@@ -173,7 +173,7 @@ class _RankingHomeState extends State<RankingHome> {
                             Padding(
                               padding: EdgeInsets.only(bottom: 2),
                               child: Container(
-                                height: 40,
+                                height: 44,
                                 child: ElevatedButton(
                                   child: Text(
                                     '크루랭킹',
@@ -217,7 +217,7 @@ class _RankingHomeState extends State<RankingHome> {
                             Padding(
                               padding: EdgeInsets.only(bottom: 2),
                               child: Container(
-                                height: 40,
+                                height: 44,
                                 child: ElevatedButton(
                                   child: Text(
                                     '개인랭킹',
@@ -262,7 +262,7 @@ class _RankingHomeState extends State<RankingHome> {
                         child: Column(
                     children: [
                         Container(
-                          height: 60,
+                          height: 44,
                           child: Row(
                             crossAxisAlignment: CrossAxisAlignment.center,
                             mainAxisAlignment: MainAxisAlignment.end,

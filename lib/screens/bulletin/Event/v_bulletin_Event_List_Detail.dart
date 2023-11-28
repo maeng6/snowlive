@@ -12,6 +12,7 @@ import '../../../controller/vm_alarmCenterController.dart';
 import '../../../controller/vm_bulletinEventController.dart';
 import '../../../controller/vm_bulletinEventReplyController.dart';
 import '../../../controller/vm_timeStampController.dart';
+import '../../../controller/vm_urlLauncherController.dart';
 import '../../../data/imgaUrls/Data_url_image.dart';
 import '../../../model/m_alarmCenterModel.dart';
 import '../../more/friend/v_friendDetailPage.dart';
@@ -31,6 +32,7 @@ class _Bulletin_Event_List_DetailState extends State<Bulletin_Event_List_Detail>
   SeasonController _seasonController = Get.find<SeasonController>();
   AlarmCenterController _alarmCenterController = Get.find<AlarmCenterController>();
   TimeStampController _timeStampController = Get.find<TimeStampController>();
+  UrlLauncherController _urlLauncherController = Get.find<UrlLauncherController>();
   //TODO: Dependency Injection**************************************************
 
   final _controller = TextEditingController();
@@ -480,7 +482,7 @@ class _Bulletin_Event_List_DetailState extends State<Bulletin_Event_List_Detail>
                                                                         uid:
                                                                         _userModelController.uid,
                                                                         bulletinEventCount: _bulletinEventModelController.bulletinEventCount,
-                                                                        imageCount: _bulletinEventModelController.itemImagesUrls!.length);
+                                                                        imageCount: _bulletinEventModelController.itemImagesUrl!.length);
                                                                   } catch (e) {
                                                                     print(
                                                                         '이미지 삭제 에러');
@@ -572,77 +574,6 @@ class _Bulletin_Event_List_DetailState extends State<Bulletin_Event_List_Detail>
                         controller: _scrollController,
                         child: Column(
                           children: [
-                            if (_bulletinEventModelController.itemImagesUrls!.isEmpty)
-                              SizedBox(
-                                height: 6,
-                              ),
-                            if (_bulletinEventModelController.itemImagesUrls!.isNotEmpty)
-                              Stack(
-                                children: [
-                                  CarouselSlider.builder(
-                                    options: CarouselOptions(
-                                      height: 280,
-                                      viewportFraction: 1,
-                                      enableInfiniteScroll: false,
-                                      onPageChanged: (index, reason) {
-                                        setState(() {
-                                          _currentIndex = index;
-                                        });
-                                      },
-                                    ),
-                                    itemCount:
-                                    _bulletinEventModelController.itemImagesUrls!.length,
-                                    itemBuilder: (context, index, pageViewIndex) {
-                                      return Container(
-                                        padding: EdgeInsets.only(bottom: 16),
-                                        child: StreamBuilder<Object>(
-                                            stream: null,
-                                            builder: (context, snapshot) {
-                                              return Row(
-                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                children: [
-                                                  GestureDetector(
-                                                    onTap: () {
-                                                      Get.to(() => BulletinEventImageScreen());
-                                                    },
-                                                    child: ExtendedImage.network(
-                                                      _bulletinEventModelController
-                                                          .itemImagesUrls![index],
-                                                      fit: BoxFit.cover,
-                                                      width: _size.width,
-                                                      height: 280,
-                                                    ),
-                                                  ),
-                                                ],
-                                              );
-                                            }),
-                                      );
-                                    },
-                                  ),
-                                  Center(
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(top: 245),
-                                      child: Row(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        children: List.generate(
-                                          _bulletinEventModelController.itemImagesUrls!.length,
-                                              (index) {
-                                            return Container(
-                                              width: 8,
-                                              height: 8,
-                                              margin: EdgeInsets.symmetric(horizontal: 4),
-                                              decoration: BoxDecoration(
-                                                shape: BoxShape.circle,
-                                                color: _currentIndex == index ? Color(0xFFFFFFFF) : Color(0xFF111111).withOpacity(0.5),
-                                              ),
-                                            );
-                                          },
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
                             Padding(
                               padding: const EdgeInsets.symmetric(horizontal: 16),
                               child: Column(
@@ -666,7 +597,7 @@ class _Bulletin_Event_List_DetailState extends State<Bulletin_Event_List_Detail>
                                     ),
                                   ),
                                   SizedBox(
-                                    height: 8,
+                                    height: 12,
                                   ),
                                   Container(
                                     width: _size.width - 32,
@@ -762,7 +693,7 @@ class _Bulletin_Event_List_DetailState extends State<Bulletin_Event_List_Detail>
                                                               fit: BoxFit.cover,
                                                             ),
                                                           SizedBox(width: 5,),
-                                                          Text('${_bulletinEventModelController.displayName}',
+                                                          Text('${userData['displayName']}',
                                                             //chatDocs[index].get('displayName'),
                                                             style: TextStyle(
                                                                 fontWeight: FontWeight.normal,
@@ -815,9 +746,6 @@ class _Bulletin_Event_List_DetailState extends State<Bulletin_Event_List_Detail>
                                         Column(
                                           crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
-                                            SizedBox(
-                                              height: 4,
-                                            ),
                                             Text(
                                               '내용',
                                               style: TextStyle(
@@ -828,6 +756,25 @@ class _Bulletin_Event_List_DetailState extends State<Bulletin_Event_List_Detail>
                                             SizedBox(
                                               height: 6,
                                             ),
+
+                                            if (_bulletinEventModelController.itemImagesUrl!.isEmpty)
+                                              SizedBox(
+                                                height: 6,
+                                              ),
+                                            if (_bulletinEventModelController.itemImagesUrl!.isNotEmpty)
+                                              GestureDetector(
+                                                onTap: () {
+                                                  Get.to(() => BulletinEventImageScreen());
+                                                },
+                                                child: ExtendedImage.network(
+                                                  _bulletinEventModelController.itemImagesUrl!,
+                                                  fit: BoxFit.cover,
+                                                  width: _size.width,
+                                                ),
+                                              ),
+                                            SizedBox(
+                                              height: 16,
+                                            ),
                                             Container(
                                               width: _size.width,
                                               child: SelectableText(
@@ -837,6 +784,76 @@ class _Bulletin_Event_List_DetailState extends State<Bulletin_Event_List_Detail>
                                                     fontWeight: FontWeight.normal),
                                               ),
                                             ),
+                                            SizedBox(
+                                              height: 16,
+                                            ),
+                                            if(_bulletinEventModelController.snsUrl != null && _bulletinEventModelController.snsUrl != '')
+                                              GestureDetector(
+                                                onTap: (){
+                                                  if(_bulletinEventModelController.snsUrl!.isNotEmpty && _bulletinEventModelController.snsUrl != '' ) {
+                                                    _urlLauncherController.otherShare(contents: '${_bulletinEventModelController.snsUrl}');
+                                                  }else{
+                                                    Get.dialog(
+                                                        AlertDialog(
+                                                      contentPadding: EdgeInsets.only(bottom: 0, left: 20, right: 20, top: 30),
+                                                      elevation: 0,
+                                                      shape: RoundedRectangleBorder(
+                                                          borderRadius: BorderRadius.circular(10.0)),
+                                                      buttonPadding:
+                                                      EdgeInsets.symmetric(
+                                                          horizontal: 20,
+                                                          vertical: 0),
+                                                      content: Text(
+                                                        '연결된 SNS가 없습니다.',
+                                                        style: TextStyle(
+                                                            fontWeight: FontWeight.w600,
+                                                            fontSize: 15),
+                                                      ),
+                                                      actions: [
+                                                        Row(
+                                                          children: [
+                                                            TextButton(
+                                                                onPressed: () async {
+                                                                  Navigator.pop(context);
+                                                                },
+                                                                child: Text(
+                                                                  '확인',
+                                                                  style: TextStyle(
+                                                                    fontSize: 15,
+                                                                    color: Color(0xff377EEA),
+                                                                    fontWeight: FontWeight.bold,
+                                                                  ),
+                                                                )),
+                                                          ],
+                                                          mainAxisAlignment: MainAxisAlignment.center,
+                                                        )
+                                                      ],
+                                                    ));
+                                                  }
+                                                },
+                                                child: Container(
+                                                  decoration: BoxDecoration(
+                                                    border: Border.all(
+                                                      color: Color(0xFFDEDEDE)
+                                                    ),
+                                                    borderRadius: BorderRadius.circular(5),
+                                                    color: Color(0xFFFFFFFF),
+                                                  ),
+                                                  padding: EdgeInsets.only(right: 8, left: 6, top: 12, bottom: 12),
+                                                  child: Row(
+                                                    mainAxisAlignment: MainAxisAlignment.center,
+                                                    children: [
+                                                      Text(
+                                                        'SNS 바로가기',
+                                                        style: TextStyle(
+                                                            fontWeight: FontWeight.bold,
+                                                            fontSize: 15,
+                                                            color: Color(0xFF949494),
+                                                      ),),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ),
                                           ],
                                         ),
                                       ]),

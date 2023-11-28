@@ -7,22 +7,24 @@ class BulletinEventModel {
 
   BulletinEventModel(
       {this.displayName,
-      this.uid,
-      this.profileImageUrl,
-      this.itemImagesUrls,
-      this.title,
-      this.category,
-      this.location,
-      this.description,
-      this.bulletinEventCount,
-      this.bulletinEventReplyCount,
-      this.resortNickname,
-      this.timeStamp});
+        this.uid,
+        this.profileImageUrl,
+        this.itemImagesUrl,
+        this.title,
+        this.category,
+        this.location,
+        this.description,
+        this.bulletinEventCount,
+        this.bulletinEventReplyCount,
+        this.resortNickname,
+        this.timeStamp,
+        this.snsUrl,
+      });
 
   String? displayName;
   String? uid;
   String? profileImageUrl;
-  List? itemImagesUrls;
+  String? itemImagesUrl;
   String? title;
   String? category;
   String? location;
@@ -33,12 +35,13 @@ class BulletinEventModel {
   Timestamp? timeStamp;
   bool? soldOut;
   DocumentReference? reference;
+  String? snsUrl;
 
   BulletinEventModel.fromJson(dynamic json, this.reference) {
     displayName = json['displayName'];
     uid = json['uid'];
     profileImageUrl = json['profileImageUrl'];
-    itemImagesUrls = json['itemImagesUrls'];
+    itemImagesUrl = json['itemImagesUrl'];
     title = json['title'];
     category = json['category'];
     location = json['location'];
@@ -48,6 +51,7 @@ class BulletinEventModel {
     bulletinEventReplyCount = json['bulletinEventReplyCount'];
     resortNickname = json['resortNickname'];
     soldOut = json['soldOut'];
+    snsUrl = json['snsUrl'];
   }
 
   BulletinEventModel.fromSnapShot(DocumentSnapshot<Map<String, dynamic>> snapshot)
@@ -55,30 +59,32 @@ class BulletinEventModel {
 
   Future<BulletinEventModel> getBulletinEventModel(String uid,int bulletinEventCount) async {
     DocumentReference<Map<String, dynamic>> documentReference =
-        ref.collection('bulletinEvent').doc('$uid#$bulletinEventCount');
+    ref.collection('bulletinEvent').doc('$uid#$bulletinEventCount');
     final DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
-        await documentReference.get();
+    await documentReference.get();
     BulletinEventModel bulletinEventModel = BulletinEventModel.fromSnapShot(documentSnapshot);
     return bulletinEventModel;
   }
 
   Future<void> uploadBulletinEvent(
       {required displayName,
-      required uid,
-      required profileImageUrl,
-      required itemImagesUrls,
-      required title,
-      required category,
-      required location,
-      required description,
-      timeStamp,
-      required bulletinEventCount,
-      required resortNickname}) async {
+        required uid,
+        required profileImageUrl,
+        required itemImagesUrl,
+        required title,
+        required category,
+        required location,
+        required description,
+        timeStamp,
+        required bulletinEventCount,
+        required resortNickname,
+        required snsUrl,
+      }) async {
     await ref.collection('bulletinEvent').doc('$uid#$bulletinEventCount').set({
       'displayName': displayName,
       'uid': uid,
       'profileImageUrl': profileImageUrl,
-      'itemImagesUrls': itemImagesUrls,
+      'itemImagesUrl': itemImagesUrl,
       'title': title,
       'category': category,
       'location': location,
@@ -90,6 +96,7 @@ class BulletinEventModel {
       'soldOut': false,
       'viewerUid': [],
       'lock': false,
+      'snsUrl': snsUrl,
     });
   }
 
@@ -97,19 +104,21 @@ class BulletinEventModel {
       {required displayName,
         required uid,
         required profileImageUrl,
-        required itemImagesUrls,
+        required itemImagesUrl,
         required title,
         required category,
         required location,
         required description,
         timeStamp,
         required bulletinEventCount,
-        required resortNickname}) async {
+        required resortNickname,
+        required snsUrl,
+      }) async {
     await ref.collection('bulletinEvent').doc('$uid#$bulletinEventCount').update({
       'displayName': displayName,
       'uid': uid,
       'profileImageUrl': profileImageUrl,
-      'itemImagesUrls': itemImagesUrls,
+      'itemImagesUrl': itemImagesUrl,
       'title': title,
       'category': category,
       'location': location,
@@ -119,6 +128,7 @@ class BulletinEventModel {
       'resortNickname': resortNickname,
       'soldOut': false,
       'viewerUid': [],
+      'snsUrl': snsUrl,
     });
   }
 

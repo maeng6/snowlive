@@ -10,6 +10,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import '../../../controller/vm_allUserDocsController.dart';
 import '../../../controller/vm_bulletinFreeController.dart';
 import '../../../controller/vm_timeStampController.dart';
 import '../../../controller/vm_userModelController.dart';
@@ -32,6 +33,7 @@ class _Bulletin_Free_List_ScreenState extends State<Bulletin_Free_List_Screen> {
   BulletinFreeModelController _bulletinFreeModelController = Get.find<BulletinFreeModelController>();
   TimeStampController _timeStampController = Get.find<TimeStampController>();
   SeasonController _seasonController = Get.find<SeasonController>();
+  AllUserDocsController _allUserDocsController = Get.find<AllUserDocsController>();
   //TODO: Dependency Injection**************************************************
 
   var _stream;
@@ -41,6 +43,7 @@ class _Bulletin_Free_List_ScreenState extends State<Bulletin_Free_List_Screen> {
   bool _isVisible = false;
   bool _orderbyLike = false;
   bool _orderbyView = false;
+  var _alluser;
 
 
   var f = NumberFormat('###,###,###,###');
@@ -94,6 +97,10 @@ class _Bulletin_Free_List_ScreenState extends State<Bulletin_Free_List_Screen> {
         }
       });
 
+      _allUserDocsController.startListening().then((result){
+        setState(() {});
+      });
+
     });
 
     // Add a listener to the ScrollController
@@ -103,6 +110,12 @@ class _Bulletin_Free_List_ScreenState extends State<Bulletin_Free_List_Screen> {
         _showAddButton = _scrollController.offset <= 0;
       });
     });
+  }
+
+  @override
+  void dispose() {
+    _allUserDocsController.stopListening();
+    super.dispose();
   }
 
   Stream<QuerySnapshot> newStream(){
@@ -1194,6 +1207,8 @@ class _Bulletin_Free_List_ScreenState extends State<Bulletin_Free_List_Screen> {
                               bool isLocked = data?.containsKey('lock') == true ? data!['lock'] : false;
                               List viewerUid = data?.containsKey('viewerUid') == true ? data!['viewerUid'] : [];
                               String _time = _timeStampController.yyyymmddFormat(chatDocs[index].get('timeStamp'));
+                              String? profileUrl = _allUserDocsController.findProfileUrl(chatDocs[index]['uid'], _allUserDocsController.allUserDocs);
+                              String? displayName = _allUserDocsController.findDisplayName(chatDocs[index]['uid'], _allUserDocsController.allUserDocs);
                               return GestureDetector(
                                 onTap: () async {
                                   var docName = '${_bulletinFreeModelController.uid}#${_bulletinFreeModelController.bulletinFreeCount}';
@@ -1614,7 +1629,7 @@ class _Bulletin_Free_List_ScreenState extends State<Bulletin_Free_List_Screen> {
                                                                   borderRadius: BorderRadius.circular(50)
                                                               ),
                                                               child: ExtendedImage.network(
-                                                                chatDocs[index]['profileImageUrl'],
+                                                                profileUrl,
                                                                 cache: true,
                                                                 shape: BoxShape.circle,
                                                                 borderRadius:
@@ -1653,7 +1668,7 @@ class _Bulletin_Free_List_ScreenState extends State<Bulletin_Free_List_Screen> {
                                                               ),
                                                             ),
                                                             SizedBox(width: 4),
-                                                            Text('${chatDocs[index]['displayName']}',
+                                                            Text('$displayName',
                                                               style: TextStyle(
                                                                   fontSize: 13,
                                                                   color: Color(0xFF111111),

@@ -2345,7 +2345,7 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                                       ),)),
                                                                 SizedBox(height: 10,),
                                                                 Container(
-                                                                  padding: EdgeInsets.symmetric(horizontal: barData.length < 4 ? 60 : 20),
+                                                                  padding: EdgeInsets.symmetric(horizontal: barData.length < 4 ? 20 : 20),
                                                                   width: _size.width,
                                                                   height: 214,
                                                                   decoration: BoxDecoration(
@@ -2392,7 +2392,7 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                                                 return Container(
                                                                                   padding: EdgeInsets.only(bottom: 2),
                                                                                   margin: EdgeInsets.symmetric(horizontal: 10),
-                                                                                  width: barData.length < 5 ? _size.width / 5 - 48 : _size.width / 5 - 48,
+                                                                                  width: barData.length < 5 ? _size.width / 5 - 32 : _size.width / 5 - 32,
                                                                                   height: 195,
                                                                                   child: Column(
                                                                                     mainAxisAlignment: MainAxisAlignment.end,

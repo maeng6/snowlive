@@ -36,21 +36,21 @@ class ImageController extends GetxController {
   Future<XFile?> cropImage(XFile? imageFile) async {
     if (imageFile != null) {
       final CroppedFile? croppedFile = await ImageCropper().cropImage(
-        sourcePath: imageFile.path,
-        aspectRatioPresets: [
-          CropAspectRatioPreset.square,
-          CropAspectRatioPreset.ratio3x2,
-          CropAspectRatioPreset.original,
-          CropAspectRatioPreset.ratio4x3,
-          CropAspectRatioPreset.ratio16x9
-        ],
-        uiSettings: [
-        AndroidUiSettings(
-            lockAspectRatio: false
-        ),
-        IOSUiSettings(
+          sourcePath: imageFile.path,
+          aspectRatioPresets: [
+            CropAspectRatioPreset.square,
+            CropAspectRatioPreset.ratio3x2,
+            CropAspectRatioPreset.original,
+            CropAspectRatioPreset.ratio4x3,
+            CropAspectRatioPreset.ratio16x9
+          ],
+          uiSettings: [
+            AndroidUiSettings(
+                lockAspectRatio: false
+            ),
+            IOSUiSettings(
 
-        ),]
+            ),]
       );
 
       if (croppedFile != null) {
@@ -68,7 +68,7 @@ class ImageController extends GetxController {
     List<XFile> selectedImages = [];
     final ImagePicker _picker = ImagePicker();
     selectedImages =
-        await _picker.pickMultiImage(imageQuality: 70);
+    await _picker.pickMultiImage(imageQuality: 70);
     if (selectedImages != null) {
       return selectedImages;
     }else {
@@ -194,6 +194,23 @@ class ImageController extends GetxController {
     return downloadUrl;
   }
 
+  Future<String> setNewImage_bulletinEvent(XFile newImage, bulletinEventCount) async {
+    String? uid = await FlutterSecureStorage().read(key: 'uid');
+    var metaData = SettableMetadata(contentType: 'image/jpeg');
+    String downloadUrl = '';
+    if (newImage != null) {
+      Reference ref = FirebaseStorage.instance.ref('images/bulletinEvent/$uid#$bulletinEventCount.jpg');
+      await ref.putFile(File(newImage.path), metaData);
+      downloadUrl = await ref.getDownloadURL();
+      print("이미지 업로드 완료: $downloadUrl"); // 로그 추가
+    } else {
+      CustomFullScreenDialog.cancelDialog();
+    }
+    return downloadUrl;
+  }
+
+
+
   Future<List<String>> setNewMultiImage_bulletinFree(List<XFile> newImages,bulletinFreeCount) async {
     int i =0;
     var downloadUrlsingle;
@@ -219,7 +236,7 @@ class ImageController extends GetxController {
   Future<void> deleteProfileImage() async{
     String? uid = _userModelController.uid;
     await FirebaseStorage.instance.ref().child('images/profile/$uid.jpg').delete();
-}
+  }
 
   Future<void> deleteLiveTalkImage({required String uid,required int count}) async {
 

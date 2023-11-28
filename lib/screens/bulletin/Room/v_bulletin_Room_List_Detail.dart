@@ -584,7 +584,7 @@ class _Bulletin_Room_List_DetailState extends State<Bulletin_Room_List_Detail> {
                                                 color: Color(0xFF666666)),
                                           ),),
                                         SizedBox(
-                                          height: 8,
+                                          height: 12,
                                         ),
                                         Container(
                                           width: _size.width-32,
@@ -687,7 +687,7 @@ class _Bulletin_Room_List_DetailState extends State<Bulletin_Room_List_Detail> {
                                                             onTap: (){
                                                               Get.to(() => FriendDetailPage(uid: userData['uid'], favoriteResort: userData['favoriteResort'],));
                                                             },
-                                                            child: Text('${_bulletinRoomModelController.displayName}',
+                                                            child: Text('${userData['displayName']}',
                                                               //chatDocs[index].get('displayName'),
                                                               style: TextStyle(
                                                                   fontWeight: FontWeight.normal,

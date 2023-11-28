@@ -17,7 +17,9 @@ class BulletinCrewModel {
         this.bulletinCrewCount,
         this.bulletinCrewReplyCount,
         this.resortNickname,
-        this.timeStamp});
+        this.timeStamp,
+        this.snsUrl,
+      });
 
   String? displayName;
   String? uid;
@@ -33,6 +35,7 @@ class BulletinCrewModel {
   Timestamp? timeStamp;
   bool? soldOut;
   DocumentReference? reference;
+  String? snsUrl;
 
   BulletinCrewModel.fromJson(dynamic json, this.reference) {
     displayName = json['displayName'];
@@ -48,6 +51,7 @@ class BulletinCrewModel {
     bulletinCrewReplyCount = json['bulletinCrewReplyCount'];
     resortNickname = json['resortNickname'];
     soldOut = json['soldOut'];
+    snsUrl = json['snsUrl'];
   }
 
   BulletinCrewModel.fromSnapShot(DocumentSnapshot<Map<String, dynamic>> snapshot)
@@ -73,7 +77,9 @@ class BulletinCrewModel {
         required description,
         timeStamp,
         required bulletinCrewCount,
-        required resortNickname}) async {
+        required resortNickname,
+        required snsUrl
+      }) async {
     await ref.collection('bulletinCrew').doc('$uid#$bulletinCrewCount').set({
       'displayName': displayName,
       'uid': uid,
@@ -90,6 +96,7 @@ class BulletinCrewModel {
       'soldOut': false,
       'viewerUid': [],
       'lock': false,
+      'snsUrl':snsUrl
     });
   }
 
@@ -104,7 +111,9 @@ class BulletinCrewModel {
         required description,
         timeStamp,
         required bulletinCrewCount,
-        required resortNickname}) async {
+        required resortNickname,
+        required snsUrl,
+      }) async {
     await ref.collection('bulletinCrew').doc('$uid#$bulletinCrewCount').update({
       'displayName': displayName,
       'uid': uid,
@@ -119,6 +128,7 @@ class BulletinCrewModel {
       'resortNickname': resortNickname,
       'soldOut': false,
       'viewerUid': [],
+      'snsUrl':snsUrl
     });
   }
 

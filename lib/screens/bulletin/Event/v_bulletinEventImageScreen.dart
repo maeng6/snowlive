@@ -21,13 +21,13 @@ class _BulletinEventImageScreenState extends State<BulletinEventImageScreen> {
   //TODO: Dependency Injection**************************************************
 
   int _currentPage = 0;
-  List<String> _itemImagesUrls = [];
+  String? _itemImagesUrl;
 
   @override
   void initState() {
     super.initState();
     // 이미지 URL 리스트를 컨트롤러에서 가져와 저장
-    _itemImagesUrls = _bulletinEventModelController.itemImagesUrls?.cast<String>() ?? [];
+    _itemImagesUrl = _bulletinEventModelController.itemImagesUrl ?? '';
   }
 
   @override
@@ -38,14 +38,6 @@ class _BulletinEventImageScreenState extends State<BulletinEventImageScreen> {
         preferredSize: Size.fromHeight(58),
         child: AppBar(
           systemOverlayStyle: SystemUiOverlayStyle.dark,
-          title: Text(
-            '${_currentPage + 1} / ${_itemImagesUrls.length}',
-            style: TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-              fontSize: 16,
-            ),
-          ),
           leading: GestureDetector(
             child: Icon(
               Icons.close,
@@ -58,27 +50,18 @@ class _BulletinEventImageScreenState extends State<BulletinEventImageScreen> {
           elevation: 0.0,
         ),
       ),
-      body: PhotoViewGallery.builder(
-        itemCount: _itemImagesUrls.length,
-        builder: (context, index) {
-          return PhotoViewGalleryPageOptions(
-            imageProvider: ExtendedNetworkImageProvider(
-                _itemImagesUrls[index],
-                cache: true
-            ),
-            minScale: PhotoViewComputedScale.contained,
-            maxScale: PhotoViewComputedScale.covered * 7,
-          );
-        },
+      body: PhotoView(
+        imageProvider: _itemImagesUrl!.isNotEmpty
+            ? ExtendedNetworkImageProvider(
+            _itemImagesUrl!,
+            cache: true
+        )
+            : AssetImage('assets/imgs/profile/img_profile_default_.png') as ImageProvider,
         backgroundDecoration: BoxDecoration(
           color: Colors.black,
         ),
-        pageController: PageController(initialPage: _currentPage),
-        onPageChanged: (index) {
-          setState(() {
-            _currentPage = index;
-          });
-        },
+        minScale: PhotoViewComputedScale.contained,
+        maxScale: PhotoViewComputedScale.covered * 7,
       ),
     );
   }

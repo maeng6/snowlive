@@ -1168,7 +1168,7 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                                           margin: EdgeInsets.only(top: 6),
                                                           child: Center(
                                                             child: Container(
-                                                              padding: EdgeInsets.symmetric(horizontal: barData.length < 4 ? 40 : 0),
+                                                              padding: EdgeInsets.symmetric(horizontal: barData.length < 4 ? 20 : 20),
                                                               width: _size.width,
                                                               height: 214,
                                                               child: Column(
@@ -1192,8 +1192,9 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                                                             double barHeightRatio = data['barHeightRatio'];
                                                                             Color barColor = Color(crewDocs[0]['crewColor']);
                                                                             return Container(
-                                                                              margin: EdgeInsets.symmetric(horizontal: 5),
-                                                                              width: barData.length < 5 ? _size.width / 5 - 10 : _size.width / 5 - 28,
+                                                                              padding: EdgeInsets.only(bottom: 2),
+                                                                              margin: EdgeInsets.symmetric(horizontal: 10),
+                                                                              width: barData.length < 5 ? _size.width / 5 - 32 : _size.width / 5 - 32,
                                                                               height: 195,
                                                                               child: Column(
                                                                                 mainAxisAlignment: MainAxisAlignment.end,

@@ -13,6 +13,7 @@ import 'package:com.snowlive/screens/bulletin/Crew/v_bulletinCrewImageScreen.dar
 import 'package:com.snowlive/screens/bulletin/Crew/v_bulletin_Crew_ModifyPage.dart';
 import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 import '../../../controller/vm_alarmCenterController.dart';
+import '../../../controller/vm_allUserDocsController.dart';
 import '../../../controller/vm_bulletinCrewController.dart';
 import '../../../controller/vm_bulletinCrewReplyController.dart';
 import '../../../controller/vm_bulletinFreeController.dart';
@@ -37,6 +38,7 @@ class _Bulletin_Free_List_DetailState extends State<Bulletin_Free_List_Detail> {
   SeasonController _seasonController = Get.find<SeasonController>();
   AlarmCenterController _alarmCenterController = Get.find<AlarmCenterController>();
   TimeStampController _timeStampController = Get.find<TimeStampController>();
+  AllUserDocsController _allUserDocsController = Get.find<AllUserDocsController>();
   //TODO: Dependency Injection**************************************************
 
   final _controller = TextEditingController();
@@ -46,6 +48,7 @@ class _Bulletin_Free_List_DetailState extends State<Bulletin_Free_List_Detail> {
   var _firstPress = true;
   var _replyStream;
   int _currentIndex = 0;
+  var _alluser;
 
 
   ScrollController _scrollController = ScrollController();
@@ -61,6 +64,9 @@ class _Bulletin_Free_List_DetailState extends State<Bulletin_Free_List_Detail> {
     super.initState();
     _seasonController.getBulletinFreeReplyLimit();
     _replyStream = replyNewStream();
+    _allUserDocsController.startListening().then((result){
+      setState(() {});
+    });
   }
 
   _updateMethod() async {
@@ -610,7 +616,7 @@ class _Bulletin_Free_List_DetailState extends State<Bulletin_Free_List_Detail> {
                                     ),
                                   ),
                                   SizedBox(
-                                    height: 8,
+                                    height: 12,
                                   ),
                                   Container(
                                     width: _size.width - 32,
@@ -706,7 +712,7 @@ class _Bulletin_Free_List_DetailState extends State<Bulletin_Free_List_Detail> {
                                                               fit: BoxFit.cover,
                                                             ),
                                                           SizedBox(width: 5,),
-                                                          Text('${_bulletinFreeModelController.displayName}',
+                                                          Text('${userData['displayName']}',
                                                             //chatDocs[index].get('displayName'),
                                                             style: TextStyle(
                                                                 fontWeight: FontWeight.normal,
