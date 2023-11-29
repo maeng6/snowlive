@@ -691,7 +691,7 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                                                   }
 
                                                                   if (snapshot.connectionState == ConnectionState.waiting) {
-                                                                    return CircularProgressIndicator();
+                                                                    return SizedBox();
                                                                   }
 
                                                                   if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
