@@ -566,6 +566,17 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
                                                   SizedBox(
                                                     height: 4,
                                                   ),
+                                                  Text("1. 와이파이 끄고 데이터 사용\n2. 위치 추적 항상 허용으로 설정",
+                                                    style: TextStyle(
+                                                        fontSize: 15,
+                                                        height: 1.4,
+                                                        fontWeight: FontWeight.normal,
+                                                        color: Color(0xFF111111)
+                                                    ),
+                                                  ),
+                                                  SizedBox(
+                                                    height: 10,
+                                                  ),
                                                   StreamBuilder(
                                                       stream: FirebaseFirestore.instance
                                                           .collection('Ranking_guideUrl')
@@ -575,7 +586,7 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
                                                         else if (snapshot.data!.docs.isNotEmpty) {
                                                           final ranking_guideUrlDoc = snapshot.data!.docs;
                                                           return Padding(
-                                                            padding: EdgeInsets.only(top: 14, right: 8),
+                                                            padding: EdgeInsets.only(right: 8),
                                                             child: GestureDetector(
                                                               onTap: (){
                                                                 _urlLauncherController.otherShare(contents: '${ranking_guideUrlDoc[0]['url']}');
@@ -588,12 +599,12 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
                                                                         padding: EdgeInsets.only(top: 6, bottom: 6, left: 10, right: 10), // 텍스트와 테두리 간의 패딩
                                                                         decoration: BoxDecoration(
                                                                           color: Color(0xFFCBE0FF),
-                                                                          borderRadius: BorderRadius.circular(30.0), // 테두리 모서리 둥글게
+                                                                          borderRadius: BorderRadius.circular(4), // 테두리 모서리 둥글게
                                                                         ),
                                                                         child: Text(
                                                                           '휴대폰 설정방법 보러가기',
                                                                           style: TextStyle(
-                                                                              fontSize: 12,
+                                                                              fontSize: 13,
                                                                               fontWeight: FontWeight.bold,
                                                                               color: Color(0xFF3D83ED)
                                                                           ),
@@ -608,18 +619,7 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
                                                         else if (snapshot.connectionState == ConnectionState.waiting) {}
                                                         return SizedBox.shrink();
                                                       }),
-                                                  SizedBox(
-                                                    height: 4,
-                                                  ),
-                                                  Text("1. 와이파이 끄고 데이터 사용\n2. 위치 추적 항상 허용으로 설정",
-                                                    style: TextStyle(
-                                                        fontSize: 15,
-                                                        height: 1.4,
-                                                        fontWeight: FontWeight.normal,
-                                                        color: Color(0xFF111111)
-                                                    ),
-                                                  ),
-                                                  SizedBox(height: 24),
+                                                  SizedBox(height: 30),
                                                   Obx(() => GestureDetector(
                                                     onTap: () {
                                                       _dialogController.isChecked.value = !_dialogController.isChecked.value;
@@ -645,7 +645,7 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
                                                     ),
                                                   )),
 
-                                                  SizedBox(height: 24),
+                                                  SizedBox(height: 20),
                                                   GestureDetector(
                                                     onTap: (){
                                                       Get.to(()=>WebPage(url: 'https://sites.google.com/view/134creativelablocationinfo/%ED%99%88'));
@@ -661,7 +661,7 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
                                                     ),
                                                   ),
                                                   SizedBox(
-                                                    height: 28,
+                                                    height: 24,
                                                   ),
                                                 ],
                                               ),
@@ -2181,6 +2181,17 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
                                               SizedBox(
                                                 height: 4,
                                               ),
+                                              Text("1. 와이파이 끄고 데이터 사용\n2. 위치 추적 항상 허용으로 설정",
+                                                style: TextStyle(
+                                                    fontSize: 15,
+                                                    height: 1.4,
+                                                    fontWeight: FontWeight.normal,
+                                                    color: Color(0xFF111111)
+                                                ),
+                                              ),
+                                              SizedBox(
+                                                height: 10,
+                                              ),
                                               StreamBuilder(
                                                   stream: FirebaseFirestore.instance
                                                       .collection('Ranking_guideUrl')
@@ -2190,7 +2201,7 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
                                                     else if (snapshot.data!.docs.isNotEmpty) {
                                                       final ranking_guideUrlDoc = snapshot.data!.docs;
                                                       return Padding(
-                                                        padding: EdgeInsets.only(top: 14, right: 8),
+                                                        padding: EdgeInsets.only(right: 8),
                                                         child: GestureDetector(
                                                           onTap: (){
                                                             _urlLauncherController.otherShare(contents: '${ranking_guideUrlDoc[0]['url']}');
@@ -2203,12 +2214,12 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
                                                                     padding: EdgeInsets.only(top: 6, bottom: 6, left: 10, right: 10), // 텍스트와 테두리 간의 패딩
                                                                     decoration: BoxDecoration(
                                                                       color: Color(0xFFCBE0FF),
-                                                                      borderRadius: BorderRadius.circular(30.0), // 테두리 모서리 둥글게
+                                                                      borderRadius: BorderRadius.circular(4), // 테두리 모서리 둥글게
                                                                     ),
                                                                     child: Text(
                                                                       '휴대폰 설정방법 보러가기',
                                                                       style: TextStyle(
-                                                                          fontSize: 12,
+                                                                          fontSize: 13,
                                                                           fontWeight: FontWeight.bold,
                                                                           color: Color(0xFF3D83ED)
                                                                       ),
@@ -2223,18 +2234,7 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
                                                     else if (snapshot.connectionState == ConnectionState.waiting) {}
                                                     return SizedBox.shrink();
                                                   }),
-                                              SizedBox(
-                                                height: 4,
-                                              ),
-                                              Text("1. 와이파이 끄고 데이터 사용\n2. 위치 추적 항상 허용으로 설정",
-                                                style: TextStyle(
-                                                    fontSize: 15,
-                                                    height: 1.4,
-                                                    fontWeight: FontWeight.normal,
-                                                    color: Color(0xFF111111)
-                                                ),
-                                              ),
-                                              SizedBox(height: 24),
+                                              SizedBox(height: 30),
                                               Obx(() => GestureDetector(
                                                 onTap: () {
                                                   _dialogController.isChecked.value = !_dialogController.isChecked.value;
@@ -2260,7 +2260,7 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
                                                 ),
                                               )),
 
-                                              SizedBox(height: 24),
+                                              SizedBox(height: 20),
                                               GestureDetector(
                                                 onTap: (){
                                                   Get.to(()=>WebPage(url: 'https://sites.google.com/view/134creativelablocationinfo/%ED%99%88'));
@@ -2276,7 +2276,7 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
                                                 ),
                                               ),
                                               SizedBox(
-                                                height: 28,
+                                                height: 24,
                                               ),
                                             ],
                                           ),
