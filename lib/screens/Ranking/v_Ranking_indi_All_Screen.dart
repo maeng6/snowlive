@@ -373,12 +373,12 @@ class _RankingIndiAllScreenState extends State<RankingIndiAllScreen> {
 
                                                       if (snapshot.connectionState ==
                                                           ConnectionState.waiting) {
-                                                        return SizedBox();
+                                                        return SizedBox.shrink();
                                                       }
 
                                                       if (!snapshot.hasData ||
                                                           snapshot.data!.docs.isEmpty) {
-                                                        return SizedBox();
+                                                        return SizedBox.shrink();
                                                       }
 
                                                       var crewData = snapshot.data!.docs.first

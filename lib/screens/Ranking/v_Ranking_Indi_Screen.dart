@@ -691,11 +691,11 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                                                   }
 
                                                                   if (snapshot.connectionState == ConnectionState.waiting) {
-                                                                    return CircularProgressIndicator();
+                                                                    return SizedBox.shrink();
                                                                   }
 
                                                                   if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                                                                    return SizedBox();
+                                                                    return SizedBox.shrink();
                                                                   }
 
                                                                   var crewData = snapshot.data!.docs.first.data() as Map<String, dynamic>?;
