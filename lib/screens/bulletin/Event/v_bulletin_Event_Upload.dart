@@ -461,7 +461,6 @@ class _Bulletin_Event_UploadState extends State<Bulletin_Event_Upload> {
                                             child: Image.file(
                                               File(_bulletinEventImageUrl!),
                                               width: _size.width -32,
-                                              height: _size.width -32,
                                               fit: BoxFit.cover,
                                             ),
                                           ),

@@ -299,7 +299,7 @@ class _Bulletin_Room_List_DetailState extends State<Bulletin_Room_List_Detail> {
                     child: Padding(
                       padding: const EdgeInsets.only(right: 12),
                       child: Icon(
-                        Icons.more_vert_rounded,
+                        Icons.more_horiz_rounded,
                         size: 26,
                         color: Color(0xFF111111),
                       ),
@@ -470,7 +470,7 @@ class _Bulletin_Room_List_DetailState extends State<Bulletin_Room_List_Detail> {
                     child: Padding(
                       padding: const EdgeInsets.only(right: 12),
                       child: Icon(
-                        Icons.more_vert_rounded,
+                        Icons.more_horiz_rounded,
                         size: 26,
                         color: Color(0xFF111111),
                       ),

@@ -865,12 +865,12 @@ class _FleaMarket_ModifyPageState extends State<FleaMarket_ModifyPage> {
                                         ),
                                         hintStyle:
                                         TextStyle(color: Color(0xffDEDEDE), fontSize: 16),
-                                        hintText: 'URL을 입력해주세요.',
+                                        hintText: 'URL을 입력해주세요.(https:// 필수 입력)',
                                         labelText: '카카오 오픈채팅 URL',
                                         border: InputBorder.none,
                                       ),
                                       validator: (val) {
-                                        if (val!.length <= 1000 && val.length >= 1) {
+                                        if (val!.length <= 1000 && val.length >= 0) {
                                           return null;
                                         } else {
                                           return '최대 입력 가능한 글자 수를 초과했습니다.';

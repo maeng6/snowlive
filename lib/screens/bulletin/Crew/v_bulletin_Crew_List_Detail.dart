@@ -844,7 +844,7 @@ class _Bulletin_Crew_List_DetailState extends State<Bulletin_Crew_List_Detail> {
                                               ),
                                             ),
                                             SizedBox(
-                                              height: 16,
+                                              height: 24,
                                             ),
                                             if(_bulletinCrewModelController.snsUrl != null && _bulletinCrewModelController.snsUrl != '')
                                             GestureDetector(
@@ -892,10 +892,10 @@ class _Bulletin_Crew_List_DetailState extends State<Bulletin_Crew_List_Detail> {
                                               child: Container(
                                                 decoration: BoxDecoration(
                                                   border: Border.all(
-                                                      color: Color(0xFFDEDEDE)
+                                                      color: Color(0xFFECECEC)
                                                   ),
                                                   borderRadius: BorderRadius.circular(5),
-                                                  color: Color(0xFFFFFFFF),
+                                                  color: Color(0xFFECECEC),
                                                 ),
                                                 padding: EdgeInsets.only(right: 8, left: 6, top: 12, bottom: 12),
                                                 child: Row(
@@ -906,7 +906,7 @@ class _Bulletin_Crew_List_DetailState extends State<Bulletin_Crew_List_Detail> {
                                                       style: TextStyle(
                                                         fontWeight: FontWeight.bold,
                                                         fontSize: 15,
-                                                        color: Color(0xFF949494),
+                                                        color: Color(0xFF666666),
                                                       ),),
                                                   ],
                                                 ),
