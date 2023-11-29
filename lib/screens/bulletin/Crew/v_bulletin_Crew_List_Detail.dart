@@ -843,6 +843,9 @@ class _Bulletin_Crew_List_DetailState extends State<Bulletin_Crew_List_Detail> {
                                                     fontWeight: FontWeight.normal),
                                               ),
                                             ),
+                                            SizedBox(
+                                              height: 16,
+                                            ),
                                             if(_bulletinCrewModelController.snsUrl != null && _bulletinCrewModelController.snsUrl != '')
                                             GestureDetector(
                                               onTap: (){
@@ -888,30 +891,23 @@ class _Bulletin_Crew_List_DetailState extends State<Bulletin_Crew_List_Detail> {
                                               },
                                               child: Container(
                                                 decoration: BoxDecoration(
+                                                  border: Border.all(
+                                                      color: Color(0xFFDEDEDE)
+                                                  ),
                                                   borderRadius: BorderRadius.circular(5),
-                                                  color: Color(0xFFFEE500),
+                                                  color: Color(0xFFFFFFFF),
                                                 ),
-                                                padding: EdgeInsets.only(right: 8, left: 6, top: 5, bottom: 5),
+                                                padding: EdgeInsets.only(right: 8, left: 6, top: 12, bottom: 12),
                                                 child: Row(
+                                                  mainAxisAlignment: MainAxisAlignment.center,
                                                   children: [
-                                                    ExtendedImage.asset(
-                                                      'assets/imgs/logos/kakao_logo.png',
-                                                      enableMemoryCache: true,
-                                                      shape: BoxShape.rectangle,
-                                                      borderRadius: BorderRadius.circular(7),
-                                                      width: 18,
-                                                      fit: BoxFit.cover,
-                                                    ),
-                                                    SizedBox(
-                                                      width: 2,
-                                                    ),
                                                     Text(
-                                                      '카카오 오픈채팅',
+                                                      'SNS 바로가기',
                                                       style: TextStyle(
-                                                          fontWeight: FontWeight.bold,
-                                                          fontSize: 12,
-                                                          color: Colors.black),
-                                                    ),
+                                                        fontWeight: FontWeight.bold,
+                                                        fontSize: 15,
+                                                        color: Color(0xFF949494),
+                                                      ),),
                                                   ],
                                                 ),
                                               ),
