@@ -219,45 +219,69 @@ class _RankingMyCrewScreenState extends State<RankingMyCrewScreen> {
                                           width: 48,
                                           height: 48,
                                           child: userData['profileImageUrl'].isNotEmpty
-                                              ? ExtendedImage.network(
-                                            userData['profileImageUrl'],
-                                            enableMemoryCache: true,
-                                            cacheHeight: 100,
-                                            shape: BoxShape.circle,
-                                            borderRadius: BorderRadius.circular(8),
-                                            width: 48,
-                                            height: 48,
-                                            fit: BoxFit.cover,
-                                            loadStateChanged: (
-                                                ExtendedImageState state) {
-                                              switch (state.extendedImageLoadState) {
-                                                case LoadState.loading:
-                                                  return SizedBox.shrink();
-                                                case LoadState.completed:
-                                                  return state.completedWidget;
-                                                case LoadState.failed:
-                                                  return ExtendedImage.asset(
-                                                    'assets/imgs/profile/img_profile_default_circle.png',
-                                                    shape: BoxShape.circle,
-                                                    borderRadius: BorderRadius.circular(
-                                                        8),
-                                                    width: 48,
-                                                    height: 48,
-                                                    fit: BoxFit.cover,
-                                                  ); // 예시로 에러 아이콘을 반환하고 있습니다.
-                                                default:
-                                                  return null;
-                                              }
-                                            },
+                                              ? Stack(
+                                            children: [
+                                              ExtendedImage.network(
+                                                userData['profileImageUrl'],
+                                                enableMemoryCache: true,
+                                                cacheHeight: 100,
+                                                shape: BoxShape.circle,
+                                                borderRadius: BorderRadius.circular(8),
+                                                width: 48,
+                                                height: 48,
+                                                fit: BoxFit.cover,
+                                                loadStateChanged: (
+                                                    ExtendedImageState state) {
+                                                  switch (state.extendedImageLoadState) {
+                                                    case LoadState.loading:
+                                                      return SizedBox.shrink();
+                                                    case LoadState.completed:
+                                                      return state.completedWidget;
+                                                    case LoadState.failed:
+                                                      return ExtendedImage.asset(
+                                                        'assets/imgs/profile/img_profile_default_circle.png',
+                                                        shape: BoxShape.circle,
+                                                        borderRadius: BorderRadius.circular(
+                                                            8),
+                                                        width: 48,
+                                                        height: 48,
+                                                        fit: BoxFit.cover,
+                                                      ); // 예시로 에러 아이콘을 반환하고 있습니다.
+                                                    default:
+                                                      return null;
+                                                  }
+                                                },
+                                              ),
+                                              (userData['isOnLive'] == true)
+                                                  ? Positioned(
+                                                child: Image.asset('assets/imgs/icons/icon_badge_live.png',
+                                                  width: 32,),
+                                                right: 0,
+                                                bottom: 0,
+                                              )
+                                                  : Container()
+                                            ],
                                           )
-                                              : ExtendedImage.asset(
-                                            'assets/imgs/profile/img_profile_default_circle.png',
-                                            enableMemoryCache: true,
-                                            shape: BoxShape.circle,
-                                            borderRadius: BorderRadius.circular(8),
-                                            width: 48,
-                                            height: 48,
-                                            fit: BoxFit.cover,
+                                              : Stack(
+                                            children: [
+                                              ExtendedImage.asset(
+                                                'assets/imgs/profile/img_profile_default_circle.png',
+                                                enableMemoryCache: true,
+                                                shape: BoxShape.circle,
+                                                borderRadius: BorderRadius.circular(8),
+                                                width: 48,
+                                                height: 48,
+                                                fit: BoxFit.cover,
+                                              ),
+                                              (userData['isOnLive'] == true)
+                                                  ? Positioned(
+                                                child: Image.asset('assets/imgs/icons/icon_badge_live.png',
+                                                  width: 32,),
+                                                right: 0,
+                                                bottom: 0,
+                                              )
+                                                  : Container()
+                                            ],
                                           ),
                                         ),
                                         SizedBox(width: 14),
