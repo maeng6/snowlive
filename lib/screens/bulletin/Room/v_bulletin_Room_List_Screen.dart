@@ -644,8 +644,12 @@ class _Bulletin_Room_List_ScreenState extends State<Bulletin_Room_List_Screen> {
                                 if (data?.containsKey('lock') == false) {
                                   await chatDocs[index].reference.update({'viewerUid': []});
                                 }
+                                await _bulletinRoomModelController.updateViewerUid();
                                 await _bulletinRoomModelController
-                                    .updateViewerUid();
+                                    .getCurrentBulletinRoom(
+                                    uid: chatDocs[index].get('uid'),
+                                    bulletinRoomCount:
+                                    chatDocs[index].get('bulletinRoomCount'));
                                 CustomFullScreenDialog.cancelDialog();
                                 Get.to(() => Bulletin_Room_List_Detail());
                               }else{}

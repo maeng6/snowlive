@@ -180,7 +180,8 @@ class BulletinFreeModelController extends GetxController {
         required likeCount,
         required hot,
         required score,
-        required viewerUid
+        required viewerUid,
+        required timeStamp
 
       }) async {
     await BulletinFreeModel().updateBulletinFree(
@@ -196,7 +197,8 @@ class BulletinFreeModelController extends GetxController {
         likeCount:likeCount,
         hot: hot,
         score: score,
-      viewerUid: viewerUid,
+        viewerUid: viewerUid,
+        timeStamp: timeStamp,
     );
   }
 

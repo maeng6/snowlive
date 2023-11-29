@@ -16,7 +16,9 @@ class BulletinRoomModel {
         this.description,
         this.bulletinRoomCount,
         this.resortNickname,
-        this.timeStamp});
+        this.timeStamp,
+        this.viewerUid,
+      });
 
   String? displayName;
   String? uid;
@@ -32,6 +34,7 @@ class BulletinRoomModel {
   Timestamp? timeStamp;
   bool? soldOut;
   DocumentReference? reference;
+  List? viewerUid;
 
   BulletinRoomModel.fromJson(dynamic json, this.reference) {
     displayName = json['displayName'];
@@ -47,6 +50,7 @@ class BulletinRoomModel {
     bulletinRoomReplyCount = json['bulletinRoomReplyCount'];
     resortNickname = json['resortNickname'];
     soldOut = json['soldOut'];
+    viewerUid = json['viewerUid'];
   }
 
   BulletinRoomModel.fromSnapShot(DocumentSnapshot<Map<String, dynamic>> snapshot)
@@ -72,7 +76,8 @@ class BulletinRoomModel {
         required description,
         timeStamp,
         required bulletinRoomCount,
-        required resortNickname}) async {
+        required resortNickname,
+      }) async {
     await ref.collection('bulletinRoom').doc('$uid#$bulletinRoomCount').set({
       'displayName': displayName,
       'uid': uid,
@@ -101,9 +106,11 @@ class BulletinRoomModel {
         required category,
         required location,
         required description,
-        timeStamp,
+        required timeStamp,
         required bulletinRoomCount,
-        required resortNickname}) async {
+        required resortNickname,
+        required viewerUid,
+      }) async {
     await ref.collection('bulletinRoom').doc('$uid#$bulletinRoomCount').update({
       'displayName': displayName,
       'uid': uid,
@@ -114,13 +121,16 @@ class BulletinRoomModel {
       'location': location,
       'description': description,
       'bulletinRoomCount': bulletinRoomCount,
-      'timeStamp': Timestamp.now(),
+      'timeStamp': timeStamp,
       'resortNickname': resortNickname,
       'soldOut': false,
+      'viewerUid': viewerUid,
     });
   }
 
 }
+
+
 
 List<dynamic> bulletinRoomResortList = [
   '곤지암리조트',

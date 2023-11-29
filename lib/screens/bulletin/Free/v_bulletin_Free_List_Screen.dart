@@ -612,6 +612,11 @@ class _Bulletin_Free_List_ScreenState extends State<Bulletin_Free_List_Screen> {
                               }
                               await _bulletinFreeModelController.scoreUpdate_read(bullUid: _bulletinFreeModelController.uid, docName: docName, timeStamp: _bulletinFreeModelController.timeStamp, score: _bulletinFreeModelController.score, viewerUid: _bulletinFreeModelController.viewerUid);
                               await _bulletinFreeModelController.updateViewerUid();
+                              await _bulletinFreeModelController
+                                  .getCurrentBulletinFree(
+                                  uid: chatDocs[0].get('uid'),
+                                  bulletinFreeCount:
+                                  chatDocs[0].get('bulletinFreeCount'));
                               CustomFullScreenDialog.cancelDialog();
                               Get.to(() => Bulletin_Free_List_Detail());
                             }else{}

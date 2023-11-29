@@ -144,7 +144,9 @@ class _Bulletin_Crew_ModifyPageState extends State<Bulletin_Crew_ModifyPage> {
                             description: _itemDescribTextEditingController.text,
                             bulletinCrewCount: _bulletinCrewModelController.bulletinCrewCount,
                             resortNickname: _userModelController.resortNickname,
-                            snsUrl: _snsUrlTextEditingController.text
+                            timeStamp: _bulletinCrewModelController.timeStamp,
+                            snsUrl: _snsUrlTextEditingController.text,
+                            viewerUid: _bulletinCrewModelController.viewerUid
                         )
                             : await _bulletinCrewModelController.updateBulletinCrew(
                             displayName: _userModelController.displayName,
@@ -157,7 +159,9 @@ class _Bulletin_Crew_ModifyPageState extends State<Bulletin_Crew_ModifyPage> {
                             description: _itemDescribTextEditingController.text,
                             bulletinCrewCount: _bulletinCrewModelController.bulletinCrewCount,
                             resortNickname: _userModelController.resortNickname,
-                            snsUrl: _snsUrlTextEditingController.text
+                            timeStamp: _bulletinCrewModelController.timeStamp,
+                            snsUrl: _snsUrlTextEditingController.text,
+                            viewerUid: _bulletinCrewModelController.viewerUid
                         );
                         CustomFullScreenDialog.cancelDialog();
                         for(int i=0; i<2; i++){
@@ -694,12 +698,12 @@ class _Bulletin_Crew_ModifyPageState extends State<Bulletin_Crew_ModifyPage> {
                                             ),
                                             hintStyle:
                                             TextStyle(color: Color(0xffDEDEDE), fontSize: 16),
-                                            hintText: 'URL을 입력해주세요.',
+                                            hintText: 'URL을 입력해주세요.(https:// 필수 입력)',
                                             labelText: 'SNS URL',
                                             border: InputBorder.none,
                                           ),
                                           validator: (val) {
-                                            if (val!.length <= 1000 && val.length >= 1) {
+                                            if (val!.length <= 1000 && val.length >= 0) {
                                               return null;
                                             } else {
                                               return '최대 입력 가능한 글자 수를 초과했습니다.';

@@ -22,6 +22,7 @@ class BulletinCrewModelController extends GetxController {
   RxBool? _soldOut = false.obs;
   Timestamp? _timeStamp;
   RxString? _snsUrl = ''.obs;
+  RxList? _viewerUid = [].obs;
 
   String? get displayName => _displayName!.value;
 
@@ -51,6 +52,8 @@ class BulletinCrewModelController extends GetxController {
 
   String? get snsUrl => _snsUrl!.value;
 
+  List? get viewerUid => _viewerUid!;
+
   Future<void> getCurrentBulletinCrew({required uid, required bulletinCrewCount}) async {
     BulletinCrewModel bulletinCrewModel = await BulletinCrewModel().getBulletinCrewModel(uid,bulletinCrewCount);
     this._displayName!.value = bulletinCrewModel.displayName!;
@@ -67,6 +70,7 @@ class BulletinCrewModelController extends GetxController {
     this._soldOut!.value = bulletinCrewModel.soldOut!;
     this._timeStamp = bulletinCrewModel.timeStamp!;
     this._snsUrl!.value = bulletinCrewModel.snsUrl!;
+    this._viewerUid!.value = bulletinCrewModel.viewerUid!;
   }
 
   Future<void> updateItemImageUrls(imageUrls) async {
@@ -172,7 +176,9 @@ class BulletinCrewModelController extends GetxController {
         required description,
         required bulletinCrewCount,
         required resortNickname,
+        required timeStamp,
         required snsUrl,
+        required viewerUid,
       }) async {
     await BulletinCrewModel().updateBulletinCrew(
         displayName: displayName,
@@ -186,6 +192,8 @@ class BulletinCrewModelController extends GetxController {
         bulletinCrewCount: bulletinCrewCount,
         resortNickname: resortNickname,
         snsUrl: snsUrl,
+        timeStamp: timeStamp,
+        viewerUid: viewerUid,
     );
   }
 

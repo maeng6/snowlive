@@ -24,6 +24,7 @@ class BulletinRoomModelController extends GetxController {
   RxString? _resortNickname = ''.obs;
   RxBool? _soldOut = false.obs;
   Timestamp? _timeStamp;
+  RxList? _viewerUid = [].obs;
 
   String? get displayName => _displayName!.value;
 
@@ -51,6 +52,8 @@ class BulletinRoomModelController extends GetxController {
 
   Timestamp? get timeStamp => _timeStamp;
 
+  List? get viewerUid => _viewerUid!;
+
   Future<void> getCurrentBulletinRoom({required uid, required bulletinRoomCount}) async {
     BulletinRoomModel bulletinRoomModel = await BulletinRoomModel().getBulletinRoomModel(uid,bulletinRoomCount);
     this._displayName!.value = bulletinRoomModel.displayName!;
@@ -66,6 +69,25 @@ class BulletinRoomModelController extends GetxController {
     this._resortNickname!.value = bulletinRoomModel.resortNickname!;
     this._soldOut!.value = bulletinRoomModel.soldOut!;
     this._timeStamp = bulletinRoomModel.timeStamp!;
+    this._viewerUid!.value = bulletinRoomModel.viewerUid!;
+  }
+
+  Future<void> getCurrentBulletinRoom_viewerUid({required uid, required bulletinRoomCount}) async {
+    BulletinRoomModel bulletinRoomModel = await BulletinRoomModel().getBulletinRoomModel(uid,bulletinRoomCount);
+    this._displayName!.value = bulletinRoomModel.displayName!;
+    this._uid!.value = bulletinRoomModel.uid!;
+    this._profileImageUrl!.value = bulletinRoomModel.profileImageUrl!;
+    this._itemImagesUrls!.value = bulletinRoomModel.itemImagesUrls!;
+    this._title!.value = bulletinRoomModel.title!;
+    this._category!.value = bulletinRoomModel.category!;
+    this._location!.value = bulletinRoomModel.location!;
+    this._description!.value = bulletinRoomModel.description!;
+    this._bulletinRoomCount!.value = bulletinRoomModel.bulletinRoomCount!;
+    this._bulletinRoomReplyCount!.value = bulletinRoomModel.bulletinRoomReplyCount!;
+    this._resortNickname!.value = bulletinRoomModel.resortNickname!;
+    this._soldOut!.value = bulletinRoomModel.soldOut!;
+    this._timeStamp = bulletinRoomModel.timeStamp!;
+    this._viewerUid!.value = bulletinRoomModel.viewerUid!;
   }
 
   Future<void> updateItemImageUrls(imageUrls) async {
@@ -166,7 +188,10 @@ class BulletinRoomModelController extends GetxController {
         required location,
         required description,
         required bulletinRoomCount,
-        required resortNickname}) async {
+        required resortNickname,
+        required timeStamp,
+        required viewerUid,
+      }) async {
     await BulletinRoomModel().updateBulletinRoom(
         displayName: displayName,
         uid: uid,
@@ -177,7 +202,10 @@ class BulletinRoomModelController extends GetxController {
         location: location,
         description: description,
         bulletinRoomCount: bulletinRoomCount,
-        resortNickname: resortNickname);
+        resortNickname: resortNickname,
+        timeStamp: timeStamp,
+        viewerUid: viewerUid
+    );
   }
 
   Future<void> updateBulletinRoomReplyCount({required bullUid, required bullCount}) async {

@@ -606,7 +606,7 @@ class _Bulletin_Crew_UploadState extends State<Bulletin_Crew_Upload> {
                                     ),
                                     hintStyle:
                                     TextStyle(color: Color(0xffDEDEDE), fontSize: 16),
-                                    hintText: 'URL을 입력해주세요.',
+                                    hintText: 'URL을 입력해주세요.(https:// 필수 입력)',
                                     labelText: 'SNS URL',
                                     border: InputBorder.none,
                                   ),

@@ -18,6 +18,7 @@ class BulletinCrewModel {
         this.bulletinCrewReplyCount,
         this.resortNickname,
         this.timeStamp,
+        this.viewerUid,
         this.snsUrl,
       });
 
@@ -36,6 +37,7 @@ class BulletinCrewModel {
   bool? soldOut;
   DocumentReference? reference;
   String? snsUrl;
+  List? viewerUid;
 
   BulletinCrewModel.fromJson(dynamic json, this.reference) {
     displayName = json['displayName'];
@@ -52,6 +54,7 @@ class BulletinCrewModel {
     resortNickname = json['resortNickname'];
     soldOut = json['soldOut'];
     snsUrl = json['snsUrl'];
+    viewerUid = json['viewerUid'];
   }
 
   BulletinCrewModel.fromSnapShot(DocumentSnapshot<Map<String, dynamic>> snapshot)
@@ -109,10 +112,11 @@ class BulletinCrewModel {
         required category,
         required location,
         required description,
-        timeStamp,
+        required timeStamp,
         required bulletinCrewCount,
         required resortNickname,
         required snsUrl,
+        required viewerUid,
       }) async {
     await ref.collection('bulletinCrew').doc('$uid#$bulletinCrewCount').update({
       'displayName': displayName,
@@ -124,11 +128,11 @@ class BulletinCrewModel {
       'location': location,
       'description': description,
       'bulletinCrewCount': bulletinCrewCount,
-      'timeStamp': Timestamp.now(),
+      'timeStamp': timeStamp,
       'resortNickname': resortNickname,
       'soldOut': false,
-      'viewerUid': [],
-      'snsUrl':snsUrl
+      'viewerUid': viewerUid,
+      'snsUrl':snsUrl,
     });
   }
 

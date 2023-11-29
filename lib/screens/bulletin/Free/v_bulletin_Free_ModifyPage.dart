@@ -129,7 +129,8 @@ class _Bulletin_Free_ModifyPageState extends State<Bulletin_Free_ModifyPage> {
                             likeCount: _bulletinFreeModelController.likeCount,
                             hot: _bulletinFreeModelController.hot,
                             score: _bulletinFreeModelController.score,
-                            viewerUid: _bulletinFreeModelController.viewerUid
+                            viewerUid: _bulletinFreeModelController.viewerUid,
+                            timeStamp: _bulletinFreeModelController.timeStamp
                         )
                             : await _bulletinFreeModelController.updateBulletinFree(
                             displayName: _userModelController.displayName,
@@ -145,7 +146,8 @@ class _Bulletin_Free_ModifyPageState extends State<Bulletin_Free_ModifyPage> {
                             likeCount: _bulletinFreeModelController.likeCount,
                             hot: _bulletinFreeModelController.hot,
                             score: _bulletinFreeModelController.score,
-                            viewerUid: _bulletinFreeModelController.viewerUid
+                            viewerUid: _bulletinFreeModelController.viewerUid,
+                            timeStamp: _bulletinFreeModelController.timeStamp
                         );
                         CustomFullScreenDialog.cancelDialog();
                         for(int i=0; i<2; i++){
