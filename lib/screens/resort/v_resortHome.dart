@@ -566,6 +566,51 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
                                                   SizedBox(
                                                     height: 4,
                                                   ),
+                                                  StreamBuilder(
+                                                      stream: FirebaseFirestore.instance
+                                                          .collection('Ranking_guideUrl')
+                                                          .snapshots(),
+                                                      builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+                                                        if (!snapshot.hasData || snapshot.data == null) {}
+                                                        else if (snapshot.data!.docs.isNotEmpty) {
+                                                          final ranking_guideUrlDoc = snapshot.data!.docs;
+                                                          return Padding(
+                                                            padding: EdgeInsets.only(top: 14, right: 8),
+                                                            child: GestureDetector(
+                                                              onTap: (){
+                                                                _urlLauncherController.otherShare(contents: '${ranking_guideUrlDoc[0]['url']}');
+                                                              },
+                                                              child: Column(
+                                                                  children: [
+                                                                    Padding(
+                                                                      padding: EdgeInsets.only(bottom: 2),
+                                                                      child: Container(
+                                                                        padding: EdgeInsets.only(top: 6, bottom: 6, left: 10, right: 10), // 텍스트와 테두리 간의 패딩
+                                                                        decoration: BoxDecoration(
+                                                                          color: Color(0xFFCBE0FF),
+                                                                          borderRadius: BorderRadius.circular(30.0), // 테두리 모서리 둥글게
+                                                                        ),
+                                                                        child: Text(
+                                                                          '휴대폰 설정방법 보러가기',
+                                                                          style: TextStyle(
+                                                                              fontSize: 12,
+                                                                              fontWeight: FontWeight.bold,
+                                                                              color: Color(0xFF3D83ED)
+                                                                          ),
+                                                                        ),
+                                                                      ),
+                                                                    )
+                                                                  ]
+                                                              ),
+                                                            ),
+                                                          );
+                                                        }
+                                                        else if (snapshot.connectionState == ConnectionState.waiting) {}
+                                                        return SizedBox.shrink();
+                                                      }),
+                                                  SizedBox(
+                                                    height: 4,
+                                                  ),
                                                   Text("1. 와이파이 끄고 데이터 사용\n2. 위치 추적 항상 허용으로 설정",
                                                     style: TextStyle(
                                                         fontSize: 15,
@@ -2131,7 +2176,53 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
                                                     fontWeight: FontWeight.bold,
                                                     color: Color(0xFF3D83ED)
                                                 ),
+
                                               ),
+                                              SizedBox(
+                                                height: 4,
+                                              ),
+                                              StreamBuilder(
+                                                  stream: FirebaseFirestore.instance
+                                                      .collection('Ranking_guideUrl')
+                                                      .snapshots(),
+                                                  builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+                                                    if (!snapshot.hasData || snapshot.data == null) {}
+                                                    else if (snapshot.data!.docs.isNotEmpty) {
+                                                      final ranking_guideUrlDoc = snapshot.data!.docs;
+                                                      return Padding(
+                                                        padding: EdgeInsets.only(top: 14, right: 8),
+                                                        child: GestureDetector(
+                                                          onTap: (){
+                                                            _urlLauncherController.otherShare(contents: '${ranking_guideUrlDoc[0]['url']}');
+                                                          },
+                                                          child: Column(
+                                                              children: [
+                                                                Padding(
+                                                                  padding: EdgeInsets.only(bottom: 2),
+                                                                  child: Container(
+                                                                    padding: EdgeInsets.only(top: 6, bottom: 6, left: 10, right: 10), // 텍스트와 테두리 간의 패딩
+                                                                    decoration: BoxDecoration(
+                                                                      color: Color(0xFFCBE0FF),
+                                                                      borderRadius: BorderRadius.circular(30.0), // 테두리 모서리 둥글게
+                                                                    ),
+                                                                    child: Text(
+                                                                      '휴대폰 설정방법 보러가기',
+                                                                      style: TextStyle(
+                                                                          fontSize: 12,
+                                                                          fontWeight: FontWeight.bold,
+                                                                          color: Color(0xFF3D83ED)
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                )
+                                                              ]
+                                                          ),
+                                                        ),
+                                                      );
+                                                    }
+                                                    else if (snapshot.connectionState == ConnectionState.waiting) {}
+                                                    return SizedBox.shrink();
+                                                  }),
                                               SizedBox(
                                                 height: 4,
                                               ),
