@@ -740,33 +740,45 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                                                                                       color: Color(0xFFDFECFF),
                                                                                                       borderRadius: BorderRadius.circular(50)
                                                                                                   ),
-                                                                                                  child: ExtendedImage.network(
-                                                                                                    memberUserDocs[0]['profileImageUrl'],
-                                                                                                    enableMemoryCache: true,
-                                                                                                    shape: BoxShape.circle,
-                                                                                                    borderRadius: BorderRadius.circular(8),
-                                                                                                    width: _size.width * 0.15,
-                                                                                                    height: _size.width * 0.15,
-                                                                                                    fit: BoxFit.cover,
-                                                                                                    loadStateChanged: (ExtendedImageState state) {
-                                                                                                      switch (state.extendedImageLoadState) {
-                                                                                                        case LoadState.loading:
-                                                                                                          return SizedBox.shrink();
-                                                                                                        case LoadState.completed:
-                                                                                                          return state.completedWidget;
-                                                                                                        case LoadState.failed:
-                                                                                                          return ExtendedImage.asset(
-                                                                                                            'assets/imgs/profile/img_profile_default_circle.png',
-                                                                                                            shape: BoxShape.circle,
-                                                                                                            borderRadius: BorderRadius.circular(20),
-                                                                                                            width: 24,
-                                                                                                            height: 24,
-                                                                                                            fit: BoxFit.cover,
-                                                                                                          ); // 예시로 에러 아이콘을 반환하고 있습니다.
-                                                                                                        default:
-                                                                                                          return null;
-                                                                                                      }
-                                                                                                    },
+                                                                                                  child: Stack(
+                                                                                                    children: [
+                                                                                                      ExtendedImage.network(
+                                                                                                        memberUserDocs[0]['profileImageUrl'],
+                                                                                                        enableMemoryCache: true,
+                                                                                                        shape: BoxShape.circle,
+                                                                                                        borderRadius: BorderRadius.circular(8),
+                                                                                                        width: _size.width * 0.15,
+                                                                                                        height: _size.width * 0.15,
+                                                                                                        fit: BoxFit.cover,
+                                                                                                        loadStateChanged: (ExtendedImageState state) {
+                                                                                                          switch (state.extendedImageLoadState) {
+                                                                                                            case LoadState.loading:
+                                                                                                              return SizedBox.shrink();
+                                                                                                            case LoadState.completed:
+                                                                                                              return state.completedWidget;
+                                                                                                            case LoadState.failed:
+                                                                                                              return ExtendedImage.asset(
+                                                                                                                'assets/imgs/profile/img_profile_default_circle.png',
+                                                                                                                shape: BoxShape.circle,
+                                                                                                                borderRadius: BorderRadius.circular(20),
+                                                                                                                width: 24,
+                                                                                                                height: 24,
+                                                                                                                fit: BoxFit.cover,
+                                                                                                              ); // 예시로 에러 아이콘을 반환하고 있습니다.
+                                                                                                            default:
+                                                                                                              return null;
+                                                                                                          }
+                                                                                                        },
+                                                                                                      ),
+                                                                                                      (memberUserDocs[0]['isOnLive'] == true)
+                                                                                                          ? Positioned(
+                                                                                                        child: Image.asset('assets/imgs/icons/icon_badge_live.png',
+                                                                                                          width: 32,),
+                                                                                                        right: 0,
+                                                                                                        bottom: 0,
+                                                                                                      )
+                                                                                                          : Container()
+                                                                                                    ],
                                                                                                   )),
                                                                                             )
                                                                                                 : GestureDetector(
@@ -776,14 +788,26 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                                                                               child: Container(
                                                                                                 width: _size.width * 0.15,
                                                                                                 height: _size.width * 0.15,
-                                                                                                child: ExtendedImage.asset(
-                                                                                                  'assets/imgs/profile/img_profile_default_circle.png',
-                                                                                                  enableMemoryCache: true,
-                                                                                                  shape: BoxShape.circle,
-                                                                                                  borderRadius: BorderRadius.circular(8),
-                                                                                                  width: _size.width * 0.15,
-                                                                                                  height: _size.width * 0.15,
-                                                                                                  fit: BoxFit.cover,
+                                                                                                child: Stack(
+                                                                                                  children: [
+                                                                                                    ExtendedImage.asset(
+                                                                                                      'assets/imgs/profile/img_profile_default_circle.png',
+                                                                                                      enableMemoryCache: true,
+                                                                                                      shape: BoxShape.circle,
+                                                                                                      borderRadius: BorderRadius.circular(8),
+                                                                                                      width: _size.width * 0.15,
+                                                                                                      height: _size.width * 0.15,
+                                                                                                      fit: BoxFit.cover,
+                                                                                                    ),
+                                                                                                    (memberUserDocs[0]['isOnLive'] == true)
+                                                                                                        ? Positioned(
+                                                                                                      child: Image.asset('assets/imgs/icons/icon_badge_live.png',
+                                                                                                        width: 32,),
+                                                                                                      right: 0,
+                                                                                                      bottom: 0,
+                                                                                                    )
+                                                                                                        : Container()
+                                                                                                  ],
                                                                                                 ),
                                                                                               ),
                                                                                             ),
@@ -864,33 +888,45 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                                                                                       color: Color(0xFFDFECFF),
                                                                                                       borderRadius: BorderRadius.circular(50)
                                                                                                   ),
-                                                                                                  child: ExtendedImage.network(
-                                                                                                    memberUserDocs[0]['profileImageUrl'],
-                                                                                                    enableMemoryCache: true,
-                                                                                                    shape: BoxShape.circle,
-                                                                                                    borderRadius: BorderRadius.circular(8),
-                                                                                                    width: _size.width * 0.15,
-                                                                                                    height: _size.width * 0.15,
-                                                                                                    fit: BoxFit.cover,
-                                                                                                    loadStateChanged: (ExtendedImageState state) {
-                                                                                                      switch (state.extendedImageLoadState) {
-                                                                                                        case LoadState.loading:
-                                                                                                          return SizedBox.shrink();
-                                                                                                        case LoadState.completed:
-                                                                                                          return state.completedWidget;
-                                                                                                        case LoadState.failed:
-                                                                                                          return ExtendedImage.asset(
-                                                                                                            'assets/imgs/profile/img_profile_default_circle.png',
-                                                                                                            shape: BoxShape.circle,
-                                                                                                            borderRadius: BorderRadius.circular(20),
-                                                                                                            width: 24,
-                                                                                                            height: 24,
-                                                                                                            fit: BoxFit.cover,
-                                                                                                          ); // 예시로 에러 아이콘을 반환하고 있습니다.
-                                                                                                        default:
-                                                                                                          return null;
-                                                                                                      }
-                                                                                                    },
+                                                                                                  child: Stack(
+                                                                                                    children: [
+                                                                                                      ExtendedImage.network(
+                                                                                                        memberUserDocs[0]['profileImageUrl'],
+                                                                                                        enableMemoryCache: true,
+                                                                                                        shape: BoxShape.circle,
+                                                                                                        borderRadius: BorderRadius.circular(8),
+                                                                                                        width: _size.width * 0.15,
+                                                                                                        height: _size.width * 0.15,
+                                                                                                        fit: BoxFit.cover,
+                                                                                                        loadStateChanged: (ExtendedImageState state) {
+                                                                                                          switch (state.extendedImageLoadState) {
+                                                                                                            case LoadState.loading:
+                                                                                                              return SizedBox.shrink();
+                                                                                                            case LoadState.completed:
+                                                                                                              return state.completedWidget;
+                                                                                                            case LoadState.failed:
+                                                                                                              return ExtendedImage.asset(
+                                                                                                                'assets/imgs/profile/img_profile_default_circle.png',
+                                                                                                                shape: BoxShape.circle,
+                                                                                                                borderRadius: BorderRadius.circular(20),
+                                                                                                                width: 24,
+                                                                                                                height: 24,
+                                                                                                                fit: BoxFit.cover,
+                                                                                                              ); // 예시로 에러 아이콘을 반환하고 있습니다.
+                                                                                                            default:
+                                                                                                              return null;
+                                                                                                          }
+                                                                                                        },
+                                                                                                      ),
+                                                                                                      (memberUserDocs[0]['isOnLive'] == true)
+                                                                                                          ? Positioned(
+                                                                                                        child: Image.asset('assets/imgs/icons/icon_badge_live.png',
+                                                                                                          width: 32,),
+                                                                                                        right: 0,
+                                                                                                        bottom: 0,
+                                                                                                      )
+                                                                                                          : Container()
+                                                                                                    ],
                                                                                                   )),
                                                                                             )
                                                                                                 : GestureDetector(
@@ -900,14 +936,26 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                                                                               child: Container(
                                                                                                 width: _size.width * 0.15,
                                                                                                 height: _size.width * 0.15,
-                                                                                                child: ExtendedImage.asset(
-                                                                                                  'assets/imgs/profile/img_profile_default_circle.png',
-                                                                                                  enableMemoryCache: true,
-                                                                                                  shape: BoxShape.circle,
-                                                                                                  borderRadius: BorderRadius.circular(8),
-                                                                                                  width: _size.width * 0.15,
-                                                                                                  height: _size.width * 0.15,
-                                                                                                  fit: BoxFit.cover,
+                                                                                                child: Stack(
+                                                                                                  children: [
+                                                                                                    ExtendedImage.asset(
+                                                                                                      'assets/imgs/profile/img_profile_default_circle.png',
+                                                                                                      enableMemoryCache: true,
+                                                                                                      shape: BoxShape.circle,
+                                                                                                      borderRadius: BorderRadius.circular(8),
+                                                                                                      width: _size.width * 0.15,
+                                                                                                      height: _size.width * 0.15,
+                                                                                                      fit: BoxFit.cover,
+                                                                                                    ),
+                                                                                                    (memberUserDocs[0]['isOnLive'] == true)
+                                                                                                        ? Positioned(
+                                                                                                      child: Image.asset('assets/imgs/icons/icon_badge_live.png',
+                                                                                                        width: 32,),
+                                                                                                      right: 0,
+                                                                                                      bottom: 0,
+                                                                                                    )
+                                                                                                        : Container()
+                                                                                                  ],
                                                                                                 ),
                                                                                               ),
                                                                                             ),
@@ -987,33 +1035,45 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                                                                                       color: Color(0xFFDFECFF),
                                                                                                       borderRadius: BorderRadius.circular(50)
                                                                                                   ),
-                                                                                                  child: ExtendedImage.network(
-                                                                                                    memberUserDocs[0]['profileImageUrl'],
-                                                                                                    enableMemoryCache: true,
-                                                                                                    shape: BoxShape.circle,
-                                                                                                    borderRadius: BorderRadius.circular(8),
-                                                                                                    width: _size.width * 0.15,
-                                                                                                    height: _size.width * 0.15,
-                                                                                                    fit: BoxFit.cover,
-                                                                                                    loadStateChanged: (ExtendedImageState state) {
-                                                                                                      switch (state.extendedImageLoadState) {
-                                                                                                        case LoadState.loading:
-                                                                                                          return SizedBox.shrink();
-                                                                                                        case LoadState.completed:
-                                                                                                          return state.completedWidget;
-                                                                                                        case LoadState.failed:
-                                                                                                          return ExtendedImage.asset(
-                                                                                                            'assets/imgs/profile/img_profile_default_circle.png',
-                                                                                                            shape: BoxShape.circle,
-                                                                                                            borderRadius: BorderRadius.circular(20),
-                                                                                                            width: 24,
-                                                                                                            height: 24,
-                                                                                                            fit: BoxFit.cover,
-                                                                                                          ); // 예시로 에러 아이콘을 반환하고 있습니다.
-                                                                                                        default:
-                                                                                                          return null;
-                                                                                                      }
-                                                                                                    },
+                                                                                                  child: Stack(
+                                                                                                    children: [
+                                                                                                      ExtendedImage.network(
+                                                                                                        memberUserDocs[0]['profileImageUrl'],
+                                                                                                        enableMemoryCache: true,
+                                                                                                        shape: BoxShape.circle,
+                                                                                                        borderRadius: BorderRadius.circular(8),
+                                                                                                        width: _size.width * 0.15,
+                                                                                                        height: _size.width * 0.15,
+                                                                                                        fit: BoxFit.cover,
+                                                                                                        loadStateChanged: (ExtendedImageState state) {
+                                                                                                          switch (state.extendedImageLoadState) {
+                                                                                                            case LoadState.loading:
+                                                                                                              return SizedBox.shrink();
+                                                                                                            case LoadState.completed:
+                                                                                                              return state.completedWidget;
+                                                                                                            case LoadState.failed:
+                                                                                                              return ExtendedImage.asset(
+                                                                                                                'assets/imgs/profile/img_profile_default_circle.png',
+                                                                                                                shape: BoxShape.circle,
+                                                                                                                borderRadius: BorderRadius.circular(20),
+                                                                                                                width: 24,
+                                                                                                                height: 24,
+                                                                                                                fit: BoxFit.cover,
+                                                                                                              ); // 예시로 에러 아이콘을 반환하고 있습니다.
+                                                                                                            default:
+                                                                                                              return null;
+                                                                                                          }
+                                                                                                        },
+                                                                                                      ),
+                                                                                                      (memberUserDocs[0]['isOnLive'] == true)
+                                                                                                          ? Positioned(
+                                                                                                        child: Image.asset('assets/imgs/icons/icon_badge_live.png',
+                                                                                                          width: 32,),
+                                                                                                        right: 0,
+                                                                                                        bottom: 0,
+                                                                                                      )
+                                                                                                          : Container()
+                                                                                                    ],
                                                                                                   )),
                                                                                             )
                                                                                                 : GestureDetector(
@@ -1023,14 +1083,26 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                                                                               child: Container(
                                                                                                 width: _size.width * 0.15,
                                                                                                 height: _size.width * 0.15,
-                                                                                                child: ExtendedImage.asset(
-                                                                                                  'assets/imgs/profile/img_profile_default_circle.png',
-                                                                                                  enableMemoryCache: true,
-                                                                                                  shape: BoxShape.circle,
-                                                                                                  borderRadius: BorderRadius.circular(8),
-                                                                                                  width: _size.width * 0.15,
-                                                                                                  height: _size.width * 0.15,
-                                                                                                  fit: BoxFit.cover,
+                                                                                                child: Stack(
+                                                                                                  children: [
+                                                                                                    ExtendedImage.asset(
+                                                                                                      'assets/imgs/profile/img_profile_default_circle.png',
+                                                                                                      enableMemoryCache: true,
+                                                                                                      shape: BoxShape.circle,
+                                                                                                      borderRadius: BorderRadius.circular(8),
+                                                                                                      width: _size.width * 0.15,
+                                                                                                      height: _size.width * 0.15,
+                                                                                                      fit: BoxFit.cover,
+                                                                                                    ),
+                                                                                                    (memberUserDocs[0]['isOnLive'] == true)
+                                                                                                        ? Positioned(
+                                                                                                      child: Image.asset('assets/imgs/icons/icon_badge_live.png',
+                                                                                                        width: 32,),
+                                                                                                      right: 0,
+                                                                                                      bottom: 0,
+                                                                                                    )
+                                                                                                        : Container()
+                                                                                                  ],
                                                                                                 ),
                                                                                               ),
                                                                                             ),

@@ -137,7 +137,9 @@ class _Bulletin_Room_ModifyPageState extends State<Bulletin_Room_ModifyPage> {
                             location: SelectedLocation!.value,
                             description: _itemDescribTextEditingController.text,
                             bulletinRoomCount: _bulletinRoomModelController.bulletinRoomCount,
-                            resortNickname: _userModelController.resortNickname
+                            resortNickname: _userModelController.resortNickname,
+                            timeStamp: _bulletinRoomModelController.timeStamp,
+                            viewerUid: _bulletinRoomModelController.viewerUid
                         )
                             : await _bulletinRoomModelController.updateBulletinRoom(
                             displayName: _userModelController.displayName,
@@ -149,7 +151,9 @@ class _Bulletin_Room_ModifyPageState extends State<Bulletin_Room_ModifyPage> {
                             location: SelectedLocation!.value,
                             description: _itemDescribTextEditingController.text,
                             bulletinRoomCount: _bulletinRoomModelController.bulletinRoomCount,
-                            resortNickname: _userModelController.resortNickname
+                            resortNickname: _userModelController.resortNickname,
+                            timeStamp: _bulletinRoomModelController.timeStamp,
+                            viewerUid: _bulletinRoomModelController.viewerUid
                         );
                         CustomFullScreenDialog.cancelDialog();
                         for(int i=0; i<2; i++){

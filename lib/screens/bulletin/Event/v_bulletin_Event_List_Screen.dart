@@ -678,8 +678,12 @@ class _Bulletin_Event_List_ScreenState extends State<Bulletin_Event_List_Screen>
                                 if (data?.containsKey('lock') == false) {
                                   await chatDocs[index].reference.update({'viewerUid': []});
                                 }
+                                await _bulletinEventModelController.updateViewerUid();
                                 await _bulletinEventModelController
-                                    .updateViewerUid();
+                                    .getCurrentBulletinEvent(
+                                    uid: chatDocs[index].get('uid'),
+                                    bulletinEventCount:
+                                    chatDocs[index].get('bulletinEventCount'));
                                 CustomFullScreenDialog.cancelDialog();
                                 Get.to(() => Bulletin_Event_List_Detail());
                               }else{}

@@ -673,8 +673,12 @@ class _Bulletin_Crew_List_ScreenState extends State<Bulletin_Crew_List_Screen> {
                                 if (data?.containsKey('lock') == false) {
                                   await chatDocs[index].reference.update({'viewerUid': []});
                                 }
+                                await _bulletinCrewModelController.updateViewerUid();
                                 await _bulletinCrewModelController
-                                    .updateViewerUid();
+                                    .getCurrentBulletinCrew(
+                                    uid: chatDocs[index].get('uid'),
+                                    bulletinCrewCount:
+                                    chatDocs[index].get('bulletinCrewCount'));
                                 CustomFullScreenDialog.cancelDialog();
                                 Get.to(() => Bulletin_Crew_List_Detail());
                               }else{}

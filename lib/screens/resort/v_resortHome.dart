@@ -574,7 +574,54 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
                                                         color: Color(0xFF111111)
                                                     ),
                                                   ),
-                                                  SizedBox(height: 24),
+                                                  SizedBox(
+                                                    height: 10,
+                                                  ),
+                                                  StreamBuilder(
+                                                      stream: FirebaseFirestore.instance
+                                                          .collection('Ranking_guideUrl')
+                                                          .snapshots(),
+                                                      builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+                                                        if (!snapshot.hasData || snapshot.data == null) {}
+                                                        else if (snapshot.data!.docs.isNotEmpty) {
+                                                          final ranking_guideUrlDoc = snapshot.data!.docs;
+                                                          return Padding(
+                                                            padding: EdgeInsets.only(right: 8),
+                                                            child: GestureDetector(
+                                                              onTap: (){
+                                                                Platform.isIOS
+                                                                    ? _urlLauncherController.otherShare(contents: '${ranking_guideUrlDoc[0]['url_iOS']}')
+                                                                : _urlLauncherController.otherShare(contents: '${ranking_guideUrlDoc[0]['url_android']}');
+                                                              },
+                                                              child: Column(
+                                                                  children: [
+                                                                    Padding(
+                                                                      padding: EdgeInsets.only(bottom: 2),
+                                                                      child: Container(
+                                                                        padding: EdgeInsets.only(top: 6, bottom: 6, left: 10, right: 10), // 텍스트와 테두리 간의 패딩
+                                                                        decoration: BoxDecoration(
+                                                                          color: Color(0xFFCBE0FF),
+                                                                          borderRadius: BorderRadius.circular(4), // 테두리 모서리 둥글게
+                                                                        ),
+                                                                        child: Text(
+                                                                          '휴대폰 설정방법 보러가기',
+                                                                          style: TextStyle(
+                                                                              fontSize: 13,
+                                                                              fontWeight: FontWeight.bold,
+                                                                              color: Color(0xFF3D83ED)
+                                                                          ),
+                                                                        ),
+                                                                      ),
+                                                                    )
+                                                                  ]
+                                                              ),
+                                                            ),
+                                                          );
+                                                        }
+                                                        else if (snapshot.connectionState == ConnectionState.waiting) {}
+                                                        return SizedBox.shrink();
+                                                      }),
+                                                  SizedBox(height: 30),
                                                   Obx(() => GestureDetector(
                                                     onTap: () {
                                                       _dialogController.isChecked.value = !_dialogController.isChecked.value;
@@ -600,7 +647,7 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
                                                     ),
                                                   )),
 
-                                                  SizedBox(height: 24),
+                                                  SizedBox(height: 20),
                                                   GestureDetector(
                                                     onTap: (){
                                                       Get.to(()=>WebPage(url: 'https://sites.google.com/view/134creativelablocationinfo/%ED%99%88'));
@@ -616,7 +663,7 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
                                                     ),
                                                   ),
                                                   SizedBox(
-                                                    height: 28,
+                                                    height: 24,
                                                   ),
                                                 ],
                                               ),
@@ -2131,6 +2178,7 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
                                                     fontWeight: FontWeight.bold,
                                                     color: Color(0xFF3D83ED)
                                                 ),
+
                                               ),
                                               SizedBox(
                                                 height: 4,
@@ -2143,7 +2191,52 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
                                                     color: Color(0xFF111111)
                                                 ),
                                               ),
-                                              SizedBox(height: 24),
+                                              SizedBox(
+                                                height: 10,
+                                              ),
+                                              StreamBuilder(
+                                                  stream: FirebaseFirestore.instance
+                                                      .collection('Ranking_guideUrl')
+                                                      .snapshots(),
+                                                  builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+                                                    if (!snapshot.hasData || snapshot.data == null) {}
+                                                    else if (snapshot.data!.docs.isNotEmpty) {
+                                                      final ranking_guideUrlDoc = snapshot.data!.docs;
+                                                      return Padding(
+                                                        padding: EdgeInsets.only(right: 8),
+                                                        child: GestureDetector(
+                                                          onTap: (){
+                                                            _urlLauncherController.otherShare(contents: '${ranking_guideUrlDoc[0]['url']}');
+                                                          },
+                                                          child: Column(
+                                                              children: [
+                                                                Padding(
+                                                                  padding: EdgeInsets.only(bottom: 2),
+                                                                  child: Container(
+                                                                    padding: EdgeInsets.only(top: 6, bottom: 6, left: 10, right: 10), // 텍스트와 테두리 간의 패딩
+                                                                    decoration: BoxDecoration(
+                                                                      color: Color(0xFFCBE0FF),
+                                                                      borderRadius: BorderRadius.circular(4), // 테두리 모서리 둥글게
+                                                                    ),
+                                                                    child: Text(
+                                                                      '휴대폰 설정방법 보러가기',
+                                                                      style: TextStyle(
+                                                                          fontSize: 13,
+                                                                          fontWeight: FontWeight.bold,
+                                                                          color: Color(0xFF3D83ED)
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                )
+                                                              ]
+                                                          ),
+                                                        ),
+                                                      );
+                                                    }
+                                                    else if (snapshot.connectionState == ConnectionState.waiting) {}
+                                                    return SizedBox.shrink();
+                                                  }),
+                                              SizedBox(height: 30),
                                               Obx(() => GestureDetector(
                                                 onTap: () {
                                                   _dialogController.isChecked.value = !_dialogController.isChecked.value;
@@ -2169,7 +2262,7 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
                                                 ),
                                               )),
 
-                                              SizedBox(height: 24),
+                                              SizedBox(height: 20),
                                               GestureDetector(
                                                 onTap: (){
                                                   Get.to(()=>WebPage(url: 'https://sites.google.com/view/134creativelablocationinfo/%ED%99%88'));
@@ -2185,7 +2278,7 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
                                                 ),
                                               ),
                                               SizedBox(
-                                                height: 28,
+                                                height: 24,
                                               ),
                                             ],
                                           ),
