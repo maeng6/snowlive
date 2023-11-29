@@ -589,7 +589,9 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
                                                             padding: EdgeInsets.only(right: 8),
                                                             child: GestureDetector(
                                                               onTap: (){
-                                                                _urlLauncherController.otherShare(contents: '${ranking_guideUrlDoc[0]['url']}');
+                                                                Platform.isIOS
+                                                                    ? _urlLauncherController.otherShare(contents: '${ranking_guideUrlDoc[0]['url_iOS']}')
+                                                                : _urlLauncherController.otherShare(contents: '${ranking_guideUrlDoc[0]['url_android']}');
                                                               },
                                                               child: Column(
                                                                   children: [
