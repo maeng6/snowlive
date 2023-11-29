@@ -49,6 +49,7 @@ class ResortModelController extends GetxController{
       this._webcamUrl!.value = selectedResort.webcamUrl!;
       this._naverUrl!.value = selectedResort.naverUrl!;
       this._slopeUrl!.value = selectedResort.slopeUrl!;
+      this._busUrl!.value = selectedResort.busUrl!;
       this._latitude!.value = selectedResort.latitude!;
       this._longitude!.value = selectedResort.longitude!;
       this._nX!.value = selectedResort.nX!;
@@ -68,7 +69,6 @@ class ResortModelController extends GetxController{
       this._weatherIcons = weatherModel.getWeatherIcon(
           this._resortPty!.value, this._resortSky!.value);
       this._resortLogo!.value = selectedResort.resortLogo!;
-      this._busUrl!.value = selectedResort.busUrl!;
     }catch(e){
     }
     isLoading.value = false;
