@@ -52,15 +52,15 @@ Future<void> updateTier()async{
   print('스코어 : $totalScore');
   
 
-  if(percent <= rankingTierList[4].scoreRng && totalScore! >= rankingTierList[4].totalScore){
+  if(percent <= rankingTierList[0].scoreRng){
     tier = 'S';
-  }else if(percent <= rankingTierList[3].scoreRng && totalScore! >= rankingTierList[3].totalScore){
+  }else if(percent <= rankingTierList[1].scoreRng ){
     tier = 'A';
-  }else if(percent <= rankingTierList[2].scoreRng && totalScore! >= rankingTierList[2].totalScore){
+  }else if(percent <= rankingTierList[2].scoreRng ){
     tier = 'B';
-  }else if(percent <= rankingTierList[1].scoreRng && totalScore! >= rankingTierList[1].totalScore){
+  }else if(percent <= rankingTierList[3].scoreRng ){
     tier = 'C';
-  }else if(percent <= rankingTierList[0].scoreRng && totalScore! >= rankingTierList[0].totalScore){
+  }else {
     tier = 'D';
   }
 
