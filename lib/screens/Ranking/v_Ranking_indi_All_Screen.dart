@@ -261,7 +261,7 @@ class _RankingIndiAllScreenState extends State<RankingIndiAllScreen> {
                         ),
                       ),
                       body: Padding(
-                        padding: const EdgeInsets.only(left: 16, right: 16, bottom: 60),
+                        padding: const EdgeInsets.only(left: 16, right: 16),
                         child: SingleChildScrollView(
                           child: Column(
                             children: documents.map((document) {

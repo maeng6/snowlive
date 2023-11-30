@@ -253,7 +253,7 @@ class _RankingCrewAllScreenState extends State<RankingCrewAllScreen> {
                   ),
                 ),
                 body: Padding(
-                  padding: const EdgeInsets.only(left: 16, right: 16, bottom: 60),
+                  padding: const EdgeInsets.only(left: 16, right: 16),
                   child: SingleChildScrollView(
                     child: Column(
                       children: crewDocs.map((document) {
@@ -373,7 +373,7 @@ class _RankingCrewAllScreenState extends State<RankingCrewAllScreen> {
                                       ),
                                       if (document['description'].isNotEmpty)
                                         SizedBox(
-                                          width: _size.width - 190,
+                                          width: _size.width - 206,
                                           child: Text(
                                             document['description'],
                                             maxLines: 1,
