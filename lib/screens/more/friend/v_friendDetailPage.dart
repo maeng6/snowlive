@@ -17,6 +17,7 @@ import 'package:com.snowlive/screens/v_MainHome.dart';
 import '../../../controller/vm_alarmCenterController.dart';
 import '../../../controller/vm_allUserDocsController.dart';
 import '../../../controller/vm_liveCrewModelController.dart';
+import '../../../controller/vm_rankingTierModelController.dart';
 import '../../../controller/vm_userModelController.dart';
 import '../../../data/imgaUrls/Data_url_image.dart';
 import '../../../model/m_alarmCenterModel.dart';
@@ -137,6 +138,7 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
         .collection('Ranking')
         .doc('${_seasonController.currentSeason}')
         .collection('${widget.favoriteResort}')
+        .where('totalScore', isGreaterThan: 0)
         .orderBy('totalScore', descending: true)
         .snapshots();
   }
@@ -154,6 +156,7 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
   TimeStampController _timeStampController = Get.find<TimeStampController>();
   AllUserDocsController _allUserDocsController = Get.find<AllUserDocsController>();
   AlarmCenterController _alarmCenterController = Get.find<AlarmCenterController>();
+  RankingTierModelController _rankingTierModelController = Get.find<RankingTierModelController>();
   //TODO: Dependency Injection**************************************************
 
   @override
@@ -1455,8 +1458,6 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
 
                                                                         final rankingDocs = snapshot.data!.docs;
 
-                                                                        for(var rankingTier in rankingTierList)
-                                                                          if(rankingDocs[0]['tier'] == rankingTier.tierName)
                                                                             return StreamBuilder<QuerySnapshot>(
                                                                                 stream: _rankStream3,
                                                                                 builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
@@ -1541,12 +1542,12 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                                                                     width: _size.width / 2 - 105,
                                                                                                   ),
                                                                                                   Transform.translate(
-                                                                                                    offset: Offset(5,-6),
+                                                                                                    offset: Offset(6, 2),
                                                                                                     child: ExtendedImage.network(
-                                                                                                      rankingTier.badgeAsset,
+                                                                                                      _rankingTierModelController.getBadgeAsset(userRankingMap!['${rankingDocs[0]['uid']}'] / rankingDocs_total.length, rankingTierList),
                                                                                                       enableMemoryCache: true,
                                                                                                       fit: BoxFit.cover,
-                                                                                                      width: 48,
+                                                                                                      width: 40,
                                                                                                     ),
                                                                                                   ),
                                                                                                 ],

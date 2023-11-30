@@ -13,6 +13,7 @@ import 'package:com.snowlive/model/m_slopeScoreModel.dart';
 import 'package:com.snowlive/screens/v_MainHome.dart';
 
 import '../../controller/vm_myRankingController.dart';
+import '../../controller/vm_rankingTierModelController.dart';
 import '../resort/v_resortHome.dart';
 
 class MyRankingDetailPage extends StatefulWidget {
@@ -29,9 +30,31 @@ class _MyRankingDetailPageState extends State<MyRankingDetailPage> {
   ResortModelController _resortModelController = Get.find<ResortModelController>();
   LiveMapController _liveMapController = Get.find<LiveMapController>();
   MyRankingController _myRankingController = Get.find<MyRankingController>();
+  RankingTierModelController _rankingTierModelController = Get.find<RankingTierModelController>();
   // TODO: Dependency Injection**************************************************
 
   Map? userRankingMap;
+  var _rankingStream;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    _rankingStream = rankingStream();
+
+  }
+
+
+  Stream<QuerySnapshot> rankingStream() {
+    return FirebaseFirestore.instance
+        .collection('Ranking')
+        .doc('${_seasonController.currentSeason}')
+        .collection('${_userModelController.favoriteResort}')
+        .where('totalScore', isGreaterThan: 0)
+        .orderBy('totalScore', descending: true)
+        .snapshots();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -104,12 +127,7 @@ class _MyRankingDetailPageState extends State<MyRankingDetailPage> {
                   ),
                 )
                     : StreamBuilder<QuerySnapshot>(
-                    stream: FirebaseFirestore.instance
-                        .collection('Ranking')
-                        .doc('${_seasonController.currentSeason}')
-                        .collection('${_userModelController.favoriteResort}')
-                        .orderBy('totalScore', descending: true)
-                        .snapshots(),
+                    stream: _rankingStream,
                     builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
                       if (!snapshot.hasData || snapshot.data == null){
                         return Container(
@@ -145,13 +163,15 @@ class _MyRankingDetailPageState extends State<MyRankingDetailPage> {
                                     right: 28,
                                     child: Column(
                                       children: [
-                                        for(var rankingTier in rankingTierList)
-                                          if(_myRankingController.tier == rankingTier.tierName)
-                                            ExtendedImage.network(
-                                              enableMemoryCache:true,
-                                              rankingTier.badgeAsset,
-                                              scale: 4,
-                                            ),
+                                        Transform.translate(
+                                          offset: Offset(6, 2),
+                                          child: ExtendedImage.network(
+                                            _rankingTierModelController.getBadgeAsset(userRankingMap!['${_userModelController.uid}']/(rankingDocs_total.length), rankingTierList),
+                                            enableMemoryCache: true,
+                                            fit: BoxFit.cover,
+                                            width: 40,
+                                          ),
+                                        ),
                                       ],
                                     )
                                 ),
