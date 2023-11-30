@@ -42,6 +42,7 @@ class _RankingIndiAllScreenState extends State<RankingIndiAllScreen> {
 
   GlobalKey myItemKey = GlobalKey();
   Map? userRankingMap;
+  Map? userRankingMap_all;
   var _rankingStream;
 
   @override
@@ -196,6 +197,7 @@ class _RankingIndiAllScreenState extends State<RankingIndiAllScreen> {
                     print('일반 랭킹참여자 : ${document.length}');
 
                     final documents = widget.isKusbf == true ? filteredDocuments : document;
+                    final documents_all = document;
 
                     documents.sort((a, b) {
                       final aTotalScore = a['totalScore'] as int;
@@ -212,8 +214,8 @@ class _RankingIndiAllScreenState extends State<RankingIndiAllScreen> {
                       return bTotalScore.compareTo(aTotalScore);
                     });
 
-                    userRankingMap = _liveMapController.calculateRankIndiAll2(
-                        userRankingDocs: documents);
+                    userRankingMap = _liveMapController.calculateRankIndiAll2(userRankingDocs: documents);
+                    userRankingMap_all = _liveMapController.calculateRankIndiAll2(userRankingDocs: documents_all);
 
                     return Scaffold(
                       backgroundColor: Colors.white,
@@ -402,7 +404,7 @@ class _RankingIndiAllScreenState extends State<RankingIndiAllScreen> {
                                                 offset: Offset(6, 2),
                                                 child: ExtendedImage.network(
                                                   _rankingTierModelController.getBadgeAsset(
-                                                      percent: userRankingMap!['${userDoc[0]['uid']}']/(documents.length),
+                                                      percent: userRankingMap_all!['${userDoc[0]['uid']}']/(documents_all.length),
                                                       totalScore: document.get('totalScore'),
                                                       rankingTierList: rankingTierList
                                                 ),

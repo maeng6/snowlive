@@ -169,13 +169,11 @@ class _MyRankingDetailPageState extends State<MyRankingDetailPage> {
                                           Transform.translate(
                                             offset: Offset(6, 2),
                                             child: ExtendedImage.network(
-                                              _rankingTierModelController
-                                                  .getBadgeAsset(
-                                                  userRankingMap!['${_userModelController
-                                                      .uid}'] /
-                                                      (rankingDocs_total
-                                                          .length),
-                                                  rankingTierList),
+                                              _rankingTierModelController.getBadgeAsset(
+                                                  percent: userRankingMap!['${_userModelController.uid}'] / (rankingDocs_total.length),
+                                                  totalScore: _myRankingController.totalScore,
+                                                  rankingTierList: rankingTierList
+                                              ),
                                               enableMemoryCache: true,
                                               fit: BoxFit.cover,
                                               width: 40,
@@ -194,6 +192,9 @@ class _MyRankingDetailPageState extends State<MyRankingDetailPage> {
                                           mainAxisAlignment: MainAxisAlignment
                                               .center,
                                           children: [
+                                            SizedBox(
+                                              height: 4,
+                                            ),
                                             Container(
                                               height: 120,
                                               child: Text(

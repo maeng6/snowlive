@@ -748,7 +748,7 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                                                             ),
                                                             if (crewDocs[index]['description'].isNotEmpty)
                                                               SizedBox(
-                                                                width: _size.width-190,
+                                                                width: _size.width-194,
                                                                 child: Text(
                                                                   crewDocs[index]['description'],
                                                                   maxLines: 1,
@@ -1043,7 +1043,7 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                                                 SizedBox(height: 2,),
                                                 if (myCrewDocs[0]['description'].isNotEmpty)
                                                   SizedBox(
-                                                    width: 200,
+                                                    width: _size.width - 200,
                                                     child: Text(
                                                       '${myCrewDocs[0]['description']}',
                                                       maxLines: 1,
