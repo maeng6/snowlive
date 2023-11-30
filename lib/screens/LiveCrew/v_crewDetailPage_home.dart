@@ -742,9 +742,6 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                                                                     if (!snapshot.hasData || snapshot.data == null) {
                                                                                       return SizedBox.shrink();
                                                                                     }
-                                                                                    else if (snapshot.connectionState == ConnectionState.waiting) {
-                                                                                      return SizedBox.shrink();
-                                                                                    }
                                                                                     else if (snapshot.hasError) {
                                                                                       return Text('Error: ${snapshot.error}');
                                                                                     }
@@ -864,8 +861,19 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                                                                         ],
                                                                                       );
                                                                                     }
-                                                                                    return Container();
+                                                                                    else if (snapshot.connectionState == ConnectionState.waiting) {
+                                                                                      return Container(
+                                                                                        height: 154,
+                                                                                        width: (_size.width - 48) / 3,
+                                                                                      );
+                                                                                    } else {
+                                                                                      return Container(
+                                                                                        height: 154,
+                                                                                        width: (_size.width - 48) / 3,
+                                                                                      );
+                                                                                    }
                                                                                   }
+
                                                                               )
                                                                           ),
                                                                         ],
@@ -886,9 +894,6 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                                                                       .snapshots(),
                                                                                   builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
                                                                                     if (!snapshot.hasData || snapshot.data == null) {
-                                                                                      return SizedBox.shrink();
-                                                                                    }
-                                                                                    else if (snapshot.connectionState == ConnectionState.waiting) {
                                                                                       return SizedBox.shrink();
                                                                                     }
                                                                                     else if (snapshot.hasError) {
@@ -1009,7 +1014,17 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                                                                         ],
                                                                                       );
                                                                                     }
-                                                                                    return Container();
+                                                                                    else if (snapshot.connectionState == ConnectionState.waiting) {
+                                                                                      return Container(
+                                                                                        height: 154,
+                                                                                        width: (_size.width - 48) / 3,
+                                                                                      );
+                                                                                    } else {
+                                                                                      return Container(
+                                                                                        height: 154,
+                                                                                        width: (_size.width - 48) / 3,
+                                                                                      );
+                                                                                    }
                                                                                   }
                                                                               )
                                                                           ),
@@ -1031,9 +1046,6 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                                                                       .snapshots(),
                                                                                   builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
                                                                                     if (!snapshot.hasData || snapshot.data == null) {
-                                                                                      return SizedBox.shrink();
-                                                                                    }
-                                                                                    else if (snapshot.connectionState == ConnectionState.waiting) {
                                                                                       return SizedBox.shrink();
                                                                                     }
                                                                                     else if (snapshot.hasError) {
@@ -1155,7 +1167,17 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                                                                         ],
                                                                                       );
                                                                                     }
-                                                                                    return Container();
+                                                                                    else if (snapshot.connectionState == ConnectionState.waiting) {
+                                                                                      return Container(
+                                                                                        height: 154,
+                                                                                        width: (_size.width - 48) / 3,
+                                                                                      );
+                                                                                    } else {
+                                                                                      return Container(
+                                                                                        height: 154,
+                                                                                        width: (_size.width - 48) / 3,
+                                                                                      );
+                                                                                    }
                                                                                   }
                                                                               )
                                                                           ),

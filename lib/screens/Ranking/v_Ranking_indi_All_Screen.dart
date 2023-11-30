@@ -396,17 +396,60 @@ class _RankingIndiAllScreenState extends State<RankingIndiAllScreen> {
                                                   fontSize: 18,
                                                 ),
                                               ),
-                                              for(var rankingTier in rankingTierList)
-                                                if(document.get('tier') == rankingTier.tierName)
-                                                  Transform.translate(
-                                                    offset: Offset(6, 2),
-                                                    child: ExtendedImage.network(
-                                                      rankingTier.badgeAsset,
-                                                      enableMemoryCache: true,
-                                                      fit: BoxFit.cover,
-                                                      width: 40,
-                                                    ),
-                                                  )
+                                              if( userRankingMap!['${userDoc[0]['uid']}']/(documents.length) > rankingTierList[1].scoreRng
+                                              && userRankingMap!['${userDoc[0]['uid']}']/(documents.length) <= rankingTierList[0].scoreRng)
+                                                Transform.translate(
+                                                  offset: Offset(6, 2),
+                                                  child: ExtendedImage.network(
+                                                    rankingTierList[0].badgeAsset,
+                                                    enableMemoryCache: true,
+                                                    fit: BoxFit.cover,
+                                                    width: 40,
+                                                  ),
+                                                ),
+                                              if( userRankingMap!['${userDoc[0]['uid']}']/(documents.length) > rankingTierList[2].scoreRng
+                                                  && userRankingMap!['${userDoc[0]['uid']}']/(documents.length) <= rankingTierList[1].scoreRng)
+                                                Transform.translate(
+                                                  offset: Offset(6, 2),
+                                                  child: ExtendedImage.network(
+                                                    rankingTierList[1].badgeAsset,
+                                                    enableMemoryCache: true,
+                                                    fit: BoxFit.cover,
+                                                    width: 40,
+                                                  ),
+                                                ),
+                                              if( userRankingMap!['${userDoc[0]['uid']}']/(documents.length) > rankingTierList[3].scoreRng
+                                                  && userRankingMap!['${userDoc[0]['uid']}']/(documents.length) <= rankingTierList[2].scoreRng)
+                                                Transform.translate(
+                                                  offset: Offset(6, 2),
+                                                  child: ExtendedImage.network(
+                                                    rankingTierList[2].badgeAsset,
+                                                    enableMemoryCache: true,
+                                                    fit: BoxFit.cover,
+                                                    width: 40,
+                                                  ),
+                                                ),
+                                              if( userRankingMap!['${userDoc[0]['uid']}']/(documents.length) > rankingTierList[4].scoreRng
+                                                  && userRankingMap!['${userDoc[0]['uid']}']/(documents.length) <= rankingTierList[3].scoreRng)
+                                                Transform.translate(
+                                                  offset: Offset(6, 2),
+                                                  child: ExtendedImage.network(
+                                                    rankingTierList[3].badgeAsset,
+                                                    enableMemoryCache: true,
+                                                    fit: BoxFit.cover,
+                                                    width: 40,
+                                                  ),
+                                                ),
+                                              if( userRankingMap!['${userDoc[0]['uid']}']/(documents.length) < rankingTierList[4].scoreRng)
+                                                Transform.translate(
+                                                  offset: Offset(6, 2),
+                                                  child: ExtendedImage.network(
+                                                    rankingTierList[4].badgeAsset,
+                                                    enableMemoryCache: true,
+                                                    fit: BoxFit.cover,
+                                                    width: 40,
+                                                  ),
+                                                ),
                                             ],
                                           ),
                                         ],
