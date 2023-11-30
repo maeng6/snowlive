@@ -96,11 +96,6 @@ class _Bulletin_Free_List_ScreenState extends State<Bulletin_Free_List_Screen> {
           _isVisible = false;
         }
       });
-
-      _allUserDocsController.startListening().then((result){
-        setState(() {});
-      });
-
     });
 
     // Add a listener to the ScrollController
@@ -109,6 +104,10 @@ class _Bulletin_Free_List_ScreenState extends State<Bulletin_Free_List_Screen> {
         // Check if the user has scrolled down by a certain offset (e.g., 100 pixels)
         _showAddButton = _scrollController.offset <= 0;
       });
+    });
+
+    _allUserDocsController.startListening().then((result){
+      setState(() {});
     });
   }
 
@@ -237,7 +236,7 @@ class _Bulletin_Free_List_ScreenState extends State<Bulletin_Free_List_Screen> {
                       child: Container(
                         width: 106,
                         child: FloatingActionButton(
-                          heroTag: 'liveTalkScreen',
+                          heroTag: 'bulletin_free',
                           mini: true,
                           elevation: 0,
                           shape: RoundedRectangleBorder(

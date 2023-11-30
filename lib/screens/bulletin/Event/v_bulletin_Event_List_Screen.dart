@@ -410,7 +410,7 @@ class _Bulletin_Event_List_ScreenState extends State<Bulletin_Event_List_Screen>
                       child: Container(
                         width: 106,
                         child: FloatingActionButton(
-                          heroTag: 'liveTalkScreen',
+                          heroTag: 'bulletin_event',
                           mini: true,
                           elevation: 0,
                           shape: RoundedRectangleBorder(

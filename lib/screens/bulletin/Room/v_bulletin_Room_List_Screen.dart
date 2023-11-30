@@ -377,7 +377,7 @@ class _Bulletin_Room_List_ScreenState extends State<Bulletin_Room_List_Screen> {
                       child: Container(
                         width: 106,
                         child: FloatingActionButton(
-                          heroTag: 'liveTalkScreen',
+                          heroTag: 'bulletin_room',
                           mini: true,
                           elevation: 0,
                           shape: RoundedRectangleBorder(
