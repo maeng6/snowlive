@@ -1328,14 +1328,14 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                                                             color: Color(0xFFFFFFFF).withOpacity(0.6)
                                                                                         ),),
                                                                                       SizedBox(
-                                                                                        height: 4,
+                                                                                        height: 6,
                                                                                       ),
                                                                                       Container(
-                                                                                        width: _size.width / 2 - 70,
+                                                                                        width: _size.width / 2 - 57,
                                                                                         child: Text('${crewDocs[0]['crewName']}',
                                                                                           style: TextStyle(
                                                                                             fontWeight: FontWeight.bold,
-                                                                                            fontSize: 16,
+                                                                                            fontSize: 14,
                                                                                             color: Color(0xFFFFFFFF),
                                                                                           ),
                                                                                           overflow: TextOverflow.ellipsis,
@@ -1502,7 +1502,6 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                                                                 mainAxisAlignment: MainAxisAlignment.start,
                                                                                                 children: [
                                                                                                   Container(
-                                                                                                    width: _size.width / 2 - 105,
                                                                                                     child: Column(
                                                                                                       crossAxisAlignment: CrossAxisAlignment.start,
                                                                                                       children: [
@@ -1531,7 +1530,7 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                                                                           ],
                                                                                                         ),
                                                                                                         SizedBox(
-                                                                                                          height: 12,
+                                                                                                          height: 6,
                                                                                                         ),
                                                                                                       ],
                                                                                                     ),
@@ -1541,7 +1540,7 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                                                               Row(
                                                                                                 children: [
                                                                                                   Container(
-                                                                                                    width: _size.width / 2 - 105,
+                                                                                                    width: _size.width / 2 - 111,
                                                                                                   ),
                                                                                                   Transform.translate(
                                                                                                     offset: Offset(6, 2),
@@ -1549,7 +1548,7 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                                                                       _rankingTierModelController.getBadgeAsset( userRankingMap!['${rankingDocs[0]['uid']}'] / (rankingDocs_total.length), rankingTierList),
                                                                                                       enableMemoryCache: true,
                                                                                                       fit: BoxFit.cover,
-                                                                                                      width: 40,
+                                                                                                      width: 54,
                                                                                                     ),
                                                                                                   ),
                                                                                                 ],
