@@ -52,13 +52,13 @@ Future<void> updateTier()async{
   print('스코어 : $totalScore');
   
 
-  if(percent <= rankingTierList[0].scoreRng){
+  if(percent <= rankingTierList[0].scoreRng && totalScore! >= rankingTierList[0].totalScore ){
     tier = 'S';
-  }else if(percent <= rankingTierList[1].scoreRng ){
+  }else if(percent <= rankingTierList[1].scoreRng && totalScore! >= rankingTierList[1].totalScore ){
     tier = 'A';
-  }else if(percent <= rankingTierList[2].scoreRng ){
+  }else if(percent <= rankingTierList[2].scoreRng && totalScore! >= rankingTierList[2].totalScore ){
     tier = 'B';
-  }else if(percent <= rankingTierList[3].scoreRng ){
+  }else if(percent <= rankingTierList[3].scoreRng && totalScore! >= rankingTierList[3].totalScore ){
     tier = 'C';
   }else {
     tier = 'D';
@@ -75,9 +75,9 @@ Future<void> updateTier()async{
 
 }
 
-  String getBadgeAsset(double userScore, List rankingTierList) {
+  String getBadgeAsset({required double percent,required int totalScore,required List rankingTierList}) {
     for (var tier in rankingTierList) {
-      if (userScore <= tier.scoreRng) {
+      if (percent <= tier.scoreRng && totalScore >= tier.totalScore) {
         return tier.badgeAsset;
       }
     }

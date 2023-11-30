@@ -46,6 +46,7 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
 
   var _rankingStream;
   Map? userRankingMap;
+  Map? userRankingMap_all;
 
   @override
   void initState() {
@@ -187,6 +188,7 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
               print(filteredDocuments.length);
 
               final documents = widget.isKusbf == true ? filteredDocuments : document;
+              final documents_all = document;
 
               documents.sort((a, b) {
                 final aTotalScore = a['totalScore'] as int;
@@ -204,6 +206,7 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
               });
 
               userRankingMap =  _liveMapController.calculateRankIndiAll2(userRankingDocs: documents);
+              userRankingMap_all =  _liveMapController.calculateRankIndiAll2(userRankingDocs: documents_all);
 
               return Container(
                 color: Colors.white,
@@ -749,7 +752,11 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                                           Transform.translate(
                                                             offset: Offset(6, 2),
                                                             child: ExtendedImage.network(
-                                                              _rankingTierModelController.getBadgeAsset(userRankingMap!['${userDoc[0]['uid']}']/(documents.length), rankingTierList),
+                                                              _rankingTierModelController.getBadgeAsset(
+                                                                  percent: userRankingMap_all!['${userDoc[0]['uid']}']/(documents_all.length),
+                                                                  totalScore: document.get('totalScore'),
+                                                                  rankingTierList: rankingTierList
+                                                              ),
                                                               enableMemoryCache: true,
                                                               fit: BoxFit.cover,
                                                               width: 40,
@@ -904,7 +911,11 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                           Transform.translate(
                                             offset: Offset(6, 2),
                                             child: ExtendedImage.network(
-                                             _rankingTierModelController.getBadgeAsset(userRankingMap?['${_userModelController.uid}'] / documents.length, rankingTierList),
+                                             _rankingTierModelController.getBadgeAsset(
+                                                 percent:  userRankingMap?['${_userModelController.uid}'] / documents_all.length,
+                                                 totalScore: _myRankingController.totalScore,
+                                                 rankingTierList: rankingTierList
+                                             ),
                                               enableMemoryCache: true,
                                               fit: BoxFit.cover,
                                               width: 40,
