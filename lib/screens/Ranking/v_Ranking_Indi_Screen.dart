@@ -808,13 +808,13 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                               child:  Obx(() => Padding(
                                   padding: const EdgeInsets.symmetric(horizontal: 16),
                                   child:
-                                  (userRankingMap?['${_userModelController.uid}'] != null )
+                                  (userRankingMap_all?['${_userModelController.uid}'] != null )
                                       ? Obx(() => Row(
                                     crossAxisAlignment: CrossAxisAlignment.center,
                                     mainAxisAlignment: MainAxisAlignment.start,
                                     children: [
                                       Text(
-                                        '${userRankingMap?['${_userModelController.uid}']}',
+                                        '${userRankingMap_all?['${_userModelController.uid}']}',
                                         style: TextStyle(
                                           color: Color(0xFFffffff),
                                           fontSize: 15,
@@ -912,7 +912,7 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                             offset: Offset(6, 2),
                                             child: ExtendedImage.network(
                                              _rankingTierModelController.getBadgeAsset(
-                                                 percent:  userRankingMap?['${_userModelController.uid}'] / documents_all.length,
+                                                 percent:  userRankingMap_all?['${_userModelController.uid}'] / documents_all.length,
                                                  totalScore: _myRankingController.totalScore,
                                                  rankingTierList: rankingTierList
                                              ),
