@@ -460,7 +460,7 @@ class _CrewDetailPage_memberState extends State<CrewDetailPage_member> {
                                           ),
                                           SizedBox(width: 15,),
                                           Container(
-                                            width: _size.width - 180,
+                                            width: _size.width - 260,
                                             child: Column(
                                               crossAxisAlignment: CrossAxisAlignment.start,
                                               children: [
