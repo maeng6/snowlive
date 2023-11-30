@@ -10,6 +10,7 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:com.snowlive/controller/vm_notificationController.dart';
 import 'package:com.snowlive/screens/v_splashScreen.dart';
+import 'controller/vm_allCrewDocsController.dart';
 import 'controller/vm_allUserDocsController.dart';
 import 'controller/vm_bottomTabBarController.dart';
 import 'controller/vm_bulletinCrewController.dart';
@@ -55,6 +56,7 @@ void main() async {
   Get.put(MyRankingController(),permanent: true);
   Get.put(RefreshController(),permanent: true);
   Get.put(AllUserDocsController(),permanent: true);
+  Get.put(AllCrewDocsController(),permanent: true);
   Get.put(LoginController(),permanent: true);
   Get.put(AlarmCenterController(),permanent: true);
   Get.put(BulletinRoomModelController(), permanent: true);
@@ -83,6 +85,7 @@ class _MyAppState extends State<MyApp> {
   //TODO: Dependency Injection********************************************
   SplashController _splashController = Get.put(SplashController());
   AllUserDocsController _allUserDocsController = Get.find<AllUserDocsController>();
+  AllCrewDocsController _allCrewDocsController = Get.find<AllCrewDocsController>();
   //TODO: Dependency Injection********************************************
 
   @override
@@ -91,6 +94,7 @@ class _MyAppState extends State<MyApp> {
     super.initState();
     loadingSplashImgUrl = _splashController.getSplashUrl();
     _allUserDocsController.getAllUserDocs();
+    _allCrewDocsController.getAllCrewDocs();
   }
 
   @override
@@ -99,34 +103,34 @@ class _MyAppState extends State<MyApp> {
 
 
     return GetMaterialApp(
-      debugShowCheckedModeBanner: false,
-      navigatorObservers: [
-        FirebaseAnalyticsObserver(analytics: FirebaseAnalytics.instance)
-      ],
-      theme: ThemeData(
-        fontFamily: 'Spoqa Han Sans Neo',
-        appBarTheme: AppBarTheme(
-          iconTheme: IconThemeData(
-            size: 30,
-            color: Colors.black
-          ),
-          centerTitle: true,
-          titleTextStyle: TextStyle(
-            fontFamily: 'Spoqa Han Sans Neo',
-            fontWeight: FontWeight.bold,
-            color: Colors.black,
+        debugShowCheckedModeBanner: false,
+        navigatorObservers: [
+          FirebaseAnalyticsObserver(analytics: FirebaseAnalytics.instance)
+        ],
+        theme: ThemeData(
+          fontFamily: 'Spoqa Han Sans Neo',
+          appBarTheme: AppBarTheme(
+            iconTheme: IconThemeData(
+                size: 30,
+                color: Colors.black
+            ),
+            centerTitle: true,
+            titleTextStyle: TextStyle(
+                fontFamily: 'Spoqa Han Sans Neo',
+                fontWeight: FontWeight.bold,
+                color: Colors.black,
                 fontSize: 20
+            ),
+            backgroundColor: Colors.transparent,
+            elevation: 0.0,
           ),
-          backgroundColor: Colors.transparent,
-          elevation: 0.0,
+          buttonTheme: ButtonThemeData(
+              buttonColor: Colors.transparent
+          ),
         ),
-        buttonTheme: ButtonThemeData(
-          buttonColor: Colors.transparent
-        ),
-      ),
         home: FutureBuilder(
           future: loadingSplashImgUrl,
-            builder: (context, snapshot){
+          builder: (context, snapshot){
             if (snapshot.connectionState == ConnectionState.done) {
               if (snapshot.hasError) {
                 return Center(child: Text('에러 발생: ${snapshot.error}'));
@@ -140,7 +144,7 @@ class _MyAppState extends State<MyApp> {
                 enableMemoryCache: true,
               );
             }
-            },
+          },
         )
     );
   }

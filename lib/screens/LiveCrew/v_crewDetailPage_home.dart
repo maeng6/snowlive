@@ -19,6 +19,7 @@ import 'package:com.snowlive/screens/comments/v_profileImageScreen.dart';
 import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 import '../../../controller/vm_userModelController.dart';
 import '../../controller/vm_alarmCenterController.dart';
+import '../../data/imgaUrls/Data_url_image.dart';
 import '../../model/m_alarmCenterModel.dart';
 import '../../model/m_crewLogoModel.dart';
 import '../Ranking/v_Ranking_MyCrew_Screen.dart';
@@ -46,6 +47,29 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
   var assetCrew;
 
   Map? crewRankingMap;
+
+  var _crewRankingStream;
+
+
+  Stream<QuerySnapshot> crewRankingStream() {
+    return FirebaseFirestore.instance
+        .collection('Ranking')
+        .doc('${_seasonController.currentSeason}')
+        .collection('${_liveCrewModelController.baseResort}')
+        .where('totalScore', isGreaterThan: 0)
+        .orderBy('totalScore', descending: true)
+        .snapshots();
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    _crewRankingStream = crewRankingStream();
+
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -83,7 +107,6 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                 }
               }
 
-
               return StreamBuilder<QuerySnapshot>(
                   stream: FirebaseFirestore.instance
                       .collection('user')
@@ -94,7 +117,7 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                       return SizedBox.shrink();
                     }
                     else if(snapshot.connectionState == ConnectionState.waiting){
-                      return Center(child: CircularProgressIndicator());
+                      return SizedBox.shrink();
                     }
                     else if(snapshot.data!.docs.isNotEmpty){
 
@@ -630,10 +653,10 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                                         .snapshots(),
                                                     builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
                                                       if (!snapshot.hasData || snapshot.data == null) {
-                                                        SizedBox.shrink();
+                                                        return SizedBox.shrink();
                                                       }
                                                       else if (snapshot.connectionState == ConnectionState.waiting) {
-                                                        return Center(child: CircularProgressIndicator());
+                                                        return SizedBox.shrink();
                                                       }
                                                       else if (snapshot.hasError) {
                                                         return Text('Error: ${snapshot.error}');
@@ -642,18 +665,23 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                                         final crewDocs = snapshot.data!.docs;
                                                         List memberList = crewDocs[0]['memberUidList'];
                                                         return StreamBuilder(
-                                                          stream: FirebaseFirestore.instance
-                                                              .collection('Ranking')
-                                                              .doc('${_seasonController.currentSeason}')
-                                                              .collection('${_liveCrewModelController.baseResort}')
-                                                              .orderBy('totalScore', descending: true)
-                                                              .snapshots(),
+                                                          stream: _crewRankingStream,
                                                           builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
                                                             if (!snapshot.hasData || snapshot.data == null) {
-                                                              SizedBox.shrink();
+                                                              return Center(
+                                                                child: Padding(
+                                                                  padding: const EdgeInsets.only(top: 30, bottom: 20),
+                                                                  child: Text(
+                                                                    '랭킹에 참여중인 크루원이 없습니다',
+                                                                    style: TextStyle(
+                                                                        fontSize: 13,
+                                                                        color: Color(0xFF949494)
+                                                                    ),),
+                                                                ),
+                                                              );
                                                             }
                                                             else if (snapshot.connectionState == ConnectionState.waiting) {
-                                                              return Center(child: CircularProgressIndicator());
+                                                              return SizedBox.shrink();
                                                             }
                                                             else if (snapshot.hasError) {
                                                               return Text('Error: ${snapshot.error}');
@@ -712,12 +740,10 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                                                                       .snapshots(),
                                                                                   builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
                                                                                     if (!snapshot.hasData || snapshot.data == null) {
-                                                                                      SizedBox.shrink();
+                                                                                      return SizedBox.shrink();
                                                                                     }
                                                                                     else if (snapshot.connectionState == ConnectionState.waiting) {
-                                                                                      return Center(
-                                                                                        child: CircularProgressIndicator(),
-                                                                                      );
+                                                                                      return SizedBox.shrink();
                                                                                     }
                                                                                     else if (snapshot.hasError) {
                                                                                       return Text('Error: ${snapshot.error}');
@@ -756,8 +782,8 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                                                                                           case LoadState.completed:
                                                                                                             return state.completedWidget;
                                                                                                           case LoadState.failed:
-                                                                                                            return ExtendedImage.asset(
-                                                                                                              'assets/imgs/profile/img_profile_default_circle.png',
+                                                                                                            return ExtendedImage.network(
+                                                                                                              '${profileImgUrlList[0].default_round}',
                                                                                                               shape: BoxShape.circle,
                                                                                                               borderRadius: BorderRadius.circular(20),
                                                                                                               width: 24,
@@ -789,8 +815,8 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                                                                               height: _size.width * 0.15,
                                                                                               child: Stack(
                                                                                                 children: [
-                                                                                                  ExtendedImage.asset(
-                                                                                                    'assets/imgs/profile/img_profile_default_circle.png',
+                                                                                                  ExtendedImage.network(
+                                                                                                    '${profileImgUrlList[0].default_round}',
                                                                                                     enableMemoryCache: true,
                                                                                                     shape: BoxShape.circle,
                                                                                                     borderRadius: BorderRadius.circular(8),
@@ -860,12 +886,10 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                                                                       .snapshots(),
                                                                                   builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
                                                                                     if (!snapshot.hasData || snapshot.data == null) {
-                                                                                      SizedBox.shrink();
+                                                                                      return SizedBox.shrink();
                                                                                     }
                                                                                     else if (snapshot.connectionState == ConnectionState.waiting) {
-                                                                                      return Center(
-                                                                                        child: CircularProgressIndicator(),
-                                                                                      );
+                                                                                      return SizedBox.shrink();
                                                                                     }
                                                                                     else if (snapshot.hasError) {
                                                                                       return Text('Error: ${snapshot.error}');
@@ -904,8 +928,8 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                                                                                           case LoadState.completed:
                                                                                                             return state.completedWidget;
                                                                                                           case LoadState.failed:
-                                                                                                            return ExtendedImage.asset(
-                                                                                                              'assets/imgs/profile/img_profile_default_circle.png',
+                                                                                                            return ExtendedImage.network(
+                                                                                                              '${profileImgUrlList[0].default_round}',
                                                                                                               shape: BoxShape.circle,
                                                                                                               borderRadius: BorderRadius.circular(20),
                                                                                                               width: 24,
@@ -937,8 +961,8 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                                                                               height: _size.width * 0.15,
                                                                                               child: Stack(
                                                                                                 children: [
-                                                                                                  ExtendedImage.asset(
-                                                                                                    'assets/imgs/profile/img_profile_default_circle.png',
+                                                                                                  ExtendedImage.network(
+                                                                                                    '${profileImgUrlList[0].default_round}',
                                                                                                     enableMemoryCache: true,
                                                                                                     shape: BoxShape.circle,
                                                                                                     borderRadius: BorderRadius.circular(8),
@@ -1007,12 +1031,10 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                                                                       .snapshots(),
                                                                                   builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
                                                                                     if (!snapshot.hasData || snapshot.data == null) {
-                                                                                      SizedBox.shrink();
+                                                                                      return SizedBox.shrink();
                                                                                     }
                                                                                     else if (snapshot.connectionState == ConnectionState.waiting) {
-                                                                                      return Center(
-                                                                                        child: CircularProgressIndicator(),
-                                                                                      );
+                                                                                      return SizedBox.shrink();
                                                                                     }
                                                                                     else if (snapshot.hasError) {
                                                                                       return Text('Error: ${snapshot.error}');
@@ -1051,8 +1073,8 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                                                                                           case LoadState.completed:
                                                                                                             return state.completedWidget;
                                                                                                           case LoadState.failed:
-                                                                                                            return ExtendedImage.asset(
-                                                                                                              'assets/imgs/profile/img_profile_default_circle.png',
+                                                                                                            return ExtendedImage.network(
+                                                                                                              '${profileImgUrlList[0].default_round}',
                                                                                                               shape: BoxShape.circle,
                                                                                                               borderRadius: BorderRadius.circular(20),
                                                                                                               width: 24,
@@ -1084,8 +1106,8 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                                                                               height: _size.width * 0.15,
                                                                                               child: Stack(
                                                                                                 children: [
-                                                                                                  ExtendedImage.asset(
-                                                                                                    'assets/imgs/profile/img_profile_default_circle.png',
+                                                                                                  ExtendedImage.network(
+                                                                                                    '${profileImgUrlList[0].default_round}',
                                                                                                     enableMemoryCache: true,
                                                                                                     shape: BoxShape.circle,
                                                                                                     borderRadius: BorderRadius.circular(8),
@@ -1160,7 +1182,17 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                                           },
                                                         );
                                                       }
-                                                      return Container();
+                                                      return Center(
+                                                        child: Padding(
+                                                          padding: const EdgeInsets.only(top: 30, bottom: 20),
+                                                          child: Text(
+                                                            '랭킹에 참여중인 크루원이 없습니다',
+                                                            style: TextStyle(
+                                                                fontSize: 13,
+                                                                color: Color(0xFF949494)
+                                                            ),),
+                                                        ),
+                                                      );
                                                     }
                                                 ),
 
@@ -1208,13 +1240,13 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                                       .snapshots(),
                                                   builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
                                                     if (!snapshot.hasData || snapshot.data == null) {
-                                                      SizedBox.shrink();
+                                                      return SizedBox.shrink();
                                                     }
                                                     else if (snapshot.hasError) {
                                                       return Text('Error: ${snapshot.error}');
                                                     }
                                                     else if (snapshot.connectionState == ConnectionState.waiting) {
-                                                      return Center(child: CircularProgressIndicator());
+                                                      return SizedBox.shrink();
                                                     }
                                                     else if (snapshot.data!.docs.isNotEmpty) {
                                                       final crewDocs = snapshot.data!.docs;
@@ -1374,13 +1406,13 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                                         .snapshots(),
                                                     builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
                                                       if (!snapshot.hasData || snapshot.data == null) {
-                                                        SizedBox.shrink();
+                                                        return SizedBox.shrink();
                                                       }
                                                       else if (snapshot.hasError) {
                                                         return Text("오류가 발생했습니다");
                                                       }
                                                       else if (snapshot.connectionState == ConnectionState.waiting) {
-                                                        return Center(child: CircularProgressIndicator());
+                                                        return SizedBox.shrink();
                                                       }
                                                       else if (snapshot.data?.docs.first.data()['passCountTimeData'] != null) {
                                                         Map<String, dynamic> passCountTimeData = snapshot.data?.docs.first.data()['passCountTimeData'];
@@ -1522,7 +1554,7 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                           }
 
                                           if(snapshot.connectionState == ConnectionState.waiting){
-                                            return Center(child: CircularProgressIndicator());
+                                            return SizedBox.shrink();
                                           }
 
                                           List<String> galleryUrlList = [];
@@ -1569,7 +1601,7 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                                   loadStateChanged: (ExtendedImageState state) {
                                                     switch (state.extendedImageLoadState) {
                                                       case LoadState.loading:
-                                                        return Center(child: CircularProgressIndicator());
+                                                        return SizedBox.shrink();
                                                       case LoadState.completed:
                                                         return null;
                                                       case LoadState.failed:

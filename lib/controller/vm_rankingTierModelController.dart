@@ -27,6 +27,7 @@ Future<void> updateTier()async{
       .collection('Ranking')
       .doc('${_seasonController.currentSeason}')
       .collection('${_userModelController.favoriteResort}')
+      .where('totalScore', isGreaterThan: 0)
       .orderBy('totalScore', descending: true)
       .get();
 
