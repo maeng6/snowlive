@@ -146,264 +146,361 @@ class _MyRankingDetailPageState extends State<MyRankingDetailPage> {
                         String maxPassCountSlope = _liveMapController.calculateMaxValue(passCountData);
                         List<Map<String, dynamic>> barData = _liveMapController.calculateBarDataSlopeScore(slopeScoresData);
                         userRankingMap =  _liveMapController.calculateRankIndiAll2(userRankingDocs: rankingDocs_total);
-                        return Column(
-                          children: [
-                            Stack(
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                                  child: ExtendedImage.asset(
-                                    'assets/imgs/icons/image_background_myscore.png',
-                                    enableMemoryCache: true,
-                                    fit: BoxFit.cover,
+
+                        if(userRankingMap!['${_userModelController.uid}'] != null) {
+                          return Column(
+                            children: [
+                              Stack(
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 16),
+                                    child: ExtendedImage.asset(
+                                      'assets/imgs/icons/image_background_myscore.png',
+                                      enableMemoryCache: true,
+                                      fit: BoxFit.cover,
+                                    ),
                                   ),
-                                ),
-                                Positioned(
-                                    top: 10,
-                                    right: 28,
-                                    child: Column(
-                                      children: [
-                                        Transform.translate(
-                                          offset: Offset(6, 2),
-                                          child: ExtendedImage.network(
-                                            _rankingTierModelController.getBadgeAsset(userRankingMap!['${_userModelController.uid}']/(rankingDocs_total.length), rankingTierList),
-                                            enableMemoryCache: true,
-                                            fit: BoxFit.cover,
-                                            width: 40,
-                                          ),
-                                        ),
-                                      ],
-                                    )
-                                ),
-                                Positioned.fill(
-                                  child: Align(
-                                    alignment: Alignment.center,
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(bottom: 6),
+                                  Positioned(
+                                      top: 10,
+                                      right: 28,
                                       child: Column(
-                                        mainAxisAlignment: MainAxisAlignment.center,
                                         children: [
-                                          Container(
-                                            height: 120,
-                                            child: Text(
-                                              '${_myRankingController.totalScore}',
-                                              style: GoogleFonts.bebasNeue(
-                                                fontSize: 120,
-                                                fontWeight: FontWeight.normal,
-                                                color: Color(0xFF3D83ED),
-                                              ),
-                                            ),
-                                          ),
-                                          Text(
-                                            'POINTS',
-                                            style: GoogleFonts.bebasNeue(
-                                              fontSize: 28,
-                                              fontWeight: FontWeight.normal,
-                                              color: Color(0xFF000000),
-                                            ),
-                                          ),
-                                          SizedBox(
-                                            height: 8,
-                                          ),
-                                          Container(
-                                            padding: EdgeInsets.only(top: 3, bottom: 3, left: 10, right: 10),
-                                            decoration: BoxDecoration(
-                                              color: Color(0xFFFFFFFF),
-                                              border: Border.all(color: Color(0xFFD9D9D9), width: 1),
-                                              borderRadius: BorderRadius.circular(30.0),
-                                            ),
-                                            child: Column(
-                                              children: [
-                                                Text(
-                                                  '${userRankingMap!['${_userModelController.uid}']}등',
-                                                  style: TextStyle(
-                                                      fontSize: 14,
-                                                      color: Color(0xFF444444),
-                                                      fontWeight: FontWeight.bold),
-                                                ),
-                                              ],
+                                          Transform.translate(
+                                            offset: Offset(6, 2),
+                                            child: ExtendedImage.network(
+                                              _rankingTierModelController
+                                                  .getBadgeAsset(
+                                                  userRankingMap!['${_userModelController
+                                                      .uid}'] /
+                                                      (rankingDocs_total
+                                                          .length),
+                                                  rankingTierList),
+                                              enableMemoryCache: true,
+                                              fit: BoxFit.cover,
+                                              width: 40,
                                             ),
                                           ),
                                         ],
+                                      )
+                                  ),
+                                  Positioned.fill(
+                                    child: Align(
+                                      alignment: Alignment.center,
+                                      child: Padding(
+                                        padding: const EdgeInsets.only(
+                                            bottom: 6),
+                                        child: Column(
+                                          mainAxisAlignment: MainAxisAlignment
+                                              .center,
+                                          children: [
+                                            Container(
+                                              height: 120,
+                                              child: Text(
+                                                '${_myRankingController
+                                                    .totalScore}',
+                                                style: GoogleFonts.bebasNeue(
+                                                  fontSize: 120,
+                                                  fontWeight: FontWeight.normal,
+                                                  color: Color(0xFF3D83ED),
+                                                ),
+                                              ),
+                                            ),
+                                            Text(
+                                              'POINTS',
+                                              style: GoogleFonts.bebasNeue(
+                                                fontSize: 28,
+                                                fontWeight: FontWeight.normal,
+                                                color: Color(0xFF000000),
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              height: 8,
+                                            ),
+                                            Container(
+                                              padding: EdgeInsets.only(top: 3,
+                                                  bottom: 3,
+                                                  left: 10,
+                                                  right: 10),
+                                              decoration: BoxDecoration(
+                                                color: Color(0xFFFFFFFF),
+                                                border: Border.all(
+                                                    color: Color(0xFFD9D9D9),
+                                                    width: 1),
+                                                borderRadius: BorderRadius
+                                                    .circular(30.0),
+                                              ),
+                                              child: Column(
+                                                children: [
+                                                  Text(
+                                                    '${userRankingMap!['${_userModelController
+                                                        .uid}']}등',
+                                                    style: TextStyle(
+                                                        fontSize: 14,
+                                                        color: Color(
+                                                            0xFF444444),
+                                                        fontWeight: FontWeight
+                                                            .bold),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ],
+                                        ),
                                       ),
                                     ),
                                   ),
-                                ),
-                                Positioned(
-                                  left: 0,
-                                  right: 0,
-                                  bottom: 20,
-                                  child: Align(
-                                    alignment: Alignment.center,
-                                    child: Text(
-                                      '${_seasonController.currentSeason} 시즌 '
-                                          '${_resortModelController.getResortName(_userModelController.resortNickname!)} 포인트',
-                                      style: TextStyle(
-                                        fontSize: 13,
-                                        fontWeight: FontWeight.normal,
-                                        color: Color(0xFF111111),
+                                  Positioned(
+                                    left: 0,
+                                    right: 0,
+                                    bottom: 20,
+                                    child: Align(
+                                      alignment: Alignment.center,
+                                      child: Text(
+                                        '${_seasonController.currentSeason} 시즌 '
+                                            '${_resortModelController
+                                            .getResortName(_userModelController
+                                            .resortNickname!)} 포인트',
+                                        style: TextStyle(
+                                          fontSize: 13,
+                                          fontWeight: FontWeight.normal,
+                                          color: Color(0xFF111111),
+                                        ),
                                       ),
                                     ),
                                   ),
+                                  Positioned(
+                                    left: 36,
+                                    top: 22,
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment
+                                          .start,
+                                      children: [
+                                        Container(
+                                          width: 130,
+                                          child: ExtendedImage.asset(
+                                            'assets/imgs/icons/icon_myranking_logo.png',
+                                            enableMemoryCache: true,
+                                            fit: BoxFit.cover,
+                                          ),
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.only(
+                                              top: 4),
+                                          child: Text(
+                                            '${_userModelController
+                                                .displayName}',
+                                            style: TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.normal,
+                                              color: Color(0xFF111111),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(height: 16),
+                              Container(
+                                decoration: BoxDecoration(
+                                  color: Color(0xFF1357BC),
+                                  borderRadius: BorderRadius.circular(20),
                                 ),
-                                Positioned(
-                                  left: 36,
-                                  top: 22,
+                                margin: EdgeInsets.symmetric(horizontal: 16),
+                                child: Container(
+                                  width: _size.width,
                                   child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment: CrossAxisAlignment
+                                        .start,
                                     children: [
                                       Container(
-                                        width: 130,
-                                        child: ExtendedImage.asset(
-                                          'assets/imgs/icons/icon_myranking_logo.png',
-                                          enableMemoryCache: true,
-                                          fit: BoxFit.cover,
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.only(top: 4),
-                                        child: Text(
-                                          '${_userModelController.displayName}',
-                                          style: TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.normal,
-                                            color: Color(0xFF111111),
+                                        child: Padding(
+                                          padding: const EdgeInsets.only(
+                                              left: 20,
+                                              right: 20,
+                                              top: 20,
+                                              bottom: 14),
+                                          child: Text(
+                                            '포인트 상세',
+                                            style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.bold
+                                            ),
                                           ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                            SizedBox(height: 16),
-                            Container(
-                              decoration: BoxDecoration(
-                                color: Color(0xFF1357BC),
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                              margin: EdgeInsets.symmetric(horizontal: 16),
-                              child: Container(
-                                width: _size.width,
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Container(
-                                      child: Padding(
-                                        padding: const EdgeInsets.only(left: 20, right: 20, top: 20, bottom: 14),
-                                        child: Text(
-                                          '포인트 상세',
-                                          style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.bold
-                                          ),
-                                        ),
 
+                                        ),
                                       ),
-                                    ),
-                                    Container(
-                                      padding: EdgeInsets.symmetric(horizontal: barData.length < 4 ? 40 : 20),
-                                      height: 240,
-                                      width: _size.width,
-                                      child: Column(
-                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Expanded(
-                                            child: Container(
-                                              child: barData.isEmpty
-                                                  ? Center(
-                                                  child: Column(
-                                                    mainAxisAlignment: MainAxisAlignment.center,
-                                                    children: [
-                                                      Image.asset(
-                                                        'assets/imgs/icons/icon_ranking_nodata_1.png',
-                                                        scale: 4,
-                                                        width: 43,
-                                                        height: 32,
-                                                      ),
-                                                      SizedBox(height: 12,),
-                                                      Text('데이터가 없습니다.',
-                                                        style: TextStyle(
-                                                            fontSize: 14,
-                                                            color: Colors.white,
-                                                            fontWeight: FontWeight.normal
-                                                        ),),
-                                                      SizedBox(
-                                                        height: 36,
-                                                      )
-                                                    ],
-                                                  ))
-                                                  : SingleChildScrollView(
-                                                scrollDirection: Axis.horizontal,
-                                                child: Container(
-                                                  child: Row(
-                                                    mainAxisAlignment:
-                                                    barData.length < 2
-                                                        ? MainAxisAlignment.center
-                                                        : MainAxisAlignment.spaceBetween,
-                                                    children: barData.map((data) {
-                                                      String slopeName = data['slopeName'];
-                                                      int scoreForSlope = data['scoreForSlope'];
-                                                      double barHeightRatio = data['barHeightRatio'];
-                                                      Color barColor = data['barColor'];
-                                                      return Container(
-                                                        margin: EdgeInsets.symmetric(horizontal: 5),
-                                                        width: barData.length < 5 ? _size.width / 5 - 10 : _size.width / 5 - 28,
-                                                        height: 185,
-                                                        child: Column(
-                                                          mainAxisAlignment: MainAxisAlignment.end,
-                                                          children: [
-                                                            Text(
-                                                              '$scoreForSlope',
-                                                              style: TextStyle(
-                                                                fontSize: 13,
-                                                                color: Color(0xFFFFFFFF),
-                                                                fontWeight: FontWeight.bold,
+                                      Container(
+                                        padding: EdgeInsets.symmetric(
+                                            horizontal: barData.length < 4
+                                                ? 40
+                                                : 20),
+                                        height: 240,
+                                        width: _size.width,
+                                        child: Column(
+                                          mainAxisAlignment: MainAxisAlignment
+                                              .spaceBetween,
+                                          children: [
+                                            Expanded(
+                                              child: Container(
+                                                child: barData.isEmpty
+                                                    ? Center(
+                                                    child: Column(
+                                                      mainAxisAlignment: MainAxisAlignment
+                                                          .center,
+                                                      children: [
+                                                        Image.asset(
+                                                          'assets/imgs/icons/icon_ranking_nodata_1.png',
+                                                          scale: 4,
+                                                          width: 43,
+                                                          height: 32,
+                                                        ),
+                                                        SizedBox(height: 12,),
+                                                        Text('데이터가 없습니다.',
+                                                          style: TextStyle(
+                                                              fontSize: 14,
+                                                              color: Colors
+                                                                  .white,
+                                                              fontWeight: FontWeight
+                                                                  .normal
+                                                          ),),
+                                                        SizedBox(
+                                                          height: 36,
+                                                        )
+                                                      ],
+                                                    ))
+                                                    : SingleChildScrollView(
+                                                  scrollDirection: Axis
+                                                      .horizontal,
+                                                  child: Container(
+                                                    child: Row(
+                                                      mainAxisAlignment:
+                                                      barData.length < 2
+                                                          ? MainAxisAlignment
+                                                          .center
+                                                          : MainAxisAlignment
+                                                          .spaceBetween,
+                                                      children: barData.map((
+                                                          data) {
+                                                        String slopeName = data['slopeName'];
+                                                        int scoreForSlope = data['scoreForSlope'];
+                                                        double barHeightRatio = data['barHeightRatio'];
+                                                        Color barColor = data['barColor'];
+                                                        return Container(
+                                                          margin: EdgeInsets
+                                                              .symmetric(
+                                                              horizontal: 5),
+                                                          width: barData
+                                                              .length < 5
+                                                              ? _size.width /
+                                                              5 - 10
+                                                              : _size.width /
+                                                              5 - 28,
+                                                          height: 185,
+                                                          child: Column(
+                                                            mainAxisAlignment: MainAxisAlignment
+                                                                .end,
+                                                            children: [
+                                                              Text(
+                                                                '$scoreForSlope',
+                                                                style: TextStyle(
+                                                                  fontSize: 13,
+                                                                  color: Color(
+                                                                      0xFFFFFFFF),
+                                                                  fontWeight: FontWeight
+                                                                      .bold,
+                                                                ),
                                                               ),
-                                                            ),
-                                                            SizedBox(height: 4),
-                                                            Container(
-                                                              width: 58,
-                                                              height: 140 * barHeightRatio,
-                                                              child: Container(
+                                                              SizedBox(
+                                                                  height: 4),
+                                                              Container(
                                                                 width: 58,
-                                                                height: 140 * barHeightRatio,
-                                                                decoration: BoxDecoration(
-                                                                  color: barColor,
-                                                                  borderRadius: BorderRadius.only(
-                                                                    topRight: Radius.circular(4),
-                                                                    topLeft: Radius.circular(4),
+                                                                height: 140 *
+                                                                    barHeightRatio,
+                                                                child: Container(
+                                                                  width: 58,
+                                                                  height: 140 *
+                                                                      barHeightRatio,
+                                                                  decoration: BoxDecoration(
+                                                                    color: barColor,
+                                                                    borderRadius: BorderRadius
+                                                                        .only(
+                                                                      topRight: Radius
+                                                                          .circular(
+                                                                          4),
+                                                                      topLeft: Radius
+                                                                          .circular(
+                                                                          4),
+                                                                    ),
                                                                   ),
                                                                 ),
                                                               ),
-                                                            ),
-                                                            SizedBox(height: 10),
-                                                            Text(
-                                                              slopeName,
-                                                              style: TextStyle(fontSize: 12, color: Color(0xFFFFFFFF)),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      );
-                                                    }).toList(),
+                                                              SizedBox(
+                                                                  height: 10),
+                                                              Text(
+                                                                slopeName,
+                                                                style: TextStyle(
+                                                                    fontSize: 12,
+                                                                    color: Color(
+                                                                        0xFFFFFFFF)),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        );
+                                                      }).toList(),
+                                                    ),
                                                   ),
                                                 ),
                                               ),
                                             ),
-                                          ),
-                                        ],
-                                      ),
-                                    )
+                                          ],
+                                        ),
+                                      )
 
 
-                                  ],
+                                    ],
+                                  ),
                                 ),
                               ),
+                              SizedBox(height: 30,),
+                            ],
+                          );
+                        } else {
+                          return Center(
+                            child: Container(
+                              width: _size.width,
+                              height: _size.height-200,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Container(
+                                    width: 80,
+                                    height: 94,
+                                    child: ExtendedImage.asset(
+                                      'assets/imgs/ranking/icon_ranking_nodata.png',
+                                      enableMemoryCache: true,
+                                      scale: 4,
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: 16,
+                                  ),
+                                  Center(
+                                    child: Text('아직 랭킹 정보가 없어요!',
+                                      style: TextStyle(
+                                          color: Color(0xFFFFFFFF),
+                                          fontSize: 15
+                                      ),),
+                                  ),
+                                ],
+                              ),
                             ),
-                            SizedBox(height: 30,),
-                          ],
-                        );
+                          );
+                        }
                       }
                       return Container(
                         color: Color(0xFF3D83ED),
