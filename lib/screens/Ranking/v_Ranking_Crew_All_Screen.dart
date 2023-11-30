@@ -294,8 +294,8 @@ class _RankingCrewAllScreenState extends State<RankingCrewAllScreen> {
                                 ),
                                 SizedBox(width: 14),
                                 Container(
-                                  width: 48,
-                                  height: 48,
+                                  width: 46,
+                                  height: 46,
                                   decoration: BoxDecoration(
                                       color: Color(0xFFDFECFF),
                                       borderRadius: BorderRadius
@@ -373,7 +373,7 @@ class _RankingCrewAllScreenState extends State<RankingCrewAllScreen> {
                                       ),
                                       if (document['description'].isNotEmpty)
                                         SizedBox(
-                                          width: 200,
+                                          width: _size.width - 190,
                                           child: Text(
                                             document['description'],
                                             maxLines: 1,

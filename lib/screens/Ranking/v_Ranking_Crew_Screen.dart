@@ -649,8 +649,8 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                                                     ),
                                                     SizedBox(width: 14),
                                                     Container(
-                                                      width: 48,
-                                                      height: 48,
+                                                      width: 46,
+                                                      height: 46,
                                                       child:
                                                       (crewDocs[index]['profileImageUrl']
                                                           .isNotEmpty)
@@ -748,7 +748,7 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                                                             ),
                                                             if (crewDocs[index]['description'].isNotEmpty)
                                                               SizedBox(
-                                                                width: 200,
+                                                                width: _size.width-190,
                                                                 child: Text(
                                                                   crewDocs[index]['description'],
                                                                   maxLines: 1,
