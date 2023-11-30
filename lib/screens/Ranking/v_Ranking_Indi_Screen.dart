@@ -860,7 +860,7 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                       ),
                                       SizedBox(width: 14),
                                       Container(
-                                        width: _size.width*0.42,
+                                        width: _size.width - 246,
                                         child: Column(
                                           mainAxisAlignment: MainAxisAlignment.center,
                                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -885,7 +885,7 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                                   overflow: TextOverflow.ellipsis,
                                                   maxLines: 1,
                                                 ),
-                                                width: _size.width*0.35,
+                                                width: _size.width - 246,
                                               )
                                           ],
                                         ),
