@@ -9,6 +9,7 @@ import 'package:com.snowlive/controller/vm_seasonController.dart';
 import 'package:com.snowlive/controller/vm_userModelController.dart';
 import 'package:com.snowlive/screens/Ranking/v_Ranking_indi_All_Screen.dart';
 import '../../controller/vm_allUserDocsController.dart';
+import '../../data/imgaUrls/Data_url_image.dart';
 import '../../model/m_rankingTierModel.dart';
 import '../more/friend/v_friendDetailPage.dart';
 
@@ -88,6 +89,7 @@ class _RankingMyCrewScreenState extends State<RankingMyCrewScreen> {
                   .collection('Ranking')
                   .doc('${_seasonController.currentSeason}')
                   .collection('${_liveCrewModelController.baseResort}')
+                  .where('totalScore', isGreaterThan: 0)
                   .orderBy('totalScore', descending: true)
                   .snapshots(),
               builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
@@ -238,8 +240,8 @@ class _RankingMyCrewScreenState extends State<RankingMyCrewScreen> {
                                                     case LoadState.completed:
                                                       return state.completedWidget;
                                                     case LoadState.failed:
-                                                      return ExtendedImage.asset(
-                                                        'assets/imgs/profile/img_profile_default_circle.png',
+                                                      return ExtendedImage.network(
+                                                        '${profileImgUrlList[0].default_round}',
                                                         shape: BoxShape.circle,
                                                         borderRadius: BorderRadius.circular(
                                                             8),
@@ -264,8 +266,8 @@ class _RankingMyCrewScreenState extends State<RankingMyCrewScreen> {
                                           )
                                               : Stack(
                                             children: [
-                                              ExtendedImage.asset(
-                                                'assets/imgs/profile/img_profile_default_circle.png',
+                                              ExtendedImage.network(
+                                                '${profileImgUrlList[0].default_round}',
                                                 enableMemoryCache: true,
                                                 shape: BoxShape.circle,
                                                 borderRadius: BorderRadius.circular(8),

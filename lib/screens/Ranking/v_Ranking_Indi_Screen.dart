@@ -10,6 +10,7 @@ import 'package:com.snowlive/controller/vm_liveMapController.dart';
 import 'package:com.snowlive/controller/vm_seasonController.dart';
 import 'package:com.snowlive/controller/vm_userModelController.dart';
 import 'package:com.snowlive/screens/Ranking/v_Ranking_indi_All_Screen.dart';
+import '../../controller/vm_allCrewDocsController.dart';
 import '../../controller/vm_allUserDocsController.dart';
 import '../../controller/vm_myRankingController.dart';
 import '../../controller/vm_refreshController.dart';
@@ -38,17 +39,30 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
   AllUserDocsController _allUserDocsController = Get.find<AllUserDocsController>();
   MyRankingController _myRankingController = Get.find<MyRankingController>();
   RefreshController _refreshController = Get.find<RefreshController>();
+  AllCrewDocsController _allCrewDocsController = Get.find<AllCrewDocsController>();
   //TODO: Dependency Injection**************************************************
 
-
+  var _rankingStream;
+  Map? userRankingMap;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+
+    _allCrewDocsController.startListening().then((result){
+      setState(() {});
+    });
+    _rankingStream = rankingStream();
+
   }
 
-  Map? userRankingMap;
+  @override
+  void dispose() {
+    _allCrewDocsController.stopListening();
+    super.dispose();
+  }
+
 
 
   Stream<QuerySnapshot> myRankingDocStream() {
@@ -60,15 +74,22 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
         .snapshots();
   }
 
+  Stream<QuerySnapshot> rankingStream() {
+    return FirebaseFirestore.instance
+        .collection('Ranking')
+        .doc('${_seasonController.currentSeason}')
+        .collection('${_userModelController.favoriteResort}')
+        .where('totalScore', isGreaterThan: 0)
+        .orderBy('totalScore', descending: true)
+        .snapshots();
+  }
+
   @override
   Widget build(BuildContext context) {
     Size _size = MediaQuery.of(context).size;
     _userModelController.getCurrentUser_crew(_userModelController.uid);
     _myRankingController.getMyRankingData(_userModelController.uid);
 
-    if(_userModelController.liveCrew != '' && _userModelController.liveCrew != null) {
-      _liveCrewModelController.getCurrrentCrew(_userModelController.liveCrew);
-    }else{}
     return  StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance
             .collection('liveCrew')
@@ -97,12 +118,7 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
           print(allMemberUidList.length);
 
           return StreamBuilder<QuerySnapshot>(
-            stream: FirebaseFirestore.instance
-                .collection('Ranking')
-                .doc('${_seasonController.currentSeason}')
-                .collection('${_userModelController.favoriteResort}')
-                .orderBy('totalScore', descending: true)
-                .snapshots(),
+            stream: _rankingStream,
             builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
               if (snapshot.hasError) {
                 return Container(
@@ -262,8 +278,8 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                                                 case LoadState.completed:
                                                                   return state.completedWidget;
                                                                 case LoadState.failed:
-                                                                  return ExtendedImage.asset(
-                                                                    'assets/imgs/profile/img_profile_default_.png',
+                                                                  return ExtendedImage.network(
+                                                                    '${profileImgUrlList[0].default_round}',
                                                                     enableMemoryCache: true,
                                                                     shape: BoxShape.circle,
                                                                     width: 58,
@@ -276,8 +292,8 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                                             },
                                                           ),
                                                         )
-                                                            : ExtendedImage.asset(
-                                                          'assets/imgs/profile/img_profile_default_.png',
+                                                            : ExtendedImage.network(
+                                                          '${profileImgUrlList[0].default_round}',
                                                           enableMemoryCache: true,
                                                           shape: BoxShape.circle,
                                                           width: 58,
@@ -366,8 +382,8 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                                                 case LoadState.completed:
                                                                   return state.completedWidget;
                                                                 case LoadState.failed:
-                                                                  return ExtendedImage.asset(
-                                                                    'assets/imgs/profile/img_profile_default_.png',
+                                                                  return ExtendedImage.network(
+                                                                    '${profileImgUrlList[0].default_round}',
                                                                     enableMemoryCache: true,
                                                                     shape: BoxShape.circle,
                                                                     width: 58,
@@ -380,8 +396,8 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                                             },
                                                           ),
                                                         )
-                                                            : ExtendedImage.asset(
-                                                          'assets/imgs/profile/img_profile_default_.png',
+                                                            : ExtendedImage.network(
+                                                          '${profileImgUrlList[0].default_round}',
                                                           enableMemoryCache: true,
                                                           shape: BoxShape.circle,
                                                           width: 58,
@@ -471,8 +487,8 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                                                 case LoadState.completed:
                                                                   return state.completedWidget;
                                                                 case LoadState.failed:
-                                                                  return ExtendedImage.asset(
-                                                                    'assets/imgs/profile/img_profile_default_.png',
+                                                                  return ExtendedImage.network(
+                                                                    '${profileImgUrlList[0].default_round}',
                                                                     enableMemoryCache: true,
                                                                     shape: BoxShape.circle,
                                                                     width: 58,
@@ -485,8 +501,8 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                                             },
                                                           ),
                                                         )
-                                                            : ExtendedImage.asset(
-                                                          'assets/imgs/profile/img_profile_default_.png',
+                                                            : ExtendedImage.network(
+                                                          '${profileImgUrlList[0].default_round}',
                                                           enableMemoryCache: true,
                                                           shape: BoxShape.circle,
                                                           width: 58,
@@ -586,6 +602,8 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                               final userDoc = snapshot.data!.docs;
                                               final userData = userDoc.isNotEmpty ? userDoc[0] : null;
 
+                                              String? crewName = _allCrewDocsController.findCrewName(userData!['liveCrew'], _allCrewDocsController.allCrewDocs);
+
                                               if (userData == null) {
                                                 return SizedBox.shrink();
                                               }
@@ -634,8 +652,8 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                                               case LoadState.completed:
                                                                 return state.completedWidget;
                                                               case LoadState.failed:
-                                                                return ExtendedImage.asset(
-                                                                  'assets/imgs/profile/img_profile_default_circle.png',
+                                                                return ExtendedImage.network(
+                                                                  '${profileImgUrlList[0].default_round}',
                                                                   enableMemoryCache: true,
                                                                   shape: BoxShape.circle,
                                                                   borderRadius: BorderRadius.circular(8),
@@ -648,8 +666,8 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                                             }
                                                           },
                                                         )
-                                                            : ExtendedImage.asset(
-                                                          'assets/imgs/profile/img_profile_default_circle.png',
+                                                            : ExtendedImage.network(
+                                                          '${profileImgUrlList[0].default_round}',
                                                           enableMemoryCache: true,
                                                           shape: BoxShape.circle,
                                                           borderRadius: BorderRadius.circular(8),
@@ -672,45 +690,45 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                                                     color: Color(0xFF111111)
                                                                 ),
                                                               ),
-                                                              // if(userData['stateMsg'] != '')
-                                                              //   Text(userData['stateMsg'],
-                                                              //     maxLines: 1,
-                                                              //     overflow: TextOverflow.ellipsis,
-                                                              //     style: TextStyle(
-                                                              //         fontSize: 12,
-                                                              //         color: Color(0xFF949494)
-                                                              //     ),)
-                                                              StreamBuilder<QuerySnapshot>(
-                                                                stream: FirebaseFirestore.instance
-                                                                    .collection('liveCrew')
-                                                                    .where('crewID', isEqualTo: userData['liveCrew'])
-                                                                    .snapshots(),
-                                                                builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
-                                                                  if (snapshot.hasError) {
-                                                                    return Text("오류가 발생했습니다");
-                                                                  }
-
-                                                                  if (snapshot.connectionState == ConnectionState.waiting) {
-                                                                    return SizedBox.shrink();
-                                                                  }
-
-                                                                  if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                                                                    return SizedBox.shrink();
-                                                                  }
-
-                                                                  var crewData = snapshot.data!.docs.first.data() as Map<String, dynamic>?;
-
-                                                                  // 크루명 가져오기
-                                                                  String crewName = crewData?['crewName'] ?? '';
-
-                                                                  return Text(crewName,
-                                                                    style: TextStyle(
-                                                                        fontSize: 12,
-                                                                        color: Color(0xFF949494)
-                                                                    ),
-                                                                  );
-                                                                },
-                                                              ),
+                                                              if(userData['liveCrew'] != '')
+                                                                Text(crewName,
+                                                                  maxLines: 1,
+                                                                  overflow: TextOverflow.ellipsis,
+                                                                  style: TextStyle(
+                                                                      fontSize: 12,
+                                                                      color: Color(0xFF949494)
+                                                                  ),)
+                                                              // StreamBuilder<QuerySnapshot>(
+                                                              //   stream: FirebaseFirestore.instance
+                                                              //       .collection('liveCrew')
+                                                              //       .where('crewID', isEqualTo: userData['liveCrew'])
+                                                              //       .snapshots(),
+                                                              //   builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                                                              //     if (snapshot.hasError) {
+                                                              //       return Text("오류가 발생했습니다");
+                                                              //     }
+                                                              //
+                                                              //     if (snapshot.connectionState == ConnectionState.waiting) {
+                                                              //       return SizedBox.shrink();
+                                                              //     }
+                                                              //
+                                                              //     if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                                                              //       return SizedBox.shrink();
+                                                              //     }
+                                                              //
+                                                              //     var crewData = snapshot.data!.docs.first.data() as Map<String, dynamic>?;
+                                                              //
+                                                              //     // 크루명 가져오기
+                                                              //     String crewName = crewData?['crewName'] ?? '';
+                                                              //
+                                                              //     return Text(crewName,
+                                                              //       style: TextStyle(
+                                                              //           fontSize: 12,
+                                                              //           color: Color(0xFF949494)
+                                                              //       ),
+                                                              //     );
+                                                              //   },
+                                                              // ),
                                                             ],
                                                           ),
                                                         ),

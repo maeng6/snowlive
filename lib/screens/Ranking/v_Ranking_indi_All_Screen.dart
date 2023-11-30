@@ -8,7 +8,9 @@ import 'package:com.snowlive/controller/vm_liveMapController.dart';
 import 'package:com.snowlive/controller/vm_seasonController.dart';
 import 'package:com.snowlive/controller/vm_userModelController.dart';
 import 'package:com.snowlive/screens/Ranking/v_Ranking_indi_All_Screen.dart';
+import '../../controller/vm_allCrewDocsController.dart';
 import '../../controller/vm_allUserDocsController.dart';
+import '../../data/imgaUrls/Data_url_image.dart';
 import '../../model/m_rankingTierModel.dart';
 import '../more/friend/v_friendDetailPage.dart';
 
@@ -29,6 +31,7 @@ class _RankingIndiAllScreenState extends State<RankingIndiAllScreen> {
   Get.find<LiveCrewModelController>();
   LiveMapController _liveMapController = Get.find<LiveMapController>();
   AllUserDocsController _allUserDocsController = Get.find<AllUserDocsController>();
+  AllCrewDocsController _allCrewDocsController = Get.find<AllCrewDocsController>();
   //TODO: Dependency Injection**************************************************
 
   ScrollController _scrollController = ScrollController();
@@ -36,6 +39,8 @@ class _RankingIndiAllScreenState extends State<RankingIndiAllScreen> {
   Map<String, GlobalKey> itemKeys = {};
 
   GlobalKey myItemKey = GlobalKey();
+  Map? userRankingMap;
+  var _rankingStream;
 
   @override
   void initState() {
@@ -44,9 +49,30 @@ class _RankingIndiAllScreenState extends State<RankingIndiAllScreen> {
 
     // GlobalKey for my item (logged-in user)
     myItemKey = GlobalKey();
+
+    _allCrewDocsController.startListening().then((result){
+      setState(() {});
+    });
+    _rankingStream = rankingStream();
+
   }
 
-  Map? userRankingMap;
+  @override
+  void dispose() {
+    _allCrewDocsController.stopListening();
+    super.dispose();
+  }
+
+  Stream<QuerySnapshot> rankingStream() {
+    return FirebaseFirestore.instance
+        .collection('Ranking')
+        .doc('${_seasonController.currentSeason}')
+        .collection('${_userModelController.favoriteResort}')
+        .where('totalScore', isGreaterThan: 0)
+        .orderBy('totalScore', descending: true)
+        .snapshots();
+  }
+
 
   void _scrollToMyRanking() {
     final myRanking = userRankingMap![_userModelController.uid];
@@ -63,10 +89,6 @@ class _RankingIndiAllScreenState extends State<RankingIndiAllScreen> {
   Widget build(BuildContext context) {
     Size _size = MediaQuery.of(context).size;
 
-    if (_userModelController.liveCrew != '' &&
-        _userModelController.liveCrew != null) {
-      _liveCrewModelController.getCurrrentCrew(_userModelController.liveCrew);
-    } else {}
     return StreamBuilder<DocumentSnapshot>(
         stream: FirebaseFirestore.instance
             .collection('kusbf')
@@ -119,12 +141,7 @@ class _RankingIndiAllScreenState extends State<RankingIndiAllScreen> {
 
 
                 return StreamBuilder<QuerySnapshot>(
-                  stream: FirebaseFirestore.instance
-                      .collection('Ranking')
-                      .doc('${_seasonController.currentSeason}')
-                      .collection('${_userModelController.favoriteResort}')
-                      .orderBy('totalScore', descending: true)
-                      .snapshots(),
+                  stream: _rankingStream,
                   builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
                     if (snapshot.hasError) {
                       return Container(
@@ -173,7 +190,8 @@ class _RankingIndiAllScreenState extends State<RankingIndiAllScreen> {
                       final uid = doc['uid'];
                       return allMemberUidList.contains(uid);
                     }).toList();
-                    print(filteredDocuments.length);
+                    print('대학연합 랭킹참여자 : ${filteredDocuments.length}');
+                    print('일반 랭킹참여자 : ${document.length}');
 
                     final documents = widget.isKusbf == true ? filteredDocuments : document;
 
@@ -262,9 +280,13 @@ class _RankingIndiAllScreenState extends State<RankingIndiAllScreen> {
                                   final userDoc = snapshot.data!.docs;
                                   final userData = userDoc.isNotEmpty ? userDoc[0] : null;
 
+
                                   if (userData == null) {
                                     return SizedBox.shrink();
                                   }
+
+                                  String? crewName = _allCrewDocsController.findCrewName(userData!['liveCrew'], _allCrewDocsController.allCrewDocs);
+
 
                                   return Padding(
                                     key: itemKey, // Apply the key here
@@ -313,8 +335,8 @@ class _RankingIndiAllScreenState extends State<RankingIndiAllScreen> {
                                                   case LoadState.completed:
                                                     return state.completedWidget;
                                                   case LoadState.failed:
-                                                    return ExtendedImage.asset(
-                                                      'assets/imgs/profile/img_profile_default_circle.png',
+                                                    return ExtendedImage.network(
+                                                      '${profileImgUrlList[0].default_round}',
                                                       shape: BoxShape.circle,
                                                       borderRadius: BorderRadius.circular(
                                                           8),
@@ -327,8 +349,8 @@ class _RankingIndiAllScreenState extends State<RankingIndiAllScreen> {
                                                 }
                                               },
                                             )
-                                                : ExtendedImage.asset(
-                                              'assets/imgs/profile/img_profile_default_circle.png',
+                                                : ExtendedImage.network(
+                                              '${profileImgUrlList[0].default_round}',
                                               enableMemoryCache: true,
                                               shape: BoxShape.circle,
                                               borderRadius: BorderRadius.circular(8),
@@ -351,51 +373,14 @@ class _RankingIndiAllScreenState extends State<RankingIndiAllScreen> {
                                                         fontSize: 15,
                                                         color: Color(0xFF111111)),
                                                   ),
-                                                  // if(userData['stateMsg'].isNotEmpty)
-                                                    // Text(userData['stateMsg'],
-                                                    //   maxLines: 1,
-                                                    //   overflow: TextOverflow.ellipsis,
-                                                    //   style: TextStyle(
-                                                    //       fontSize: 12,
-                                                    //       color: Color(0xFF949494)
-                                                    //   ),)
-                                                  StreamBuilder<QuerySnapshot>(
-                                                    stream: FirebaseFirestore.instance
-                                                        .collection('liveCrew')
-                                                        .where('crewID',
-                                                        isEqualTo: userData['liveCrew'])
-                                                        .snapshots(),
-                                                    builder: (context,
-                                                        AsyncSnapshot<QuerySnapshot> snapshot) {
-                                                      if (snapshot.hasError) {
-                                                        return Text("오류가 발생했습니다");
-                                                      }
-
-                                                      if (snapshot.connectionState ==
-                                                          ConnectionState.waiting) {
-                                                        return SizedBox.shrink();
-                                                      }
-
-                                                      if (!snapshot.hasData ||
-                                                          snapshot.data!.docs.isEmpty) {
-                                                        return SizedBox.shrink();
-                                                      }
-
-                                                      var crewData = snapshot.data!.docs.first
-                                                          .data() as Map<String, dynamic>?;
-
-                                                      // 크루명 가져오기
-                                                      String crewName =
-                                                          crewData?['crewName'] ?? '';
-
-                                                      return Text(
-                                                        crewName,
-                                                        style: TextStyle(
-                                                            fontSize: 12,
-                                                            color: Color(0xFF949494)),
-                                                      );
-                                                    },
-                                                  ),
+                                                  if(userData['liveCrew'].isNotEmpty)
+                                                    Text(crewName,
+                                                      maxLines: 1,
+                                                      overflow: TextOverflow.ellipsis,
+                                                      style: TextStyle(
+                                                          fontSize: 12,
+                                                          color: Color(0xFF949494)
+                                                      ),)
                                                 ],
                                               ),
                                             ),
