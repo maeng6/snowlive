@@ -459,23 +459,27 @@ class _CrewDetailPage_memberState extends State<CrewDetailPage_member> {
                                             ],
                                           ),
                                           SizedBox(width: 15,),
-                                          Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: [
-                                              Text(crewMemberDocs[index]['displayName'],
-                                                style: TextStyle(
-                                                    fontSize: 15,
-                                                    color: Color(0xFF111111)
-                                                ),
-                                              ),
-                                              if(crewMemberDocs[index]['stateMsg'].isNotEmpty)
-                                                Text(crewMemberDocs[index]['stateMsg'],
+                                          Container(
+                                            width: _size.width - 180,
+                                            child: Column(
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              children: [
+                                                Text(crewMemberDocs[index]['displayName'],
                                                   style: TextStyle(
-                                                      fontSize: 13,
-                                                      color: Color(0xFF949494)
+                                                      fontSize: 15,
+                                                      color: Color(0xFF111111)
                                                   ),
-                                                )
-                                            ],
+                                                ),
+                                                if(crewMemberDocs[index]['stateMsg'].isNotEmpty)
+                                                  Text(crewMemberDocs[index]['stateMsg'],
+                                                    style: TextStyle(
+                                                        fontSize: 13,
+                                                        color: Color(0xFF949494)
+                                                    ),
+                                                    overflow: TextOverflow.ellipsis,
+                                                  )
+                                              ],
+                                            ),
                                           ),
                                           Expanded(child: SizedBox()),
                                           (_liveCrewModelController.leaderUid == _userModelController.uid)

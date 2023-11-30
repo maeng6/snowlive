@@ -452,29 +452,33 @@ class _FriendListPageState extends State<FriendListPage> {
                                                 ],
                                               ),
                                             ),
-                                            Column(
-                                              mainAxisAlignment: _userModelController.displayName == ''
-                                                  ? MainAxisAlignment.center
-                                                  : MainAxisAlignment.start,
-                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                              children: [
-                                                Text(_userModelController.displayName!,
-                                                  style: TextStyle(
-                                                      color: Color(0xFF111111),
-                                                      fontWeight: FontWeight.normal,
-                                                      fontSize: 16),
-                                                ),
-                                                _userModelController.stateMsg == ''
-                                                    ? Container()
-                                                    : Text(
-                                                  _userModelController.stateMsg!,
-                                                  style: TextStyle(
-                                                    color: Color(0xFF949494),
-                                                    fontWeight: FontWeight.normal,
-                                                    fontSize: 14,
+                                            Container(
+                                              width: _size.width - 102,
+                                              child: Column(
+                                                mainAxisAlignment: _userModelController.displayName == ''
+                                                    ? MainAxisAlignment.center
+                                                    : MainAxisAlignment.start,
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(_userModelController.displayName!,
+                                                    style: TextStyle(
+                                                        color: Color(0xFF111111),
+                                                        fontWeight: FontWeight.normal,
+                                                        fontSize: 16),
                                                   ),
-                                                )
-                                              ],
+                                                  _userModelController.stateMsg == ''
+                                                      ? Container()
+                                                      : Text(
+                                                    _userModelController.stateMsg!,
+                                                    style: TextStyle(
+                                                      color: Color(0xFF949494),
+                                                      fontWeight: FontWeight.normal,
+                                                      fontSize: 14,
+                                                    ),
+                                                    overflow: TextOverflow.ellipsis,
+                                                  )
+                                                ],
+                                              ),
                                             ),
 
                                           ]
@@ -982,29 +986,33 @@ class _FriendListPageState extends State<FriendListPage> {
                                           ),
                                           Padding(
                                             padding: const EdgeInsets.only(left: 10),
-                                            child: Column(
-                                              mainAxisAlignment: doc.get('stateMsg') == ''
-                                                  ? MainAxisAlignment.center
-                                                  : MainAxisAlignment.start,
-                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                              children: [
-                                                Text(doc.get('displayName'),
-                                                  style: TextStyle(
-                                                      color: Color(0xFF111111),
-                                                      fontWeight: FontWeight.normal,
-                                                      fontSize: 15),
-                                                ),
-                                                if (doc.get('stateMsg') == '')
-                                                  SizedBox(height: 0)
-                                                else
-                                                  Text(
-                                                    '${doc.get('stateMsg')}',
+                                            child: Container(
+                                              width: _size.width - 160,
+                                              child: Column(
+                                                mainAxisAlignment: doc.get('stateMsg') == ''
+                                                    ? MainAxisAlignment.center
+                                                    : MainAxisAlignment.start,
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(doc.get('displayName'),
                                                     style: TextStyle(
-                                                        color: Color(0xFF949494),
+                                                        color: Color(0xFF111111),
                                                         fontWeight: FontWeight.normal,
-                                                        fontSize: 13),
+                                                        fontSize: 15),
                                                   ),
-                                              ],
+                                                  if (doc.get('stateMsg') == '')
+                                                    SizedBox(height: 0)
+                                                  else
+                                                    Text(
+                                                      '${doc.get('stateMsg')}',
+                                                      style: TextStyle(
+                                                          color: Color(0xFF949494),
+                                                          fontWeight: FontWeight.normal,
+                                                          fontSize: 13),
+                                                      overflow: TextOverflow.ellipsis,
+                                                    ),
+                                                ],
+                                              ),
                                             ),
                                           ),
 

@@ -373,7 +373,7 @@ class _RankingCrewAllScreenState extends State<RankingCrewAllScreen> {
                                       ),
                                       if (document['description'].isNotEmpty)
                                         SizedBox(
-                                          width: _size.width - 190,
+                                          width: _size.width - 206,
                                           child: Text(
                                             document['description'],
                                             maxLines: 1,
