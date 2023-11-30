@@ -75,5 +75,15 @@ Future<void> updateTier()async{
 
 }
 
+  String getBadgeAsset(double userScore, List rankingTierList) {
+    for (var tier in rankingTierList) {
+      if (userScore <= tier.scoreRng) {
+        return tier.badgeAsset;
+      }
+    }
+    return rankingTierList.last.badgeAsset; // 가장 낮은 순위의 뱃지
+  }
+
+
 }
 

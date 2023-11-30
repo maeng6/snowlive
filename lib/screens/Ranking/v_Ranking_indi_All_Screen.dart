@@ -10,6 +10,7 @@ import 'package:com.snowlive/controller/vm_userModelController.dart';
 import 'package:com.snowlive/screens/Ranking/v_Ranking_indi_All_Screen.dart';
 import '../../controller/vm_allCrewDocsController.dart';
 import '../../controller/vm_allUserDocsController.dart';
+import '../../controller/vm_rankingTierModelController.dart';
 import '../../data/imgaUrls/Data_url_image.dart';
 import '../../model/m_rankingTierModel.dart';
 import '../more/friend/v_friendDetailPage.dart';
@@ -32,6 +33,7 @@ class _RankingIndiAllScreenState extends State<RankingIndiAllScreen> {
   LiveMapController _liveMapController = Get.find<LiveMapController>();
   AllUserDocsController _allUserDocsController = Get.find<AllUserDocsController>();
   AllCrewDocsController _allCrewDocsController = Get.find<AllCrewDocsController>();
+  RankingTierModelController _rankingTierModelController = Get.find<RankingTierModelController>();
   //TODO: Dependency Injection**************************************************
 
   ScrollController _scrollController = ScrollController();
@@ -396,17 +398,15 @@ class _RankingIndiAllScreenState extends State<RankingIndiAllScreen> {
                                                   fontSize: 18,
                                                 ),
                                               ),
-                                              for(var rankingTier in rankingTierList)
-                                                if(document.get('tier') == rankingTier.tierName)
-                                                  Transform.translate(
-                                                    offset: Offset(6, 2),
-                                                    child: ExtendedImage.network(
-                                                      rankingTier.badgeAsset,
-                                                      enableMemoryCache: true,
-                                                      fit: BoxFit.cover,
-                                                      width: 40,
-                                                    ),
-                                                  )
+                                              Transform.translate(
+                                                offset: Offset(6, 2),
+                                                child: ExtendedImage.network(
+                                                  _rankingTierModelController.getBadgeAsset(userRankingMap!['${userDoc[0]['uid']}']/(documents.length), rankingTierList),
+                                                  enableMemoryCache: true,
+                                                  fit: BoxFit.cover,
+                                                  width: 40,
+                                                ),
+                                              ),
                                             ],
                                           ),
                                         ],
