@@ -1545,7 +1545,11 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                                                                   Transform.translate(
                                                                                                     offset: Offset(6, 2),
                                                                                                     child: ExtendedImage.network(
-                                                                                                      _rankingTierModelController.getBadgeAsset( userRankingMap!['${rankingDocs[0]['uid']}'] / (rankingDocs_total.length), rankingTierList),
+                                                                                                      _rankingTierModelController.getBadgeAsset(
+                                                                                                          percent: userRankingMap!['${rankingDocs[0]['uid']}'] / (rankingDocs_total.length),
+                                                                                                          totalScore: rankingDocs[0]['totalScore'],
+                                                                                                          rankingTierList: rankingTierList
+                                                                                                      ),
                                                                                                       enableMemoryCache: true,
                                                                                                       fit: BoxFit.cover,
                                                                                                       width: 54,

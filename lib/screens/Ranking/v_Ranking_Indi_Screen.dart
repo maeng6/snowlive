@@ -749,7 +749,11 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                                           Transform.translate(
                                                             offset: Offset(6, 2),
                                                             child: ExtendedImage.network(
-                                                              _rankingTierModelController.getBadgeAsset(userRankingMap!['${userDoc[0]['uid']}']/(documents.length), rankingTierList),
+                                                              _rankingTierModelController.getBadgeAsset(
+                                                                  percent: userRankingMap!['${userDoc[0]['uid']}']/(documents.length),
+                                                                  totalScore: document.get('totalScore'),
+                                                                  rankingTierList: rankingTierList
+                                                              ),
                                                               enableMemoryCache: true,
                                                               fit: BoxFit.cover,
                                                               width: 40,
@@ -904,7 +908,11 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                           Transform.translate(
                                             offset: Offset(6, 2),
                                             child: ExtendedImage.network(
-                                             _rankingTierModelController.getBadgeAsset(userRankingMap?['${_userModelController.uid}'] / documents.length, rankingTierList),
+                                             _rankingTierModelController.getBadgeAsset(
+                                                 percent:  userRankingMap?['${_userModelController.uid}'] / documents.length,
+                                                 totalScore: _myRankingController.totalScore,
+                                                 rankingTierList: rankingTierList
+                                             ),
                                               enableMemoryCache: true,
                                               fit: BoxFit.cover,
                                               width: 40,
