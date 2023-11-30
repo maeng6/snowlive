@@ -405,7 +405,7 @@ class _Bulletin_Crew_List_ScreenState extends State<Bulletin_Crew_List_Screen> {
                       child: Container(
                         width: 106,
                         child: FloatingActionButton(
-                          heroTag: 'liveTalkScreen',
+                          heroTag: 'bulletin_crew',
                           mini: true,
                           elevation: 0,
                           shape: RoundedRectangleBorder(
