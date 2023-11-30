@@ -194,8 +194,11 @@ class _MyRankingDetailPageState extends State<MyRankingDetailPage> {
                                           mainAxisAlignment: MainAxisAlignment
                                               .center,
                                           children: [
+                                            SizedBox(
+                                              height: 4,
+                                            ),
                                             Container(
-                                              height: 120,
+                                              height: 130,
                                               child: Text(
                                                 '${_myRankingController
                                                     .totalScore}',
