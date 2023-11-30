@@ -1458,6 +1458,8 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
 
                                                                         final rankingDocs = snapshot.data!.docs;
 
+                                                                        if(rankingDocs[0]['totalScore'] != 0 ) {
+
                                                                             return StreamBuilder<QuerySnapshot>(
                                                                                 stream: _rankStream3,
                                                                                 builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
@@ -1544,7 +1546,7 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                                                                   Transform.translate(
                                                                                                     offset: Offset(6, 2),
                                                                                                     child: ExtendedImage.network(
-                                                                                                      _rankingTierModelController.getBadgeAsset(userRankingMap!['${rankingDocs[0]['uid']}'] / rankingDocs_total.length, rankingTierList),
+                                                                                                      _rankingTierModelController.getBadgeAsset( userRankingMap!['${rankingDocs[0]['uid']}'] / (rankingDocs_total.length), rankingTierList),
                                                                                                       enableMemoryCache: true,
                                                                                                       fit: BoxFit.cover,
                                                                                                       width: 40,
@@ -1561,6 +1563,49 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                                                   return Container();
                                                                                 }
                                                                             );
+                                                                        } else{
+                                                                          return Container(
+                                                                            width: _size.width / 2 - 25,
+                                                                            padding: EdgeInsets.all(16),
+                                                                            decoration: BoxDecoration(
+                                                                                borderRadius: BorderRadius.circular(10),
+                                                                                color: Color(0xFFf1f3f3)
+                                                                            ),
+                                                                            child: Row(
+                                                                              children: [
+                                                                                Column(
+                                                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                  mainAxisAlignment: MainAxisAlignment.start,
+                                                                                  children: [
+                                                                                    Text('개인 랭킹',
+                                                                                      style: TextStyle(
+                                                                                          fontWeight: FontWeight.normal,
+                                                                                          fontSize: 13,
+                                                                                          color: Color(0xFF444444).withOpacity(0.8)
+                                                                                      ),),
+                                                                                    SizedBox(height: 39),
+                                                                                    Text('미참여',
+                                                                                      style: TextStyle(
+                                                                                          fontWeight: FontWeight.bold,
+                                                                                          fontSize: 16,
+                                                                                          color: Color(0xFF444444)
+                                                                                      ),
+                                                                                    ),
+                                                                                    SizedBox(
+                                                                                      height: 3,
+                                                                                    ),
+                                                                                    Text('점수가 없습니다',
+                                                                                      style: TextStyle(
+                                                                                          fontSize: 13,
+                                                                                          color: Color(0xFF949494)
+                                                                                      ),
+                                                                                    ),
+                                                                                  ],
+                                                                                ),
+                                                                              ],
+                                                                            ),
+                                                                          );
+                                                                        }
                                                                       }
 
                                                                       return Container(
