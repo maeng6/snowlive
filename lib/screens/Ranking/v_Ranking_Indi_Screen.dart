@@ -1003,7 +1003,7 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                                 overflow: TextOverflow.ellipsis,
                                                 maxLines: 1,
                                               ),
-                                              width: _size.width*0.3,
+                                              width: _size.width - 246,
                                             )
                                         ],
                                       ),
