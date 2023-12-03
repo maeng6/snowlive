@@ -21,6 +21,7 @@ import 'package:com.snowlive/screens/v_webPage.dart';
 import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 import '../../controller/vm_liveCrewModelController.dart';
 import '../../controller/vm_noticeController.dart';
+import '../../controller/vm_rankingTierModelController.dart';
 import '../../controller/vm_seasonController.dart';
 import '../../controller/vm_userModelController.dart';
 import '../LiveCrew/CreateOnboarding/v_FirstPage_createCrew.dart';
@@ -47,6 +48,7 @@ class _MoreTabState extends State<MoreTab> {
   LiveCrewModelController _liveCrewModelController = Get.find<LiveCrewModelController>();
   UrlLauncherController _urlLauncherController = Get.find<UrlLauncherController>();
   SeasonController _seasonController = Get.find<SeasonController>();
+  RankingTierModelController _rankingTierModelController = Get.find<RankingTierModelController>();
   //TODO: Dependency Injection**************************************************
 
   @override
@@ -729,7 +731,11 @@ class _MoreTabState extends State<MoreTab> {
                     Column(
                       children: [
                         GestureDetector(
-                          onTap: (){
+                          onTap: () async{
+                            CustomFullScreenDialog.showDialog();
+                            await _rankingTierModelController.getRankingDocs_crew();
+                            await _rankingTierModelController.getRankingDocs();
+                            CustomFullScreenDialog.cancelDialog();
                             (_seasonController.open ==true || _seasonController.open_uidList!.contains(_userModelController.uid))
                                 ? Get.to(()=>RankingHome())
                                 : Get.to(()=>Ranking_CommingSoon_Screen());

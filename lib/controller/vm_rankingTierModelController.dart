@@ -14,15 +14,27 @@ class RankingTierModelController extends GetxController{
 
   RxList? _rankingDocs=[].obs;
   RxList? _rankingDocs_kusbf=[].obs;
-  RxList? _kusbfAllMemberUidList=[].obs;
   RxMap? _userRankingMap=<String, int>{}.obs;
   RxMap? _userRankingMap_kusbf=<String, int>{}.obs;
 
+  RxList? _rankingDocs_crew=[].obs;
+  RxList? _rankingDocs_crew_kusbf=[].obs;
+  RxMap? _crewRankingMap =<String, int>{}.obs;
+  RxMap? _crewRankingMap_kusbf =<String, int>{}.obs;
+
+  RxList? _kusbfAllMemberUidList=[].obs;
+
   List? get rankingDocs => _rankingDocs;
-  List? get kusbfAllMemberUidList => _kusbfAllMemberUidList;
   List? get rankingDocs_kusbf => _rankingDocs_kusbf;
   Map? get userRankingMap => _userRankingMap;
   Map? get userRankingMap_kusbf => _userRankingMap_kusbf;
+
+  List? get rankingDocs_crew => _rankingDocs_crew;
+  List? get rankingDocs_crew_kusbf => _rankingDocs_crew_kusbf;
+  Map? get crewRankingMap => _crewRankingMap;
+  Map? get crewRankingMap_kusbf => _crewRankingMap_kusbf;
+
+  List? get kusbfAllMemberUidList => _kusbfAllMemberUidList;
 
   //TODO: Dependency Injection********************************************
   UserModelController _userModelController = Get.find<UserModelController>();
@@ -160,8 +172,6 @@ Future<void> updateTier()async{
       return bTotalScore.compareTo(aTotalScore);
     });
 
-    // ...
-
     this._rankingDocs!.value = rankingList.map((doc) {
       // 각 문서의 데이터를 Map 형태로 변환
       return doc.data() as Map<String, dynamic>;
@@ -176,6 +186,77 @@ Future<void> updateTier()async{
 
     print('대학연합 랭킹참여자 : ${_rankingDocs_kusbf!.length}');
     print('일반 랭킹참여자 : ${_rankingDocs!.length}');
+
+  }
+
+  Future<void> getRankingDocs_crew() async{
+
+    List<QueryDocumentSnapshot> rankingList = [];
+    List<QueryDocumentSnapshot> rankingList_kusbf=[];
+
+    QuerySnapshot rankingSnapshot_crew = await  FirebaseFirestore.instance
+        .collection('liveCrew')
+        .where('kusbf', isEqualTo: false)
+        .where('baseResort', isEqualTo: _userModelController.favoriteResort)
+        .orderBy('totalScore', descending: true)
+        .get();
+    rankingList = rankingSnapshot_crew.docs;
+
+    if(_userModelController.favoriteResort == 12) {
+      QuerySnapshot rankingSnapshot_crew_kusbf = await FirebaseFirestore.instance
+          .collection('liveCrew')
+          .where('kusbf', isEqualTo: true)
+          .where('baseResort', isEqualTo: _userModelController.favoriteResort)
+          .orderBy('totalScore', descending: true)
+          .get();
+      rankingList_kusbf = rankingSnapshot_crew_kusbf.docs;
+
+      rankingList_kusbf.sort((a, b) {
+        final aTotalScore = a['totalScore'] as int;
+        final bTotalScore = b['totalScore'] as int;
+        final aLastPassTime = a['lastPassTime'] as Timestamp?;
+        final bLastPassTime = b['lastPassTime'] as Timestamp?;
+
+        if (aTotalScore == bTotalScore) {
+          if (aLastPassTime != null && bLastPassTime != null) {
+            return bLastPassTime.compareTo(aLastPassTime);
+          }
+        }
+
+        return bTotalScore.compareTo(aTotalScore);
+      });
+
+    }else{}
+
+    rankingList.sort((a, b) {
+      final aTotalScore = a['totalScore'] as int;
+      final bTotalScore = b['totalScore'] as int;
+      final aLastPassTime = a['lastPassTime'] as Timestamp?;
+      final bLastPassTime = b['lastPassTime'] as Timestamp?;
+
+      if (aTotalScore == bTotalScore) {
+        if (aLastPassTime != null && bLastPassTime != null) {
+          return bLastPassTime.compareTo(aLastPassTime);
+        }
+      }
+
+      return bTotalScore.compareTo(aTotalScore);
+    });
+
+    this._rankingDocs_crew!.value = rankingList.map((doc) {
+      // 각 문서의 데이터를 Map 형태로 변환
+      return doc.data() as Map<String, dynamic>;
+    }).toList();
+    this._rankingDocs_crew_kusbf!.value = rankingList_kusbf.map((doc) {
+      // 각 문서의 데이터를 Map 형태로 변환
+      return doc.data() as Map<String, dynamic>;
+    }).toList();
+    this._crewRankingMap!.value = await calculateRankCrewAll2(crewDocs: _rankingDocs_crew);
+    this._crewRankingMap_kusbf!.value = await calculateRankCrewAll2(crewDocs: _rankingDocs_crew_kusbf);
+
+
+    print('대학연합 랭킹참여 크루 : ${_rankingDocs_kusbf!.length}');
+    print('일반 랭킹참여 크루 : ${_rankingDocs!.length}');
 
   }
 
@@ -197,51 +278,25 @@ Future<void> updateTier()async{
     return userRankingMap;
   }
 
-  Future<Map<String, int>> calculateRankCrewAll(int crewScore, String crewID) async {
+  Map<String, int> calculateRankCrewAll2({required crewDocs})  {
 
-    int totalCrews = 0;
-    int crewRank = 0;
-    int sameScoreCount = 0;
-    bool foundCrew = false;
-    List<QueryDocumentSnapshot> crewDocs;
-
-    QuerySnapshot crewCollection = await FirebaseFirestore.instance
-        .collection('liveCrew')
-        .where('baseResort', isEqualTo: _userModelController.favoriteResort)
-        .orderBy('totalScore', descending: true)
-        .get();
-
-    totalCrews = crewCollection.docs.length;
-    crewDocs = crewCollection.docs;
+    Map<String, int> crewRankingMap = {};
 
     for (int i = 0; i < crewDocs.length; i++) {
-      if (crewDocs[i].data() != null) {
-        Map<String, dynamic> data = crewDocs[i].data() as Map<String, dynamic>;
-        int currentScore = data['totalScore'] as int;
-
-        if (crewDocs[i].id == crewID) {
-          foundCrew = true;
-        }
-
-        if (currentScore != crewScore) {
-          crewRank += sameScoreCount + 1;
-          sameScoreCount = 0;
-        } else {
-          if (foundCrew) {
-            crewRank = crewRank + 1;
-            break;
-          }
-          sameScoreCount++;
+      if (crewDocs[i] != null) {
+        if (i == 0) {
+          crewRankingMap['${crewDocs[i]['crewID']}'] = i+1;
+        } else if(crewDocs[i]['totalScore'] != crewDocs[i-1]['totalScore']){
+          crewRankingMap['${crewDocs[i]['crewID']}'] = i+1;
+        } else if(crewDocs[i]['totalScore'] == crewDocs[i-1]['totalScore']){
+          crewRankingMap['${crewDocs[i]['crewID']}'] = crewRankingMap['${crewDocs[i-1]['crewID']}']!;
         }
       }
     }
 
-    if (foundCrew) {
-      return {'totalCrews': totalCrews, 'rank': crewRank};
-    } else {
-      return {'totalCrews': totalCrews, 'rank': 0};
-    }
+    return crewRankingMap;
   }
+
 
 
 }

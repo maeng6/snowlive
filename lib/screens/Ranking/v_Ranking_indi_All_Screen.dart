@@ -13,6 +13,7 @@ import '../../controller/vm_allUserDocsController.dart';
 import '../../controller/vm_rankingTierModelController.dart';
 import '../../data/imgaUrls/Data_url_image.dart';
 import '../../model/m_rankingTierModel.dart';
+import '../../widget/w_fullScreenDialog.dart';
 import '../more/friend/v_friendDetailPage.dart';
 
 class RankingIndiAllScreen extends StatefulWidget {
@@ -100,6 +101,17 @@ class _RankingIndiAllScreenState extends State<RankingIndiAllScreen> {
                       color: Color(0xFF3D83ED)),
                 ),
               ),
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.only(top: 14, right: 16),
+            child: GestureDetector(
+              onTap: () async{
+                CustomFullScreenDialog.showDialog();
+                await _rankingTierModelController.getRankingDocs();
+                CustomFullScreenDialog.cancelDialog();
+              },
+              child: Icon(Icons.refresh),
             ),
           ),
         ],

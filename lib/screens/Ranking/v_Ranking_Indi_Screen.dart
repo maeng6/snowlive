@@ -34,12 +34,7 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
   //TODO: Dependency Injection**************************************************
   UserModelController _userModelController = Get.find<UserModelController>();
   SeasonController _seasonController = Get.find<SeasonController>();
-  LiveCrewModelController _liveCrewModelController = Get.find<LiveCrewModelController>();
-  LiveMapController _liveMapController = Get.find<LiveMapController>();
-  ResortModelController _resortModelController = Get.find<ResortModelController>();
-  AllUserDocsController _allUserDocsController = Get.find<AllUserDocsController>();
   MyRankingController _myRankingController = Get.find<MyRankingController>();
-  RefreshController _refreshController = Get.find<RefreshController>();
   AllCrewDocsController _allCrewDocsController = Get.find<AllCrewDocsController>();
   RankingTierModelController _rankingTierModelController = Get.find<RankingTierModelController>();
   //TODO: Dependency Injection**************************************************

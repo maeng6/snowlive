@@ -156,6 +156,18 @@ class _RankingHomeState extends State<RankingHome> {
                       ),
                     ),
                   ),
+                  Padding(
+                    padding: EdgeInsets.only(top: 14, right: 16),
+                    child: GestureDetector(
+                      onTap: () async{
+                        CustomFullScreenDialog.showDialog();
+                        await _rankingTierModelController.getRankingDocs_crew();
+                        await _rankingTierModelController.getRankingDocs();
+                        CustomFullScreenDialog.cancelDialog();
+                      },
+                      child: Icon(Icons.refresh),
+                    ),
+                  ),
                 ],
               ),
             ],
@@ -234,10 +246,7 @@ class _RankingHomeState extends State<RankingHome> {
                                         fontSize: 20),
                                   ),
                                   onPressed: () async{
-                                    CustomFullScreenDialog.showDialog();
                                     await _seasonController.getCurrentSeason();
-                                    await _rankingTierModelController.getRankingDocs();
-                                    CustomFullScreenDialog.cancelDialog();
                                     print('개인랭킹페이지로 전환');
                                     setState(() {
                                       isTap[0] = false;
