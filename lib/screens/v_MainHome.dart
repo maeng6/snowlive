@@ -46,9 +46,9 @@ class _MainHomeState extends State<MainHome> {
   Widget build(BuildContext context) {
 
     //TODO: Dependency Injection************************************************
-    Get.put(RankingTierModelController(), permanent: true);
+
     Get.put(NoticeController(), permanent: true);
-    Get.put(LiveMapController(), permanent: true);
+
     Get.put(BottomTabBarController(),permanent: true);
     NoticeController _noticeController = Get.find<NoticeController>()..getIsNewNotice();
     UserModelController _userModelController = Get.find<UserModelController>();

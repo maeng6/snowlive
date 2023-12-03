@@ -1,5 +1,6 @@
 import 'package:com.snowlive/controller/vm_seasonController.dart';
 import 'package:com.snowlive/screens/Ranking/v_Ranking_Tutorial_Screen.dart';
+import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -12,6 +13,7 @@ import 'package:com.snowlive/controller/vm_liveCrewModelController.dart';
 import 'package:com.snowlive/screens/Ranking/v_MyRanking_Detail_Screen.dart';
 import 'package:com.snowlive/screens/Ranking/v_Ranking_Crew_Screen.dart';
 import 'package:com.snowlive/screens/Ranking/v_Ranking_Indi_Screen.dart';
+import '../../controller/vm_rankingTierModelController.dart';
 import '../../controller/vm_userModelController.dart';
 import '../../data/imgaUrls/Data_url_image.dart';
 
@@ -41,6 +43,7 @@ class _RankingHomeState extends State<RankingHome> {
     //TODO: Dependency Injection**************************************************
     SeasonController _seasonController = Get.find<SeasonController>();
     UserModelController _userModelController = Get.find<UserModelController>();
+    RankingTierModelController _rankingTierModelController = Get.find<RankingTierModelController>();
     //TODO: Dependency Injection**************************************************
 
     Size _size = MediaQuery.of(context).size;
@@ -231,7 +234,10 @@ class _RankingHomeState extends State<RankingHome> {
                                         fontSize: 20),
                                   ),
                                   onPressed: () async{
+                                    CustomFullScreenDialog.showDialog();
                                     await _seasonController.getCurrentSeason();
+                                    await _rankingTierModelController.getRankingDocs();
+                                    CustomFullScreenDialog.cancelDialog();
                                     print('개인랭킹페이지로 전환');
                                     setState(() {
                                       isTap[0] = false;
