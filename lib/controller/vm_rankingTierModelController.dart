@@ -196,8 +196,8 @@ Future<void> updateTier()async{
 
     QuerySnapshot rankingSnapshot_crew = await  FirebaseFirestore.instance
         .collection('liveCrew')
-        .where('kusbf', isEqualTo: false)
         .where('baseResort', isEqualTo: _userModelController.favoriteResort)
+        .where('totalScore', isGreaterThan: 0)
         .orderBy('totalScore', descending: true)
         .get();
     rankingList = rankingSnapshot_crew.docs;
@@ -207,6 +207,7 @@ Future<void> updateTier()async{
           .collection('liveCrew')
           .where('kusbf', isEqualTo: true)
           .where('baseResort', isEqualTo: _userModelController.favoriteResort)
+          .where('totalScore', isGreaterThan: 0)
           .orderBy('totalScore', descending: true)
           .get();
       rankingList_kusbf = rankingSnapshot_crew_kusbf.docs;
