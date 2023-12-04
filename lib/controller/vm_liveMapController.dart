@@ -38,6 +38,10 @@ class LiveMapController extends GetxController {
   Map<String, bool> _isTapped = {};
   RxBool isLoading = false.obs;
 
+  bool isCheckAndUpdatePassCountRunning = false;
+  bool isCheckAndUpdatePassCountRunningDaily = false;
+
+
   void initializeIsTapped() {
     _isTapped = {};
   }
@@ -286,207 +290,232 @@ class LiveMapController extends GetxController {
 
 
   Future<void> checkAndUpdatePassCount(Position position) async {
-    await _seasonController.getCurrentSeason();
 
-    for (LocationModel location in slopeLocationMap['${_userModelController.favoriteResort}']!) {
-      for (LatLng coordinate in location.coordinates) {
+    if (isCheckAndUpdatePassCountRunning) {
+      print('점수 업데이트 실행중');
+      return;
+    }
 
-        // location.resort 값에 따라 반경을 다르게 설정하기 위한 변수 선언
-        double radius;
+    print('점수 업데이트 실행중 아님');
 
-        switch (location.resort) {
-          case 0:
-            radius = 30;
-            break;
-          case 2:
-            radius = 20;
-            break;
-          case 11:
-            radius = 10;
-            break;
-          case 12:
-            radius = 20;
-            break;
-          default:
-            radius = 5; // 기본 반경 설정
-            break;
-        }
+    try{
+      isCheckAndUpdatePassCountRunning = true;
 
-        double distanceInMeters = Geolocator.distanceBetween(
-          position.latitude,
-          position.longitude,
-          coordinate.latitude,
-          coordinate.longitude,
-        );
+      await _seasonController.getCurrentSeason();
 
-        bool withinBoundary = distanceInMeters <= radius;
+      for (LocationModel location in slopeLocationMap['${_userModelController.favoriteResort}']!) {
+        for (LatLng coordinate in location.coordinates) {
 
-        if (withinBoundary) {
-          DateTime now = DateTime.now();
+          // location.resort 값에 따라 반경을 다르게 설정하기 위한 변수 선언
+          double radius;
 
-          if (_userModelController.uid != null) {
-            DocumentReference docRef = FirebaseFirestore.instance
-                .collection('Ranking')
-                .doc('${_seasonController.currentSeason}')
-                .collection('${_userModelController.favoriteResort}')
-                .doc("${_userModelController.uid}");
+          switch (location.resort) {
+            case 0:
+              radius = 30;
+              break;
+            case 2:
+              radius = 20;
+              break;
+            case 11:
+              radius = 10;
+              break;
+            case 12:
+              radius = 20;
+              break;
+            default:
+              radius = 5; // 기본 반경 설정
+              break;
+          }
 
-            try {
-              DocumentSnapshot userSnapshot = await docRef.get();
+          double distanceInMeters = Geolocator.distanceBetween(
+            position.latitude,
+            position.longitude,
+            coordinate.latitude,
+            coordinate.longitude,
+          );
 
-              if (!userSnapshot.exists) {
-                // Document doesn't exist. Let's create it!
-                await docRef.set({
-                  'uid': _userModelController.uid,
-                  'passCountData': {},
-                  'totalPassCount': 0,
-                  'lastPassTime': DateTime.now(),
-                  'passCountTimeData': {
-                    '1': 0,
-                    '2': 0,
-                    '3': 0,
-                    '4': 0,
-                    '5': 0,
-                    '6': 0,
-                    '7': 0,
-                    '8': 0,
-                    '9': 0,
-                    '10': 0,
-                    '11': 0,
-                    '12': 0,
-                  },
-                  'slopeScores': {},
-                  'totalScore': 0,
-                  'tier': ''
-                });
+          bool withinBoundary = distanceInMeters <= radius;
 
-                // Re-fetch the document after creating it
-                userSnapshot = await docRef.get();
-              }
+          if (withinBoundary) {
+            DateTime now = DateTime.now();
 
-              // Now, we are sure the document exists. Let's proceed with the rest of the logic.
-              Map<String, dynamic> data = userSnapshot.data() as Map<String, dynamic>;
-              Map<String, dynamic> passCountData = data['passCountData'] ?? {};
-              Map<String, dynamic> passCountTimeData = data['passCountTimeData'] ?? {};
-              Map<String, dynamic> slopeScores = data['slopeScores'] ?? {};
-              int totalPassCount = data['totalPassCount'] ?? 0;
-              DateTime lastPassTime = data['lastPassTime']?.toDate();
-              DateTime now = DateTime.now();
+            if (_userModelController.uid != null) {
+              DocumentReference docRef = FirebaseFirestore.instance
+                  .collection('Ranking')
+                  .doc('${_seasonController.currentSeason}')
+                  .collection('${_userModelController.favoriteResort}')
+                  .doc("${_userModelController.uid}");
 
-              int timeSlot = getTimeSlot(now);
+              try {
+                DocumentSnapshot userSnapshot = await docRef.get();
 
-              if (location.type == 'slope') {
+                if (!userSnapshot.exists) {
+                  // Document doesn't exist. Let's create it!
+                  await docRef.set({
+                    'uid': _userModelController.uid,
+                    'passCountData': {},
+                    'totalPassCount': 0,
+                    'lastPassTime': DateTime.now(),
+                    'passCountTimeData': {
+                      '1': 0,
+                      '2': 0,
+                      '3': 0,
+                      '4': 0,
+                      '5': 0,
+                      '6': 0,
+                      '7': 0,
+                      '8': 0,
+                      '9': 0,
+                      '10': 0,
+                      '11': 0,
+                      '12': 0,
+                    },
+                    'slopeScores': {},
+                    'totalScore': 0,
+                    'tier': ''
+                  });
 
-                try{
-                  data['slopeStatus'] ??= {};
-                  data['slopeStatus'][location.name] = true;
-
-                  passCountTimeData["$timeSlot"] ??= 0;
-
-                  await docRef.set(data, SetOptions(merge: true));
-                }catch (error, stackTrace) {
-                  print('오류 발생: $error');
-                  print('스택 트레이스: $stackTrace');
-                  // 오류 처리 로직 추가
+                  // Re-fetch the document after creating it
+                  userSnapshot = await docRef.get();
                 }
 
-              }
-              else if(location.type == 'slopeReset'){
+                // Now, we are sure the document exists. Let's proceed with the rest of the logic.
+                Map<String, dynamic> data = userSnapshot.data() as Map<String, dynamic>;
+                Map<String, dynamic> passCountData = data['passCountData'] ?? {};
+                Map<String, dynamic> passCountTimeData = data['passCountTimeData'] ?? {};
+                Map<String, dynamic> slopeScores = data['slopeScores'] ?? {};
+                int totalPassCount = data['totalPassCount'] ?? 0;
+                DateTime lastPassTime = data['lastPassTime']?.toDate();
+                DateTime now = DateTime.now();
 
-                try{
-                  Map<String, dynamic> slopeStatus = data['slopeStatus'] ?? {};
+                int timeSlot = getTimeSlot(now);
 
-                  for (String slopeName in slopeStatus.keys) {
-                    slopeStatus[slopeName] = false;
+                if (location.type == 'slope') {
+
+                  try{
+                    data['slopeStatus'] ??= {};
+                    data['slopeStatus'][location.name] = true;
+
+                    passCountTimeData["$timeSlot"] ??= 0;
+
+                    await docRef.set(data, SetOptions(merge: true));
+                  }catch (error, stackTrace) {
+                    print('오류 발생: $error');
+                    print('스택 트레이스: $stackTrace');
+                    // 오류 처리 로직 추가
                   }
 
-                  passCountTimeData["$timeSlot"] ??= 0;
-
-                  await docRef.set(data, SetOptions(merge: true));
-
-                }catch (error, stackTrace) {
-                  print('오류 발생: $error');
-                  print('스택 트레이스: $stackTrace');
-                  // 오류 처리 로직 추가
                 }
+                else if(location.type == 'slopeReset'){
 
-              }
-              else if (location.type == 'respawn' && now.difference(lastPassTime).inMinutes >= 1) {
-                try {
-                  Map<String, dynamic> slopeStatus = data['slopeStatus'] ?? {};
+                  try{
+                    Map<String, dynamic> slopeStatus = data['slopeStatus'] ?? {};
 
-                  List<String> passedSlopes = slopeStatus.entries
-                      .where((entry) => entry.value == true)
-                      .map((entry) => entry.key)
-                      .toList();
-
-                  DocumentReference? crewDocRef;
-                  DocumentSnapshot? crewDocSnapshot;
-
-                  if (_userModelController.liveCrew != null && _userModelController.liveCrew!.isNotEmpty) {
-                    crewDocRef = FirebaseFirestore.instance
-                        .collection('liveCrew')
-                        .doc(_userModelController.liveCrew);
-
-                    crewDocSnapshot = await crewDocRef.get();
-                  }
-
-
-                  for (String slopeName in passedSlopes) {
-                    int storedPassCount = passCountData[slopeName] ?? 0;
-                    int timeSlotPassCount = passCountTimeData["$timeSlot"] ?? 0;
-                    Map<String, int> selectedSlopeScores = slopeScoresMap['${_userModelController.favoriteResort}']!;
-
-
-                    int slopeScore = selectedSlopeScores[slopeName] ?? 0;
-
-                    storedPassCount += 1;
-                    totalPassCount += 1;
-                    timeSlotPassCount += 1;
-                    int updatedScore = storedPassCount * slopeScore;
-
-                    passCountData[slopeName] = storedPassCount;
-                    passCountTimeData["$timeSlot"] = timeSlotPassCount;
-
-                    slopeScores[slopeName] = updatedScore;
-
-                    if(crewDocSnapshot != null && _userModelController.favoriteResort == crewDocSnapshot['baseResort']){
-                      await updateCrewData(slopeName, slopeScore, timeSlot, DateTime.now());
+                    for (String slopeName in slopeStatus.keys) {
+                      slopeStatus[slopeName] = false;
                     }
+
+                    passCountTimeData["$timeSlot"] ??= 0;
+
+                    await docRef.set(data, SetOptions(merge: true));
+
+                  }catch (error, stackTrace) {
+                    print('오류 발생: $error');
+                    print('스택 트레이스: $stackTrace');
+                    // 오류 처리 로직 추가
                   }
 
-                  for (String slopeName in slopeStatus.keys) {
-                    slopeStatus[slopeName] = false;
-                  }
-
-                  int totalScore = slopeScores.values.fold<int>(0, (sum, score) => sum + (score as int? ?? 0));
-                  data['totalScore'] = totalScore;
-                  data['totalPassCount'] = totalPassCount;
-
-                  DateTime lastPassTime = data['lastPassTime']?.toDate();
-                  DateTime now = DateTime.now();
-
-                  if (now.difference(lastPassTime).inMinutes >= 1) {
-                    data['lastPassTime'] = Timestamp.fromDate(now);
-                  }
-
-                  await docRef.set(data, SetOptions(merge: true));
-
-
-                  await _rankingTierModelController.updateTier();
-                } catch (error, stackTrace) {
-                  print('오류 발생: $error');
-                  print('스택 트레이스: $stackTrace');
-                  // 오류 처리 로직 추가
                 }
+                else if (location.type == 'respawn' && now.difference(lastPassTime).inMinutes >= 1) {
+                  try {
+                    Map<String, dynamic> slopeStatus = data['slopeStatus'] ?? {};
+
+                    List<String> passedSlopes = slopeStatus.entries
+                        .where((entry) => entry.value == true)
+                        .map((entry) => entry.key)
+                        .toList();
+
+                    DocumentReference? crewDocRef;
+                    DocumentSnapshot? crewDocSnapshot;
+
+                    if (_userModelController.liveCrew != null && _userModelController.liveCrew!.isNotEmpty) {
+                      crewDocRef = FirebaseFirestore.instance
+                          .collection('liveCrew')
+                          .doc(_userModelController.liveCrew);
+
+                      crewDocSnapshot = await crewDocRef.get();
+                    }
+
+
+                    for (String slopeName in passedSlopes) {
+                      int storedPassCount = passCountData[slopeName] ?? 0;
+                      int timeSlotPassCount = passCountTimeData["$timeSlot"] ?? 0;
+                      Map<String, int> selectedSlopeScores = slopeScoresMap['${_userModelController.favoriteResort}']!;
+
+
+                      int slopeScore = selectedSlopeScores[slopeName] ?? 0;
+
+                      storedPassCount += 1;
+                      totalPassCount += 1;
+                      timeSlotPassCount += 1;
+                      int updatedScore = storedPassCount * slopeScore;
+
+                      passCountData[slopeName] = storedPassCount;
+                      passCountTimeData["$timeSlot"] = timeSlotPassCount;
+
+                      slopeScores[slopeName] = updatedScore;
+
+                      if(crewDocSnapshot != null && _userModelController.favoriteResort == crewDocSnapshot['baseResort']){
+                        await updateCrewData(slopeName, slopeScore, timeSlot, DateTime.now());
+                        print('크루 점수 업데이트 완료');
+
+                      }
+                    }
+
+                    for (String slopeName in slopeStatus.keys) {
+                      slopeStatus[slopeName] = false;
+                    }
+
+                    int totalScore = slopeScores.values.fold<int>(0, (sum, score) => sum + (score as int? ?? 0));
+                    data['totalScore'] = totalScore;
+                    data['totalPassCount'] = totalPassCount;
+
+                    DateTime lastPassTime = data['lastPassTime']?.toDate();
+                    DateTime now = DateTime.now();
+
+                    if (now.difference(lastPassTime).inMinutes >= 1) {
+                      data['lastPassTime'] = Timestamp.fromDate(now);
+                    }
+
+                    await docRef.set(data, SetOptions(merge: true));
+
+
+                    await _rankingTierModelController.updateTier();
+
+                    print('점수 업데이트 완료');
+
+                  } catch (error, stackTrace) {
+                    print('오류 발생: $error');
+                    print('스택 트레이스: $stackTrace');
+                    // 오류 처리 로직 추가
+                  }
+                }
+              } catch (error, stackTrace) {
+                print('Firestore 업데이트 에러: $error');
+                print('StackTrace: $stackTrace');
               }
-            } catch (error, stackTrace) {
-              print('Firestore 업데이트 에러: $error');
-              print('StackTrace: $stackTrace');
             }
           }
-        }
-      }}
+        }}
+
+      isCheckAndUpdatePassCountRunning = false;
+
+    }catch(error, stackTrace){
+      print('오류 발생: $error');
+      print('스택 트레이스: $stackTrace');
+      // 중복 실행 방지를 위해 업데이트가 실패하더라도 플래그 변수는 초기화합니다.
+      isCheckAndUpdatePassCountRunning = false;
+    }
   }
 
   Future<void> checkAndUpdatePassCountOff() async {
@@ -620,197 +649,222 @@ class LiveMapController extends GetxController {
   }
 
   Future<void> checkAndUpdatePassCountDaily(Position position) async {
-    await _seasonController.getCurrentSeason();
 
-    for (LocationModel location in slopeLocationMap['${_userModelController.favoriteResort}']!) {
-      for (LatLng coordinate in location.coordinates) {
+    if (isCheckAndUpdatePassCountRunningDaily) {
+      print('데일리점수 업데이트 실행중');
+      return;
+    }
 
-        // location.resort 값에 따라 반경을 다르게 설정하기 위한 변수 선언
-        double radius;
+    print('데일리점수 업데이트 실행중 아님');
 
-        switch (location.resort) {
-          case 0:
-            radius = 30;
-            break;
-          case 2:
-            radius = 20;
-            break;
-          case 11:
-            radius = 10;
-            break;
-          case 12:
-            radius = 20;
-            break;
-          default:
-            radius = 5; // 기본 반경 설정
-            break;
-        }
 
-        double distanceInMeters = Geolocator.distanceBetween(
-          position.latitude,
-          position.longitude,
-          coordinate.latitude,
-          coordinate.longitude,
-        );
+    try{
 
-        bool withinBoundary = distanceInMeters <= radius;
+      isCheckAndUpdatePassCountRunningDaily = true;
 
-        if (withinBoundary) {
-          DateTime now = DateTime.now();
 
-          String todayDocName = DateFormat('yyyyMMdd').format(DateTime.now());
+      await _seasonController.getCurrentSeason();
 
-          if (_userModelController.uid != null) {
-            DocumentReference docRef = FirebaseFirestore.instance
-                .collection('Ranking')
-                .doc('${_seasonController.currentSeason}')
-                .collection('${_userModelController.favoriteResort}')
-                .doc("${_userModelController.uid}")
-                .collection('calendar')
-                .doc(todayDocName);
+      for (LocationModel location in slopeLocationMap['${_userModelController.favoriteResort}']!) {
+        for (LatLng coordinate in location.coordinates) {
 
-            try {
-              DocumentSnapshot userSnapshot = await docRef.get();
+          // location.resort 값에 따라 반경을 다르게 설정하기 위한 변수 선언
+          double radius;
 
-              if (!userSnapshot.exists) {
-                // Document doesn't exist. Let's create it!
-                await docRef.set({
-                  'uid': _userModelController.uid,
-                  'passCountData': {},
-                  'totalPassCount': 0,
-                  'lastPassTime': DateTime.now(),
-                  'passCountTimeData': {
-                    '1': 0,
-                    '2': 0,
-                    '3': 0,
-                    '4': 0,
-                    '5': 0,
-                    '6': 0,
-                    '7': 0,
-                    '8': 0,
-                    '9': 0,
-                    '10': 0,
-                    '11': 0,
-                    '12': 0,
-                  },
-                  'slopeScores': {},
-                  'totalScore': 0,
-                  'tier': ''
-                });
+          switch (location.resort) {
+            case 0:
+              radius = 30;
+              break;
+            case 2:
+              radius = 20;
+              break;
+            case 11:
+              radius = 10;
+              break;
+            case 12:
+              radius = 20;
+              break;
+            default:
+              radius = 5; // 기본 반경 설정
+              break;
+          }
 
-                // Re-fetch the document after creating it
-                userSnapshot = await docRef.get();
-              }
+          double distanceInMeters = Geolocator.distanceBetween(
+            position.latitude,
+            position.longitude,
+            coordinate.latitude,
+            coordinate.longitude,
+          );
 
-              // Now, we are sure the document exists. Let's proceed with the rest of the logic.
-              Map<String, dynamic> data = userSnapshot.data() as Map<String, dynamic>;
-              Map<String, dynamic> passCountData = data['passCountData'] ?? {};
-              Map<String, dynamic> passCountTimeData = data['passCountTimeData'] ?? {};
-              Map<String, dynamic> slopeScores = data['slopeScores'] ?? {};
-              int totalPassCount = data['totalPassCount'] ?? 0;
-              DateTime lastPassTime = data['lastPassTime']?.toDate();
-              DateTime now = DateTime.now();
+          bool withinBoundary = distanceInMeters <= radius;
 
-              int timeSlot = getTimeSlot(now);
+          if (withinBoundary) {
+            DateTime now = DateTime.now();
 
-              if (location.type == 'slope') {
+            String todayDocName = DateFormat('yyyyMMdd').format(DateTime.now());
 
-                try{
-                  data['slopeStatus'] ??= {};
-                  data['slopeStatus'][location.name] = true;
+            if (_userModelController.uid != null) {
+              DocumentReference docRef = FirebaseFirestore.instance
+                  .collection('Ranking')
+                  .doc('${_seasonController.currentSeason}')
+                  .collection('${_userModelController.favoriteResort}')
+                  .doc("${_userModelController.uid}")
+                  .collection('calendar')
+                  .doc(todayDocName);
 
-                  passCountTimeData["$timeSlot"] ??= 0;
+              try {
+                DocumentSnapshot userSnapshot = await docRef.get();
 
-                  await docRef.set(data, SetOptions(merge: true));
-                }catch (error, stackTrace) {
-                  print('오류 발생: $error');
-                  print('스택 트레이스: $stackTrace');
-                  // 오류 처리 로직 추가
+                if (!userSnapshot.exists) {
+                  // Document doesn't exist. Let's create it!
+                  await docRef.set({
+                    'uid': _userModelController.uid,
+                    'passCountData': {},
+                    'totalPassCount': 0,
+                    'lastPassTime': DateTime.now(),
+                    'passCountTimeData': {
+                      '1': 0,
+                      '2': 0,
+                      '3': 0,
+                      '4': 0,
+                      '5': 0,
+                      '6': 0,
+                      '7': 0,
+                      '8': 0,
+                      '9': 0,
+                      '10': 0,
+                      '11': 0,
+                      '12': 0,
+                    },
+                    'slopeScores': {},
+                    'totalScore': 0,
+                    'tier': ''
+                  });
+
+                  // Re-fetch the document after creating it
+                  userSnapshot = await docRef.get();
                 }
 
-              }
-              else if(location.type == 'slopeReset'){
+                // Now, we are sure the document exists. Let's proceed with the rest of the logic.
+                Map<String, dynamic> data = userSnapshot.data() as Map<String, dynamic>;
+                Map<String, dynamic> passCountData = data['passCountData'] ?? {};
+                Map<String, dynamic> passCountTimeData = data['passCountTimeData'] ?? {};
+                Map<String, dynamic> slopeScores = data['slopeScores'] ?? {};
+                int totalPassCount = data['totalPassCount'] ?? 0;
+                DateTime lastPassTime = data['lastPassTime']?.toDate();
+                DateTime now = DateTime.now();
 
-                try{
-                  Map<String, dynamic> slopeStatus = data['slopeStatus'] ?? {};
+                int timeSlot = getTimeSlot(now);
 
-                  for (String slopeName in slopeStatus.keys) {
-                    slopeStatus[slopeName] = false;
+                if (location.type == 'slope') {
+
+                  try{
+                    data['slopeStatus'] ??= {};
+                    data['slopeStatus'][location.name] = true;
+
+                    passCountTimeData["$timeSlot"] ??= 0;
+
+                    await docRef.set(data, SetOptions(merge: true));
+                  }catch (error, stackTrace) {
+                    print('오류 발생: $error');
+                    print('스택 트레이스: $stackTrace');
+                    // 오류 처리 로직 추가
                   }
 
-                  passCountTimeData["$timeSlot"] ??= 0;
-
-                  await docRef.set(data, SetOptions(merge: true));
-
-                }catch (error, stackTrace) {
-                  print('오류 발생: $error');
-                  print('스택 트레이스: $stackTrace');
-                  // 오류 처리 로직 추가
                 }
+                else if(location.type == 'slopeReset'){
 
-              }
-              else if (location.type == 'respawn' && now.difference(lastPassTime).inMinutes >= 1) {
-                try {
-                  Map<String, dynamic> slopeStatus = data['slopeStatus'] ?? {};
+                  try{
+                    Map<String, dynamic> slopeStatus = data['slopeStatus'] ?? {};
 
-                  List<String> passedSlopes = slopeStatus.entries
-                      .where((entry) => entry.value == true)
-                      .map((entry) => entry.key)
-                      .toList();
+                    for (String slopeName in slopeStatus.keys) {
+                      slopeStatus[slopeName] = false;
+                    }
 
+                    passCountTimeData["$timeSlot"] ??= 0;
 
-                  for (String slopeName in passedSlopes) {
-                    int storedPassCount = passCountData[slopeName] ?? 0;
-                    int timeSlotPassCount = passCountTimeData["$timeSlot"] ?? 0;
-                    Map<String, int> selectedSlopeScores = slopeScoresMap['${_userModelController.favoriteResort}']!;
+                    await docRef.set(data, SetOptions(merge: true));
 
-
-                    int slopeScore = selectedSlopeScores[slopeName] ?? 0;
-
-                    storedPassCount += 1;
-                    totalPassCount += 1;
-                    timeSlotPassCount += 1;
-                    int updatedScore = storedPassCount * slopeScore;
-
-                    passCountData[slopeName] = storedPassCount;
-                    passCountTimeData["$timeSlot"] = timeSlotPassCount;
-
-                    slopeScores[slopeName] = updatedScore;
-
+                  }catch (error, stackTrace) {
+                    print('오류 발생: $error');
+                    print('스택 트레이스: $stackTrace');
+                    // 오류 처리 로직 추가
                   }
 
-                  for (String slopeName in slopeStatus.keys) {
-                    slopeStatus[slopeName] = false;
-                  }
-
-                  int totalScore = slopeScores.values.fold<int>(0, (sum, score) => sum + (score as int? ?? 0));
-                  data['totalScore'] = totalScore;
-                  data['totalPassCount'] = totalPassCount;
-
-                  DateTime lastPassTime = data['lastPassTime']?.toDate();
-                  DateTime now = DateTime.now();
-
-                  if (now.difference(lastPassTime).inMinutes >= 1) {
-                    data['lastPassTime'] = Timestamp.fromDate(now);
-                  }
-
-                  await docRef.set(data, SetOptions(merge: true));
-
-
-                  await _rankingTierModelController.updateTier();
-                } catch (error, stackTrace) {
-                  print('오류 발생: $error');
-                  print('스택 트레이스: $stackTrace');
-                  // 오류 처리 로직 추가
                 }
+                else if (location.type == 'respawn' && now.difference(lastPassTime).inMinutes >= 1) {
+                  try {
+                    Map<String, dynamic> slopeStatus = data['slopeStatus'] ?? {};
+
+                    List<String> passedSlopes = slopeStatus.entries
+                        .where((entry) => entry.value == true)
+                        .map((entry) => entry.key)
+                        .toList();
+
+
+                    for (String slopeName in passedSlopes) {
+                      int storedPassCount = passCountData[slopeName] ?? 0;
+                      int timeSlotPassCount = passCountTimeData["$timeSlot"] ?? 0;
+                      Map<String, int> selectedSlopeScores = slopeScoresMap['${_userModelController.favoriteResort}']!;
+
+
+                      int slopeScore = selectedSlopeScores[slopeName] ?? 0;
+
+                      storedPassCount += 1;
+                      totalPassCount += 1;
+                      timeSlotPassCount += 1;
+                      int updatedScore = storedPassCount * slopeScore;
+
+                      passCountData[slopeName] = storedPassCount;
+                      passCountTimeData["$timeSlot"] = timeSlotPassCount;
+
+                      slopeScores[slopeName] = updatedScore;
+
+                    }
+
+                    for (String slopeName in slopeStatus.keys) {
+                      slopeStatus[slopeName] = false;
+                    }
+
+                    int totalScore = slopeScores.values.fold<int>(0, (sum, score) => sum + (score as int? ?? 0));
+                    data['totalScore'] = totalScore;
+                    data['totalPassCount'] = totalPassCount;
+
+                    DateTime lastPassTime = data['lastPassTime']?.toDate();
+                    DateTime now = DateTime.now();
+
+                    if (now.difference(lastPassTime).inMinutes >= 1) {
+                      data['lastPassTime'] = Timestamp.fromDate(now);
+                    }
+
+                    await docRef.set(data, SetOptions(merge: true));
+
+
+                    await _rankingTierModelController.updateTier();
+
+                    print('데일리점수 업데이트 완료');
+
+                  } catch (error, stackTrace) {
+                    print('오류 발생: $error');
+                    print('스택 트레이스: $stackTrace');
+                    // 오류 처리 로직 추가
+                  }
+                }
+              } catch (error, stackTrace) {
+                print('Firestore 업데이트 에러: $error');
+                print('StackTrace: $stackTrace');
               }
-            } catch (error, stackTrace) {
-              print('Firestore 업데이트 에러: $error');
-              print('StackTrace: $stackTrace');
             }
           }
-        }
-      }}
+        }}
+
+      isCheckAndUpdatePassCountRunningDaily = false;
+
+    }catch (error, stackTrace) {
+      print('Firestore 업데이트 에러: $error');
+      print('StackTrace: $stackTrace');
+      isCheckAndUpdatePassCountRunningDaily = false;
+    }
   }
 
   Future<void> checkAndUpdatePassCountOffDaily() async {

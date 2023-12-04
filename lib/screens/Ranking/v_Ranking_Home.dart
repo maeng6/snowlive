@@ -156,18 +156,6 @@ class _RankingHomeState extends State<RankingHome> {
                       ),
                     ),
                   ),
-                  Padding(
-                    padding: EdgeInsets.only(top: 14, right: 16),
-                    child: GestureDetector(
-                      onTap: () async{
-                        CustomFullScreenDialog.showDialog();
-                        await _rankingTierModelController.getRankingDocs_crew();
-                        await _rankingTierModelController.getRankingDocs();
-                        CustomFullScreenDialog.cancelDialog();
-                      },
-                      child: Icon(Icons.refresh),
-                    ),
-                  ),
                 ],
               ),
             ],
@@ -273,9 +261,9 @@ class _RankingHomeState extends State<RankingHome> {
                   ),
                   (_userModelController.favoriteResort == 12)
                       ? Padding(
-                        padding: const EdgeInsets.only(right: 10, bottom: 5),
-                        child: Column(
-                    children: [
+                    padding: const EdgeInsets.only(right: 10, bottom: 5),
+                    child: Column(
+                      children: [
                         Container(
                           height: 44,
                           child: Row(
@@ -314,9 +302,9 @@ class _RankingHomeState extends State<RankingHome> {
                             ],
                           ),
                         ),
-                    ],
-                  ),
-                      )
+                      ],
+                    ),
+                  )
                       :SizedBox.shrink()
                 ],
               ),

@@ -75,6 +75,11 @@ class _RankingIndiAllScreenState extends State<RankingIndiAllScreen> {
     }
   }
 
+  Future<void> _refreshData() async {
+    await _rankingTierModelController.getRankingDocs();
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     Size _size = MediaQuery.of(context).size;
@@ -110,6 +115,7 @@ class _RankingIndiAllScreenState extends State<RankingIndiAllScreen> {
                 CustomFullScreenDialog.showDialog();
                 await _rankingTierModelController.getRankingDocs();
                 CustomFullScreenDialog.cancelDialog();
+                setState(() {});
               },
               child: Icon(Icons.refresh),
             ),
@@ -138,169 +144,172 @@ class _RankingIndiAllScreenState extends State<RankingIndiAllScreen> {
               fontSize: 20),
         ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.only(left: 16, right: 16),
-        child: SingleChildScrollView(
-          child: Column(
-            children: documents!.map((document) {
-              final itemKey = document['uid'] == _userModelController.uid
-                  ? myItemKey
-                  : GlobalKey();
+      body: RefreshIndicator(
+        onRefresh: _refreshData,
+        child: Padding(
+          padding: const EdgeInsets.only(left: 16, right: 16),
+          child: SingleChildScrollView(
+            child: Column(
+              children: documents!.map((document) {
+                final itemKey = document['uid'] == _userModelController.uid
+                    ? myItemKey
+                    : GlobalKey();
 
-              return StreamBuilder(
-                stream: FirebaseFirestore.instance
-                    .collection('user')
-                    .where('uid', isEqualTo: document['uid'])
-                    .snapshots(),
-                builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>>snapshot) {
+                return StreamBuilder(
+                  stream: FirebaseFirestore.instance
+                      .collection('user')
+                      .where('uid', isEqualTo: document['uid'])
+                      .snapshots(),
+                  builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>>snapshot) {
 
-                  if (!snapshot.hasData || snapshot.data == null) {
-                    return SizedBox.shrink();
-                  }
+                    if (!snapshot.hasData || snapshot.data == null) {
+                      return SizedBox.shrink();
+                    }
 
-                  final userDoc = snapshot.data!.docs;
-                  final userData = userDoc.isNotEmpty ? userDoc[0] : null;
-
-
-                  if (userData == null) {
-                    return SizedBox.shrink();
-                  }
-
-                  String? crewName = _allCrewDocsController.findCrewName(userData!['liveCrew'], _allCrewDocsController.allCrewDocs);
+                    final userDoc = snapshot.data!.docs;
+                    final userData = userDoc.isNotEmpty ? userDoc[0] : null;
 
 
-                  return Padding(
-                    key: itemKey, // Apply the key here
-                    padding: const EdgeInsets.only(bottom: 12),
-                    child: InkWell(
-                      highlightColor: Colors.transparent,
-                      splashColor: Colors.transparent,
-                      onTap: (){
-                        Get.to(() =>
-                            FriendDetailPage(uid: userDoc[0]['uid'],
-                              favoriteResort: userDoc[0]['favoriteResort'],));
-                      },
-                      child: Row(
-                        children: [
-                          Text(
-                            '${userRankingMap!['${userDoc[0]['uid']}']}',
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 15,
-                                color: Color(0xFF111111)),
-                          ),
-                          SizedBox(width: 14),
-                          Container(
-                            width: 48,
-                            height: 48,
-                            decoration: BoxDecoration(
-                                color: Color(0xFFDFECFF),
-                                borderRadius: BorderRadius
-                                    .circular(50)
+                    if (userData == null) {
+                      return SizedBox.shrink();
+                    }
+
+                    String? crewName = _allCrewDocsController.findCrewName(userData!['liveCrew'], _allCrewDocsController.allCrewDocs);
+
+
+                    return Padding(
+                      key: itemKey, // Apply the key here
+                      padding: const EdgeInsets.only(bottom: 12),
+                      child: InkWell(
+                        highlightColor: Colors.transparent,
+                        splashColor: Colors.transparent,
+                        onTap: (){
+                          Get.to(() =>
+                              FriendDetailPage(uid: userDoc[0]['uid'],
+                                favoriteResort: userDoc[0]['favoriteResort'],));
+                        },
+                        child: Row(
+                          children: [
+                            Text(
+                              '${userRankingMap!['${userDoc[0]['uid']}']}',
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 15,
+                                  color: Color(0xFF111111)),
                             ),
-                            child: userData['profileImageUrl'].isNotEmpty
-                                ? ExtendedImage.network(
-                              userData['profileImageUrl'],
-                              enableMemoryCache: true,
-                              cacheHeight: 100,
-                              shape: BoxShape.circle,
-                              borderRadius: BorderRadius.circular(8),
+                            SizedBox(width: 14),
+                            Container(
                               width: 48,
                               height: 48,
-                              fit: BoxFit.cover,
-                              loadStateChanged: (
-                                  ExtendedImageState state) {
-                                switch (state.extendedImageLoadState) {
-                                  case LoadState.loading:
-                                    return SizedBox.shrink();
-                                  case LoadState.completed:
-                                    return state.completedWidget;
-                                  case LoadState.failed:
-                                    return ExtendedImage.network(
-                                      '${profileImgUrlList[0].default_round}',
-                                      shape: BoxShape.circle,
-                                      borderRadius: BorderRadius.circular(
-                                          8),
-                                      width: 48,
-                                      height: 48,
-                                      fit: BoxFit.cover,
-                                    ); // 예시로 에러 아이콘을 반환하고 있습니다.
-                                  default:
-                                    return null;
-                                }
-                              },
-                            )
-                                : ExtendedImage.network(
-                              '${profileImgUrlList[0].default_round}',
-                              enableMemoryCache: true,
-                              shape: BoxShape.circle,
-                              borderRadius: BorderRadius.circular(8),
-                              width: 48,
-                              height: 48,
-                              fit: BoxFit.cover,
+                              decoration: BoxDecoration(
+                                  color: Color(0xFFDFECFF),
+                                  borderRadius: BorderRadius
+                                      .circular(50)
+                              ),
+                              child: userData['profileImageUrl'].isNotEmpty
+                                  ? ExtendedImage.network(
+                                userData['profileImageUrl'],
+                                enableMemoryCache: true,
+                                cacheHeight: 100,
+                                shape: BoxShape.circle,
+                                borderRadius: BorderRadius.circular(8),
+                                width: 48,
+                                height: 48,
+                                fit: BoxFit.cover,
+                                loadStateChanged: (
+                                    ExtendedImageState state) {
+                                  switch (state.extendedImageLoadState) {
+                                    case LoadState.loading:
+                                      return SizedBox.shrink();
+                                    case LoadState.completed:
+                                      return state.completedWidget;
+                                    case LoadState.failed:
+                                      return ExtendedImage.network(
+                                        '${profileImgUrlList[0].default_round}',
+                                        shape: BoxShape.circle,
+                                        borderRadius: BorderRadius.circular(
+                                            8),
+                                        width: 48,
+                                        height: 48,
+                                        fit: BoxFit.cover,
+                                      ); // 예시로 에러 아이콘을 반환하고 있습니다.
+                                    default:
+                                      return null;
+                                  }
+                                },
+                              )
+                                  : ExtendedImage.network(
+                                '${profileImgUrlList[0].default_round}',
+                                enableMemoryCache: true,
+                                shape: BoxShape.circle,
+                                borderRadius: BorderRadius.circular(8),
+                                width: 48,
+                                height: 48,
+                                fit: BoxFit.cover,
+                              ),
                             ),
-                          ),
-                          SizedBox(width: 10),
-                          Padding(
-                            padding: const EdgeInsets.only(bottom: 3),
-                            child: Container(
-                              width: _size.width - 240,
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    userData['displayName'],
-                                    style: TextStyle(
-                                        fontSize: 15,
-                                        color: Color(0xFF111111)),
-                                  ),
-                                  if(userData['liveCrew'].isNotEmpty)
-                                    Text(crewName,
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
+                            SizedBox(width: 10),
+                            Padding(
+                              padding: const EdgeInsets.only(bottom: 3),
+                              child: Container(
+                                width: _size.width - 240,
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      userData['displayName'],
                                       style: TextStyle(
-                                          fontSize: 12,
-                                          color: Color(0xFF949494)
-                                      ),)
-                                ],
+                                          fontSize: 15,
+                                          color: Color(0xFF111111)),
+                                    ),
+                                    if(userData['liveCrew'].isNotEmpty)
+                                      Text(crewName,
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: TextStyle(
+                                            fontSize: 12,
+                                            color: Color(0xFF949494)
+                                        ),)
+                                  ],
+                                ),
                               ),
                             ),
-                          ),
-                          Expanded(child: SizedBox()),
-                          Row(
-                            children: [
-                              Text(
-                                '${document['totalScore'].toString()}점',
-                                style: TextStyle(
-                                  color: Color(0xFF111111),
-                                  fontWeight: FontWeight.normal,
-                                  fontSize: 18,
-                                ),
-                              ),
-                              Transform.translate(
-                                offset: Offset(6, 2),
-                                child: ExtendedImage.network(
-                                  _rankingTierModelController.getBadgeAsset(
-                                      percent: userRankingMap_all!['${userDoc[0]['uid']}']/(documents_all!.length),
-                                      totalScore: document['totalScore'],
-                                      rankingTierList: rankingTierList
+                            Expanded(child: SizedBox()),
+                            Row(
+                              children: [
+                                Text(
+                                  '${document['totalScore'].toString()}점',
+                                  style: TextStyle(
+                                    color: Color(0xFF111111),
+                                    fontWeight: FontWeight.normal,
+                                    fontSize: 18,
                                   ),
-                                  enableMemoryCache: true,
-                                  fit: BoxFit.cover,
-                                  width: 40,
                                 ),
-                              ),
-                            ],
-                          ),
-                        ],
+                                Transform.translate(
+                                  offset: Offset(6, 2),
+                                  child: ExtendedImage.network(
+                                    _rankingTierModelController.getBadgeAsset(
+                                        percent: userRankingMap_all!['${userDoc[0]['uid']}']/(documents_all!.length),
+                                        totalScore: document['totalScore'],
+                                        rankingTierList: rankingTierList
+                                    ),
+                                    enableMemoryCache: true,
+                                    fit: BoxFit.cover,
+                                    width: 40,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
 
-                  );
+                    );
 
-                },
-              );
-            }).toList(),
+                  },
+                );
+              }).toList(),
+            ),
           ),
         ),
       ),

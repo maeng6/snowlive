@@ -9,6 +9,13 @@ class AllUserDocsController extends GetxController {
   RxList<Map<String, dynamic>> _allUserDocs = <Map<String, dynamic>>[].obs;
   List<Map<String, dynamic>> get allUserDocs => _allUserDocs;
 
+  @override
+  void onInit()  async{
+
+    await getAllUserDocs();
+
+  }
+
   Future<void> getAllUserDocs() async{
     QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection('user').get();
     this._allUserDocs.value = querySnapshot.docs
