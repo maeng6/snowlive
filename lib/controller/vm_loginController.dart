@@ -7,6 +7,7 @@ import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:platform_device_id/platform_device_id.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:com.snowlive/controller/vm_loadingPage.dart';
@@ -79,10 +80,13 @@ class LoginController extends GetxController {
         .collection('user')
         .doc('$uid');
     final userDocSnapshot = await userDoc.get();
+    final localDeviceID = await FlutterSecureStorage().read(key: 'deviceID');
+    String? deviceId = await PlatformDeviceId.getDeviceId;
     if (userDocSnapshot.exists ) {
-      if(userDocSnapshot['deviceID'] == _notificationController.deviceID) {
+      if(localDeviceID == deviceId) {
         CustomFullScreenDialog.cancelDialog();
         await FlutterSecureStorage().write(key: 'uid', value: auth.currentUser!.uid);
+        await FlutterSecureStorage().write(key: 'deviceID', value: '${_notificationController.deviceID}');
         Get.offAll(() => MainHome(uid: uid));
       }else {
         Get.dialog(
@@ -138,8 +142,9 @@ class LoginController extends GetxController {
                     TextButton(
                       onPressed: () async {
                         try {
-                          await _userModelController.updateDeviceID(deviceID: _notificationController.deviceID);
+                          await _userModelController.updateDeviceID(deviceID: localDeviceID);
                           await _userModelController.updateDeviceToken(deviceToken: _notificationController.deviceToken);
+                          await FlutterSecureStorage().write(key: 'deviceID', value: '${_notificationController.deviceID}');
                           await FlutterSecureStorage().write(key: 'uid', value: auth.currentUser!.uid);
                           CustomFullScreenDialog.cancelDialog();
                           Get.offAll(() => MainHome(uid: uid));
@@ -178,13 +183,77 @@ class LoginController extends GetxController {
         .collection('user')
         .doc('$uid');
     final userDocSnapshot = await userDoc.get();
+    String? deviceId = await PlatformDeviceId.getDeviceId;
     if (userDocSnapshot.exists ) {
       print(userDocSnapshot['deviceID']);
-      print(_notificationController.deviceID);
 
-      if(userDocSnapshot['deviceID'] == _notificationController.deviceID) {
 
-      }else {
+      try{
+        final localDeviceID = await FlutterSecureStorage().read(key: 'deviceID');
+        print('로컬 DeviceID : $localDeviceID');
+        print('real Device ID : ${deviceId}');
+        if(localDeviceID == deviceId){
+        }else{
+          print('로컬 DeviceID : $localDeviceID');
+          print('real Device ID : ${deviceId}');
+          Get.dialog(WillPopScope(
+            onWillPop: () async => false,
+            child: AlertDialog(
+              contentPadding: EdgeInsets.only(bottom: 0, left: 20, right: 20, top: 30),
+              elevation: 0,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+              buttonPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+              content: Container(
+                height: 100,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Image.asset(
+                      'assets/imgs/icons/icon_popup_notice.png',
+                      width: 48,
+                      fit: BoxFit.cover,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 28),
+                      child: Text(
+                        '기존 계정으로 다시 로그인해주세요.',
+                        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, height: 1.4),
+                        textAlign: TextAlign.center,
+
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              actions: [
+                Center(
+                  child: TextButton(
+                      onPressed: () async {
+                        try{
+                          await signOutFromAll;
+                          await FlutterSecureStorage().delete(key: 'uid');
+                          await getLocalSignInMethod();
+                          Get.offAll(() => LoginPage());
+                        }catch(e){
+                          Get.back();
+                        }
+                      },
+                      child: Text(
+                        '확인',
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Color(0xFF3D83ED),
+                          fontWeight: FontWeight.bold,
+                        ),
+                      )),
+                )
+              ],
+            ),
+          ),
+              barrierDismissible: false);
+        }
+      }catch(e){
+        print('로컬 스토리지 불러오기 에러');
         Get.dialog(WillPopScope(
           onWillPop: () async => false,
           child: AlertDialog(
@@ -239,13 +308,8 @@ class LoginController extends GetxController {
             ],
           ),
         ),
-            barrierDismissible: false
-        );
+            barrierDismissible: false);
       }
-    } else {
-      print('Document does not exist on the database');
-      CustomFullScreenDialog.cancelDialog();
-      Get.offAll(() => FirstPage());
     }
   }
 

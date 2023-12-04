@@ -19,6 +19,7 @@ import 'package:com.snowlive/screens/more/v_setProfileImage_moreTab.dart';
 import 'package:com.snowlive/screens/more/v_setting_moreTab.dart';
 import 'package:com.snowlive/screens/v_webPage.dart';
 import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
+import '../../controller/vm_allUserDocsController.dart';
 import '../../controller/vm_liveCrewModelController.dart';
 import '../../controller/vm_noticeController.dart';
 import '../../controller/vm_rankingTierModelController.dart';
@@ -49,6 +50,7 @@ class _MoreTabState extends State<MoreTab> {
   UrlLauncherController _urlLauncherController = Get.find<UrlLauncherController>();
   SeasonController _seasonController = Get.find<SeasonController>();
   RankingTierModelController _rankingTierModelController = Get.find<RankingTierModelController>();
+  AllUserDocsController _allUserDocsController = Get.find<AllUserDocsController>();
   //TODO: Dependency Injection**************************************************
 
   @override
