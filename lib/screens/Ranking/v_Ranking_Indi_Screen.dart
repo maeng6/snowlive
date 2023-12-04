@@ -34,12 +34,7 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
   //TODO: Dependency Injection**************************************************
   UserModelController _userModelController = Get.find<UserModelController>();
   SeasonController _seasonController = Get.find<SeasonController>();
-  LiveCrewModelController _liveCrewModelController = Get.find<LiveCrewModelController>();
-  LiveMapController _liveMapController = Get.find<LiveMapController>();
-  ResortModelController _resortModelController = Get.find<ResortModelController>();
-  AllUserDocsController _allUserDocsController = Get.find<AllUserDocsController>();
   MyRankingController _myRankingController = Get.find<MyRankingController>();
-  RefreshController _refreshController = Get.find<RefreshController>();
   AllCrewDocsController _allCrewDocsController = Get.find<AllCrewDocsController>();
   RankingTierModelController _rankingTierModelController = Get.find<RankingTierModelController>();
   //TODO: Dependency Injection**************************************************
@@ -90,125 +85,14 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
   @override
   Widget build(BuildContext context) {
     Size _size = MediaQuery.of(context).size;
-    _userModelController.getCurrentUser_crew(_userModelController.uid);
-    _myRankingController.getMyRankingData(_userModelController.uid);
 
-    return  StreamBuilder<QuerySnapshot>(
-        stream: FirebaseFirestore.instance
-            .collection('liveCrew')
-            .where('kusbf', isEqualTo: true)
-            .snapshots(),
-        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+    final documents = widget.isKusbf == true ? _rankingTierModelController.rankingDocs_kusbf : _rankingTierModelController.rankingDocs;
+    final documents_all = _rankingTierModelController.rankingDocs;
 
-          if (snapshot.hasError) {
-            return SizedBox.shrink();
-          }
+    final userRankingMap =  widget.isKusbf == true ? _rankingTierModelController.userRankingMap_kusbf : _rankingTierModelController.userRankingMap;
+    final userRankingMap_all = _rankingTierModelController.userRankingMap;
 
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return SizedBox.shrink();
-          }
-
-          if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-            return SizedBox.shrink();
-          }
-
-          // 'liveCrew' 컬렉션의 모든 문서에서 'memberUidList' 필드를 가져와서 합칩니다.
-          List<dynamic> allMemberUidList = [];
-          for (var doc in snapshot.data!.docs) {
-            List<dynamic> memberUidList = doc['memberUidList'];
-            allMemberUidList.addAll(memberUidList);
-          }
-          print(allMemberUidList.length);
-
-          return StreamBuilder<QuerySnapshot>(
-            stream: _rankingStream,
-            builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-              if (snapshot.hasError) {
-                return Container(
-                  color: Colors.white,
-                  child: SafeArea(
-                    top: false,
-                    bottom: true,
-                    child: Scaffold(
-                        backgroundColor: Colors.white,
-                        body: Text("오류가 발생했습니다")),
-                  ),
-                );
-              }
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return Container(
-                  color: Colors.white,
-                  child: SafeArea(
-                    top: false,
-                    bottom: true,
-                    child: Scaffold(
-                        backgroundColor: Colors.white,
-                        body: Text("")),
-                  ),
-                );
-              }
-              if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                return Container(
-                  color: Colors.white,
-                  child: SafeArea(
-                    top: false,
-                    bottom: true,
-                    child: Scaffold(
-                      backgroundColor: Colors.white,
-                      body: Container(
-                        height: _size.height - 200,
-                        child: Center(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              ExtendedImage.asset(
-                                'assets/imgs/icons/icon_rankin_indi_nodata.png',
-                                enableMemoryCache: true,
-                                shape: BoxShape.rectangle,
-                                borderRadius: BorderRadius.circular(7),
-                                width: 80,
-                                fit: BoxFit.cover,
-                              ),
-                              Text("데이터가 없습니다"),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                );
-              }
-              final document = snapshot.data!.docs;
-              // 동점자인 경우 lastPassTime을 기준으로 최신 순으로 정렬
-              final filteredDocuments = document.where((doc) {
-                final uid = doc['uid'];
-                return allMemberUidList.contains(uid);
-              }).toList();
-              print(filteredDocuments.length);
-
-              final documents = widget.isKusbf == true ? filteredDocuments : document;
-              final documents_all = document;
-
-              documents.sort((a, b) {
-                final aTotalScore = a['totalScore'] as int;
-                final bTotalScore = b['totalScore'] as int;
-                final aLastPassTime = a['lastPassTime'] as Timestamp?;
-                final bLastPassTime = b['lastPassTime'] as Timestamp?;
-
-                if (aTotalScore == bTotalScore) {
-                  if (aLastPassTime != null && bLastPassTime != null) {
-                    return bLastPassTime.compareTo(aLastPassTime);
-                  }
-                }
-
-                return bTotalScore.compareTo(aTotalScore);
-              });
-
-              userRankingMap =  _liveMapController.calculateRankIndiAll2(userRankingDocs: documents);
-              userRankingMap_all =  _liveMapController.calculateRankIndiAll2(userRankingDocs: documents_all);
-
-              return Container(
+    return Container(
                 color: Colors.white,
                 child: SafeArea(
                   top: false,
@@ -236,11 +120,11 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                     SizedBox(height: 12),
                                     Row(
                                       children: [
-                                        if(documents.length > 0)
+                                        if(documents!.length > 0)
                                           StreamBuilder(
                                             stream: FirebaseFirestore.instance
                                                 .collection('user')
-                                                .where('uid', isEqualTo: documents[0].get('uid'))
+                                                .where('uid', isEqualTo: documents[0]['uid'])
                                                 .snapshots(),
                                             builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
                                               if (!snapshot.hasData || snapshot.data == null) {
@@ -349,7 +233,7 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                           StreamBuilder(
                                             stream: FirebaseFirestore.instance
                                                 .collection('user')
-                                                .where('uid', isEqualTo: documents[1].get('uid'))
+                                                .where('uid', isEqualTo: documents[1]['uid'])
                                                 .snapshots(),
                                             builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
                                               if (!snapshot.hasData || snapshot.data == null) {
@@ -453,7 +337,7 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                           StreamBuilder(
                                             stream: FirebaseFirestore.instance
                                                 .collection('user')
-                                                .where('uid', isEqualTo: documents[2].get('uid'))
+                                                .where('uid', isEqualTo: documents[2]['uid'])
                                                 .snapshots(),
                                             builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
                                               if (!snapshot.hasData || snapshot.data == null) {
@@ -575,6 +459,9 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                           ),
                                         GestureDetector(
                                           onTap: () async{
+                                            CustomFullScreenDialog.showDialog();
+                                            await _rankingTierModelController.getRankingDocs();
+                                            CustomFullScreenDialog.cancelDialog();
                                             Get.to(()=> RankingIndiAllScreen(isKusbf: widget.isKusbf,));
                                           },
                                           child: Text('전체 보기',
@@ -598,7 +485,7 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                           return StreamBuilder(
                                             stream: FirebaseFirestore.instance
                                                 .collection('user')
-                                                .where('uid', isEqualTo: document.get('uid'))
+                                                .where('uid', isEqualTo: document['uid'])
                                                 .snapshots(),
                                             builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
                                               if (!snapshot.hasData || snapshot.data == null) {
@@ -742,7 +629,7 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                                       Row(
                                                         children: [
                                                           Text(
-                                                            '${document.get('totalScore').toString()}점',
+                                                            '${document['totalScore'].toString()}점',
                                                             style: TextStyle(
                                                               color: Color(0xFF111111),
                                                               fontWeight: FontWeight.normal,
@@ -753,8 +640,8 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                                             offset: Offset(6, 2),
                                                             child: ExtendedImage.network(
                                                               _rankingTierModelController.getBadgeAsset(
-                                                                  percent: userRankingMap_all!['${userDoc[0]['uid']}']/(documents_all.length),
-                                                                  totalScore: document.get('totalScore'),
+                                                                  percent: userRankingMap_all!['${userDoc[0]['uid']}']/(documents_all!.length),
+                                                                  totalScore: document['totalScore'],
                                                                   rankingTierList: rankingTierList
                                                               ),
                                                               enableMemoryCache: true,
@@ -912,7 +799,7 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                             offset: Offset(6, 2),
                                             child: ExtendedImage.network(
                                              _rankingTierModelController.getBadgeAsset(
-                                                 percent:  userRankingMap_all?['${_userModelController.uid}'] / documents_all.length,
+                                                 percent:  userRankingMap_all?['${_userModelController.uid}'] / documents_all!.length,
                                                  totalScore: _myRankingController.totalScore,
                                                  rankingTierList: rankingTierList
                                              ),
@@ -1040,9 +927,5 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                   ),
                 ),
               );
-            },
-          );
-        }
-    );
   }
 }

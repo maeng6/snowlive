@@ -26,8 +26,6 @@ class LiveMapController extends GetxController {
   UserModelController _userModelController = Get.find<UserModelController>();
   ResortModelController _resortModelController = Get.find<ResortModelController>();
   RankingTierModelController _rankingTierModelController = Get.find<RankingTierModelController>();
-  LiveCrewModelController _liveCrewModelController = Get.find<LiveCrewModelController>();
-  DialogController _dialogController = Get.put(DialogController(), permanent: true);
   //TODO: Dependency Injection********************************************
 
   RxList<Marker> _markers = RxList<Marker>();
