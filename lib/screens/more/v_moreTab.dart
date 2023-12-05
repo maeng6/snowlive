@@ -21,6 +21,7 @@ import 'package:com.snowlive/screens/v_webPage.dart';
 import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 import '../../controller/vm_allUserDocsController.dart';
 import '../../controller/vm_liveCrewModelController.dart';
+import '../../controller/vm_myRankingController.dart';
 import '../../controller/vm_noticeController.dart';
 import '../../controller/vm_rankingTierModelController.dart';
 import '../../controller/vm_seasonController.dart';
@@ -51,6 +52,7 @@ class _MoreTabState extends State<MoreTab> {
   SeasonController _seasonController = Get.find<SeasonController>();
   RankingTierModelController _rankingTierModelController = Get.find<RankingTierModelController>();
   AllUserDocsController _allUserDocsController = Get.find<AllUserDocsController>();
+  MyRankingController _myRankingController = Get.find<MyRankingController>();
   //TODO: Dependency Injection**************************************************
 
   @override
@@ -737,6 +739,7 @@ class _MoreTabState extends State<MoreTab> {
                             CustomFullScreenDialog.showDialog();
                             await _rankingTierModelController.getRankingDocs_crew();
                             await _rankingTierModelController.getRankingDocs();
+                            await _myRankingController.getMyRankingData(_userModelController.uid);
                             CustomFullScreenDialog.cancelDialog();
                             (_seasonController.open ==true || _seasonController.open_uidList!.contains(_userModelController.uid))
                                 ? Get.to(()=>RankingHome())
