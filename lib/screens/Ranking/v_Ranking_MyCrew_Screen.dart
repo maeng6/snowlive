@@ -26,8 +26,8 @@ class _RankingMyCrewScreenState extends State<RankingMyCrewScreen> {
   //TODO: Dependency Injection**************************************************
   UserModelController _userModelController = Get.find<UserModelController>();
   RankingTierModelController _rankingTierModelController = Get.find<RankingTierModelController>();
-  AllCrewDocsController _allCrewDocsController = Get.find<AllCrewDocsController>();
   AllUserDocsController _allUserDocsController = Get.find<AllUserDocsController>();
+  LiveCrewModelController _liveCrewModelController = Get.find<LiveCrewModelController>();
   //TODO: Dependency Injection**************************************************
 
   ScrollController _scrollController = ScrollController();
@@ -60,6 +60,9 @@ class _RankingMyCrewScreenState extends State<RankingMyCrewScreen> {
 
   Future<void> _refreshData() async {
     await _rankingTierModelController.getRankingDocs_crew();
+    await _rankingTierModelController.getRankingDocs();
+    await _rankingTierModelController.getRankingDocs_crewMember(crewID: _liveCrewModelController.crewID, crewBase: _liveCrewModelController.baseResort);
+
     setState(() {});
   }
 
