@@ -61,6 +61,8 @@ class _RankingMyCrewScreenState extends State<RankingMyCrewScreen> {
 
   Future<void> _refreshData() async {
     await _rankingTierModelController.getRankingDocs_crew();
+    await _rankingTierModelController.getRankingDocs();
+    await _rankingTierModelController.getRankingDocs_crewMember(crewID: _liveCrewModelController.crewID, crewBase: _liveCrewModelController.baseResort);
     setState(() {});
   }
 
