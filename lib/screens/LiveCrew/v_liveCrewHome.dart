@@ -974,7 +974,7 @@ class _LiveCrewHomeState extends State<LiveCrewHome> {
                               .collection('liveCrew')
                               .where('baseResort', isEqualTo: _userModelController.favoriteResort!)
                               .orderBy('resistDate', descending: true)
-                              .limit(5)
+                              .limit(10)
                               .snapshots(),
                           builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
                             if (!snapshot.hasData || snapshot.data == null) {
