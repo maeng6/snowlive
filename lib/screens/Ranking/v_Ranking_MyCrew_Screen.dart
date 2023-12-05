@@ -123,6 +123,7 @@ class _RankingMyCrewScreenState extends State<RankingMyCrewScreen> {
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: SingleChildScrollView(
+            physics: AlwaysScrollableScrollPhysics(),
             child: Column(
               children: document!.map((document) {
                 final itemKey = document['uid'] == _userModelController.uid

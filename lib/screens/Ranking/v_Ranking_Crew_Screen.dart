@@ -99,6 +99,7 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
             RefreshIndicator(
               onRefresh: _refreshData,
               child: SingleChildScrollView(
+                physics: AlwaysScrollableScrollPhysics(),
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 12),
                   child: Column(
