@@ -37,6 +37,7 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
   MyRankingController _myRankingController = Get.find<MyRankingController>();
   AllCrewDocsController _allCrewDocsController = Get.find<AllCrewDocsController>();
   RankingTierModelController _rankingTierModelController = Get.find<RankingTierModelController>();
+  AllUserDocsController _allUserDocsController = Get.find<AllUserDocsController>();
   //TODO: Dependency Injection**************************************************
 
   var _rankingStream;
@@ -489,183 +490,173 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                 itemCount: documents.length < 100 ? documents.length : 100,
                                 itemBuilder: (context, index) {
                                   final document = documents[index];
-                                  return StreamBuilder(
-                                    stream: FirebaseFirestore.instance
-                                        .collection('user')
-                                        .where('uid', isEqualTo: document['uid'])
-                                        .snapshots(),
-                                    builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
-                                      if (!snapshot.hasData || snapshot.data == null) {
-                                        return SizedBox.shrink();
-                                      }
-                                      final userDoc = snapshot.data!.docs;
-                                      final userData = userDoc.isNotEmpty ? userDoc[0] : null;
 
-                                      String? crewName = _allCrewDocsController.findCrewName(userData!['liveCrew'], _allCrewDocsController.allCrewDocs);
+                                  final userDoc = _allUserDocsController.allUserDocs;
+                                  final Map<String, dynamic> userData = userDoc.isNotEmpty
+                                      ? userDoc.firstWhere(
+                                          (doc) => doc['uid'] == document['uid'],
+                                      orElse: () => <String, dynamic>{} // 빈 맵을 반환
+                                  )
+                                      : <String, dynamic>{};
 
-                                      if (userData == null) {
-                                        return SizedBox.shrink();
-                                      }
+                                  String? crewName = _allCrewDocsController.findCrewName(userData['liveCrew'], _allCrewDocsController.allCrewDocs);
 
-                                      return Padding(
-                                        padding: const EdgeInsets.only(bottom: 12),
-                                        child: InkWell(
-                                          highlightColor: Colors.transparent,
-                                          splashColor: Colors.transparent,
-                                          onTap: (){
-                                            Get.to(() => FriendDetailPage(uid: userData['uid'], favoriteResort: userData['favoriteResort'],));
-                                          },
-                                          child: Row(
-                                            children: [
-                                              Text(
-                                                '${userRankingMap!['${userDoc[0]['uid']}']}',
-                                                style: TextStyle(
-                                                    fontWeight: FontWeight.bold,
-                                                    fontSize: 15,
-                                                    color: Color(0xFF111111)
-                                                ),
-                                              ),
-                                              SizedBox(width: 14),
-                                              Container(
-                                                width: 48,
-                                                height: 48,
-                                                decoration: BoxDecoration(
-                                                    color: Color(0xFFDFECFF),
-                                                    borderRadius: BorderRadius
-                                                        .circular(50)
-                                                ),
-                                                child: userData['profileImageUrl'].isNotEmpty
-                                                    ? ExtendedImage.network(
-                                                  userData['profileImageUrl'],
-                                                  enableMemoryCache: true,
-                                                  cacheHeight: 200,
-                                                  shape: BoxShape.circle,
-                                                  borderRadius: BorderRadius.circular(8),
-                                                  width: 48,
-                                                  height: 48,
-                                                  fit: BoxFit.cover,
-                                                  loadStateChanged: (ExtendedImageState state) {
-                                                    switch (state.extendedImageLoadState) {
-                                                      case LoadState.loading:
-                                                        return SizedBox.shrink();
-                                                      case LoadState.completed:
-                                                        return state.completedWidget;
-                                                      case LoadState.failed:
-                                                        return ExtendedImage.network(
-                                                          '${profileImgUrlList[0].default_round}',
-                                                          enableMemoryCache: true,
-                                                          shape: BoxShape.circle,
-                                                          borderRadius: BorderRadius.circular(8),
-                                                          width: 48,
-                                                          height: 48,
-                                                          fit: BoxFit.cover,
-                                                        ); // 예시로 에러 아이콘을 반환하고 있습니다.
-                                                      default:
-                                                        return null;
-                                                    }
-                                                  },
-                                                )
-                                                    : ExtendedImage.network(
-                                                  '${profileImgUrlList[0].default_round}',
-                                                  enableMemoryCache: true,
-                                                  shape: BoxShape.circle,
-                                                  borderRadius: BorderRadius.circular(8),
-                                                  width: 48,
-                                                  height: 48,
-                                                  fit: BoxFit.cover,
-                                                ),
-                                              ),
-                                              SizedBox(width: 10),
-                                              Padding(
-                                                padding: const EdgeInsets.only(bottom: 3),
-                                                child: Container(
-                                                  width: _size.width - 240,
-                                                  child: Column(
-                                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                                    children: [
-                                                      Text(userData['displayName'],
-                                                        style: TextStyle(
-                                                            fontSize: 15,
-                                                            color: Color(0xFF111111)
-                                                        ),
-                                                      ),
-                                                      if(userData['liveCrew'] != '')
-                                                        Text(crewName,
-                                                          maxLines: 1,
-                                                          overflow: TextOverflow.ellipsis,
-                                                          style: TextStyle(
-                                                              fontSize: 12,
-                                                              color: Color(0xFF949494)
-                                                          ),)
-                                                      // StreamBuilder<QuerySnapshot>(
-                                                      //   stream: FirebaseFirestore.instance
-                                                      //       .collection('liveCrew')
-                                                      //       .where('crewID', isEqualTo: userData['liveCrew'])
-                                                      //       .snapshots(),
-                                                      //   builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
-                                                      //     if (snapshot.hasError) {
-                                                      //       return Text("오류가 발생했습니다");
-                                                      //     }
-                                                      //
-                                                      //     if (snapshot.connectionState == ConnectionState.waiting) {
-                                                      //       return SizedBox.shrink();
-                                                      //     }
-                                                      //
-                                                      //     if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                                                      //       return SizedBox.shrink();
-                                                      //     }
-                                                      //
-                                                      //     var crewData = snapshot.data!.docs.first.data() as Map<String, dynamic>?;
-                                                      //
-                                                      //     // 크루명 가져오기
-                                                      //     String crewName = crewData?['crewName'] ?? '';
-                                                      //
-                                                      //     return Text(crewName,
-                                                      //       style: TextStyle(
-                                                      //           fontSize: 12,
-                                                      //           color: Color(0xFF949494)
-                                                      //       ),
-                                                      //     );
-                                                      //   },
-                                                      // ),
-                                                    ],
-                                                  ),
-                                                ),
-                                              ),
-                                              Expanded(child: SizedBox()),
-                                              Row(
-                                                children: [
-                                                  Text(
-                                                    '${document['totalScore'].toString()}점',
-                                                    style: TextStyle(
-                                                      color: Color(0xFF111111),
-                                                      fontWeight: FontWeight.normal,
-                                                      fontSize: 18,
-                                                    ),
-                                                  ),
-                                                  Transform.translate(
-                                                    offset: Offset(6, 2),
-                                                    child: ExtendedImage.network(
-                                                      _rankingTierModelController.getBadgeAsset(
-                                                          percent: userRankingMap_all!['${userDoc[0]['uid']}']/(documents_all!.length),
-                                                          totalScore: document['totalScore'],
-                                                          rankingTierList: rankingTierList
-                                                      ),
+                                  return Padding(
+                                    padding: const EdgeInsets.only(bottom: 12),
+                                    child: InkWell(
+                                      highlightColor: Colors.transparent,
+                                      splashColor: Colors.transparent,
+                                      onTap: (){
+                                        Get.to(() => FriendDetailPage(uid: userData['uid'], favoriteResort: userData['favoriteResort'],));
+                                      },
+                                      child: Row(
+                                        children: [
+                                          Text(
+                                            '${userRankingMap!['${userData['uid']}']}',
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 15,
+                                                color: Color(0xFF111111)
+                                            ),
+                                          ),
+                                          SizedBox(width: 14),
+                                          Container(
+                                            width: 48,
+                                            height: 48,
+                                            decoration: BoxDecoration(
+                                                color: Color(0xFFDFECFF),
+                                                borderRadius: BorderRadius
+                                                    .circular(50)
+                                            ),
+                                            child: userData['profileImageUrl'].isNotEmpty
+                                                ? ExtendedImage.network(
+                                              userData['profileImageUrl'],
+                                              enableMemoryCache: true,
+                                              cacheHeight: 200,
+                                              shape: BoxShape.circle,
+                                              borderRadius: BorderRadius.circular(8),
+                                              width: 48,
+                                              height: 48,
+                                              fit: BoxFit.cover,
+                                              loadStateChanged: (ExtendedImageState state) {
+                                                switch (state.extendedImageLoadState) {
+                                                  case LoadState.loading:
+                                                    return SizedBox.shrink();
+                                                  case LoadState.completed:
+                                                    return state.completedWidget;
+                                                  case LoadState.failed:
+                                                    return ExtendedImage.network(
+                                                      '${profileImgUrlList[0].default_round}',
                                                       enableMemoryCache: true,
+                                                      shape: BoxShape.circle,
+                                                      borderRadius: BorderRadius.circular(8),
+                                                      width: 48,
+                                                      height: 48,
                                                       fit: BoxFit.cover,
-                                                      width: 40,
+                                                    ); // 예시로 에러 아이콘을 반환하고 있습니다.
+                                                  default:
+                                                    return null;
+                                                }
+                                              },
+                                            )
+                                                : ExtendedImage.network(
+                                              '${profileImgUrlList[0].default_round}',
+                                              enableMemoryCache: true,
+                                              shape: BoxShape.circle,
+                                              borderRadius: BorderRadius.circular(8),
+                                              width: 48,
+                                              height: 48,
+                                              fit: BoxFit.cover,
+                                            ),
+                                          ),
+                                          SizedBox(width: 10),
+                                          Padding(
+                                            padding: const EdgeInsets.only(bottom: 3),
+                                            child: Container(
+                                              width: _size.width - 240,
+                                              child: Column(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(userData['displayName'],
+                                                    style: TextStyle(
+                                                        fontSize: 15,
+                                                        color: Color(0xFF111111)
                                                     ),
                                                   ),
+                                                  if(userData['liveCrew'] != '')
+                                                    Text(crewName,
+                                                      maxLines: 1,
+                                                      overflow: TextOverflow.ellipsis,
+                                                      style: TextStyle(
+                                                          fontSize: 12,
+                                                          color: Color(0xFF949494)
+                                                      ),)
+                                                  // StreamBuilder<QuerySnapshot>(
+                                                  //   stream: FirebaseFirestore.instance
+                                                  //       .collection('liveCrew')
+                                                  //       .where('crewID', isEqualTo: userData['liveCrew'])
+                                                  //       .snapshots(),
+                                                  //   builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                                                  //     if (snapshot.hasError) {
+                                                  //       return Text("오류가 발생했습니다");
+                                                  //     }
+                                                  //
+                                                  //     if (snapshot.connectionState == ConnectionState.waiting) {
+                                                  //       return SizedBox.shrink();
+                                                  //     }
+                                                  //
+                                                  //     if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                                                  //       return SizedBox.shrink();
+                                                  //     }
+                                                  //
+                                                  //     var crewData = snapshot.data!.docs.first.data() as Map<String, dynamic>?;
+                                                  //
+                                                  //     // 크루명 가져오기
+                                                  //     String crewName = crewData?['crewName'] ?? '';
+                                                  //
+                                                  //     return Text(crewName,
+                                                  //       style: TextStyle(
+                                                  //           fontSize: 12,
+                                                  //           color: Color(0xFF949494)
+                                                  //       ),
+                                                  //     );
+                                                  //   },
+                                                  // ),
                                                 ],
                                               ),
-
+                                            ),
+                                          ),
+                                          Expanded(child: SizedBox()),
+                                          Row(
+                                            children: [
+                                              Text(
+                                                '${document['totalScore'].toString()}점',
+                                                style: TextStyle(
+                                                  color: Color(0xFF111111),
+                                                  fontWeight: FontWeight.normal,
+                                                  fontSize: 18,
+                                                ),
+                                              ),
+                                              Transform.translate(
+                                                offset: Offset(6, 2),
+                                                child: ExtendedImage.network(
+                                                  _rankingTierModelController.getBadgeAsset(
+                                                      percent: userRankingMap_all!['${userData['uid']}']/(documents_all!.length),
+                                                      totalScore: document['totalScore'],
+                                                      rankingTierList: rankingTierList
+                                                  ),
+                                                  enableMemoryCache: true,
+                                                  fit: BoxFit.cover,
+                                                  width: 40,
+                                                ),
+                                              ),
                                             ],
                                           ),
-                                        ),
 
-                                      );
+                                        ],
+                                      ),
+                                    ),
 
-                                    },
                                   );
 
                                 },
