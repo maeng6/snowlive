@@ -127,6 +127,7 @@ class _RankingCrewAllScreenState extends State<RankingCrewAllScreen> {
         child: Padding(
           padding: const EdgeInsets.only(left: 16, right: 16),
           child: SingleChildScrollView(
+            physics: AlwaysScrollableScrollPhysics(),
             child: Column(
               children: crewDocs!.map((document) {
                 // Assign myItemKey for the logged-in user's ListTile
