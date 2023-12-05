@@ -1023,7 +1023,7 @@ class LiveMapController extends GetxController {
   }
 
   Future<void> updateCrewData(String locationName, int slopeScore, int timeSlot, DateTime lastPassTime) async {
-    String liveCrew = _userModelController.liveCrew ?? ''; // 유효하지 않은 경우 빈 문자열로 초기화
+    String liveCrew = _userModelController.liveCrew ?? '';
 
     if (liveCrew.isNotEmpty) {
       DocumentReference crewDocRef = FirebaseFirestore.instance
@@ -1036,6 +1036,7 @@ class LiveMapController extends GetxController {
         Map<String, dynamic> crewData;
 
         if (!crewDocSnapshot.exists) {
+          // 문서가 없으면 초기값 설정
           crewData = {
             'passCountData': {},
             'passCountTimeData': {
@@ -1078,42 +1079,15 @@ class LiveMapController extends GetxController {
           }
         }
 
-        Map<String, dynamic> crewPassCountData = crewData['passCountData'] ?? {};
-        Map<String, dynamic> crewPassCountTimeData = crewData['passCountTimeData'];
-        Map<String, dynamic> crewSlopeScores = crewData['slopeScores'] ?? {};
-        int crewTotalPassCount = crewData['totalPassCount'] ?? 0;
-
-        // Update the pass count
-        int crewStoredPassCount = crewPassCountData[locationName] ?? 0;
-        crewPassCountData[locationName] = crewStoredPassCount + 1;
-
-        // Update the pass count for the current time slot
-        int crewTimeSlotPassCount = crewPassCountTimeData["$timeSlot"] ?? 0;
-        crewPassCountTimeData["$timeSlot"] = crewTimeSlotPassCount + 1;
-
-        // Update the total pass count
-        crewTotalPassCount += 1;
-
-        // Update the score
-        int crewSlopeScore = crewSlopeScores[locationName] ?? 0;
-        crewSlopeScores[locationName] = crewSlopeScore + slopeScore;
-
-        // Update the total score
-        int crewTotalScore = crewSlopeScores.values.fold<int>(0, (sum, score) => sum + (score as int? ?? 0));
-        crewData['totalScore'] = crewTotalScore;
-
-        crewData['totalPassCount'] = crewTotalPassCount;
-
-        // Update lastPassTime with current time
-        DateTime lastPassTime = crewData['lastPassTime']?.toDate();
-        DateTime now = DateTime.now();
-
-        if (now.difference(lastPassTime).inMinutes >= 1) {
-          crewData['lastPassTime'] = Timestamp.fromDate(now);
-        }
-
-        // Update the document
-        await crewDocRef.set(crewData, SetOptions(merge: true));
+        // Update the pass count using FieldValue.increment
+        await crewDocRef.update({
+          'passCountData.$locationName': FieldValue.increment(1),
+          'passCountTimeData.$timeSlot': FieldValue.increment(1),
+          'totalPassCount': FieldValue.increment(1),
+          'slopeScores.$locationName': FieldValue.increment(slopeScore),
+          'totalScore': FieldValue.increment(slopeScore),
+          'lastPassTime': DateTime.now(),
+        });
       } catch (error, stackTrace) {
         print('오류 발생: $error');
         print('스택 트레이스: $stackTrace');
