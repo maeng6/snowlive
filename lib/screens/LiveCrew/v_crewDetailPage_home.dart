@@ -19,6 +19,7 @@ import 'package:com.snowlive/screens/comments/v_profileImageScreen.dart';
 import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 import '../../../controller/vm_userModelController.dart';
 import '../../controller/vm_alarmCenterController.dart';
+import '../../controller/vm_rankingTierModelController.dart';
 import '../../data/imgaUrls/Data_url_image.dart';
 import '../../model/m_alarmCenterModel.dart';
 import '../../model/m_crewLogoModel.dart';
@@ -42,6 +43,7 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
   LiveMapController _liveMapController = Get.find<LiveMapController>();
   AlarmCenterController _alarmCenterController = Get.find<AlarmCenterController>();
   UrlLauncherController _urlLauncherController = Get.find<UrlLauncherController>();
+  RankingTierModelController _rankingTierModelController = Get.find<RankingTierModelController>();
   //TODO: Dependency Injection**************************************************
 
   var assetCrew;
@@ -633,6 +635,9 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                                     ),
                                                     GestureDetector(
                                                       onTap: () async{
+                                                        CustomFullScreenDialog.showDialog();
+                                                        await _rankingTierModelController.getRankingDocs_crewMember(crewID: _liveCrewModelController.crewID, crewBase: _liveCrewModelController.baseResort);
+                                                        CustomFullScreenDialog.cancelDialog();
                                                         Get.to(()=> RankingMyCrewScreen());
                                                       },
                                                       child: Text('전체 보기',
@@ -653,10 +658,30 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                                         .snapshots(),
                                                     builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
                                                       if (!snapshot.hasData || snapshot.data == null) {
-                                                        return SizedBox.shrink();
+                                                        return Center(
+                                                          child: Padding(
+                                                            padding: const EdgeInsets.only(top: 30, bottom: 20),
+                                                            child: Text(
+                                                              '랭킹에 참여중인 크루원이 없습니다',
+                                                              style: TextStyle(
+                                                                  fontSize: 13,
+                                                                  color: Color(0xFF949494)
+                                                              ),),
+                                                          ),
+                                                        );
                                                       }
                                                       else if (snapshot.connectionState == ConnectionState.waiting) {
-                                                        return SizedBox.shrink();
+                                                        return Center(
+                                                          child: Padding(
+                                                            padding: const EdgeInsets.only(top: 30, bottom: 20),
+                                                            child: Text(
+                                                              '랭킹에 참여중인 크루원이 없습니다',
+                                                              style: TextStyle(
+                                                                  fontSize: 13,
+                                                                  color: Color(0xFF949494)
+                                                              ),),
+                                                          ),
+                                                        );
                                                       }
                                                       else if (snapshot.hasError) {
                                                         return Text('Error: ${snapshot.error}');

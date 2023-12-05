@@ -97,18 +97,6 @@ class _RankingCrewAllScreenState extends State<RankingCrewAllScreen> {
               ),
             ),
           ),
-          Padding(
-            padding: EdgeInsets.only(top: 14, right: 16),
-            child: GestureDetector(
-              onTap: () async{
-                CustomFullScreenDialog.showDialog();
-                await _rankingTierModelController.getRankingDocs_crew();
-                CustomFullScreenDialog.cancelDialog();
-                setState(() {});
-              },
-              child: Icon(Icons.refresh),
-            ),
-          ),
         ],
         backgroundColor: Colors.white,
         leading: GestureDetector(

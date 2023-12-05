@@ -1812,6 +1812,10 @@ List<LocationModel> yongpyong = [
       LatLng(37.644097, 128.682026),
       LatLng(37.644144, 128.682020),
       LatLng(37.644194, 128.682012),
+
+      LatLng(37.643890, 128.682035),
+      LatLng(37.643795, 128.682061),
+      LatLng(37.643702, 128.682075),
     ],
     type: 'slope',
     resort: 8,

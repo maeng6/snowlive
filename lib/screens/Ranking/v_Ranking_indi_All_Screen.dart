@@ -108,18 +108,6 @@ class _RankingIndiAllScreenState extends State<RankingIndiAllScreen> {
               ),
             ),
           ),
-          Padding(
-            padding: EdgeInsets.only(top: 14, right: 16),
-            child: GestureDetector(
-              onTap: () async{
-                CustomFullScreenDialog.showDialog();
-                await _rankingTierModelController.getRankingDocs();
-                CustomFullScreenDialog.cancelDialog();
-                setState(() {});
-              },
-              child: Icon(Icons.refresh),
-            ),
-          ),
         ],
         backgroundColor: Colors.white,
         leading: GestureDetector(

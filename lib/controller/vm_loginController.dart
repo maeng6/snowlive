@@ -79,11 +79,17 @@ class LoginController extends GetxController {
     final userDoc = await FirebaseFirestore.instance
         .collection('user')
         .doc('$uid');
-    final userDocSnapshot = await userDoc.get();
-    final localDeviceID = await FlutterSecureStorage().read(key: 'deviceID');
-    String? deviceId = await PlatformDeviceId.getDeviceId;
+    var userDocSnapshot = await userDoc.get();
+    var localDeviceID = await FlutterSecureStorage().read(key: 'deviceID');
+
+    if (localDeviceID == null) {
+      localDeviceID = '${_notificationController.deviceID}';
+      await FlutterSecureStorage().write(key: 'deviceID', value: '${_notificationController.deviceID}');
+    }
+
+
     if (userDocSnapshot.exists ) {
-      if(localDeviceID == deviceId) {
+      if(localDeviceID == userDocSnapshot['deviceID']) {
         CustomFullScreenDialog.cancelDialog();
         await FlutterSecureStorage().write(key: 'uid', value: auth.currentUser!.uid);
         await FlutterSecureStorage().write(key: 'deviceID', value: '${_notificationController.deviceID}');
@@ -182,17 +188,30 @@ class LoginController extends GetxController {
     final userDoc = await FirebaseFirestore.instance
         .collection('user')
         .doc('$uid');
-    final userDocSnapshot = await userDoc.get();
+    var userDocSnapshot = await userDoc.get();
+    var localDeviceID = await FlutterSecureStorage().read(key: 'deviceID');
     String? deviceId = await PlatformDeviceId.getDeviceId;
     if (userDocSnapshot.exists ) {
       print(userDocSnapshot['deviceID']);
 
+      if(userDocSnapshot['deviceID'] == '' || deviceId != localDeviceID){
+
+        localDeviceID = '${_notificationController.deviceID}';
+        await FlutterSecureStorage().write(key: 'deviceID', value: '${_notificationController.deviceID}');
+
+        await _userModelController.updateDeviceID(deviceID: deviceId);
+
+        final updatedUserDocSnapshot = await userDoc.get();
+        userDocSnapshot = updatedUserDocSnapshot;
+        print('업데이트된 파베 디바이스 아이디: ${updatedUserDocSnapshot['deviceID']}');
+      }
+
 
       try{
-        final localDeviceID = await FlutterSecureStorage().read(key: 'deviceID');
         print('로컬 DeviceID : $localDeviceID');
         print('real Device ID : ${deviceId}');
-        if(localDeviceID == deviceId){
+
+        if(localDeviceID == userDocSnapshot['deviceID']){
         }else{
           print('로컬 DeviceID : $localDeviceID');
           print('real Device ID : ${deviceId}');
@@ -355,7 +374,7 @@ class LoginController extends GetxController {
       CustomFullScreenDialog.cancelDialog();
     } else {
       OAuthCredential facebookAuthCredential =
-          FacebookAuthProvider.credential(loginResult.accessToken!.token);
+      FacebookAuthProvider.credential(loginResult.accessToken!.token);
       await auth.signInWithCredential(facebookAuthCredential);
       User? currentUser = auth.currentUser;
       if (currentUser != null) {
@@ -409,12 +428,12 @@ class LoginController extends GetxController {
 
   Future<void> deleteFleaItemAll({required myUid, required fleaCount}) async{
     print(myUid);
-     for (int i = fleaCount; i > -1; i--) {
+    for (int i = fleaCount; i > -1; i--) {
       DocumentReference fleaDocs = FirebaseFirestore
           .instance.collection('fleaMarket').doc('$myUid#$i');
       FirebaseFirestore.instance.runTransaction((transaction) async => await transaction.delete(fleaDocs));
       print(i);
-     }
+    }
   }
 
   Future<void> deleteBulletinCrewAll({required myUid, required bulletinCrewCount}) async{
