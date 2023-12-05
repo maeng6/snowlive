@@ -752,6 +752,18 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                                               return Row(
                                                                 mainAxisAlignment: MainAxisAlignment.center,
                                                                 children: [
+                                                              if (memberlength == 0)
+                                                                Center(
+                                                                  child: Padding(
+                                                                    padding: const EdgeInsets.only(top: 30, bottom: 20),
+                                                                    child: Text(
+                                                                      '랭킹에 참여중인 크루원이 없습니다',
+                                                                      style: TextStyle(
+                                                                          fontSize: 13,
+                                                                          color: Color(0xFF949494)),
+                                                                    ),
+                                                                  ),
+                                                                ),
                                                                   if(memberlength>0)
                                                                     Padding(
                                                                       padding: const EdgeInsets.symmetric(horizontal: 11),
@@ -1319,7 +1331,7 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                                           margin: EdgeInsets.only(top: 6),
                                                           child: Center(
                                                             child: Container(
-                                                              padding: EdgeInsets.symmetric(horizontal: barData.length < 4 ? 20 : 20),
+                                                              padding: EdgeInsets.symmetric(horizontal: barData.length < 4 ? 6 : 6),
                                                               width: _size.width,
                                                               height: 214,
                                                               child: Column(
