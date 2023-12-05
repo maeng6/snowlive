@@ -107,29 +107,13 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  (widget.isKusbf == false)
-                                      ? '${_userModelController.resortNickname} 상위 TOP 3 크루' :'KUSBF 상위 TOP 3 크루',
-                                  style: TextStyle(
-                                      color: Color(0xFF949494),
-                                      fontSize: 12
-                                  ),
-                                ),
-                                GestureDetector(
-                                  onTap: () async{
-                                    CustomFullScreenDialog.showDialog();
-                                    await _rankingTierModelController.getRankingDocs_crew();
-                                    CustomFullScreenDialog.cancelDialog();
-                                    setState(() {});
-                                  },
-                                  child: Icon(Icons.refresh,
-                                    size: 18,
-                                  ),
-                                ),
-                              ],
+                            Text(
+                              (widget.isKusbf == false)
+                                  ? '${_userModelController.resortNickname} 상위 TOP 3 크루' :'KUSBF 상위 TOP 3 크루',
+                              style: TextStyle(
+                                  color: Color(0xFF949494),
+                                  fontSize: 12
+                              ),
                             ),
                             SizedBox(height: 12),
                             Row(

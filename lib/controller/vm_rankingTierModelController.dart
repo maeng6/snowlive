@@ -18,6 +18,7 @@ class RankingTierModelController extends GetxController{
   RxMap? _userRankingMap_kusbf=<String, int>{}.obs;
 
   RxList? _rankingDocs_crew=[].obs;
+  RxList? _rankingDocs_crewMember=[].obs;
   RxList? _rankingDocs_crew_kusbf=[].obs;
   RxMap? _crewRankingMap =<String, int>{}.obs;
   RxMap? _crewRankingMap_kusbf =<String, int>{}.obs;
@@ -30,6 +31,7 @@ class RankingTierModelController extends GetxController{
   Map? get userRankingMap_kusbf => _userRankingMap_kusbf;
 
   List? get rankingDocs_crew => _rankingDocs_crew;
+  List? get rankingDocs_crewMember => _rankingDocs_crewMember;
   List? get rankingDocs_crew_kusbf => _rankingDocs_crew_kusbf;
   Map? get crewRankingMap => _crewRankingMap;
   Map? get crewRankingMap_kusbf => _crewRankingMap_kusbf;
@@ -258,6 +260,66 @@ Future<void> updateTier()async{
 
     print('대학연합 랭킹참여 크루 : ${_rankingDocs_kusbf!.length}');
     print('일반 랭킹참여 크루 : ${_rankingDocs!.length}');
+
+  }
+
+  Future<void> getRankingDocs_crewMember({required crewID, required crewBase}) async{
+
+    List<Map<String, dynamic>> rankingList = [];
+
+    QuerySnapshot rankingSnapshot_crewMember = await FirebaseFirestore.instance
+        .collection('liveCrew')
+        .where('crewID', isEqualTo: crewID)
+        .get();
+
+    List<dynamic> memberList = [];
+    for (var doc in rankingSnapshot_crewMember.docs) {
+      var data = doc.data() as Map<String, dynamic>;
+      if (data.containsKey('memberUidList')) {
+        List<dynamic> members = data['memberUidList'];
+        memberList.addAll(members);
+      }
+    }
+
+    QuerySnapshot rankingSnapshot = await  FirebaseFirestore.instance
+        .collection('Ranking')
+        .doc('${_seasonController.currentSeason}')
+        .collection('${crewBase}')
+        .where('totalScore', isGreaterThan: 0)
+        .orderBy('totalScore', descending: true)
+        .get();
+
+    final AllUserScoreDocs = rankingSnapshot.docs;
+
+    List<Map<String, dynamic>> allUserScoreData = AllUserScoreDocs.map((doc) {
+      return doc.data() as Map<String, dynamic>;
+    }).toList();
+
+
+    rankingList = allUserScoreData.where((doc) =>
+        memberList.contains(doc['uid'])).toList();
+    // 동점자인 경우 lastPassTime을 기준으로 최신 순으로 정렬
+    rankingList.sort((a, b) {
+      final aTotalScore = a['totalScore'] as int;
+      final bTotalScore = b['totalScore'] as int;
+      final aLastPassTime = a['lastPassTime'] as Timestamp?;
+      final bLastPassTime = b['lastPassTime'] as Timestamp?;
+
+      if (aTotalScore == bTotalScore) {
+        if (aLastPassTime != null && bLastPassTime != null) {
+          return bLastPassTime.compareTo(aLastPassTime);
+        }
+      }
+
+      return bTotalScore.compareTo(aTotalScore);
+    });
+
+    this._rankingDocs_crewMember!.value = rankingList.map((doc) {
+      // 각 문서의 데이터를 Map 형태로 변환
+      return doc as Map<String, dynamic>;
+    }).toList();
+
+    print('크루 랭킹인원 : ${_rankingDocs_crewMember!.length}');
 
   }
 
