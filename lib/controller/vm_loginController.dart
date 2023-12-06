@@ -650,6 +650,7 @@ class LoginController extends GetxController {
       'deviceID': deviceID,
       'kusbf': false,
       'bulletinFreeCount': 0,
+      'bulletinEventCount' : 0
     });
     await ref.collection('newAlarm')
         .doc(uid)
