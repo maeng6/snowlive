@@ -250,7 +250,7 @@ class _RankingMyCrewScreenState extends State<RankingMyCrewScreen> {
                             Padding(
                               padding: const EdgeInsets.only(bottom: 3),
                               child: Container(
-                                width: _size.width - 220,
+                                width: _size.width - 260,
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
