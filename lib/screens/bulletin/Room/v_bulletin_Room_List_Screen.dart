@@ -77,10 +77,6 @@ class _Bulletin_Room_List_ScreenState extends State<Bulletin_Room_List_Screen> {
       });
     });
 
-    _allUserDocsController.startListening().then((result){
-      setState(() {});
-    });
-
     try{
       FirebaseAnalytics.instance.logEvent(
         name: 'visit_bulletinRoom',
@@ -349,6 +345,11 @@ class _Bulletin_Room_List_ScreenState extends State<Bulletin_Room_List_Screen> {
     setState(() {
       _stream = newStream();
     });
+  }
+
+  Future<void> _refreshData() async {
+    await _allUserDocsController.getAllUserDocs();
+    setState(() {});
   }
 
   @override

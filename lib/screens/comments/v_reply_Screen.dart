@@ -77,9 +77,6 @@ class _ReplyScreenState extends State<ReplyScreen> {
     super.initState();
     _seasonController.getLiveTalkReplyLimit();
     _replyStream = replyNewStream();
-    _allUserDocsController.startListening().then((result){
-      setState(() {});
-    });
   }
 
   @override
@@ -101,6 +98,11 @@ class _ReplyScreenState extends State<ReplyScreen> {
         .orderBy('timeStamp', descending: false)
         .limit(_seasonController.liveTalkReplyLimit!)
         .snapshots();
+  }
+
+  Future<void> _refreshData() async {
+    await _allUserDocsController.getAllUserDocs();
+    setState(() {});
   }
 
   @override
@@ -205,7 +207,7 @@ class _ReplyScreenState extends State<ReplyScreen> {
                                             if (widget.replyImage != "" && widget.replyImage != 'anony' && widget.replyDisplayName != 'SNOWLIVE')
                                               GestureDetector(
                                                 onTap: () {
-                                                  if(widget.replyDisplayName == '탈퇴한회원'){
+                                                  if(widget.replyDisplayName == '회원정보 없음'){
                                                     Get.to(()=>NoUserScreen());
                                                   }else{
                                                     Get.to(() =>
@@ -253,7 +255,7 @@ class _ReplyScreenState extends State<ReplyScreen> {
                                             if (widget.replyImage == "" && widget.replyImage != 'anony' && widget.replyDisplayName != 'SNOWLIVE')
                                               GestureDetector(
                                                 onTap: () {
-                                                  if(widget.replyDisplayName == '탈퇴한회원'){
+                                                  if(widget.replyDisplayName == '회원정보 없음'){
                                                     Get.to(()=>NoUserScreen());
                                                   }else{
                                                     Get.to(() =>
@@ -286,7 +288,7 @@ class _ReplyScreenState extends State<ReplyScreen> {
                                             if (widget.replyImage != "" && widget.replyImage != "anony" && widget.replyDisplayName == 'SNOWLIVE')
                                               GestureDetector(
                                                 onTap: () {
-                                                  if(widget.replyDisplayName == '탈퇴한회원'){
+                                                  if(widget.replyDisplayName == '회원정보 없음'){
                                                     Get.to(()=>NoUserScreen());
                                                   }else{
                                                     Get.to(()=>SnowliveDetailPage());                                                }
@@ -319,7 +321,7 @@ class _ReplyScreenState extends State<ReplyScreen> {
                                                   style: TextStyle(
                                                       fontWeight: FontWeight.bold,
                                                       fontSize: 14,
-                                                      color: (widget.replyDisplayName == '탈퇴한회원')? Color(0xFFb7b7b7): Color(0xFF111111)),
+                                                      color: (widget.replyDisplayName == '회원정보 없음')? Color(0xFFb7b7b7): Color(0xFF111111)),
                                                 ),
                                                 if(widget.replyDisplayName == 'SNOWLIVE')
                                                   Padding(
@@ -612,7 +614,7 @@ class _ReplyScreenState extends State<ReplyScreen> {
                                                                   style: TextStyle(
                                                                       fontWeight: FontWeight.bold,
                                                                       fontSize: 14,
-                                                                      color: (displayName == '탈퇴한회원')? Color(0xFFb7b7b7): Color(0xFF111111)),
+                                                                      color: (displayName == '회원정보 없음')? Color(0xFFb7b7b7): Color(0xFF111111)),
                                                                 ),
                                                                 if(replyDocs[index]['displayName'] == 'SNOWLIVE')
                                                                   Padding(

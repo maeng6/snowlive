@@ -237,7 +237,7 @@ class _CommentTile_resortHomeState extends State<CommentTile_resortHome> {
                                                       fontWeight: FontWeight.bold,
                                                       fontSize: 14,
                                                       color:
-                                                      (displayName == '탈퇴한회원')? Color(0xFFDEDEDE): Color(0xFF111111)),
+                                                      (displayName == '회원정보 없음')? Color(0xFFDEDEDE): Color(0xFF111111)),
                                                 ),
                                                 if(chatDocs[index].get('displayName') == 'SNOWLIVE')
                                                   Padding(

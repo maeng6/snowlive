@@ -64,9 +64,6 @@ class _Bulletin_Free_List_DetailState extends State<Bulletin_Free_List_Detail> {
     super.initState();
     _seasonController.getBulletinFreeReplyLimit();
     _replyStream = replyNewStream();
-    _allUserDocsController.startListening().then((result){
-      setState(() {});
-    });
   }
 
   _updateMethod() async {
@@ -83,7 +80,10 @@ class _Bulletin_Free_List_DetailState extends State<Bulletin_Free_List_Detail> {
         .snapshots();
   }
 
-
+  Future<void> _refreshData() async {
+    await _allUserDocsController.getAllUserDocs();
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
