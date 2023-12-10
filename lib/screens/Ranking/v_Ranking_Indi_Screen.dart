@@ -85,6 +85,7 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
 
   Future<void> _refreshData() async {
     await _rankingTierModelController.getRankingDocs();
+    await _myRankingController.getMyRankingData(_userModelController.uid);
     setState(() {});
   }
 
