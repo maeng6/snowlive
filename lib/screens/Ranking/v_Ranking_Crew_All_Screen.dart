@@ -48,9 +48,6 @@ class _RankingCrewAllScreenState extends State<RankingCrewAllScreen> {
   int? myCrewRank;
   Map? crewRankingMap;
 
-  var _allCrew;
-
-
   void _scrollToMyRanking() {
     final myRanking = _rankingTierModelController.crewRankingMap![_userModelController.liveCrew];
 
