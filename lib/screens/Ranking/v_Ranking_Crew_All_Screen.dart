@@ -52,7 +52,7 @@ class _RankingCrewAllScreenState extends State<RankingCrewAllScreen> {
 
 
   void _scrollToMyRanking() {
-    final myRanking = crewRankingMap![_userModelController.liveCrew];
+    final myRanking = _rankingTierModelController.crewRankingMap![_userModelController.liveCrew];
 
     if (myRanking != null) {
       Scrollable.ensureVisible(
