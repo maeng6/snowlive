@@ -52,7 +52,6 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
     _allCrewDocsController.startListening().then((result){
       setState(() {});
     });
-    _rankingStream = rankingStream();
 
   }
 
@@ -60,27 +59,6 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
   void dispose() {
     _allCrewDocsController.stopListening();
     super.dispose();
-  }
-
-
-
-  Stream<QuerySnapshot> myRankingDocStream() {
-    return FirebaseFirestore.instance
-        .collection('Ranking')
-        .doc('${_seasonController.currentSeason}')
-        .collection('${_userModelController.favoriteResort}')
-        .where('uid', isEqualTo: _userModelController.uid )
-        .snapshots();
-  }
-
-  Stream<QuerySnapshot> rankingStream() {
-    return FirebaseFirestore.instance
-        .collection('Ranking')
-        .doc('${_seasonController.currentSeason}')
-        .collection('${_userModelController.favoriteResort}')
-        .where('totalScore', isGreaterThan: 0)
-        .orderBy('totalScore', descending: true)
-        .snapshots();
   }
 
   Future<void> _refreshData() async {

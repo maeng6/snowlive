@@ -41,19 +41,6 @@ class _MyRankingDetailPageState extends State<MyRankingDetailPage> {
     // TODO: implement initState
     super.initState();
 
-    _rankingStream = rankingStream();
-
-  }
-
-
-  Stream<QuerySnapshot> rankingStream() {
-    return FirebaseFirestore.instance
-        .collection('Ranking')
-        .doc('${_seasonController.currentSeason}')
-        .collection('${_userModelController.favoriteResort}')
-        .where('totalScore', isGreaterThan: 0)
-        .orderBy('totalScore', descending: true)
-        .snapshots();
   }
 
   @override
