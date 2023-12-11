@@ -120,6 +120,15 @@ Future<void> updateTier()async{
     return rankingTierList.last.badgeAsset; // 가장 낮은 순위의 뱃지
   }
 
+  String getBadgeAsset_integrated({required double percent,required int totalPassCount,required List rankingTierList}) {
+    for (var tier in rankingTierList_integrated) {
+      if (percent <= tier.scoreRng && totalPassCount >= tier.totalScore) {
+        return tier.badgeAsset;
+      }
+    }
+    return rankingTierList.last.badgeAsset; // 가장 낮은 순위의 뱃지
+  }
+
 
   Future<void> getRankingDocs() async{
 
@@ -333,6 +342,44 @@ Future<void> updateTier()async{
 
   }
 
+  Map<String, int> calculateRankIndiAll2({required userRankingDocs}){
+
+    Map<String, int> userRankingMap = {};
+
+    for (int i = 0; i < userRankingDocs.length; i++) {
+      if (userRankingDocs[i] != null) {
+        if (i == 0) {
+          userRankingMap['${userRankingDocs[i]['uid']}'] = i+1;
+        } else if(userRankingDocs[i]['totalScore'] != userRankingDocs[i-1]['totalScore']){
+          userRankingMap['${userRankingDocs[i]['uid']}'] = i+1;
+        } else if(userRankingDocs[i]['totalScore'] == userRankingDocs[i-1]['totalScore']){
+          userRankingMap['${userRankingDocs[i]['uid']}'] = userRankingMap['${userRankingDocs[i-1]['uid']}']!;
+        }
+      }
+    }
+    return userRankingMap;
+  }
+
+  Map<String, int> calculateRankCrewAll2({required crewDocs})  {
+
+    Map<String, int> crewRankingMap = {};
+
+    for (int i = 0; i < crewDocs.length; i++) {
+      if (crewDocs[i] != null) {
+        if (i == 0) {
+          crewRankingMap['${crewDocs[i]['crewID']}'] = i+1;
+        } else if(crewDocs[i]['totalScore'] != crewDocs[i-1]['totalScore']){
+          crewRankingMap['${crewDocs[i]['crewID']}'] = i+1;
+        } else if(crewDocs[i]['totalScore'] == crewDocs[i-1]['totalScore']){
+          crewRankingMap['${crewDocs[i]['crewID']}'] = crewRankingMap['${crewDocs[i-1]['crewID']}']!;
+        }
+      }
+    }
+
+    return crewRankingMap;
+  }
+
+
 
 
 
@@ -354,6 +401,20 @@ Future<void> updateTier()async{
       rankingList.addAll(snapshot.docs);
     }
 
+    Map<String, QueryDocumentSnapshot> uniqueDocs = {};
+    for (var doc in rankingList) {
+      var data = doc.data() as Map<String, dynamic>;
+      String uid = data['uid'];
+      int totalPassCount = data['totalPassCount'];
+
+      // 이미 해당 uid에 대한 문서가 있고, 현재 문서의 totalPassCount가 더 큰 경우에만 업데이트
+      if (!uniqueDocs.containsKey(uid) || (uniqueDocs[uid]!['totalPassCount'] as int) < totalPassCount) {
+        uniqueDocs[uid] = doc;
+      }
+    }
+    // 중복을 제거한 문서들로 rankingList를 업데이트
+    rankingList = uniqueDocs.values.toList();
+
     // 결과 리스트 정렬
     rankingList.sort((a, b) {
       final aTotalScore = a['totalPassCount'] as int;
@@ -370,7 +431,7 @@ Future<void> updateTier()async{
     // 결과를 Map 형태로 변환 및 저장
     this._rankingDocs_integrated!.value = rankingList.map((doc) => doc.data() as Map<String, dynamic>).toList();
 
-    this._userRankingMap_integrated!.value = await calculateRankIndiAll2(userRankingDocs: _rankingDocs_integrated);
+    this._userRankingMap_integrated!.value = await calculateRankIndiAll2_integrated(userRankingDocs: _rankingDocs_integrated);
 
     print('통합랭킹 참여자 : ${_rankingDocs_integrated!.length}');
   }
@@ -411,11 +472,10 @@ Future<void> updateTier()async{
       return doc.data() as Map<String, dynamic>;
     }).toList();
 
-    this._crewRankingMap_integrated!.value = await calculateRankCrewAll2(crewDocs: _rankingDocs_crew_integrated);
+    this._crewRankingMap_integrated!.value = await calculateRankCrewAll2_integrated(crewDocs: _rankingDocs_crew_integrated);
 
     print('통합랭킹 참여 크루 : ${_rankingDocs_crew_integrated!.length}');
   }
-
 
   Future<void> getRankingDocs_crewMember_integrated({required crewID, required crewBase}) async{
 
@@ -468,10 +528,7 @@ Future<void> updateTier()async{
 
   }
 
-
-
-
-  Map<String, int> calculateRankIndiAll2({required userRankingDocs}){
+  Map<String, int> calculateRankIndiAll2_integrated({required userRankingDocs}){
 
     Map<String, int> userRankingMap = {};
 
@@ -479,9 +536,9 @@ Future<void> updateTier()async{
       if (userRankingDocs[i] != null) {
         if (i == 0) {
           userRankingMap['${userRankingDocs[i]['uid']}'] = i+1;
-        } else if(userRankingDocs[i]['totalScore'] != userRankingDocs[i-1]['totalScore']){
+        } else if(userRankingDocs[i]['totalPassCount'] != userRankingDocs[i-1]['totalPassCount']){
           userRankingMap['${userRankingDocs[i]['uid']}'] = i+1;
-        } else if(userRankingDocs[i]['totalScore'] == userRankingDocs[i-1]['totalScore']){
+        } else if(userRankingDocs[i]['totalPassCount'] == userRankingDocs[i-1]['totalPassCount']){
           userRankingMap['${userRankingDocs[i]['uid']}'] = userRankingMap['${userRankingDocs[i-1]['uid']}']!;
         }
       }
@@ -489,7 +546,7 @@ Future<void> updateTier()async{
     return userRankingMap;
   }
 
-  Map<String, int> calculateRankCrewAll2({required crewDocs})  {
+  Map<String, int> calculateRankCrewAll2_integrated({required crewDocs})  {
 
     Map<String, int> crewRankingMap = {};
 
@@ -497,9 +554,9 @@ Future<void> updateTier()async{
       if (crewDocs[i] != null) {
         if (i == 0) {
           crewRankingMap['${crewDocs[i]['crewID']}'] = i+1;
-        } else if(crewDocs[i]['totalScore'] != crewDocs[i-1]['totalScore']){
+        } else if(crewDocs[i]['totalPassCount'] != crewDocs[i-1]['totalPassCount']){
           crewRankingMap['${crewDocs[i]['crewID']}'] = i+1;
-        } else if(crewDocs[i]['totalScore'] == crewDocs[i-1]['totalScore']){
+        } else if(crewDocs[i]['totalPassCount'] == crewDocs[i-1]['totalPassCount']){
           crewRankingMap['${crewDocs[i]['crewID']}'] = crewRankingMap['${crewDocs[i-1]['crewID']}']!;
         }
       }

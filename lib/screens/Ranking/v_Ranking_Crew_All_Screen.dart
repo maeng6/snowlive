@@ -47,9 +47,15 @@ class _RankingCrewAllScreenState extends State<RankingCrewAllScreen> {
 
   int? myCrewRank;
   Map? crewRankingMap;
+  List? crewDocs;
+  dynamic myRanking;
 
   void _scrollToMyRanking() {
-    final myRanking = _rankingTierModelController.crewRankingMap![_userModelController.liveCrew];
+    if(_userModelController.favoriteResort == 12 ||_userModelController.favoriteResort == 2 ||_userModelController.favoriteResort == 0) {
+      myRanking = _rankingTierModelController.crewRankingMap![_userModelController.liveCrew];
+    }else {
+      myRanking = _rankingTierModelController.crewRankingMap_integrated![_userModelController.liveCrew];
+    }
 
     if (myRanking != null) {
       Scrollable.ensureVisible(
@@ -63,7 +69,11 @@ class _RankingCrewAllScreenState extends State<RankingCrewAllScreen> {
   }
 
   Future<void> _refreshData() async {
-    await _rankingTierModelController.getRankingDocs_crew();
+    if(_userModelController.favoriteResort == 12 ||_userModelController.favoriteResort == 2 ||_userModelController.favoriteResort == 0) {
+      await _rankingTierModelController.getRankingDocs_crew();
+    }else {
+      await _rankingTierModelController.getRankingDocs_crew_integrated();
+    }
     setState(() {});
   }
 
@@ -71,9 +81,17 @@ class _RankingCrewAllScreenState extends State<RankingCrewAllScreen> {
   Widget build(BuildContext context) {
     Size _size = MediaQuery.of(context).size;
 
-    final crewDocs = widget.isKusbf == true ? _rankingTierModelController.rankingDocs_crew_kusbf : _rankingTierModelController.rankingDocs_crew;
-    final crewRankingMap =  widget.isKusbf == true ? _rankingTierModelController.crewRankingMap_kusbf : _rankingTierModelController.crewRankingMap;
-
+    if(_userModelController.favoriteResort == 12 ||_userModelController.favoriteResort == 2 ||_userModelController.favoriteResort == 0) {
+      crewDocs = widget.isKusbf == true
+          ? _rankingTierModelController.rankingDocs_crew_kusbf
+          : _rankingTierModelController.rankingDocs_crew;
+      crewRankingMap = widget.isKusbf == true
+          ? _rankingTierModelController.crewRankingMap_kusbf
+          : _rankingTierModelController.crewRankingMap;
+    } else{
+      crewDocs = _rankingTierModelController.rankingDocs_crew_integrated;
+      crewRankingMap = _rankingTierModelController.crewRankingMap_integrated;
+    }
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -257,7 +275,11 @@ class _RankingCrewAllScreenState extends State<RankingCrewAllScreen> {
                         ),
                         Expanded(child: SizedBox()),
                         Text(
-                          '${document['totalScore'].toString()}점',
+                          (_userModelController.favoriteResort == 12
+                              || _userModelController.favoriteResort == 2
+                              || _userModelController.favoriteResort == 0)
+                              ? '${document['totalScore']}점'
+                              : '${document['totalPassCount']}회',
                           style: TextStyle(
                             color: Color(0xFF111111),
                             fontWeight: FontWeight.normal,

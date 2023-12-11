@@ -63,7 +63,11 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
   }
 
   Future<void> _refreshData() async {
-    await _rankingTierModelController.getRankingDocs();
+    if(_userModelController.favoriteResort == 12 ||_userModelController.favoriteResort == 2 ||_userModelController.favoriteResort == 0) {
+      await _rankingTierModelController.getRankingDocs();
+    }else{
+      await _rankingTierModelController.getRankingDocs_integrated();
+    }
     await _myRankingController.getMyRankingData(_userModelController.uid);
     setState(() {});
   }
@@ -458,13 +462,6 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                   ),
                                 GestureDetector(
                                   onTap: () async{
-                                    CustomFullScreenDialog.showDialog();
-                                    if(_userModelController.favoriteResort != 12 && _userModelController.favoriteResort != 2 && _userModelController.favoriteResort != 0 ) {
-                                      await _rankingTierModelController.getRankingDocs_integrated();
-                                    }else {
-                                      await _rankingTierModelController.getRankingDocs();
-                                    }
-                                    CustomFullScreenDialog.cancelDialog();
                                     Get.to(()=> RankingIndiAllScreen(isKusbf: widget.isKusbf,));
                                   },
                                   child: Text('전체 보기',
@@ -639,11 +636,19 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                               Transform.translate(
                                                 offset: Offset(6, 2),
                                                 child: ExtendedImage.network(
-                                                  _rankingTierModelController.getBadgeAsset(
+                                                    (_userModelController.favoriteResort == 12
+                                                        || _userModelController.favoriteResort == 2
+                                                        || _userModelController.favoriteResort == 0)
+                                                  ? _rankingTierModelController.getBadgeAsset(
                                                       percent: userRankingMap_all!['${userData['uid']}']/(documents_all!.length),
                                                       totalScore: document['totalScore'],
                                                       rankingTierList: rankingTierList
-                                                  ),
+                                                  )
+                                                  :_rankingTierModelController.getBadgeAsset_integrated(
+                                                        percent: userRankingMap_all!['${userData['uid']}']/(documents_all!.length),
+                                                        totalPassCount: document['totalPassCount'],
+                                                        rankingTierList: rankingTierList
+                                                    ),
                                                   enableMemoryCache: true,
                                                   fit: BoxFit.cover,
                                                   width: 40,
@@ -786,7 +791,12 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                             Obx(()=>Row(
                               children: [
                                 Text(
-                                  '${_myRankingController.totalScore}점',
+                                  (_userModelController.favoriteResort == 12
+                                      || _userModelController.favoriteResort == 2
+                                      || _userModelController.favoriteResort == 0)
+                                      ?
+                                  '${_myRankingController.totalScore}점'
+                                  :  '${_myRankingController.totalPassCount}회',
                                   style: TextStyle(
                                     color: Color(0xFFffffff),
                                     fontWeight: FontWeight.normal,
@@ -796,11 +806,19 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                 Transform.translate(
                                   offset: Offset(6, 2),
                                   child: ExtendedImage.network(
-                                    _rankingTierModelController.getBadgeAsset(
+                                      (_userModelController.favoriteResort == 12
+                                          || _userModelController.favoriteResort == 2
+                                          || _userModelController.favoriteResort == 0)
+                                    ? _rankingTierModelController.getBadgeAsset(
                                         percent:  userRankingMap_all?['${_userModelController.uid}'] / documents_all!.length,
                                         totalScore: _myRankingController.totalScore,
                                         rankingTierList: rankingTierList
-                                    ),
+                                    )
+                                    : _rankingTierModelController.getBadgeAsset_integrated(
+                                          percent:  userRankingMap_all?['${_userModelController.uid}'] / documents_all!.length,
+                                          totalPassCount: _myRankingController.totalPassCount,
+                                          rankingTierList: rankingTierList
+                                      ),
                                     enableMemoryCache: true,
                                     fit: BoxFit.cover,
                                     width: 40,

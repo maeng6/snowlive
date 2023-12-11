@@ -47,7 +47,11 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
   Map? crewRankingMap;
 
   Future<void> _refreshData() async {
-    await _rankingTierModelController.getRankingDocs_crew();
+    if(_userModelController.favoriteResort == 12 ||_userModelController.favoriteResort == 2 ||_userModelController.favoriteResort == 0) {
+      await _rankingTierModelController.getRankingDocs_crew();
+    }else {
+      await _rankingTierModelController.getRankingDocs_crew_integrated();
+    }
     setState(() {});
   }
 
@@ -533,13 +537,6 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                                   ),
                                 GestureDetector(
                                   onTap: () async{
-                                    CustomFullScreenDialog.showDialog();
-                                    if(_userModelController.favoriteResort != 12 && _userModelController.favoriteResort != 2 && _userModelController.favoriteResort != 0 ) {
-                                      await _rankingTierModelController.getRankingDocs_crew_integrated();
-                                    }else {
-                                      await _rankingTierModelController.getRankingDocs_crew();
-                                    }
-                                    CustomFullScreenDialog.cancelDialog();
                                     Get.to(() => RankingCrewAllScreen(isKusbf: widget.isKusbf,));
                                   },
                                   child: Text('전체 보기',

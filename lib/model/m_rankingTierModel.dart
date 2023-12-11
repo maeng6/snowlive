@@ -48,3 +48,40 @@ List<RankingTierModel> rankingTierList = [
 
 
 ];
+
+List<RankingTierModel> rankingTierList_integrated = [
+  RankingTierModel(
+      tierName: 'S',
+      scoreRng: 0.005,
+      totalScore: 70,
+      badgeAsset : '${rankingTierUrlList[0].tierS}'
+  ),
+  RankingTierModel(
+      tierName: 'A',
+      scoreRng: 0.04,
+      totalScore: 50,
+      badgeAsset : '${rankingTierUrlList[0].tierA}'
+  ),
+  RankingTierModel(
+      tierName: 'B',
+      scoreRng: 0.24,
+      totalScore: 30,
+      badgeAsset : '${rankingTierUrlList[0].tierB}'
+  ),
+  RankingTierModel(
+      tierName: 'C',
+      scoreRng: 0.74,
+      totalScore: 15,
+      badgeAsset : '${rankingTierUrlList[0].tierC}'
+  ),
+  RankingTierModel(
+      tierName: 'D',
+      scoreRng: 1.0,
+      totalScore: 0,
+      badgeAsset : '${rankingTierUrlList[0].tierD}'
+  ),
+
+
+
+
+];
