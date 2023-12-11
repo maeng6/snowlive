@@ -40,12 +40,11 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
   }
 
   int? myCrewRank;
-  Map? crewRankingMap;
   var assetTop1;
   var assetTop2;
   var assetTop3;
-
-  var _allCrew;
+  List? crewDocs;
+  Map? crewRankingMap;
 
   Future<void> _refreshData() async {
     await _rankingTierModelController.getRankingDocs_crew();
@@ -59,30 +58,38 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
     _userModelController.getCurrentUser_crew(_userModelController.uid);
     _userModelController.getCurrentUser_kusbf(_userModelController.uid);
 
-    final crewDocs = widget.isKusbf == true ? _rankingTierModelController.rankingDocs_crew_kusbf : _rankingTierModelController.rankingDocs_crew;
-    final crewRankingMap =  widget.isKusbf == true ? _rankingTierModelController.crewRankingMap_kusbf : _rankingTierModelController.crewRankingMap;
-
+    if(_userModelController.favoriteResort == 12 ||_userModelController.favoriteResort == 2 ||_userModelController.favoriteResort == 0) {
+       crewDocs = widget.isKusbf == true
+           ? _rankingTierModelController.rankingDocs_crew_kusbf
+           : _rankingTierModelController.rankingDocs_crew;
+       crewRankingMap = widget.isKusbf == true
+          ? _rankingTierModelController.crewRankingMap_kusbf
+          : _rankingTierModelController.crewRankingMap;
+    } else{
+       crewDocs = _rankingTierModelController.rankingDocs_crew_integrated;
+       crewRankingMap = _rankingTierModelController.crewRankingMap_integrated;
+    }
     if (crewDocs!.isNotEmpty) {
       for (var crewLogo in crewLogoList) {
-        if (crewLogo.crewColor == crewDocs[0]['crewColor']) {
+        if (crewLogo.crewColor == crewDocs![0]['crewColor']) {
           assetTop1 = crewLogo.crewLogoAsset;
           break;
         }
       }
     }
 
-    if (crewDocs.length > 1) {
+    if (crewDocs!.length > 1) {
       for (var crewLogo in crewLogoList) {
-        if (crewLogo.crewColor == crewDocs[1]['crewColor']) {
+        if (crewLogo.crewColor == crewDocs![1]['crewColor']) {
           assetTop2 = crewLogo.crewLogoAsset;
           break;
         }
       }
     }
 
-    if (crewDocs.length > 2) {
+    if (crewDocs!.length > 2) {
       for (var crewLogo in crewLogoList) {
-        if (crewLogo.crewColor == crewDocs[2]['crewColor']) {
+        if (crewLogo.crewColor == crewDocs![2]['crewColor']) {
           assetTop3 = crewLogo.crewLogoAsset;
           break;
         }
@@ -119,12 +126,12 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                             SizedBox(height: 12),
                             Row(
                               children: [
-                                if(crewDocs.length > 0)
+                                if(crewDocs!.length > 0)
                                   GestureDetector(
                                     onTap: () async {
                                       CustomFullScreenDialog.showDialog();
                                       await _userModelController.getCurrentUser_crew(_userModelController.uid);
-                                      await _liveCrewModelController.getCurrrentCrew(crewDocs[0]['crewID']);
+                                      await _liveCrewModelController.getCurrrentCrew(crewDocs![0]['crewID']);
                                       CustomFullScreenDialog.cancelDialog();
                                       Get.to(() =>
                                           CrewDetailPage_screen());
@@ -132,7 +139,7 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                                     child: Container(
                                       decoration: BoxDecoration(
                                         color: Color(
-                                            crewDocs[0]['crewColor']),
+                                            crewDocs![0]['crewColor']),
                                         borderRadius: BorderRadius
                                             .circular(8),
                                       ),
@@ -142,7 +149,7 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                                         mainAxisAlignment: MainAxisAlignment
                                             .center,
                                         children: [
-                                          (crewDocs[0]['profileImageUrl']
+                                          (crewDocs![0]['profileImageUrl']
                                               .isNotEmpty)
                                               ? Container(
                                             decoration: BoxDecoration(
@@ -160,7 +167,7 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                                             width: 58,
                                             height: 58,
                                             child: ExtendedImage.network(
-                                              crewDocs[0]['profileImageUrl'],
+                                              crewDocs![0]['profileImageUrl'],
                                               enableMemoryCache: true,
                                               shape: BoxShape
                                                   .rectangle,
@@ -229,7 +236,7 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                                                 .symmetric(
                                                 horizontal: 16),
                                             child: Text(
-                                              crewDocs[0]['crewName'],
+                                              crewDocs![0]['crewName'],
                                               style: TextStyle(
                                                 color: Color(
                                                     0xFFFFFFFF),
@@ -247,19 +254,19 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                                     ),
                                   ),
                                 SizedBox(width: 8),
-                                if(crewDocs.length > 1)
+                                if(crewDocs!.length > 1)
                                   GestureDetector(
                                     onTap: () async {
                                       CustomFullScreenDialog.showDialog();
                                       await _userModelController.getCurrentUser_crew(_userModelController.uid);
-                                      await _liveCrewModelController.getCurrrentCrew(crewDocs[1]['crewID']);
+                                      await _liveCrewModelController.getCurrrentCrew(crewDocs![1]['crewID']);
                                       CustomFullScreenDialog.cancelDialog();
                                       Get.to(() => CrewDetailPage_screen());
                                     },
                                     child: Container(
                                       decoration: BoxDecoration(
                                         color: Color(
-                                            crewDocs[1]['crewColor']),
+                                            crewDocs![1]['crewColor']),
                                         borderRadius: BorderRadius
                                             .circular(8),
                                       ),
@@ -269,7 +276,7 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                                         mainAxisAlignment: MainAxisAlignment
                                             .center,
                                         children: [
-                                          (crewDocs[1]['profileImageUrl']
+                                          (crewDocs![1]['profileImageUrl']
                                               .isNotEmpty)
                                               ? Container(
                                             decoration: BoxDecoration(
@@ -288,7 +295,7 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                                             height: 58,
                                             child: ExtendedImage
                                                 .network(
-                                              crewDocs[1]['profileImageUrl'],
+                                              crewDocs![1]['profileImageUrl'],
                                               enableMemoryCache: true,
                                               cacheHeight: 200,
                                               shape: BoxShape
@@ -357,7 +364,7 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                                                 .symmetric(
                                                 horizontal: 16),
                                             child: Text(
-                                              crewDocs[1]['crewName'],
+                                              crewDocs![1]['crewName'],
                                               style: TextStyle(
                                                 color: Color(
                                                     0xFFFFFFFF),
@@ -375,19 +382,19 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                                     ),
                                   ),
                                 SizedBox(width: 8),
-                                if(crewDocs.length > 2)
+                                if(crewDocs!.length > 2)
                                   GestureDetector(
                                     onTap: () async {
                                       CustomFullScreenDialog.showDialog();
                                       await _userModelController.getCurrentUser_crew(_userModelController.uid);
-                                      await _liveCrewModelController.getCurrrentCrew(crewDocs[2]['crewID']);
+                                      await _liveCrewModelController.getCurrrentCrew(crewDocs![2]['crewID']);
                                       CustomFullScreenDialog.cancelDialog();
                                       Get.to(() => CrewDetailPage_screen());
                                     },
                                     child: Container(
                                       decoration: BoxDecoration(
                                         color: Color(
-                                            crewDocs[2]['crewColor']),
+                                            crewDocs![2]['crewColor']),
                                         borderRadius: BorderRadius
                                             .circular(8),
                                       ),
@@ -397,7 +404,7 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                                         mainAxisAlignment: MainAxisAlignment
                                             .center,
                                         children: [
-                                          (crewDocs[2]['profileImageUrl']
+                                          (crewDocs![2]['profileImageUrl']
                                               .isNotEmpty)
                                               ? Container(
                                             decoration: BoxDecoration(
@@ -416,7 +423,7 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                                             height: 58,
                                             child: ExtendedImage
                                                 .network(
-                                              crewDocs[2]['profileImageUrl'],
+                                              crewDocs![2]['profileImageUrl'],
                                               enableMemoryCache: true,
                                               cacheHeight: 200,
                                               shape: BoxShape
@@ -485,7 +492,7 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                                                 .symmetric(
                                                 horizontal: 16),
                                             child: Text(
-                                              crewDocs[2]['crewName'],
+                                              crewDocs![2]['crewName'],
                                               style: TextStyle(
                                                 color: Color(
                                                     0xFFFFFFFF),
@@ -527,7 +534,11 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                                 GestureDetector(
                                   onTap: () async{
                                     CustomFullScreenDialog.showDialog();
-                                    await _rankingTierModelController.getRankingDocs_crew();
+                                    if(_userModelController.favoriteResort != 12 && _userModelController.favoriteResort != 2 && _userModelController.favoriteResort != 0 ) {
+                                      await _rankingTierModelController.getRankingDocs_crew_integrated();
+                                    }else {
+                                      await _rankingTierModelController.getRankingDocs_crew();
+                                    }
                                     CustomFullScreenDialog.cancelDialog();
                                     Get.to(() => RankingCrewAllScreen(isKusbf: widget.isKusbf,));
                                   },
@@ -546,12 +557,12 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                               child: ListView.builder(
                                 physics: NeverScrollableScrollPhysics(),
                                 shrinkWrap: true,
-                                itemCount: crewDocs.length < 20
-                                    ? crewDocs.length
+                                itemCount: crewDocs!.length < 20
+                                    ? crewDocs!.length
                                     : 20,
                                 itemBuilder: (context, index) {
                                   for (var crewLogo in crewLogoList)
-                                    if (crewDocs[index]['crewColor'] == crewLogo.crewColor)
+                                    if (crewDocs![index]['crewColor'] == crewLogo.crewColor)
                                       return Padding(
                                         padding: const EdgeInsets.only(
                                             bottom: 12),
@@ -561,14 +572,14 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                                           onTap: () async {
                                             CustomFullScreenDialog.showDialog();
                                             await _userModelController.getCurrentUser_crew(_userModelController.uid);
-                                            await _liveCrewModelController.getCurrrentCrew(crewDocs[index]['crewID']);
+                                            await _liveCrewModelController.getCurrrentCrew(crewDocs![index]['crewID']);
                                             CustomFullScreenDialog.cancelDialog();
                                             Get.to(() => CrewDetailPage_screen());
                                           },
                                           child: Row(
                                             children: [
                                               Text(
-                                                '${crewRankingMap!['${crewDocs[index]['crewID']}']}',
+                                                '${crewRankingMap!['${crewDocs![index]['crewID']}']}',
                                                 style: TextStyle(
                                                     fontWeight: FontWeight
                                                         .bold,
@@ -581,7 +592,7 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                                                 width: 46,
                                                 height: 46,
                                                 child:
-                                                (crewDocs[index]['profileImageUrl']
+                                                (crewDocs![index]['profileImageUrl']
                                                     .isNotEmpty)
                                                     ? Container(
                                                     width: 46,
@@ -593,7 +604,7 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                                                     ),
                                                     child: ExtendedImage
                                                         .network(
-                                                      crewDocs[index]['profileImageUrl'],
+                                                      crewDocs![index]['profileImageUrl'],
                                                       enableMemoryCache: true,
                                                       cacheHeight: 200,
                                                       shape: BoxShape
@@ -611,7 +622,7 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                                                             return Container(
                                                               decoration: BoxDecoration(
                                                                   color: Color(
-                                                                      crewDocs[index]['crewColor']),
+                                                                      crewDocs![index]['crewColor']),
                                                                   borderRadius: BorderRadius
                                                                       .circular(8)
                                                               ),
@@ -640,7 +651,7 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                                                   height: 46,
                                                   decoration: BoxDecoration(
                                                       color: Color(
-                                                          crewDocs[index]['crewColor']),
+                                                          crewDocs![index]['crewColor']),
                                                       borderRadius: BorderRadius
                                                           .circular(8)
                                                   ),
@@ -669,17 +680,17 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                                                     mainAxisAlignment: MainAxisAlignment.center,
                                                     children: [
                                                       Text(
-                                                        crewDocs[index]['crewName'],
+                                                        crewDocs![index]['crewName'],
                                                         style: TextStyle(
                                                           fontSize: 15,
                                                           color: Color(0xFF111111),
                                                         ),
                                                       ),
-                                                      if (crewDocs[index]['description'].isNotEmpty)
+                                                      if (crewDocs![index]['description'].isNotEmpty)
                                                         SizedBox(
                                                           width: _size.width-194,
                                                           child: Text(
-                                                            crewDocs[index]['description'],
+                                                            crewDocs![index]['description'],
                                                             maxLines: 1,
                                                             overflow: TextOverflow.ellipsis,
                                                             style: TextStyle(
@@ -692,9 +703,15 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                                                   )
                                               ),
                                               Expanded(child: SizedBox()),
-                                              Text(
-                                                '${crewDocs[index]['totalScore']
-                                                    .toString()}점',
+
+                                               Text(
+                                               (_userModelController.favoriteResort == 12
+                                               || _userModelController.favoriteResort == 2
+                                               || _userModelController.favoriteResort == 0)
+                                                ?'${crewDocs![index]['totalScore']
+                                                    .toString()}점'
+                                                 : '${crewDocs![index]['totalPassCount']
+                                                   .toString()}회',
                                                 style: TextStyle(
                                                   color: Color(0xFF111111),
                                                   fontWeight: FontWeight
@@ -872,7 +889,11 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                                   ),
                                   Expanded(child: SizedBox()),
                                   Text(
-                                    '${myCrewDocs[0]['totalScore']}점',
+                                    (_userModelController.favoriteResort == 12
+                                        || _userModelController.favoriteResort == 2
+                                        || _userModelController.favoriteResort == 0)
+                                    ? '${myCrewDocs[0]['totalScore']}점'
+                                    : '${myCrewDocs[0]['totalPassCount']}회',
                                     style: TextStyle(
                                       color: Color(0xFFFFFFFF),
                                       fontWeight: FontWeight.normal,
@@ -988,7 +1009,11 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                                   ),
                                   Expanded(child: SizedBox()),
                                   Text(
-                                    '${myCrewDocs[0]['totalScore']}점',
+                                    (_userModelController.favoriteResort == 12
+                                      || _userModelController.favoriteResort == 2
+                                      || _userModelController.favoriteResort == 0)
+                                      ? '${myCrewDocs[0]['totalScore']}점'
+                                      : '${myCrewDocs[0]['totalPassCount']}회',
                                     style: TextStyle(
                                       color: Color(0xFFFFFFFF),
                                       fontWeight: FontWeight.normal,

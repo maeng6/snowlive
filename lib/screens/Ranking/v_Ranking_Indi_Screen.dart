@@ -40,9 +40,10 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
   AllUserDocsController _allUserDocsController = Get.find<AllUserDocsController>();
   //TODO: Dependency Injection**************************************************
 
-  var _rankingStream;
   Map? userRankingMap;
   Map? userRankingMap_all;
+  List? documents;
+  List? documents_all;
 
   @override
   void initState() {
@@ -70,12 +71,23 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
   @override
   Widget build(BuildContext context) {
     Size _size = MediaQuery.of(context).size;
+    if(_userModelController.favoriteResort == 12 ||_userModelController.favoriteResort == 2 ||_userModelController.favoriteResort == 0) {
 
-    final documents = widget.isKusbf == true ? _rankingTierModelController.rankingDocs_kusbf : _rankingTierModelController.rankingDocs;
-    final documents_all = _rankingTierModelController.rankingDocs;
+       documents = widget.isKusbf == true
+          ? _rankingTierModelController.rankingDocs_kusbf
+          : _rankingTierModelController.rankingDocs;
+       documents_all = _rankingTierModelController.rankingDocs;
 
-    final userRankingMap =  widget.isKusbf == true ? _rankingTierModelController.userRankingMap_kusbf : _rankingTierModelController.userRankingMap;
-    final userRankingMap_all = _rankingTierModelController.userRankingMap;
+       userRankingMap = widget.isKusbf == true
+          ? _rankingTierModelController.userRankingMap_kusbf
+          : _rankingTierModelController.userRankingMap;
+       userRankingMap_all = _rankingTierModelController.userRankingMap;
+    }else {
+      documents =  _rankingTierModelController.rankingDocs_integrated;
+      documents_all = _rankingTierModelController.rankingDocs_integrated;
+      userRankingMap = _rankingTierModelController.userRankingMap_integrated;
+      userRankingMap_all = _rankingTierModelController.userRankingMap_integrated;
+    }
 
     return Container(
       color: Colors.white,
@@ -111,7 +123,7 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                   StreamBuilder(
                                     stream: FirebaseFirestore.instance
                                         .collection('user')
-                                        .where('uid', isEqualTo: documents[0]['uid'])
+                                        .where('uid', isEqualTo: documents![0]['uid'])
                                         .snapshots(),
                                     builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
                                       if (!snapshot.hasData || snapshot.data == null) {
@@ -215,12 +227,12 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                     },
                                   ),
                                 SizedBox(width: 8,),
-                                if(documents.length > 1)
+                                if(documents!.length > 1)
 
                                   StreamBuilder(
                                     stream: FirebaseFirestore.instance
                                         .collection('user')
-                                        .where('uid', isEqualTo: documents[1]['uid'])
+                                        .where('uid', isEqualTo: documents![1]['uid'])
                                         .snapshots(),
                                     builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
                                       if (!snapshot.hasData || snapshot.data == null) {
@@ -319,12 +331,12 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                     },
                                   ),
                                 SizedBox(width: 8,),
-                                if(documents.length > 2)
+                                if(documents!.length > 2)
 
                                   StreamBuilder(
                                     stream: FirebaseFirestore.instance
                                         .collection('user')
-                                        .where('uid', isEqualTo: documents[2]['uid'])
+                                        .where('uid', isEqualTo: documents![2]['uid'])
                                         .snapshots(),
                                     builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
                                       if (!snapshot.hasData || snapshot.data == null) {
@@ -447,7 +459,11 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                 GestureDetector(
                                   onTap: () async{
                                     CustomFullScreenDialog.showDialog();
-                                    await _rankingTierModelController.getRankingDocs();
+                                    if(_userModelController.favoriteResort != 12 && _userModelController.favoriteResort != 2 && _userModelController.favoriteResort != 0 ) {
+                                      await _rankingTierModelController.getRankingDocs_integrated();
+                                    }else {
+                                      await _rankingTierModelController.getRankingDocs();
+                                    }
                                     CustomFullScreenDialog.cancelDialog();
                                     Get.to(()=> RankingIndiAllScreen(isKusbf: widget.isKusbf,));
                                   },
@@ -466,9 +482,9 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                               child: ListView.builder(
                                 physics: NeverScrollableScrollPhysics(),
                                 shrinkWrap: true,
-                                itemCount: documents.length < 100 ? documents.length : 100,
+                                itemCount: documents!.length < 100 ? documents!.length : 100,
                                 itemBuilder: (context, index) {
-                                  final document = documents[index];
+                                  final document = documents![index];
 
                                   final userDoc = _allUserDocsController.allUserDocs;
                                   final Map<String, dynamic> userData = userDoc.isNotEmpty
@@ -609,7 +625,11 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                           Row(
                                             children: [
                                               Text(
-                                                '${document['totalScore'].toString()}점',
+                                          (_userModelController.favoriteResort == 12
+                                              || _userModelController.favoriteResort == 2
+                                              || _userModelController.favoriteResort == 0)
+                                               ? '${document['totalScore'].toString()}점'
+                                               : '${document['totalPassCount'].toString()}회',
                                                 style: TextStyle(
                                                   color: Color(0xFF111111),
                                                   fontWeight: FontWeight.normal,
