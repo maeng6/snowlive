@@ -120,8 +120,10 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              (widget.isKusbf == false)
-                                  ? '${_userModelController.resortNickname} 상위 TOP 3 크루' :'KUSBF 상위 TOP 3 크루',
+                              (_userModelController.favoriteResort == 12 ||_userModelController.favoriteResort == 2 ||_userModelController.favoriteResort == 0)
+                                ?(widget.isKusbf == false)
+                                  ? '${_userModelController.resortNickname} 상위 TOP 3 크루' :'KUSBF 상위 TOP 3 크루'
+                              : '통합 상위 TOP 3 크루',
                               style: TextStyle(
                                   color: Color(0xFF949494),
                                   fontSize: 12
@@ -527,8 +529,20 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                                         fontWeight: FontWeight.bold
                                     ),
                                   ),
-                                if(widget.isKusbf == false)
+                                if(widget.isKusbf == false &&
+                                    (_userModelController.favoriteResort == 12 ||_userModelController.favoriteResort == 2 ||_userModelController.favoriteResort == 0)
+                                )
                                   Text('${_userModelController.resortNickname} 크루 랭킹 TOP 20',
+                                    style: TextStyle(
+                                        color: Color(0xFF111111),
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold
+                                    ),
+                                  ),
+                                if(widget.isKusbf == false &&
+                                    (_userModelController.favoriteResort != 12 && _userModelController.favoriteResort != 2 && _userModelController.favoriteResort != 0)
+                                )
+                                  Text('통합 크루 랭킹 TOP 20',
                                     style: TextStyle(
                                         color: Color(0xFF111111),
                                         fontSize: 16,
@@ -676,12 +690,24 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                                                     crossAxisAlignment: CrossAxisAlignment.start,
                                                     mainAxisAlignment: MainAxisAlignment.center,
                                                     children: [
-                                                      Text(
-                                                        crewDocs![index]['crewName'],
-                                                        style: TextStyle(
-                                                          fontSize: 15,
-                                                          color: Color(0xFF111111),
-                                                        ),
+                                                      Row(
+                                                        children: [
+                                                          Text(
+                                                            crewDocs![index]['crewName'],
+                                                            style: TextStyle(
+                                                              fontSize: 15,
+                                                              color: Color(0xFF111111),
+                                                            ),
+                                                          ),
+                                                          SizedBox(width: 5,),
+                                                          Text(
+                                                            crewDocs![index]['baseResortNickName'],
+                                                            style: TextStyle(
+                                                              fontSize: 12,
+                                                              color: Color(0xFF949494)
+                                                            ),
+                                                          ),
+                                                        ],
                                                       ),
                                                       if (crewDocs![index]['description'].isNotEmpty)
                                                         SizedBox(

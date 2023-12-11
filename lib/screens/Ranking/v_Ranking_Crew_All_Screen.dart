@@ -254,10 +254,22 @@ class _RankingCrewAllScreenState extends State<RankingCrewAllScreen> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
-                                document['crewName'],
-                                style: TextStyle(
-                                    fontSize: 15, color: Color(0xFF111111)),
+                              Row(
+                                children: [
+                                  Text(
+                                    document['crewName'],
+                                    style: TextStyle(
+                                        fontSize: 15, color: Color(0xFF111111)),
+                                  ),
+                                  SizedBox(width: 5,),
+                                  Text(
+                                    document['baseResortNickName'],
+                                    style: TextStyle(
+                                        fontSize: 12,
+                                        color: Color(0xFF949494)
+                                    ),
+                                  ),
+                                ],
                               ),
                               if (document['description'].isNotEmpty)
                                 SizedBox(
