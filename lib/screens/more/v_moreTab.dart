@@ -871,7 +871,7 @@ class _MoreTabState extends State<MoreTab> {
                 onTap: () {
                   Get.to(() => NoticeList());
                 },
-                title: Row(
+                title: Stack(
                   children: [
                     Text(
                       '공지사항',
@@ -880,13 +880,14 @@ class _MoreTabState extends State<MoreTab> {
                           fontSize: 15,
                           color: Color(0xFF111111)),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 2, bottom: 12),
+                    Positioned(  // draw a red marble
+                      top: 1,
+                      left: 58,
                       child: new Icon(Icons.brightness_1, size: 6.0,
                           color:
                           (_noticeController.isNewNotice == true)
                               ?Color(0xFFD32F2F):Colors.white),
-                    ),
+                    )
                   ],
                 ),
                 trailing: Image.asset(
