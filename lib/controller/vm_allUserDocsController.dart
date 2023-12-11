@@ -55,7 +55,7 @@ class AllUserDocsController extends GetxController {
     );
 
     // 찾은 문서에서 profileUrl 값을 반환합니다. 값이 없으면 기본값인 ''을 반환합니다.
-    return userDoc['displayName'] ?? '탈퇴한회원';
+    return userDoc['displayName'] ?? '회원정보 없음';
   }
 
   String findStateMsg(String chatDocUid, List<Map<String, dynamic>> userDocs) {

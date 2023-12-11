@@ -105,10 +105,6 @@ class _Bulletin_Free_List_ScreenState extends State<Bulletin_Free_List_Screen> {
         _showAddButton = _scrollController.offset <= 0;
       });
     });
-
-    _allUserDocsController.startListening().then((result){
-      setState(() {});
-    });
   }
 
   @override
@@ -208,6 +204,11 @@ class _Bulletin_Free_List_ScreenState extends State<Bulletin_Free_List_Screen> {
     setState(() {
       _stream = newStream();
     });
+  }
+
+  Future<void> _refreshData() async {
+    await _allUserDocsController.getAllUserDocs();
+    setState(() {});
   }
 
   @override

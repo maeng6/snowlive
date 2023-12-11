@@ -79,10 +79,6 @@ class _Bulletin_Event_List_ScreenState extends State<Bulletin_Event_List_Screen>
       });
     });
 
-    _allUserDocsController.startListening().then((result){
-      setState(() {});
-    });
-
     // Add a listener to the ScrollController
     _scrollController.addListener(() {
       setState(() {
@@ -383,6 +379,11 @@ class _Bulletin_Event_List_ScreenState extends State<Bulletin_Event_List_Screen>
     setState(() {
       _stream = newStream();
     });
+  }
+
+  Future<void> _refreshData() async {
+    await _allUserDocsController.getAllUserDocs();
+    setState(() {});
   }
 
   @override
