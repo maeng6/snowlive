@@ -259,11 +259,23 @@ class _RankingIndiAllScreenState extends State<RankingIndiAllScreen> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(
-                                  userData['displayName'],
-                                  style: TextStyle(
-                                      fontSize: 15,
-                                      color: Color(0xFF111111)),
+                                Row(
+                                  children: [
+                                    Text(
+                                      userData['displayName'],
+                                      style: TextStyle(
+                                          fontSize: 15,
+                                          color: Color(0xFF111111)),
+                                    ),
+                                    SizedBox(width: 5,),
+                                    Text(
+                                      userData['resortNickname'],
+                                      style: TextStyle(
+                                          fontSize: 12,
+                                          color: Color(0xFF949494)
+                                      ),
+                                    ),
+                                  ],
                                 ),
                                 if(userData['liveCrew'].isNotEmpty)
                                   Text(crewName,

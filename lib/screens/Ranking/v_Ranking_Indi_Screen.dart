@@ -113,8 +113,10 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              (widget.isKusbf == false)
-                                  ?'${_userModelController.resortNickname} 상위 TOP 3 유저' : 'KUSBF 상위 TOP 3 유저',
+                              (_userModelController.favoriteResort == 12 ||_userModelController.favoriteResort == 2 ||_userModelController.favoriteResort == 0)
+                                  ?(widget.isKusbf == false)
+                                  ? '${_userModelController.resortNickname} 상위 TOP 3 유저' :'KUSBF 상위 TOP 3 유저'
+                                  : '통합 상위 TOP 3 유저',
                               style: TextStyle(
                                   color: Color(0xFF949494),
                                   fontSize: 12
@@ -201,15 +203,27 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                                 ),
                                                 Padding(
                                                   padding: EdgeInsets.symmetric(horizontal: 16),
-                                                  child: Text(
-                                                    userDoc[0]['displayName'],
-                                                    style: TextStyle(
-                                                      color: Color(0xFF111111),
-                                                      fontWeight: FontWeight.bold,
-                                                      fontSize: 13,
-                                                    ),
-                                                    overflow: TextOverflow.ellipsis,
-                                                    maxLines: 1,
+                                                  child: Column(
+                                                    children: [
+                                                      Text(
+                                                        userDoc[0]['displayName'],
+                                                        style: TextStyle(
+                                                          color: Color(0xFF111111),
+                                                          fontWeight: FontWeight.bold,
+                                                          fontSize: 13,
+                                                        ),
+                                                        overflow: TextOverflow.ellipsis,
+                                                        maxLines: 1,
+                                                      ),
+                                                      SizedBox(width: 5,),
+                                                      Text(
+                                                        userDoc[0]['resortNickname'],
+                                                        style: TextStyle(
+                                                            fontSize: 12,
+                                                            color: Color(0xFF949494)
+                                                        ),
+                                                      ),
+                                                    ],
                                                   ),
                                                 ),
                                               ],
@@ -305,15 +319,27 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                                 ),
                                                 Padding(
                                                   padding: EdgeInsets.symmetric(horizontal: 16),
-                                                  child: Text(
-                                                    userDoc[0]['displayName'],
-                                                    style: TextStyle(
-                                                      color: Color(0xFF111111),
-                                                      fontWeight: FontWeight.bold,
-                                                      fontSize: 13,
-                                                    ),
-                                                    overflow: TextOverflow.ellipsis,
-                                                    maxLines: 1,
+                                                  child: Column(
+                                                    children: [
+                                                      Text(
+                                                        userDoc[0]['displayName'],
+                                                        style: TextStyle(
+                                                          color: Color(0xFF111111),
+                                                          fontWeight: FontWeight.bold,
+                                                          fontSize: 13,
+                                                        ),
+                                                        overflow: TextOverflow.ellipsis,
+                                                        maxLines: 1,
+                                                      ),
+                                                      SizedBox(width: 5,),
+                                                      Text(
+                                                        userDoc[0]['resortNickname'],
+                                                        style: TextStyle(
+                                                            fontSize: 12,
+                                                            color: Color(0xFF949494)
+                                                        ),
+                                                      ),
+                                                    ],
                                                   ),
                                                 ),
                                               ],
@@ -410,15 +436,27 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                                 ),
                                                 Padding(
                                                   padding: EdgeInsets.symmetric(horizontal: 16),
-                                                  child: Text(
-                                                    userDoc[0]['displayName'],
-                                                    style: TextStyle(
-                                                      color: Color(0xFF111111),
-                                                      fontWeight: FontWeight.bold,
-                                                      fontSize: 13,
-                                                    ),
-                                                    overflow: TextOverflow.ellipsis,
-                                                    maxLines: 1,
+                                                  child: Column(
+                                                    children: [
+                                                      Text(
+                                                        userDoc[0]['displayName'],
+                                                        style: TextStyle(
+                                                          color: Color(0xFF111111),
+                                                          fontWeight: FontWeight.bold,
+                                                          fontSize: 13,
+                                                        ),
+                                                        overflow: TextOverflow.ellipsis,
+                                                        maxLines: 1,
+                                                      ),
+                                                      SizedBox(width: 5,),
+                                                      Text(
+                                                        userDoc[0]['resortNickname'],
+                                                        style: TextStyle(
+                                                            fontSize: 12,
+                                                            color: Color(0xFF949494)
+                                                        ),
+                                                      ),
+                                                    ],
                                                   ),
                                                 ),
                                               ],
@@ -452,8 +490,20 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                         fontWeight: FontWeight.bold
                                     ),
                                   ),
-                                if(widget.isKusbf == false)
+                                if(widget.isKusbf == false &&
+                                    (_userModelController.favoriteResort == 12 ||_userModelController.favoriteResort == 2 ||_userModelController.favoriteResort == 0)
+                                )
                                   Text('${_userModelController.resortNickname} 개인 랭킹 TOP 100',
+                                    style: TextStyle(
+                                        color: Color(0xFF111111),
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold
+                                    ),
+                                  ),
+                                if(widget.isKusbf == false &&
+                                    (_userModelController.favoriteResort != 12 && _userModelController.favoriteResort != 2 && _userModelController.favoriteResort != 0)
+                                )
+                                  Text('통합 개인 랭킹 TOP 100',
                                     style: TextStyle(
                                         color: Color(0xFF111111),
                                         fontSize: 16,
@@ -569,11 +619,23 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                               child: Column(
                                                 crossAxisAlignment: CrossAxisAlignment.start,
                                                 children: [
-                                                  Text(userData['displayName'],
-                                                    style: TextStyle(
-                                                        fontSize: 15,
-                                                        color: Color(0xFF111111)
-                                                    ),
+                                                  Row(
+                                                    children: [
+                                                      Text(userData['displayName'],
+                                                        style: TextStyle(
+                                                            fontSize: 15,
+                                                            color: Color(0xFF111111)
+                                                        ),
+                                                      ),
+                                                      SizedBox(width: 5,),
+                                                      Text(
+                                                        userData['resortNickname'],
+                                                        style: TextStyle(
+                                                            fontSize: 12,
+                                                            color: Color(0xFF949494)
+                                                        ),
+                                                      ),
+                                                    ],
                                                   ),
                                                   if(userData['liveCrew'] != '')
                                                     Text(crewName,
