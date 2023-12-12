@@ -72,9 +72,9 @@ class _RankingIndiAllScreenState extends State<RankingIndiAllScreen> {
 
   void _scrollToMyRanking() {
     if(_userModelController.favoriteResort == 12 ||_userModelController.favoriteResort == 2 ||_userModelController.favoriteResort == 0) {
-       myRanking = _rankingTierModelController.userRankingMap![_userModelController.uid];
+      myRanking = _rankingTierModelController.userRankingMap![_userModelController.uid];
     }else {
-       myRanking = _rankingTierModelController.userRankingMap_integrated![_userModelController.uid];
+      myRanking = _rankingTierModelController.userRankingMap_integrated![_userModelController.uid];
     }
 
     if (myRanking != null) {
@@ -269,7 +269,7 @@ class _RankingIndiAllScreenState extends State<RankingIndiAllScreen> {
                                     ),
                                     SizedBox(width: 5,),
                                     Text(
-                                      userData['resortNickname'],
+                                      document['resortNickname'] ?? '',
                                       style: TextStyle(
                                           fontSize: 12,
                                           color: Color(0xFF949494)
@@ -316,7 +316,7 @@ class _RankingIndiAllScreenState extends State<RankingIndiAllScreen> {
                                     totalScore: document['totalScore'],
                                     rankingTierList: rankingTierList
                                 )
-                                :  _rankingTierModelController.getBadgeAsset_integrated(
+                                    :  _rankingTierModelController.getBadgeAsset_integrated(
                                     percent: userRankingMap_all!['${userData['uid']}']/(documents_all!.length),
                                     totalPassCount: document['totalPassCount'],
                                     rankingTierList: rankingTierList

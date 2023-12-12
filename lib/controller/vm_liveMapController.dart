@@ -372,11 +372,25 @@ class LiveMapController extends GetxController {
                     },
                     'slopeScores': {},
                     'totalScore': 0,
-                    'tier': ''
+                    'tier': '',
+                    'favoriteResort' : _userModelController.favoriteResort,
+                    'resortNickname' : _userModelController.resortNickname
                   });
 
                   // Re-fetch the document after creating it
                   userSnapshot = await docRef.get();
+                } else {
+                  // Document exists, check if favoriteResort and resortNickname fields exist
+                  Map<String, dynamic> data = userSnapshot.data() as Map<String, dynamic>;
+
+                  // Check if favoriteResort and resortNickname fields are missing
+                  if (!data.containsKey('favoriteResort') || !data.containsKey('resortNickname')) {
+                    // Add the missing fields to the document
+                    await docRef.update({
+                      'favoriteResort': _userModelController.favoriteResort,
+                      'resortNickname': _userModelController.resortNickname,
+                    });
+                  }
                 }
 
                 // Now, we are sure the document exists. Let's proceed with the rest of the logic.
@@ -556,11 +570,25 @@ class LiveMapController extends GetxController {
             },
             'slopeScores': {},
             'totalScore': 0,
-            'tier': ''
+            'tier': '',
+            'favoriteResort' : _userModelController.favoriteResort,
+            'resortNickname' : _userModelController.resortNickname
           });
 
           // Re-fetch the document after creating it
           userSnapshot = await docRef.get();
+        } else {
+          // Document exists, check if favoriteResort and resortNickname fields exist
+          Map<String, dynamic> data = userSnapshot.data() as Map<String, dynamic>;
+
+          // Check if favoriteResort and resortNickname fields are missing
+          if (!data.containsKey('favoriteResort') || !data.containsKey('resortNickname')) {
+            // Add the missing fields to the document
+            await docRef.update({
+              'favoriteResort': _userModelController.favoriteResort,
+              'resortNickname': _userModelController.resortNickname,
+            });
+          }
         }
 
         // Now, we are sure the document exists. Let's proceed with the rest of the logic.
@@ -738,11 +766,25 @@ class LiveMapController extends GetxController {
                     },
                     'slopeScores': {},
                     'totalScore': 0,
-                    'tier': ''
+                    'tier': '',
+                    'favoriteResort' : _userModelController.favoriteResort,
+                    'resortNickname' : _userModelController.resortNickname
                   });
 
                   // Re-fetch the document after creating it
                   userSnapshot = await docRef.get();
+                } else {
+                  // Document exists, check if favoriteResort and resortNickname fields exist
+                  Map<String, dynamic> data = userSnapshot.data() as Map<String, dynamic>;
+
+                  // Check if favoriteResort and resortNickname fields are missing
+                  if (!data.containsKey('favoriteResort') || !data.containsKey('resortNickname')) {
+                    // Add the missing fields to the document
+                    await docRef.update({
+                      'favoriteResort': _userModelController.favoriteResort,
+                      'resortNickname': _userModelController.resortNickname,
+                    });
+                  }
                 }
 
                 // Now, we are sure the document exists. Let's proceed with the rest of the logic.
@@ -910,11 +952,25 @@ class LiveMapController extends GetxController {
             },
             'slopeScores': {},
             'totalScore': 0,
-            'tier': ''
+            'tier': '',
+            'favoriteResort' : _userModelController.favoriteResort,
+            'resortNickname' : _userModelController.resortNickname
           });
 
           // Re-fetch the document after creating it
           userSnapshot = await docRef.get();
+        } else {
+          // Document exists, check if favoriteResort and resortNickname fields exist
+          Map<String, dynamic> data = userSnapshot.data() as Map<String, dynamic>;
+
+          // Check if favoriteResort and resortNickname fields are missing
+          if (!data.containsKey('favoriteResort') || !data.containsKey('resortNickname')) {
+            // Add the missing fields to the document
+            await docRef.update({
+              'favoriteResort': _userModelController.favoriteResort,
+              'resortNickname': _userModelController.resortNickname,
+            });
+          }
         }
 
         // Now, we are sure the document exists. Let's proceed with the rest of the logic.

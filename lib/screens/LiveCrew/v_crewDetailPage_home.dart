@@ -52,6 +52,8 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
 
   var _crewRankingStream;
 
+  List? crewDocs;
+
 
   Stream<QuerySnapshot> crewRankingStream() {
     return FirebaseFirestore.instance
@@ -78,6 +80,14 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
 
     final Size _size = MediaQuery.of(context).size;
     Get.put(ImageController(), permanent: true);
+
+    if(_userModelController.favoriteResort == 12 ||_userModelController.favoriteResort == 2 ||_userModelController.favoriteResort == 0) {
+      crewDocs = _rankingTierModelController.rankingDocs_crew;
+      crewRankingMap = _rankingTierModelController.crewRankingMap;
+    } else{
+      crewDocs = _rankingTierModelController.rankingDocs_crew_integrated;
+      crewRankingMap = _rankingTierModelController.crewRankingMap_integrated;
+    }
 
     return Scaffold(
       backgroundColor: Color(0xFFFFFFFF),
@@ -375,56 +385,36 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                                       SizedBox(
                                                         height: 2,
                                                       ),
-                                                      StreamBuilder(
-                                                        stream: FirebaseFirestore.instance
-                                                            .collection('liveCrew')
-                                                            .where('baseResort', isEqualTo: _liveCrewModelController.baseResort)
-                                                            .orderBy('totalScore', descending: true)
-                                                            .snapshots(),
-                                                        builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
-                                                          if (snapshot.connectionState == ConnectionState.waiting) {}
-                                                          if (snapshot.data == null) {}
-                                                          else if (snapshot.hasError) {
-                                                            return Text('Error: ${snapshot.error}');
-                                                          } else if (snapshot.hasData && snapshot.data!.docs.isNotEmpty) {
-
-                                                            final crewDocs = snapshot.data!.docs;
-                                                            crewRankingMap =  _liveMapController.calculateRankCrewAll2(crewDocs: crewDocs);
-
-                                                            return Row(
-                                                              children: [
-                                                                Text('${crewRankingMap!['${_liveCrewModelController.crewID}']}',
-                                                                  style: GoogleFonts.bebasNeue(
-                                                                      color: Color(0xFFFFFFFF),
-                                                                      fontSize: 28
-                                                                  ),
-                                                                ),
-                                                                // SizedBox(width: 3,),
-                                                                // Text('/',
-                                                                //   style: GoogleFonts.bebasNeue(
-                                                                //       fontSize: 16,
-                                                                //       color: Color(0xFFFFFFFF),
-                                                                //       fontWeight: FontWeight.bold
-                                                                //   ),
-                                                                // ),
-                                                                // Text('${crewDocs.length}',
-                                                                //   style: GoogleFonts.bebasNeue(
-                                                                //       color: Color(0xFFFFFFFF),
-                                                                //       fontSize: 28
-                                                                //   ),
-                                                                // ),
-                                                              ],
-                                                            );
-                                                          } else if (!snapshot.hasData || snapshot.data!.docs.isEmpty){
-                                                            return Text('-',
-                                                              style: TextStyle(
-                                                                  color: Color(0xFFFFFFFF),
-                                                                  fontSize: 28
-                                                              ),
-                                                            );
-                                                          }
-                                                          return Container();
-                                                        },
+                                                      Row(
+                                                        children: [
+                                                          (crewRankingMap!.isEmpty)
+                                                              ? Text('-',
+                                                            style: GoogleFonts.bebasNeue(
+                                                                color: Color(0xFFFFFFFF),
+                                                                fontSize: 28
+                                                            ),
+                                                          )
+                                                              : Text('${crewRankingMap!['${_liveCrewModelController.crewID}']}',
+                                                            style: GoogleFonts.bebasNeue(
+                                                                color: Color(0xFFFFFFFF),
+                                                                fontSize: 28
+                                                            ),
+                                                          ),
+                                                          // SizedBox(width: 3,),
+                                                          // Text('/',
+                                                          //   style: GoogleFonts.bebasNeue(
+                                                          //       fontSize: 16,
+                                                          //       color: Color(0xFFFFFFFF),
+                                                          //       fontWeight: FontWeight.bold
+                                                          //   ),
+                                                          // ),
+                                                          // Text('${crewDocs.length}',
+                                                          //   style: GoogleFonts.bebasNeue(
+                                                          //       color: Color(0xFFFFFFFF),
+                                                          //       fontSize: 28
+                                                          //   ),
+                                                          // ),
+                                                        ],
                                                       ),
                                                     ],
                                                   ),
@@ -636,9 +626,17 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                                     GestureDetector(
                                                       onTap: () async{
                                                         CustomFullScreenDialog.showDialog();
-                                                        await _rankingTierModelController.getRankingDocs_crew();
-                                                        await _rankingTierModelController.getRankingDocs();
-                                                        await _rankingTierModelController.getRankingDocs_crewMember(crewID: _liveCrewModelController.crewID, crewBase: _liveCrewModelController.baseResort);
+                                                        if(_liveCrewModelController.baseResort != 12 && _liveCrewModelController.baseResort != 2 && _liveCrewModelController.baseResort != 0 ) {
+                                                          print('통합랭킹 진입');
+                                                          await _rankingTierModelController.getRankingDocs_crew_integrated();
+                                                          await _rankingTierModelController.getRankingDocs_integrated();
+                                                          await _rankingTierModelController.getRankingDocs_crewMember_integrated(crewID: _liveCrewModelController.crewID, crewBase: _liveCrewModelController.baseResort);
+
+                                                        }else {
+                                                          await _rankingTierModelController.getRankingDocs_crew();
+                                                          await _rankingTierModelController.getRankingDocs();
+                                                          await _rankingTierModelController.getRankingDocs_crewMember(crewID: _liveCrewModelController.crewID, crewBase: _liveCrewModelController.baseResort);
+                                                        }
                                                         CustomFullScreenDialog.cancelDialog();
                                                         Get.to(()=> RankingMyCrewScreen());
                                                       },
@@ -752,18 +750,18 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                                               return Row(
                                                                 mainAxisAlignment: MainAxisAlignment.center,
                                                                 children: [
-                                                              if (memberlength == 0)
-                                                                Center(
-                                                                  child: Padding(
-                                                                    padding: const EdgeInsets.only(top: 30, bottom: 20),
-                                                                    child: Text(
-                                                                      '랭킹에 참여중인 크루원이 없습니다',
-                                                                      style: TextStyle(
-                                                                          fontSize: 13,
-                                                                          color: Color(0xFF949494)),
+                                                                  if (memberlength == 0)
+                                                                    Center(
+                                                                      child: Padding(
+                                                                        padding: const EdgeInsets.only(top: 30, bottom: 20),
+                                                                        child: Text(
+                                                                          '랭킹에 참여중인 크루원이 없습니다',
+                                                                          style: TextStyle(
+                                                                              fontSize: 13,
+                                                                              color: Color(0xFF949494)),
+                                                                        ),
+                                                                      ),
                                                                     ),
-                                                                  ),
-                                                                ),
                                                                   if(memberlength>0)
                                                                     Padding(
                                                                       padding: const EdgeInsets.symmetric(horizontal: 11),
@@ -891,7 +889,12 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                                                                             height: 2,
                                                                                           ),
                                                                                           // Text('베이스 : ${memberUserDocs[0]['resortNickname']}'),
-                                                                                          Text('${memberScoreDocs[0]['totalScore']}점',
+                                                                                          Text(
+                                                                                            (_liveCrewModelController.baseResort == 12
+                                                                                                || _liveCrewModelController.baseResort == 2
+                                                                                                || _liveCrewModelController.baseResort == 0)
+                                                                                                ? '${memberScoreDocs[0]['totalScore']}점'
+                                                                                                : '${memberScoreDocs[0]['totalPassCount']}회',
                                                                                             style: TextStyle(
                                                                                                 fontSize: 13,
                                                                                                 fontWeight: FontWeight.bold,
@@ -1044,7 +1047,12 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                                                                             height: 2,
                                                                                           ),
                                                                                           // Text('베이스 : ${memberUserDocs[0]['resortNickname']}'),
-                                                                                          Text('${memberScoreDocs[1]['totalScore']}점',
+                                                                                          Text(
+                                                                                            (_liveCrewModelController.baseResort == 12
+                                                                                                || _liveCrewModelController.baseResort == 2
+                                                                                                || _liveCrewModelController.baseResort == 0)
+                                                                                                ? '${memberScoreDocs[1]['totalScore']}점'
+                                                                                                : '${memberScoreDocs[1]['totalPassCount']}회',
                                                                                             style: TextStyle(
                                                                                                 fontSize: 13,
                                                                                                 fontWeight: FontWeight.bold,
@@ -1197,7 +1205,12 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                                                                             height: 2,
                                                                                           ),
                                                                                           // Text('베이스 : ${memberUserDocs[0]['resortNickname']}'),
-                                                                                          Text('${memberScoreDocs[2]['totalScore']}점',
+                                                                                          Text(
+                                                                                            (_liveCrewModelController.baseResort == 12
+                                                                                                || _liveCrewModelController.baseResort == 2
+                                                                                                || _liveCrewModelController.baseResort == 0)
+                                                                                                ? '${memberScoreDocs[2]['totalScore']}점'
+                                                                                                : '${memberScoreDocs[2]['totalPassCount']}회',
                                                                                             style: TextStyle(
                                                                                                 fontSize: 13,
                                                                                                 fontWeight: FontWeight.bold,
