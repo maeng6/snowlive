@@ -274,24 +274,30 @@ class _RankingIndiAllScreenState extends State<RankingIndiAllScreen> {
                                 ),
                                   Row(
                                     children: [
-                                      Container(
-                                        padding: EdgeInsets.symmetric(horizontal: 3, vertical: 1.5),
-                                        decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.circular(4),
-                                            border: Border.all(
-                                                color: Color(0xFFDEDEDE)
-                                            )
-                                        ),
-                                        child: Text(
-                                          document['resortNickname'] ?? '',
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 9,
-                                              color: Color(0xFF949494)
+                                      (document['resortNickname'] != null && document['resortNickname'] != '')
+                                          ? Row(
+                                        children: [
+                                          Container(
+                                            padding: EdgeInsets.symmetric(horizontal: 3, vertical: 1.5),
+                                            decoration: BoxDecoration(
+                                                borderRadius: BorderRadius.circular(4),
+                                                border: Border.all(
+                                                    color: Color(0xFFDEDEDE)
+                                                )
+                                            ),
+                                            child: Text(
+                                              document['resortNickname'] ?? '',
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 9,
+                                                  color: Color(0xFF949494)
+                                              ),
+                                            ),
                                           ),
-                                        ),
-                                      ),
-                                      SizedBox(width: 4),
+                                          SizedBox(width: 4),
+                                        ],
+                                      )
+                                          : Container(),
                                       if(userData['liveCrew'].isNotEmpty)
                                       Text(crewName,
                                         maxLines: 1,

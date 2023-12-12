@@ -1525,12 +1525,12 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                                                                           mainAxisAlignment: MainAxisAlignment.start,
                                                                                                           children: [
                                                                                                             Text(
-                                                                                                              (_userModelController.favoriteResort == 12
-                                                                                                                  || _userModelController.favoriteResort == 2
-                                                                                                                  || _userModelController.favoriteResort == 0)
+                                                                                                              (widget.favoriteResort == 12
+                                                                                                                  || widget.favoriteResort == 2
+                                                                                                                  || widget.favoriteResort == 0)
                                                                                                                   ?
-                                                                                                              '${_myRankingController.totalScore}점'
-                                                                                                                  :  '${_myRankingController.totalPassCount}회',
+                                                                                                              '${rankingDocs[0]['totalScore']}점'
+                                                                                                                  :  '${rankingDocs[0]['totalPassCount']}회',
                                                                                                               style: TextStyle(
                                                                                                                 color: Color(0xFFffffff),
                                                                                                                 fontWeight: FontWeight.bold,
@@ -1541,7 +1541,7 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                                                                               width: 5,
                                                                                                             ),
                                                                                                             Text(
-                                                                                                              '${userRankingMap_all!['${rankingDocs[0]['uid']}']}등',
+                                                                                                              '${userRankingMap_all!['${widget.uid}']}등',
                                                                                                               style: TextStyle(
                                                                                                                   fontSize: 13,
                                                                                                                   color: Color(0xFFFFFFFF)
@@ -1565,17 +1565,17 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                                                                   Transform.translate(
                                                                                                     offset: Offset(6, 2),
                                                                                                     child: ExtendedImage.network(
-                                                                                                      (_userModelController.favoriteResort == 12
-                                                                                                          || _userModelController.favoriteResort == 2
-                                                                                                          || _userModelController.favoriteResort == 0)
+                                                                                                      (widget.favoriteResort == 12
+                                                                                                          || widget.favoriteResort == 2
+                                                                                                          || widget.favoriteResort == 0)
                                                                                                           ? _rankingTierModelController.getBadgeAsset(
-                                                                                                          percent:  userRankingMap_all?['${_userModelController.uid}'] / documents_all!.length,
-                                                                                                          totalScore: _myRankingController.totalScore,
+                                                                                                          percent:  userRankingMap_all?['${widget.uid}'] / documents_all!.length,
+                                                                                                          totalScore: rankingDocs[0]['totalScore'],
                                                                                                           rankingTierList: rankingTierList
                                                                                                       )
                                                                                                           : _rankingTierModelController.getBadgeAsset_integrated(
-                                                                                                          percent:  userRankingMap_all?['${_userModelController.uid}'] / documents_all!.length,
-                                                                                                          totalPassCount: _myRankingController.totalPassCount,
+                                                                                                          percent:  userRankingMap_all?['${widget.uid}'] / documents_all!.length,
+                                                                                                          totalPassCount: rankingDocs[0]['totalPassCount'],
                                                                                                           rankingTierList: rankingTierList
                                                                                                       ),
                                                                                                       enableMemoryCache: true,
