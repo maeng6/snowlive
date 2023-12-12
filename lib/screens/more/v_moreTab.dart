@@ -737,8 +737,19 @@ class _MoreTabState extends State<MoreTab> {
                         GestureDetector(
                           onTap: () async{
                             CustomFullScreenDialog.showDialog();
-                            await _rankingTierModelController.getRankingDocs_crew();
-                            await _rankingTierModelController.getRankingDocs();
+                            if(_userModelController.favoriteResort != 12 && _userModelController.favoriteResort != 2 && _userModelController.favoriteResort != 0 ) {
+
+                              print('통합랭킹 진입');
+                              await _rankingTierModelController.getRankingDocs_crew_integrated();
+                              await _rankingTierModelController.getRankingDocs_integrated();
+
+                            }else {
+
+                              await _rankingTierModelController.getRankingDocs_crew();
+                              await _rankingTierModelController.getRankingDocs();
+
+                            }
+
                             await _myRankingController.getMyRankingData(_userModelController.uid);
                             CustomFullScreenDialog.cancelDialog();
                             (_seasonController.open ==true || _seasonController.open_uidList!.contains(_userModelController.uid))
@@ -871,7 +882,7 @@ class _MoreTabState extends State<MoreTab> {
                 onTap: () {
                   Get.to(() => NoticeList());
                 },
-                title: Stack(
+                title: Row(
                   children: [
                     Text(
                       '공지사항',
@@ -880,14 +891,13 @@ class _MoreTabState extends State<MoreTab> {
                           fontSize: 15,
                           color: Color(0xFF111111)),
                     ),
-                    Positioned(  // draw a red marble
-                      top: 1,
-                      left: 58,
+                    Padding(
+                      padding: const EdgeInsets.only(left: 2, bottom: 12),
                       child: new Icon(Icons.brightness_1, size: 6.0,
                           color:
                           (_noticeController.isNewNotice == true)
                               ?Color(0xFFD32F2F):Colors.white),
-                    )
+                    ),
                   ],
                 ),
                 trailing: Image.asset(

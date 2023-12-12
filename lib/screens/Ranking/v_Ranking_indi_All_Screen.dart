@@ -63,9 +63,19 @@ class _RankingIndiAllScreenState extends State<RankingIndiAllScreen> {
     super.dispose();
   }
 
+  Map? userRankingMap;
+  Map? userRankingMap_all;
+  List? documents;
+  List? documents_all;
+  dynamic myRanking;
+
 
   void _scrollToMyRanking() {
-    final myRanking = _rankingTierModelController.userRankingMap![_userModelController.uid];
+    if(_userModelController.favoriteResort == 12 ||_userModelController.favoriteResort == 2 ||_userModelController.favoriteResort == 0) {
+       myRanking = _rankingTierModelController.userRankingMap![_userModelController.uid];
+    }else {
+       myRanking = _rankingTierModelController.userRankingMap_integrated![_userModelController.uid];
+    }
 
     if (myRanking != null) {
       Scrollable.ensureVisible(myItemKey.currentContext!,
@@ -76,19 +86,35 @@ class _RankingIndiAllScreenState extends State<RankingIndiAllScreen> {
   }
 
   Future<void> _refreshData() async {
-    await _rankingTierModelController.getRankingDocs();
+    if(_userModelController.favoriteResort == 12 ||_userModelController.favoriteResort == 2 ||_userModelController.favoriteResort == 0) {
+      await _rankingTierModelController.getRankingDocs();
+    }else{
+      await _rankingTierModelController.getRankingDocs_integrated();
+    }
     setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
     Size _size = MediaQuery.of(context).size;
-    final documents = widget.isKusbf == true ? _rankingTierModelController.rankingDocs_kusbf : _rankingTierModelController.rankingDocs;
-    final documents_all = _rankingTierModelController.rankingDocs;
 
-    final userRankingMap =  widget.isKusbf == true ? _rankingTierModelController.userRankingMap_kusbf : _rankingTierModelController.userRankingMap;
-    final userRankingMap_all = _rankingTierModelController.userRankingMap;
+    if(_userModelController.favoriteResort == 12 ||_userModelController.favoriteResort == 2 ||_userModelController.favoriteResort == 0) {
 
+      documents = widget.isKusbf == true
+          ? _rankingTierModelController.rankingDocs_kusbf
+          : _rankingTierModelController.rankingDocs;
+      documents_all = _rankingTierModelController.rankingDocs;
+
+      userRankingMap = widget.isKusbf == true
+          ? _rankingTierModelController.userRankingMap_kusbf
+          : _rankingTierModelController.userRankingMap;
+      userRankingMap_all = _rankingTierModelController.userRankingMap;
+    }else {
+      documents =  _rankingTierModelController.rankingDocs_integrated;
+      documents_all = _rankingTierModelController.rankingDocs_integrated;
+      userRankingMap = _rankingTierModelController.userRankingMap_integrated;
+      userRankingMap_all = _rankingTierModelController.userRankingMap_integrated;
+    }
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -233,11 +259,23 @@ class _RankingIndiAllScreenState extends State<RankingIndiAllScreen> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(
-                                  userData['displayName'],
-                                  style: TextStyle(
-                                      fontSize: 15,
-                                      color: Color(0xFF111111)),
+                                Row(
+                                  children: [
+                                    Text(
+                                      userData['displayName'],
+                                      style: TextStyle(
+                                          fontSize: 15,
+                                          color: Color(0xFF111111)),
+                                    ),
+                                    SizedBox(width: 5,),
+                                    Text(
+                                      userData['resortNickname'],
+                                      style: TextStyle(
+                                          fontSize: 12,
+                                          color: Color(0xFF949494)
+                                      ),
+                                    ),
+                                  ],
                                 ),
                                 if(userData['liveCrew'].isNotEmpty)
                                   Text(crewName,
@@ -255,7 +293,11 @@ class _RankingIndiAllScreenState extends State<RankingIndiAllScreen> {
                         Row(
                           children: [
                             Text(
-                              '${document['totalScore'].toString()}점',
+                              (_userModelController.favoriteResort == 12
+                                  || _userModelController.favoriteResort == 2
+                                  || _userModelController.favoriteResort == 0)
+                                  ? '${document['totalScore']}점'
+                                  : '${document['totalPassCount']}회',
                               style: TextStyle(
                                 color: Color(0xFF111111),
                                 fontWeight: FontWeight.normal,
@@ -265,9 +307,18 @@ class _RankingIndiAllScreenState extends State<RankingIndiAllScreen> {
                             Transform.translate(
                               offset: Offset(6, 2),
                               child: ExtendedImage.network(
+                                (_userModelController.favoriteResort == 12
+                                    || _userModelController.favoriteResort == 2
+                                    || _userModelController.favoriteResort == 0)
+                                    ?
                                 _rankingTierModelController.getBadgeAsset(
                                     percent: userRankingMap_all!['${userData['uid']}']/(documents_all!.length),
                                     totalScore: document['totalScore'],
+                                    rankingTierList: rankingTierList
+                                )
+                                :  _rankingTierModelController.getBadgeAsset_integrated(
+                                    percent: userRankingMap_all!['${userData['uid']}']/(documents_all!.length),
+                                    totalPassCount: document['totalPassCount'],
                                     rankingTierList: rankingTierList
                                 ),
                                 enableMemoryCache: true,
