@@ -47,9 +47,17 @@ class _RankingMyCrewScreenState extends State<RankingMyCrewScreen> {
   }
 
   Map? userRankingMap;
+  Map? userRankingMap_all;
+  List? document;
+  List? documents_all;
+  dynamic myRanking;
 
   void _scrollToMyRanking() {
-    final myRanking = userRankingMap![_userModelController.uid];
+    if(_liveCrewModelController.baseResort == 12 || _liveCrewModelController.baseResort == 2 || _liveCrewModelController.baseResort == 0) {
+      myRanking = _rankingTierModelController.userRankingMap![_userModelController.uid];
+    }else {
+      myRanking = _rankingTierModelController.userRankingMap_integrated![_userModelController.uid];
+    }
 
     if (myRanking != null) {
       Scrollable.ensureVisible(myItemKey.currentContext!,
@@ -60,9 +68,16 @@ class _RankingMyCrewScreenState extends State<RankingMyCrewScreen> {
   }
 
   Future<void> _refreshData() async {
-    await _rankingTierModelController.getRankingDocs_crew();
-    await _rankingTierModelController.getRankingDocs();
-    await _rankingTierModelController.getRankingDocs_crewMember(crewID: _liveCrewModelController.crewID, crewBase: _liveCrewModelController.baseResort);
+    if(_liveCrewModelController.baseResort == 12 ||_liveCrewModelController.baseResort == 2 ||_liveCrewModelController.baseResort == 0) {
+      await _rankingTierModelController.getRankingDocs_crew();
+      await _rankingTierModelController.getRankingDocs();
+      await _rankingTierModelController.getRankingDocs_crewMember(crewID: _liveCrewModelController.crewID, crewBase: _liveCrewModelController.baseResort);
+
+    }else{
+      await _rankingTierModelController.getRankingDocs_crew_integrated();
+      await _rankingTierModelController.getRankingDocs_integrated();
+      await _rankingTierModelController.getRankingDocs_crewMember_integrated(crewID: _liveCrewModelController.crewID, crewBase: _liveCrewModelController.baseResort);
+    }
     setState(() {});
   }
 
@@ -70,17 +85,23 @@ class _RankingMyCrewScreenState extends State<RankingMyCrewScreen> {
   Widget build(BuildContext context) {
     Size _size = MediaQuery.of(context).size;
 
-    final document = _rankingTierModelController.rankingDocs_crewMember;
-    final documents_all = _rankingTierModelController.rankingDocs;
-
-    final userRankingMap =   _rankingTierModelController.userRankingMap;
-    final userRankingMap_all = _rankingTierModelController.userRankingMap;
-
+    if(_liveCrewModelController.baseResort == 12 || _liveCrewModelController.baseResort == 2 || _liveCrewModelController.baseResort == 0) {
+       document = _rankingTierModelController.rankingDocs_crewMember;
+       documents_all = _rankingTierModelController.rankingDocs;
+       userRankingMap =   _rankingTierModelController.userRankingMap;
+       userRankingMap_all = _rankingTierModelController.userRankingMap;
+    }else {
+      document = _rankingTierModelController.rankingDocs_crewMember_integrated;
+      documents_all = _rankingTierModelController.rankingDocs_integrated;
+      userRankingMap =   _rankingTierModelController.userRankingMap_integrated;
+      userRankingMap_all = _rankingTierModelController.userRankingMap_integrated;
+    }
 
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
         actions: <Widget>[
+          if(_userModelController.liveCrew == _liveCrewModelController.crewID)
           GestureDetector(
             onTap: _scrollToMyRanking,
             child: Center(
@@ -144,7 +165,7 @@ class _RankingMyCrewScreenState extends State<RankingMyCrewScreen> {
                         child: Padding(
                           padding: const EdgeInsets.only(top: 30, bottom: 20),
                           child: Text(
-                            '랭킹에 참여중인 크루원이 없습니다',
+                            '',
                             style: TextStyle(
                                 fontSize: 13,
                                 color: Color(0xFF949494)),
@@ -311,7 +332,11 @@ class _RankingMyCrewScreenState extends State<RankingMyCrewScreen> {
                             ),
                             Expanded(child: SizedBox()),
                             Text(
-                              '${document['totalScore'].toString()}점',
+                              (_liveCrewModelController.baseResort == 12
+                                  || _liveCrewModelController.baseResort == 2
+                                  || _liveCrewModelController.baseResort == 0)
+                                  ? '${document['totalScore']}점'
+                                  : '${document['totalPassCount']}회',
                               style: TextStyle(
                                 color: Color(0xFF111111),
                                 fontWeight: FontWeight.normal,
@@ -321,9 +346,18 @@ class _RankingMyCrewScreenState extends State<RankingMyCrewScreen> {
                             Transform.translate(
                               offset: Offset(6, 2),
                               child: ExtendedImage.network(
+                                (_liveCrewModelController.baseResort == 12
+                                    || _liveCrewModelController.baseResort == 2
+                                    || _liveCrewModelController.baseResort == 0)
+                                    ?
                                 _rankingTierModelController.getBadgeAsset(
-                                    percent: userRankingMap_all!['${userDoc[0]['uid']}']/(documents_all!.length),
+                                    percent: userRankingMap_all!['${userData['uid']??0}']/(documents_all!.length),
                                     totalScore: document['totalScore'],
+                                    rankingTierList: rankingTierList
+                                )
+                                    :  _rankingTierModelController.getBadgeAsset_integrated(
+                                    percent: userRankingMap_all!['${userData['uid']??0}']/(documents_all!.length),
+                                    totalPassCount: document['totalPassCount'],
                                     rankingTierList: rankingTierList
                                 ),
                                 enableMemoryCache: true,

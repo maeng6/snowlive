@@ -498,7 +498,7 @@ Future<void> updateTier()async{
     final AllUserScoreDocs = _rankingDocs_integrated;
 
     List<Map<String, dynamic>> allUserScoreData = AllUserScoreDocs!.map((doc) {
-      return doc.data() as Map<String, dynamic>;
+      return doc as Map<String, dynamic>;
     }).toList();
 
     rankingList = allUserScoreData.where((doc) =>
@@ -521,7 +521,7 @@ Future<void> updateTier()async{
 
     this._rankingDocs_crewMember_integrated!.value = rankingList.map((doc) {
       // 각 문서의 데이터를 Map 형태로 변환
-      return doc as Map<String, dynamic>;
+      return doc ;
     }).toList();
 
     print('크루 랭킹인원 : ${_rankingDocs_crewMember_integrated!.length}');
