@@ -217,14 +217,11 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                                                 ),
                                               ],
                                             ),
-                                            child: ExtendedImage
-                                                .network(
+                                            child: ExtendedImage.network(
                                               assetTop1,
                                               enableMemoryCache: true,
-                                              shape: BoxShape
-                                                  .rectangle,
-                                              borderRadius: BorderRadius
-                                                  .circular(7),
+                                              shape: BoxShape.rectangle,
+                                              borderRadius: BorderRadius.circular(7),
                                               width: 58,
                                               height: 58,
                                               fit: BoxFit.cover,
@@ -238,20 +235,16 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                                             fit: BoxFit.cover,
                                           ),
                                           Padding(
-                                            padding: EdgeInsets
-                                                .symmetric(
+                                            padding: EdgeInsets.symmetric(
                                                 horizontal: 16),
                                             child: Text(
                                               crewDocs![0]['crewName'],
                                               style: TextStyle(
-                                                color: Color(
-                                                    0xFFFFFFFF),
-                                                fontWeight: FontWeight
-                                                    .bold,
+                                                color: Color(0xFFFFFFFF),
+                                                fontWeight: FontWeight.bold,
                                                 fontSize: 13,
                                               ),
-                                              overflow: TextOverflow
-                                                  .ellipsis,
+                                              overflow: TextOverflow.ellipsis,
                                               maxLines: 1,
                                             ),
                                           ),
@@ -592,13 +585,12 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                                               Text(
                                                 '${crewRankingMap!['${crewDocs![index]['crewID']}']}',
                                                 style: TextStyle(
-                                                    fontWeight: FontWeight
-                                                        .bold,
-                                                    fontSize: 15,
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 14,
                                                     color: Color(0xFF111111)
                                                 ),
                                               ),
-                                              SizedBox(width: 14),
+                                              SizedBox(width: 12),
                                               Container(
                                                 width: 46,
                                                 height: 46,
@@ -682,7 +674,7 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                                                   ),
                                                 ),
                                               ),
-                                              SizedBox(width: 14),
+                                              SizedBox(width: 12),
                                               Padding(
                                                   padding: const EdgeInsets
                                                       .only(bottom: 3),
@@ -699,28 +691,45 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                                                               color: Color(0xFF111111),
                                                             ),
                                                           ),
-                                                          SizedBox(width: 5,),
-                                                          Text(
-                                                            crewDocs![index]['baseResortNickName'],
-                                                            style: TextStyle(
-                                                              fontSize: 12,
-                                                              color: Color(0xFF949494)
-                                                            ),
-                                                          ),
                                                         ],
                                                       ),
-                                                      if (crewDocs![index]['description'].isNotEmpty)
-                                                        SizedBox(
-                                                          width: _size.width-194,
-                                                          child: Text(
-                                                            crewDocs![index]['description'],
-                                                            maxLines: 1,
-                                                            overflow: TextOverflow.ellipsis,
-                                                            style: TextStyle(
-                                                                fontSize: 12,
-                                                                color: Color(0xFF949494)
+                                                      SizedBox(
+                                                        height: 4,
+                                                      ),
+                                                        Row(
+                                                          children: [
+                                                            Container(
+                                                              padding: EdgeInsets.symmetric(horizontal: 3, vertical: 1.5),
+                                                              decoration: BoxDecoration(
+                                                                  borderRadius: BorderRadius.circular(4),
+                                                                  border: Border.all(
+                                                                      color: Color(0xFFDEDEDE)
+                                                                  )
+                                                              ),
+                                                              child: Text(
+                                                                crewDocs![index]['baseResortNickName'],
+                                                                style: TextStyle(
+                                                                    fontWeight: FontWeight.bold,
+                                                                    fontSize: 9,
+                                                                    color: Color(0xFF949494)
+                                                                ),
+                                                              ),
                                                             ),
-                                                          ),
+                                                            SizedBox(width: 4),
+                                                            if (crewDocs![index]['description'].isNotEmpty)
+                                                            SizedBox(
+                                                              width: _size.width-220,
+                                                              child: Text(
+                                                                crewDocs![index]['description'],
+                                                                maxLines: 1,
+                                                                overflow: TextOverflow.ellipsis,
+                                                                style: TextStyle(
+                                                                    fontSize: 12,
+                                                                    color: Color(0xFF949494)
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          ],
                                                         ),
                                                     ],
                                                   )
@@ -739,7 +748,7 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                                                   color: Color(0xFF111111),
                                                   fontWeight: FontWeight
                                                       .normal,
-                                                  fontSize: 18,
+                                                  fontSize: 16,
                                                 ),
                                               ),
                                             ],

@@ -1,5 +1,5 @@
 import 'dart:math';
-
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:com.snowlive/controller/vm_imageController.dart';
 import 'package:com.snowlive/controller/vm_urlLauncherController.dart';
@@ -1533,13 +1533,16 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                                                     child: Column(
                                                                       mainAxisAlignment: MainAxisAlignment.end,
                                                                       children: [
-                                                                        Text(
+                                                                        AutoSizeText(
                                                                           passCount != 0 ? '$passCount' : '',
                                                                           style: TextStyle(
                                                                             fontSize: 13,
                                                                             color: Color(0xFF111111),
                                                                             fontWeight: FontWeight.bold,
                                                                           ),
+                                                                          minFontSize: 8,
+                                                                          maxLines: 1,
+                                                                          overflow: TextOverflow.visible,
                                                                         ),
                                                                         SizedBox(height: 4),
                                                                         Container(

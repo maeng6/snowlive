@@ -177,10 +177,10 @@ class _RankingCrewAllScreenState extends State<RankingCrewAllScreen> {
                           '${crewRankingMap!['${document['crewID']}']}',
                           style: TextStyle(
                               fontWeight: FontWeight.bold,
-                              fontSize: 15,
+                              fontSize: 14,
                               color: Color(0xFF111111)),
                         ),
-                        SizedBox(width: 14),
+                        SizedBox(width: 12),
                         Container(
                           width: 46,
                           height: 46,
@@ -248,7 +248,7 @@ class _RankingCrewAllScreenState extends State<RankingCrewAllScreen> {
                             ),
                           ),
                         ),
-                        SizedBox(width: 14),
+                        SizedBox(width: 12),
                         Padding(
                           padding: const EdgeInsets.only(bottom: 3),
                           child: Column(
@@ -261,27 +261,47 @@ class _RankingCrewAllScreenState extends State<RankingCrewAllScreen> {
                                     style: TextStyle(
                                         fontSize: 15, color: Color(0xFF111111)),
                                   ),
-                                  SizedBox(width: 5,),
-                                  Text(
-                                    document['baseResortNickName'],
-                                    style: TextStyle(
-                                        fontSize: 12,
-                                        color: Color(0xFF949494)
-                                    ),
-                                  ),
+
                                 ],
                               ),
-                              if (document['description'].isNotEmpty)
-                                SizedBox(
-                                  width: _size.width - 206,
-                                  child: Text(
-                                    document['description'],
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: TextStyle(
-                                        fontSize: 12, color: Color(0xFF949494)),
+                              SizedBox(
+                                height: 4,
+                              ),
+                              Row(
+                                children: [
+                                  Container(
+                                    padding: EdgeInsets.symmetric(horizontal: 3, vertical: 1.5),
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(4),
+                                        border: Border.all(
+                                            color: Color(0xFFDEDEDE)
+                                        )
+                                    ),
+                                    child: Text(
+                                      document['baseResortNickName'],
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 9,
+                                          color: Color(0xFF949494)
+                                      ),
+                                    ),
                                   ),
-                                ),
+                                  SizedBox(width: 4),
+                                  if (document['description'].isNotEmpty)
+                                    SizedBox(
+                                      width: _size.width-220,
+                                      child: Text(
+                                        document['description'],
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: TextStyle(
+                                            fontSize: 12,
+                                            color: Color(0xFF949494)
+                                        ),
+                                      ),
+                                    ),
+                                ],
+                              ),
                             ],
                           ),
                         ),
@@ -295,7 +315,7 @@ class _RankingCrewAllScreenState extends State<RankingCrewAllScreen> {
                           style: TextStyle(
                             color: Color(0xFF111111),
                             fontWeight: FontWeight.normal,
-                            fontSize: 18,
+                            fontSize: 16,
                           ),
                         ),
                       ],

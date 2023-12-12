@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
@@ -2575,13 +2576,16 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                                                   child: Column(
                                                                                     mainAxisAlignment: MainAxisAlignment.end,
                                                                                     children: [
-                                                                                      Text(
+                                                                                      AutoSizeText(
                                                                                         passCount != 0 ? '$passCount' : '',
                                                                                         style: TextStyle(
-                                                                                            fontSize: 13,
-                                                                                            color: Color(0xFF111111),
-                                                                                            fontWeight: FontWeight.bold
+                                                                                          fontSize: 13,
+                                                                                          color: Color(0xFF111111),
+                                                                                          fontWeight: FontWeight.bold,
                                                                                         ),
+                                                                                        minFontSize: 8,
+                                                                                        maxLines: 1,
+                                                                                        overflow: TextOverflow.visible,
                                                                                       ),
                                                                                       SizedBox(height: 4),
                                                                                       Container(

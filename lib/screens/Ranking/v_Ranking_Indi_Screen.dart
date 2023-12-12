@@ -215,12 +215,12 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                                         overflow: TextOverflow.ellipsis,
                                                         maxLines: 1,
                                                       ),
-                                                      SizedBox(width: 5,),
+                                                      SizedBox(height: 2),
                                                       Text(
                                                         documents![0]['resortNickname'] ?? '',
                                                         style: TextStyle(
                                                             fontSize: 12,
-                                                            color: Color(0xFF949494)
+                                                            color: Color(0xFF666666)
                                                         ),
                                                       ),
                                                     ],
@@ -331,12 +331,12 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                                         overflow: TextOverflow.ellipsis,
                                                         maxLines: 1,
                                                       ),
-                                                      SizedBox(width: 5,),
+                                                      SizedBox(height: 2),
                                                       Text(
                                                         documents![1]['resortNickname'] ?? '',
                                                         style: TextStyle(
                                                             fontSize: 12,
-                                                            color: Color(0xFF949494)
+                                                            color: Color(0xFF666666)
                                                         ),
                                                       ),
                                                     ],
@@ -448,12 +448,12 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                                         overflow: TextOverflow.ellipsis,
                                                         maxLines: 1,
                                                       ),
-                                                      SizedBox(width: 5,),
+                                                      SizedBox(height: 2),
                                                       Text(
                                                         documents![2]['resortNickname'] ?? '',
                                                         style: TextStyle(
                                                             fontSize: 12,
-                                                            color: Color(0xFF949494)
+                                                            color: Color(0xFF666666)
                                                         ),
                                                       ),
                                                     ],
@@ -557,11 +557,11 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                             '${userRankingMap!['${userData['uid']}']}',
                                             style: TextStyle(
                                                 fontWeight: FontWeight.bold,
-                                                fontSize: 15,
+                                                fontSize: 14,
                                                 color: Color(0xFF111111)
                                             ),
                                           ),
-                                          SizedBox(width: 14),
+                                          SizedBox(width: 12),
                                           Container(
                                             width: 48,
                                             height: 48,
@@ -627,24 +627,41 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                                             color: Color(0xFF111111)
                                                         ),
                                                       ),
-                                                      SizedBox(width: 5,),
-                                                      Text(
-                                                        document['resortNickname'] ?? '',
-                                                        style: TextStyle(
-                                                            fontSize: 12,
-                                                            color: Color(0xFF949494)
-                                                        ),
-                                                      ),
                                                     ],
                                                   ),
-                                                  if(userData['liveCrew'] != '')
-                                                    Text(crewName,
-                                                      maxLines: 1,
-                                                      overflow: TextOverflow.ellipsis,
-                                                      style: TextStyle(
-                                                          fontSize: 12,
-                                                          color: Color(0xFF949494)
-                                                      ),)
+                                                  SizedBox(
+                                                    height: 4,
+                                                  ),
+                                                  Row(
+                                                    children: [
+                                                      Container(
+                                                        padding: EdgeInsets.symmetric(horizontal: 3, vertical: 1.5),
+                                                        decoration: BoxDecoration(
+                                                            borderRadius: BorderRadius.circular(4),
+                                                            border: Border.all(
+                                                                color: Color(0xFFDEDEDE)
+                                                            )
+                                                        ),
+                                                        child: Text(
+                                                          document['resortNickname'] ?? '',
+                                                          style: TextStyle(
+                                                              fontWeight: FontWeight.bold,
+                                                              fontSize: 9,
+                                                              color: Color(0xFF949494)
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      SizedBox(width: 4),
+                                                      if(userData['liveCrew'] != '')
+                                                        Text(crewName,
+                                                          maxLines: 1,
+                                                          overflow: TextOverflow.ellipsis,
+                                                          style: TextStyle(
+                                                              fontSize: 12,
+                                                              color: Color(0xFF949494)
+                                                          ),),
+                                                    ],
+                                                  )
                                                   // StreamBuilder<QuerySnapshot>(
                                                   //   stream: FirebaseFirestore.instance
                                                   //       .collection('liveCrew')
@@ -692,7 +709,7 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                                 style: TextStyle(
                                                   color: Color(0xFF111111),
                                                   fontWeight: FontWeight.normal,
-                                                  fontSize: 18,
+                                                  fontSize: 16,
                                                 ),
                                               ),
                                               Transform.translate(
@@ -713,7 +730,7 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                                   ),
                                                   enableMemoryCache: true,
                                                   fit: BoxFit.cover,
-                                                  width: 40,
+                                                  width: 36,
                                                 ),
                                               ),
                                             ],

@@ -197,10 +197,10 @@ class _RankingIndiAllScreenState extends State<RankingIndiAllScreen> {
                           '${userRankingMap!['${userData['uid']}']}',
                           style: TextStyle(
                               fontWeight: FontWeight.bold,
-                              fontSize: 15,
+                              fontSize: 14,
                               color: Color(0xFF111111)),
                         ),
-                        SizedBox(width: 14),
+                        SizedBox(width: 12),
                         Container(
                           width: 48,
                           height: 48,
@@ -267,24 +267,41 @@ class _RankingIndiAllScreenState extends State<RankingIndiAllScreen> {
                                           fontSize: 15,
                                           color: Color(0xFF111111)),
                                     ),
-                                    SizedBox(width: 5,),
-                                    Text(
-                                      document['resortNickname'] ?? '',
-                                      style: TextStyle(
-                                          fontSize: 12,
-                                          color: Color(0xFF949494)
-                                      ),
-                                    ),
                                   ],
                                 ),
-                                if(userData['liveCrew'].isNotEmpty)
-                                  Text(crewName,
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: TextStyle(
-                                        fontSize: 12,
-                                        color: Color(0xFF949494)
-                                    ),)
+                                SizedBox(
+                                  height: 4,
+                                ),
+                                  Row(
+                                    children: [
+                                      Container(
+                                        padding: EdgeInsets.symmetric(horizontal: 3, vertical: 1.5),
+                                        decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.circular(4),
+                                            border: Border.all(
+                                                color: Color(0xFFDEDEDE)
+                                            )
+                                        ),
+                                        child: Text(
+                                          document['resortNickname'] ?? '',
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 9,
+                                              color: Color(0xFF949494)
+                                          ),
+                                        ),
+                                      ),
+                                      SizedBox(width: 4),
+                                      if(userData['liveCrew'].isNotEmpty)
+                                      Text(crewName,
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: TextStyle(
+                                            fontSize: 12,
+                                            color: Color(0xFF949494)
+                                        ),),
+                                    ],
+                                  )
                               ],
                             ),
                           ),
@@ -301,7 +318,7 @@ class _RankingIndiAllScreenState extends State<RankingIndiAllScreen> {
                               style: TextStyle(
                                 color: Color(0xFF111111),
                                 fontWeight: FontWeight.normal,
-                                fontSize: 18,
+                                fontSize: 16,
                               ),
                             ),
                             Transform.translate(
@@ -323,7 +340,7 @@ class _RankingIndiAllScreenState extends State<RankingIndiAllScreen> {
                                 ),
                                 enableMemoryCache: true,
                                 fit: BoxFit.cover,
-                                width: 40,
+                                width: 36,
                               ),
                             ),
                           ],
