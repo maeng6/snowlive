@@ -48,7 +48,7 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
 
   Future<void> _refreshData() async {
     if(_userModelController.favoriteResort == 12 ||_userModelController.favoriteResort == 2 ||_userModelController.favoriteResort == 0) {
-      await _rankingTierModelController.getRankingDocs_crew();
+      await _rankingTierModelController.getRankingDocs_crew(baseResort: _userModelController.favoriteResort);
     }else {
       await _rankingTierModelController.getRankingDocs_crew_integrated();
     }
@@ -63,15 +63,15 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
     _userModelController.getCurrentUser_kusbf(_userModelController.uid);
 
     if(_userModelController.favoriteResort == 12 ||_userModelController.favoriteResort == 2 ||_userModelController.favoriteResort == 0) {
-       crewDocs = widget.isKusbf == true
-           ? _rankingTierModelController.rankingDocs_crew_kusbf
-           : _rankingTierModelController.rankingDocs_crew;
-       crewRankingMap = widget.isKusbf == true
+      crewDocs = widget.isKusbf == true
+          ? _rankingTierModelController.rankingDocs_crew_kusbf
+          : _rankingTierModelController.rankingDocs_crew;
+      crewRankingMap = widget.isKusbf == true
           ? _rankingTierModelController.crewRankingMap_kusbf
           : _rankingTierModelController.crewRankingMap;
     } else{
-       crewDocs = _rankingTierModelController.rankingDocs_crew_integrated;
-       crewRankingMap = _rankingTierModelController.crewRankingMap_integrated;
+      crewDocs = _rankingTierModelController.rankingDocs_crew_integrated;
+      crewRankingMap = _rankingTierModelController.crewRankingMap_integrated;
     }
     if (crewDocs!.isNotEmpty) {
       for (var crewLogo in crewLogoList) {
@@ -121,9 +121,9 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                           children: [
                             Text(
                               (_userModelController.favoriteResort == 12 ||_userModelController.favoriteResort == 2 ||_userModelController.favoriteResort == 0)
-                                ?(widget.isKusbf == false)
+                                  ?(widget.isKusbf == false)
                                   ? '${_userModelController.resortNickname} 상위 TOP 3 크루' :'KUSBF 상위 TOP 3 크루'
-                              : '통합 상위 TOP 3 크루',
+                                  : '통합 상위 TOP 3 크루',
                               style: TextStyle(
                                   color: Color(0xFF949494),
                                   fontSize: 12
@@ -696,27 +696,27 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                                                       SizedBox(
                                                         height: 4,
                                                       ),
-                                                        Row(
-                                                          children: [
-                                                            Container(
-                                                              padding: EdgeInsets.symmetric(horizontal: 3, vertical: 1.5),
-                                                              decoration: BoxDecoration(
-                                                                  borderRadius: BorderRadius.circular(4),
-                                                                  border: Border.all(
-                                                                      color: Color(0xFFDEDEDE)
-                                                                  )
-                                                              ),
-                                                              child: Text(
-                                                                crewDocs![index]['baseResortNickName'],
-                                                                style: TextStyle(
-                                                                    fontWeight: FontWeight.bold,
-                                                                    fontSize: 9,
-                                                                    color: Color(0xFF949494)
-                                                                ),
+                                                      Row(
+                                                        children: [
+                                                          Container(
+                                                            padding: EdgeInsets.symmetric(horizontal: 3, vertical: 1.5),
+                                                            decoration: BoxDecoration(
+                                                                borderRadius: BorderRadius.circular(4),
+                                                                border: Border.all(
+                                                                    color: Color(0xFFDEDEDE)
+                                                                )
+                                                            ),
+                                                            child: Text(
+                                                              crewDocs![index]['baseResortNickName'],
+                                                              style: TextStyle(
+                                                                  fontWeight: FontWeight.bold,
+                                                                  fontSize: 9,
+                                                                  color: Color(0xFF949494)
                                                               ),
                                                             ),
-                                                            SizedBox(width: 4),
-                                                            if (crewDocs![index]['description'].isNotEmpty)
+                                                          ),
+                                                          SizedBox(width: 4),
+                                                          if (crewDocs![index]['description'].isNotEmpty)
                                                             SizedBox(
                                                               width: _size.width-220,
                                                               child: Text(
@@ -729,21 +729,21 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                                                                 ),
                                                               ),
                                                             ),
-                                                          ],
-                                                        ),
+                                                        ],
+                                                      ),
                                                     ],
                                                   )
                                               ),
                                               Expanded(child: SizedBox()),
 
-                                               Text(
-                                               (_userModelController.favoriteResort == 12
-                                               || _userModelController.favoriteResort == 2
-                                               || _userModelController.favoriteResort == 0)
-                                                ?'${crewDocs![index]['totalScore']
+                                              Text(
+                                                (_userModelController.favoriteResort == 12
+                                                    || _userModelController.favoriteResort == 2
+                                                    || _userModelController.favoriteResort == 0)
+                                                    ?'${crewDocs![index]['totalScore']
                                                     .toString()}점'
-                                                 : '${crewDocs![index]['totalPassCount']
-                                                   .toString()}회',
+                                                    : '${crewDocs![index]['totalPassCount']
+                                                    .toString()}회',
                                                 style: TextStyle(
                                                   color: Color(0xFF111111),
                                                   fontWeight: FontWeight
@@ -924,8 +924,8 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                                     (_userModelController.favoriteResort == 12
                                         || _userModelController.favoriteResort == 2
                                         || _userModelController.favoriteResort == 0)
-                                    ? '${myCrewDocs[0]['totalScore']}점'
-                                    : '${myCrewDocs[0]['totalPassCount']}회',
+                                        ? '${myCrewDocs[0]['totalScore']}점'
+                                        : '${myCrewDocs[0]['totalPassCount']}회',
                                     style: TextStyle(
                                       color: Color(0xFFFFFFFF),
                                       fontWeight: FontWeight.normal,
@@ -1042,10 +1042,10 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                                   Expanded(child: SizedBox()),
                                   Text(
                                     (_userModelController.favoriteResort == 12
-                                      || _userModelController.favoriteResort == 2
-                                      || _userModelController.favoriteResort == 0)
-                                      ? '${myCrewDocs[0]['totalScore']}점'
-                                      : '${myCrewDocs[0]['totalPassCount']}회',
+                                        || _userModelController.favoriteResort == 2
+                                        || _userModelController.favoriteResort == 0)
+                                        ? '${myCrewDocs[0]['totalScore']}점'
+                                        : '${myCrewDocs[0]['totalPassCount']}회',
                                     style: TextStyle(
                                       color: Color(0xFFFFFFFF),
                                       fontWeight: FontWeight.normal,

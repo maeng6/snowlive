@@ -210,24 +210,24 @@ class RankingTierModelController extends GetxController{
 
   }
 
-  Future<void> getRankingDocs_crew() async{
+  Future<void> getRankingDocs_crew({required baseResort}) async{
 
     List<QueryDocumentSnapshot> rankingList = [];
     List<QueryDocumentSnapshot> rankingList_kusbf=[];
 
     QuerySnapshot rankingSnapshot_crew = await  FirebaseFirestore.instance
         .collection('liveCrew')
-        .where('baseResort', isEqualTo: _userModelController.favoriteResort)
+        .where('baseResort', isEqualTo: baseResort)
         .where('totalScore', isGreaterThan: 0)
         .orderBy('totalScore', descending: true)
         .get();
     rankingList = rankingSnapshot_crew.docs;
 
-    if(_userModelController.favoriteResort == 12) {
+    if(baseResort == 12) {
       QuerySnapshot rankingSnapshot_crew_kusbf = await FirebaseFirestore.instance
           .collection('liveCrew')
           .where('kusbf', isEqualTo: true)
-          .where('baseResort', isEqualTo: _userModelController.favoriteResort)
+          .where('baseResort', isEqualTo: baseResort)
           .where('totalScore', isGreaterThan: 0)
           .orderBy('totalScore', descending: true)
           .get();

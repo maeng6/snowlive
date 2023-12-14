@@ -69,9 +69,25 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
   void initState() {
     // TODO: implement initState
     super.initState();
-
     _crewRankingStream = crewRankingStream();
+    getCrewDocs();
 
+  }
+
+
+  Future<void> getCrewDocs() async{
+    if(_liveCrewModelController.baseResort != 12 && _liveCrewModelController.baseResort != 2 && _liveCrewModelController.baseResort != 0 ) {
+
+      print('통합랭킹 진입');
+      await _rankingTierModelController.getRankingDocs_crew_integrated();
+      await _rankingTierModelController.getRankingDocs_integrated();
+
+    }else {
+      print('개별랭킹 진입');
+      await _rankingTierModelController.getRankingDocs_crew(baseResort: _liveCrewModelController.baseResort);
+      await _rankingTierModelController.getRankingDocs(baseResort: _liveCrewModelController.baseResort);
+
+    }
   }
 
 
@@ -81,7 +97,7 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
     final Size _size = MediaQuery.of(context).size;
     Get.put(ImageController(), permanent: true);
 
-    if(_userModelController.favoriteResort == 12 ||_userModelController.favoriteResort == 2 ||_userModelController.favoriteResort == 0) {
+    if(_liveCrewModelController.baseResort == 12 || _liveCrewModelController.baseResort == 2 || _liveCrewModelController.baseResort == 0) {
       crewDocs = _rankingTierModelController.rankingDocs_crew;
       crewRankingMap = _rankingTierModelController.crewRankingMap;
     } else{
@@ -387,7 +403,7 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                                       ),
                                                       Row(
                                                         children: [
-                                                          (crewRankingMap!.isEmpty)
+                                                          (crewRankingMap!.isEmpty || crewRankingMap!['${_liveCrewModelController.crewID}'] == null )
                                                               ? Text('-',
                                                             style: GoogleFonts.bebasNeue(
                                                                 color: Color(0xFFFFFFFF),
@@ -633,7 +649,7 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                                           await _rankingTierModelController.getRankingDocs_crewMember_integrated(crewID: _liveCrewModelController.crewID, crewBase: _liveCrewModelController.baseResort);
 
                                                         }else {
-                                                          await _rankingTierModelController.getRankingDocs_crew();
+                                                          await _rankingTierModelController.getRankingDocs_crew(baseResort: _liveCrewModelController.baseResort);
                                                           await _rankingTierModelController.getRankingDocs(baseResort: _liveCrewModelController.baseResort);
                                                           await _rankingTierModelController.getRankingDocs_crewMember(crewID: _liveCrewModelController.crewID, crewBase: _liveCrewModelController.baseResort);
                                                         }
