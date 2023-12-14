@@ -634,7 +634,7 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
 
                                                         }else {
                                                           await _rankingTierModelController.getRankingDocs_crew();
-                                                          await _rankingTierModelController.getRankingDocs();
+                                                          await _rankingTierModelController.getRankingDocs(baseResort: _liveCrewModelController.baseResort);
                                                           await _rankingTierModelController.getRankingDocs_crewMember(crewID: _liveCrewModelController.crewID, crewBase: _liveCrewModelController.baseResort);
                                                         }
                                                         CustomFullScreenDialog.cancelDialog();

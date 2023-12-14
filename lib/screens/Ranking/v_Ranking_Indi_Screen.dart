@@ -64,7 +64,7 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
 
   Future<void> _refreshData() async {
     if(_userModelController.favoriteResort == 12 ||_userModelController.favoriteResort == 2 ||_userModelController.favoriteResort == 0) {
-      await _rankingTierModelController.getRankingDocs();
+      await _rankingTierModelController.getRankingDocs(baseResort: _userModelController.favoriteResort);
     }else{
       await _rankingTierModelController.getRankingDocs_integrated();
     }
@@ -635,7 +635,7 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                                   Row(
                                                     children: [
                                                       (document['resortNickname'] != null && document['resortNickname'] != '')
-                                                      ? Row(
+                                                          ? Row(
                                                         children: [
                                                           Container(
                                                             padding: EdgeInsets.symmetric(horizontal: 3, vertical: 1.5),
@@ -657,7 +657,7 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                                           SizedBox(width: 4),
                                                         ],
                                                       )
-                                                      : Container(),
+                                                          : Container(),
                                                       if(userData['liveCrew'] != '')
                                                         Text(crewName,
                                                           maxLines: 1,

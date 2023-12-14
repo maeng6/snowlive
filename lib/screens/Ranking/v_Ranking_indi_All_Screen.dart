@@ -87,7 +87,7 @@ class _RankingIndiAllScreenState extends State<RankingIndiAllScreen> {
 
   Future<void> _refreshData() async {
     if(_userModelController.favoriteResort == 12 ||_userModelController.favoriteResort == 2 ||_userModelController.favoriteResort == 0) {
-      await _rankingTierModelController.getRankingDocs();
+      await _rankingTierModelController.getRankingDocs(baseResort: _userModelController.favoriteResort);
     }else{
       await _rankingTierModelController.getRankingDocs_integrated();
     }
@@ -272,33 +272,33 @@ class _RankingIndiAllScreenState extends State<RankingIndiAllScreen> {
                                 SizedBox(
                                   height: 4,
                                 ),
-                                  Row(
-                                    children: [
-                                      (document['resortNickname'] != null && document['resortNickname'] != '')
-                                          ? Row(
-                                        children: [
-                                          Container(
-                                            padding: EdgeInsets.symmetric(horizontal: 3, vertical: 1.5),
-                                            decoration: BoxDecoration(
-                                                borderRadius: BorderRadius.circular(4),
-                                                border: Border.all(
-                                                    color: Color(0xFFDEDEDE)
-                                                )
-                                            ),
-                                            child: Text(
-                                              document['resortNickname'] ?? '',
-                                              style: TextStyle(
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 9,
-                                                  color: Color(0xFF949494)
-                                              ),
+                                Row(
+                                  children: [
+                                    (document['resortNickname'] != null && document['resortNickname'] != '')
+                                        ? Row(
+                                      children: [
+                                        Container(
+                                          padding: EdgeInsets.symmetric(horizontal: 3, vertical: 1.5),
+                                          decoration: BoxDecoration(
+                                              borderRadius: BorderRadius.circular(4),
+                                              border: Border.all(
+                                                  color: Color(0xFFDEDEDE)
+                                              )
+                                          ),
+                                          child: Text(
+                                            document['resortNickname'] ?? '',
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 9,
+                                                color: Color(0xFF949494)
                                             ),
                                           ),
-                                          SizedBox(width: 4),
-                                        ],
-                                      )
-                                          : Container(),
-                                      if(userData['liveCrew'].isNotEmpty)
+                                        ),
+                                        SizedBox(width: 4),
+                                      ],
+                                    )
+                                        : Container(),
+                                    if(userData['liveCrew'].isNotEmpty)
                                       Text(crewName,
                                         maxLines: 1,
                                         overflow: TextOverflow.ellipsis,
@@ -306,8 +306,8 @@ class _RankingIndiAllScreenState extends State<RankingIndiAllScreen> {
                                             fontSize: 12,
                                             color: Color(0xFF949494)
                                         ),),
-                                    ],
-                                  )
+                                  ],
+                                )
                               ],
                             ),
                           ),

@@ -172,15 +172,6 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
     final Size _size = MediaQuery.of(context).size;
     final double _statusBarSize = MediaQuery.of(context).padding.top;
 
-    if(_userModelController.favoriteResort == 12 ||_userModelController.favoriteResort == 2 ||_userModelController.favoriteResort == 0) {
-
-      documents_all = _rankingTierModelController.rankingDocs;
-      userRankingMap_all = _rankingTierModelController.userRankingMap;
-    }else {
-      documents_all = _rankingTierModelController.rankingDocs_integrated;
-      userRankingMap_all = _rankingTierModelController.userRankingMap_integrated;
-    }
-
     return Scaffold(
         backgroundColor: Colors.white,
         extendBodyBehindAppBar: true,
@@ -1491,7 +1482,11 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                                                   else if (snapshot.data!.docs.isNotEmpty){
                                                                                     final rankingDocs_total = snapshot.data!.docs;
 
-                                                                                    userRankingMap =  _liveMapController.calculateRankIndiAll2(userRankingDocs: rankingDocs_total);
+                                                                                    if   (widget.favoriteResort == 12 || widget.favoriteResort == 2 || widget.favoriteResort == 0) {
+                                                                                      userRankingMap_all = _rankingTierModelController.calculateRankIndiAll2(userRankingDocs: rankingDocs_total);
+                                                                                    } else{
+                                                                                      userRankingMap_all = _rankingTierModelController.calculateRankIndiAll2_integrated(userRankingDocs: rankingDocs_total);
+                                                                                    }
 
                                                                                     return Container(
                                                                                       width: _size.width / 2 - 25,
@@ -1569,12 +1564,12 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                                                                           || widget.favoriteResort == 2
                                                                                                           || widget.favoriteResort == 0)
                                                                                                           ? _rankingTierModelController.getBadgeAsset(
-                                                                                                          percent:  userRankingMap_all?['${widget.uid}'] / documents_all!.length,
+                                                                                                          percent:  userRankingMap_all?['${widget.uid}'] / userRankingMap_all!.length,
                                                                                                           totalScore: rankingDocs[0]['totalScore'],
                                                                                                           rankingTierList: rankingTierList
                                                                                                       )
                                                                                                           : _rankingTierModelController.getBadgeAsset_integrated(
-                                                                                                          percent:  userRankingMap_all?['${widget.uid}'] / documents_all!.length,
+                                                                                                          percent:  userRankingMap_all?['${widget.uid}'] / userRankingMap_all!.length,
                                                                                                           totalPassCount: rankingDocs[0]['totalPassCount'],
                                                                                                           rankingTierList: rankingTierList
                                                                                                       ),
