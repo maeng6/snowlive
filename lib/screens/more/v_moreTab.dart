@@ -745,7 +745,7 @@ class _MoreTabState extends State<MoreTab> {
 
                             }else {
 
-                              await _rankingTierModelController.getRankingDocs_crew();
+                              await _rankingTierModelController.getRankingDocs_crew(baseResort: _userModelController.favoriteResort);
                               await _rankingTierModelController.getRankingDocs(baseResort: _userModelController.favoriteResort);
 
                             }

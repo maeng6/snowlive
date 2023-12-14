@@ -40,8 +40,8 @@ class _RankingMyCrewScreenState extends State<RankingMyCrewScreen> {
   @override
   void initState() {
     // TODO: implement initState
-    super.initState();
 
+    super.initState();
     // GlobalKey for my item (logged-in user)
     myItemKey = GlobalKey();
   }
@@ -51,6 +51,7 @@ class _RankingMyCrewScreenState extends State<RankingMyCrewScreen> {
   List? document;
   List? documents_all;
   dynamic myRanking;
+
 
   void _scrollToMyRanking() {
     if(_liveCrewModelController.baseResort == 12 || _liveCrewModelController.baseResort == 2 || _liveCrewModelController.baseResort == 0) {
@@ -69,7 +70,7 @@ class _RankingMyCrewScreenState extends State<RankingMyCrewScreen> {
 
   Future<void> _refreshData() async {
     if(_liveCrewModelController.baseResort == 12 ||_liveCrewModelController.baseResort == 2 ||_liveCrewModelController.baseResort == 0) {
-      await _rankingTierModelController.getRankingDocs_crew();
+      await _rankingTierModelController.getRankingDocs_crew(baseResort: _liveCrewModelController.baseResort);
       await _rankingTierModelController.getRankingDocs(baseResort: _liveCrewModelController.baseResort);
       await _rankingTierModelController.getRankingDocs_crewMember(crewID: _liveCrewModelController.crewID, crewBase: _liveCrewModelController.baseResort);
 
