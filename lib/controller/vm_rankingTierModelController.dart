@@ -53,63 +53,63 @@ class RankingTierModelController extends GetxController{
   SeasonController _seasonController = Get.find<SeasonController>();
   //TODO: Dependency Injection********************************************
 
-Future<void> updateTier()async{
+  Future<void> updateTier()async{
 
-  double? percent;
-  int? totalScore;
-  String? tier;
+    double? percent;
+    int? totalScore;
+    String? tier;
 
-  QuerySnapshot rankingSnapshot = await FirebaseFirestore.instance
-      .collection('Ranking')
-      .doc('${_seasonController.currentSeason}')
-      .collection('${_userModelController.favoriteResort}')
-      .where('totalScore', isGreaterThan: 0)
-      .orderBy('totalScore', descending: true)
-      .get();
+    QuerySnapshot rankingSnapshot = await FirebaseFirestore.instance
+        .collection('Ranking')
+        .doc('${_seasonController.currentSeason}')
+        .collection('${_userModelController.favoriteResort}')
+        .where('totalScore', isGreaterThan: 0)
+        .orderBy('totalScore', descending: true)
+        .get();
 
-  final rankingDocs = rankingSnapshot.docs;
+    final rankingDocs = rankingSnapshot.docs;
 
-  // 내 UID와 일치하는 데이터 찾기
-  var myData;
-  for (var doc in rankingDocs) {
-    if (doc.id == _userModelController.uid) {
-      myData = doc;
-      break;
+    // 내 UID와 일치하는 데이터 찾기
+    var myData;
+    for (var doc in rankingDocs) {
+      if (doc.id == _userModelController.uid) {
+        myData = doc;
+        break;
+      }
     }
+    // 내 순위 찾기
+    int myRank = rankingDocs.indexOf(myData) + 1;
+    int totalRankCount = rankingDocs.length;
+
+    percent = myRank/totalRankCount;
+    totalScore = myData['totalScore'];
+    print('등수 : $myRank');
+    print('퍼센트 : $percent');
+    print('스코어 : $totalScore');
+
+
+    if(percent <= rankingTierList[0].scoreRng && totalScore! >= rankingTierList[0].totalScore ){
+      tier = 'S';
+    }else if(percent <= rankingTierList[1].scoreRng && totalScore! >= rankingTierList[1].totalScore ){
+      tier = 'A';
+    }else if(percent <= rankingTierList[2].scoreRng && totalScore! >= rankingTierList[2].totalScore ){
+      tier = 'B';
+    }else if(percent <= rankingTierList[3].scoreRng && totalScore! >= rankingTierList[3].totalScore ){
+      tier = 'C';
+    }else {
+      tier = 'D';
+    }
+
+    print('티어 : $tier');
+
+    await ref.collection('Ranking')
+        .doc('${_seasonController.currentSeason}')
+        .collection('${_userModelController.favoriteResort}')
+        .doc(_userModelController.uid).update({
+      'tier': tier,
+    },);
+
   }
-  // 내 순위 찾기
-  int myRank = rankingDocs.indexOf(myData) + 1;
-  int totalRankCount = rankingDocs.length;
-
-  percent = myRank/totalRankCount;
-  totalScore = myData['totalScore'];
-  print('등수 : $myRank');
-  print('퍼센트 : $percent');
-  print('스코어 : $totalScore');
-  
-
-  if(percent <= rankingTierList[0].scoreRng && totalScore! >= rankingTierList[0].totalScore ){
-    tier = 'S';
-  }else if(percent <= rankingTierList[1].scoreRng && totalScore! >= rankingTierList[1].totalScore ){
-    tier = 'A';
-  }else if(percent <= rankingTierList[2].scoreRng && totalScore! >= rankingTierList[2].totalScore ){
-    tier = 'B';
-  }else if(percent <= rankingTierList[3].scoreRng && totalScore! >= rankingTierList[3].totalScore ){
-    tier = 'C';
-  }else {
-    tier = 'D';
-  }
-
-  print('티어 : $tier');
-
-  await ref.collection('Ranking')
-      .doc('${_seasonController.currentSeason}')
-      .collection('${_userModelController.favoriteResort}')
-      .doc(_userModelController.uid).update({
-    'tier': tier,
-  },);
-
-}
 
   String getBadgeAsset({required double percent,required int totalScore,required List rankingTierList}) {
     for (var tier in rankingTierList) {
@@ -130,7 +130,7 @@ Future<void> updateTier()async{
   }
 
 
-  Future<void> getRankingDocs() async{
+  Future<void> getRankingDocs({required baseResort}) async{
 
     List<QueryDocumentSnapshot> rankingList = [];
     List<QueryDocumentSnapshot> rankingList_kusbf=[];
@@ -138,13 +138,13 @@ Future<void> updateTier()async{
     QuerySnapshot rankingSnapshot = await FirebaseFirestore.instance
         .collection('Ranking')
         .doc('${_seasonController.currentSeason}')
-        .collection('${_userModelController.favoriteResort}')
+        .collection('${baseResort}')
         .where('totalScore', isGreaterThan: 0)
         .orderBy('totalScore', descending: true)
         .get();
     rankingList = rankingSnapshot.docs;
 
-    if(_userModelController.favoriteResort == 12) {
+    if(baseResort == 12) {
       QuerySnapshot kusbfCrewSnapshot = await FirebaseFirestore.instance
           .collection('liveCrew')
           .where('kusbf', isEqualTo: true)

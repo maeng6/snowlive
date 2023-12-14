@@ -70,7 +70,7 @@ class _RankingMyCrewScreenState extends State<RankingMyCrewScreen> {
   Future<void> _refreshData() async {
     if(_liveCrewModelController.baseResort == 12 ||_liveCrewModelController.baseResort == 2 ||_liveCrewModelController.baseResort == 0) {
       await _rankingTierModelController.getRankingDocs_crew();
-      await _rankingTierModelController.getRankingDocs();
+      await _rankingTierModelController.getRankingDocs(baseResort: _liveCrewModelController.baseResort);
       await _rankingTierModelController.getRankingDocs_crewMember(crewID: _liveCrewModelController.crewID, crewBase: _liveCrewModelController.baseResort);
 
     }else{
@@ -86,37 +86,42 @@ class _RankingMyCrewScreenState extends State<RankingMyCrewScreen> {
     Size _size = MediaQuery.of(context).size;
 
     if(_liveCrewModelController.baseResort == 12 || _liveCrewModelController.baseResort == 2 || _liveCrewModelController.baseResort == 0) {
-       document = _rankingTierModelController.rankingDocs_crewMember;
-       documents_all = _rankingTierModelController.rankingDocs;
-       userRankingMap =   _rankingTierModelController.userRankingMap;
-       userRankingMap_all = _rankingTierModelController.userRankingMap;
+      print('개별랭킹');
+      document = _rankingTierModelController.rankingDocs_crewMember;
+      documents_all = _rankingTierModelController.rankingDocs;
+      userRankingMap =   _rankingTierModelController.userRankingMap;
+      userRankingMap_all = _rankingTierModelController.userRankingMap;
+
     }else {
+      print('통합랭킹');
       document = _rankingTierModelController.rankingDocs_crewMember_integrated;
       documents_all = _rankingTierModelController.rankingDocs_integrated;
       userRankingMap =   _rankingTierModelController.userRankingMap_integrated;
       userRankingMap_all = _rankingTierModelController.userRankingMap_integrated;
     }
 
+    print(documents_all);
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
         actions: <Widget>[
           if(_userModelController.liveCrew == _liveCrewModelController.crewID)
-          GestureDetector(
-            onTap: _scrollToMyRanking,
-            child: Center(
-              child: Padding(
-                padding: const EdgeInsets.only(right: 16),
-                child: Text(
-                  'My 랭킹',
-                  style: TextStyle(
-                      fontSize: 15,
-                      fontWeight: FontWeight.bold,
-                      color: Color(0xFF3D83ED)),
+            GestureDetector(
+              onTap: _scrollToMyRanking,
+              child: Center(
+                child: Padding(
+                  padding: const EdgeInsets.only(right: 16),
+                  child: Text(
+                    'My 랭킹',
+                    style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xFF3D83ED)),
+                  ),
                 ),
               ),
             ),
-          ),
         ],
         backgroundColor: Colors.white,
         leading: GestureDetector(
