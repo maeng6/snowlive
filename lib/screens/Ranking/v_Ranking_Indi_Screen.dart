@@ -21,9 +21,15 @@ import '../../model/m_rankingTierModel.dart';
 import '../more/friend/v_friendDetailPage.dart';
 
 class RankingIndiScreen extends StatefulWidget {
-  RankingIndiScreen({Key? key, required this.isKusbf}) : super(key: key);
+  RankingIndiScreen({Key? key,
+  required this.isKusbf,
+  required this.isDaily,
+  required this.isWeekly,}) : super(key: key);
 
   bool isKusbf = false;
+  bool isDaily = false;
+  bool isWeekly = false;
+
 
   @override
   State<RankingIndiScreen> createState() => _RankingIndiScreenState();
@@ -63,10 +69,30 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
   }
 
   Future<void> _refreshData() async {
-    if(_userModelController.favoriteResort == 12 ||_userModelController.favoriteResort == 2 ||_userModelController.favoriteResort == 0) {
-      await _rankingTierModelController.getRankingDocs(baseResort: _userModelController.favoriteResort);
+    if(_userModelController.favoriteResort == 12
+        ||_userModelController.favoriteResort == 2
+        ||_userModelController.favoriteResort == 0) {
+
+      if(widget.isDaily == true){
+        await _rankingTierModelController.getRankingDocsDaily(baseResort: _userModelController.favoriteResort);
+      }
+      else if(widget.isWeekly == true){
+        await _rankingTierModelController.getRankingDocsWeekly(baseResort: _userModelController.favoriteResort);
+      }
+      else{
+        await _rankingTierModelController.getRankingDocs(baseResort: _userModelController.favoriteResort);
+      }
     }else{
-      await _rankingTierModelController.getRankingDocs_integrated();
+
+      if(widget.isDaily == true){
+        await _rankingTierModelController.getRankingDocs_integrated_Daily();
+      }
+      else if(widget.isWeekly == true){
+        await _rankingTierModelController.getRankingDocs_integrated_Weekly();
+      }
+      else{
+        await _rankingTierModelController.getRankingDocs_integrated();
+      }
     }
     await _myRankingController.getMyRankingData(_userModelController.uid);
     setState(() {});
@@ -512,7 +538,7 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                   ),
                                 GestureDetector(
                                   onTap: () async{
-                                    Get.to(()=> RankingIndiAllScreen(isKusbf: widget.isKusbf,));
+                                    Get.to(()=> RankingIndiAllScreen(isKusbf: widget.isKusbf, isDaily: widget.isDaily, isWeekly: widget.isWeekly));
                                   },
                                   child: Text('전체 보기',
                                     style: TextStyle(
@@ -710,8 +736,8 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                                 (_userModelController.favoriteResort == 12
                                                     || _userModelController.favoriteResort == 2
                                                     || _userModelController.favoriteResort == 0)
-                                                    ? '${document['totalScore'].toString()}점'
-                                                    : '${document['totalPassCount'].toString()}회',
+                                                    ? widget.isWeekly == true ?'${document['totalScoreWeekly'].toString()}점' :'${document['totalScore'].toString()}점'
+                                                    : widget.isWeekly == true ?'${document['totalPassCountWeekly'].toString()}회':'${document['totalPassCount'].toString()}회',
                                                 style: TextStyle(
                                                   color: Color(0xFF111111),
                                                   fontWeight: FontWeight.normal,
@@ -879,8 +905,7 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                   (_userModelController.favoriteResort == 12
                                       || _userModelController.favoriteResort == 2
                                       || _userModelController.favoriteResort == 0)
-                                      ?
-                                  '${_myRankingController.totalScore}점'
+                                      ? '${_myRankingController.totalScore}점'
                                       :  '${_myRankingController.totalPassCount}회',
                                   style: TextStyle(
                                     color: Color(0xFFffffff),

@@ -481,6 +481,7 @@ class LiveMapController extends GetxController {
 
                       if(crewDocSnapshot != null && _userModelController.favoriteResort == crewDocSnapshot['baseResort']){
                         await updateCrewData(slopeName, slopeScore, timeSlot, DateTime.now());
+                        await updateCrewDataDaily(slopeName, slopeScore, timeSlot, DateTime.now());
                         print('크루 점수 업데이트 완료');
 
                       }
@@ -639,6 +640,7 @@ class LiveMapController extends GetxController {
 
             if(crewDocSnapshot != null && _userModelController.favoriteResort == crewDocSnapshot['baseResort']){
               await updateCrewData(slopeName, slopeScore, timeSlot, DateTime.now());
+              await updateCrewDataDaily(slopeName, slopeScore, timeSlot, DateTime.now());
             }
           }
 
@@ -727,17 +729,15 @@ class LiveMapController extends GetxController {
           bool withinBoundary = distanceInMeters <= radius;
 
           if (withinBoundary) {
-            DateTime now = DateTime.now();
+            String today = DateFormat('yyyyMMdd').format(DateTime.now());
 
-            String todayDocName = DateFormat('yyyyMMdd').format(DateTime.now());
+            String todayDocName = '${_userModelController.uid}#${DateFormat('yyyyMMdd').format(DateTime.now())}';
 
             if (_userModelController.uid != null) {
               DocumentReference docRef = FirebaseFirestore.instance
-                  .collection('Ranking')
+                  .collection('Ranking_Daily')
                   .doc('${_seasonController.currentSeason}')
                   .collection('${_userModelController.favoriteResort}')
-                  .doc("${_userModelController.uid}")
-                  .collection('calendar')
                   .doc(todayDocName);
 
               try {
@@ -749,6 +749,7 @@ class LiveMapController extends GetxController {
                     'uid': _userModelController.uid,
                     'passCountData': {},
                     'totalPassCount': 0,
+                    'date': today,
                     'lastPassTime': DateTime.now(),
                     'passCountTimeData': {
                       '1': 0,
@@ -766,6 +767,8 @@ class LiveMapController extends GetxController {
                     },
                     'slopeScores': {},
                     'totalScore': 0,
+                    'totalScoreWeekly': 0,
+                    'totalPassCountWeekly': 0,
                     'tier': '',
                     'favoriteResort' : _userModelController.favoriteResort,
                     'resortNickname' : _userModelController.resortNickname
@@ -886,6 +889,78 @@ class LiveMapController extends GetxController {
 
                     print('데일리점수 업데이트 완료');
 
+
+                    //여기서부터 주간 점수 업데이트
+
+                    try{
+
+                      List<QueryDocumentSnapshot> rankingList = [];
+
+                      DateTime startOfWeek = now.subtract(Duration(days: now.weekday - 1));
+                      DateTime endOfWeek = startOfWeek.add(Duration(days: 7));
+                      List<String> thisWeekDates = [];
+
+                      for (DateTime date = startOfWeek; date.isBefore(endOfWeek); date = date.add(Duration(days: 1))) {
+                        String formattedDate = DateFormat('yyyyMMdd').format(date);
+                        thisWeekDates.add(formattedDate);
+                      }
+                      print(thisWeekDates);
+
+                      QuerySnapshot rankingSnapshot = await FirebaseFirestore.instance
+                          .collection('Ranking_Daily')
+                          .doc('${_seasonController.currentSeason}')
+                          .collection('${_userModelController.favoriteResort}')
+                          .where('uid', isEqualTo: _userModelController.uid)
+                          .where('date', whereIn: thisWeekDates)
+                          .where('totalScore', isGreaterThan: 0)
+                          .orderBy('totalScore', descending: true)
+                          .get();
+
+                      rankingList = rankingSnapshot.docs;
+
+                      print(rankingList);
+
+                      int totalScoreWeekly = 0;
+                      int totalPassCountWeekly = 0;
+
+                      for (QueryDocumentSnapshot doc in rankingList) {
+                        Map<String, dynamic>? data = doc.data() as Map<String, dynamic>?;
+
+                        if (data != null) {
+                          int? totalScore = data['totalScore'] as int?;
+                          int? totalPassCount = data['totalPassCount'] as int?;
+
+                          if (totalScore != null && totalPassCount != null) {
+                            totalScoreWeekly += totalScore;
+                            totalPassCountWeekly += totalPassCount;
+                          } else {
+                            print('totalScore 또는 totalPassCount가 null입니다.');
+                          }
+                        } else {
+                          print('데이터가 null입니다.');
+                        }
+                      }
+
+                      print('totalScoreWeekly: $totalScoreWeekly');
+                      print('totalPassCountWeekly: $totalPassCountWeekly');
+
+                      DocumentReference docRefWeekly = FirebaseFirestore.instance
+                          .collection('Ranking_Daily')
+                          .doc('${_seasonController.currentSeason}')
+                          .collection('${_userModelController.favoriteResort}')
+                          .doc(todayDocName);
+
+                      await docRefWeekly.update({
+                        'totalScoreWeekly': totalScoreWeekly, // totalScoreWeekly 값을 업데이트
+                        'totalPassCountWeekly': totalPassCountWeekly, // totalPassCountWeekly 값을 업데이트
+                      });
+
+                    }catch(error, stackTrace){
+                      print('오류 발생: $error');
+                      print('스택 트레이스: $stackTrace');
+                    }
+
+
                   } catch (error, stackTrace) {
                     print('오류 발생: $error');
                     print('스택 트레이스: $stackTrace');
@@ -914,16 +989,17 @@ class LiveMapController extends GetxController {
 
     DateTime now = DateTime.now();
 
-    String todayDocName = DateFormat('yyyyMMdd').format(DateTime.now());
+    String today = DateFormat('yyyyMMdd').format(DateTime.now());
+
+    String todayDocName = '${_userModelController.uid}#${DateFormat('yyyyMMdd').format(DateTime.now())}';
+
 
 
     if (_userModelController.uid != null) {
       DocumentReference docRef = FirebaseFirestore.instance
-          .collection('Ranking')
+          .collection('Ranking_Daily')
           .doc('${_seasonController.currentSeason}')
           .collection('${_userModelController.favoriteResort}')
-          .doc("${_userModelController.uid}")
-          .collection('calendar')
           .doc(todayDocName);
 
       try {
@@ -935,6 +1011,7 @@ class LiveMapController extends GetxController {
             'uid': _userModelController.uid,
             'passCountData': {},
             'totalPassCount': 0,
+            'date': today,
             'lastPassTime': DateTime.now(),
             'passCountTimeData': {
               '1': 0,
@@ -1029,6 +1106,78 @@ class LiveMapController extends GetxController {
           await docRef.set(data, SetOptions(merge: true));
 
           await _rankingTierModelController.updateTier();
+
+          //여기서부터 주간 점수 업데이트
+
+          try{
+
+            List<QueryDocumentSnapshot> rankingList = [];
+
+            DateTime startOfWeek = now.subtract(Duration(days: now.weekday - 1));
+            DateTime endOfWeek = startOfWeek.add(Duration(days: 7));
+            List<String> thisWeekDates = [];
+
+            for (DateTime date = startOfWeek; date.isBefore(endOfWeek); date = date.add(Duration(days: 1))) {
+              String formattedDate = DateFormat('yyyyMMdd').format(date);
+              thisWeekDates.add(formattedDate);
+            }
+            print(thisWeekDates);
+
+            QuerySnapshot rankingSnapshot = await FirebaseFirestore.instance
+                .collection('Ranking_Daily')
+                .doc('${_seasonController.currentSeason}')
+                .collection('${_userModelController.favoriteResort}')
+                .where('uid', isEqualTo: _userModelController.uid)
+                .where('date', whereIn: thisWeekDates)
+                .where('totalScore', isGreaterThan: 0)
+                .orderBy('totalScore', descending: true)
+                .get();
+
+            rankingList = rankingSnapshot.docs;
+
+            print(rankingList);
+
+            int totalScoreWeekly = 0;
+            int totalPassCountWeekly = 0;
+
+            for (QueryDocumentSnapshot doc in rankingList) {
+              Map<String, dynamic>? data = doc.data() as Map<String, dynamic>?;
+
+              if (data != null) {
+                int? totalScore = data['totalScore'] as int?;
+                int? totalPassCount = data['totalPassCount'] as int?;
+
+                if (totalScore != null && totalPassCount != null) {
+                  totalScoreWeekly += totalScore;
+                  totalPassCountWeekly += totalPassCount;
+                } else {
+                  print('totalScore 또는 totalPassCount가 null입니다.');
+                }
+              } else {
+                print('데이터가 null입니다.');
+              }
+            }
+
+            print('totalScoreWeekly: $totalScoreWeekly');
+            print('totalPassCountWeekly: $totalPassCountWeekly');
+
+            DocumentReference docRefWeekly = FirebaseFirestore.instance
+                .collection('Ranking_Daily')
+                .doc('${_seasonController.currentSeason}')
+                .collection('${_userModelController.favoriteResort}')
+                .doc(todayDocName);
+
+            await docRefWeekly.update({
+              'totalScoreWeekly': totalScoreWeekly, // totalScoreWeekly 값을 업데이트
+              'totalPassCountWeekly': totalPassCountWeekly, // totalPassCountWeekly 값을 업데이트
+            });
+
+          }catch(error, stackTrace){
+            print('오류 발생: $error');
+            print('스택 트레이스: $stackTrace');
+          }
+
+
         } catch (error, stackTrace) {
           print('오류 발생: $error');
           print('스택 트레이스: $stackTrace');
@@ -1044,39 +1193,6 @@ class LiveMapController extends GetxController {
 
   }
 
-
-
-  int getTimeSlot(DateTime now) {
-    int hour = now.hour;
-
-    if (hour >= 8 && hour < 10) {
-      return 1;
-    } else if (hour >= 10 && hour < 12) {
-      return 2;
-    } else if (hour >= 12 && hour < 14) {
-      return 3;
-    } else if (hour >= 14 && hour < 16) {
-      return 4;
-    } else if (hour >= 16 && hour < 18) {
-      return 5;
-    } else if (hour >= 18 && hour < 20) {
-      return 6;
-    } else if (hour >= 20 && hour < 22) {
-      return 7;
-    } else if (hour >= 22) {
-      return 8;
-    } else if (hour < 2) {
-      return 9;
-    } else if (hour >= 2 && hour < 4) {
-      return 10;
-    } else if (hour >= 4 && hour < 6) {
-      return 11;
-    } else if (hour >= 6 && hour < 8) {
-      return 12;
-    }
-
-    return -1; // default return value in case of an error
-  }
 
   Future<void> updateCrewData(String locationName, int slopeScore, int timeSlot, DateTime lastPassTime) async {
     String liveCrew = _userModelController.liveCrew ?? '';
@@ -1150,6 +1266,123 @@ class LiveMapController extends GetxController {
       }
     }
   }
+
+  Future<void> updateCrewDataDaily(String locationName, int slopeScore, int timeSlot, DateTime lastPassTime) async {
+    String liveCrew = _userModelController.liveCrew ?? '';
+
+    DateTime now = DateTime.now();
+
+    String todayDocName = DateFormat('yyyyMMdd').format(DateTime.now());
+
+    if (liveCrew.isNotEmpty) {
+      DocumentReference crewDocRef = FirebaseFirestore.instance
+          .collection('liveCrew')
+          .doc(liveCrew)
+          .collection('calendar')
+          .doc(todayDocName);
+
+      try {
+        DocumentSnapshot crewDocSnapshot = await crewDocRef.get();
+
+        Map<String, dynamic> crewData;
+
+        if (!crewDocSnapshot.exists) {
+          // 문서가 없으면 초기값 설정
+
+          await crewDocRef.set({
+            'passCountData': {},
+            'passCountTimeData': {
+              '1': 0,
+              '2': 0,
+              '3': 0,
+              '4': 0,
+              '5': 0,
+              '6': 0,
+              '7': 0,
+              '8': 0,
+              '9': 0,
+              '10': 0,
+              '11': 0,
+              '12': 0,
+            },
+            'slopeScores': {},
+            'totalPassCount': 0,
+            'totalScore': 0,
+            'lastPassTime': DateTime.now(),
+          });
+
+          crewDocSnapshot = await crewDocRef.get();
+
+        } else {
+          crewData = crewDocSnapshot.data() as Map<String, dynamic>;
+
+          if (crewData['passCountTimeData'] == null) {
+            crewData['passCountTimeData'] = {
+              '1': 0,
+              '2': 0,
+              '3': 0,
+              '4': 0,
+              '5': 0,
+              '6': 0,
+              '7': 0,
+              '8': 0,
+              '9': 0,
+              '10': 0,
+              '11': 0,
+              '12': 0,
+            };
+          }
+        }
+
+        // Update the pass count using FieldValue.increment
+        await crewDocRef.update({
+          'passCountData.$locationName': FieldValue.increment(1),
+          'passCountTimeData.$timeSlot': FieldValue.increment(1),
+          'totalPassCount': FieldValue.increment(1),
+          'slopeScores.$locationName': FieldValue.increment(slopeScore),
+          'totalScore': FieldValue.increment(slopeScore),
+          'lastPassTime': DateTime.now(),
+        });
+      } catch (error, stackTrace) {
+        print('오류 발생: $error');
+        print('스택 트레이스: $stackTrace');
+      }
+    }
+  }
+
+
+  int getTimeSlot(DateTime now) {
+    int hour = now.hour;
+
+    if (hour >= 8 && hour < 10) {
+      return 1;
+    } else if (hour >= 10 && hour < 12) {
+      return 2;
+    } else if (hour >= 12 && hour < 14) {
+      return 3;
+    } else if (hour >= 14 && hour < 16) {
+      return 4;
+    } else if (hour >= 16 && hour < 18) {
+      return 5;
+    } else if (hour >= 18 && hour < 20) {
+      return 6;
+    } else if (hour >= 20 && hour < 22) {
+      return 7;
+    } else if (hour >= 22) {
+      return 8;
+    } else if (hour < 2) {
+      return 9;
+    } else if (hour >= 2 && hour < 4) {
+      return 10;
+    } else if (hour >= 4 && hour < 6) {
+      return 11;
+    } else if (hour >= 6 && hour < 8) {
+      return 12;
+    }
+
+    return -1; // default return value in case of an error
+  }
+
 
   Future<void> stopBackgroundLocationService() async {
     await bg.BackgroundGeolocation.stop();

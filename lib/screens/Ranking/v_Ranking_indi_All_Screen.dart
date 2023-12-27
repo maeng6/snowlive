@@ -17,9 +17,11 @@ import '../../widget/w_fullScreenDialog.dart';
 import '../more/friend/v_friendDetailPage.dart';
 
 class RankingIndiAllScreen extends StatefulWidget {
-  RankingIndiAllScreen({Key? key, required this.isKusbf}) : super(key: key);
+  RankingIndiAllScreen({Key? key, required this.isKusbf, required this.isDaily, required this.isWeekly}) : super(key: key);
 
   bool isKusbf = false;
+  bool isDaily = false;
+  bool isWeekly = false;
 
   @override
   State<RankingIndiAllScreen> createState() => _RankingIndiAllScreenState();
@@ -86,10 +88,30 @@ class _RankingIndiAllScreenState extends State<RankingIndiAllScreen> {
   }
 
   Future<void> _refreshData() async {
-    if(_userModelController.favoriteResort == 12 ||_userModelController.favoriteResort == 2 ||_userModelController.favoriteResort == 0) {
-      await _rankingTierModelController.getRankingDocs(baseResort: _userModelController.favoriteResort);
+    if(_userModelController.favoriteResort == 12
+        ||_userModelController.favoriteResort == 2
+        ||_userModelController.favoriteResort == 0) {
+
+      if(widget.isDaily == true){
+        await _rankingTierModelController.getRankingDocsDaily(baseResort: _userModelController.favoriteResort);
+      }
+      else if(widget.isWeekly == true){
+        await _rankingTierModelController.getRankingDocsWeekly(baseResort: _userModelController.favoriteResort);
+      }
+      else{
+        await _rankingTierModelController.getRankingDocs(baseResort: _userModelController.favoriteResort);
+      }
     }else{
-      await _rankingTierModelController.getRankingDocs_integrated();
+
+      if(widget.isDaily == true){
+        await _rankingTierModelController.getRankingDocs_integrated_Daily();
+      }
+      else if(widget.isWeekly == true){
+        await _rankingTierModelController.getRankingDocs_integrated_Weekly();
+      }
+      else{
+        await _rankingTierModelController.getRankingDocs_integrated();
+      }
     }
     setState(() {});
   }
@@ -319,8 +341,8 @@ class _RankingIndiAllScreenState extends State<RankingIndiAllScreen> {
                               (_userModelController.favoriteResort == 12
                                   || _userModelController.favoriteResort == 2
                                   || _userModelController.favoriteResort == 0)
-                                  ? '${document['totalScore']}점'
-                                  : '${document['totalPassCount']}회',
+                                  ? widget.isWeekly == true ? '${document['totalScoreWeekly']}점' :'${document['totalScore']}점'
+                                  : widget.isWeekly == true ? '${document['totalPassCountWeekly']}회': '${document['totalPassCount']}회',
                               style: TextStyle(
                                 color: Color(0xFF111111),
                                 fontWeight: FontWeight.normal,
