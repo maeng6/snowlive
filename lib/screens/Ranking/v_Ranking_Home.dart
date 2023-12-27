@@ -33,7 +33,16 @@ class _RankingHomeState extends State<RankingHome> {
     false,
   ];
 
+  List<bool> isTapPeriod = [
+    true,
+    false,
+    false,
+  ];
+
   bool _isKusbf = false;
+
+  bool _isDaily = false;
+  bool _isWeekly = false;
 
 
 
@@ -308,13 +317,199 @@ class _RankingHomeState extends State<RankingHome> {
                       :SizedBox.shrink()
                 ],
               ),
+              Row(
+                children: [
+                  Padding(
+                    padding: EdgeInsets.only(left: 16, right: 12),
+                    child: Column(
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.only(bottom: 2),
+                          child: Container(
+                            height: 44,
+                            child: ElevatedButton(
+                              child: Text(
+                                '일간TOP',
+                                style: TextStyle(
+                                    fontFamily: 'Spoqa Han Sans Neo',
+                                    color: (isTapPeriod[0])
+                                        ? Color(0xFF111111)
+                                        : Color(0xFFC8C8C8),
+                                    fontWeight: (isTapPeriod[0])
+                                        ? FontWeight.bold
+                                        : FontWeight.bold,
+                                    fontSize: 14),
+                              ),
+                              onPressed: () async{
+                                print('일간TOP 전환');
+                                setState(() {
+                                  isTapPeriod[0] = true;
+                                  isTapPeriod[1] = false;
+                                  isTapPeriod[2] = false;
+                                  _isDaily = true;
+                                  _isWeekly = false;
+                                });
+                                if(_userModelController.favoriteResort == 12
+                                    || _userModelController.favoriteResort == 2
+                                    || _userModelController.favoriteResort == 0){
+                                  CustomFullScreenDialog.showDialog();
+                                  await _rankingTierModelController.getRankingDocsDaily(baseResort: _userModelController.favoriteResort);
+                                  CustomFullScreenDialog.cancelDialog();
+                                } else{
+                                  CustomFullScreenDialog.showDialog();
+                                  await _rankingTierModelController.getRankingDocs_integrated_Daily();
+                                  CustomFullScreenDialog.cancelDialog();
+                                }
+
+                                setState(() {});
+                                print(isTapPeriod);
+                              },
+                              style: ElevatedButton.styleFrom(
+                                padding: EdgeInsets.only(top: 0),
+                                minimumSize: Size(40, 10),
+                                backgroundColor: Color(0xFFFFFFFF),
+                                shape: RoundedRectangleBorder(
+                                    borderRadius:
+                                    BorderRadius.circular(8)),
+                                elevation: 0,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(right: 12),
+                    child: Column(
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.only(bottom: 2),
+                          child: Container(
+                            height: 44,
+                            child: ElevatedButton(
+                              child: Text(
+                                '주간TOP',
+                                style: TextStyle(
+                                    color: (isTapPeriod[1])
+                                        ? Color(0xFF111111)
+                                        : Color(0xFFC8C8C8),
+                                    fontWeight: (isTapPeriod[1])
+                                        ? FontWeight.bold
+                                        : FontWeight.bold,
+                                    fontSize: 14),
+                              ),
+                              onPressed: () async{
+                                await _seasonController.getCurrentSeason();
+                                print('주간TOP 전환');
+                                setState(() {
+                                  isTapPeriod[0] = false;
+                                  isTapPeriod[1] = true;
+                                  isTapPeriod[2] = false;
+                                  _isDaily = false;
+                                  _isWeekly = true;
+                                });
+                                if(_userModelController.favoriteResort == 12
+                                    || _userModelController.favoriteResort == 2
+                                    || _userModelController.favoriteResort == 0){
+
+                                  await _rankingTierModelController.getRankingDocsWeekly(baseResort: _userModelController.favoriteResort);
+
+                                } else{
+                                  CustomFullScreenDialog.showDialog();
+                                  await _rankingTierModelController.getRankingDocs_integrated_Weekly();
+                                  CustomFullScreenDialog.cancelDialog();
+                                }
+                                setState(() {});
+                                print(isTapPeriod);
+                              },
+                              style: ElevatedButton.styleFrom(
+                                padding: EdgeInsets.only(top: 0),
+                                minimumSize: Size(40, 10),
+                                backgroundColor: Color(0xFFFFFFFF),
+                                shape: RoundedRectangleBorder(
+                                    borderRadius:
+                                    BorderRadius.circular(8)),
+                                elevation: 0,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(right: 12),
+                    child: Column(
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.only(bottom: 2),
+                          child: Container(
+                            height: 44,
+                            child: ElevatedButton(
+                              child: Text(
+                                '시즌누적',
+                                style: TextStyle(
+                                    color: (isTapPeriod[2])
+                                        ? Color(0xFF111111)
+                                        : Color(0xFFC8C8C8),
+                                    fontWeight: (isTapPeriod[2])
+                                        ? FontWeight.bold
+                                        : FontWeight.bold,
+                                    fontSize: 14),
+                              ),
+                              onPressed: () async{
+                                await _seasonController.getCurrentSeason();
+                                print('시즌누적 전환');
+                                setState(() {
+                                  isTapPeriod[0] = false;
+                                  isTapPeriod[1] = false;
+                                  isTapPeriod[2] = true;
+                                  _isDaily = false;
+                                  _isWeekly = false;
+                                });
+                                if(_userModelController.favoriteResort == 12
+                                    || _userModelController.favoriteResort == 2
+                                    || _userModelController.favoriteResort == 0){
+                                  CustomFullScreenDialog.showDialog();
+                                  await _rankingTierModelController.getRankingDocs(baseResort: _userModelController.favoriteResort);
+                                  CustomFullScreenDialog.cancelDialog();
+                                } else{
+                                  CustomFullScreenDialog.showDialog();
+                                  await _rankingTierModelController.getRankingDocs_integrated();
+                                  CustomFullScreenDialog.cancelDialog();
+                                }
+                                setState(() {});
+                                print(isTapPeriod);
+                              },
+                              style: ElevatedButton.styleFrom(
+                                padding: EdgeInsets.only(top: 0),
+                                minimumSize: Size(40, 10),
+                                backgroundColor: Color(0xFFFFFFFF),
+                                shape: RoundedRectangleBorder(
+                                    borderRadius:
+                                    BorderRadius.circular(8)),
+                                elevation: 0,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
               SizedBox(
                 height: 10,
               ),
               if (isTap[0] == true)
                 Expanded(child: RankingCrewScreen(isKusbf: _isKusbf,)),
               if (isTap[1] == true)
-                Expanded(child: RankingIndiScreen(isKusbf: _isKusbf)),
+                Expanded(child: RankingIndiScreen(
+                  isKusbf: _isKusbf,
+                  isDaily: _isDaily,
+                  isWeekly: _isWeekly,
+                  )),
               // if (isTap[2] == true)
               //   Expanded(child: FleaMarket_Chatroom_List()),
             ],
