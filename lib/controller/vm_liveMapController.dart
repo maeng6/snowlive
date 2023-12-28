@@ -26,6 +26,7 @@ class LiveMapController extends GetxController {
   UserModelController _userModelController = Get.find<UserModelController>();
   ResortModelController _resortModelController = Get.find<ResortModelController>();
   RankingTierModelController _rankingTierModelController = Get.find<RankingTierModelController>();
+  LiveCrewModelController _liveCrewModelController = Get.find<LiveCrewModelController>();
   //TODO: Dependency Injection********************************************
 
   RxList<Marker> _markers = RxList<Marker>();
@@ -1029,6 +1030,8 @@ class LiveMapController extends GetxController {
             },
             'slopeScores': {},
             'totalScore': 0,
+            'totalScoreWeekly': 0,
+            'totalPassCountWeekly': 0,
             'tier': '',
             'favoriteResort' : _userModelController.favoriteResort,
             'resortNickname' : _userModelController.resortNickname
@@ -1276,10 +1279,10 @@ class LiveMapController extends GetxController {
 
     if (liveCrew.isNotEmpty) {
       DocumentReference crewDocRef = FirebaseFirestore.instance
-          .collection('liveCrew')
-          .doc(liveCrew)
-          .collection('calendar')
-          .doc(todayDocName);
+          .collection('Ranking_Crew_Daily')
+          .doc('1')
+          .collection('${_seasonController.currentSeason}')
+          .doc('$liveCrew#$todayDocName');
 
       try {
         DocumentSnapshot crewDocSnapshot = await crewDocRef.get();
@@ -1290,6 +1293,11 @@ class LiveMapController extends GetxController {
           // 문서가 없으면 초기값 설정
 
           await crewDocRef.set({
+            'crewID': _liveCrewModelController.crewID,
+            'crewName': _liveCrewModelController.crewName,
+            'date': todayDocName,
+            'baseResort': _liveCrewModelController.baseResort,
+            'baseResortNickName': _liveCrewModelController.baseResortNickName,
             'passCountData': {},
             'passCountTimeData': {
               '1': 0,
@@ -1308,6 +1316,8 @@ class LiveMapController extends GetxController {
             'slopeScores': {},
             'totalPassCount': 0,
             'totalScore': 0,
+            'totalPassCountWeekly': 0,
+            'totalScoreWeekly': 0,
             'lastPassTime': DateTime.now(),
           });
 
@@ -1343,6 +1353,78 @@ class LiveMapController extends GetxController {
           'totalScore': FieldValue.increment(slopeScore),
           'lastPassTime': DateTime.now(),
         });
+
+        //여기서부터 주간 점수 업데이트
+
+        try{
+
+          List<QueryDocumentSnapshot> rankingList = [];
+
+          DateTime startOfWeek = now.subtract(Duration(days: now.weekday - 1));
+          DateTime endOfWeek = startOfWeek.add(Duration(days: 7));
+          List<String> thisWeekDates = [];
+
+          for (DateTime date = startOfWeek; date.isBefore(endOfWeek); date = date.add(Duration(days: 1))) {
+            String formattedDate = DateFormat('yyyyMMdd').format(date);
+            thisWeekDates.add(formattedDate);
+          }
+          print(thisWeekDates);
+
+          QuerySnapshot rankingSnapshot = await FirebaseFirestore.instance
+              .collection('Ranking_Crew_Daily')
+              .doc('1')
+              .collection('${_seasonController.currentSeason}')
+              .where('crewID', isEqualTo: _liveCrewModelController.crewID)
+              .where('date', whereIn: thisWeekDates)
+              .where('totalScore', isGreaterThan: 0)
+              .orderBy('totalScore', descending: true)
+              .get();
+
+          rankingList = rankingSnapshot.docs;
+
+          print(rankingList);
+
+          int totalScoreWeekly = 0;
+          int totalPassCountWeekly = 0;
+
+          for (QueryDocumentSnapshot doc in rankingList) {
+            Map<String, dynamic>? data = doc.data() as Map<String, dynamic>?;
+
+            if (data != null) {
+              int? totalScore = data['totalScore'] as int?;
+              int? totalPassCount = data['totalPassCount'] as int?;
+
+              if (totalScore != null && totalPassCount != null) {
+                totalScoreWeekly += totalScore;
+                totalPassCountWeekly += totalPassCount;
+              } else {
+                print('totalScore 또는 totalPassCount가 null입니다.');
+              }
+            } else {
+              print('데이터가 null입니다.');
+            }
+          }
+
+          print('totalScoreWeekly: $totalScoreWeekly');
+          print('totalPassCountWeekly: $totalPassCountWeekly');
+
+          DocumentReference docRefWeekly = FirebaseFirestore.instance
+              .collection('Ranking_Crew_Daily')
+              .doc('1')
+              .collection('${_seasonController.currentSeason}')
+              .doc('$liveCrew#$todayDocName');
+
+          await docRefWeekly.update({
+            'totalScoreWeekly': totalScoreWeekly, // totalScoreWeekly 값을 업데이트
+            'totalPassCountWeekly': totalPassCountWeekly, // totalPassCountWeekly 값을 업데이트
+          });
+
+        }catch(error, stackTrace){
+          print('오류 발생: $error');
+          print('스택 트레이스: $stackTrace');
+        }
+
+
       } catch (error, stackTrace) {
         print('오류 발생: $error');
         print('스택 트레이스: $stackTrace');

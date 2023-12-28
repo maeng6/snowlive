@@ -53,9 +53,9 @@ void main() async {
   Get.put(TimeStampController(), permanent: true);
   Get.put(FriendsCommentModelController(), permanent: true);
   Get.put(RankingTierModelController(), permanent: true);
+  Get.put(LiveCrewModelController(), permanent: true);
   Get.put(LiveMapController(), permanent: true);
   Get.put(MainHomeController(), permanent: true);
-  Get.put(LiveCrewModelController(), permanent: true);
   Get.put(UrlLauncherController(), permanent: true);
   Get.put(MyRankingController(),permanent: true);
   Get.put(RefreshController(),permanent: true);
