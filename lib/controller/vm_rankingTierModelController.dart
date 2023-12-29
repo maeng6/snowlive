@@ -54,82 +54,8 @@ class RankingTierModelController extends GetxController{
   SeasonController _seasonController = Get.find<SeasonController>();
   //TODO: Dependency Injection********************************************
 
-  Future<void> updateTier()async{
 
-    double? percent;
-    int? totalScore;
-    String? tier;
-
-    QuerySnapshot rankingSnapshot = await FirebaseFirestore.instance
-        .collection('Ranking')
-        .doc('${_seasonController.currentSeason}')
-        .collection('${_userModelController.favoriteResort}')
-        .where('totalScore', isGreaterThan: 0)
-        .orderBy('totalScore', descending: true)
-        .get();
-
-    final rankingDocs = rankingSnapshot.docs;
-
-    // 내 UID와 일치하는 데이터 찾기
-    var myData;
-    for (var doc in rankingDocs) {
-      if (doc.id == _userModelController.uid) {
-        myData = doc;
-        break;
-      }
-    }
-    // 내 순위 찾기
-    int myRank = rankingDocs.indexOf(myData) + 1;
-    int totalRankCount = rankingDocs.length;
-
-    percent = myRank/totalRankCount;
-    totalScore = myData['totalScore'];
-    print('등수 : $myRank');
-    print('퍼센트 : $percent');
-    print('스코어 : $totalScore');
-
-
-    if(percent <= rankingTierList[0].scoreRng && totalScore! >= rankingTierList[0].totalScore ){
-      tier = 'S';
-    }else if(percent <= rankingTierList[1].scoreRng && totalScore! >= rankingTierList[1].totalScore ){
-      tier = 'A';
-    }else if(percent <= rankingTierList[2].scoreRng && totalScore! >= rankingTierList[2].totalScore ){
-      tier = 'B';
-    }else if(percent <= rankingTierList[3].scoreRng && totalScore! >= rankingTierList[3].totalScore ){
-      tier = 'C';
-    }else {
-      tier = 'D';
-    }
-
-    print('티어 : $tier');
-
-    await ref.collection('Ranking')
-        .doc('${_seasonController.currentSeason}')
-        .collection('${_userModelController.favoriteResort}')
-        .doc(_userModelController.uid).update({
-      'tier': tier,
-    },);
-
-  }
-
-  String getBadgeAsset({required double percent,required int totalScore,required List rankingTierList}) {
-    for (var tier in rankingTierList) {
-      if (percent <= tier.scoreRng && totalScore >= tier.totalScore) {
-        return tier.badgeAsset;
-      }
-    }
-    return rankingTierList.last.badgeAsset; // 가장 낮은 순위의 뱃지
-  }
-
-  String getBadgeAsset_integrated({required double percent,required int totalPassCount,required List rankingTierList}) {
-    for (var tier in rankingTierList_integrated) {
-      if (percent <= tier.scoreRng && totalPassCount >= tier.totalScore) {
-        return tier.badgeAsset;
-      }
-    }
-    return rankingTierList.last.badgeAsset; // 가장 낮은 순위의 뱃지
-  }
-
+  //TODO: 개인 랭킹독 가져오는 메소드********************************************
 
   Future<void> getRankingDocs({required baseResort}) async{
 
@@ -138,312 +64,31 @@ class RankingTierModelController extends GetxController{
 
     String today = DateFormat('yyyyMMdd').format(DateTime.now());
 
-      QuerySnapshot rankingSnapshot = await FirebaseFirestore.instance
-          .collection('Ranking')
-          .doc('${_seasonController.currentSeason}')
-          .collection('${baseResort}')
-          .where('totalScore', isGreaterThan: 0)
-          .orderBy('totalScore', descending: true)
-          .get();
-      rankingList = rankingSnapshot.docs;
-
-      if(baseResort == 12) {
-        QuerySnapshot kusbfCrewSnapshot = await FirebaseFirestore.instance
-            .collection('liveCrew')
-            .where('kusbf', isEqualTo: true)
-            .get();
-        rankingList_kusbf = rankingSnapshot.docs;
-
-        for (var doc in kusbfCrewSnapshot.docs) {
-          List<dynamic> memberUidList = doc['memberUidList'];
-          this._kusbfAllMemberUidList!.addAll(memberUidList);
-        }
-
-        rankingList_kusbf = rankingSnapshot.docs.where((doc) {
-          final uid = doc['uid'];
-          return _kusbfAllMemberUidList!.contains(uid);
-        }).toList();
-
-        rankingList_kusbf.sort((a, b) {
-          final aTotalScore = a['totalScore'] as int;
-          final bTotalScore = b['totalScore'] as int;
-          final aLastPassTime = a['lastPassTime'] as Timestamp?;
-          final bLastPassTime = b['lastPassTime'] as Timestamp?;
-
-          if (aTotalScore == bTotalScore) {
-            if (aLastPassTime != null && bLastPassTime != null) {
-              return bLastPassTime.compareTo(aLastPassTime);
-            }
-          }
-
-          return bTotalScore.compareTo(aTotalScore);
-        });
-
-      }else{}
-
-      rankingList.sort((a, b) {
-        final aTotalScore = a['totalScore'] as int;
-        final bTotalScore = b['totalScore'] as int;
-        final aLastPassTime = a['lastPassTime'] as Timestamp?;
-        final bLastPassTime = b['lastPassTime'] as Timestamp?;
-
-        if (aTotalScore == bTotalScore) {
-          if (aLastPassTime != null && bLastPassTime != null) {
-            return bLastPassTime.compareTo(aLastPassTime);
-          }
-        }
-
-        return bTotalScore.compareTo(aTotalScore);
-      });
-
-
-
-    this._rankingDocs!.value = rankingList.map((doc) {
-      // 각 문서의 데이터를 Map 형태로 변환
-      return doc.data() as Map<String, dynamic>;
-    }).toList();
-    this._rankingDocs_kusbf!.value = rankingList_kusbf.map((doc) {
-      // 각 문서의 데이터를 Map 형태로 변환
-      return doc.data() as Map<String, dynamic>;
-    }).toList();
-    this._userRankingMap!.value = await calculateRankIndiAll2(userRankingDocs: _rankingDocs);
-    this._userRankingMap_kusbf!.value = await calculateRankIndiAll2(userRankingDocs: _rankingDocs_kusbf);
-
-
-    print('대학연합 랭킹참여자 : ${_rankingDocs_kusbf!.length}');
-    print('일반 랭킹참여자 : ${_rankingDocs!.length}');
-
-  }
-
-  Future<void> getRankingDocsDaily({required baseResort}) async{
-
-    List<QueryDocumentSnapshot>? rankingList = [];
-    List<QueryDocumentSnapshot> rankingList_kusbf=[];
-
-    String today = DateFormat('yyyyMMdd').format(DateTime.now());
-
-      QuerySnapshot rankingSnapshot = await FirebaseFirestore.instance
-          .collection('Ranking_Daily')
-          .doc('${_seasonController.currentSeason}')
-          .collection('${baseResort}')
-          .where('date', isEqualTo: today)
-          .where('totalScore', isGreaterThan: 0)
-          .orderBy('totalScore', descending: true)
-          .get();
-      rankingList = rankingSnapshot.docs;
-
-      if(baseResort == 12) {
-        QuerySnapshot kusbfCrewSnapshot = await FirebaseFirestore.instance
-            .collection('liveCrew')
-            .where('kusbf', isEqualTo: true)
-            .get();
-        rankingList_kusbf = rankingSnapshot.docs;
-
-        for (var doc in kusbfCrewSnapshot.docs) {
-          List<dynamic> memberUidList = doc['memberUidList'];
-          this._kusbfAllMemberUidList!.addAll(memberUidList);
-        }
-
-        rankingList_kusbf = rankingSnapshot.docs.where((doc) {
-          final uid = doc['uid'];
-          return _kusbfAllMemberUidList!.contains(uid);
-        }).toList();
-
-        rankingList_kusbf.sort((a, b) {
-          final aTotalScore = a['totalScore'] as int;
-          final bTotalScore = b['totalScore'] as int;
-          final aLastPassTime = a['lastPassTime'] as Timestamp?;
-          final bLastPassTime = b['lastPassTime'] as Timestamp?;
-
-          if (aTotalScore == bTotalScore) {
-            if (aLastPassTime != null && bLastPassTime != null) {
-              return bLastPassTime.compareTo(aLastPassTime);
-            }
-          }
-
-          return bTotalScore.compareTo(aTotalScore);
-        });
-
-      }else{}
-
-      rankingList.sort((a, b) {
-        final aTotalScore = a['totalScore'] as int;
-        final bTotalScore = b['totalScore'] as int;
-        final aLastPassTime = a['lastPassTime'] as Timestamp?;
-        final bLastPassTime = b['lastPassTime'] as Timestamp?;
-
-        if (aTotalScore == bTotalScore) {
-          if (aLastPassTime != null && bLastPassTime != null) {
-            return bLastPassTime.compareTo(aLastPassTime);
-          }
-        }
-
-        return bTotalScore.compareTo(aTotalScore);
-      });
-
-
-
-
-
-    this._rankingDocs!.value = rankingList.map((doc) {
-      // 각 문서의 데이터를 Map 형태로 변환
-      return doc.data() as Map<String, dynamic>;
-    }).toList();
-    this._rankingDocs_kusbf!.value = rankingList_kusbf.map((doc) {
-      // 각 문서의 데이터를 Map 형태로 변환
-      return doc.data() as Map<String, dynamic>;
-    }).toList();
-    this._userRankingMap!.value = await calculateRankIndiAll2(userRankingDocs: _rankingDocs);
-    this._userRankingMap_kusbf!.value = await calculateRankIndiAll2(userRankingDocs: _rankingDocs_kusbf);
-
-
-    print('대학연합 랭킹참여자 : ${_rankingDocs_kusbf!.length}');
-    print('일반 랭킹참여자 : ${_rankingDocs!.length}');
-
-  }
-
-  Future<void> getRankingDocsWeekly({required baseResort}) async{
-
-    List<QueryDocumentSnapshot>? rankingList = [];
-    List<QueryDocumentSnapshot> rankingList_kusbf=[];
-
-
-      DateTime now = DateTime.now();
-      DateTime startOfWeek = now.subtract(Duration(days: now.weekday - 1));
-      DateTime endOfWeek = startOfWeek.add(Duration(days: 7));
-      List<String> thisWeekDates = [];
-
-      for (DateTime date = startOfWeek; date.isBefore(endOfWeek); date = date.add(Duration(days: 1))) {
-        String formattedDate = DateFormat('yyyyMMdd').format(date);
-        thisWeekDates.add(formattedDate);
-      }
-      print(thisWeekDates);
-
-      QuerySnapshot rankingSnapshot = await FirebaseFirestore.instance
-          .collection('Ranking_Daily')
-          .doc('${_seasonController.currentSeason}')
-          .collection('${baseResort}')
-          .where('date', whereIn: thisWeekDates)
-          .where('totalScoreWeekly', isGreaterThan: 0)
-          .orderBy('totalScoreWeekly', descending: true)
-          .get();
-
-      Map<String, List<DocumentSnapshot>> groupedData = {};
-
-      for (var doc in rankingSnapshot.docs) {
-        final uid = doc['uid'] as String;
-        if (!groupedData.containsKey(uid)) {
-          groupedData[uid] = [];
-        }
-        groupedData[uid]?.add(doc);
-      }
-
-      // 각 그룹 내에서 date 필드를 기준으로 소팅하여 최신 데이터를 선택합니다.
-      List<DocumentSnapshot> finalRankingList = [];
-
-      groupedData.forEach((uid, documents) {
-        documents.sort((a, b) {
-          final aDate = a['date'] as String;
-          final bDate = b['date'] as String;
-          return bDate.compareTo(aDate);
-        });
-        finalRankingList.add(documents[0]); // 최신 데이터를 선택하여 결과 목록에 추가합니다.
-      });
-
-      rankingList = finalRankingList.cast<QueryDocumentSnapshot<Object?>>();
-
-      if(baseResort == 12) {
-        QuerySnapshot kusbfCrewSnapshot = await FirebaseFirestore.instance
-            .collection('liveCrew')
-            .where('kusbf', isEqualTo: true)
-            .get();
-        rankingList_kusbf = rankingSnapshot.docs;
-
-        for (var doc in kusbfCrewSnapshot.docs) {
-          List<dynamic> memberUidList = doc['memberUidList'];
-          this._kusbfAllMemberUidList!.addAll(memberUidList);
-        }
-
-        rankingList_kusbf = rankingSnapshot.docs.where((doc) {
-          final uid = doc['uid'];
-          return _kusbfAllMemberUidList!.contains(uid);
-        }).toList();
-
-        rankingList_kusbf.sort((a, b) {
-          final aTotalScore = a['totalScoreWeekly'] as int;
-          final bTotalScore = b['totalScoreWeekly'] as int;
-          final aLastPassTime = a['lastPassTime'] as Timestamp?;
-          final bLastPassTime = b['lastPassTime'] as Timestamp?;
-
-          if (aTotalScore == bTotalScore) {
-            if (aLastPassTime != null && bLastPassTime != null) {
-              return bLastPassTime.compareTo(aLastPassTime);
-            }
-          }
-
-          return bTotalScore.compareTo(aTotalScore);
-        });
-
-      }else{}
-
-      rankingList.sort((a, b) {
-        final aTotalScore = a['totalScoreWeekly'] as int;
-        final bTotalScore = b['totalScoreWeekly'] as int;
-        final aLastPassTime = a['lastPassTime'] as Timestamp?;
-        final bLastPassTime = b['lastPassTime'] as Timestamp?;
-
-        if (aTotalScore == bTotalScore) {
-          if (aLastPassTime != null && bLastPassTime != null) {
-            return bLastPassTime.compareTo(aLastPassTime);
-          }
-        }
-
-        return bTotalScore.compareTo(aTotalScore);
-      });
-
-
-
-    this._rankingDocs!.value = rankingList.map((doc) {
-      // 각 문서의 데이터를 Map 형태로 변환
-      return doc.data() as Map<String, dynamic>;
-    }).toList();
-    this._rankingDocs_kusbf!.value = rankingList_kusbf.map((doc) {
-      // 각 문서의 데이터를 Map 형태로 변환
-      return doc.data() as Map<String, dynamic>;
-    }).toList();
-    this._userRankingMap!.value = await calculateRankIndiAll2(userRankingDocs: _rankingDocs);
-    this._userRankingMap_kusbf!.value = await calculateRankIndiAll2(userRankingDocs: _rankingDocs_kusbf);
-
-
-    print('대학연합 랭킹참여자 : ${_rankingDocs_kusbf!.length}');
-    print('일반 랭킹참여자 : ${_rankingDocs!.length}');
-
-  }
-
-
-
-  Future<void> getRankingDocs_crew({required baseResort}) async{
-
-    List<QueryDocumentSnapshot> rankingList = [];
-    List<QueryDocumentSnapshot> rankingList_kusbf=[];
-
-    QuerySnapshot rankingSnapshot_crew = await  FirebaseFirestore.instance
-        .collection('liveCrew')
-        .where('baseResort', isEqualTo: baseResort)
+    QuerySnapshot rankingSnapshot = await FirebaseFirestore.instance
+        .collection('Ranking')
+        .doc('${_seasonController.currentSeason}')
+        .collection('${baseResort}')
         .where('totalScore', isGreaterThan: 0)
         .orderBy('totalScore', descending: true)
         .get();
-    rankingList = rankingSnapshot_crew.docs;
+    rankingList = rankingSnapshot.docs;
 
     if(baseResort == 12) {
-      QuerySnapshot rankingSnapshot_crew_kusbf = await FirebaseFirestore.instance
+      QuerySnapshot kusbfCrewSnapshot = await FirebaseFirestore.instance
           .collection('liveCrew')
           .where('kusbf', isEqualTo: true)
-          .where('baseResort', isEqualTo: baseResort)
-          .where('totalScore', isGreaterThan: 0)
-          .orderBy('totalScore', descending: true)
           .get();
-      rankingList_kusbf = rankingSnapshot_crew_kusbf.docs;
+      rankingList_kusbf = rankingSnapshot.docs;
+
+      for (var doc in kusbfCrewSnapshot.docs) {
+        List<dynamic> memberUidList = doc['memberUidList'];
+        this._kusbfAllMemberUidList!.addAll(memberUidList);
+      }
+
+      rankingList_kusbf = rankingSnapshot.docs.where((doc) {
+        final uid = doc['uid'];
+        return _kusbfAllMemberUidList!.contains(uid);
+      }).toList();
 
       rankingList_kusbf.sort((a, b) {
         final aTotalScore = a['totalScore'] as int;
@@ -477,59 +122,76 @@ class RankingTierModelController extends GetxController{
       return bTotalScore.compareTo(aTotalScore);
     });
 
-    this._rankingDocs_crew!.value = rankingList.map((doc) {
+
+
+    this._rankingDocs!.value = rankingList.map((doc) {
       // 각 문서의 데이터를 Map 형태로 변환
       return doc.data() as Map<String, dynamic>;
     }).toList();
-    this._rankingDocs_crew_kusbf!.value = rankingList_kusbf.map((doc) {
+    this._rankingDocs_kusbf!.value = rankingList_kusbf.map((doc) {
       // 각 문서의 데이터를 Map 형태로 변환
       return doc.data() as Map<String, dynamic>;
     }).toList();
-    this._crewRankingMap!.value = await calculateRankCrewAll2(crewDocs: _rankingDocs_crew);
-    this._crewRankingMap_kusbf!.value = await calculateRankCrewAll2(crewDocs: _rankingDocs_crew_kusbf);
+    this._userRankingMap!.value = await calculateRankIndiAll2(userRankingDocs: _rankingDocs);
+    this._userRankingMap_kusbf!.value = await calculateRankIndiAll2(userRankingDocs: _rankingDocs_kusbf);
 
 
-    print('대학연합 랭킹참여 크루 : ${_rankingDocs_kusbf!.length}');
-    print('일반 랭킹참여 크루 : ${_rankingDocs!.length}');
+    print('대학연합 랭킹참여자 : ${_rankingDocs_kusbf!.length}');
+    print('일반 랭킹참여자 : ${_rankingDocs!.length}');
 
   }
 
-  Future<void> getRankingDocs_crewMember({required crewID, required crewBase}) async{
+  Future<void> getRankingDocsDaily({required baseResort}) async{
 
-    List<Map<String, dynamic>> rankingList = [];
+    List<QueryDocumentSnapshot>? rankingList = [];
+    List<QueryDocumentSnapshot> rankingList_kusbf=[];
 
-    QuerySnapshot rankingSnapshot_crewMember = await FirebaseFirestore.instance
-        .collection('liveCrew')
-        .where('crewID', isEqualTo: crewID)
-        .get();
+    String today = DateFormat('yyyyMMdd').format(DateTime.now());
 
-    List<dynamic> memberList = [];
-    for (var doc in rankingSnapshot_crewMember.docs) {
-      var data = doc.data() as Map<String, dynamic>;
-      if (data.containsKey('memberUidList')) {
-        List<dynamic> members = data['memberUidList'];
-        memberList.addAll(members);
-      }
-    }
-
-    QuerySnapshot rankingSnapshot = await  FirebaseFirestore.instance
-        .collection('Ranking')
+    QuerySnapshot rankingSnapshot = await FirebaseFirestore.instance
+        .collection('Ranking_Daily')
         .doc('${_seasonController.currentSeason}')
-        .collection('${crewBase}')
+        .collection('${baseResort}')
+        .where('date', isEqualTo: today)
         .where('totalScore', isGreaterThan: 0)
         .orderBy('totalScore', descending: true)
         .get();
+    rankingList = rankingSnapshot.docs;
 
-    final AllUserScoreDocs = rankingSnapshot.docs;
+    if(baseResort == 12) {
+      QuerySnapshot kusbfCrewSnapshot = await FirebaseFirestore.instance
+          .collection('liveCrew')
+          .where('kusbf', isEqualTo: true)
+          .get();
+      rankingList_kusbf = rankingSnapshot.docs;
 
-    List<Map<String, dynamic>> allUserScoreData = AllUserScoreDocs.map((doc) {
-      return doc.data() as Map<String, dynamic>;
-    }).toList();
+      for (var doc in kusbfCrewSnapshot.docs) {
+        List<dynamic> memberUidList = doc['memberUidList'];
+        this._kusbfAllMemberUidList!.addAll(memberUidList);
+      }
 
+      rankingList_kusbf = rankingSnapshot.docs.where((doc) {
+        final uid = doc['uid'];
+        return _kusbfAllMemberUidList!.contains(uid);
+      }).toList();
 
-    rankingList = allUserScoreData.where((doc) =>
-        memberList.contains(doc['uid'])).toList();
-    // 동점자인 경우 lastPassTime을 기준으로 최신 순으로 정렬
+      rankingList_kusbf.sort((a, b) {
+        final aTotalScore = a['totalScore'] as int;
+        final bTotalScore = b['totalScore'] as int;
+        final aLastPassTime = a['lastPassTime'] as Timestamp?;
+        final bLastPassTime = b['lastPassTime'] as Timestamp?;
+
+        if (aTotalScore == bTotalScore) {
+          if (aLastPassTime != null && bLastPassTime != null) {
+            return bLastPassTime.compareTo(aLastPassTime);
+          }
+        }
+
+        return bTotalScore.compareTo(aTotalScore);
+      });
+
+    }else{}
+
     rankingList.sort((a, b) {
       final aTotalScore = a['totalScore'] as int;
       final bTotalScore = b['totalScore'] as int;
@@ -545,55 +207,144 @@ class RankingTierModelController extends GetxController{
       return bTotalScore.compareTo(aTotalScore);
     });
 
-    this._rankingDocs_crewMember!.value = rankingList.map((doc) {
+
+
+
+
+    this._rankingDocs!.value = rankingList.map((doc) {
       // 각 문서의 데이터를 Map 형태로 변환
-      return doc as Map<String, dynamic>;
+      return doc.data() as Map<String, dynamic>;
     }).toList();
+    this._rankingDocs_kusbf!.value = rankingList_kusbf.map((doc) {
+      // 각 문서의 데이터를 Map 형태로 변환
+      return doc.data() as Map<String, dynamic>;
+    }).toList();
+    this._userRankingMap!.value = await calculateRankIndiAll2(userRankingDocs: _rankingDocs);
+    this._userRankingMap_kusbf!.value = await calculateRankIndiAll2(userRankingDocs: _rankingDocs_kusbf);
 
-    print('크루 랭킹인원 : ${_rankingDocs_crewMember!.length}');
+
+    print('대학연합 랭킹참여자 : ${_rankingDocs_kusbf!.length}');
+    print('일반 랭킹참여자 : ${_rankingDocs!.length}');
 
   }
 
-  Map<String, int> calculateRankIndiAll2({required userRankingDocs}){
+  Future<void> getRankingDocsWeekly({required baseResort}) async{
 
-    Map<String, int> userRankingMap = {};
+    List<QueryDocumentSnapshot>? rankingList = [];
+    List<QueryDocumentSnapshot> rankingList_kusbf=[];
 
-    for (int i = 0; i < userRankingDocs.length; i++) {
-      if (userRankingDocs[i] != null) {
-        if (i == 0) {
-          userRankingMap['${userRankingDocs[i]['uid']}'] = i+1;
-        } else if(userRankingDocs[i]['totalScore'] != userRankingDocs[i-1]['totalScore']){
-          userRankingMap['${userRankingDocs[i]['uid']}'] = i+1;
-        } else if(userRankingDocs[i]['totalScore'] == userRankingDocs[i-1]['totalScore']){
-          userRankingMap['${userRankingDocs[i]['uid']}'] = userRankingMap['${userRankingDocs[i-1]['uid']}']!;
+
+    DateTime now = DateTime.now();
+    DateTime startOfWeek = now.subtract(Duration(days: now.weekday - 1));
+    DateTime endOfWeek = startOfWeek.add(Duration(days: 7));
+    List<String> thisWeekDates = [];
+
+    for (DateTime date = startOfWeek; date.isBefore(endOfWeek); date = date.add(Duration(days: 1))) {
+      String formattedDate = DateFormat('yyyyMMdd').format(date);
+      thisWeekDates.add(formattedDate);
+    }
+    print(thisWeekDates);
+
+    QuerySnapshot rankingSnapshot = await FirebaseFirestore.instance
+        .collection('Ranking_Daily')
+        .doc('${_seasonController.currentSeason}')
+        .collection('${baseResort}')
+        .where('date', whereIn: thisWeekDates)
+        .where('totalScoreWeekly', isGreaterThan: 0)
+        .orderBy('totalScoreWeekly', descending: true)
+        .get();
+
+    Map<String, List<DocumentSnapshot>> groupedData = {};
+
+    for (var doc in rankingSnapshot.docs) {
+      final uid = doc['uid'] as String;
+      if (!groupedData.containsKey(uid)) {
+        groupedData[uid] = [];
+      }
+      groupedData[uid]?.add(doc);
+    }
+
+    // 각 그룹 내에서 date 필드를 기준으로 소팅하여 최신 데이터를 선택합니다.
+    List<DocumentSnapshot> finalRankingList = [];
+
+    groupedData.forEach((uid, documents) {
+      documents.sort((a, b) {
+        final aDate = a['date'] as String;
+        final bDate = b['date'] as String;
+        return bDate.compareTo(aDate);
+      });
+      finalRankingList.add(documents[0]); // 최신 데이터를 선택하여 결과 목록에 추가합니다.
+    });
+
+    rankingList = finalRankingList.cast<QueryDocumentSnapshot<Object?>>();
+
+    if(baseResort == 12) {
+      QuerySnapshot kusbfCrewSnapshot = await FirebaseFirestore.instance
+          .collection('liveCrew')
+          .where('kusbf', isEqualTo: true)
+          .get();
+      rankingList_kusbf = rankingSnapshot.docs;
+
+      for (var doc in kusbfCrewSnapshot.docs) {
+        List<dynamic> memberUidList = doc['memberUidList'];
+        this._kusbfAllMemberUidList!.addAll(memberUidList);
+      }
+
+      rankingList_kusbf = rankingSnapshot.docs.where((doc) {
+        final uid = doc['uid'];
+        return _kusbfAllMemberUidList!.contains(uid);
+      }).toList();
+
+      rankingList_kusbf.sort((a, b) {
+        final aTotalScore = a['totalScoreWeekly'] as int;
+        final bTotalScore = b['totalScoreWeekly'] as int;
+        final aLastPassTime = a['lastPassTime'] as Timestamp?;
+        final bLastPassTime = b['lastPassTime'] as Timestamp?;
+
+        if (aTotalScore == bTotalScore) {
+          if (aLastPassTime != null && bLastPassTime != null) {
+            return bLastPassTime.compareTo(aLastPassTime);
+          }
+        }
+
+        return bTotalScore.compareTo(aTotalScore);
+      });
+
+    }else{}
+
+    rankingList.sort((a, b) {
+      final aTotalScore = a['totalScoreWeekly'] as int;
+      final bTotalScore = b['totalScoreWeekly'] as int;
+      final aLastPassTime = a['lastPassTime'] as Timestamp?;
+      final bLastPassTime = b['lastPassTime'] as Timestamp?;
+
+      if (aTotalScore == bTotalScore) {
+        if (aLastPassTime != null && bLastPassTime != null) {
+          return bLastPassTime.compareTo(aLastPassTime);
         }
       }
-    }
-    return userRankingMap;
+
+      return bTotalScore.compareTo(aTotalScore);
+    });
+
+
+
+    this._rankingDocs!.value = rankingList.map((doc) {
+      // 각 문서의 데이터를 Map 형태로 변환
+      return doc.data() as Map<String, dynamic>;
+    }).toList();
+    this._rankingDocs_kusbf!.value = rankingList_kusbf.map((doc) {
+      // 각 문서의 데이터를 Map 형태로 변환
+      return doc.data() as Map<String, dynamic>;
+    }).toList();
+    this._userRankingMap!.value = await calculateRankIndiAll2(userRankingDocs: _rankingDocs);
+    this._userRankingMap_kusbf!.value = await calculateRankIndiAll2(userRankingDocs: _rankingDocs_kusbf);
+
+
+    print('대학연합 랭킹참여자 : ${_rankingDocs_kusbf!.length}');
+    print('일반 랭킹참여자 : ${_rankingDocs!.length}');
+
   }
-
-  Map<String, int> calculateRankCrewAll2({required crewDocs})  {
-
-    Map<String, int> crewRankingMap = {};
-
-    for (int i = 0; i < crewDocs.length; i++) {
-      if (crewDocs[i] != null) {
-        if (i == 0) {
-          crewRankingMap['${crewDocs[i]['crewID']}'] = i+1;
-        } else if(crewDocs[i]['totalScore'] != crewDocs[i-1]['totalScore']){
-          crewRankingMap['${crewDocs[i]['crewID']}'] = i+1;
-        } else if(crewDocs[i]['totalScore'] == crewDocs[i-1]['totalScore']){
-          crewRankingMap['${crewDocs[i]['crewID']}'] = crewRankingMap['${crewDocs[i-1]['crewID']}']!;
-        }
-      }
-    }
-
-    return crewRankingMap;
-  }
-
-
-
-
 
   Future<void> getRankingDocs_integrated() async {
     List<QueryDocumentSnapshot> rankingList = [];
@@ -795,6 +546,273 @@ class RankingTierModelController extends GetxController{
     print('통합랭킹 참여자 : ${_rankingDocs_integrated!.length}');
   }
 
+  //TODO: 개인 랭킹독 가져오는 메소드********************************************
+
+
+
+  //TODO: 크루 랭킹독 가져오는 메소드********************************************
+
+  Future<void> getRankingDocs_crew({required baseResort}) async{
+
+    List<QueryDocumentSnapshot> rankingList = [];
+    List<QueryDocumentSnapshot> rankingList_kusbf=[];
+
+    QuerySnapshot rankingSnapshot_crew = await  FirebaseFirestore.instance
+        .collection('liveCrew')
+        .where('baseResort', isEqualTo: baseResort)
+        .where('totalScore', isGreaterThan: 0)
+        .orderBy('totalScore', descending: true)
+        .get();
+    rankingList = rankingSnapshot_crew.docs;
+
+    if(baseResort == 12) {
+      QuerySnapshot rankingSnapshot_crew_kusbf = await FirebaseFirestore.instance
+          .collection('liveCrew')
+          .where('kusbf', isEqualTo: true)
+          .where('baseResort', isEqualTo: baseResort)
+          .where('totalScore', isGreaterThan: 0)
+          .orderBy('totalScore', descending: true)
+          .get();
+      rankingList_kusbf = rankingSnapshot_crew_kusbf.docs;
+
+      rankingList_kusbf.sort((a, b) {
+        final aTotalScore = a['totalScore'] as int;
+        final bTotalScore = b['totalScore'] as int;
+        final aLastPassTime = a['lastPassTime'] as Timestamp?;
+        final bLastPassTime = b['lastPassTime'] as Timestamp?;
+
+        if (aTotalScore == bTotalScore) {
+          if (aLastPassTime != null && bLastPassTime != null) {
+            return bLastPassTime.compareTo(aLastPassTime);
+          }
+        }
+
+        return bTotalScore.compareTo(aTotalScore);
+      });
+
+    }else{}
+
+    rankingList.sort((a, b) {
+      final aTotalScore = a['totalScore'] as int;
+      final bTotalScore = b['totalScore'] as int;
+      final aLastPassTime = a['lastPassTime'] as Timestamp?;
+      final bLastPassTime = b['lastPassTime'] as Timestamp?;
+
+      if (aTotalScore == bTotalScore) {
+        if (aLastPassTime != null && bLastPassTime != null) {
+          return bLastPassTime.compareTo(aLastPassTime);
+        }
+      }
+
+      return bTotalScore.compareTo(aTotalScore);
+    });
+
+    this._rankingDocs_crew!.value = rankingList.map((doc) {
+      // 각 문서의 데이터를 Map 형태로 변환
+      return doc.data() as Map<String, dynamic>;
+    }).toList();
+    this._rankingDocs_crew_kusbf!.value = rankingList_kusbf.map((doc) {
+      // 각 문서의 데이터를 Map 형태로 변환
+      return doc.data() as Map<String, dynamic>;
+    }).toList();
+    this._crewRankingMap!.value = await calculateRankCrewAll2(crewDocs: _rankingDocs_crew);
+    this._crewRankingMap_kusbf!.value = await calculateRankCrewAll2(crewDocs: _rankingDocs_crew_kusbf);
+
+
+    print('대학연합 랭킹참여 크루 : ${_rankingDocs_kusbf!.length}');
+    print('일반 랭킹참여 크루 : ${_rankingDocs!.length}');
+
+  }
+
+  Future<void> getRankingDocs_crew_Daily({required baseResort}) async{
+
+    List<QueryDocumentSnapshot> rankingList = [];
+    List<QueryDocumentSnapshot> rankingList_kusbf=[];
+
+    QuerySnapshot rankingSnapshot_crew = await  FirebaseFirestore.instance
+        .collection('Ranking_Crew_Daily')
+        .doc('1')
+        .collection('${_seasonController.currentSeason}')
+        .where('baseResort', isEqualTo: baseResort)
+        .where('totalScore', isGreaterThan: 0)
+        .orderBy('totalScore', descending: true)
+        .get();
+    rankingList = rankingSnapshot_crew.docs;
+
+    if(baseResort == 12) {
+      QuerySnapshot rankingSnapshot_crew_kusbf = await FirebaseFirestore.instance
+          .collection('Ranking_Crew_Daily')
+          .doc('1')
+          .collection('${_seasonController.currentSeason}')
+          .where('kusbf', isEqualTo: true)
+          .where('baseResort', isEqualTo: baseResort)
+          .where('totalScore', isGreaterThan: 0)
+          .orderBy('totalScore', descending: true)
+          .get();
+      rankingList_kusbf = rankingSnapshot_crew_kusbf.docs;
+
+      rankingList_kusbf.sort((a, b) {
+        final aTotalScore = a['totalScore'] as int;
+        final bTotalScore = b['totalScore'] as int;
+        final aLastPassTime = a['lastPassTime'] as Timestamp?;
+        final bLastPassTime = b['lastPassTime'] as Timestamp?;
+
+        if (aTotalScore == bTotalScore) {
+          if (aLastPassTime != null && bLastPassTime != null) {
+            return bLastPassTime.compareTo(aLastPassTime);
+          }
+        }
+
+        return bTotalScore.compareTo(aTotalScore);
+      });
+
+    }else{}
+
+    rankingList.sort((a, b) {
+      final aTotalScore = a['totalScore'] as int;
+      final bTotalScore = b['totalScore'] as int;
+      final aLastPassTime = a['lastPassTime'] as Timestamp?;
+      final bLastPassTime = b['lastPassTime'] as Timestamp?;
+
+      if (aTotalScore == bTotalScore) {
+        if (aLastPassTime != null && bLastPassTime != null) {
+          return bLastPassTime.compareTo(aLastPassTime);
+        }
+      }
+
+      return bTotalScore.compareTo(aTotalScore);
+    });
+
+    this._rankingDocs_crew!.value = rankingList.map((doc) {
+      // 각 문서의 데이터를 Map 형태로 변환
+      return doc.data() as Map<String, dynamic>;
+    }).toList();
+    this._rankingDocs_crew_kusbf!.value = rankingList_kusbf.map((doc) {
+      // 각 문서의 데이터를 Map 형태로 변환
+      return doc.data() as Map<String, dynamic>;
+    }).toList();
+    this._crewRankingMap!.value = await calculateRankCrewAll2(crewDocs: _rankingDocs_crew);
+    this._crewRankingMap_kusbf!.value = await calculateRankCrewAll2(crewDocs: _rankingDocs_crew_kusbf);
+
+
+    print('대학연합 랭킹참여 크루 : ${_rankingDocs_kusbf!.length}');
+    print('일반 랭킹참여 크루 : ${_rankingDocs!.length}');
+
+  }
+
+  Future<void> getRankingDocs_crew_Weekly({required baseResort}) async{
+
+    List<QueryDocumentSnapshot> rankingList = [];
+    List<QueryDocumentSnapshot> rankingList_kusbf=[];
+
+    DateTime now = DateTime.now();
+    DateTime startOfWeek = now.subtract(Duration(days: now.weekday - 1));
+    DateTime endOfWeek = startOfWeek.add(Duration(days: 7));
+    List<String> thisWeekDates = [];
+
+    for (DateTime date = startOfWeek; date.isBefore(endOfWeek); date = date.add(Duration(days: 1))) {
+      String formattedDate = DateFormat('yyyyMMdd').format(date);
+      thisWeekDates.add(formattedDate);
+    }
+    print(thisWeekDates);
+
+    QuerySnapshot rankingSnapshot_crew = await  FirebaseFirestore.instance
+        .collection('Ranking_Crew_Daily')
+        .doc('1')
+        .collection('${_seasonController.currentSeason}')
+        .where('date', whereIn: thisWeekDates)
+        .where('baseResort', isEqualTo: baseResort)
+        .where('totalScore', isGreaterThan: 0)
+        .orderBy('totalScore', descending: true)
+        .get();
+
+    Map<String, List<DocumentSnapshot>> groupedData = {};
+
+    for (var doc in rankingSnapshot_crew.docs) {
+      final crewID = doc['crewID'] as String;
+      if (!groupedData.containsKey(crewID)) {
+        groupedData[crewID] = [];
+      }
+      groupedData[crewID]?.add(doc);
+    }
+
+    // 각 그룹 내에서 date 필드를 기준으로 소팅하여 최신 데이터를 선택합니다.
+    List<DocumentSnapshot> finalRankingList = [];
+
+    groupedData.forEach((uid, documents) {
+      documents.sort((a, b) {
+        final aDate = a['date'] as String;
+        final bDate = b['date'] as String;
+        return bDate.compareTo(aDate);
+      });
+      finalRankingList.add(documents[0]); // 최신 데이터를 선택하여 결과 목록에 추가합니다.
+    });
+
+    rankingList = finalRankingList.cast<QueryDocumentSnapshot<Object?>>();
+
+
+    if(baseResort == 12) {
+      QuerySnapshot rankingSnapshot_crew_kusbf = await FirebaseFirestore.instance
+          .collection('Ranking_Crew_Daily')
+          .doc('1')
+          .collection('${_seasonController.currentSeason}')
+          .where('date', whereIn: thisWeekDates)
+          .where('kusbf', isEqualTo: true)
+          .where('baseResort', isEqualTo: baseResort)
+          .where('totalScore', isGreaterThan: 0)
+          .orderBy('totalScore', descending: true)
+          .get();
+      rankingList_kusbf = rankingSnapshot_crew_kusbf.docs;
+
+      rankingList_kusbf.sort((a, b) {
+        final aTotalScore = a['totalScore'] as int;
+        final bTotalScore = b['totalScore'] as int;
+        final aLastPassTime = a['lastPassTime'] as Timestamp?;
+        final bLastPassTime = b['lastPassTime'] as Timestamp?;
+
+        if (aTotalScore == bTotalScore) {
+          if (aLastPassTime != null && bLastPassTime != null) {
+            return bLastPassTime.compareTo(aLastPassTime);
+          }
+        }
+
+        return bTotalScore.compareTo(aTotalScore);
+      });
+
+    }else{}
+
+    rankingList.sort((a, b) {
+      final aTotalScore = a['totalScore'] as int;
+      final bTotalScore = b['totalScore'] as int;
+      final aLastPassTime = a['lastPassTime'] as Timestamp?;
+      final bLastPassTime = b['lastPassTime'] as Timestamp?;
+
+      if (aTotalScore == bTotalScore) {
+        if (aLastPassTime != null && bLastPassTime != null) {
+          return bLastPassTime.compareTo(aLastPassTime);
+        }
+      }
+
+      return bTotalScore.compareTo(aTotalScore);
+    });
+
+    this._rankingDocs_crew!.value = rankingList.map((doc) {
+      // 각 문서의 데이터를 Map 형태로 변환
+      return doc.data() as Map<String, dynamic>;
+    }).toList();
+    this._rankingDocs_crew_kusbf!.value = rankingList_kusbf.map((doc) {
+      // 각 문서의 데이터를 Map 형태로 변환
+      return doc.data() as Map<String, dynamic>;
+    }).toList();
+    this._crewRankingMap!.value = await calculateRankCrewAll2(crewDocs: _rankingDocs_crew);
+    this._crewRankingMap_kusbf!.value = await calculateRankCrewAll2(crewDocs: _rankingDocs_crew_kusbf);
+
+
+    print('대학연합 랭킹참여 크루 : ${_rankingDocs_kusbf!.length}');
+    print('일반 랭킹참여 크루 : ${_rankingDocs!.length}');
+
+  }
+
 
   Future<void> getRankingDocs_crew_integrated() async {
     List<QueryDocumentSnapshot> rankingList = [];
@@ -804,6 +822,128 @@ class RankingTierModelController extends GetxController{
         .where('totalPassCount', isGreaterThan: 0)
         .orderBy('totalPassCount', descending: true)
         .get();
+
+    // favoriteResort가 0, 2, 12가 아닌 문서만 필터링
+    rankingList = rankingSnapshot_crew.docs.where((doc) {
+      var data = doc.data() as Map<String, dynamic>;
+      var baseResort = data['baseResort'];
+      return ![0, 2, 12].contains(baseResort);
+    }).toList();
+
+    // 정렬 로직은 동일하게 유지
+    rankingList.sort((a, b) {
+      final aTotalScore = a['totalPassCount'] as int;
+      final bTotalScore = b['totalPassCount'] as int;
+      final aLastPassTime = a['lastPassTime'] as Timestamp?;
+      final bLastPassTime = b['lastPassTime'] as Timestamp?;
+
+      if (aTotalScore == bTotalScore) {
+        if (aLastPassTime != null && bLastPassTime != null) {
+          return bLastPassTime.compareTo(aLastPassTime);
+        }
+      }
+
+      return bTotalScore.compareTo(aTotalScore);
+    });
+
+    this._rankingDocs_crew_integrated!.value = rankingList.map((doc) {
+      return doc.data() as Map<String, dynamic>;
+    }).toList();
+
+    this._crewRankingMap_integrated!.value = await calculateRankCrewAll2_integrated(crewDocs: _rankingDocs_crew_integrated);
+
+    print('통합랭킹 참여 크루 : ${_rankingDocs_crew_integrated!.length}');
+  }
+
+  Future<void> getRankingDocs_crew_integrated_Daily() async {
+    List<QueryDocumentSnapshot> rankingList = [];
+
+    QuerySnapshot rankingSnapshot_crew = await FirebaseFirestore.instance
+        .collection('Ranking_Crew_Daily')
+        .doc('1')
+        .collection('${_seasonController.currentSeason}')
+        .where('totalPassCount', isGreaterThan: 0)
+        .orderBy('totalPassCount', descending: true)
+        .get();
+
+    // favoriteResort가 0, 2, 12가 아닌 문서만 필터링
+    rankingList = rankingSnapshot_crew.docs.where((doc) {
+      var data = doc.data() as Map<String, dynamic>;
+      var baseResort = data['baseResort'];
+      return ![0, 2, 12].contains(baseResort);
+    }).toList();
+
+    // 정렬 로직은 동일하게 유지
+    rankingList.sort((a, b) {
+      final aTotalScore = a['totalPassCount'] as int;
+      final bTotalScore = b['totalPassCount'] as int;
+      final aLastPassTime = a['lastPassTime'] as Timestamp?;
+      final bLastPassTime = b['lastPassTime'] as Timestamp?;
+
+      if (aTotalScore == bTotalScore) {
+        if (aLastPassTime != null && bLastPassTime != null) {
+          return bLastPassTime.compareTo(aLastPassTime);
+        }
+      }
+
+      return bTotalScore.compareTo(aTotalScore);
+    });
+
+    this._rankingDocs_crew_integrated!.value = rankingList.map((doc) {
+      return doc.data() as Map<String, dynamic>;
+    }).toList();
+
+    this._crewRankingMap_integrated!.value = await calculateRankCrewAll2_integrated(crewDocs: _rankingDocs_crew_integrated);
+
+    print('통합랭킹 참여 크루 : ${_rankingDocs_crew_integrated!.length}');
+  }
+
+  Future<void> getRankingDocs_crew_integrated_Weekly() async {
+    List<QueryDocumentSnapshot> rankingList = [];
+
+    DateTime now = DateTime.now();
+    DateTime startOfWeek = now.subtract(Duration(days: now.weekday - 1));
+    DateTime endOfWeek = startOfWeek.add(Duration(days: 7));
+    List<String> thisWeekDates = [];
+
+    for (DateTime date = startOfWeek; date.isBefore(endOfWeek); date = date.add(Duration(days: 1))) {
+      String formattedDate = DateFormat('yyyyMMdd').format(date);
+      thisWeekDates.add(formattedDate);
+    }
+    print(thisWeekDates);
+
+    QuerySnapshot rankingSnapshot_crew = await FirebaseFirestore.instance
+        .collection('Ranking_Crew_Daily')
+        .doc('1')
+        .collection('${_seasonController.currentSeason}')
+        .where('date', whereIn: thisWeekDates)
+        .where('totalPassCount', isGreaterThan: 0)
+        .orderBy('totalPassCount', descending: true)
+        .get();
+
+    Map<String, List<DocumentSnapshot>> groupedData = {};
+
+    for (var doc in rankingSnapshot_crew.docs) {
+      final crewID = doc['crewID'] as String;
+      if (!groupedData.containsKey(crewID)) {
+        groupedData[crewID] = [];
+      }
+      groupedData[crewID]?.add(doc);
+    }
+
+    // 각 그룹 내에서 date 필드를 기준으로 소팅하여 최신 데이터를 선택합니다.
+    List<DocumentSnapshot> finalRankingList = [];
+
+    groupedData.forEach((uid, documents) {
+      documents.sort((a, b) {
+        final aDate = a['date'] as String;
+        final bDate = b['date'] as String;
+        return bDate.compareTo(aDate);
+      });
+      finalRankingList.add(documents[0]); // 최신 데이터를 선택하여 결과 목록에 추가합니다.
+    });
+
+    rankingList = finalRankingList.cast<QueryDocumentSnapshot<Object?>>();
 
     // favoriteResort가 0, 2, 12가 아닌 문서만 필터링
     rankingList = rankingSnapshot_crew.docs.where((doc) {
@@ -888,6 +1028,190 @@ class RankingTierModelController extends GetxController{
 
   }
 
+  Future<void> getRankingDocs_crewMember({required crewID, required crewBase}) async{
+
+    List<Map<String, dynamic>> rankingList = [];
+
+    QuerySnapshot rankingSnapshot_crewMember = await FirebaseFirestore.instance
+        .collection('liveCrew')
+        .where('crewID', isEqualTo: crewID)
+        .get();
+
+    List<dynamic> memberList = [];
+    for (var doc in rankingSnapshot_crewMember.docs) {
+      var data = doc.data() as Map<String, dynamic>;
+      if (data.containsKey('memberUidList')) {
+        List<dynamic> members = data['memberUidList'];
+        memberList.addAll(members);
+      }
+    }
+
+    QuerySnapshot rankingSnapshot = await  FirebaseFirestore.instance
+        .collection('Ranking')
+        .doc('${_seasonController.currentSeason}')
+        .collection('${crewBase}')
+        .where('totalScore', isGreaterThan: 0)
+        .orderBy('totalScore', descending: true)
+        .get();
+
+    final AllUserScoreDocs = rankingSnapshot.docs;
+
+    List<Map<String, dynamic>> allUserScoreData = AllUserScoreDocs.map((doc) {
+      return doc.data() as Map<String, dynamic>;
+    }).toList();
+
+
+    rankingList = allUserScoreData.where((doc) =>
+        memberList.contains(doc['uid'])).toList();
+    // 동점자인 경우 lastPassTime을 기준으로 최신 순으로 정렬
+    rankingList.sort((a, b) {
+      final aTotalScore = a['totalScore'] as int;
+      final bTotalScore = b['totalScore'] as int;
+      final aLastPassTime = a['lastPassTime'] as Timestamp?;
+      final bLastPassTime = b['lastPassTime'] as Timestamp?;
+
+      if (aTotalScore == bTotalScore) {
+        if (aLastPassTime != null && bLastPassTime != null) {
+          return bLastPassTime.compareTo(aLastPassTime);
+        }
+      }
+
+      return bTotalScore.compareTo(aTotalScore);
+    });
+
+    this._rankingDocs_crewMember!.value = rankingList.map((doc) {
+      // 각 문서의 데이터를 Map 형태로 변환
+      return doc as Map<String, dynamic>;
+    }).toList();
+
+    print('크루 랭킹인원 : ${_rankingDocs_crewMember!.length}');
+
+  }
+
+  //TODO: 크루 랭킹독 가져오는 메소드********************************************
+
+
+
+  //TODO: 티어 뱃지 가져오는 메소드********************************************
+
+  Future<void> updateTier()async{
+
+    double? percent;
+    int? totalScore;
+    String? tier;
+
+    QuerySnapshot rankingSnapshot = await FirebaseFirestore.instance
+        .collection('Ranking')
+        .doc('${_seasonController.currentSeason}')
+        .collection('${_userModelController.favoriteResort}')
+        .where('totalScore', isGreaterThan: 0)
+        .orderBy('totalScore', descending: true)
+        .get();
+
+    final rankingDocs = rankingSnapshot.docs;
+
+    // 내 UID와 일치하는 데이터 찾기
+    var myData;
+    for (var doc in rankingDocs) {
+      if (doc.id == _userModelController.uid) {
+        myData = doc;
+        break;
+      }
+    }
+    // 내 순위 찾기
+    int myRank = rankingDocs.indexOf(myData) + 1;
+    int totalRankCount = rankingDocs.length;
+
+    percent = myRank/totalRankCount;
+    totalScore = myData['totalScore'];
+    print('등수 : $myRank');
+    print('퍼센트 : $percent');
+    print('스코어 : $totalScore');
+
+
+    if(percent <= rankingTierList[0].scoreRng && totalScore! >= rankingTierList[0].totalScore ){
+      tier = 'S';
+    }else if(percent <= rankingTierList[1].scoreRng && totalScore! >= rankingTierList[1].totalScore ){
+      tier = 'A';
+    }else if(percent <= rankingTierList[2].scoreRng && totalScore! >= rankingTierList[2].totalScore ){
+      tier = 'B';
+    }else if(percent <= rankingTierList[3].scoreRng && totalScore! >= rankingTierList[3].totalScore ){
+      tier = 'C';
+    }else {
+      tier = 'D';
+    }
+
+    print('티어 : $tier');
+
+    await ref.collection('Ranking')
+        .doc('${_seasonController.currentSeason}')
+        .collection('${_userModelController.favoriteResort}')
+        .doc(_userModelController.uid).update({
+      'tier': tier,
+    },);
+
+  }
+
+  String getBadgeAsset({required double percent,required int totalScore,required List rankingTierList}) {
+    for (var tier in rankingTierList) {
+      if (percent <= tier.scoreRng && totalScore >= tier.totalScore) {
+        return tier.badgeAsset;
+      }
+    }
+    return rankingTierList.last.badgeAsset; // 가장 낮은 순위의 뱃지
+  }
+
+  String getBadgeAsset_integrated({required double percent,required int totalPassCount,required List rankingTierList}) {
+    for (var tier in rankingTierList_integrated) {
+      if (percent <= tier.scoreRng && totalPassCount >= tier.totalScore) {
+        return tier.badgeAsset;
+      }
+    }
+    return rankingTierList.last.badgeAsset; // 가장 낮은 순위의 뱃지
+  }
+
+  //TODO: 티어 뱃지 가져오는 메소드********************************************
+
+
+  //TODO: 랭킹 계산하는 메소드********************************************
+
+  Map<String, int> calculateRankIndiAll2({required userRankingDocs}){
+
+    Map<String, int> userRankingMap = {};
+
+    for (int i = 0; i < userRankingDocs.length; i++) {
+      if (userRankingDocs[i] != null) {
+        if (i == 0) {
+          userRankingMap['${userRankingDocs[i]['uid']}'] = i+1;
+        } else if(userRankingDocs[i]['totalScore'] != userRankingDocs[i-1]['totalScore']){
+          userRankingMap['${userRankingDocs[i]['uid']}'] = i+1;
+        } else if(userRankingDocs[i]['totalScore'] == userRankingDocs[i-1]['totalScore']){
+          userRankingMap['${userRankingDocs[i]['uid']}'] = userRankingMap['${userRankingDocs[i-1]['uid']}']!;
+        }
+      }
+    }
+    return userRankingMap;
+  }
+
+  Map<String, int> calculateRankCrewAll2({required crewDocs})  {
+
+    Map<String, int> crewRankingMap = {};
+
+    for (int i = 0; i < crewDocs.length; i++) {
+      if (crewDocs[i] != null) {
+        if (i == 0) {
+          crewRankingMap['${crewDocs[i]['crewID']}'] = i+1;
+        } else if(crewDocs[i]['totalScore'] != crewDocs[i-1]['totalScore']){
+          crewRankingMap['${crewDocs[i]['crewID']}'] = i+1;
+        } else if(crewDocs[i]['totalScore'] == crewDocs[i-1]['totalScore']){
+          crewRankingMap['${crewDocs[i]['crewID']}'] = crewRankingMap['${crewDocs[i-1]['crewID']}']!;
+        }
+      }
+    }
+
+    return crewRankingMap;
+  }
+
   Map<String, int> calculateRankIndiAll2_integrated({required userRankingDocs}){
 
     Map<String, int> userRankingMap = {};
@@ -925,6 +1249,7 @@ class RankingTierModelController extends GetxController{
     return crewRankingMap;
   }
 
+  //TODO: 랭킹 계산하는 메소드********************************************
 
 
 }

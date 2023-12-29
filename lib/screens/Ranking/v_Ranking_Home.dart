@@ -41,7 +41,7 @@ class _RankingHomeState extends State<RankingHome> {
 
   bool _isKusbf = false;
 
-  bool _isDaily = false;
+  bool _isDaily = true;
   bool _isWeekly = false;
 
 
@@ -354,10 +354,12 @@ class _RankingHomeState extends State<RankingHome> {
                                     || _userModelController.favoriteResort == 0){
                                   CustomFullScreenDialog.showDialog();
                                   await _rankingTierModelController.getRankingDocsDaily(baseResort: _userModelController.favoriteResort);
+                                  await _rankingTierModelController.getRankingDocs_crew_Daily(baseResort: _userModelController.favoriteResort);
                                   CustomFullScreenDialog.cancelDialog();
                                 } else{
                                   CustomFullScreenDialog.showDialog();
                                   await _rankingTierModelController.getRankingDocs_integrated_Daily();
+                                  await _rankingTierModelController.getRankingDocs_crew_integrated_Daily();
                                   CustomFullScreenDialog.cancelDialog();
                                 }
 
@@ -414,10 +416,11 @@ class _RankingHomeState extends State<RankingHome> {
                                     || _userModelController.favoriteResort == 0){
 
                                   await _rankingTierModelController.getRankingDocsWeekly(baseResort: _userModelController.favoriteResort);
-
+                                  await _rankingTierModelController.getRankingDocs_crew_Weekly(baseResort: _userModelController.favoriteResort);
                                 } else{
                                   CustomFullScreenDialog.showDialog();
                                   await _rankingTierModelController.getRankingDocs_integrated_Weekly();
+                                  await _rankingTierModelController.getRankingDocs_crew_integrated_Weekly();
                                   CustomFullScreenDialog.cancelDialog();
                                 }
                                 setState(() {});
@@ -473,10 +476,12 @@ class _RankingHomeState extends State<RankingHome> {
                                     || _userModelController.favoriteResort == 0){
                                   CustomFullScreenDialog.showDialog();
                                   await _rankingTierModelController.getRankingDocs(baseResort: _userModelController.favoriteResort);
+                                  await _rankingTierModelController.getRankingDocs_crew(baseResort: _userModelController.favoriteResort);
                                   CustomFullScreenDialog.cancelDialog();
                                 } else{
                                   CustomFullScreenDialog.showDialog();
                                   await _rankingTierModelController.getRankingDocs_integrated();
+                                  await _rankingTierModelController.getRankingDocs_crew_integrated();
                                   CustomFullScreenDialog.cancelDialog();
                                 }
                                 setState(() {});
@@ -503,7 +508,11 @@ class _RankingHomeState extends State<RankingHome> {
                 height: 10,
               ),
               if (isTap[0] == true)
-                Expanded(child: RankingCrewScreen(isKusbf: _isKusbf,)),
+                Expanded(child: RankingCrewScreen(
+                  isKusbf: _isKusbf,
+                  isDaily: _isDaily,
+                  isWeekly: _isWeekly,
+                )),
               if (isTap[1] == true)
                 Expanded(child: RankingIndiScreen(
                   isKusbf: _isKusbf,

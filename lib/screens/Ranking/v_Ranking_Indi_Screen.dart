@@ -187,6 +187,7 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                                   child: ExtendedImage.network(
                                                     userDoc[0]['profileImageUrl'],
                                                     enableMemoryCache: true,
+                                                    cacheHeight: 100,
                                                     shape: BoxShape.circle,
                                                     width: 100,
                                                     height: 100,
@@ -215,6 +216,7 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                                     : ExtendedImage.network(
                                                   '${profileImgUrlList[0].default_round}',
                                                   enableMemoryCache: true,
+                                                  cacheHeight: 60,
                                                   shape: BoxShape.circle,
                                                   width: 58,
                                                   height: 58,
@@ -303,6 +305,7 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                                   child: ExtendedImage.network(
                                                     userDoc[0]['profileImageUrl'],
                                                     enableMemoryCache: true,
+                                                    cacheHeight: 100,
                                                     shape: BoxShape.circle,
                                                     width: 100,
                                                     height: 100,
@@ -331,6 +334,7 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                                     : ExtendedImage.network(
                                                   '${profileImgUrlList[0].default_round}',
                                                   enableMemoryCache: true,
+                                                  cacheHeight: 60,
                                                   shape: BoxShape.circle,
                                                   width: 58,
                                                   height: 58,
@@ -420,6 +424,7 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                                   child: ExtendedImage.network(
                                                     userDoc[0]['profileImageUrl'],
                                                     enableMemoryCache: true,
+                                                    cacheHeight: 100,
                                                     shape: BoxShape.circle,
                                                     width: 100,
                                                     height: 100,
@@ -434,6 +439,7 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                                           return ExtendedImage.network(
                                                             '${profileImgUrlList[0].default_round}',
                                                             enableMemoryCache: true,
+                                                            cacheHeight: 60,
                                                             shape: BoxShape.circle,
                                                             width: 58,
                                                             height: 58,
@@ -448,6 +454,7 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                                     : ExtendedImage.network(
                                                   '${profileImgUrlList[0].default_round}',
                                                   enableMemoryCache: true,
+                                                  cacheHeight: 60,
                                                   shape: BoxShape.circle,
                                                   width: 58,
                                                   height: 58,
@@ -600,7 +607,7 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                                 ? ExtendedImage.network(
                                               userData['profileImageUrl'],
                                               enableMemoryCache: true,
-                                              cacheHeight: 200,
+                                              cacheHeight: 50,
                                               shape: BoxShape.circle,
                                               borderRadius: BorderRadius.circular(8),
                                               width: 48,
@@ -616,6 +623,7 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                                     return ExtendedImage.network(
                                                       '${profileImgUrlList[0].default_round}',
                                                       enableMemoryCache: true,
+                                                      cacheHeight: 50,
                                                       shape: BoxShape.circle,
                                                       borderRadius: BorderRadius.circular(8),
                                                       width: 48,
@@ -630,6 +638,7 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                                 : ExtendedImage.network(
                                               '${profileImgUrlList[0].default_round}',
                                               enableMemoryCache: true,
+                                              cacheHeight: 50,
                                               shape: BoxShape.circle,
                                               borderRadius: BorderRadius.circular(8),
                                               width: 48,
@@ -761,6 +770,7 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                                       rankingTierList: rankingTierList
                                                   ),
                                                   enableMemoryCache: true,
+                                                  cacheHeight: 50,
                                                   fit: BoxFit.cover,
                                                   width: 36,
                                                 ),
@@ -830,6 +840,7 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                   ? ExtendedImage.network(
                                 _userModelController.profileImageUrl!,
                                 enableMemoryCache: true,
+                                cacheHeight: 50,
                                 shape: BoxShape.circle,
                                 borderRadius: BorderRadius.circular(8),
                                 width: 48,
@@ -859,6 +870,7 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                   : ExtendedImage.network(
                                 '${profileImgUrlList[0].default_round}',
                                 enableMemoryCache: true,
+                                cacheHeight: 50,
                                 shape: BoxShape.circle,
                                 borderRadius: BorderRadius.circular(8),
                                 width: 48,
@@ -930,6 +942,7 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                         rankingTierList: rankingTierList
                                     ),
                                     enableMemoryCache: true,
+                                    cacheHeight: 50,
                                     fit: BoxFit.cover,
                                     width: 40,
                                   ),
@@ -963,6 +976,7 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                     ? ExtendedImage.network(
                                   _userModelController.profileImageUrl!,
                                   enableMemoryCache: true,
+                                  cacheHeight: 50,
                                   shape: BoxShape.circle,
                                   borderRadius: BorderRadius.circular(8),
                                   width: 48,
@@ -978,6 +992,7 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                         return ExtendedImage.network(
                                           '${profileImgUrlList[0].default_round}',
                                           enableMemoryCache: true,
+                                          cacheHeight: 50,
                                           shape: BoxShape.circle,
                                           borderRadius: BorderRadius.circular(8),
                                           width: 48,
@@ -992,6 +1007,7 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                     : ExtendedImage.network(
                                   '${profileImgUrlList[0].default_round}',
                                   enableMemoryCache: true,
+                                  cacheHeight: 50,
                                   shape: BoxShape.circle,
                                   borderRadius: BorderRadius.circular(8),
                                   width: 48,

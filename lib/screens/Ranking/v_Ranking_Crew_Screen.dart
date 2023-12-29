@@ -16,9 +16,14 @@ import '../../widget/w_fullScreenDialog.dart';
 import '../LiveCrew/v_crewDetailPage_screen.dart';
 
 class RankingCrewScreen extends StatefulWidget {
-  RankingCrewScreen({Key? key, required this.isKusbf}) : super(key: key);
+  RankingCrewScreen({Key? key,
+    required this.isKusbf,
+    required this.isDaily,
+    required this.isWeekly,}) : super(key: key);
 
   bool isKusbf = false;
+  bool isDaily = false;
+  bool isWeekly = false;
 
   @override
   State<RankingCrewScreen> createState() => _RankingCrewScreenState();
@@ -48,9 +53,26 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
 
   Future<void> _refreshData() async {
     if(_userModelController.favoriteResort == 12 ||_userModelController.favoriteResort == 2 ||_userModelController.favoriteResort == 0) {
-      await _rankingTierModelController.getRankingDocs_crew(baseResort: _userModelController.favoriteResort);
+
+      if(widget.isDaily == true){
+        await _rankingTierModelController.getRankingDocs_crew_Daily(baseResort: _userModelController.favoriteResort);
+      }
+      else if(widget.isWeekly == true){
+        await _rankingTierModelController.getRankingDocs_crew_Weekly(baseResort: _userModelController.favoriteResort);
+      }else{
+        await _rankingTierModelController.getRankingDocs_crew(baseResort: _userModelController.favoriteResort);
+      }
     }else {
-      await _rankingTierModelController.getRankingDocs_crew_integrated();
+
+      if(widget.isDaily == true){
+        await _rankingTierModelController.getRankingDocs_crew_integrated_Daily();
+      }
+      else if(widget.isWeekly == true){
+        await _rankingTierModelController.getRankingDocs_crew_integrated_Weekly();
+      }
+      else{
+        await _rankingTierModelController.getRankingDocs_crew_integrated();
+      }
     }
     setState(() {});
   }
@@ -544,7 +566,12 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                                   ),
                                 GestureDetector(
                                   onTap: () async{
-                                    Get.to(() => RankingCrewAllScreen(isKusbf: widget.isKusbf,));
+                                    Get.to(() => RankingCrewAllScreen(
+                                      isKusbf: widget.isKusbf,
+                                      isDaily: widget.isDaily,
+                                      isWeekly: widget.isWeekly,
+
+                                    ));
                                   },
                                   child: Text('전체 보기',
                                     style: TextStyle(
@@ -740,10 +767,12 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                                                 (_userModelController.favoriteResort == 12
                                                     || _userModelController.favoriteResort == 2
                                                     || _userModelController.favoriteResort == 0)
-                                                    ?'${crewDocs![index]['totalScore']
-                                                    .toString()}점'
-                                                    : '${crewDocs![index]['totalPassCount']
-                                                    .toString()}회',
+                                                    ? widget.isWeekly == true
+                                                    ?'${crewDocs![index]['totalScoreWeekly'].toString()}점'
+                                                    :'${crewDocs![index]['totalScore'].toString()}점'
+                                                    : widget.isWeekly == true
+                                                    ?'${crewDocs![index]['totalPassCountWeekly'].toString()}회'
+                                                    :'${crewDocs![index]['totalPassCount'].toString()}회',
                                                 style: TextStyle(
                                                   color: Color(0xFF111111),
                                                   fontWeight: FontWeight

@@ -740,12 +740,12 @@ class _MoreTabState extends State<MoreTab> {
                             if(_userModelController.favoriteResort != 12 && _userModelController.favoriteResort != 2 && _userModelController.favoriteResort != 0 ) {
 
                               print('통합랭킹 진입');
-                              await _rankingTierModelController.getRankingDocs_crew_integrated();
+                              await _rankingTierModelController.getRankingDocs_crew_integrated_Daily();
                               await _rankingTierModelController.getRankingDocs_integrated_Daily();
 
                             }else {
 
-                              await _rankingTierModelController.getRankingDocs_crew(baseResort: _userModelController.favoriteResort);
+                              await _rankingTierModelController.getRankingDocs_crew_Daily(baseResort: _userModelController.favoriteResort);
                               await _rankingTierModelController.getRankingDocsDaily(baseResort: _userModelController.favoriteResort);
 
                             }
