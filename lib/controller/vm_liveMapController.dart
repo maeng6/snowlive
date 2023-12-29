@@ -1295,7 +1295,13 @@ class LiveMapController extends GetxController {
           await crewDocRef.set({
             'crewID': _liveCrewModelController.crewID,
             'crewName': _liveCrewModelController.crewName,
+            'crewLeader': _liveCrewModelController.crewLeader,
+            'leaderUid': _liveCrewModelController.leaderUid,
+            'profileImageUrl' : _liveCrewModelController.profileImageUrl,
+            'description': _liveCrewModelController.description,
             'date': todayDocName,
+            'kusbf': _userModelController.kusbf,
+            'crewColor': _liveCrewModelController.crewColor,
             'baseResort': _liveCrewModelController.baseResort,
             'baseResortNickName': _liveCrewModelController.baseResortNickName,
             'passCountData': {},
