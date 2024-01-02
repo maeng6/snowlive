@@ -637,6 +637,7 @@ class _RankingIndiScreen_testState extends State<RankingIndiScreen_test> {
                                               enableMemoryCache: true,
                                               shape: BoxShape.circle,
                                               borderRadius: BorderRadius.circular(8),
+                                              cacheHeight: 100,
                                               width: 48,
                                               height: 48,
                                               fit: BoxFit.cover,
@@ -650,6 +651,7 @@ class _RankingIndiScreen_testState extends State<RankingIndiScreen_test> {
                                                     return ExtendedImage.network(
                                                       '${profileImgUrlList[0].default_round}',
                                                       enableMemoryCache: true,
+                                                      cacheHeight: 100,
                                                       shape: BoxShape.circle,
                                                       borderRadius: BorderRadius.circular(8),
                                                       width: 48,
@@ -664,6 +666,7 @@ class _RankingIndiScreen_testState extends State<RankingIndiScreen_test> {
                                                 : ExtendedImage.network(
                                               '${profileImgUrlList[0].default_round}',
                                               enableMemoryCache: true,
+                                              cacheHeight: 100,
                                               shape: BoxShape.circle,
                                               borderRadius: BorderRadius.circular(8),
                                               width: 48,

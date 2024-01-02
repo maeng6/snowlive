@@ -285,7 +285,7 @@ class _RankingIndiAllScreen_testState extends State<RankingIndiAllScreen_test> {
                             ? ExtendedImage.network(
                           userData['profileImageUrl'],
                           enableMemoryCache: false,
-                          cacheHeight: 50,
+                          cacheHeight: 100,
                           shape: BoxShape.circle,
                           borderRadius: BorderRadius.circular(8),
                           width: 48,
@@ -316,6 +316,7 @@ class _RankingIndiAllScreen_testState extends State<RankingIndiAllScreen_test> {
                             : ExtendedImage.network(
                           '${profileImgUrlList[0].default_round}',
                           enableMemoryCache: true,
+                          cacheHeight: 100,
                           shape: BoxShape.circle,
                           borderRadius: BorderRadius.circular(8),
                           width: 48,
