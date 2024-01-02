@@ -224,7 +224,6 @@ class _RankingCrewScreen_testState extends State<RankingCrewScreen_test> {
                                               enableMemoryCache: true,
                                               shape: BoxShape
                                                   .rectangle,
-                                              cacheHeight: 200,
                                               borderRadius: BorderRadius
                                                   .circular(7),
                                               width: 100,
@@ -343,7 +342,6 @@ class _RankingCrewScreen_testState extends State<RankingCrewScreen_test> {
                                                 .network(
                                               crewDocs![1]['profileImageUrl'],
                                               enableMemoryCache: true,
-                                              cacheHeight: 200,
                                               shape: BoxShape
                                                   .rectangle,
                                               borderRadius: BorderRadius
@@ -471,7 +469,6 @@ class _RankingCrewScreen_testState extends State<RankingCrewScreen_test> {
                                                 .network(
                                               crewDocs![2]['profileImageUrl'],
                                               enableMemoryCache: true,
-                                              cacheHeight: 200,
                                               shape: BoxShape
                                                   .rectangle,
                                               borderRadius: BorderRadius
@@ -661,7 +658,6 @@ class _RankingCrewScreen_testState extends State<RankingCrewScreen_test> {
                                                         .network(
                                                       crewDocs![index]['profileImageUrl'],
                                                       enableMemoryCache: true,
-                                                      cacheHeight: 200,
                                                       shape: BoxShape
                                                           .rectangle,
                                                       borderRadius: BorderRadius

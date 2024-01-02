@@ -86,9 +86,26 @@ class _RankingCrewAllScreen_testState extends State<RankingCrewAllScreen_test> {
 
   Future<void> _refreshData() async {
     if(_userModelController.favoriteResort == 12 ||_userModelController.favoriteResort == 2 ||_userModelController.favoriteResort == 0) {
-      await _rankingTierModelController.getRankingDocs_crew(baseResort: _userModelController.favoriteResort);
+
+      if(widget.isDaily == true){
+        await _rankingTierModelController.getRankingDocs_crew_Daily(baseResort: _userModelController.favoriteResort);
+      }
+      else if(widget.isWeekly == true){
+        await _rankingTierModelController.getRankingDocs_crew_Weekly(baseResort: _userModelController.favoriteResort);
+      }else{
+        await _rankingTierModelController.getRankingDocs_crew(baseResort: _userModelController.favoriteResort);
+      }
     }else {
-      await _rankingTierModelController.getRankingDocs_crew_integrated();
+
+      if(widget.isDaily == true){
+        await _rankingTierModelController.getRankingDocs_crew_integrated_Daily();
+      }
+      else if(widget.isWeekly == true){
+        await _rankingTierModelController.getRankingDocs_crew_integrated_Weekly();
+      }
+      else{
+        await _rankingTierModelController.getRankingDocs_crew_integrated();
+      }
     }
     setState(() {});
   }
@@ -98,15 +115,39 @@ class _RankingCrewAllScreen_testState extends State<RankingCrewAllScreen_test> {
     Size _size = MediaQuery.of(context).size;
 
     if(_userModelController.favoriteResort == 12 ||_userModelController.favoriteResort == 2 ||_userModelController.favoriteResort == 0) {
-      crewDocs = widget.isKusbf == true
-          ? _rankingTierModelController.rankingDocs_crew_kusbf
-          : _rankingTierModelController.rankingDocs_crew;
-      crewRankingMap = widget.isKusbf == true
-          ? _rankingTierModelController.crewRankingMap_kusbf
-          : _rankingTierModelController.crewRankingMap;
+      if(widget.isDaily == true) {
+        crewDocs = widget.isKusbf == true
+            ? _rankingTierModelController.rankingDocs_crew_kusbf_daily
+            : _rankingTierModelController.rankingDocs_crew_daily;
+        crewRankingMap = widget.isKusbf == true
+            ? _rankingTierModelController.crewRankingMap_kusbf_daily
+            : _rankingTierModelController.crewRankingMap_daily;
+      } else if(widget.isWeekly == true) {
+        crewDocs = widget.isKusbf == true
+            ? _rankingTierModelController.rankingDocs_crew_kusbf_weekly
+            : _rankingTierModelController.rankingDocs_crew_weekly;
+        crewRankingMap = widget.isKusbf == true
+            ? _rankingTierModelController.crewRankingMap_kusbf_weekly
+            : _rankingTierModelController.crewRankingMap_weekly;
+      } else {
+        crewDocs = widget.isKusbf == true
+            ? _rankingTierModelController.rankingDocs_crew_kusbf
+            : _rankingTierModelController.rankingDocs_crew;
+        crewRankingMap = widget.isKusbf == true
+            ? _rankingTierModelController.crewRankingMap_kusbf
+            : _rankingTierModelController.crewRankingMap;
+      }
     } else{
-      crewDocs = _rankingTierModelController.rankingDocs_crew_integrated;
-      crewRankingMap = _rankingTierModelController.crewRankingMap_integrated;
+      if(widget.isDaily == true) {
+        crewDocs = _rankingTierModelController.rankingDocs_crew_integrated_daily;
+        crewRankingMap = _rankingTierModelController.crewRankingMap_integrated_daily;
+      } else if(widget.isWeekly == true) {
+        crewDocs = _rankingTierModelController.rankingDocs_crew_integrated_weekly;
+        crewRankingMap = _rankingTierModelController.crewRankingMap_integrated_weekly;
+      }else {
+        crewDocs = _rankingTierModelController.rankingDocs_crew_integrated;
+        crewRankingMap = _rankingTierModelController.crewRankingMap_integrated;
+      }
     }
     return Scaffold(
       backgroundColor: Colors.white,
@@ -157,190 +198,188 @@ class _RankingCrewAllScreen_testState extends State<RankingCrewAllScreen_test> {
         onRefresh: _refreshData,
         child: Padding(
           padding: const EdgeInsets.only(left: 16, right: 16),
-          child: SingleChildScrollView(
-            physics: AlwaysScrollableScrollPhysics(),
-            child: Column(
-              children: crewDocs!.map((document) {
-                // Assign myItemKey for the logged-in user's ListTile
-                final itemKey = document['crewID'] ==
-                    _userModelController.liveCrew
-                    ? myItemKey
-                    : GlobalKey();
+          child: ListView.builder(
+            shrinkWrap: true,
+            itemCount: crewDocs!.length,
+            itemBuilder: (context, index) {
+              final document = crewDocs![index];
+              final itemKey = document['crewID'] == _userModelController.liveCrew
+                  ? myItemKey
+                  : GlobalKey();
 
-                for (var crewLogo in crewLogoList) {
-                  if (crewLogo.crewColor == document['crewColor']) {
-                    assetBases = crewLogo.crewLogoAsset;
-                    break;
-                  }
+              String assetBases = '';
+              for (var crewLogo in crewLogoList) {
+                if (crewLogo.crewColor == document['crewColor']) {
+                  assetBases = crewLogo.crewLogoAsset;
+                  break;
                 }
+              }
 
-                return Padding(
-                  key: itemKey,
-                  padding: const EdgeInsets.only(top: 6, bottom: 10),
-                  child: InkWell(
-                    highlightColor: Colors.transparent,
-                    splashColor: Colors.transparent,
-                    onTap: ()async{
-                      CustomFullScreenDialog.showDialog();
-                      await _userModelController.getCurrentUser_crew(_userModelController.uid);
-                      await _liveCrewModelController.getCurrrentCrew(document['crewID']);
-                      CustomFullScreenDialog.cancelDialog();
-                      Get.to(() => CrewDetailPage_screen());
-                    },
-                    child: Row(
-                      children: [
-                        Text(
-                          '${crewRankingMap!['${document['crewID']}']}',
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 14,
-                              color: Color(0xFF111111)),
+              return Padding(
+                key: itemKey,
+                padding: const EdgeInsets.only(top: 6, bottom: 10),
+                child: InkWell(
+                  highlightColor: Colors.transparent,
+                  splashColor: Colors.transparent,
+                  onTap: ()async{
+                    CustomFullScreenDialog.showDialog();
+                    await _userModelController.getCurrentUser_crew(_userModelController.uid);
+                    await _liveCrewModelController.getCurrrentCrew(document['crewID']);
+                    CustomFullScreenDialog.cancelDialog();
+                    Get.to(() => CrewDetailPage_screen());
+                  },
+                  child: Row(
+                    children: [
+                      Text(
+                        '${crewRankingMap!['${document['crewID']}']}',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 14,
+                            color: Color(0xFF111111)),
+                      ),
+                      SizedBox(width: 12),
+                      Container(
+                        width: 46,
+                        height: 46,
+                        decoration: BoxDecoration(
+                            color: Color(0xFFDFECFF),
+                            borderRadius: BorderRadius
+                                .circular(8)
                         ),
-                        SizedBox(width: 12),
-                        Container(
+                        child: (document['profileImageUrl'].isNotEmpty)
+                            ? Container(
+                          width: 46,
+                          height: 46,
+                          child: ExtendedImage.network(
+                            document['profileImageUrl'],
+                            enableMemoryCache: true,
+                            cacheHeight: 200,
+                            shape: BoxShape.rectangle,
+                            borderRadius: BorderRadius.circular(6),
+                            fit: BoxFit.cover,
+                            loadStateChanged: (ExtendedImageState state) {
+                              switch (state.extendedImageLoadState) {
+                                case LoadState.loading:
+                                  return SizedBox.shrink();
+                                case LoadState.completed:
+                                  return state.completedWidget;
+                                case LoadState.failed:
+                                  return Container(
+                                    decoration: BoxDecoration(
+                                      color: Color(document['crewColor']),
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(2.0),
+                                      child: ExtendedImage.network(
+                                        assetBases,
+                                        enableMemoryCache: true,
+                                        shape: BoxShape.rectangle,
+                                        borderRadius: BorderRadius.circular(6),
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+                                  ); // 예시로 에러 아이콘을 반환하고 있습니다.
+                                default:
+                                  return null;
+                              }
+                            },
+                          ),
+                        )
+                            : Container(
                           width: 46,
                           height: 46,
                           decoration: BoxDecoration(
-                              color: Color(0xFFDFECFF),
-                              borderRadius: BorderRadius
-                                  .circular(8)
+                            color: Color(document['crewColor']),
+                            borderRadius: BorderRadius.circular(8),
                           ),
-                          child: (document['profileImageUrl'].isNotEmpty)
-                              ? Container(
-                            width: 46,
-                            height: 46,
+                          child: Padding(
+                            padding: const EdgeInsets.all(2.0),
                             child: ExtendedImage.network(
-                              document['profileImageUrl'],
+                              assetBases,
                               enableMemoryCache: true,
-                              cacheHeight: 200,
                               shape: BoxShape.rectangle,
                               borderRadius: BorderRadius.circular(6),
                               fit: BoxFit.cover,
-                              loadStateChanged: (ExtendedImageState state) {
-                                switch (state.extendedImageLoadState) {
-                                  case LoadState.loading:
-                                    return SizedBox.shrink();
-                                  case LoadState.completed:
-                                    return state.completedWidget;
-                                  case LoadState.failed:
-                                    return Container(
-                                      decoration: BoxDecoration(
-                                        color: Color(document['crewColor']),
-                                        borderRadius: BorderRadius.circular(8),
-                                      ),
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(2.0),
-                                        child: ExtendedImage.network(
-                                          assetBases,
-                                          enableMemoryCache: true,
-                                          shape: BoxShape.rectangle,
-                                          borderRadius: BorderRadius.circular(6),
-                                          fit: BoxFit.cover,
-                                        ),
-                                      ),
-                                    ); // 예시로 에러 아이콘을 반환하고 있습니다.
-                                  default:
-                                    return null;
-                                }
-                              },
-                            ),
-                          )
-                              : Container(
-                            width: 46,
-                            height: 46,
-                            decoration: BoxDecoration(
-                              color: Color(document['crewColor']),
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.all(2.0),
-                              child: ExtendedImage.network(
-                                assetBases,
-                                enableMemoryCache: true,
-                                shape: BoxShape.rectangle,
-                                borderRadius: BorderRadius.circular(6),
-                                fit: BoxFit.cover,
-                              ),
                             ),
                           ),
                         ),
-                        SizedBox(width: 12),
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 3),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                children: [
-                                  Text(
-                                    document['crewName'],
-                                    style: TextStyle(
-                                        fontSize: 15, color: Color(0xFF111111)),
-                                  ),
+                      ),
+                      SizedBox(width: 12),
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 3),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                Text(
+                                  document['crewName'],
+                                  style: TextStyle(
+                                      fontSize: 15, color: Color(0xFF111111)),
+                                ),
 
-                                ],
-                              ),
-                              SizedBox(
-                                height: 4,
-                              ),
-                              Row(
-                                children: [
-                                  Container(
-                                    padding: EdgeInsets.symmetric(horizontal: 3, vertical: 1.5),
-                                    decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(4),
-                                        border: Border.all(
-                                            color: Color(0xFFDEDEDE)
-                                        )
+                              ],
+                            ),
+                            SizedBox(
+                              height: 4,
+                            ),
+                            Row(
+                              children: [
+                                Container(
+                                  padding: EdgeInsets.symmetric(horizontal: 3, vertical: 1.5),
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(4),
+                                      border: Border.all(
+                                          color: Color(0xFFDEDEDE)
+                                      )
+                                  ),
+                                  child: Text(
+                                    document['baseResortNickName'],
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 9,
+                                        color: Color(0xFF949494)
                                     ),
+                                  ),
+                                ),
+                                SizedBox(width: 4),
+                                if (document['description'].isNotEmpty)
+                                  SizedBox(
+                                    width: _size.width-220,
                                     child: Text(
-                                      document['baseResortNickName'],
+                                      document['description'],
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
                                       style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 9,
+                                          fontSize: 12,
                                           color: Color(0xFF949494)
                                       ),
                                     ),
                                   ),
-                                  SizedBox(width: 4),
-                                  if (document['description'].isNotEmpty)
-                                    SizedBox(
-                                      width: _size.width-220,
-                                      child: Text(
-                                        document['description'],
-                                        maxLines: 1,
-                                        overflow: TextOverflow.ellipsis,
-                                        style: TextStyle(
-                                            fontSize: 12,
-                                            color: Color(0xFF949494)
-                                        ),
-                                      ),
-                                    ),
-                                ],
-                              ),
-                            ],
-                          ),
+                              ],
+                            ),
+                          ],
                         ),
-                        Expanded(child: SizedBox()),
-                        Text(
-                          (_userModelController.favoriteResort == 12
-                              || _userModelController.favoriteResort == 2
-                              || _userModelController.favoriteResort == 0)
-                              ? '${document['totalScore']}점'
-                              : '${document['totalPassCount']}회',
-                          style: TextStyle(
-                            color: Color(0xFF111111),
-                            fontWeight: FontWeight.normal,
-                            fontSize: 16,
-                          ),
+                      ),
+                      Expanded(child: SizedBox()),
+                      Text(
+                        (_userModelController.favoriteResort == 12
+                            || _userModelController.favoriteResort == 2
+                            || _userModelController.favoriteResort == 0)
+                            ? widget.isWeekly == true ?'${document['totalScoreWeekly']}점' :'${document['totalScore']}점'
+                            : widget.isWeekly == true ?'${document['totalPassCountWeekly']}회':'${document['totalPassCount']}회',
+                        style: TextStyle(
+                          color: Color(0xFF111111),
+                          fontWeight: FontWeight.normal,
+                          fontSize: 16,
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
-
-                );
-              }).toList(),
-            ),
+                ),
+              );
+            },
           ),
         ),
       ),

@@ -70,7 +70,6 @@ class MyRankingController extends GetxController {
     } else {
       Get.to(() => LoginPage());
     }
-
   }
 
   void resetMyRankingData() async {
