@@ -153,22 +153,22 @@ class _RankingCrewAllScreen_testState extends State<RankingCrewAllScreen_test> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         actions: <Widget>[
-          GestureDetector(
-            onTap: _scrollToMyRanking,
-            child: Center(
-              child: Padding(
-                padding: const EdgeInsets.only(right: 16),
-                child: Text(
-                  'My 크루',
-                  style: TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.bold,
-                    color: Color(0xFF3D83ED),
-                  ),
-                ),
-              ),
-            ),
-          ),
+          // GestureDetector(
+          //   onTap: _scrollToMyRanking,
+          //   child: Center(
+          //     child: Padding(
+          //       padding: const EdgeInsets.only(right: 16),
+          //       child: Text(
+          //         'My 크루',
+          //         style: TextStyle(
+          //           fontSize: 15,
+          //           fontWeight: FontWeight.bold,
+          //           color: Color(0xFF3D83ED),
+          //         ),
+          //       ),
+          //     ),
+          //   ),
+          // ),
         ],
         backgroundColor: Colors.white,
         leading: GestureDetector(
