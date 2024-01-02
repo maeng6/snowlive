@@ -1,6 +1,6 @@
 import 'package:com.snowlive/controller/vm_seasonController.dart';
-import 'package:com.snowlive/screens/Ranking/v_Ranking_Crew_Screen.dart';
-import 'package:com.snowlive/screens/Ranking/v_Ranking_Indi_Screen.dart';
+import 'package:com.snowlive/screens/Ranking/test/v_Ranking_Crew_Screen_test.dart';
+import 'package:com.snowlive/screens/Ranking/test/v_Ranking_Indi_Screen_test.dart';
 import 'package:com.snowlive/screens/Ranking/v_Ranking_Tutorial_Screen.dart';
 import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 import 'package:extended_image/extended_image.dart';
@@ -13,21 +13,21 @@ import 'package:get/get_core/src/get_main.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:com.snowlive/controller/vm_liveCrewModelController.dart';
 import 'package:com.snowlive/screens/Ranking/v_MyRanking_Detail_Screen.dart';
-import 'package:com.snowlive/screens/Ranking/test/v_Ranking_Crew_Screen_test.dart';
-import 'package:com.snowlive/screens/Ranking/test/v_Ranking_Indi_Screen_test.dart';
-import '../../controller/vm_rankingTierModelController.dart';
-import '../../controller/vm_userModelController.dart';
-import '../../data/imgaUrls/Data_url_image.dart';
+import 'package:com.snowlive/screens/Ranking/v_Ranking_Crew_Screen.dart';
+import 'package:com.snowlive/screens/Ranking/v_Ranking_Indi_Screen.dart';
+import '../../../controller/vm_rankingTierModelController.dart';
+import '../../../controller/vm_userModelController.dart';
+import '../../../data/imgaUrls/Data_url_image.dart';
 
 
-class RankingHome extends StatefulWidget {
-  RankingHome({Key? key}) : super(key: key);
+class RankingHome_test extends StatefulWidget {
+  RankingHome_test({Key? key}) : super(key: key);
 
   @override
-  State<RankingHome> createState() => _RankingHomeState();
+  State<RankingHome_test> createState() => _RankingHome_testState();
 }
 
-class _RankingHomeState extends State<RankingHome> {
+class _RankingHome_testState extends State<RankingHome_test> {
 
   int counter = 0;
   List<bool> isTap = [
@@ -35,7 +35,16 @@ class _RankingHomeState extends State<RankingHome> {
     false,
   ];
 
+  List<bool> isTapPeriod = [
+    true,
+    false,
+    false,
+  ];
+
   bool _isKusbf = false;
+
+  bool _isDaily = true;
+  bool _isWeekly = false;
 
 
 
@@ -310,13 +319,170 @@ class _RankingHomeState extends State<RankingHome> {
                       :SizedBox.shrink()
                 ],
               ),
+              Row(
+                children: [
+                  Padding(
+                    padding: EdgeInsets.only(left: 16, right: 12),
+                    child: Column(
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.only(bottom: 2),
+                          child: Container(
+                            height: 44,
+                            child: ElevatedButton(
+                              child: Text(
+                                '일간TOP',
+                                style: TextStyle(
+                                    fontFamily: 'Spoqa Han Sans Neo',
+                                    color: (isTapPeriod[0])
+                                        ? Color(0xFF111111)
+                                        : Color(0xFFC8C8C8),
+                                    fontWeight: (isTapPeriod[0])
+                                        ? FontWeight.bold
+                                        : FontWeight.bold,
+                                    fontSize: 14),
+                              ),
+                              onPressed: () async{
+                                print('일간TOP 전환');
+                                setState(() {
+                                  isTapPeriod[0] = true;
+                                  isTapPeriod[1] = false;
+                                  isTapPeriod[2] = false;
+                                  _isDaily = true;
+                                  _isWeekly = false;
+                                });
+                                setState(() {
+                                });
+                                print(isTapPeriod);
+                              },
+                              style: ElevatedButton.styleFrom(
+                                padding: EdgeInsets.only(top: 0),
+                                minimumSize: Size(40, 10),
+                                backgroundColor: Color(0xFFFFFFFF),
+                                shape: RoundedRectangleBorder(
+                                    borderRadius:
+                                    BorderRadius.circular(8)),
+                                elevation: 0,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(right: 12),
+                    child: Column(
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.only(bottom: 2),
+                          child: Container(
+                            height: 44,
+                            child: ElevatedButton(
+                              child: Text(
+                                '주간TOP',
+                                style: TextStyle(
+                                    color: (isTapPeriod[1])
+                                        ? Color(0xFF111111)
+                                        : Color(0xFFC8C8C8),
+                                    fontWeight: (isTapPeriod[1])
+                                        ? FontWeight.bold
+                                        : FontWeight.bold,
+                                    fontSize: 14),
+                              ),
+                              onPressed: () async{
+                                print('주간TOP 전환');
+                                setState(() {
+                                  isTapPeriod[0] = false;
+                                  isTapPeriod[1] = true;
+                                  isTapPeriod[2] = false;
+                                  _isDaily = false;
+                                  _isWeekly = true;
+                                });
+                                setState(() {
+                                });
+                                print(isTapPeriod);
+                              },
+                              style: ElevatedButton.styleFrom(
+                                padding: EdgeInsets.only(top: 0),
+                                minimumSize: Size(40, 10),
+                                backgroundColor: Color(0xFFFFFFFF),
+                                shape: RoundedRectangleBorder(
+                                    borderRadius:
+                                    BorderRadius.circular(8)),
+                                elevation: 0,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(right: 12),
+                    child: Column(
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.only(bottom: 2),
+                          child: Container(
+                            height: 44,
+                            child: ElevatedButton(
+                              child: Text(
+                                '시즌누적',
+                                style: TextStyle(
+                                    color: (isTapPeriod[2])
+                                        ? Color(0xFF111111)
+                                        : Color(0xFFC8C8C8),
+                                    fontWeight: (isTapPeriod[2])
+                                        ? FontWeight.bold
+                                        : FontWeight.bold,
+                                    fontSize: 14),
+                              ),
+                              onPressed: () async{
+                                print('시즌누적 전환');
+                                setState(() {
+                                  isTapPeriod[0] = false;
+                                  isTapPeriod[1] = false;
+                                  isTapPeriod[2] = true;
+                                  _isDaily = false;
+                                  _isWeekly = false;
+                                });
+                                setState(() {
+                                });
+                                print(isTapPeriod);
+                              },
+                              style: ElevatedButton.styleFrom(
+                                padding: EdgeInsets.only(top: 0),
+                                minimumSize: Size(40, 10),
+                                backgroundColor: Color(0xFFFFFFFF),
+                                shape: RoundedRectangleBorder(
+                                    borderRadius:
+                                    BorderRadius.circular(8)),
+                                elevation: 0,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
               SizedBox(
                 height: 10,
               ),
               if (isTap[0] == true)
-                Expanded(child: RankingCrewScreen(isKusbf: _isKusbf,)),
+                Expanded(child: RankingCrewScreen_test(
+                  isKusbf: _isKusbf,
+                  isDaily: _isDaily,
+                  isWeekly: _isWeekly,
+                )),
               if (isTap[1] == true)
-                Expanded(child: RankingIndiScreen(isKusbf: _isKusbf)),
+                Expanded(child: RankingIndiScreen_test(
+                  isKusbf: _isKusbf,
+                  isDaily: _isDaily,
+                  isWeekly: _isWeekly,
+                )),
               // if (isTap[2] == true)
               //   Expanded(child: FleaMarket_Chatroom_List()),
             ],

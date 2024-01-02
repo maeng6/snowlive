@@ -8,24 +8,28 @@ import 'package:com.snowlive/controller/vm_liveMapController.dart';
 import 'package:com.snowlive/controller/vm_seasonController.dart';
 import 'package:com.snowlive/controller/vm_userModelController.dart';
 import 'package:com.snowlive/screens/Ranking/test/v_Ranking_indi_All_Screen_test.dart';
-import '../../controller/vm_allCrewDocsController.dart';
-import '../../controller/vm_allUserDocsController.dart';
-import '../../controller/vm_rankingTierModelController.dart';
-import '../../data/imgaUrls/Data_url_image.dart';
-import '../../model/m_rankingTierModel.dart';
-import '../../widget/w_fullScreenDialog.dart';
-import '../more/friend/v_friendDetailPage.dart';
+import '../../../controller/vm_allCrewDocsController.dart';
+import '../../../controller/vm_allUserDocsController.dart';
+import '../../../controller/vm_rankingTierModelController.dart';
+import '../../../data/imgaUrls/Data_url_image.dart';
+import '../../../model/m_rankingTierModel.dart';
+import '../../../widget/w_fullScreenDialog.dart';
+import '../../more/friend/v_friendDetailPage.dart';
 
-class RankingIndiAllScreen extends StatefulWidget {
-  RankingIndiAllScreen({Key? key, required this.isKusbf}) : super(key: key);
+class RankingIndiAllScreen_test extends StatefulWidget {
+
+  RankingIndiAllScreen_test({Key? key, required this.isKusbf,required this.isDaily,
+    required this.isWeekly}) : super(key: key);
 
   bool isKusbf = false;
+  bool isDaily = false;
+  bool isWeekly = false;
 
   @override
-  State<RankingIndiAllScreen> createState() => _RankingIndiAllScreenState();
+  State<RankingIndiAllScreen_test> createState() => _RankingIndiAllScreen_testState();
 }
 
-class _RankingIndiAllScreenState extends State<RankingIndiAllScreen> {
+class _RankingIndiAllScreen_testState extends State<RankingIndiAllScreen_test> {
   //TODO: Dependency Injection**************************************************
   UserModelController _userModelController = Get.find<UserModelController>();
   SeasonController _seasonController = Get.find<SeasonController>();
@@ -72,9 +76,22 @@ class _RankingIndiAllScreenState extends State<RankingIndiAllScreen> {
 
   void _scrollToMyRanking() {
     if(_userModelController.favoriteResort == 12 ||_userModelController.favoriteResort == 2 ||_userModelController.favoriteResort == 0) {
-      myRanking = _rankingTierModelController.userRankingMap![_userModelController.uid];
+      if(widget.isDaily == true){
+        myRanking = _rankingTierModelController.userRankingMap_daily![_userModelController.uid];
+      } else if(widget.isWeekly == true){
+        myRanking = _rankingTierModelController.userRankingMap_weekly![_userModelController.uid];
+      } else {
+        myRanking = _rankingTierModelController.userRankingMap![_userModelController.uid];
+      }
     }else {
+      if(widget.isDaily == true){
+        myRanking = _rankingTierModelController.userRankingMap_integrated_daily![_userModelController.uid];
+      } else  if(widget.isWeekly == true){
+        myRanking = _rankingTierModelController.userRankingMap_integrated_weekly![_userModelController.uid];
+      } else{
       myRanking = _rankingTierModelController.userRankingMap_integrated![_userModelController.uid];
+
+      }
     }
 
     if (myRanking != null) {

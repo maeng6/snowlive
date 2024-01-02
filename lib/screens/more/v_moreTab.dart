@@ -29,6 +29,7 @@ import '../../controller/vm_seasonController.dart';
 import '../../controller/vm_userModelController.dart';
 import '../LiveCrew/CreateOnboarding/v_FirstPage_createCrew.dart';
 import '../Ranking/v_Ranking_Home.dart';
+import '../Ranking/test/v_Ranking_Home_test.dart';
 import '../Ranking/v_ranking_comingSoon_Screen.dart';
 import '../bulletin/v_bulletin_Screen.dart';
 import '../fleaMarket/v_fleaMarket_Screen.dart';
@@ -774,9 +775,9 @@ class _MoreTabState extends State<MoreTab> {
 
                             await _myRankingController.getMyRankingData(_userModelController.uid);
                             CustomFullScreenDialog.cancelDialog();
-                            (_seasonController.open ==true || _seasonController.open_uidList!.contains(_userModelController.uid))
-                                ? Get.to(()=>RankingHome())
-                                : Get.to(()=>Ranking_CommingSoon_Screen());
+                            (_seasonController.dailyOpen ==true || _seasonController.open_uidList!.contains(_userModelController.uid))
+                                ? Get.to(()=>RankingHome_test())
+                                : Get.to(()=>RankingHome());
                           },
                           child: Column(
                             children: [

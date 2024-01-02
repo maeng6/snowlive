@@ -21,6 +21,7 @@ class SeasonController extends GetxController{
   RxInt? _bulletinFreeReplyLimit = 0.obs;
   RxInt? _bulletinEventReplyLimit = 0.obs;
   RxBool? _open = false.obs;
+  RxBool? _dailyOpen = false.obs;
   RxList? _open_uidList = [].obs;
 
   String? get currentSeason => _currentSeason!.value;
@@ -37,6 +38,7 @@ class SeasonController extends GetxController{
   int? get bulletinFreeReplyLimit => _bulletinFreeReplyLimit!.value;
   int? get bulletinEventReplyLimit => _bulletinEventReplyLimit!.value;
   bool? get open => _open!.value;
+  bool? get dailyOpen => _dailyOpen!.value;
   List? get open_uidList => _open_uidList!;
 
 
@@ -186,8 +188,10 @@ class SeasonController extends GetxController{
     final DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
     await documentReference.get();
     bool open = documentSnapshot.get('open');
+    bool dailyOpen = documentSnapshot.get('dailyOpen');
     List open_uidList = documentSnapshot.get('open_uidList');
     this._open!.value = open;
+    this._dailyOpen!.value = dailyOpen;
     this._open_uidList!.value = open_uidList;
   }
 

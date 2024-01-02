@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:com.snowlive/screens/Ranking/test/v_Ranking_indi_All_Screen_test.dart';
 import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/cupertino.dart';
@@ -10,26 +11,32 @@ import 'package:com.snowlive/controller/vm_liveMapController.dart';
 import 'package:com.snowlive/controller/vm_seasonController.dart';
 import 'package:com.snowlive/controller/vm_userModelController.dart';
 import 'package:com.snowlive/screens/Ranking/v_Ranking_indi_All_Screen.dart';
-import '../../controller/vm_allCrewDocsController.dart';
-import '../../controller/vm_allUserDocsController.dart';
-import '../../controller/vm_myRankingController.dart';
-import '../../controller/vm_rankingTierModelController.dart';
-import '../../controller/vm_refreshController.dart';
-import '../../controller/vm_resortModelController.dart';
-import '../../data/imgaUrls/Data_url_image.dart';
-import '../../model/m_rankingTierModel.dart';
-import '../more/friend/v_friendDetailPage.dart';
+import '../../../controller/vm_allCrewDocsController.dart';
+import '../../../controller/vm_allUserDocsController.dart';
+import '../../../controller/vm_myRankingController.dart';
+import '../../../controller/vm_rankingTierModelController.dart';
+import '../../../controller/vm_refreshController.dart';
+import '../../../controller/vm_resortModelController.dart';
+import '../../../data/imgaUrls/Data_url_image.dart';
+import '../../../model/m_rankingTierModel.dart';
+import '../../more/friend/v_friendDetailPage.dart';
 
-class RankingIndiScreen extends StatefulWidget {
-  RankingIndiScreen({Key? key, required this.isKusbf}) : super(key: key);
+class RankingIndiScreen_test extends StatefulWidget {
+  RankingIndiScreen_test({Key? key,
+    required this.isKusbf,
+    required this.isDaily,
+    required this.isWeekly,}) : super(key: key);
 
   bool isKusbf = false;
+  bool isDaily = false;
+  bool isWeekly = false;
+
 
   @override
-  State<RankingIndiScreen> createState() => _RankingIndiScreenState();
+  State<RankingIndiScreen_test> createState() => _RankingIndiScreen_testState();
 }
 
-class _RankingIndiScreenState extends State<RankingIndiScreen> {
+class _RankingIndiScreen_testState extends State<RankingIndiScreen_test> {
 
   //TODO: Dependency Injection**************************************************
   UserModelController _userModelController = Get.find<UserModelController>();
@@ -63,10 +70,30 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
   }
 
   Future<void> _refreshData() async {
-    if(_userModelController.favoriteResort == 12 ||_userModelController.favoriteResort == 2 ||_userModelController.favoriteResort == 0) {
-      await _rankingTierModelController.getRankingDocs(baseResort: _userModelController.favoriteResort);
+    if(_userModelController.favoriteResort == 12
+        ||_userModelController.favoriteResort == 2
+        ||_userModelController.favoriteResort == 0) {
+
+      if(widget.isDaily == true){
+        await _rankingTierModelController.getRankingDocsDaily(baseResort: _userModelController.favoriteResort);
+      }
+      else if(widget.isWeekly == true){
+        await _rankingTierModelController.getRankingDocsWeekly(baseResort: _userModelController.favoriteResort);
+      }
+      else{
+        await _rankingTierModelController.getRankingDocs(baseResort: _userModelController.favoriteResort);
+      }
     }else{
-      await _rankingTierModelController.getRankingDocs_integrated();
+
+      if(widget.isDaily == true){
+        await _rankingTierModelController.getRankingDocs_integrated_Daily();
+      }
+      else if(widget.isWeekly == true){
+        await _rankingTierModelController.getRankingDocs_integrated_Weekly();
+      }
+      else{
+        await _rankingTierModelController.getRankingDocs_integrated();
+      }
     }
     await _myRankingController.getMyRankingData(_userModelController.uid);
     setState(() {});
@@ -76,21 +103,55 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
   Widget build(BuildContext context) {
     Size _size = MediaQuery.of(context).size;
     if(_userModelController.favoriteResort == 12 ||_userModelController.favoriteResort == 2 ||_userModelController.favoriteResort == 0) {
+      if(widget.isDaily == true){
+        documents = widget.isKusbf == true
+            ? _rankingTierModelController.rankingDocs_kusbf_daily
+            : _rankingTierModelController.rankingDocs_daily;
+        documents_all = _rankingTierModelController.rankingDocs_daily;
 
-      documents = widget.isKusbf == true
-          ? _rankingTierModelController.rankingDocs_kusbf
-          : _rankingTierModelController.rankingDocs;
-      documents_all = _rankingTierModelController.rankingDocs;
+        userRankingMap = widget.isKusbf == true
+            ? _rankingTierModelController.userRankingMap_kusbf_daily
+            : _rankingTierModelController.userRankingMap_daily;
+        userRankingMap_all = _rankingTierModelController.userRankingMap_daily;
+      } else if(widget.isWeekly == true){
+        documents = widget.isKusbf == true
+            ? _rankingTierModelController.rankingDocs_kusbf_weekly
+            : _rankingTierModelController.rankingDocs_weekly;
+        documents_all = _rankingTierModelController.rankingDocs_weekly;
 
-      userRankingMap = widget.isKusbf == true
-          ? _rankingTierModelController.userRankingMap_kusbf
-          : _rankingTierModelController.userRankingMap;
-      userRankingMap_all = _rankingTierModelController.userRankingMap;
+        userRankingMap = widget.isKusbf == true
+            ? _rankingTierModelController.userRankingMap_kusbf_weekly
+            : _rankingTierModelController.userRankingMap_weekly;
+        userRankingMap_all = _rankingTierModelController.userRankingMap_weekly;
+      } else {
+        documents = widget.isKusbf == true
+            ? _rankingTierModelController.rankingDocs_kusbf
+            : _rankingTierModelController.rankingDocs;
+        documents_all = _rankingTierModelController.rankingDocs;
+
+        userRankingMap = widget.isKusbf == true
+            ? _rankingTierModelController.userRankingMap_kusbf
+            : _rankingTierModelController.userRankingMap;
+        userRankingMap_all = _rankingTierModelController.userRankingMap;
+      }
+
     }else {
-      documents =  _rankingTierModelController.rankingDocs_integrated;
-      documents_all = _rankingTierModelController.rankingDocs_integrated;
-      userRankingMap = _rankingTierModelController.userRankingMap_integrated;
-      userRankingMap_all = _rankingTierModelController.userRankingMap_integrated;
+      if(widget.isDaily == true){
+        documents =  _rankingTierModelController.rankingDocs_integrated_daily;
+        documents_all = _rankingTierModelController.rankingDocs_integrated_daily;
+        userRankingMap = _rankingTierModelController.userRankingMap_integrated_daily;
+        userRankingMap_all = _rankingTierModelController.userRankingMap_integrated_daily;
+      } else if(widget.isWeekly == true){
+        documents =  _rankingTierModelController.rankingDocs_integrated_weekly;
+        documents_all = _rankingTierModelController.rankingDocs_integrated_weekly;
+        userRankingMap = _rankingTierModelController.userRankingMap_integrated_weekly;
+        userRankingMap_all = _rankingTierModelController.userRankingMap_integrated_weekly;
+      } else{
+        documents =  _rankingTierModelController.rankingDocs_integrated;
+        documents_all = _rankingTierModelController.rankingDocs_integrated;
+        userRankingMap = _rankingTierModelController.userRankingMap_integrated;
+        userRankingMap_all = _rankingTierModelController.userRankingMap_integrated;
+      }
     }
 
     return Container(
@@ -161,6 +222,7 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                                   child: ExtendedImage.network(
                                                     userDoc[0]['profileImageUrl'],
                                                     enableMemoryCache: true,
+                                                    cacheHeight: 100,
                                                     shape: BoxShape.circle,
                                                     width: 100,
                                                     height: 100,
@@ -189,6 +251,7 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                                     : ExtendedImage.network(
                                                   '${profileImgUrlList[0].default_round}',
                                                   enableMemoryCache: true,
+                                                  cacheHeight: 60,
                                                   shape: BoxShape.circle,
                                                   width: 58,
                                                   height: 58,
@@ -277,6 +340,7 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                                   child: ExtendedImage.network(
                                                     userDoc[0]['profileImageUrl'],
                                                     enableMemoryCache: true,
+                                                    cacheHeight: 100,
                                                     shape: BoxShape.circle,
                                                     width: 100,
                                                     height: 100,
@@ -305,6 +369,7 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                                     : ExtendedImage.network(
                                                   '${profileImgUrlList[0].default_round}',
                                                   enableMemoryCache: true,
+                                                  cacheHeight: 60,
                                                   shape: BoxShape.circle,
                                                   width: 58,
                                                   height: 58,
@@ -394,6 +459,7 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                                   child: ExtendedImage.network(
                                                     userDoc[0]['profileImageUrl'],
                                                     enableMemoryCache: true,
+                                                    cacheHeight: 100,
                                                     shape: BoxShape.circle,
                                                     width: 100,
                                                     height: 100,
@@ -408,6 +474,7 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                                           return ExtendedImage.network(
                                                             '${profileImgUrlList[0].default_round}',
                                                             enableMemoryCache: true,
+                                                            cacheHeight: 60,
                                                             shape: BoxShape.circle,
                                                             width: 58,
                                                             height: 58,
@@ -422,6 +489,7 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                                     : ExtendedImage.network(
                                                   '${profileImgUrlList[0].default_round}',
                                                   enableMemoryCache: true,
+                                                  cacheHeight: 60,
                                                   shape: BoxShape.circle,
                                                   width: 58,
                                                   height: 58,
@@ -512,7 +580,7 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                   ),
                                 GestureDetector(
                                   onTap: () async{
-                                    Get.to(()=> RankingIndiAllScreen(isKusbf: widget.isKusbf,));
+                                    Get.to(()=> RankingIndiAllScreen_test(isKusbf: widget.isKusbf, isDaily: widget.isDaily, isWeekly: widget.isWeekly));
                                   },
                                   child: Text('전체 보기',
                                     style: TextStyle(
@@ -574,7 +642,7 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                                 ? ExtendedImage.network(
                                               userData['profileImageUrl'],
                                               enableMemoryCache: true,
-                                              cacheHeight: 200,
+                                              cacheHeight: 50,
                                               shape: BoxShape.circle,
                                               borderRadius: BorderRadius.circular(8),
                                               width: 48,
@@ -590,6 +658,7 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                                     return ExtendedImage.network(
                                                       '${profileImgUrlList[0].default_round}',
                                                       enableMemoryCache: true,
+                                                      cacheHeight: 50,
                                                       shape: BoxShape.circle,
                                                       borderRadius: BorderRadius.circular(8),
                                                       width: 48,
@@ -604,6 +673,7 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                                 : ExtendedImage.network(
                                               '${profileImgUrlList[0].default_round}',
                                               enableMemoryCache: true,
+                                              cacheHeight: 50,
                                               shape: BoxShape.circle,
                                               borderRadius: BorderRadius.circular(8),
                                               width: 48,
@@ -710,35 +780,37 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                                 (_userModelController.favoriteResort == 12
                                                     || _userModelController.favoriteResort == 2
                                                     || _userModelController.favoriteResort == 0)
-                                                    ? '${document['totalScore'].toString()}점'
-                                                    : '${document['totalPassCount'].toString()}회',
+                                                    ? widget.isWeekly == true ?'${document['totalScoreWeekly'].toString()}점' :'${document['totalScore'].toString()}점'
+                                                    : widget.isWeekly == true ?'${document['totalPassCountWeekly'].toString()}회':'${document['totalPassCount'].toString()}회',
                                                 style: TextStyle(
                                                   color: Color(0xFF111111),
                                                   fontWeight: FontWeight.normal,
                                                   fontSize: 16,
                                                 ),
                                               ),
-                                              Transform.translate(
-                                                offset: Offset(6, 2),
-                                                child: ExtendedImage.network(
-                                                  (_userModelController.favoriteResort == 12
-                                                      || _userModelController.favoriteResort == 2
-                                                      || _userModelController.favoriteResort == 0)
-                                                      ? _rankingTierModelController.getBadgeAsset(
-                                                      percent: userRankingMap_all!['${userData['uid']}']/(documents_all!.length),
-                                                      totalScore: document['totalScore'],
-                                                      rankingTierList: rankingTierList
-                                                  )
-                                                      :_rankingTierModelController.getBadgeAsset_integrated(
-                                                      percent: userRankingMap_all!['${userData['uid']}']/(documents_all!.length),
-                                                      totalPassCount: document['totalPassCount'],
-                                                      rankingTierList: rankingTierList
+                                              if(widget.isDaily != true && widget.isWeekly != true)
+                                                Transform.translate(
+                                                  offset: Offset(6, 2),
+                                                  child: ExtendedImage.network(
+                                                    (_userModelController.favoriteResort == 12
+                                                        || _userModelController.favoriteResort == 2
+                                                        || _userModelController.favoriteResort == 0)
+                                                        ? _rankingTierModelController.getBadgeAsset(
+                                                        percent: userRankingMap_all!['${userData['uid']}']/(documents_all!.length),
+                                                        totalScore: document['totalScore'],
+                                                        rankingTierList: rankingTierList
+                                                    )
+                                                        :_rankingTierModelController.getBadgeAsset_integrated(
+                                                        percent: userRankingMap_all!['${userData['uid']}']/(documents_all!.length),
+                                                        totalPassCount: document['totalPassCount'],
+                                                        rankingTierList: rankingTierList
+                                                    ),
+                                                    enableMemoryCache: true,
+                                                    cacheHeight: 50,
+                                                    fit: BoxFit.cover,
+                                                    width: 36,
                                                   ),
-                                                  enableMemoryCache: true,
-                                                  fit: BoxFit.cover,
-                                                  width: 36,
                                                 ),
-                                              ),
                                             ],
                                           ),
 
@@ -804,6 +876,7 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                   ? ExtendedImage.network(
                                 _userModelController.profileImageUrl!,
                                 enableMemoryCache: true,
+                                cacheHeight: 50,
                                 shape: BoxShape.circle,
                                 borderRadius: BorderRadius.circular(8),
                                 width: 48,
@@ -833,6 +906,7 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                   : ExtendedImage.network(
                                 '${profileImgUrlList[0].default_round}',
                                 enableMemoryCache: true,
+                                cacheHeight: 50,
                                 shape: BoxShape.circle,
                                 borderRadius: BorderRadius.circular(8),
                                 width: 48,
@@ -879,8 +953,7 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                   (_userModelController.favoriteResort == 12
                                       || _userModelController.favoriteResort == 2
                                       || _userModelController.favoriteResort == 0)
-                                      ?
-                                  '${_myRankingController.totalScore}점'
+                                      ? '${_myRankingController.totalScore}점'
                                       :  '${_myRankingController.totalPassCount}회',
                                   style: TextStyle(
                                     color: Color(0xFFffffff),
@@ -905,6 +978,7 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                         rankingTierList: rankingTierList
                                     ),
                                     enableMemoryCache: true,
+                                    cacheHeight: 50,
                                     fit: BoxFit.cover,
                                     width: 40,
                                   ),
@@ -938,6 +1012,7 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                     ? ExtendedImage.network(
                                   _userModelController.profileImageUrl!,
                                   enableMemoryCache: true,
+                                  cacheHeight: 50,
                                   shape: BoxShape.circle,
                                   borderRadius: BorderRadius.circular(8),
                                   width: 48,
@@ -953,6 +1028,7 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                         return ExtendedImage.network(
                                           '${profileImgUrlList[0].default_round}',
                                           enableMemoryCache: true,
+                                          cacheHeight: 50,
                                           shape: BoxShape.circle,
                                           borderRadius: BorderRadius.circular(8),
                                           width: 48,
@@ -967,6 +1043,7 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                     : ExtendedImage.network(
                                   '${profileImgUrlList[0].default_round}',
                                   enableMemoryCache: true,
+                                  cacheHeight: 50,
                                   shape: BoxShape.circle,
                                   borderRadius: BorderRadius.circular(8),
                                   width: 48,

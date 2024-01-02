@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:com.snowlive/data/imgaUrls/Data_url_image.dart';
-import 'package:com.snowlive/screens/Ranking/v_Ranking_Crew_All_Screen.dart';
+import 'package:com.snowlive/screens/Ranking/test/v_Ranking_Crew_All_Screen_test.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -8,24 +8,29 @@ import 'package:get/get.dart';
 import 'package:com.snowlive/controller/vm_liveCrewModelController.dart';
 import 'package:com.snowlive/controller/vm_seasonController.dart';
 import 'package:com.snowlive/controller/vm_userModelController.dart';
-import 'package:com.snowlive/screens/Ranking/test/v_Ranking_Crew_All_Screen_test.dart';
-import '../../controller/vm_liveMapController.dart';
-import '../../controller/vm_rankingTierModelController.dart';
-import '../../controller/vm_resortModelController.dart';
-import '../../model/m_crewLogoModel.dart';
-import '../../widget/w_fullScreenDialog.dart';
-import '../LiveCrew/v_crewDetailPage_screen.dart';
+import 'package:com.snowlive/screens/Ranking/v_Ranking_Crew_All_Screen.dart';
+import '../../../controller/vm_liveMapController.dart';
+import '../../../controller/vm_rankingTierModelController.dart';
+import '../../../controller/vm_resortModelController.dart';
+import '../../../model/m_crewLogoModel.dart';
+import '../../../widget/w_fullScreenDialog.dart';
+import '../../LiveCrew/v_crewDetailPage_screen.dart';
 
-class RankingCrewScreen extends StatefulWidget {
-  RankingCrewScreen({Key? key, required this.isKusbf}) : super(key: key);
+class RankingCrewScreen_test extends StatefulWidget {
+  RankingCrewScreen_test({Key? key,
+    required this.isKusbf,
+    required this.isDaily,
+    required this.isWeekly,}) : super(key: key);
 
   bool isKusbf = false;
+  bool isDaily = false;
+  bool isWeekly = false;
 
   @override
-  State<RankingCrewScreen> createState() => _RankingCrewScreenState();
+  State<RankingCrewScreen_test> createState() => _RankingCrewScreen_testState();
 }
 
-class _RankingCrewScreenState extends State<RankingCrewScreen> {
+class _RankingCrewScreen_testState extends State<RankingCrewScreen_test> {
 
   //TODO: Dependency Injection**************************************************
   UserModelController _userModelController = Get.find<UserModelController>();
@@ -49,9 +54,26 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
 
   Future<void> _refreshData() async {
     if(_userModelController.favoriteResort == 12 ||_userModelController.favoriteResort == 2 ||_userModelController.favoriteResort == 0) {
-      await _rankingTierModelController.getRankingDocs_crew(baseResort: _userModelController.favoriteResort);
+
+      if(widget.isDaily == true){
+        await _rankingTierModelController.getRankingDocs_crew_Daily(baseResort: _userModelController.favoriteResort);
+      }
+      else if(widget.isWeekly == true){
+        await _rankingTierModelController.getRankingDocs_crew_Weekly(baseResort: _userModelController.favoriteResort);
+      }else{
+        await _rankingTierModelController.getRankingDocs_crew(baseResort: _userModelController.favoriteResort);
+      }
     }else {
-      await _rankingTierModelController.getRankingDocs_crew_integrated();
+
+      if(widget.isDaily == true){
+        await _rankingTierModelController.getRankingDocs_crew_integrated_Daily();
+      }
+      else if(widget.isWeekly == true){
+        await _rankingTierModelController.getRankingDocs_crew_integrated_Weekly();
+      }
+      else{
+        await _rankingTierModelController.getRankingDocs_crew_integrated();
+      }
     }
     setState(() {});
   }
@@ -64,15 +86,39 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
     _userModelController.getCurrentUser_kusbf(_userModelController.uid);
 
     if(_userModelController.favoriteResort == 12 ||_userModelController.favoriteResort == 2 ||_userModelController.favoriteResort == 0) {
-      crewDocs = widget.isKusbf == true
-          ? _rankingTierModelController.rankingDocs_crew_kusbf
-          : _rankingTierModelController.rankingDocs_crew;
-      crewRankingMap = widget.isKusbf == true
-          ? _rankingTierModelController.crewRankingMap_kusbf
-          : _rankingTierModelController.crewRankingMap;
+      if(widget.isDaily == true) {
+        crewDocs = widget.isKusbf == true
+            ? _rankingTierModelController.rankingDocs_crew_kusbf_daily
+            : _rankingTierModelController.rankingDocs_crew_daily;
+        crewRankingMap = widget.isKusbf == true
+            ? _rankingTierModelController.crewRankingMap_kusbf_daily
+            : _rankingTierModelController.crewRankingMap_daily;
+      } else if(widget.isWeekly == true) {
+        crewDocs = widget.isKusbf == true
+            ? _rankingTierModelController.rankingDocs_crew_kusbf_weekly
+            : _rankingTierModelController.rankingDocs_crew_weekly;
+        crewRankingMap = widget.isKusbf == true
+            ? _rankingTierModelController.crewRankingMap_kusbf_weekly
+            : _rankingTierModelController.crewRankingMap_weekly;
+      } else {
+        crewDocs = widget.isKusbf == true
+            ? _rankingTierModelController.rankingDocs_crew_kusbf
+            : _rankingTierModelController.rankingDocs_crew;
+        crewRankingMap = widget.isKusbf == true
+            ? _rankingTierModelController.crewRankingMap_kusbf
+            : _rankingTierModelController.crewRankingMap;
+      }
     } else{
-      crewDocs = _rankingTierModelController.rankingDocs_crew_integrated;
-      crewRankingMap = _rankingTierModelController.crewRankingMap_integrated;
+      if(widget.isDaily == true) {
+        crewDocs = _rankingTierModelController.rankingDocs_crew_integrated_daily;
+        crewRankingMap = _rankingTierModelController.crewRankingMap_integrated_daily;
+      } else if(widget.isWeekly == true) {
+        crewDocs = _rankingTierModelController.rankingDocs_crew_integrated_weekly;
+        crewRankingMap = _rankingTierModelController.crewRankingMap_integrated_weekly;
+      }else {
+        crewDocs = _rankingTierModelController.rankingDocs_crew_integrated;
+        crewRankingMap = _rankingTierModelController.crewRankingMap_integrated;
+      }
     }
     if (crewDocs!.isNotEmpty) {
       for (var crewLogo in crewLogoList) {
@@ -545,7 +591,12 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                                   ),
                                 GestureDetector(
                                   onTap: () async{
-                                    Get.to(() => RankingCrewAllScreen(isKusbf: widget.isKusbf,));
+                                    Get.to(() => RankingCrewAllScreen_test(
+                                      isKusbf: widget.isKusbf,
+                                      isDaily: widget.isDaily,
+                                      isWeekly: widget.isWeekly,
+
+                                    ));
                                   },
                                   child: Text('전체 보기',
                                     style: TextStyle(
@@ -741,10 +792,12 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                                                 (_userModelController.favoriteResort == 12
                                                     || _userModelController.favoriteResort == 2
                                                     || _userModelController.favoriteResort == 0)
-                                                    ?'${crewDocs![index]['totalScore']
-                                                    .toString()}점'
-                                                    : '${crewDocs![index]['totalPassCount']
-                                                    .toString()}회',
+                                                    ? widget.isWeekly == true
+                                                    ?'${crewDocs![index]['totalScoreWeekly'].toString()}점'
+                                                    :'${crewDocs![index]['totalScore'].toString()}점'
+                                                    : widget.isWeekly == true
+                                                    ?'${crewDocs![index]['totalPassCountWeekly'].toString()}회'
+                                                    :'${crewDocs![index]['totalPassCount'].toString()}회',
                                                 style: TextStyle(
                                                   color: Color(0xFF111111),
                                                   fontWeight: FontWeight

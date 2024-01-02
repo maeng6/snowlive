@@ -5,22 +5,25 @@ import 'package:get/get.dart';
 import 'package:com.snowlive/controller/vm_liveCrewModelController.dart';
 import 'package:com.snowlive/controller/vm_seasonController.dart';
 import 'package:com.snowlive/controller/vm_userModelController.dart';
-import '../../controller/vm_liveMapController.dart';
-import '../../controller/vm_rankingTierModelController.dart';
-import '../../model/m_crewLogoModel.dart';
-import '../../widget/w_fullScreenDialog.dart';
-import '../LiveCrew/v_crewDetailPage_screen.dart';
+import '../../../controller/vm_liveMapController.dart';
+import '../../../controller/vm_rankingTierModelController.dart';
+import '../../../model/m_crewLogoModel.dart';
+import '../../../widget/w_fullScreenDialog.dart';
+import '../../LiveCrew/v_crewDetailPage_screen.dart';
 
-class RankingCrewAllScreen extends StatefulWidget {
-  RankingCrewAllScreen({Key? key, required this.isKusbf}) : super(key: key);
+class RankingCrewAllScreen_test extends StatefulWidget {
+  RankingCrewAllScreen_test({Key? key, required this.isKusbf, required this.isDaily,
+    required this.isWeekly,}) : super(key: key);
 
   bool isKusbf = false;
+  bool isDaily = false;
+  bool isWeekly = false;
 
   @override
-  State<RankingCrewAllScreen> createState() => _RankingCrewAllScreenState();
+  State<RankingCrewAllScreen_test> createState() => _RankingCrewAllScreen_testState();
 }
 
-class _RankingCrewAllScreenState extends State<RankingCrewAllScreen> {
+class _RankingCrewAllScreen_testState extends State<RankingCrewAllScreen_test> {
   //TODO: Dependency Injection**************************************************
   UserModelController _userModelController = Get.find<UserModelController>();
   LiveCrewModelController _liveCrewModelController =
@@ -52,10 +55,23 @@ class _RankingCrewAllScreenState extends State<RankingCrewAllScreen> {
 
   void _scrollToMyRanking() {
     if(_userModelController.favoriteResort == 12 ||_userModelController.favoriteResort == 2 ||_userModelController.favoriteResort == 0) {
+
+      if(widget.isDaily == true){
+        myRanking = _rankingTierModelController.crewRankingMap_daily![_userModelController.liveCrew];
+      } else if(widget.isWeekly == true){
+        myRanking = _rankingTierModelController.crewRankingMap_weekly![_userModelController.liveCrew];
+      } else{
       myRanking = _rankingTierModelController.crewRankingMap![_userModelController.liveCrew];
+      }
     }else {
-      myRanking = _rankingTierModelController.crewRankingMap_integrated![_userModelController.liveCrew];
-    }
+      if(widget.isDaily == true){
+        myRanking = _rankingTierModelController.crewRankingMap_integrated_daily![_userModelController.liveCrew];
+      } else if(widget.isWeekly == true){
+      myRanking = _rankingTierModelController.crewRankingMap_integrated_weekly![_userModelController.liveCrew];
+    } else {
+        myRanking = _rankingTierModelController.crewRankingMap_integrated![_userModelController.liveCrew];
+      }
+      }
 
     if (myRanking != null) {
       Scrollable.ensureVisible(
