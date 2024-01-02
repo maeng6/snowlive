@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:com.snowlive/controller/vm_loadingController.dart';
 import 'package:com.snowlive/controller/vm_urlLauncherController.dart';
 import 'package:com.snowlive/screens/more/friend/v_snowliveDetailPage.dart';
 import 'package:com.snowlive/screens/more/v_eventPage.dart';
@@ -51,8 +52,8 @@ class _MoreTabState extends State<MoreTab> {
   UrlLauncherController _urlLauncherController = Get.find<UrlLauncherController>();
   SeasonController _seasonController = Get.find<SeasonController>();
   RankingTierModelController _rankingTierModelController = Get.find<RankingTierModelController>();
-  AllUserDocsController _allUserDocsController = Get.find<AllUserDocsController>();
   MyRankingController _myRankingController = Get.find<MyRankingController>();
+  LoadingController _loadingController = Get.find<LoadingController>();
   //TODO: Dependency Injection**************************************************
 
   @override
@@ -740,13 +741,34 @@ class _MoreTabState extends State<MoreTab> {
                             if(_userModelController.favoriteResort != 12 && _userModelController.favoriteResort != 2 && _userModelController.favoriteResort != 0 ) {
 
                               print('통합랭킹 진입');
-                              await _rankingTierModelController.getRankingDocs_crew_integrated_Daily();
+                              _loadingController.updateProgress(0);
+                              await _rankingTierModelController.getRankingDocs_integrated();
+                              _loadingController.updateProgress(10);
                               await _rankingTierModelController.getRankingDocs_integrated_Daily();
+                              _loadingController.updateProgress(20);
+                              await _rankingTierModelController.getRankingDocs_integrated_Weekly();
+                              _loadingController.updateProgress(40);
+                              await _rankingTierModelController.getRankingDocs_crew_integrated();
+                              _loadingController.updateProgress(60);
+                              await _rankingTierModelController.getRankingDocs_crew_integrated_Daily();
+                              _loadingController.updateProgress(80);
+                              await _rankingTierModelController.getRankingDocs_crew_integrated_Weekly();
+                              _loadingController.updateProgress(100);
 
                             }else {
-
-                              await _rankingTierModelController.getRankingDocs_crew_Daily(baseResort: _userModelController.favoriteResort);
+                              _loadingController.updateProgress(0);
+                              await _rankingTierModelController.getRankingDocs(baseResort: _userModelController.favoriteResort);
+                              _loadingController.updateProgress(10);
                               await _rankingTierModelController.getRankingDocsDaily(baseResort: _userModelController.favoriteResort);
+                              _loadingController.updateProgress(20);
+                              await _rankingTierModelController.getRankingDocsWeekly(baseResort: _userModelController.favoriteResort);
+                              _loadingController.updateProgress(40);
+                              await _rankingTierModelController.getRankingDocs_crew(baseResort: _userModelController.favoriteResort);
+                              _loadingController.updateProgress(60);
+                              await _rankingTierModelController.getRankingDocs_crew_Daily(baseResort: _userModelController.favoriteResort);
+                              _loadingController.updateProgress(80);
+                              await _rankingTierModelController.getRankingDocs_crew_Weekly(baseResort: _userModelController.favoriteResort);
+                              _loadingController.updateProgress(100);
 
                             }
 

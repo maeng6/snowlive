@@ -21,6 +21,7 @@ import 'controller/vm_friendsCommentController.dart';
 import 'controller/vm_getDateTimeController.dart';
 import 'controller/vm_liveCrewModelController.dart';
 import 'controller/vm_liveMapController.dart';
+import 'controller/vm_loadingController.dart';
 import 'controller/vm_mainHomeController.dart';
 import 'controller/vm_myRankingController.dart';
 import 'controller/vm_rankingTierModelController.dart';
@@ -68,6 +69,7 @@ void main() async {
   Get.put(BulletinFreeModelController(), permanent: true);
   Get.put(BulletinEventModelController(), permanent: true);
   //Get.put(FleaChatModelController(), permanent: true);
+  Get.put(LoadingController(),permanent: true);
 
   runApp(MyApp());
 

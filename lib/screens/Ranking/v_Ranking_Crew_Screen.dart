@@ -85,15 +85,39 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
     _userModelController.getCurrentUser_kusbf(_userModelController.uid);
 
     if(_userModelController.favoriteResort == 12 ||_userModelController.favoriteResort == 2 ||_userModelController.favoriteResort == 0) {
-      crewDocs = widget.isKusbf == true
-          ? _rankingTierModelController.rankingDocs_crew_kusbf
-          : _rankingTierModelController.rankingDocs_crew;
-      crewRankingMap = widget.isKusbf == true
-          ? _rankingTierModelController.crewRankingMap_kusbf
-          : _rankingTierModelController.crewRankingMap;
+      if(widget.isDaily == true) {
+        crewDocs = widget.isKusbf == true
+            ? _rankingTierModelController.rankingDocs_crew_kusbf_daily
+            : _rankingTierModelController.rankingDocs_crew_daily;
+        crewRankingMap = widget.isKusbf == true
+            ? _rankingTierModelController.crewRankingMap_kusbf_daily
+            : _rankingTierModelController.crewRankingMap_daily;
+      } else if(widget.isWeekly == true) {
+        crewDocs = widget.isKusbf == true
+            ? _rankingTierModelController.rankingDocs_crew_kusbf_weekly
+            : _rankingTierModelController.rankingDocs_crew_weekly;
+        crewRankingMap = widget.isKusbf == true
+            ? _rankingTierModelController.crewRankingMap_kusbf_weekly
+            : _rankingTierModelController.crewRankingMap_weekly;
+      } else {
+        crewDocs = widget.isKusbf == true
+            ? _rankingTierModelController.rankingDocs_crew_kusbf
+            : _rankingTierModelController.rankingDocs_crew;
+        crewRankingMap = widget.isKusbf == true
+            ? _rankingTierModelController.crewRankingMap_kusbf
+            : _rankingTierModelController.crewRankingMap;
+      }
     } else{
-      crewDocs = _rankingTierModelController.rankingDocs_crew_integrated;
-      crewRankingMap = _rankingTierModelController.crewRankingMap_integrated;
+      if(widget.isDaily == true) {
+        crewDocs = _rankingTierModelController.rankingDocs_crew_integrated_daily;
+        crewRankingMap = _rankingTierModelController.crewRankingMap_integrated_daily;
+      } else if(widget.isWeekly == true) {
+        crewDocs = _rankingTierModelController.rankingDocs_crew_integrated_weekly;
+        crewRankingMap = _rankingTierModelController.crewRankingMap_integrated_weekly;
+      }else {
+        crewDocs = _rankingTierModelController.rankingDocs_crew_integrated;
+        crewRankingMap = _rankingTierModelController.crewRankingMap_integrated;
+      }
     }
     if (crewDocs!.isNotEmpty) {
       for (var crewLogo in crewLogoList) {

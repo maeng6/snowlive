@@ -102,21 +102,55 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
   Widget build(BuildContext context) {
     Size _size = MediaQuery.of(context).size;
     if(_userModelController.favoriteResort == 12 ||_userModelController.favoriteResort == 2 ||_userModelController.favoriteResort == 0) {
+      if(widget.isDaily == true){
+        documents = widget.isKusbf == true
+            ? _rankingTierModelController.rankingDocs_kusbf_daily
+            : _rankingTierModelController.rankingDocs_daily;
+        documents_all = _rankingTierModelController.rankingDocs_daily;
 
-      documents = widget.isKusbf == true
-          ? _rankingTierModelController.rankingDocs_kusbf
-          : _rankingTierModelController.rankingDocs;
-      documents_all = _rankingTierModelController.rankingDocs;
+        userRankingMap = widget.isKusbf == true
+            ? _rankingTierModelController.userRankingMap_kusbf_daily
+            : _rankingTierModelController.userRankingMap_daily;
+        userRankingMap_all = _rankingTierModelController.userRankingMap_daily;
+      } else if(widget.isWeekly == true){
+        documents = widget.isKusbf == true
+            ? _rankingTierModelController.rankingDocs_kusbf_weekly
+            : _rankingTierModelController.rankingDocs_weekly;
+        documents_all = _rankingTierModelController.rankingDocs_weekly;
 
-      userRankingMap = widget.isKusbf == true
-          ? _rankingTierModelController.userRankingMap_kusbf
-          : _rankingTierModelController.userRankingMap;
-      userRankingMap_all = _rankingTierModelController.userRankingMap;
+        userRankingMap = widget.isKusbf == true
+            ? _rankingTierModelController.userRankingMap_kusbf_weekly
+            : _rankingTierModelController.userRankingMap_weekly;
+        userRankingMap_all = _rankingTierModelController.userRankingMap_weekly;
+      } else {
+        documents = widget.isKusbf == true
+            ? _rankingTierModelController.rankingDocs_kusbf
+            : _rankingTierModelController.rankingDocs;
+        documents_all = _rankingTierModelController.rankingDocs;
+
+        userRankingMap = widget.isKusbf == true
+            ? _rankingTierModelController.userRankingMap_kusbf
+            : _rankingTierModelController.userRankingMap;
+        userRankingMap_all = _rankingTierModelController.userRankingMap;
+      }
+
     }else {
-      documents =  _rankingTierModelController.rankingDocs_integrated;
-      documents_all = _rankingTierModelController.rankingDocs_integrated;
-      userRankingMap = _rankingTierModelController.userRankingMap_integrated;
-      userRankingMap_all = _rankingTierModelController.userRankingMap_integrated;
+      if(widget.isDaily == true){
+        documents =  _rankingTierModelController.rankingDocs_integrated_daily;
+        documents_all = _rankingTierModelController.rankingDocs_integrated_daily;
+        userRankingMap = _rankingTierModelController.userRankingMap_integrated_daily;
+        userRankingMap_all = _rankingTierModelController.userRankingMap_integrated_daily;
+      } else if(widget.isWeekly == true){
+        documents =  _rankingTierModelController.rankingDocs_integrated_weekly;
+        documents_all = _rankingTierModelController.rankingDocs_integrated_weekly;
+        userRankingMap = _rankingTierModelController.userRankingMap_integrated_weekly;
+        userRankingMap_all = _rankingTierModelController.userRankingMap_integrated_weekly;
+      } else{
+        documents =  _rankingTierModelController.rankingDocs_integrated;
+        documents_all = _rankingTierModelController.rankingDocs_integrated;
+        userRankingMap = _rankingTierModelController.userRankingMap_integrated;
+        userRankingMap_all = _rankingTierModelController.userRankingMap_integrated;
+      }
     }
 
     return Container(
@@ -753,6 +787,7 @@ class _RankingIndiScreenState extends State<RankingIndiScreen> {
                                                   fontSize: 16,
                                                 ),
                                               ),
+                                              if(widget.isDaily != true && widget.isWeekly != true)
                                               Transform.translate(
                                                 offset: Offset(6, 2),
                                                 child: ExtendedImage.network(

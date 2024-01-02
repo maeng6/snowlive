@@ -349,21 +349,6 @@ class _RankingHomeState extends State<RankingHome> {
                                   _isDaily = true;
                                   _isWeekly = false;
                                 });
-                                if(_userModelController.favoriteResort == 12
-                                    || _userModelController.favoriteResort == 2
-                                    || _userModelController.favoriteResort == 0){
-                                  CustomFullScreenDialog.showDialog();
-                                  await _rankingTierModelController.getRankingDocsDaily(baseResort: _userModelController.favoriteResort);
-                                  await _rankingTierModelController.getRankingDocs_crew_Daily(baseResort: _userModelController.favoriteResort);
-                                  CustomFullScreenDialog.cancelDialog();
-                                } else{
-                                  CustomFullScreenDialog.showDialog();
-                                  await _rankingTierModelController.getRankingDocs_integrated_Daily();
-                                  await _rankingTierModelController.getRankingDocs_crew_integrated_Daily();
-                                  CustomFullScreenDialog.cancelDialog();
-                                }
-
-                                setState(() {});
                                 print(isTapPeriod);
                               },
                               style: ElevatedButton.styleFrom(
@@ -402,7 +387,6 @@ class _RankingHomeState extends State<RankingHome> {
                                     fontSize: 14),
                               ),
                               onPressed: () async{
-                                await _seasonController.getCurrentSeason();
                                 print('주간TOP 전환');
                                 setState(() {
                                   isTapPeriod[0] = false;
@@ -411,19 +395,6 @@ class _RankingHomeState extends State<RankingHome> {
                                   _isDaily = false;
                                   _isWeekly = true;
                                 });
-                                if(_userModelController.favoriteResort == 12
-                                    || _userModelController.favoriteResort == 2
-                                    || _userModelController.favoriteResort == 0){
-
-                                  await _rankingTierModelController.getRankingDocsWeekly(baseResort: _userModelController.favoriteResort);
-                                  await _rankingTierModelController.getRankingDocs_crew_Weekly(baseResort: _userModelController.favoriteResort);
-                                } else{
-                                  CustomFullScreenDialog.showDialog();
-                                  await _rankingTierModelController.getRankingDocs_integrated_Weekly();
-                                  await _rankingTierModelController.getRankingDocs_crew_integrated_Weekly();
-                                  CustomFullScreenDialog.cancelDialog();
-                                }
-                                setState(() {});
                                 print(isTapPeriod);
                               },
                               style: ElevatedButton.styleFrom(
@@ -462,7 +433,6 @@ class _RankingHomeState extends State<RankingHome> {
                                     fontSize: 14),
                               ),
                               onPressed: () async{
-                                await _seasonController.getCurrentSeason();
                                 print('시즌누적 전환');
                                 setState(() {
                                   isTapPeriod[0] = false;
@@ -471,20 +441,6 @@ class _RankingHomeState extends State<RankingHome> {
                                   _isDaily = false;
                                   _isWeekly = false;
                                 });
-                                if(_userModelController.favoriteResort == 12
-                                    || _userModelController.favoriteResort == 2
-                                    || _userModelController.favoriteResort == 0){
-                                  CustomFullScreenDialog.showDialog();
-                                  await _rankingTierModelController.getRankingDocs(baseResort: _userModelController.favoriteResort);
-                                  await _rankingTierModelController.getRankingDocs_crew(baseResort: _userModelController.favoriteResort);
-                                  CustomFullScreenDialog.cancelDialog();
-                                } else{
-                                  CustomFullScreenDialog.showDialog();
-                                  await _rankingTierModelController.getRankingDocs_integrated();
-                                  await _rankingTierModelController.getRankingDocs_crew_integrated();
-                                  CustomFullScreenDialog.cancelDialog();
-                                }
-                                setState(() {});
                                 print(isTapPeriod);
                               },
                               style: ElevatedButton.styleFrom(

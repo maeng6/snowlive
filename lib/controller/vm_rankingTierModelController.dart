@@ -14,38 +14,86 @@ class RankingTierModelController extends GetxController{
   final auth = FirebaseAuth.instance;
 
   RxList? _rankingDocs=[].obs;
+  RxList? _rankingDocs_daily=[].obs;
+  RxList? _rankingDocs_weekly=[].obs;
   RxList? _rankingDocs_integrated=[].obs;
+  RxList? _rankingDocs_integrated_daily=[].obs;
+  RxList? _rankingDocs_integrated_weekly=[].obs;
   RxList? _rankingDocs_kusbf=[].obs;
+  RxList? _rankingDocs_kusbf_daily=[].obs;
+  RxList? _rankingDocs_kusbf_weekly=[].obs;
   RxMap? _userRankingMap=<String, int>{}.obs;
+  RxMap? _userRankingMap_daily=<String, int>{}.obs;
+  RxMap? _userRankingMap_weekly=<String, int>{}.obs;
   RxMap? _userRankingMap_integrated=<String, int>{}.obs;
+  RxMap? _userRankingMap_integrated_daily=<String, int>{}.obs;
+  RxMap? _userRankingMap_integrated_weekly=<String, int>{}.obs;
   RxMap? _userRankingMap_kusbf=<String, int>{}.obs;
+  RxMap? _userRankingMap_kusbf_daily=<String, int>{}.obs;
+  RxMap? _userRankingMap_kusbf_weekly=<String, int>{}.obs;
 
   RxList? _rankingDocs_crew=[].obs;
+  RxList? _rankingDocs_crew_daily=[].obs;
+  RxList? _rankingDocs_crew_weekly=[].obs;
   RxList? _rankingDocs_crew_integrated=[].obs;
+  RxList? _rankingDocs_crew_integrated_daily=[].obs;
+  RxList? _rankingDocs_crew_integrated_weekly=[].obs;
   RxList? _rankingDocs_crewMember=[].obs;
   RxList? _rankingDocs_crewMember_integrated=[].obs;
   RxList? _rankingDocs_crew_kusbf=[].obs;
+  RxList? _rankingDocs_crew_kusbf_daily=[].obs;
+  RxList? _rankingDocs_crew_kusbf_weekly=[].obs;
   RxMap? _crewRankingMap =<String, int>{}.obs;
+  RxMap? _crewRankingMap_daily =<String, int>{}.obs;
+  RxMap? _crewRankingMap_weekly =<String, int>{}.obs;
   RxMap? _crewRankingMap_integrated =<String, int>{}.obs;
+  RxMap? _crewRankingMap_integrated_daily =<String, int>{}.obs;
+  RxMap? _crewRankingMap_integrated_weekly =<String, int>{}.obs;
   RxMap? _crewRankingMap_kusbf =<String, int>{}.obs;
+  RxMap? _crewRankingMap_kusbf_daily =<String, int>{}.obs;
+  RxMap? _crewRankingMap_kusbf_weekly =<String, int>{}.obs;
 
   RxList? _kusbfAllMemberUidList=[].obs;
 
   List? get rankingDocs => _rankingDocs;
+  List? get rankingDocs_daily => _rankingDocs_daily;
+  List? get rankingDocs_weekly => _rankingDocs_weekly;
   List? get rankingDocs_integrated => _rankingDocs_integrated;
+  List? get rankingDocs_integrated_daily => _rankingDocs_integrated_daily;
+  List? get rankingDocs_integrated_weekly => _rankingDocs_integrated_weekly;
   List? get rankingDocs_kusbf => _rankingDocs_kusbf;
+  List? get rankingDocs_kusbf_daily => _rankingDocs_kusbf_daily;
+  List? get rankingDocs_kusbf_weekly => _rankingDocs_kusbf_weekly;
   Map? get userRankingMap => _userRankingMap;
+  Map? get userRankingMap_daily => _userRankingMap_daily;
+  Map? get userRankingMap_weekly => _userRankingMap_weekly;
   Map? get userRankingMap_integrated => _userRankingMap_integrated;
+  Map? get userRankingMap_integrated_daily => _userRankingMap_integrated_daily;
+  Map? get userRankingMap_integrated_weekly => _userRankingMap_integrated_weekly;
   Map? get userRankingMap_kusbf => _userRankingMap_kusbf;
+  Map? get userRankingMap_kusbf_daily => _userRankingMap_kusbf_daily;
+  Map? get userRankingMap_kusbf_weekly => _userRankingMap_kusbf_weekly;
 
   List? get rankingDocs_crew => _rankingDocs_crew;
+  List? get rankingDocs_crew_daily => _rankingDocs_crew_daily;
+  List? get rankingDocs_crew_weekly => _rankingDocs_crew_weekly;
   List? get rankingDocs_crew_integrated => _rankingDocs_crew_integrated;
+  List? get rankingDocs_crew_integrated_daily => _rankingDocs_crew_integrated_daily;
+  List? get rankingDocs_crew_integrated_weekly => _rankingDocs_crew_integrated_weekly;
   List? get rankingDocs_crewMember => _rankingDocs_crewMember;
   List? get rankingDocs_crewMember_integrated => _rankingDocs_crewMember_integrated;
   List? get rankingDocs_crew_kusbf => _rankingDocs_crew_kusbf;
+  List? get rankingDocs_crew_kusbf_daily => _rankingDocs_crew_kusbf_daily;
+  List? get rankingDocs_crew_kusbf_weekly => _rankingDocs_crew_kusbf_weekly;
   Map? get crewRankingMap => _crewRankingMap;
+  Map? get crewRankingMap_daily => _crewRankingMap_daily;
+  Map? get crewRankingMap_weekly => _crewRankingMap_weekly;
   Map? get crewRankingMap_integrated => _crewRankingMap_integrated;
+  Map? get crewRankingMap_integrated_daily => _crewRankingMap_integrated_daily;
+  Map? get crewRankingMap_integrated_weekly => _crewRankingMap_integrated_weekly;
   Map? get crewRankingMap_kusbf => _crewRankingMap_kusbf;
+  Map? get crewRankingMap_kusbf_daily => _crewRankingMap_kusbf_daily;
+  Map? get crewRankingMap_kusbf_weekly => _crewRankingMap_kusbf_weekly;
 
   List? get kusbfAllMemberUidList => _kusbfAllMemberUidList;
 
@@ -211,20 +259,20 @@ class RankingTierModelController extends GetxController{
 
 
 
-    this._rankingDocs!.value = rankingList.map((doc) {
+    this._rankingDocs_daily!.value = rankingList.map((doc) {
       // 각 문서의 데이터를 Map 형태로 변환
       return doc.data() as Map<String, dynamic>;
     }).toList();
-    this._rankingDocs_kusbf!.value = rankingList_kusbf.map((doc) {
+    this._rankingDocs_kusbf_daily!.value = rankingList_kusbf.map((doc) {
       // 각 문서의 데이터를 Map 형태로 변환
       return doc.data() as Map<String, dynamic>;
     }).toList();
-    this._userRankingMap!.value = await calculateRankIndiAll2(userRankingDocs: _rankingDocs);
-    this._userRankingMap_kusbf!.value = await calculateRankIndiAll2(userRankingDocs: _rankingDocs_kusbf);
+    this._userRankingMap_daily!.value = await calculateRankIndiAll2(userRankingDocs: _rankingDocs_daily);
+    this._userRankingMap_kusbf_daily!.value = await calculateRankIndiAll2(userRankingDocs: _rankingDocs_kusbf_daily);
 
 
-    print('대학연합 랭킹참여자 : ${_rankingDocs_kusbf!.length}');
-    print('일반 랭킹참여자 : ${_rankingDocs!.length}');
+    print('대학연합 일간랭킹 참여자 : ${_rankingDocs_kusbf_daily!.length}');
+    print('일간랭킹 참여자 : ${_rankingDocs_daily!.length}');
 
   }
 
@@ -329,20 +377,20 @@ class RankingTierModelController extends GetxController{
 
 
 
-    this._rankingDocs!.value = rankingList.map((doc) {
+    this._rankingDocs_weekly!.value = rankingList.map((doc) {
       // 각 문서의 데이터를 Map 형태로 변환
       return doc.data() as Map<String, dynamic>;
     }).toList();
-    this._rankingDocs_kusbf!.value = rankingList_kusbf.map((doc) {
+    this._rankingDocs_kusbf_weekly!.value = rankingList_kusbf.map((doc) {
       // 각 문서의 데이터를 Map 형태로 변환
       return doc.data() as Map<String, dynamic>;
     }).toList();
-    this._userRankingMap!.value = await calculateRankIndiAll2(userRankingDocs: _rankingDocs);
-    this._userRankingMap_kusbf!.value = await calculateRankIndiAll2(userRankingDocs: _rankingDocs_kusbf);
+    this._userRankingMap_weekly!.value = await calculateRankIndiAll2(userRankingDocs: _rankingDocs_weekly);
+    this._userRankingMap_kusbf_weekly!.value = await calculateRankIndiAll2(userRankingDocs: _rankingDocs_kusbf_weekly);
 
 
-    print('대학연합 랭킹참여자 : ${_rankingDocs_kusbf!.length}');
-    print('일반 랭킹참여자 : ${_rankingDocs!.length}');
+    print('대학연합 주간랭킹 참여자 : ${_rankingDocs_kusbf_weekly!.length}');
+    print('주간랭킹 참여자 : ${_rankingDocs_weekly!.length}');
 
   }
 
@@ -448,11 +496,11 @@ class RankingTierModelController extends GetxController{
     });
 
     // 결과를 Map 형태로 변환 및 저장
-    this._rankingDocs_integrated!.value = rankingList.map((doc) => doc.data() as Map<String, dynamic>).toList();
+    this._rankingDocs_integrated_daily!.value = rankingList.map((doc) => doc.data() as Map<String, dynamic>).toList();
 
-    this._userRankingMap_integrated!.value = await calculateRankIndiAll2_integrated(userRankingDocs: _rankingDocs_integrated);
+    this._userRankingMap_integrated_daily!.value = await calculateRankIndiAll2_integrated(userRankingDocs: _rankingDocs_integrated_daily);
 
-    print('통합랭킹 참여자 : ${_rankingDocs_integrated!.length}');
+    print('일간 통합랭킹 참여자 : ${_rankingDocs_integrated_daily!.length}');
   }
 
   Future<void> getRankingDocs_integrated_Weekly() async {
@@ -539,11 +587,11 @@ class RankingTierModelController extends GetxController{
     });
 
     // 결과를 Map 형태로 변환 및 저장
-    this._rankingDocs_integrated!.value = rankingList.map((doc) => doc.data() as Map<String, dynamic>).toList();
+    this._rankingDocs_integrated_weekly!.value = rankingList.map((doc) => doc.data() as Map<String, dynamic>).toList();
 
-    this._userRankingMap_integrated!.value = await calculateRankIndiAll2_integrated(userRankingDocs: _rankingDocs_integrated);
+    this._userRankingMap_integrated_weekly!.value = await calculateRankIndiAll2_integrated(userRankingDocs: _rankingDocs_integrated_weekly);
 
-    print('통합랭킹 참여자 : ${_rankingDocs_integrated!.length}');
+    print('주간 통합랭킹 참여자 : ${_rankingDocs_integrated_weekly!.length}');
   }
 
   //TODO: 개인 랭킹독 가져오는 메소드********************************************
@@ -629,11 +677,14 @@ class RankingTierModelController extends GetxController{
     List<QueryDocumentSnapshot> rankingList = [];
     List<QueryDocumentSnapshot> rankingList_kusbf=[];
 
+    String today = DateFormat('yyyyMMdd').format(DateTime.now());
+
     QuerySnapshot rankingSnapshot_crew = await  FirebaseFirestore.instance
         .collection('Ranking_Crew_Daily')
         .doc('1')
         .collection('${_seasonController.currentSeason}')
         .where('baseResort', isEqualTo: baseResort)
+        .where('date', isEqualTo: today)
         .where('totalScore', isGreaterThan: 0)
         .orderBy('totalScore', descending: true)
         .get();
@@ -683,20 +734,20 @@ class RankingTierModelController extends GetxController{
       return bTotalScore.compareTo(aTotalScore);
     });
 
-    this._rankingDocs_crew!.value = rankingList.map((doc) {
+    this._rankingDocs_crew_daily!.value = rankingList.map((doc) {
       // 각 문서의 데이터를 Map 형태로 변환
       return doc.data() as Map<String, dynamic>;
     }).toList();
-    this._rankingDocs_crew_kusbf!.value = rankingList_kusbf.map((doc) {
+    this._rankingDocs_crew_kusbf_daily!.value = rankingList_kusbf.map((doc) {
       // 각 문서의 데이터를 Map 형태로 변환
       return doc.data() as Map<String, dynamic>;
     }).toList();
-    this._crewRankingMap!.value = await calculateRankCrewAll2(crewDocs: _rankingDocs_crew);
-    this._crewRankingMap_kusbf!.value = await calculateRankCrewAll2(crewDocs: _rankingDocs_crew_kusbf);
+    this._crewRankingMap_daily!.value = await calculateRankCrewAll2(crewDocs: _rankingDocs_crew_daily);
+    this._crewRankingMap_kusbf_daily!.value = await calculateRankCrewAll2(crewDocs: _rankingDocs_crew_kusbf_daily);
 
 
-    print('대학연합 랭킹참여 크루 : ${_rankingDocs_kusbf!.length}');
-    print('일반 랭킹참여 크루 : ${_rankingDocs!.length}');
+    print('대학연합 일간 랭킹참여 크루 : ${_rankingDocs_crew_kusbf_daily!.length}');
+    print('일간 랭킹참여 크루 : ${_rankingDocs_crew_daily!.length}');
 
   }
 
@@ -796,23 +847,22 @@ class RankingTierModelController extends GetxController{
       return bTotalScore.compareTo(aTotalScore);
     });
 
-    this._rankingDocs_crew!.value = rankingList.map((doc) {
+    this._rankingDocs_crew_weekly!.value = rankingList.map((doc) {
       // 각 문서의 데이터를 Map 형태로 변환
       return doc.data() as Map<String, dynamic>;
     }).toList();
-    this._rankingDocs_crew_kusbf!.value = rankingList_kusbf.map((doc) {
+    this._rankingDocs_crew_kusbf_weekly!.value = rankingList_kusbf.map((doc) {
       // 각 문서의 데이터를 Map 형태로 변환
       return doc.data() as Map<String, dynamic>;
     }).toList();
-    this._crewRankingMap!.value = await calculateRankCrewAll2(crewDocs: _rankingDocs_crew);
-    this._crewRankingMap_kusbf!.value = await calculateRankCrewAll2(crewDocs: _rankingDocs_crew_kusbf);
+    this._crewRankingMap_weekly!.value = await calculateRankCrewAll2(crewDocs: _rankingDocs_crew_weekly);
+    this._crewRankingMap_kusbf_weekly!.value = await calculateRankCrewAll2(crewDocs: _rankingDocs_crew_kusbf_weekly);
 
 
-    print('대학연합 랭킹참여 크루 : ${_rankingDocs_kusbf!.length}');
-    print('일반 랭킹참여 크루 : ${_rankingDocs!.length}');
+    print('대학연합 주간 랭킹참여 크루 : ${_rankingDocs_crew_kusbf_weekly!.length}');
+    print('주간 랭킹참여 크루 : ${_rankingDocs_crew_weekly!.length}');
 
   }
-
 
   Future<void> getRankingDocs_crew_integrated() async {
     List<QueryDocumentSnapshot> rankingList = [];
@@ -889,13 +939,13 @@ class RankingTierModelController extends GetxController{
       return bTotalScore.compareTo(aTotalScore);
     });
 
-    this._rankingDocs_crew_integrated!.value = rankingList.map((doc) {
+    this._rankingDocs_crew_integrated_weekly!.value = rankingList.map((doc) {
       return doc.data() as Map<String, dynamic>;
     }).toList();
 
-    this._crewRankingMap_integrated!.value = await calculateRankCrewAll2_integrated(crewDocs: _rankingDocs_crew_integrated);
+    this._crewRankingMap_integrated_weekly!.value = await calculateRankCrewAll2_integrated(crewDocs: _rankingDocs_crew_integrated_weekly);
 
-    print('통합랭킹 참여 크루 : ${_rankingDocs_crew_integrated!.length}');
+    print('통합랭킹 참여 크루 : ${_rankingDocs_crew_integrated_weekly!.length}');
   }
 
   Future<void> getRankingDocs_crew_integrated_Weekly() async {
@@ -968,13 +1018,13 @@ class RankingTierModelController extends GetxController{
       return bTotalScore.compareTo(aTotalScore);
     });
 
-    this._rankingDocs_crew_integrated!.value = rankingList.map((doc) {
+    this._rankingDocs_crew_integrated_weekly!.value = rankingList.map((doc) {
       return doc.data() as Map<String, dynamic>;
     }).toList();
 
-    this._crewRankingMap_integrated!.value = await calculateRankCrewAll2_integrated(crewDocs: _rankingDocs_crew_integrated);
+    this._crewRankingMap_integrated_weekly!.value = await calculateRankCrewAll2_integrated(crewDocs: _rankingDocs_crew_integrated_weekly);
 
-    print('통합랭킹 참여 크루 : ${_rankingDocs_crew_integrated!.length}');
+    print('통합랭킹 참여 크루 : ${_rankingDocs_crew_integrated_weekly!.length}');
   }
 
   Future<void> getRankingDocs_crewMember_integrated({required crewID, required crewBase}) async{
