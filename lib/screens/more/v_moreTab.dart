@@ -737,7 +737,7 @@ class _MoreTabState extends State<MoreTab> {
                       children: [
                         GestureDetector(
                           onTap: () async{
-                            CustomFullScreenDialog.showDialog();
+                            CustomFullScreenDialog.showDialog_progress();
                             if(_userModelController.favoriteResort != 12 && _userModelController.favoriteResort != 2 && _userModelController.favoriteResort != 0 ) {
 
                               print('통합랭킹 진입');
