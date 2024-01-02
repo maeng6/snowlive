@@ -53,6 +53,7 @@ void main() async {
   Get.put(GetDateTimeController(), permanent: true);
   Get.put(TimeStampController(), permanent: true);
   Get.put(FriendsCommentModelController(), permanent: true);
+  Get.put(LoadingController(),permanent: true);
   Get.put(RankingTierModelController(), permanent: true);
   Get.put(LiveCrewModelController(), permanent: true);
   Get.put(LiveMapController(), permanent: true);
@@ -69,7 +70,6 @@ void main() async {
   Get.put(BulletinFreeModelController(), permanent: true);
   Get.put(BulletinEventModelController(), permanent: true);
   //Get.put(FleaChatModelController(), permanent: true);
-  Get.put(LoadingController(),permanent: true);
 
   runApp(MyApp());
 

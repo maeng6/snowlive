@@ -744,9 +744,9 @@ class _MoreTabState extends State<MoreTab> {
                               print('통합랭킹 진입');
                               _loadingController.updateProgress(0);
                               await _rankingTierModelController.getRankingDocs_integrated();
-                              _loadingController.updateProgress(10);
-                              await _rankingTierModelController.getRankingDocs_integrated_Daily();
                               _loadingController.updateProgress(20);
+                              await _rankingTierModelController.getRankingDocs_integrated_Daily();
+                              _loadingController.updateProgress(30);
                               await _rankingTierModelController.getRankingDocs_integrated_Weekly();
                               _loadingController.updateProgress(40);
                               await _rankingTierModelController.getRankingDocs_crew_integrated();
