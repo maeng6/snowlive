@@ -27,6 +27,7 @@ import 'package:com.snowlive/controller/vm_userModelController.dart';
 import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 import '../../controller/vm_bottomTabBarController.dart';
 import '../../controller/vm_commentController.dart';
+import '../../controller/vm_liveCrewModelController.dart';
 import '../../controller/vm_seasonController.dart';
 import '../../controller/vm_urlLauncherController.dart';
 import '../fleaMarket/v_fleaMarket_List_Screen_home.dart';
@@ -53,6 +54,7 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
   UrlLauncherController _urlLauncherController = Get.find<UrlLauncherController>();
   RefreshController _refreshController = Get.find<RefreshController>();
   SeasonController _seasonController = Get.find<SeasonController>();
+  LiveCrewModelController _liveCrewModelController = Get.find<LiveCrewModelController>();
 
   //TODO: Dependency Injection**************************************************
 
@@ -88,6 +90,7 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
     _userModelController.updateIsOnLiveOff();
     _alarmStream = alarmStream();
     _seasonController.getSeasonOpen();
+    _liveCrewModelController.getCurrrentCrew(_userModelController.liveCrew);
 
     try{
       FirebaseAnalytics.instance.logEvent(

@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:com.snowlive/data/imgaUrls/Data_url_image.dart';
+import 'package:com.snowlive/screens/Ranking/v_Ranking_Crew_All_Screen.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -7,7 +8,7 @@ import 'package:get/get.dart';
 import 'package:com.snowlive/controller/vm_liveCrewModelController.dart';
 import 'package:com.snowlive/controller/vm_seasonController.dart';
 import 'package:com.snowlive/controller/vm_userModelController.dart';
-import 'package:com.snowlive/screens/Ranking/v_Ranking_Crew_All_Screen.dart';
+import 'package:com.snowlive/screens/Ranking/test/v_Ranking_Crew_All_Screen_test.dart';
 import '../../controller/vm_liveMapController.dart';
 import '../../controller/vm_rankingTierModelController.dart';
 import '../../controller/vm_resortModelController.dart';

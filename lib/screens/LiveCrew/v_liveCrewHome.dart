@@ -7,7 +7,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:com.snowlive/screens/LiveCrew/v_crewDetailPage_screen.dart';
 import 'package:com.snowlive/screens/LiveCrew/v_liveCrewList_more.dart';
 import 'package:com.snowlive/screens/LiveCrew/v_searchCrewPage.dart';
-import 'package:com.snowlive/screens/Ranking/v_Ranking_Crew_All_Screen.dart';
+import 'package:com.snowlive/screens/Ranking/test/v_Ranking_Crew_All_Screen_test.dart';
 import 'package:com.snowlive/screens/comments/v_profileImageScreen.dart';
 import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 import '../../../controller/vm_userModelController.dart';

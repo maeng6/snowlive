@@ -242,7 +242,7 @@ packages:
     source: hosted
     version: "8.1.1"
   extended_image_library:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: extended_image_library
       sha256: "8bf87c0b14dcb59200c923a9a3952304e4732a0901e40811428834ef39018ee1"

@@ -5,7 +5,7 @@ import 'package:com.snowlive/screens/Ranking/v_ranking_comingSoon_Screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:com.snowlive/controller/vm_liveMapController.dart';
-import 'package:com.snowlive/screens/Ranking/v_Ranking_Home.dart';
+import 'package:com.snowlive/screens/Ranking/test/v_Ranking_Home_test.dart';
 import 'package:com.snowlive/screens/comments/v_liveTalk_Screen.dart';
 import 'package:com.snowlive/screens/resort/v_resortHome.dart';
 import '../controller/vm_noticeController.dart';

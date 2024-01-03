@@ -30,6 +30,13 @@ class MyRankingController extends GetxController {
   RxString? _uid = ''.obs;
   RxBool? _exist= false.obs;
 
+  RxInt? _totalPassCount_Daily = 0.obs;
+  RxInt? _totalScore_Daily = 0.obs;
+  RxInt? _totalPassCount_Weekly = 0.obs;
+  RxInt? _totalScore_Weekly = 0.obs;
+
+
+
   Timestamp get lastPassTime => _lastPassTime!;
   Map<String, dynamic> get passCountData => _passCountData!.value as Map<String, dynamic>;
   Map<String, dynamic> get passCountTimeData => _passCountTimeData!.value as Map<String, dynamic>;
@@ -39,11 +46,17 @@ class MyRankingController extends GetxController {
   int get totalScore => _totalScore!.value;
   String get uid => _uid!.value;
   bool? get exist => _exist!.value;
+  int get totalPassCount_Daily => _totalPassCount_Daily!.value;
+  int get totalScore_Daily => _totalScore_Daily!.value;
+  int get totalPassCount_Weekly => _totalPassCount_Weekly!.value;
+  int get totalScore_Weekly => _totalScore_Weekly!.value;
 
   @override
   void onInit() async {
     // TODO: implement onInit
     await getMyRankingData(_userModelController.uid);
+    await getMyRankingDataDaily(_userModelController.uid);
+    await getMyRankingDataWeekly(_userModelController.uid);
   }
 
   Future<void> getMyRankingData(uid) async {
@@ -70,7 +83,46 @@ class MyRankingController extends GetxController {
     } else {
       Get.to(() => LoginPage());
     }
+  }
 
+  Future<void> getMyRankingDataDaily(uid) async {
+    if (FirebaseAuth.instance.currentUser != null) {
+
+      if (uid != null) {
+        MyRankingModel? myRankingModel = await MyRankingModel().getMyRankingModel_Daily(uid);
+        if (myRankingModel != null) {
+          this._totalPassCount_Daily!.value = myRankingModel.totalPassCount!;
+          this._totalScore_Daily!.value = myRankingModel.totalScore!;
+          this._uid!.value = myRankingModel.uid!;
+          print('${exist}');
+        } else {}
+      } else {
+        Get.to(() => LoginPage());
+        // handle the case where the userModel is null
+      }
+    } else {
+      Get.to(() => LoginPage());
+    }
+  }
+
+  Future<void> getMyRankingDataWeekly(uid) async {
+    if (FirebaseAuth.instance.currentUser != null) {
+
+      if (uid != null) {
+        MyRankingModel? myRankingModel = await MyRankingModel().getMyRankingModel_Weekly(uid);
+        if (myRankingModel != null) {
+          this._totalPassCount_Weekly!.value = myRankingModel.totalPassCountWeekly!;
+          this._totalScore_Weekly!.value = myRankingModel.totalScoreWeekly!;
+          this._uid!.value = myRankingModel.uid!;
+          print('${exist}');
+        } else {}
+      } else {
+        Get.to(() => LoginPage());
+        // handle the case where the userModel is null
+      }
+    } else {
+      Get.to(() => LoginPage());
+    }
   }
 
   void resetMyRankingData() async {

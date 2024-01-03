@@ -1,4 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:com.snowlive/controller/vm_loadingController.dart';
+import 'package:com.snowlive/controller/vm_myCrewRankingController.dart';
 import 'package:com.snowlive/controller/vm_urlLauncherController.dart';
 import 'package:com.snowlive/screens/more/friend/v_snowliveDetailPage.dart';
 import 'package:com.snowlive/screens/more/v_eventPage.dart';
@@ -28,6 +30,7 @@ import '../../controller/vm_seasonController.dart';
 import '../../controller/vm_userModelController.dart';
 import '../LiveCrew/CreateOnboarding/v_FirstPage_createCrew.dart';
 import '../Ranking/v_Ranking_Home.dart';
+import '../Ranking/test/v_Ranking_Home_test.dart';
 import '../Ranking/v_ranking_comingSoon_Screen.dart';
 import '../bulletin/v_bulletin_Screen.dart';
 import '../fleaMarket/v_fleaMarket_Screen.dart';
@@ -51,8 +54,9 @@ class _MoreTabState extends State<MoreTab> {
   UrlLauncherController _urlLauncherController = Get.find<UrlLauncherController>();
   SeasonController _seasonController = Get.find<SeasonController>();
   RankingTierModelController _rankingTierModelController = Get.find<RankingTierModelController>();
-  AllUserDocsController _allUserDocsController = Get.find<AllUserDocsController>();
   MyRankingController _myRankingController = Get.find<MyRankingController>();
+  LoadingController _loadingController = Get.find<LoadingController>();
+  MyCrewRankingController _myCrewRankingController = Get.find<MyCrewRankingController>();
   //TODO: Dependency Injection**************************************************
 
   @override
@@ -736,25 +740,52 @@ class _MoreTabState extends State<MoreTab> {
                       children: [
                         GestureDetector(
                           onTap: () async{
-                            CustomFullScreenDialog.showDialog();
+                            CustomFullScreenDialog.showDialog_progress();
                             if(_userModelController.favoriteResort != 12 && _userModelController.favoriteResort != 2 && _userModelController.favoriteResort != 0 ) {
 
                               print('통합랭킹 진입');
-                              await _rankingTierModelController.getRankingDocs_crew_integrated();
+                              _loadingController.updateProgress(0);
                               await _rankingTierModelController.getRankingDocs_integrated();
+                              _loadingController.updateProgress(20);
+                              await _rankingTierModelController.getRankingDocs_integrated_Daily();
+                              _loadingController.updateProgress(30);
+                              await _rankingTierModelController.getRankingDocs_integrated_Weekly();
+                              _loadingController.updateProgress(40);
+                              await _rankingTierModelController.getRankingDocs_crew_integrated();
+                              _loadingController.updateProgress(60);
+                              await _rankingTierModelController.getRankingDocs_crew_integrated_Daily();
+                              _loadingController.updateProgress(80);
+                              await _rankingTierModelController.getRankingDocs_crew_integrated_Weekly();
+                              _loadingController.updateProgress(100);
 
                             }else {
-
-                              await _rankingTierModelController.getRankingDocs_crew(baseResort: _userModelController.favoriteResort);
+                              _loadingController.updateProgress(0);
                               await _rankingTierModelController.getRankingDocs(baseResort: _userModelController.favoriteResort);
+                              _loadingController.updateProgress(10);
+                              await _rankingTierModelController.getRankingDocsDaily(baseResort: _userModelController.favoriteResort);
+                              _loadingController.updateProgress(20);
+                              await _rankingTierModelController.getRankingDocsWeekly(baseResort: _userModelController.favoriteResort);
+                              _loadingController.updateProgress(40);
+                              await _rankingTierModelController.getRankingDocs_crew(baseResort: _userModelController.favoriteResort);
+                              _loadingController.updateProgress(60);
+                              await _rankingTierModelController.getRankingDocs_crew_Daily(baseResort: _userModelController.favoriteResort);
+                              _loadingController.updateProgress(80);
+                              await _rankingTierModelController.getRankingDocs_crew_Weekly(baseResort: _userModelController.favoriteResort);
+                              _loadingController.updateProgress(100);
 
                             }
 
                             await _myRankingController.getMyRankingData(_userModelController.uid);
+                            await _myRankingController.getMyRankingDataDaily(_userModelController.uid);
+                            await _myRankingController.getMyRankingDataWeekly(_userModelController.uid);
+                            await _myCrewRankingController.getMyCrewRankingData(_userModelController.liveCrew);
+                            await _myCrewRankingController.getMyCrewRankingDataDaily(_userModelController.liveCrew);
+                            await _myCrewRankingController.getMyCrewRankingDataWeekly(_userModelController.liveCrew);
+
                             CustomFullScreenDialog.cancelDialog();
-                            (_seasonController.open ==true || _seasonController.open_uidList!.contains(_userModelController.uid))
-                                ? Get.to(()=>RankingHome())
-                                : Get.to(()=>Ranking_CommingSoon_Screen());
+                            (_seasonController.dailyOpen ==true || _seasonController.open_uidList!.contains(_userModelController.uid))
+                                ? Get.to(()=>RankingHome_test())
+                                : Get.to(()=>RankingHome());
                           },
                           child: Column(
                             children: [

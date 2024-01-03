@@ -1,4 +1,6 @@
 import 'package:com.snowlive/controller/vm_seasonController.dart';
+import 'package:com.snowlive/screens/Ranking/v_Ranking_Crew_Screen.dart';
+import 'package:com.snowlive/screens/Ranking/v_Ranking_Indi_Screen.dart';
 import 'package:com.snowlive/screens/Ranking/v_Ranking_Tutorial_Screen.dart';
 import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 import 'package:extended_image/extended_image.dart';
@@ -11,8 +13,8 @@ import 'package:get/get_core/src/get_main.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:com.snowlive/controller/vm_liveCrewModelController.dart';
 import 'package:com.snowlive/screens/Ranking/v_MyRanking_Detail_Screen.dart';
-import 'package:com.snowlive/screens/Ranking/v_Ranking_Crew_Screen.dart';
-import 'package:com.snowlive/screens/Ranking/v_Ranking_Indi_Screen.dart';
+import 'package:com.snowlive/screens/Ranking/test/v_Ranking_Crew_Screen_test.dart';
+import 'package:com.snowlive/screens/Ranking/test/v_Ranking_Indi_Screen_test.dart';
 import '../../controller/vm_rankingTierModelController.dart';
 import '../../controller/vm_userModelController.dart';
 import '../../data/imgaUrls/Data_url_image.dart';
