@@ -51,6 +51,8 @@ class _RankingIndiScreen_testState extends State<RankingIndiScreen_test> {
   Map? userRankingMap_all;
   List? documents;
   List? documents_all;
+  int? myTotalScore;
+  int? myTotalPassCount;
 
   @override
   void initState() {
@@ -76,26 +78,31 @@ class _RankingIndiScreen_testState extends State<RankingIndiScreen_test> {
 
       if(widget.isDaily == true){
         await _rankingTierModelController.getRankingDocsDaily(baseResort: _userModelController.favoriteResort);
+        await _myRankingController.getMyRankingDataDaily(_userModelController.uid);
       }
       else if(widget.isWeekly == true){
         await _rankingTierModelController.getRankingDocsWeekly(baseResort: _userModelController.favoriteResort);
+        await _myRankingController.getMyRankingDataWeekly(_userModelController.uid);
       }
       else{
         await _rankingTierModelController.getRankingDocs(baseResort: _userModelController.favoriteResort);
+        await _myRankingController.getMyRankingData(_userModelController.uid);
       }
     }else{
 
       if(widget.isDaily == true){
         await _rankingTierModelController.getRankingDocs_integrated_Daily();
+        await _myRankingController.getMyRankingDataDaily(_userModelController.uid);
       }
       else if(widget.isWeekly == true){
         await _rankingTierModelController.getRankingDocs_integrated_Weekly();
+        await _myRankingController.getMyRankingDataWeekly(_userModelController.uid);
       }
       else{
         await _rankingTierModelController.getRankingDocs_integrated();
+        await _myRankingController.getMyRankingData(_userModelController.uid);
       }
     }
-    await _myRankingController.getMyRankingData(_userModelController.uid);
     setState(() {});
   }
 
@@ -113,6 +120,8 @@ class _RankingIndiScreen_testState extends State<RankingIndiScreen_test> {
             ? _rankingTierModelController.userRankingMap_kusbf_daily
             : _rankingTierModelController.userRankingMap_daily;
         userRankingMap_all = _rankingTierModelController.userRankingMap_daily;
+        myTotalScore = _myRankingController.totalScore_Daily;
+        myTotalPassCount = _myRankingController.totalPassCount_Daily;
       } else if(widget.isWeekly == true){
         documents = widget.isKusbf == true
             ? _rankingTierModelController.rankingDocs_kusbf_weekly
@@ -123,6 +132,8 @@ class _RankingIndiScreen_testState extends State<RankingIndiScreen_test> {
             ? _rankingTierModelController.userRankingMap_kusbf_weekly
             : _rankingTierModelController.userRankingMap_weekly;
         userRankingMap_all = _rankingTierModelController.userRankingMap_weekly;
+        myTotalScore = _myRankingController.totalScore_Weekly;
+        myTotalPassCount = _myRankingController.totalPassCount_Weekly;
       } else {
         documents = widget.isKusbf == true
             ? _rankingTierModelController.rankingDocs_kusbf
@@ -133,6 +144,8 @@ class _RankingIndiScreen_testState extends State<RankingIndiScreen_test> {
             ? _rankingTierModelController.userRankingMap_kusbf
             : _rankingTierModelController.userRankingMap;
         userRankingMap_all = _rankingTierModelController.userRankingMap;
+        myTotalScore = _myRankingController.totalScore;
+        myTotalPassCount = _myRankingController.totalPassCount;
       }
 
     }else {
@@ -141,16 +154,22 @@ class _RankingIndiScreen_testState extends State<RankingIndiScreen_test> {
         documents_all = _rankingTierModelController.rankingDocs_integrated_daily;
         userRankingMap = _rankingTierModelController.userRankingMap_integrated_daily;
         userRankingMap_all = _rankingTierModelController.userRankingMap_integrated_daily;
+        myTotalScore = _myRankingController.totalScore_Daily;
+        myTotalPassCount = _myRankingController.totalPassCount_Daily;
       } else if(widget.isWeekly == true){
         documents =  _rankingTierModelController.rankingDocs_integrated_weekly;
         documents_all = _rankingTierModelController.rankingDocs_integrated_weekly;
         userRankingMap = _rankingTierModelController.userRankingMap_integrated_weekly;
         userRankingMap_all = _rankingTierModelController.userRankingMap_integrated_weekly;
+        myTotalScore = _myRankingController.totalScore_Weekly;
+        myTotalPassCount = _myRankingController.totalPassCount_Weekly;
       } else{
         documents =  _rankingTierModelController.rankingDocs_integrated;
         documents_all = _rankingTierModelController.rankingDocs_integrated;
         userRankingMap = _rankingTierModelController.userRankingMap_integrated;
         userRankingMap_all = _rankingTierModelController.userRankingMap_integrated;
+        myTotalScore = _myRankingController.totalScore;
+        myTotalPassCount = _myRankingController.totalPassCount;
       }
     }
 
@@ -943,14 +962,15 @@ class _RankingIndiScreen_testState extends State<RankingIndiScreen_test> {
                                   (_userModelController.favoriteResort == 12
                                       || _userModelController.favoriteResort == 2
                                       || _userModelController.favoriteResort == 0)
-                                      ? '${_myRankingController.totalScore}점'
-                                      :  '${_myRankingController.totalPassCount}회',
+                                      ? '${myTotalScore}점'
+                                      :  '${myTotalPassCount}회',
                                   style: TextStyle(
                                     color: Color(0xFFffffff),
                                     fontWeight: FontWeight.normal,
                                     fontSize: 18,
                                   ),
                                 ),
+                                if(widget.isDaily != true && widget.isWeekly != true)
                                 Transform.translate(
                                   offset: Offset(6, 2),
                                   child: ExtendedImage.network(
@@ -959,12 +979,12 @@ class _RankingIndiScreen_testState extends State<RankingIndiScreen_test> {
                                         || _userModelController.favoriteResort == 0)
                                         ? _rankingTierModelController.getBadgeAsset(
                                         percent:  userRankingMap_all?['${_userModelController.uid}'] / documents_all!.length,
-                                        totalScore: _myRankingController.totalScore,
+                                        totalScore: myTotalScore ?? 0,
                                         rankingTierList: rankingTierList
                                     )
                                         : _rankingTierModelController.getBadgeAsset_integrated(
                                         percent:  userRankingMap_all?['${_userModelController.uid}'] / documents_all!.length,
-                                        totalPassCount: _myRankingController.totalPassCount,
+                                        totalPassCount: myTotalPassCount ?? 0,
                                         rankingTierList: rankingTierList
                                     ),
                                     enableMemoryCache: true,

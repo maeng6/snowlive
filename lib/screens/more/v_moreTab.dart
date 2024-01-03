@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:com.snowlive/controller/vm_loadingController.dart';
+import 'package:com.snowlive/controller/vm_myCrewRankingController.dart';
 import 'package:com.snowlive/controller/vm_urlLauncherController.dart';
 import 'package:com.snowlive/screens/more/friend/v_snowliveDetailPage.dart';
 import 'package:com.snowlive/screens/more/v_eventPage.dart';
@@ -55,6 +56,7 @@ class _MoreTabState extends State<MoreTab> {
   RankingTierModelController _rankingTierModelController = Get.find<RankingTierModelController>();
   MyRankingController _myRankingController = Get.find<MyRankingController>();
   LoadingController _loadingController = Get.find<LoadingController>();
+  MyCrewRankingController _myCrewRankingController = Get.find<MyCrewRankingController>();
   //TODO: Dependency Injection**************************************************
 
   @override
@@ -774,6 +776,12 @@ class _MoreTabState extends State<MoreTab> {
                             }
 
                             await _myRankingController.getMyRankingData(_userModelController.uid);
+                            await _myRankingController.getMyRankingDataDaily(_userModelController.uid);
+                            await _myRankingController.getMyRankingDataWeekly(_userModelController.uid);
+                            await _myCrewRankingController.getMyCrewRankingData(_userModelController.liveCrew);
+                            await _myCrewRankingController.getMyCrewRankingDataDaily(_userModelController.liveCrew);
+                            await _myCrewRankingController.getMyCrewRankingDataWeekly(_userModelController.liveCrew);
+
                             CustomFullScreenDialog.cancelDialog();
                             (_seasonController.dailyOpen ==true || _seasonController.open_uidList!.contains(_userModelController.uid))
                                 ? Get.to(()=>RankingHome_test())
