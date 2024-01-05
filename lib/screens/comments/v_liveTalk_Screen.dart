@@ -821,289 +821,374 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                 );
                               }
                               else if (snapshot.data!.docs.isEmpty){
-                                return Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Image.asset(
-                                      'assets/imgs/icons/icon_nodata_white.png',
-                                      scale: 4,
-                                      width: 73,
-                                      height: 73,
+                                return Container(
+                                  width: _size.width,
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(bottom: 50),
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      children: [
+                                        Image.asset(
+                                          'assets/imgs/icons/icon_nodata_white.png',
+                                          scale: 4,
+                                          width: 73,
+                                          height: 73,
+                                        ),
+                                        SizedBox(height: 6,),
+                                        Text('라이브톡이 없습니다.',
+                                          style: TextStyle(
+                                              color: Color(0xFF666666)
+                                          ),
+                                        ),
+                                      ],
                                     ),
-                                    SizedBox(height: 6,),
-                                    Text('라이브톡이 없습니다.',
-                                      style: TextStyle(
-                                          color: Color(0xFF666666)
-                                      ),
-                                    ),
-                                  ],
+                                  ),
                                 );
                               }
                               final chatDocs = snapshot.data!.docs;
-                              return ListView.builder(
-                                controller: _scrollController,
-                                reverse: false,
-                                itemCount: chatDocs.length,
-                                itemBuilder: (context, index) {
+                              return Padding(
+                                padding: const EdgeInsets.only(bottom: 72),
+                                child: ListView.builder(
+                                  controller: _scrollController,
+                                  reverse: false,
+                                  itemCount: chatDocs.length,
+                                  itemBuilder: (context, index) {
 
-                                  Map<String, dynamic>? data = chatDocs[index].data() as Map<String, dynamic>?;
+                                    Map<String, dynamic>? data = chatDocs[index].data() as Map<String, dynamic>?;
 
-                                  // 필드가 없을 경우 기본값 설정
-                                  bool isLocked = data?.containsKey('lock') == true ? data!['lock'] : false;
+                                    // 필드가 없을 경우 기본값 설정
+                                    bool isLocked = data?.containsKey('lock') == true ? data!['lock'] : false;
 
 
-                                  String _time = _commentModelController
-                                      .getAgoTime(chatDocs[index].get('timeStamp'));
+                                    String _time = _commentModelController
+                                        .getAgoTime(chatDocs[index].get('timeStamp'));
 
-                                  String? profileUrl = _allUserDocsController.findProfileUrl(chatDocs[index]['uid'], _allUserDocsController.allUserDocs);
-                                  String? displayName = _allUserDocsController.findDisplayName(chatDocs[index]['uid'], _allUserDocsController.allUserDocs);
-                                  return Padding(
-                                    padding:
-                                    const EdgeInsets.only(
-                                        top:12, left: 12, right: 12),
-                                    child: Obx(() =>
-                                        Container(
-                                          child: Column(
-                                            crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                            children: [
-                                              (isLocked ==true)
-                                                  ? Center(
-                                                child: Container(
+                                    String? profileUrl = _allUserDocsController.findProfileUrl(chatDocs[index]['uid'], _allUserDocsController.allUserDocs);
+                                    String? displayName = _allUserDocsController.findDisplayName(chatDocs[index]['uid'], _allUserDocsController.allUserDocs);
+                                    return Padding(
+                                      padding:
+                                      const EdgeInsets.only(
+                                          top:12, left: 12, right: 12),
+                                      child: Obx(() =>
+                                          Container(
+                                            child: Column(
+                                              crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                              children: [
+                                                (isLocked ==true)
+                                                    ? Center(
+                                                  child: Container(
+                                                    decoration: BoxDecoration(
+                                                        color: Colors.white,
+                                                        borderRadius: BorderRadius
+                                                            .circular(8)
+                                                    ),
+                                                    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+                                                    child: Row(
+                                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                      children: [
+                                                        Text(
+                                                          '운영자에 의해 차단된 게시글입니다.',
+                                                          style: TextStyle(
+                                                              fontWeight: FontWeight.normal,
+                                                              fontSize: 13,
+                                                              color: Color(0xff949494)),
+                                                        ),
+                                                        if(_userModelController.displayName == 'SNOWLIVE')
+                                                          GestureDetector(
+                                                            onTap: () =>
+                                                                showModalBottomSheet(
+                                                                    enableDrag: false,
+                                                                    context: context,
+                                                                    builder: (context) {
+                                                                      return Container(
+                                                                        height: 100,
+                                                                        child:Padding(
+                                                                          padding: const EdgeInsets
+                                                                              .symmetric(
+                                                                              horizontal: 20.0,
+                                                                              vertical: 14),
+                                                                          child: Column(
+                                                                            children: [
+                                                                              GestureDetector(
+                                                                                child: ListTile(
+                                                                                  contentPadding: EdgeInsets.zero,
+                                                                                  title: Center(
+                                                                                    child: Text(
+                                                                                      (isLocked == false)
+                                                                                          ? '게시글 잠금' : '게시글 잠금 해제',
+                                                                                      style: TextStyle(
+                                                                                          fontSize: 15,
+                                                                                          fontWeight: FontWeight.bold,
+                                                                                          color: Color(0xFFD63636)
+                                                                                      ),
+                                                                                    ),
+                                                                                  ),
+                                                                                  //selected: _isSelected[index]!,
+                                                                                  onTap: () async {
+                                                                                    Navigator.pop(context);
+                                                                                    showModalBottomSheet(
+                                                                                        context: context,
+                                                                                        builder: (context) {
+                                                                                          return Container(
+                                                                                            color: Colors.white,
+                                                                                            height: 180,
+                                                                                            child: Padding(
+                                                                                              padding: const EdgeInsets.symmetric(
+                                                                                                  horizontal: 20.0),
+                                                                                              child: Column(
+                                                                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                                mainAxisAlignment: MainAxisAlignment.start,
+                                                                                                children: [
+                                                                                                  SizedBox(
+                                                                                                    height: 30,
+                                                                                                  ),
+                                                                                                  Text(
+                                                                                                    (isLocked==false)
+                                                                                                        ? '이 게시글을 잠그시겠습니까?' : '이 게시글의 잠금을 해제하시겠습니까?',
+                                                                                                    style: TextStyle(
+                                                                                                        fontSize: 20,
+                                                                                                        fontWeight: FontWeight.bold,
+                                                                                                        color: Color(0xFF111111)),
+                                                                                                  ),
+                                                                                                  SizedBox(
+                                                                                                    height: 30,
+                                                                                                  ),
+                                                                                                  Row(
+                                                                                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                                                                                    children: [
+                                                                                                      Expanded(
+                                                                                                        child: ElevatedButton(
+                                                                                                          onPressed: () {
+                                                                                                            Navigator.pop(context);
+                                                                                                          },
+                                                                                                          child: Text(
+                                                                                                            '취소',
+                                                                                                            style: TextStyle(
+                                                                                                                color: Colors.white,
+                                                                                                                fontSize: 15,
+                                                                                                                fontWeight: FontWeight.bold),
+                                                                                                          ),
+                                                                                                          style: TextButton.styleFrom(
+                                                                                                              splashFactory: InkRipple.splashFactory,
+                                                                                                              elevation: 0,
+                                                                                                              minimumSize: Size(100, 56),
+                                                                                                              backgroundColor: Color(0xff555555),
+                                                                                                              padding: EdgeInsets.symmetric(horizontal: 0)),
+                                                                                                        ),
+                                                                                                      ),
+                                                                                                      SizedBox(
+                                                                                                        width: 10,
+                                                                                                      ),
+                                                                                                      Expanded(
+                                                                                                        child: ElevatedButton(
+                                                                                                          onPressed: () async {
+                                                                                                            if (data?.containsKey('lock') == false) {
+                                                                                                              await chatDocs[index].reference.update({'lock': false});
+                                                                                                            }
+                                                                                                            CustomFullScreenDialog.showDialog();
+                                                                                                            await _commentModelController.lock('${chatDocs[index]['uid']}${chatDocs[index]['commentCount']}');
+                                                                                                            Navigator.pop(context);
+                                                                                                            CustomFullScreenDialog.cancelDialog();
+                                                                                                          },
+                                                                                                          child: Text('확인',
+                                                                                                            style: TextStyle(
+                                                                                                                color: Colors.white,
+                                                                                                                fontSize: 15,
+                                                                                                                fontWeight: FontWeight.bold),
+                                                                                                          ),
+                                                                                                          style: TextButton.styleFrom(
+                                                                                                              splashFactory: InkRipple.splashFactory,
+                                                                                                              elevation: 0,
+                                                                                                              minimumSize: Size(100, 56),
+                                                                                                              backgroundColor: Color(0xff2C97FB),
+                                                                                                              padding: EdgeInsets.symmetric(horizontal: 0)),
+                                                                                                        ),
+                                                                                                      ),
+                                                                                                    ],
+                                                                                                  )
+                                                                                                ],
+                                                                                              ),
+                                                                                            ),
+                                                                                          );
+                                                                                        });
+                                                                                  },
+                                                                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                                                                                ),
+                                                                              ),
+                                                                            ],
+                                                                          ),
+                                                                        ),
+                                                                      );
+                                                                    }),
+                                                            child: Icon(Icons.more_horiz,
+                                                              color: Color(0xFFdedede),
+                                                              size: 20,
+                                                            ),
+                                                          )
+                                                      ],
+                                                    ),
+                                                  ),
+                                                )
+                                                    : ( (_userModelController.repoUidList!.contains(chatDocs[index].get('uid')) && chatDocs[index].get('displayName') !='익명' )
+                                                    || _userModelController.liveTalkHideList!.contains('${chatDocs[index].get('uid')}${chatDocs[index].get('commentCount')}'))
+                                                    ? Container(
+                                                  padding: EdgeInsets.symmetric(
+                                                      horizontal: 16, vertical: 14),
                                                   decoration: BoxDecoration(
                                                       color: Colors.white,
                                                       borderRadius: BorderRadius
                                                           .circular(8)
                                                   ),
-                                                  padding: EdgeInsets.symmetric(horizontal: 16, vertical: 20),
-                                                  child: Row(
-                                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                    children: [
-                                                      Text(
-                                                        '운영자에 의해 차단된 게시글입니다.',
+                                                  child: Center(
+                                                    child: Padding(
+                                                      padding: const EdgeInsets
+                                                          .symmetric(
+                                                          vertical: 12),
+                                                      child: Text(
+                                                        '이 게시글은 회원님의 요청에 의해 숨김 처리되었습니다.',
                                                         style: TextStyle(
-                                                            fontWeight: FontWeight.normal,
-                                                            fontSize: 13,
-                                                            color: Color(0xff949494)),
+                                                            fontWeight:
+                                                            FontWeight.normal,
+                                                            fontSize: 12,
+                                                            color:
+                                                            Color(0xffc8c8c8)),
                                                       ),
-                                                      if(_userModelController.displayName == 'SNOWLIVE')
-                                                        GestureDetector(
-                                                          onTap: () =>
-                                                              showModalBottomSheet(
-                                                                  enableDrag: false,
-                                                                  context: context,
-                                                                  builder: (context) {
-                                                                    return Container(
-                                                                      height: 100,
-                                                                      child:Padding(
-                                                                        padding: const EdgeInsets
-                                                                            .symmetric(
-                                                                            horizontal: 20.0,
-                                                                            vertical: 14),
-                                                                        child: Column(
-                                                                          children: [
-                                                                            GestureDetector(
-                                                                              child: ListTile(
-                                                                                contentPadding: EdgeInsets.zero,
-                                                                                title: Center(
-                                                                                  child: Text(
-                                                                                    (isLocked == false)
-                                                                                        ? '게시글 잠금' : '게시글 잠금 해제',
-                                                                                    style: TextStyle(
-                                                                                        fontSize: 15,
-                                                                                        fontWeight: FontWeight.bold,
-                                                                                        color: Color(0xFFD63636)
-                                                                                    ),
-                                                                                  ),
-                                                                                ),
-                                                                                //selected: _isSelected[index]!,
-                                                                                onTap: () async {
-                                                                                  Navigator.pop(context);
-                                                                                  showModalBottomSheet(
-                                                                                      context: context,
-                                                                                      builder: (context) {
-                                                                                        return Container(
-                                                                                          color: Colors.white,
-                                                                                          height: 180,
-                                                                                          child: Padding(
-                                                                                            padding: const EdgeInsets.symmetric(
-                                                                                                horizontal: 20.0),
-                                                                                            child: Column(
-                                                                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                                                                              mainAxisAlignment: MainAxisAlignment.start,
-                                                                                              children: [
-                                                                                                SizedBox(
-                                                                                                  height: 30,
-                                                                                                ),
-                                                                                                Text(
-                                                                                                  (isLocked==false)
-                                                                                                      ? '이 게시글을 잠그시겠습니까?' : '이 게시글의 잠금을 해제하시겠습니까?',
-                                                                                                  style: TextStyle(
-                                                                                                      fontSize: 20,
-                                                                                                      fontWeight: FontWeight.bold,
-                                                                                                      color: Color(0xFF111111)),
-                                                                                                ),
-                                                                                                SizedBox(
-                                                                                                  height: 30,
-                                                                                                ),
-                                                                                                Row(
-                                                                                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                                                                                  children: [
-                                                                                                    Expanded(
-                                                                                                      child: ElevatedButton(
-                                                                                                        onPressed: () {
-                                                                                                          Navigator.pop(context);
-                                                                                                        },
-                                                                                                        child: Text(
-                                                                                                          '취소',
-                                                                                                          style: TextStyle(
-                                                                                                              color: Colors.white,
-                                                                                                              fontSize: 15,
-                                                                                                              fontWeight: FontWeight.bold),
-                                                                                                        ),
-                                                                                                        style: TextButton.styleFrom(
-                                                                                                            splashFactory: InkRipple.splashFactory,
-                                                                                                            elevation: 0,
-                                                                                                            minimumSize: Size(100, 56),
-                                                                                                            backgroundColor: Color(0xff555555),
-                                                                                                            padding: EdgeInsets.symmetric(horizontal: 0)),
-                                                                                                      ),
-                                                                                                    ),
-                                                                                                    SizedBox(
-                                                                                                      width: 10,
-                                                                                                    ),
-                                                                                                    Expanded(
-                                                                                                      child: ElevatedButton(
-                                                                                                        onPressed: () async {
-                                                                                                          if (data?.containsKey('lock') == false) {
-                                                                                                            await chatDocs[index].reference.update({'lock': false});
-                                                                                                          }
-                                                                                                          CustomFullScreenDialog.showDialog();
-                                                                                                          await _commentModelController.lock('${chatDocs[index]['uid']}${chatDocs[index]['commentCount']}');
-                                                                                                          Navigator.pop(context);
-                                                                                                          CustomFullScreenDialog.cancelDialog();
-                                                                                                        },
-                                                                                                        child: Text('확인',
-                                                                                                          style: TextStyle(
-                                                                                                              color: Colors.white,
-                                                                                                              fontSize: 15,
-                                                                                                              fontWeight: FontWeight.bold),
-                                                                                                        ),
-                                                                                                        style: TextButton.styleFrom(
-                                                                                                            splashFactory: InkRipple.splashFactory,
-                                                                                                            elevation: 0,
-                                                                                                            minimumSize: Size(100, 56),
-                                                                                                            backgroundColor: Color(0xff2C97FB),
-                                                                                                            padding: EdgeInsets.symmetric(horizontal: 0)),
-                                                                                                      ),
-                                                                                                    ),
-                                                                                                  ],
-                                                                                                )
-                                                                                              ],
-                                                                                            ),
-                                                                                          ),
-                                                                                        );
-                                                                                      });
-                                                                                },
-                                                                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                                                                              ),
-                                                                            ),
-                                                                          ],
-                                                                        ),
-                                                                      ),
-                                                                    );
-                                                                  }),
-                                                          child: Icon(Icons.more_horiz,
-                                                            color: Color(0xFFdedede),
-                                                            size: 20,
-                                                          ),
-                                                        )
-                                                    ],
-                                                  ),
-                                                ),
-                                              )
-                                                  : ( (_userModelController.repoUidList!.contains(chatDocs[index].get('uid')) && chatDocs[index].get('displayName') !='익명' )
-                                                  || _userModelController.liveTalkHideList!.contains('${chatDocs[index].get('uid')}${chatDocs[index].get('commentCount')}'))
-                                                  ? Container(
-                                                padding: EdgeInsets.symmetric(
-                                                    horizontal: 16, vertical: 14),
-                                                decoration: BoxDecoration(
-                                                    color: Colors.white,
-                                                    borderRadius: BorderRadius
-                                                        .circular(8)
-                                                ),
-                                                child: Center(
-                                                  child: Padding(
-                                                    padding: const EdgeInsets
-                                                        .symmetric(
-                                                        vertical: 12),
-                                                    child: Text(
-                                                      '이 게시글은 회원님의 요청에 의해 숨김 처리되었습니다.',
-                                                      style: TextStyle(
-                                                          fontWeight:
-                                                          FontWeight.normal,
-                                                          fontSize: 12,
-                                                          color:
-                                                          Color(0xffc8c8c8)),
                                                     ),
                                                   ),
-                                                ),
-                                              )
-                                                  : Container(
-                                                padding: EdgeInsets.symmetric(
-                                                    vertical: 14),
-                                                decoration: BoxDecoration(
-                                                    color: Colors.white,
-                                                    borderRadius: BorderRadius
-                                                        .circular(8)
-                                                ),
-                                                width: _size.width - 24,
-                                                child: Row(
-                                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                  children: [
-                                                    Column(
-                                                      mainAxisAlignment: MainAxisAlignment.start,
-                                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                                      children: [
-                                                        Padding(
-                                                          padding: const EdgeInsets.symmetric(horizontal: 16),
-                                                          child: Container(
-                                                            width: _size.width - 56,
-                                                            child: Row(
-                                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                              crossAxisAlignment: CrossAxisAlignment.center,
-                                                              children: [
-                                                                Row(
-                                                                  mainAxisAlignment: MainAxisAlignment.start,
-                                                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                                                  children: [
-                                                                    if (profileUrl != "" && chatDocs[index]['profileImageUrl']  != "anony" && chatDocs[index]['displayName'] != 'SNOWLIVE')
-                                                                      GestureDetector(
-                                                                        onTap: () async {
-                                                                          QuerySnapshot userQuerySnapshot = await FirebaseFirestore.instance
-                                                                              .collection('user')
-                                                                              .where('uid', isEqualTo: chatDocs[index]['uid'])
-                                                                              .get();
+                                                )
+                                                    : Container(
+                                                  padding: EdgeInsets.symmetric(
+                                                      vertical: 14),
+                                                  decoration: BoxDecoration(
+                                                      color: Colors.white,
+                                                      borderRadius: BorderRadius
+                                                          .circular(8)
+                                                  ),
+                                                  width: _size.width - 24,
+                                                  child: Row(
+                                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                    children: [
+                                                      Column(
+                                                        mainAxisAlignment: MainAxisAlignment.start,
+                                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                                        children: [
+                                                          Padding(
+                                                            padding: const EdgeInsets.symmetric(horizontal: 16),
+                                                            child: Container(
+                                                              width: _size.width - 56,
+                                                              child: Row(
+                                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                                crossAxisAlignment: CrossAxisAlignment.center,
+                                                                children: [
+                                                                  Row(
+                                                                    mainAxisAlignment: MainAxisAlignment.start,
+                                                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                                                    children: [
+                                                                      if (profileUrl != "" && chatDocs[index]['profileImageUrl']  != "anony" && chatDocs[index]['displayName'] != 'SNOWLIVE')
+                                                                        GestureDetector(
+                                                                          onTap: () async {
+                                                                            QuerySnapshot userQuerySnapshot = await FirebaseFirestore.instance
+                                                                                .collection('user')
+                                                                                .where('uid', isEqualTo: chatDocs[index]['uid'])
+                                                                                .get();
 
-                                                                          if (userQuerySnapshot.docs.isNotEmpty) {
-                                                                            DocumentSnapshot userDoc = userQuerySnapshot.docs.first;
-                                                                            int favoriteResort = userDoc['favoriteResort'];
-                                                                            print(favoriteResort);
-                                                                            print(chatDocs[index]['uid']);
+                                                                            if (userQuerySnapshot.docs.isNotEmpty) {
+                                                                              DocumentSnapshot userDoc = userQuerySnapshot.docs.first;
+                                                                              int favoriteResort = userDoc['favoriteResort'];
+                                                                              print(favoriteResort);
+                                                                              print(chatDocs[index]['uid']);
 
-                                                                            Get.to(() => FriendDetailPage(uid: chatDocs[index]['uid'], favoriteResort: favoriteResort,));
-                                                                          } else {
-                                                                            Get.to(()=>NoUserScreen());
-                                                                          }
-                                                                        },
-                                                                        child: Container(
-                                                                          width: 24,
-                                                                          height: 24,
-                                                                          decoration: BoxDecoration(
-                                                                              color: Color(0xFFDFECFF),
-                                                                              borderRadius: BorderRadius.circular(50)
+                                                                              Get.to(() => FriendDetailPage(uid: chatDocs[index]['uid'], favoriteResort: favoriteResort,));
+                                                                            } else {
+                                                                              Get.to(()=>NoUserScreen());
+                                                                            }
+                                                                          },
+                                                                          child: Container(
+                                                                            width: 24,
+                                                                            height: 24,
+                                                                            decoration: BoxDecoration(
+                                                                                color: Color(0xFFDFECFF),
+                                                                                borderRadius: BorderRadius.circular(50)
+                                                                            ),
+                                                                            child: ExtendedImage.network(
+                                                                              profileUrl,
+                                                                              cache: true,
+                                                                              shape: BoxShape.circle,
+                                                                              borderRadius: BorderRadius.circular(20),
+                                                                              width: 24,
+                                                                              height: 24,
+                                                                              fit: BoxFit.cover,
+                                                                              loadStateChanged: (ExtendedImageState state) {
+                                                                                switch (state.extendedImageLoadState) {
+                                                                                  case LoadState.loading:
+                                                                                    return SizedBox.shrink();
+                                                                                  case LoadState.completed:
+                                                                                    return state.completedWidget;
+                                                                                  case LoadState.failed:
+                                                                                    return ExtendedImage.network(
+                                                                                      '${profileImgUrlList[0].default_round}',
+                                                                                      shape: BoxShape.circle,
+                                                                                      borderRadius: BorderRadius.circular(20),
+                                                                                      width: 24,
+                                                                                      height: 24,
+                                                                                      fit: BoxFit.cover,
+                                                                                    ); // 예시로 에러 아이콘을 반환하고 있습니다.
+                                                                                  default:
+                                                                                    return null;
+                                                                                }
+                                                                              },
+                                                                            ),
                                                                           ),
+
+                                                                        ),
+                                                                      if (profileUrl == "" && chatDocs[index]['profileImageUrl'] != "anony" && chatDocs[index]['displayName'] != 'SNOWLIVE')
+                                                                        GestureDetector(
+                                                                          onTap: () async {
+                                                                            QuerySnapshot userQuerySnapshot = await FirebaseFirestore.instance
+                                                                                .collection('user')
+                                                                                .where('uid', isEqualTo: chatDocs[index]['uid'])
+                                                                                .get();
+
+                                                                            if (userQuerySnapshot.docs.isNotEmpty) {
+                                                                              DocumentSnapshot userDoc = userQuerySnapshot.docs.first;
+                                                                              int favoriteResort = userDoc['favoriteResort'];
+                                                                              print(favoriteResort);
+                                                                              print(chatDocs[index]['uid']);
+
+                                                                              Get.to(() => FriendDetailPage(uid: chatDocs[index]['uid'], favoriteResort: favoriteResort,));
+                                                                            } else {
+                                                                              Get.to(()=>NoUserScreen());
+                                                                            }
+                                                                          },
+                                                                          child: ExtendedImage.network(
+                                                                            '${profileImgUrlList[0].default_round}',
+                                                                            shape: BoxShape.circle,
+                                                                            borderRadius: BorderRadius.circular(20),
+                                                                            width: 24,
+                                                                            height: 24,
+                                                                            fit: BoxFit.cover,
+                                                                          ),
+                                                                        ),
+                                                                      if (chatDocs[index]['profileImageUrl'] == "anony" && chatDocs[index]['displayName'] != 'SNOWLIVE')
+                                                                        GestureDetector(
+                                                                          onTap: () async {},
+                                                                          child: ExtendedImage.network(
+                                                                            '${profileImgUrlList[0].anony_round}',
+                                                                            shape: BoxShape.circle,
+                                                                            borderRadius: BorderRadius.circular(20),
+                                                                            width: 24,
+                                                                            height: 24,
+                                                                            fit: BoxFit.cover,
+                                                                          ),
+                                                                        ),
+                                                                      if (chatDocs[index]['profileImageUrl']!= '' && chatDocs[index]['profileImageUrl']  != "anony" && chatDocs[index]['displayName'] == 'SNOWLIVE')
+                                                                        GestureDetector(
+                                                                          onTap: () async {
+                                                                            Get.to(()=>SnowliveDetailPage());
+                                                                          },
                                                                           child: ExtendedImage.network(
                                                                             profileUrl,
                                                                             cache: true,
@@ -1133,303 +1218,73 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                                                             },
                                                                           ),
                                                                         ),
-
-                                                                      ),
-                                                                    if (profileUrl == "" && chatDocs[index]['profileImageUrl'] != "anony" && chatDocs[index]['displayName'] != 'SNOWLIVE')
-                                                                      GestureDetector(
-                                                                        onTap: () async {
-                                                                          QuerySnapshot userQuerySnapshot = await FirebaseFirestore.instance
-                                                                              .collection('user')
-                                                                              .where('uid', isEqualTo: chatDocs[index]['uid'])
-                                                                              .get();
-
-                                                                          if (userQuerySnapshot.docs.isNotEmpty) {
-                                                                            DocumentSnapshot userDoc = userQuerySnapshot.docs.first;
-                                                                            int favoriteResort = userDoc['favoriteResort'];
-                                                                            print(favoriteResort);
-                                                                            print(chatDocs[index]['uid']);
-
-                                                                            Get.to(() => FriendDetailPage(uid: chatDocs[index]['uid'], favoriteResort: favoriteResort,));
-                                                                          } else {
-                                                                            Get.to(()=>NoUserScreen());
-                                                                          }
-                                                                        },
-                                                                        child: ExtendedImage.network(
-                                                                          '${profileImgUrlList[0].default_round}',
-                                                                          shape: BoxShape.circle,
-                                                                          borderRadius: BorderRadius.circular(20),
-                                                                          width: 24,
-                                                                          height: 24,
-                                                                          fit: BoxFit.cover,
-                                                                        ),
-                                                                      ),
-                                                                    if (chatDocs[index]['profileImageUrl'] == "anony" && chatDocs[index]['displayName'] != 'SNOWLIVE')
-                                                                      GestureDetector(
-                                                                        onTap: () async {},
-                                                                        child: ExtendedImage.network(
-                                                                          '${profileImgUrlList[0].anony_round}',
-                                                                          shape: BoxShape.circle,
-                                                                          borderRadius: BorderRadius.circular(20),
-                                                                          width: 24,
-                                                                          height: 24,
-                                                                          fit: BoxFit.cover,
-                                                                        ),
-                                                                      ),
-                                                                    if (chatDocs[index]['profileImageUrl']!= '' && chatDocs[index]['profileImageUrl']  != "anony" && chatDocs[index]['displayName'] == 'SNOWLIVE')
-                                                                      GestureDetector(
-                                                                        onTap: () async {
-                                                                          Get.to(()=>SnowliveDetailPage());
-                                                                        },
-                                                                        child: ExtendedImage.network(
-                                                                          profileUrl,
-                                                                          cache: true,
-                                                                          shape: BoxShape.circle,
-                                                                          borderRadius: BorderRadius.circular(20),
-                                                                          width: 24,
-                                                                          height: 24,
-                                                                          fit: BoxFit.cover,
-                                                                          loadStateChanged: (ExtendedImageState state) {
-                                                                            switch (state.extendedImageLoadState) {
-                                                                              case LoadState.loading:
-                                                                                return SizedBox.shrink();
-                                                                              case LoadState.completed:
-                                                                                return state.completedWidget;
-                                                                              case LoadState.failed:
-                                                                                return ExtendedImage.network(
-                                                                                  '${profileImgUrlList[0].default_round}',
-                                                                                  shape: BoxShape.circle,
-                                                                                  borderRadius: BorderRadius.circular(20),
-                                                                                  width: 24,
-                                                                                  height: 24,
-                                                                                  fit: BoxFit.cover,
-                                                                                ); // 예시로 에러 아이콘을 반환하고 있습니다.
-                                                                              default:
-                                                                                return null;
-                                                                            }
-                                                                          },
-                                                                        ),
-                                                                      ),
-                                                                    SizedBox(width: 8),
-                                                                    Padding(
-                                                                        padding: EdgeInsets.only(bottom: 1),
-                                                                        child:
-                                                                        Row(
-                                                                          children: [
-                                                                            Text(
-                                                                              (chatDocs[index]['displayName'] != "익명")
-                                                                                  ? displayName
-                                                                                  : chatDocs[index]['displayName'],
-                                                                              style: TextStyle(
-                                                                                  fontWeight: FontWeight.bold,
-                                                                                  fontSize: 12,
-                                                                                  color:
-                                                                                  (displayName == '회원정보 없음')? Color(0xFFb7b7b7): Color(0xFF111111)),
-                                                                            ),
-                                                                            if(chatDocs[index]['displayName'] == 'SNOWLIVE')
-                                                                              Padding(
-                                                                                padding: const EdgeInsets.only(left : 2.0, bottom: 1),
-                                                                                child: Image.asset(
-                                                                                  'assets/imgs/icons/icon_snowlive_operator.png',
-                                                                                  scale: 5.5,
-                                                                                ),
-                                                                              ),
-                                                                            SizedBox(
-                                                                                width: 8),
-                                                                            if(chatDocs[index]['displayName'] != 'SNOWLIVE')
-                                                                              Text(_isTabKusbf == true
-                                                                                  ? '${_userModelController.kusbfNameMap[chatDocs[index].get('liveCrew')]}'
-                                                                                  : chatDocs[index].get('resortNickname'),
+                                                                      SizedBox(width: 8),
+                                                                      Padding(
+                                                                          padding: EdgeInsets.only(bottom: 1),
+                                                                          child:
+                                                                          Row(
+                                                                            children: [
+                                                                              Text(
+                                                                                (chatDocs[index]['displayName'] != "익명")
+                                                                                    ? displayName
+                                                                                    : chatDocs[index]['displayName'],
                                                                                 style: TextStyle(
-                                                                                    fontWeight: FontWeight.w300,
+                                                                                    fontWeight: FontWeight.bold,
                                                                                     fontSize: 12,
-                                                                                    color: Color(0xFF949494)),
+                                                                                    color:
+                                                                                    (displayName == '회원정보 없음')? Color(0xFFb7b7b7): Color(0xFF111111)),
                                                                               ),
+                                                                              if(chatDocs[index]['displayName'] == 'SNOWLIVE')
+                                                                                Padding(
+                                                                                  padding: const EdgeInsets.only(left : 2.0, bottom: 1),
+                                                                                  child: Image.asset(
+                                                                                    'assets/imgs/icons/icon_snowlive_operator.png',
+                                                                                    scale: 5.5,
+                                                                                  ),
+                                                                                ),
+                                                                              SizedBox(
+                                                                                  width: 8),
+                                                                              if(chatDocs[index]['displayName'] != 'SNOWLIVE')
+                                                                                Text(_isTabKusbf == true
+                                                                                    ? '${_userModelController.kusbfNameMap[chatDocs[index].get('liveCrew')]}'
+                                                                                    : chatDocs[index].get('resortNickname'),
+                                                                                  style: TextStyle(
+                                                                                      fontWeight: FontWeight.w300,
+                                                                                      fontSize: 12,
+                                                                                      color: Color(0xFF949494)),
+                                                                                ),
 
-                                                                          ],
-                                                                        )
-                                                                    ),
-                                                                  ],
-                                                                ),
-                                                                (chatDocs[index]['uid'] != _userModelController.uid)
-                                                                    ? GestureDetector(
-                                                                  onTap: () =>
-                                                                      showModalBottomSheet(
-                                                                          enableDrag: false,
-                                                                          context: context,
-                                                                          builder: (context) {
-                                                                            return SafeArea(
-                                                                              child: Container(
-                                                                                height:
-                                                                                (_userModelController.displayName == 'SNOWLIVE')
-                                                                                    ? 260
-                                                                                    : 140,
-                                                                                child: Padding(
-                                                                                  padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 14),
-                                                                                  child: Column(
-                                                                                    children: [
-                                                                                      GestureDetector(
-                                                                                        child: ListTile(
-                                                                                          contentPadding: EdgeInsets.zero,
-                                                                                          title: Center(
-                                                                                            child: Text(
-                                                                                              '신고하기',
-                                                                                              style: TextStyle(
-                                                                                                fontSize: 15,
-                                                                                                fontWeight: FontWeight.bold,
-                                                                                              ),
-                                                                                            ),
-                                                                                          ),
-                                                                                          //selected: _isSelected[index]!,
-                                                                                          onTap: () async {
-                                                                                            Get.dialog(
-                                                                                                AlertDialog(
-                                                                                                  contentPadding: EdgeInsets.only(bottom: 0, left: 20, right: 20, top: 30),
-                                                                                                  elevation: 0,
-                                                                                                  shape: RoundedRectangleBorder(
-                                                                                                      borderRadius: BorderRadius.circular(10.0)),
-                                                                                                  buttonPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
-                                                                                                  content: Text(
-                                                                                                    '이 회원을 신고하시겠습니까?',
-                                                                                                    style: TextStyle(
-                                                                                                        fontWeight: FontWeight.w600,
-                                                                                                        fontSize: 15),
-                                                                                                  ),
-                                                                                                  actions: [
-                                                                                                    Row(
-                                                                                                      children: [
-                                                                                                        TextButton(
-                                                                                                            onPressed: () {
-                                                                                                              Navigator.pop(context);
-                                                                                                            },
-                                                                                                            child: Text('취소',
-                                                                                                              style: TextStyle(
-                                                                                                                fontSize: 15,
-                                                                                                                color: Color(0xFF949494),
-                                                                                                                fontWeight: FontWeight.bold,
-                                                                                                              ),
-                                                                                                            )),
-                                                                                                        TextButton(
-                                                                                                            onPressed: () async {var repoUid = chatDocs[index].get('uid');
-                                                                                                            await _userModelController.repoUpdate(repoUid);
-                                                                                                            Navigator.pop(context);
-                                                                                                            Navigator.pop(context);
-                                                                                                            },
-                                                                                                            child: Text(
-                                                                                                              '신고',
-                                                                                                              style: TextStyle(
-                                                                                                                fontSize: 15,
-                                                                                                                color: Color(0xFF3D83ED),
-                                                                                                                fontWeight: FontWeight.bold,
-                                                                                                              ),
-                                                                                                            ))
-                                                                                                      ],
-                                                                                                      mainAxisAlignment: MainAxisAlignment.end,
-                                                                                                    )
-                                                                                                  ],
-                                                                                                ));
-                                                                                          },
-                                                                                          shape: RoundedRectangleBorder(
-                                                                                              borderRadius: BorderRadius.circular(
-                                                                                                  10)),
-                                                                                        ),
-                                                                                      ),
-                                                                                      if(chatDocs[index]['displayName'] != '익명')
+                                                                            ],
+                                                                          )
+                                                                      ),
+                                                                    ],
+                                                                  ),
+                                                                  (chatDocs[index]['uid'] != _userModelController.uid)
+                                                                      ? GestureDetector(
+                                                                    onTap: () =>
+                                                                        showModalBottomSheet(
+                                                                            enableDrag: false,
+                                                                            context: context,
+                                                                            builder: (context) {
+                                                                              return SafeArea(
+                                                                                child: Container(
+                                                                                  height:
+                                                                                  (_userModelController.displayName == 'SNOWLIVE')
+                                                                                      ? 260
+                                                                                      : 140,
+                                                                                  child: Padding(
+                                                                                    padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 14),
+                                                                                    child: Column(
+                                                                                      children: [
                                                                                         GestureDetector(
                                                                                           child: ListTile(
                                                                                             contentPadding: EdgeInsets.zero,
                                                                                             title: Center(
                                                                                               child: Text(
-                                                                                                '이 회원의 글 모두 숨기기',
+                                                                                                '신고하기',
                                                                                                 style: TextStyle(
                                                                                                   fontSize: 15,
-                                                                                                  fontWeight: FontWeight
-                                                                                                      .bold,
-                                                                                                ),
-                                                                                              ),
-                                                                                            ),
-                                                                                            //selected: _isSelected[index]!,
-                                                                                            onTap: () async {
-                                                                                              Get.dialog(
-                                                                                                  AlertDialog(
-                                                                                                    contentPadding: EdgeInsets.only(bottom: 0, left: 20, right: 20, top: 30),
-                                                                                                    elevation: 0,
-                                                                                                    shape: RoundedRectangleBorder(
-                                                                                                        borderRadius: BorderRadius.circular(10.0)),
-                                                                                                    buttonPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
-                                                                                                    content: Container(
-                                                                                                      height: _size.width*0.17,
-                                                                                                      child: Column(
-                                                                                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                                                                                        children: [
-                                                                                                          Text(
-                                                                                                            '이 회원의 게시물을 모두 숨길까요?',
-                                                                                                            style: TextStyle(
-                                                                                                                fontWeight: FontWeight.w600,
-                                                                                                                fontSize: 15),
-                                                                                                          ),
-                                                                                                          SizedBox(
-                                                                                                            height: 10,
-                                                                                                          ),
-                                                                                                          Text(
-                                                                                                            '차단해제는 [더보기 - 친구 - 설정 - 차단목록]에서\n하실 수 있습니다.',
-                                                                                                            style: TextStyle(
-                                                                                                                fontWeight: FontWeight.w600,
-                                                                                                                fontSize: 12,
-                                                                                                                color: Color(0xFF555555)),
-                                                                                                          ),
-                                                                                                        ],
-                                                                                                      ),
-                                                                                                    ),
-                                                                                                    actions: [
-                                                                                                      Row(
-                                                                                                        children: [
-                                                                                                          TextButton(
-                                                                                                              onPressed: () {
-                                                                                                                Navigator.pop(context);
-                                                                                                              },
-                                                                                                              child: Text(
-                                                                                                                '취소',
-                                                                                                                style: TextStyle(
-                                                                                                                  fontSize: 15,
-                                                                                                                  color: Color(0xFF949494),
-                                                                                                                  fontWeight: FontWeight.bold,
-                                                                                                                ),
-                                                                                                              )),
-                                                                                                          TextButton(
-                                                                                                              onPressed: () {
-                                                                                                                var repoUid = chatDocs[index].get('uid');
-                                                                                                                _userModelController.updateRepoUid(repoUid);
-                                                                                                                Navigator.pop(context);
-                                                                                                                Navigator.pop(context);
-                                                                                                              },
-                                                                                                              child: Text('확인',
-                                                                                                                style: TextStyle(
-                                                                                                                  fontSize: 15,
-                                                                                                                  color: Color(0xFF3D83ED),
-                                                                                                                  fontWeight: FontWeight.bold,
-                                                                                                                ),
-                                                                                                              ))
-                                                                                                        ],
-                                                                                                        mainAxisAlignment: MainAxisAlignment.end,
-                                                                                                      )
-                                                                                                    ],
-                                                                                                  ));
-                                                                                            },
-                                                                                            shape: RoundedRectangleBorder(
-                                                                                                borderRadius: BorderRadius.circular(10)),
-                                                                                          ),
-                                                                                        ),
-                                                                                      if(chatDocs[index]['displayName'] == '익명')
-                                                                                        GestureDetector(
-                                                                                          child: ListTile(
-                                                                                            contentPadding: EdgeInsets.zero,
-                                                                                            title: Center(
-                                                                                              child: Text(
-                                                                                                '이 글 숨기기',
-                                                                                                style: TextStyle(
-                                                                                                  fontSize: 15,
-                                                                                                  fontWeight: FontWeight
-                                                                                                      .bold,
+                                                                                                  fontWeight: FontWeight.bold,
                                                                                                 ),
                                                                                               ),
                                                                                             ),
@@ -1443,7 +1298,7 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                                                                                         borderRadius: BorderRadius.circular(10.0)),
                                                                                                     buttonPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
                                                                                                     content: Text(
-                                                                                                      '이 글을 숨기시겠습니까?\n이 동작은 취소할 수 없습니다.',
+                                                                                                      '이 회원을 신고하시겠습니까?',
                                                                                                       style: TextStyle(
                                                                                                           fontWeight: FontWeight.w600,
                                                                                                           fontSize: 15),
@@ -1455,8 +1310,7 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                                                                                               onPressed: () {
                                                                                                                 Navigator.pop(context);
                                                                                                               },
-                                                                                                              child: Text(
-                                                                                                                '취소',
+                                                                                                              child: Text('취소',
                                                                                                                 style: TextStyle(
                                                                                                                   fontSize: 15,
                                                                                                                   color: Color(0xFF949494),
@@ -1464,15 +1318,13 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                                                                                                 ),
                                                                                                               )),
                                                                                                           TextButton(
-                                                                                                              onPressed: () async{
-                                                                                                                var repoUid = chatDocs[index].get('uid');
-                                                                                                                var commentCount = chatDocs[index].get('commentCount');
-                                                                                                                await _userModelController.updateHideList('${repoUid}${commentCount}');
-                                                                                                                await _userModelController.getCurrentUser(_userModelController.uid);
-                                                                                                                Navigator.pop(context);
-                                                                                                                Navigator.pop(context);
+                                                                                                              onPressed: () async {var repoUid = chatDocs[index].get('uid');
+                                                                                                              await _userModelController.repoUpdate(repoUid);
+                                                                                                              Navigator.pop(context);
+                                                                                                              Navigator.pop(context);
                                                                                                               },
-                                                                                                              child: Text('확인',
+                                                                                                              child: Text(
+                                                                                                                '신고',
                                                                                                                 style: TextStyle(
                                                                                                                   fontSize: 15,
                                                                                                                   color: Color(0xFF3D83ED),
@@ -1486,9 +1338,340 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                                                                                   ));
                                                                                             },
                                                                                             shape: RoundedRectangleBorder(
-                                                                                                borderRadius: BorderRadius.circular(10)),
+                                                                                                borderRadius: BorderRadius.circular(
+                                                                                                    10)),
                                                                                           ),
                                                                                         ),
+                                                                                        if(chatDocs[index]['displayName'] != '익명')
+                                                                                          GestureDetector(
+                                                                                            child: ListTile(
+                                                                                              contentPadding: EdgeInsets.zero,
+                                                                                              title: Center(
+                                                                                                child: Text(
+                                                                                                  '이 회원의 글 모두 숨기기',
+                                                                                                  style: TextStyle(
+                                                                                                    fontSize: 15,
+                                                                                                    fontWeight: FontWeight
+                                                                                                        .bold,
+                                                                                                  ),
+                                                                                                ),
+                                                                                              ),
+                                                                                              //selected: _isSelected[index]!,
+                                                                                              onTap: () async {
+                                                                                                Get.dialog(
+                                                                                                    AlertDialog(
+                                                                                                      contentPadding: EdgeInsets.only(bottom: 0, left: 20, right: 20, top: 30),
+                                                                                                      elevation: 0,
+                                                                                                      shape: RoundedRectangleBorder(
+                                                                                                          borderRadius: BorderRadius.circular(10.0)),
+                                                                                                      buttonPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+                                                                                                      content: Container(
+                                                                                                        height: _size.width*0.17,
+                                                                                                        child: Column(
+                                                                                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                                          children: [
+                                                                                                            Text(
+                                                                                                              '이 회원의 게시물을 모두 숨길까요?',
+                                                                                                              style: TextStyle(
+                                                                                                                  fontWeight: FontWeight.w600,
+                                                                                                                  fontSize: 15),
+                                                                                                            ),
+                                                                                                            SizedBox(
+                                                                                                              height: 10,
+                                                                                                            ),
+                                                                                                            Text(
+                                                                                                              '차단해제는 [더보기 - 친구 - 설정 - 차단목록]에서\n하실 수 있습니다.',
+                                                                                                              style: TextStyle(
+                                                                                                                  fontWeight: FontWeight.w600,
+                                                                                                                  fontSize: 12,
+                                                                                                                  color: Color(0xFF555555)),
+                                                                                                            ),
+                                                                                                          ],
+                                                                                                        ),
+                                                                                                      ),
+                                                                                                      actions: [
+                                                                                                        Row(
+                                                                                                          children: [
+                                                                                                            TextButton(
+                                                                                                                onPressed: () {
+                                                                                                                  Navigator.pop(context);
+                                                                                                                },
+                                                                                                                child: Text(
+                                                                                                                  '취소',
+                                                                                                                  style: TextStyle(
+                                                                                                                    fontSize: 15,
+                                                                                                                    color: Color(0xFF949494),
+                                                                                                                    fontWeight: FontWeight.bold,
+                                                                                                                  ),
+                                                                                                                )),
+                                                                                                            TextButton(
+                                                                                                                onPressed: () {
+                                                                                                                  var repoUid = chatDocs[index].get('uid');
+                                                                                                                  _userModelController.updateRepoUid(repoUid);
+                                                                                                                  Navigator.pop(context);
+                                                                                                                  Navigator.pop(context);
+                                                                                                                },
+                                                                                                                child: Text('확인',
+                                                                                                                  style: TextStyle(
+                                                                                                                    fontSize: 15,
+                                                                                                                    color: Color(0xFF3D83ED),
+                                                                                                                    fontWeight: FontWeight.bold,
+                                                                                                                  ),
+                                                                                                                ))
+                                                                                                          ],
+                                                                                                          mainAxisAlignment: MainAxisAlignment.end,
+                                                                                                        )
+                                                                                                      ],
+                                                                                                    ));
+                                                                                              },
+                                                                                              shape: RoundedRectangleBorder(
+                                                                                                  borderRadius: BorderRadius.circular(10)),
+                                                                                            ),
+                                                                                          ),
+                                                                                        if(chatDocs[index]['displayName'] == '익명')
+                                                                                          GestureDetector(
+                                                                                            child: ListTile(
+                                                                                              contentPadding: EdgeInsets.zero,
+                                                                                              title: Center(
+                                                                                                child: Text(
+                                                                                                  '이 글 숨기기',
+                                                                                                  style: TextStyle(
+                                                                                                    fontSize: 15,
+                                                                                                    fontWeight: FontWeight
+                                                                                                        .bold,
+                                                                                                  ),
+                                                                                                ),
+                                                                                              ),
+                                                                                              //selected: _isSelected[index]!,
+                                                                                              onTap: () async {
+                                                                                                Get.dialog(
+                                                                                                    AlertDialog(
+                                                                                                      contentPadding: EdgeInsets.only(bottom: 0, left: 20, right: 20, top: 30),
+                                                                                                      elevation: 0,
+                                                                                                      shape: RoundedRectangleBorder(
+                                                                                                          borderRadius: BorderRadius.circular(10.0)),
+                                                                                                      buttonPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+                                                                                                      content: Text(
+                                                                                                        '이 글을 숨기시겠습니까?\n이 동작은 취소할 수 없습니다.',
+                                                                                                        style: TextStyle(
+                                                                                                            fontWeight: FontWeight.w600,
+                                                                                                            fontSize: 15),
+                                                                                                      ),
+                                                                                                      actions: [
+                                                                                                        Row(
+                                                                                                          children: [
+                                                                                                            TextButton(
+                                                                                                                onPressed: () {
+                                                                                                                  Navigator.pop(context);
+                                                                                                                },
+                                                                                                                child: Text(
+                                                                                                                  '취소',
+                                                                                                                  style: TextStyle(
+                                                                                                                    fontSize: 15,
+                                                                                                                    color: Color(0xFF949494),
+                                                                                                                    fontWeight: FontWeight.bold,
+                                                                                                                  ),
+                                                                                                                )),
+                                                                                                            TextButton(
+                                                                                                                onPressed: () async{
+                                                                                                                  var repoUid = chatDocs[index].get('uid');
+                                                                                                                  var commentCount = chatDocs[index].get('commentCount');
+                                                                                                                  await _userModelController.updateHideList('${repoUid}${commentCount}');
+                                                                                                                  await _userModelController.getCurrentUser(_userModelController.uid);
+                                                                                                                  Navigator.pop(context);
+                                                                                                                  Navigator.pop(context);
+                                                                                                                },
+                                                                                                                child: Text('확인',
+                                                                                                                  style: TextStyle(
+                                                                                                                    fontSize: 15,
+                                                                                                                    color: Color(0xFF3D83ED),
+                                                                                                                    fontWeight: FontWeight.bold,
+                                                                                                                  ),
+                                                                                                                ))
+                                                                                                          ],
+                                                                                                          mainAxisAlignment: MainAxisAlignment.end,
+                                                                                                        )
+                                                                                                      ],
+                                                                                                    ));
+                                                                                              },
+                                                                                              shape: RoundedRectangleBorder(
+                                                                                                  borderRadius: BorderRadius.circular(10)),
+                                                                                            ),
+                                                                                          ),
+                                                                                        if(_userModelController.displayName == 'SNOWLIVE')
+                                                                                          Column(
+                                                                                            children: [
+                                                                                              GestureDetector(
+                                                                                                child: ListTile(
+                                                                                                  contentPadding: EdgeInsets.zero,
+                                                                                                  title: Center(
+                                                                                                    child: Text(
+                                                                                                      (isLocked ==false)
+                                                                                                          ? '게시글 잠금' : '게시글 잠금 해제',
+                                                                                                      style: TextStyle(
+                                                                                                        fontSize: 15,
+                                                                                                        fontWeight: FontWeight
+                                                                                                            .bold,
+                                                                                                      ),
+                                                                                                    ),
+                                                                                                  ),
+                                                                                                  //selected: _isSelected[index]!,
+                                                                                                  onTap: () async {
+                                                                                                    Get
+                                                                                                        .dialog(
+                                                                                                        AlertDialog(
+                                                                                                          contentPadding: EdgeInsets.only(bottom: 0, left: 20, right: 20, top: 30),
+                                                                                                          elevation: 0,
+                                                                                                          shape: RoundedRectangleBorder(
+                                                                                                              borderRadius: BorderRadius.circular(10.0)),
+                                                                                                          buttonPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+                                                                                                          content: Text(
+                                                                                                            (isLocked ==false)
+                                                                                                                ? '이 게시글을 잠그시겠습니까?' : '게시글 잠금을 해제하시겠습니까?',
+                                                                                                            style: TextStyle(
+                                                                                                                fontWeight: FontWeight.w600,
+                                                                                                                fontSize: 15),
+                                                                                                          ),
+                                                                                                          actions: [
+                                                                                                            Row(
+                                                                                                              children: [
+                                                                                                                TextButton(
+                                                                                                                    onPressed: () {
+                                                                                                                      Navigator.pop(context);
+                                                                                                                    },
+                                                                                                                    child: Text(
+                                                                                                                      '취소',
+                                                                                                                      style: TextStyle(
+                                                                                                                        fontSize: 15,
+                                                                                                                        color: Color(0xFF949494),
+                                                                                                                        fontWeight: FontWeight.bold,
+                                                                                                                      ),
+                                                                                                                    )),
+                                                                                                                TextButton(
+                                                                                                                    onPressed: () async{
+                                                                                                                      if (data?.containsKey('lock') == false) {
+                                                                                                                        await chatDocs[index].reference.update({'lock': false});
+                                                                                                                      }
+                                                                                                                      await _commentModelController.lock('${chatDocs[index]['uid']}${chatDocs[index]['commentCount']}');
+                                                                                                                      Navigator.pop(context);
+                                                                                                                      Navigator.pop(context);
+                                                                                                                    },
+                                                                                                                    child: Text('확인',
+                                                                                                                      style: TextStyle(
+                                                                                                                        fontSize: 15,
+                                                                                                                        color: Color(0xFF3D83ED),
+                                                                                                                        fontWeight: FontWeight.bold,
+                                                                                                                      ),
+                                                                                                                    ))
+                                                                                                              ],
+                                                                                                              mainAxisAlignment: MainAxisAlignment.end,
+                                                                                                            )
+                                                                                                          ],
+                                                                                                        ));
+                                                                                                  },
+                                                                                                  shape: RoundedRectangleBorder(
+                                                                                                      borderRadius: BorderRadius.circular(10)),
+                                                                                                ),
+                                                                                              ),
+                                                                                              GestureDetector(
+                                                                                                child: ListTile(
+                                                                                                  contentPadding: EdgeInsets.zero,
+                                                                                                  title: Center(
+                                                                                                    child: Text(
+                                                                                                      '게시글 수정',
+                                                                                                      style: TextStyle(
+                                                                                                        fontSize: 15,
+                                                                                                        fontWeight: FontWeight
+                                                                                                            .bold,
+                                                                                                      ),
+                                                                                                    ),
+                                                                                                  ),
+                                                                                                  //selected: _isSelected[index]!,
+                                                                                                  onTap: () async {
+                                                                                                    Get.dialog(
+                                                                                                        AlertDialog(
+                                                                                                          contentPadding: EdgeInsets.only(bottom: 0, left: 20, right: 20, top: 30),
+                                                                                                          elevation: 0,
+                                                                                                          shape: RoundedRectangleBorder(
+                                                                                                              borderRadius: BorderRadius.circular(10.0)),
+                                                                                                          buttonPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+                                                                                                          content: Text(
+                                                                                                            '이 게시글을 수정하시겠습니까?',
+                                                                                                            style: TextStyle(
+                                                                                                                fontWeight: FontWeight.w600,
+                                                                                                                fontSize: 15),
+                                                                                                          ),
+                                                                                                          actions: [
+                                                                                                            Row(
+                                                                                                              children: [
+                                                                                                                TextButton(
+                                                                                                                    onPressed: () {
+                                                                                                                      Navigator.pop(context);
+                                                                                                                    },
+                                                                                                                    child: Text(
+                                                                                                                      '취소',
+                                                                                                                      style: TextStyle(
+                                                                                                                        fontSize: 15,
+                                                                                                                        color: Color(0xFF949494),
+                                                                                                                        fontWeight: FontWeight.bold,
+                                                                                                                      ),
+                                                                                                                    )),
+                                                                                                                TextButton(
+                                                                                                                    onPressed: () async{
+                                                                                                                      await _commentModelController.getCurrentLiveTalk(uid: chatDocs[index]['uid'],commentCount: chatDocs[index]['commentCount'],);
+                                                                                                                      Navigator.pop(context);
+                                                                                                                      Navigator.pop(context);
+                                                                                                                      Get.to(()=>Modify_liveTalk());
+                                                                                                                    },
+                                                                                                                    child: Text('확인',
+                                                                                                                      style: TextStyle(
+                                                                                                                        fontSize: 15,
+                                                                                                                        color: Color(0xFF3D83ED),
+                                                                                                                        fontWeight: FontWeight.bold,
+                                                                                                                      ),
+                                                                                                                    ))
+                                                                                                              ],
+                                                                                                              mainAxisAlignment: MainAxisAlignment.end,
+                                                                                                            )
+                                                                                                          ],
+                                                                                                        ));
+                                                                                                  },
+                                                                                                  shape: RoundedRectangleBorder(
+                                                                                                      borderRadius: BorderRadius.circular(10)),
+                                                                                                ),
+                                                                                              ),
+                                                                                            ],
+                                                                                          ),
+                                                                                      ],
+                                                                                    ),
+                                                                                  ),
+                                                                                ),
+                                                                              );
+                                                                            }),
+                                                                    child: Icon(
+                                                                      Icons.more_horiz,
+                                                                      color: Color(0xFFdedede),
+                                                                      size: 20,
+                                                                    ),
+                                                                  )
+                                                                      : GestureDetector(
+                                                                    onTap: () =>
+                                                                        showModalBottomSheet(
+                                                                            enableDrag:
+                                                                            false,
+                                                                            context: context,
+                                                                            builder: (
+                                                                                context) {
+                                                                              return Container(
+                                                                                height: (_userModelController.displayName == 'SNOWLIVE')
+                                                                                    ? 260
+                                                                                    : 160,
+                                                                                child:
+                                                                                Padding(
+                                                                                  padding: const EdgeInsets.symmetric(
+                                                                                      horizontal: 20.0, vertical: 14),
+                                                                                  child: Column(
+                                                                                    children: [
                                                                                       if(_userModelController.displayName == 'SNOWLIVE')
                                                                                         Column(
                                                                                           children: [
@@ -1501,15 +1684,13 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                                                                                         ? '게시글 잠금' : '게시글 잠금 해제',
                                                                                                     style: TextStyle(
                                                                                                       fontSize: 15,
-                                                                                                      fontWeight: FontWeight
-                                                                                                          .bold,
+                                                                                                      fontWeight: FontWeight.bold,
                                                                                                     ),
                                                                                                   ),
                                                                                                 ),
                                                                                                 //selected: _isSelected[index]!,
                                                                                                 onTap: () async {
-                                                                                                  Get
-                                                                                                      .dialog(
+                                                                                                  Get.dialog(
                                                                                                       AlertDialog(
                                                                                                         contentPadding: EdgeInsets.only(bottom: 0, left: 20, right: 20, top: 30),
                                                                                                         elevation: 0,
@@ -1610,8 +1791,6 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                                                                                               TextButton(
                                                                                                                   onPressed: () async{
                                                                                                                     await _commentModelController.getCurrentLiveTalk(uid: chatDocs[index]['uid'],commentCount: chatDocs[index]['commentCount'],);
-                                                                                                                    Navigator.pop(context);
-                                                                                                                    Navigator.pop(context);
                                                                                                                     Get.to(()=>Modify_liveTalk());
                                                                                                                   },
                                                                                                                   child: Text('확인',
@@ -1633,640 +1812,472 @@ class _LiveTalkScreenState extends State<LiveTalkScreen> {
                                                                                             ),
                                                                                           ],
                                                                                         ),
+                                                                                      GestureDetector(
+                                                                                        child: ListTile(
+                                                                                          contentPadding: EdgeInsets.zero,
+                                                                                          title: Center(
+                                                                                            child: Text(
+                                                                                              '게시글 수정',
+                                                                                              style: TextStyle(
+                                                                                                fontSize: 15,
+                                                                                                fontWeight: FontWeight
+                                                                                                    .bold,
+                                                                                              ),
+                                                                                            ),
+                                                                                          ),
+                                                                                          //selected: _isSelected[index]!,
+                                                                                          onTap: () async {
+                                                                                            Get.dialog(
+                                                                                                AlertDialog(
+                                                                                                  contentPadding: EdgeInsets.only(bottom: 0, left: 20, right: 20, top: 30),
+                                                                                                  elevation: 0,
+                                                                                                  shape: RoundedRectangleBorder(
+                                                                                                      borderRadius: BorderRadius.circular(10.0)),
+                                                                                                  buttonPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+                                                                                                  content: Text(
+                                                                                                    '이 게시글을 수정하시겠습니까?',
+                                                                                                    style: TextStyle(
+                                                                                                        fontWeight: FontWeight.w600,
+                                                                                                        fontSize: 15),
+                                                                                                  ),
+                                                                                                  actions: [
+                                                                                                    Row(
+                                                                                                      children: [
+                                                                                                        TextButton(
+                                                                                                            onPressed: () {
+                                                                                                              Navigator.pop(context);
+                                                                                                            },
+                                                                                                            child: Text(
+                                                                                                              '취소',
+                                                                                                              style: TextStyle(
+                                                                                                                fontSize: 15,
+                                                                                                                color: Color(0xFF949494),
+                                                                                                                fontWeight: FontWeight.bold,
+                                                                                                              ),
+                                                                                                            )),
+                                                                                                        TextButton(
+                                                                                                            onPressed: () async{
+                                                                                                              Navigator.pop(context);
+                                                                                                              Navigator.pop(context);
+                                                                                                              await _commentModelController.getCurrentLiveTalk(uid: chatDocs[index]['uid'],commentCount: chatDocs[index]['commentCount'],);
+                                                                                                              Get.to(()=>Modify_liveTalk());
+                                                                                                            },
+                                                                                                            child: Text('확인',
+                                                                                                              style: TextStyle(
+                                                                                                                fontSize: 15,
+                                                                                                                color: Color(0xFF3D83ED),
+                                                                                                                fontWeight: FontWeight.bold,
+                                                                                                              ),
+                                                                                                            ))
+                                                                                                      ],
+                                                                                                      mainAxisAlignment: MainAxisAlignment.end,
+                                                                                                    )
+                                                                                                  ],
+                                                                                                ));
+                                                                                          },
+                                                                                          shape: RoundedRectangleBorder(
+                                                                                              borderRadius: BorderRadius.circular(10)),
+                                                                                        ),
+                                                                                      ),
+                                                                                      GestureDetector(
+                                                                                        child: ListTile(
+                                                                                          contentPadding: EdgeInsets.zero,
+                                                                                          title: Center(
+                                                                                            child: Text(
+                                                                                              '삭제',
+                                                                                              style: TextStyle(
+                                                                                                  fontSize: 15,
+                                                                                                  fontWeight: FontWeight.bold,
+                                                                                                  color: Color(0xFFD63636)
+                                                                                              ),
+                                                                                            ),
+                                                                                          ),
+                                                                                          //selected: _isSelected[index]!,
+                                                                                          onTap: () async {
+                                                                                            Navigator.pop(context);
+                                                                                            showModalBottomSheet(
+                                                                                                context: context,
+                                                                                                builder: (context) {
+                                                                                                  return Container(
+                                                                                                    color: Colors.white,
+                                                                                                    height: 180,
+                                                                                                    child: Padding(
+                                                                                                      padding: const EdgeInsets.symmetric(
+                                                                                                          horizontal: 20.0),
+                                                                                                      child: Column(
+                                                                                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                                        mainAxisAlignment: MainAxisAlignment.start,
+                                                                                                        children: [
+                                                                                                          SizedBox(
+                                                                                                            height: 30,
+                                                                                                          ),
+                                                                                                          Text(
+                                                                                                            '삭제하시겠습니까?',
+                                                                                                            style: TextStyle(
+                                                                                                                fontSize: 20,
+                                                                                                                fontWeight: FontWeight.bold,
+                                                                                                                color: Color(0xFF111111)),
+                                                                                                          ),
+                                                                                                          SizedBox(
+                                                                                                            height: 30,
+                                                                                                          ),
+                                                                                                          Row(
+                                                                                                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                                                                                            children: [
+                                                                                                              Expanded(
+                                                                                                                child: ElevatedButton(
+                                                                                                                  onPressed: () {
+                                                                                                                    Navigator.pop(context);
+                                                                                                                  },
+                                                                                                                  child: Text(
+                                                                                                                    '취소',
+                                                                                                                    style: TextStyle(
+                                                                                                                        color: Colors.white,
+                                                                                                                        fontSize: 15,
+                                                                                                                        fontWeight: FontWeight.bold),
+                                                                                                                  ),
+                                                                                                                  style: TextButton.styleFrom(
+                                                                                                                      splashFactory: InkRipple.splashFactory,
+                                                                                                                      elevation: 0,
+                                                                                                                      minimumSize: Size(100, 56),
+                                                                                                                      backgroundColor: Color(0xff555555),
+                                                                                                                      padding: EdgeInsets.symmetric(horizontal: 0)),
+                                                                                                                ),
+                                                                                                              ),
+                                                                                                              SizedBox(
+                                                                                                                width: 10,
+                                                                                                              ),
+                                                                                                              Expanded(
+                                                                                                                child: ElevatedButton(
+                                                                                                                  onPressed: () async {
+                                                                                                                    CustomFullScreenDialog.showDialog();
+                                                                                                                    try {
+                                                                                                                      await FirebaseFirestore.instance.collection('liveTalk').doc('${_userModelController.uid}${chatDocs[index]['commentCount']}').delete();
+                                                                                                                      await _imageController.deleteLiveTalkImage(uid: _userModelController.uid!, count: chatDocs[index]['commentCount']);
+
+                                                                                                                    } catch (e) {}
+                                                                                                                    print('라이브톡 삭제 완료');
+                                                                                                                    Navigator.pop(context);
+                                                                                                                    CustomFullScreenDialog.cancelDialog();
+                                                                                                                  },
+                                                                                                                  child: Text('확인',
+                                                                                                                    style: TextStyle(
+                                                                                                                        color: Colors.white,
+                                                                                                                        fontSize: 15,
+                                                                                                                        fontWeight: FontWeight.bold),
+                                                                                                                  ),
+                                                                                                                  style: TextButton.styleFrom(
+                                                                                                                      splashFactory: InkRipple.splashFactory,
+                                                                                                                      elevation: 0,
+                                                                                                                      minimumSize: Size(100, 56),
+                                                                                                                      backgroundColor: Color(0xff2C97FB),
+                                                                                                                      padding: EdgeInsets.symmetric(horizontal: 0)),
+                                                                                                                ),
+                                                                                                              ),
+                                                                                                            ],
+                                                                                                          )
+                                                                                                        ],
+                                                                                                      ),
+                                                                                                    ),
+                                                                                                  );
+                                                                                                });
+                                                                                          },
+                                                                                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                                                                                        ),
+                                                                                      ),
                                                                                     ],
                                                                                   ),
                                                                                 ),
-                                                                              ),
-                                                                            );
-                                                                          }),
-                                                                  child: Icon(
-                                                                    Icons.more_horiz,
-                                                                    color: Color(0xFFdedede),
-                                                                    size: 20,
+                                                                              );
+                                                                            }),
+                                                                    child: Icon(Icons.more_horiz,
+                                                                      color: Color(0xFFdedede),
+                                                                      size: 20,
+                                                                    ),
+                                                                  )
+                                                                ],
+                                                              ),
+                                                            ),
+                                                          ),
+                                                          Column(
+                                                            children: [
+                                                              if (chatDocs[index]['livetalkImageUrl'] != "")
+                                                                Padding(
+                                                                  padding: EdgeInsets.only(top: 14, bottom: 6),
+                                                                  child: GestureDetector(
+                                                                    onTap: () {Get.to(() =>
+                                                                        ProfileImagePage(
+                                                                          CommentProfileUrl: chatDocs[index]['livetalkImageUrl'],
+                                                                        ));
+                                                                    },
+                                                                    child: ExtendedImage.network(
+                                                                      chatDocs[index]['livetalkImageUrl'],
+                                                                      cache: true,
+                                                                      //cacheHeight: 1600,
+                                                                      width: _size.width - 24,
+                                                                      height: _size.width - 24,
+                                                                      fit: BoxFit.cover,
+                                                                    ),
                                                                   ),
+                                                                ),
+                                                              if (chatDocs[index]['livetalkImageUrl'] == "")
+                                                                Container(
+                                                                  height: 0,
                                                                 )
-                                                                    : GestureDetector(
-                                                                  onTap: () =>
-                                                                      showModalBottomSheet(
-                                                                          enableDrag:
-                                                                          false,
-                                                                          context: context,
-                                                                          builder: (
-                                                                              context) {
-                                                                            return Container(
-                                                                              height: (_userModelController.displayName == 'SNOWLIVE')
-                                                                                  ? 260
-                                                                                  : 160,
-                                                                              child:
-                                                                              Padding(
-                                                                                padding: const EdgeInsets.symmetric(
-                                                                                    horizontal: 20.0, vertical: 14),
-                                                                                child: Column(
-                                                                                  children: [
-                                                                                    if(_userModelController.displayName == 'SNOWLIVE')
-                                                                                      Column(
-                                                                                        children: [
-                                                                                          GestureDetector(
-                                                                                            child: ListTile(
-                                                                                              contentPadding: EdgeInsets.zero,
-                                                                                              title: Center(
-                                                                                                child: Text(
-                                                                                                  (isLocked ==false)
-                                                                                                      ? '게시글 잠금' : '게시글 잠금 해제',
-                                                                                                  style: TextStyle(
-                                                                                                    fontSize: 15,
-                                                                                                    fontWeight: FontWeight.bold,
-                                                                                                  ),
-                                                                                                ),
-                                                                                              ),
-                                                                                              //selected: _isSelected[index]!,
-                                                                                              onTap: () async {
-                                                                                                Get.dialog(
-                                                                                                    AlertDialog(
-                                                                                                      contentPadding: EdgeInsets.only(bottom: 0, left: 20, right: 20, top: 30),
-                                                                                                      elevation: 0,
-                                                                                                      shape: RoundedRectangleBorder(
-                                                                                                          borderRadius: BorderRadius.circular(10.0)),
-                                                                                                      buttonPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
-                                                                                                      content: Text(
-                                                                                                        (isLocked ==false)
-                                                                                                            ? '이 게시글을 잠그시겠습니까?' : '게시글 잠금을 해제하시겠습니까?',
-                                                                                                        style: TextStyle(
-                                                                                                            fontWeight: FontWeight.w600,
-                                                                                                            fontSize: 15),
-                                                                                                      ),
-                                                                                                      actions: [
-                                                                                                        Row(
-                                                                                                          children: [
-                                                                                                            TextButton(
-                                                                                                                onPressed: () {
-                                                                                                                  Navigator.pop(context);
-                                                                                                                },
-                                                                                                                child: Text(
-                                                                                                                  '취소',
-                                                                                                                  style: TextStyle(
-                                                                                                                    fontSize: 15,
-                                                                                                                    color: Color(0xFF949494),
-                                                                                                                    fontWeight: FontWeight.bold,
-                                                                                                                  ),
-                                                                                                                )),
-                                                                                                            TextButton(
-                                                                                                                onPressed: () async{
-                                                                                                                  if (data?.containsKey('lock') == false) {
-                                                                                                                    await chatDocs[index].reference.update({'lock': false});
-                                                                                                                  }
-                                                                                                                  await _commentModelController.lock('${chatDocs[index]['uid']}${chatDocs[index]['commentCount']}');
-                                                                                                                  Navigator.pop(context);
-                                                                                                                  Navigator.pop(context);
-                                                                                                                },
-                                                                                                                child: Text('확인',
-                                                                                                                  style: TextStyle(
-                                                                                                                    fontSize: 15,
-                                                                                                                    color: Color(0xFF3D83ED),
-                                                                                                                    fontWeight: FontWeight.bold,
-                                                                                                                  ),
-                                                                                                                ))
-                                                                                                          ],
-                                                                                                          mainAxisAlignment: MainAxisAlignment.end,
-                                                                                                        )
-                                                                                                      ],
-                                                                                                    ));
-                                                                                              },
-                                                                                              shape: RoundedRectangleBorder(
-                                                                                                  borderRadius: BorderRadius.circular(10)),
-                                                                                            ),
-                                                                                          ),
-                                                                                          GestureDetector(
-                                                                                            child: ListTile(
-                                                                                              contentPadding: EdgeInsets.zero,
-                                                                                              title: Center(
-                                                                                                child: Text(
-                                                                                                  '게시글 수정',
-                                                                                                  style: TextStyle(
-                                                                                                    fontSize: 15,
-                                                                                                    fontWeight: FontWeight
-                                                                                                        .bold,
-                                                                                                  ),
-                                                                                                ),
-                                                                                              ),
-                                                                                              //selected: _isSelected[index]!,
-                                                                                              onTap: () async {
-                                                                                                Get.dialog(
-                                                                                                    AlertDialog(
-                                                                                                      contentPadding: EdgeInsets.only(bottom: 0, left: 20, right: 20, top: 30),
-                                                                                                      elevation: 0,
-                                                                                                      shape: RoundedRectangleBorder(
-                                                                                                          borderRadius: BorderRadius.circular(10.0)),
-                                                                                                      buttonPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
-                                                                                                      content: Text(
-                                                                                                        '이 게시글을 수정하시겠습니까?',
-                                                                                                        style: TextStyle(
-                                                                                                            fontWeight: FontWeight.w600,
-                                                                                                            fontSize: 15),
-                                                                                                      ),
-                                                                                                      actions: [
-                                                                                                        Row(
-                                                                                                          children: [
-                                                                                                            TextButton(
-                                                                                                                onPressed: () {
-                                                                                                                  Navigator.pop(context);
-                                                                                                                },
-                                                                                                                child: Text(
-                                                                                                                  '취소',
-                                                                                                                  style: TextStyle(
-                                                                                                                    fontSize: 15,
-                                                                                                                    color: Color(0xFF949494),
-                                                                                                                    fontWeight: FontWeight.bold,
-                                                                                                                  ),
-                                                                                                                )),
-                                                                                                            TextButton(
-                                                                                                                onPressed: () async{
-                                                                                                                  await _commentModelController.getCurrentLiveTalk(uid: chatDocs[index]['uid'],commentCount: chatDocs[index]['commentCount'],);
-                                                                                                                  Get.to(()=>Modify_liveTalk());
-                                                                                                                },
-                                                                                                                child: Text('확인',
-                                                                                                                  style: TextStyle(
-                                                                                                                    fontSize: 15,
-                                                                                                                    color: Color(0xFF3D83ED),
-                                                                                                                    fontWeight: FontWeight.bold,
-                                                                                                                  ),
-                                                                                                                ))
-                                                                                                          ],
-                                                                                                          mainAxisAlignment: MainAxisAlignment.end,
-                                                                                                        )
-                                                                                                      ],
-                                                                                                    ));
-                                                                                              },
-                                                                                              shape: RoundedRectangleBorder(
-                                                                                                  borderRadius: BorderRadius.circular(10)),
-                                                                                            ),
-                                                                                          ),
-                                                                                        ],
-                                                                                      ),
-                                                                                    GestureDetector(
-                                                                                      child: ListTile(
-                                                                                        contentPadding: EdgeInsets.zero,
-                                                                                        title: Center(
-                                                                                          child: Text(
-                                                                                            '게시글 수정',
-                                                                                            style: TextStyle(
-                                                                                              fontSize: 15,
-                                                                                              fontWeight: FontWeight
-                                                                                                  .bold,
-                                                                                            ),
-                                                                                          ),
-                                                                                        ),
-                                                                                        //selected: _isSelected[index]!,
-                                                                                        onTap: () async {
-                                                                                          Get.dialog(
-                                                                                              AlertDialog(
-                                                                                                contentPadding: EdgeInsets.only(bottom: 0, left: 20, right: 20, top: 30),
-                                                                                                elevation: 0,
-                                                                                                shape: RoundedRectangleBorder(
-                                                                                                    borderRadius: BorderRadius.circular(10.0)),
-                                                                                                buttonPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
-                                                                                                content: Text(
-                                                                                                  '이 게시글을 수정하시겠습니까?',
-                                                                                                  style: TextStyle(
-                                                                                                      fontWeight: FontWeight.w600,
-                                                                                                      fontSize: 15),
-                                                                                                ),
-                                                                                                actions: [
-                                                                                                  Row(
-                                                                                                    children: [
-                                                                                                      TextButton(
-                                                                                                          onPressed: () {
-                                                                                                            Navigator.pop(context);
-                                                                                                          },
-                                                                                                          child: Text(
-                                                                                                            '취소',
-                                                                                                            style: TextStyle(
-                                                                                                              fontSize: 15,
-                                                                                                              color: Color(0xFF949494),
-                                                                                                              fontWeight: FontWeight.bold,
-                                                                                                            ),
-                                                                                                          )),
-                                                                                                      TextButton(
-                                                                                                          onPressed: () async{
-                                                                                                            Navigator.pop(context);
-                                                                                                            Navigator.pop(context);
-                                                                                                            await _commentModelController.getCurrentLiveTalk(uid: chatDocs[index]['uid'],commentCount: chatDocs[index]['commentCount'],);
-                                                                                                            Get.to(()=>Modify_liveTalk());
-                                                                                                          },
-                                                                                                          child: Text('확인',
-                                                                                                            style: TextStyle(
-                                                                                                              fontSize: 15,
-                                                                                                              color: Color(0xFF3D83ED),
-                                                                                                              fontWeight: FontWeight.bold,
-                                                                                                            ),
-                                                                                                          ))
-                                                                                                    ],
-                                                                                                    mainAxisAlignment: MainAxisAlignment.end,
-                                                                                                  )
-                                                                                                ],
-                                                                                              ));
-                                                                                        },
-                                                                                        shape: RoundedRectangleBorder(
-                                                                                            borderRadius: BorderRadius.circular(10)),
-                                                                                      ),
-                                                                                    ),
-                                                                                    GestureDetector(
-                                                                                      child: ListTile(
-                                                                                        contentPadding: EdgeInsets.zero,
-                                                                                        title: Center(
-                                                                                          child: Text(
-                                                                                            '삭제',
-                                                                                            style: TextStyle(
-                                                                                                fontSize: 15,
-                                                                                                fontWeight: FontWeight.bold,
-                                                                                                color: Color(0xFFD63636)
-                                                                                            ),
-                                                                                          ),
-                                                                                        ),
-                                                                                        //selected: _isSelected[index]!,
-                                                                                        onTap: () async {
-                                                                                          Navigator.pop(context);
-                                                                                          showModalBottomSheet(
-                                                                                              context: context,
-                                                                                              builder: (context) {
-                                                                                                return Container(
-                                                                                                  color: Colors.white,
-                                                                                                  height: 180,
-                                                                                                  child: Padding(
-                                                                                                    padding: const EdgeInsets.symmetric(
-                                                                                                        horizontal: 20.0),
-                                                                                                    child: Column(
-                                                                                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                                                                                      mainAxisAlignment: MainAxisAlignment.start,
-                                                                                                      children: [
-                                                                                                        SizedBox(
-                                                                                                          height: 30,
-                                                                                                        ),
-                                                                                                        Text(
-                                                                                                          '삭제하시겠습니까?',
-                                                                                                          style: TextStyle(
-                                                                                                              fontSize: 20,
-                                                                                                              fontWeight: FontWeight.bold,
-                                                                                                              color: Color(0xFF111111)),
-                                                                                                        ),
-                                                                                                        SizedBox(
-                                                                                                          height: 30,
-                                                                                                        ),
-                                                                                                        Row(
-                                                                                                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                                                                                          children: [
-                                                                                                            Expanded(
-                                                                                                              child: ElevatedButton(
-                                                                                                                onPressed: () {
-                                                                                                                  Navigator.pop(context);
-                                                                                                                },
-                                                                                                                child: Text(
-                                                                                                                  '취소',
-                                                                                                                  style: TextStyle(
-                                                                                                                      color: Colors.white,
-                                                                                                                      fontSize: 15,
-                                                                                                                      fontWeight: FontWeight.bold),
-                                                                                                                ),
-                                                                                                                style: TextButton.styleFrom(
-                                                                                                                    splashFactory: InkRipple.splashFactory,
-                                                                                                                    elevation: 0,
-                                                                                                                    minimumSize: Size(100, 56),
-                                                                                                                    backgroundColor: Color(0xff555555),
-                                                                                                                    padding: EdgeInsets.symmetric(horizontal: 0)),
-                                                                                                              ),
-                                                                                                            ),
-                                                                                                            SizedBox(
-                                                                                                              width: 10,
-                                                                                                            ),
-                                                                                                            Expanded(
-                                                                                                              child: ElevatedButton(
-                                                                                                                onPressed: () async {
-                                                                                                                  CustomFullScreenDialog.showDialog();
-                                                                                                                  try {
-                                                                                                                    await FirebaseFirestore.instance.collection('liveTalk').doc('${_userModelController.uid}${chatDocs[index]['commentCount']}').delete();
-                                                                                                                    await _imageController.deleteLiveTalkImage(uid: _userModelController.uid!, count: chatDocs[index]['commentCount']);
-
-                                                                                                                  } catch (e) {}
-                                                                                                                  print('라이브톡 삭제 완료');
-                                                                                                                  Navigator.pop(context);
-                                                                                                                  CustomFullScreenDialog.cancelDialog();
-                                                                                                                },
-                                                                                                                child: Text('확인',
-                                                                                                                  style: TextStyle(
-                                                                                                                      color: Colors.white,
-                                                                                                                      fontSize: 15,
-                                                                                                                      fontWeight: FontWeight.bold),
-                                                                                                                ),
-                                                                                                                style: TextButton.styleFrom(
-                                                                                                                    splashFactory: InkRipple.splashFactory,
-                                                                                                                    elevation: 0,
-                                                                                                                    minimumSize: Size(100, 56),
-                                                                                                                    backgroundColor: Color(0xff2C97FB),
-                                                                                                                    padding: EdgeInsets.symmetric(horizontal: 0)),
-                                                                                                              ),
-                                                                                                            ),
-                                                                                                          ],
-                                                                                                        )
-                                                                                                      ],
-                                                                                                    ),
-                                                                                                  ),
-                                                                                                );
-                                                                                              });
-                                                                                        },
-                                                                                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                                                                                      ),
-                                                                                    ),
-                                                                                  ],
+                                                            ],
+                                                          ),
+                                                          Padding(
+                                                            padding: const EdgeInsets.symmetric(
+                                                                horizontal: 16),
+                                                            child: Column(
+                                                              mainAxisAlignment: MainAxisAlignment.start,
+                                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                                              children: [
+                                                                SizedBox(
+                                                                  height: 8,
+                                                                ),
+                                                                Row(
+                                                                  children: [
+                                                                    Container(
+                                                                      constraints: BoxConstraints(
+                                                                          maxWidth: _size.width - 56),
+                                                                      child: SelectableText(
+                                                                        chatDocs[index].get('comment'),
+                                                                        style: TextStyle(
+                                                                            color: Color(0xFF111111),
+                                                                            fontWeight: FontWeight.normal,
+                                                                            fontSize: 14),
+                                                                      ),
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                                SizedBox(
+                                                                  height: 4,
+                                                                ),
+                                                                Text('$_time',
+                                                                  style: TextStyle(
+                                                                      fontSize: 12,
+                                                                      color: Color(0xFF949494),
+                                                                      fontWeight: FontWeight.w300),
+                                                                ),
+                                                                SizedBox(
+                                                                  height: 16,
+                                                                ),
+                                                                Row(
+                                                                  children: [
+                                                                    GestureDetector(
+                                                                      child: Container(
+                                                                        height: 24,
+                                                                        decoration: BoxDecoration(
+                                                                            color: (_userModelController.likeUidList!.contains('${chatDocs[index]['uid']}${chatDocs[index]['commentCount']}'))
+                                                                                ? Color(0xFFFFCDCD)
+                                                                                : Color(0xFFECECEC),
+                                                                            borderRadius: BorderRadius.circular(4)
+                                                                        ),
+                                                                        child: Padding(
+                                                                          padding: EdgeInsets.only(right: 8),
+                                                                          child: Row(
+                                                                            children: [
+                                                                              (_userModelController.likeUidList!.contains('${chatDocs[index]['uid']}${chatDocs[index]['commentCount']}'))
+                                                                                  ? Padding(
+                                                                                padding: const EdgeInsets.only(top: 2),
+                                                                                child:
+                                                                                IconButton(
+                                                                                  onPressed: () async {
+                                                                                    var likeUid = '${chatDocs[index]['uid']}${chatDocs[index]['commentCount']}';
+                                                                                    print(likeUid);
+                                                                                    HapticFeedback.lightImpact();
+                                                                                    if (_firstPress) {
+                                                                                      _firstPress = false;
+                                                                                      await _userModelController.deleteLikeUid(likeUid);
+                                                                                      await _commentModelController.likeDelete(likeUid);
+                                                                                      _firstPress =
+                                                                                      true;
+                                                                                    }
+                                                                                  },
+                                                                                  icon: Icon(
+                                                                                    Icons.favorite,
+                                                                                    size: 14,
+                                                                                    color: Color(0xFFD63636),
+                                                                                  ),
+                                                                                  padding: EdgeInsets.zero,
+                                                                                  constraints: BoxConstraints(),
+                                                                                ),
+                                                                              )
+                                                                                  : Padding(
+                                                                                padding: const EdgeInsets.only(top: 2),
+                                                                                child:
+                                                                                IconButton(
+                                                                                  onPressed: () async {
+                                                                                    var likeUid = '${chatDocs[index]['uid']}${chatDocs[index]['commentCount']}';
+                                                                                    print(likeUid);
+                                                                                    HapticFeedback.lightImpact();
+                                                                                    if (_firstPress) {
+                                                                                      _firstPress = false;
+                                                                                      await _userModelController.updateLikeUid(likeUid);
+                                                                                      await _commentModelController.likeUpdate(likeUid);
+                                                                                      _firstPress = true;
+                                                                                    }
+                                                                                  },
+                                                                                  icon: Icon(Icons.favorite,
+                                                                                    size: 14,
+                                                                                    color: Color(0xFFC8C8C8),
+                                                                                  ),
+                                                                                  padding: EdgeInsets.zero,
+                                                                                  constraints: BoxConstraints(),
                                                                                 ),
                                                                               ),
-                                                                            );
-                                                                          }),
-                                                                  child: Icon(Icons.more_horiz,
-                                                                    color: Color(0xFFdedede),
-                                                                    size: 20,
-                                                                  ),
-                                                                )
+                                                                              Padding(
+                                                                                padding: EdgeInsets.only(bottom: 1),
+                                                                                child: Text(
+                                                                                  '${chatDocs[index]['likeCount']}',
+                                                                                  style: TextStyle(
+                                                                                      fontWeight: FontWeight.bold,
+                                                                                      fontSize: 11,
+                                                                                      color:
+                                                                                      (_userModelController.likeUidList!.contains('${chatDocs[index]['uid']}${chatDocs[index]['commentCount']}'))
+                                                                                          ? Color(0xFF111111)
+                                                                                          : Color(0xFF666666)),
+                                                                                ),
+                                                                              ),
+                                                                            ],
+                                                                          ),
+                                                                        ),
+                                                                      ),
+                                                                      onTap: () async{
+                                                                        if (_userModelController.likeUidList!.contains('${chatDocs[index]['uid']}${chatDocs[index]['commentCount']}')){
+                                                                          var likeUid = '${chatDocs[index]['uid']}${chatDocs[index]['commentCount']}';
+                                                                          print(likeUid);
+                                                                          HapticFeedback.lightImpact();
+                                                                          if (_firstPress) {
+                                                                            _firstPress = false;
+                                                                            await _userModelController.deleteLikeUid(likeUid);
+                                                                            await _commentModelController.likeDelete(likeUid);
+                                                                            _firstPress = true;
+                                                                          }
+                                                                        } else{
+                                                                          var likeUid = '${chatDocs[index]['uid']}${chatDocs[index]['commentCount']}';
+                                                                          print(likeUid);
+                                                                          HapticFeedback.lightImpact();
+                                                                          if (_firstPress) {
+                                                                            _firstPress = false;
+                                                                            await _userModelController.updateLikeUid(likeUid);
+                                                                            await _commentModelController.likeUpdate(likeUid);
+                                                                            _firstPress = true;
+                                                                          }
+                                                                        }
+
+                                                                      },
+                                                                    ),
+                                                                    SizedBox(
+                                                                      width: 8,
+                                                                    ),
+                                                                    GestureDetector(
+                                                                      onTap: (){
+                                                                        Get.to(() =>
+                                                                            ReplyScreen(
+                                                                              replyUid: chatDocs[index]['uid'],
+                                                                              replyCount: chatDocs[index]['commentCount'],
+                                                                              replyImage:
+                                                                              (chatDocs[index]['profileImageUrl'] != 'anony')
+                                                                                  ? profileUrl
+                                                                                  : chatDocs[index]['profileImageUrl'],
+                                                                              replyDisplayName:
+                                                                              (chatDocs[index]['displayName'] != '익명')
+                                                                                  ? displayName
+                                                                                  : chatDocs[index]['displayName'],
+                                                                              replyResortNickname: chatDocs[index]['resortNickname'],
+                                                                              comment: chatDocs[index]['comment'],
+                                                                              commentTime: chatDocs[index]['timeStamp'],
+                                                                              kusbf: _isTabKusbf == true ? true : false,
+                                                                              replyLiveTalkImageUrl: chatDocs[index]['livetalkImageUrl'],
+                                                                            ));
+                                                                      },
+                                                                      child: Container(
+                                                                        height: 24,
+                                                                        decoration: BoxDecoration(
+                                                                            color:
+                                                                            (chatDocs[index]['replyCount'] != 0)
+                                                                                ? Color(0xFFCBE0FF)
+                                                                                : Color(0xFFECECEC),
+                                                                            borderRadius: BorderRadius.circular(4)
+                                                                        ),
+                                                                        child: Padding(
+                                                                          padding: EdgeInsets.only(right: 6),
+                                                                          child: Row(
+                                                                            children: [
+                                                                              Padding(
+                                                                                padding:
+                                                                                const EdgeInsets.only(top: 2),
+                                                                                child:
+                                                                                IconButton(
+                                                                                  onPressed: () {
+                                                                                    Get.to(() =>
+                                                                                        ReplyScreen(
+                                                                                          replyUid: chatDocs[index]['uid'],
+                                                                                          replyCount: chatDocs[index]['commentCount'],
+                                                                                          replyImage:
+                                                                                          (chatDocs[index]['profileImageUrl'] != 'anony')
+                                                                                              ? profileUrl
+                                                                                              : chatDocs[index]['profileImageUrl'],
+                                                                                          replyDisplayName:
+                                                                                          (chatDocs[index]['displayName'] != '익명')
+                                                                                              ? displayName
+                                                                                              : chatDocs[index]['displayName'],
+                                                                                          replyResortNickname: chatDocs[index]['resortNickname'],
+                                                                                          comment: chatDocs[index]['comment'],
+                                                                                          commentTime: chatDocs[index]['timeStamp'],
+                                                                                          kusbf: _isTabKusbf == true ? true : false,
+                                                                                          replyLiveTalkImageUrl: chatDocs[index]['livetalkImageUrl'],
+                                                                                        ));
+                                                                                  },
+                                                                                  icon: Icon(
+                                                                                    Icons.insert_comment,
+                                                                                    size: 14,
+                                                                                    color:
+                                                                                    (chatDocs[index]['replyCount'] != 0)
+                                                                                        ? Color(0xFF3D83ED)
+                                                                                        : Color(0xFFC8C8C8),
+                                                                                  ),
+                                                                                  padding: EdgeInsets.zero,
+                                                                                  constraints: BoxConstraints(),
+                                                                                ),
+                                                                              ),
+                                                                              Padding(
+                                                                                padding: EdgeInsets.only(bottom: 1),
+                                                                                child: Text(
+                                                                                  '${chatDocs[index]['replyCount']}',
+                                                                                  style: TextStyle(
+                                                                                      color:
+                                                                                      (chatDocs[index]['replyCount'] != 0)
+                                                                                          ? Color(0xFF111111)
+                                                                                          : Color(0xFF666666),
+                                                                                      fontWeight: FontWeight.bold,
+                                                                                      fontSize: 11),
+                                                                                ),
+                                                                              )
+                                                                            ],
+                                                                          ),
+                                                                        ),
+                                                                      ),
+                                                                    ),
+                                                                  ],
+                                                                ),
                                                               ],
                                                             ),
                                                           ),
-                                                        ),
-                                                        Column(
-                                                          children: [
-                                                            if (chatDocs[index]['livetalkImageUrl'] != "")
-                                                              Padding(
-                                                                padding: EdgeInsets.only(top: 14, bottom: 6),
-                                                                child: GestureDetector(
-                                                                  onTap: () {Get.to(() =>
-                                                                      ProfileImagePage(
-                                                                        CommentProfileUrl: chatDocs[index]['livetalkImageUrl'],
-                                                                      ));
-                                                                  },
-                                                                  child: ExtendedImage.network(
-                                                                    chatDocs[index]['livetalkImageUrl'],
-                                                                    cache: true,
-                                                                    //cacheHeight: 1600,
-                                                                    width: _size.width - 24,
-                                                                    height: _size.width - 24,
-                                                                    fit: BoxFit.cover,
-                                                                  ),
-                                                                ),
-                                                              ),
-                                                            if (chatDocs[index]['livetalkImageUrl'] == "")
-                                                              Container(
-                                                                height: 0,
-                                                              )
-                                                          ],
-                                                        ),
-                                                        Padding(
-                                                          padding: const EdgeInsets.symmetric(
-                                                              horizontal: 16),
-                                                          child: Column(
-                                                            mainAxisAlignment: MainAxisAlignment.start,
-                                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                                            children: [
-                                                              SizedBox(
-                                                                height: 8,
-                                                              ),
-                                                              Row(
-                                                                children: [
-                                                                  Container(
-                                                                    constraints: BoxConstraints(
-                                                                        maxWidth: _size.width - 56),
-                                                                    child: SelectableText(
-                                                                      chatDocs[index].get('comment'),
-                                                                      style: TextStyle(
-                                                                          color: Color(0xFF111111),
-                                                                          fontWeight: FontWeight.normal,
-                                                                          fontSize: 14),
-                                                                    ),
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                              SizedBox(
-                                                                height: 4,
-                                                              ),
-                                                              Text('$_time',
-                                                                style: TextStyle(
-                                                                    fontSize: 12,
-                                                                    color: Color(0xFF949494),
-                                                                    fontWeight: FontWeight.w300),
-                                                              ),
-                                                              SizedBox(
-                                                                height: 16,
-                                                              ),
-                                                              Row(
-                                                                children: [
-                                                                  GestureDetector(
-                                                                    child: Container(
-                                                                      height: 24,
-                                                                      decoration: BoxDecoration(
-                                                                          color: (_userModelController.likeUidList!.contains('${chatDocs[index]['uid']}${chatDocs[index]['commentCount']}'))
-                                                                              ? Color(0xFFFFCDCD)
-                                                                              : Color(0xFFECECEC),
-                                                                          borderRadius: BorderRadius.circular(4)
-                                                                      ),
-                                                                      child: Padding(
-                                                                        padding: EdgeInsets.only(right: 8),
-                                                                        child: Row(
-                                                                          children: [
-                                                                            (_userModelController.likeUidList!.contains('${chatDocs[index]['uid']}${chatDocs[index]['commentCount']}'))
-                                                                                ? Padding(
-                                                                              padding: const EdgeInsets.only(top: 2),
-                                                                              child:
-                                                                              IconButton(
-                                                                                onPressed: () async {
-                                                                                  var likeUid = '${chatDocs[index]['uid']}${chatDocs[index]['commentCount']}';
-                                                                                  print(likeUid);
-                                                                                  HapticFeedback.lightImpact();
-                                                                                  if (_firstPress) {
-                                                                                    _firstPress = false;
-                                                                                    await _userModelController.deleteLikeUid(likeUid);
-                                                                                    await _commentModelController.likeDelete(likeUid);
-                                                                                    _firstPress =
-                                                                                    true;
-                                                                                  }
-                                                                                },
-                                                                                icon: Icon(
-                                                                                  Icons.favorite,
-                                                                                  size: 14,
-                                                                                  color: Color(0xFFD63636),
-                                                                                ),
-                                                                                padding: EdgeInsets.zero,
-                                                                                constraints: BoxConstraints(),
-                                                                              ),
-                                                                            )
-                                                                                : Padding(
-                                                                              padding: const EdgeInsets.only(top: 2),
-                                                                              child:
-                                                                              IconButton(
-                                                                                onPressed: () async {
-                                                                                  var likeUid = '${chatDocs[index]['uid']}${chatDocs[index]['commentCount']}';
-                                                                                  print(likeUid);
-                                                                                  HapticFeedback.lightImpact();
-                                                                                  if (_firstPress) {
-                                                                                    _firstPress = false;
-                                                                                    await _userModelController.updateLikeUid(likeUid);
-                                                                                    await _commentModelController.likeUpdate(likeUid);
-                                                                                    _firstPress = true;
-                                                                                  }
-                                                                                },
-                                                                                icon: Icon(Icons.favorite,
-                                                                                  size: 14,
-                                                                                  color: Color(0xFFC8C8C8),
-                                                                                ),
-                                                                                padding: EdgeInsets.zero,
-                                                                                constraints: BoxConstraints(),
-                                                                              ),
-                                                                            ),
-                                                                            Padding(
-                                                                              padding: EdgeInsets.only(bottom: 1),
-                                                                              child: Text(
-                                                                                '${chatDocs[index]['likeCount']}',
-                                                                                style: TextStyle(
-                                                                                    fontWeight: FontWeight.bold,
-                                                                                    fontSize: 11,
-                                                                                    color:
-                                                                                    (_userModelController.likeUidList!.contains('${chatDocs[index]['uid']}${chatDocs[index]['commentCount']}'))
-                                                                                        ? Color(0xFF111111)
-                                                                                        : Color(0xFF666666)),
-                                                                              ),
-                                                                            ),
-                                                                          ],
-                                                                        ),
-                                                                      ),
-                                                                    ),
-                                                                    onTap: () async{
-                                                                      if (_userModelController.likeUidList!.contains('${chatDocs[index]['uid']}${chatDocs[index]['commentCount']}')){
-                                                                        var likeUid = '${chatDocs[index]['uid']}${chatDocs[index]['commentCount']}';
-                                                                        print(likeUid);
-                                                                        HapticFeedback.lightImpact();
-                                                                        if (_firstPress) {
-                                                                          _firstPress = false;
-                                                                          await _userModelController.deleteLikeUid(likeUid);
-                                                                          await _commentModelController.likeDelete(likeUid);
-                                                                          _firstPress = true;
-                                                                        }
-                                                                      } else{
-                                                                        var likeUid = '${chatDocs[index]['uid']}${chatDocs[index]['commentCount']}';
-                                                                        print(likeUid);
-                                                                        HapticFeedback.lightImpact();
-                                                                        if (_firstPress) {
-                                                                          _firstPress = false;
-                                                                          await _userModelController.updateLikeUid(likeUid);
-                                                                          await _commentModelController.likeUpdate(likeUid);
-                                                                          _firstPress = true;
-                                                                        }
-                                                                      }
-
-                                                                    },
-                                                                  ),
-                                                                  SizedBox(
-                                                                    width: 8,
-                                                                  ),
-                                                                  GestureDetector(
-                                                                    onTap: (){
-                                                                      Get.to(() =>
-                                                                          ReplyScreen(
-                                                                            replyUid: chatDocs[index]['uid'],
-                                                                            replyCount: chatDocs[index]['commentCount'],
-                                                                            replyImage:
-                                                                            (chatDocs[index]['profileImageUrl'] != 'anony')
-                                                                                ? profileUrl
-                                                                                : chatDocs[index]['profileImageUrl'],
-                                                                            replyDisplayName:
-                                                                            (chatDocs[index]['displayName'] != '익명')
-                                                                                ? displayName
-                                                                                : chatDocs[index]['displayName'],
-                                                                            replyResortNickname: chatDocs[index]['resortNickname'],
-                                                                            comment: chatDocs[index]['comment'],
-                                                                            commentTime: chatDocs[index]['timeStamp'],
-                                                                            kusbf: _isTabKusbf == true ? true : false,
-                                                                            replyLiveTalkImageUrl: chatDocs[index]['livetalkImageUrl'],
-                                                                          ));
-                                                                    },
-                                                                    child: Container(
-                                                                      height: 24,
-                                                                      decoration: BoxDecoration(
-                                                                          color:
-                                                                          (chatDocs[index]['replyCount'] != 0)
-                                                                              ? Color(0xFFCBE0FF)
-                                                                              : Color(0xFFECECEC),
-                                                                          borderRadius: BorderRadius.circular(4)
-                                                                      ),
-                                                                      child: Padding(
-                                                                        padding: EdgeInsets.only(right: 6),
-                                                                        child: Row(
-                                                                          children: [
-                                                                            Padding(
-                                                                              padding:
-                                                                              const EdgeInsets.only(top: 2),
-                                                                              child:
-                                                                              IconButton(
-                                                                                onPressed: () {
-                                                                                  Get.to(() =>
-                                                                                      ReplyScreen(
-                                                                                        replyUid: chatDocs[index]['uid'],
-                                                                                        replyCount: chatDocs[index]['commentCount'],
-                                                                                        replyImage:
-                                                                                        (chatDocs[index]['profileImageUrl'] != 'anony')
-                                                                                            ? profileUrl
-                                                                                            : chatDocs[index]['profileImageUrl'],
-                                                                                        replyDisplayName:
-                                                                                        (chatDocs[index]['displayName'] != '익명')
-                                                                                            ? displayName
-                                                                                            : chatDocs[index]['displayName'],
-                                                                                        replyResortNickname: chatDocs[index]['resortNickname'],
-                                                                                        comment: chatDocs[index]['comment'],
-                                                                                        commentTime: chatDocs[index]['timeStamp'],
-                                                                                        kusbf: _isTabKusbf == true ? true : false,
-                                                                                        replyLiveTalkImageUrl: chatDocs[index]['livetalkImageUrl'],
-                                                                                      ));
-                                                                                },
-                                                                                icon: Icon(
-                                                                                  Icons.insert_comment,
-                                                                                  size: 14,
-                                                                                  color:
-                                                                                  (chatDocs[index]['replyCount'] != 0)
-                                                                                      ? Color(0xFF3D83ED)
-                                                                                      : Color(0xFFC8C8C8),
-                                                                                ),
-                                                                                padding: EdgeInsets.zero,
-                                                                                constraints: BoxConstraints(),
-                                                                              ),
-                                                                            ),
-                                                                            Padding(
-                                                                              padding: EdgeInsets.only(bottom: 1),
-                                                                              child: Text(
-                                                                                '${chatDocs[index]['replyCount']}',
-                                                                                style: TextStyle(
-                                                                                    color:
-                                                                                    (chatDocs[index]['replyCount'] != 0)
-                                                                                        ? Color(0xFF111111)
-                                                                                        : Color(0xFF666666),
-                                                                                    fontWeight: FontWeight.bold,
-                                                                                    fontSize: 11),
-                                                                              ),
-                                                                            )
-                                                                          ],
-                                                                        ),
-                                                                      ),
-                                                                    ),
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                            ],
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ],
+                                                        ],
+                                                      ),
+                                                    ],
+                                                  ),
                                                 ),
-                                              ),
-                                            ],
-                                          ),
-                                        )),
-                                  );
-                                },
+                                              ],
+                                            ),
+                                          )),
+                                    );
+                                  },
+                                  padding: EdgeInsets.only(bottom: 16),
+                                ),
                               );
                             },
                           ),

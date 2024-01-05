@@ -1734,6 +1734,7 @@ class _Bulletin_Free_List_ScreenState extends State<Bulletin_Free_List_Screen> {
                                           ),
                                         ),
                                       ),
+                                      if(chatDocs.length != index + 1)
                                       Divider(
                                         color: Color(0xFFDEDEDE),
                                         height: 15,
@@ -1743,6 +1744,7 @@ class _Bulletin_Free_List_ScreenState extends State<Bulletin_Free_List_Screen> {
                                   )),
                                 );
                               },
+                              padding: EdgeInsets.only(bottom: 90),
                             ),
                           );
                         },

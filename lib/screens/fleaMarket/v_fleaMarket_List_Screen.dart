@@ -1456,6 +1456,7 @@ class _FleaMarket_List_ScreenState extends State<FleaMarket_List_Screen> {
                                         ],
                                       ),
                                     ),
+                                    if (chatDocs.length != index + 1)
                                     Divider(
                                       color: Color(0xFFDEDEDE),
                                       height: 16,
@@ -1465,6 +1466,7 @@ class _FleaMarket_List_ScreenState extends State<FleaMarket_List_Screen> {
                                 )
                             );
                           },
+                          padding: EdgeInsets.only(bottom: 80),
                         ),
                       );
                     },

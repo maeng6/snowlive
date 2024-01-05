@@ -216,49 +216,54 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
         return Padding(
           padding: EdgeInsets.only(
               bottom: MediaQuery.of(context).viewInsets.bottom),
-          child: Container(
-            height: 520,
-            padding: EdgeInsets.only(left: 16, right: 16),
-            child: CupertinoActionSheet(
-              actions: [
-                CupertinoActionSheetAction(
-                  onPressed: () {
-                    HapticFeedback.lightImpact();
-                    // 전체를 보여주기 위해 날짜 목록을 초기화합니다.
-                    setState(() {
-                      filteredData = dateItems;
-                      _selectedDateName = dateItems.isNotEmpty ? dateItems.last : '데이터 없음';
-                      isTapStats[0] = true;
-                      isTapStats[1] = false;
-                      isTapStats[2] = false;
-                    });
-                    Navigator.pop(context);
-                  },
-                  child: Text('전체'),
-                ),
-                for (String date in dateItems)
+          child: ConstrainedBox(
+        constraints: BoxConstraints(
+          minHeight: 200,
+          maxHeight: 520,
+        ),
+            child: Container(
+              padding: EdgeInsets.only(left: 16, right: 16),
+              child: CupertinoActionSheet(
+                actions: [
                   CupertinoActionSheetAction(
-                    onPressed: () async {
+                    onPressed: () {
                       HapticFeedback.lightImpact();
-                      // 선택한 날짜에 따라 필터링된 데이터를 업데이트합니다.
+                      // 전체를 보여주기 위해 날짜 목록을 초기화합니다.
                       setState(() {
-                        filteredData = [date];
-                        _selectedDateName = date;
-                        isTapStats[0] = false;
-                        isTapStats[1] = true;
-                        isTapStats[2] = true;
+                        filteredData = dateItems;
+                        _selectedDateName = dateItems.isNotEmpty ? dateItems.last : '데이터 없음';
+                        isTapStats[0] = true;
+                        isTapStats[1] = false;
+                        isTapStats[2] = false;
                       });
                       Navigator.pop(context);
                     },
-                    child: Text(date), // 각 날짜 항목을 별도의 타일로 표시합니다.
+                    child: Text('전체'),
                   ),
-              ],
-              cancelButton: CupertinoActionSheetAction(
-                child: Text('닫기'),
-                onPressed: () {
-                  HapticFeedback.mediumImpact();
-                  Navigator.pop(context);
-                },
+                  for (String date in dateItems)
+                    CupertinoActionSheetAction(
+                      onPressed: () async {
+                        HapticFeedback.lightImpact();
+                        // 선택한 날짜에 따라 필터링된 데이터를 업데이트합니다.
+                        setState(() {
+                          filteredData = [date];
+                          _selectedDateName = date;
+                          isTapStats[0] = false;
+                          isTapStats[1] = true;
+                          isTapStats[2] = true;
+                        });
+                        Navigator.pop(context);
+                      },
+                      child: Text(date), // 각 날짜 항목을 별도의 타일로 표시합니다.
+                    ),
+                ],
+                cancelButton: CupertinoActionSheetAction(
+                  child: Text('닫기'),
+                  onPressed: () {
+                    HapticFeedback.mediumImpact();
+                    Navigator.pop(context);
+                  },
+                ),
               ),
             ),
           ),
@@ -2590,19 +2595,33 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                                     padding: const EdgeInsets.only(right: 20),
                                                                     child: Container(
                                                                         decoration: BoxDecoration(
-                                                                          color: (isTapStats[2] == true) ? Color(0xFFD8E7FD) : Color(0xFFFFFFFF),
+                                                                          color: (isTapStats[2] == true) ? Color(0xFFFFFFFF) : Color(0xFFFFFFFF),
                                                                           borderRadius: BorderRadius.circular(6),
                                                                           border: Border.all(
-                                                                              color: (isTapStats[2] == true) ? Color(0xFFD8E7FD) : Color(0xFFDEDEDE)),
+                                                                              color: (isTapStats[2] == true) ? Color(0xFFDEDEDE) : Color(0xFFDEDEDE)),
                                                                         ),
-                                                                        padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                                                                        padding: EdgeInsets.only(right: 4, left: 12, top: 8, bottom: 8),
                                                                         height: 32,
                                                                         child:(isTapStats[2] == true)
-                                                                            ? Text(_selectedDateName,
-                                                                            style: TextStyle(
-                                                                                fontSize: 12,
-                                                                                fontWeight: FontWeight.bold,
-                                                                                color: (isTapStats[2] == true) ? Color(0xFF3D83ED) : Color(0xFF777777)))
+                                                                            ? Row(
+                                                                          mainAxisAlignment: MainAxisAlignment.center,
+                                                                              children: [
+                                                                                Text(_selectedDateName,
+                                                                                style: TextStyle(
+                                                                                    fontSize: 12,
+                                                                                    fontWeight: FontWeight.bold,
+                                                                                    color: (isTapStats[2] == true) ? Color(0xFF777777) : Color(0xFF777777))),
+                                                                                Container(
+                                                                                  height: 18,
+                                                                                  width: 18,
+                                                                                  child: Icon(
+                                                                                    Icons.arrow_drop_down_sharp,
+                                                                                    size: 16,
+                                                                                    color: Color(0xFF666666),
+                                                                                  ),
+                                                                                ),
+                                                                              ],
+                                                                            )
                                                                             : Row(
                                                                           children: [
                                                                             Padding(
@@ -2691,7 +2710,7 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                                             padding: EdgeInsets.only(right: 20),
                                                                             child: Text('${data['totalPassCount']}회',
                                                                               style: TextStyle(
-                                                                                  fontWeight: FontWeight.bold,
+                                                                                  fontWeight: FontWeight.normal,
                                                                                   fontSize: 16,
                                                                                   color: Color(0xFF111111)
                                                                               ),),
@@ -3057,7 +3076,7 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                                             padding: EdgeInsets.only(right: 20),
                                                                             child: Text('${data['totalPassCount']}회',
                                                                               style: TextStyle(
-                                                                                  fontWeight: FontWeight.bold,
+                                                                                  fontWeight: FontWeight.normal,
                                                                                   fontSize: 16,
                                                                                   color: Color(0xFF111111)
                                                                               ),),

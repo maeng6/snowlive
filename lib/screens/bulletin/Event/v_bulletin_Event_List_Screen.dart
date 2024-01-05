@@ -1185,7 +1185,8 @@ class _Bulletin_Event_List_ScreenState extends State<Bulletin_Event_List_Screen>
                                       ),
                                     ),
                                   ),
-                                  Divider(
+                                  if(chatDocs.length != index + 1)
+                                    Divider(
                                     color: Color(0xFFDEDEDE),
                                     height: 15,
                                     thickness: 0.5,
@@ -1194,6 +1195,7 @@ class _Bulletin_Event_List_ScreenState extends State<Bulletin_Event_List_Screen>
                               )),
                             );
                           },
+                          padding: EdgeInsets.only(bottom: 90),
                         ),
                       );
                     },

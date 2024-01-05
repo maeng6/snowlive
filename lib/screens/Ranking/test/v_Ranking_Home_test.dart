@@ -319,16 +319,19 @@ class _RankingHome_testState extends State<RankingHome_test> {
                       :SizedBox.shrink()
                 ],
               ),
+              SizedBox(
+                height: 6,
+              ),
               Row(
                 children: [
                   Padding(
-                    padding: EdgeInsets.only(left: 16, right: 12),
+                    padding: EdgeInsets.only(left: 16, right: 6),
                     child: Column(
                       children: [
                         Padding(
                           padding: EdgeInsets.only(bottom: 2),
                           child: Container(
-                            height: 44,
+                            height: 32,
                             child: ElevatedButton(
                               child: Text(
                                 '일간TOP',
@@ -336,11 +339,11 @@ class _RankingHome_testState extends State<RankingHome_test> {
                                     fontFamily: 'Spoqa Han Sans Neo',
                                     color: (isTapPeriod[0])
                                         ? Color(0xFF111111)
-                                        : Color(0xFFC8C8C8),
+                                        : Color(0xFF949494),
                                     fontWeight: (isTapPeriod[0])
                                         ? FontWeight.bold
                                         : FontWeight.bold,
-                                    fontSize: 14),
+                                    fontSize: 13),
                               ),
                               onPressed: () async{
                                 print('일간TOP 전환');
@@ -356,12 +359,20 @@ class _RankingHome_testState extends State<RankingHome_test> {
                                 print(isTapPeriod);
                               },
                               style: ElevatedButton.styleFrom(
-                                padding: EdgeInsets.only(top: 0),
+                                padding: EdgeInsets.symmetric(horizontal: 12, vertical: 0),
                                 minimumSize: Size(40, 10),
-                                backgroundColor: Color(0xFFFFFFFF),
+                                backgroundColor: (isTapPeriod[0])
+                                    ? Color(0xFFECECEC)
+                                    : Color(0xFFFFFFFF),
                                 shape: RoundedRectangleBorder(
-                                    borderRadius:
-                                    BorderRadius.circular(8)),
+                                    borderRadius: BorderRadius.circular(5),
+                                    side: BorderSide(
+                                        color: (isTapPeriod[0])
+                                            ? Color(0xFFECECEC)
+                                            : Color(0xFFFFFFFF),
+                                        width: 1
+                                    )
+                                ),
                                 elevation: 0,
                               ),
                             ),
@@ -371,24 +382,24 @@ class _RankingHome_testState extends State<RankingHome_test> {
                     ),
                   ),
                   Padding(
-                    padding: EdgeInsets.only(right: 12),
+                    padding: EdgeInsets.only(right: 6),
                     child: Column(
                       children: [
                         Padding(
                           padding: EdgeInsets.only(bottom: 2),
                           child: Container(
-                            height: 44,
+                            height: 32,
                             child: ElevatedButton(
                               child: Text(
                                 '주간TOP',
                                 style: TextStyle(
                                     color: (isTapPeriod[1])
                                         ? Color(0xFF111111)
-                                        : Color(0xFFC8C8C8),
+                                        : Color(0xFF949494),
                                     fontWeight: (isTapPeriod[1])
                                         ? FontWeight.bold
                                         : FontWeight.bold,
-                                    fontSize: 14),
+                                    fontSize: 13),
                               ),
                               onPressed: () async{
                                 print('주간TOP 전환');
@@ -404,12 +415,20 @@ class _RankingHome_testState extends State<RankingHome_test> {
                                 print(isTapPeriod);
                               },
                               style: ElevatedButton.styleFrom(
-                                padding: EdgeInsets.only(top: 0),
+                                padding: EdgeInsets.symmetric(horizontal: 12, vertical: 0),
                                 minimumSize: Size(40, 10),
-                                backgroundColor: Color(0xFFFFFFFF),
+                                backgroundColor: (isTapPeriod[1])
+                                    ? Color(0xFFECECEC)
+                                    : Color(0xFFFFFFFF),
                                 shape: RoundedRectangleBorder(
-                                    borderRadius:
-                                    BorderRadius.circular(8)),
+                                    borderRadius: BorderRadius.circular(5),
+                                    side: BorderSide(
+                                        color: (isTapPeriod[1])
+                                            ? Color(0xFFECECEC)
+                                            : Color(0xFFFFFFFF),
+                                        width: 1
+                                    )
+                                ),
                                 elevation: 0,
                               ),
                             ),
@@ -419,24 +438,24 @@ class _RankingHome_testState extends State<RankingHome_test> {
                     ),
                   ),
                   Padding(
-                    padding: EdgeInsets.only(right: 12),
+                    padding: EdgeInsets.only(right: 6),
                     child: Column(
                       children: [
                         Padding(
                           padding: EdgeInsets.only(bottom: 2),
                           child: Container(
-                            height: 44,
+                            height: 32,
                             child: ElevatedButton(
                               child: Text(
                                 '시즌누적',
                                 style: TextStyle(
                                     color: (isTapPeriod[2])
                                         ? Color(0xFF111111)
-                                        : Color(0xFFC8C8C8),
+                                        : Color(0xFF949494),
                                     fontWeight: (isTapPeriod[2])
                                         ? FontWeight.bold
                                         : FontWeight.bold,
-                                    fontSize: 14),
+                                    fontSize: 13),
                               ),
                               onPressed: () async{
                                 print('시즌누적 전환');
@@ -452,12 +471,20 @@ class _RankingHome_testState extends State<RankingHome_test> {
                                 print(isTapPeriod);
                               },
                               style: ElevatedButton.styleFrom(
-                                padding: EdgeInsets.only(top: 0),
+                                padding: EdgeInsets.symmetric(horizontal: 12, vertical: 0),
                                 minimumSize: Size(40, 10),
-                                backgroundColor: Color(0xFFFFFFFF),
+                                backgroundColor: (isTapPeriod[2])
+                                    ? Color(0xFFECECEC)
+                                    : Color(0xFFFFFFFF),
                                 shape: RoundedRectangleBorder(
-                                    borderRadius:
-                                    BorderRadius.circular(8)),
+                                    borderRadius: BorderRadius.circular(5),
+                                    side: BorderSide(
+                                        color: (isTapPeriod[2])
+                                            ? Color(0xFFECECEC)
+                                            : Color(0xFFFFFFFF),
+                                        width: 1
+                                    )
+                                ),
                                 elevation: 0,
                               ),
                             ),
@@ -470,6 +497,11 @@ class _RankingHome_testState extends State<RankingHome_test> {
               ),
               SizedBox(
                 height: 10,
+              ),
+              Container(
+                width: _size.width,
+                height: 1,
+                color: Color(0xFFececec),
               ),
               if (isTap[0] == true)
                 Expanded(child: RankingCrewScreen_test(

@@ -530,15 +530,17 @@ class _FleaMarket_My_ScreenState
                                       ],
                                     ),
                                   ),
-                                  Divider(
-                                    color: Color(0xFFDEDEDE),
-                                    height: 20,
-                                    thickness: 0.5,
-                                  ),
+                                  if (chatDocs.length != index + 1)
+                                    Divider(
+                                      color: Color(0xFFDEDEDE),
+                                      height: 16,
+                                      thickness: 0.5,
+                                    ),
                                 ],
                               ),
                             );
                           },
+                          padding: EdgeInsets.only(bottom: 80),
                         ),
                       );
                     },

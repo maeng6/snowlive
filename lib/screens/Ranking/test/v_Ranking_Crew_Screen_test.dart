@@ -193,13 +193,16 @@ class _RankingCrewScreen_testState extends State<RankingCrewScreen_test> {
               child: SingleChildScrollView(
                 physics: AlwaysScrollableScrollPhysics(),
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: Column(
                     children: [
                       Container(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
+                            SizedBox(
+                              height: 30,
+                            ),
                             Text(
                               (_userModelController.favoriteResort == 12 ||_userModelController.favoriteResort == 2 ||_userModelController.favoriteResort == 0)
                                   ?(widget.isKusbf == false)
@@ -288,12 +291,10 @@ class _RankingCrewScreen_testState extends State<RankingCrewScreen_test> {
                                             decoration: BoxDecoration(
                                               boxShadow: [
                                                 BoxShadow(
-                                                  color: Colors
-                                                      .black12,
+                                                  color: Colors.black12,
                                                   spreadRadius: 0,
                                                   blurRadius: 8,
-                                                  offset: Offset(0,
-                                                      4), // changes position of shadow
+                                                  offset: Offset(0, 4), // changes position of shadow
                                                 ),
                                               ],
                                             ),
@@ -408,23 +409,17 @@ class _RankingCrewScreen_testState extends State<RankingCrewScreen_test> {
                                             decoration: BoxDecoration(
                                               boxShadow: [
                                                 BoxShadow(
-                                                  color: Colors
-                                                      .black12,
+                                                  color: Colors.black12,
                                                   spreadRadius: 0,
                                                   blurRadius: 8,
-                                                  offset: Offset(0,
-                                                      4), // changes position of shadow
+                                                  offset: Offset(0, 4), // changes position of shadow
                                                 ),
                                               ],
                                             ),
-                                            child: ExtendedImage
-                                                .network(
-                                              assetTop2,
+                                            child: ExtendedImage.network(assetTop2,
                                               enableMemoryCache: true,
-                                              shape: BoxShape
-                                                  .rectangle,
-                                              borderRadius: BorderRadius
-                                                  .circular(7),
+                                              shape: BoxShape.rectangle,
+                                              borderRadius: BorderRadius.circular(7),
                                               width: 58,
                                               height: 58,
                                               fit: BoxFit.cover,
@@ -438,20 +433,15 @@ class _RankingCrewScreen_testState extends State<RankingCrewScreen_test> {
                                             fit: BoxFit.cover,
                                           ),
                                           Padding(
-                                            padding: EdgeInsets
-                                                .symmetric(
-                                                horizontal: 16),
+                                            padding: EdgeInsets.symmetric(horizontal: 16),
                                             child: Text(
                                               crewDocs![1]['crewName'],
                                               style: TextStyle(
-                                                color: Color(
-                                                    0xFFFFFFFF),
-                                                fontWeight: FontWeight
-                                                    .bold,
+                                                color: Color(0xFFFFFFFF),
+                                                fontWeight: FontWeight.bold,
                                                 fontSize: 13,
                                               ),
-                                              overflow: TextOverflow
-                                                  .ellipsis,
+                                              overflow: TextOverflow.ellipsis,
                                               maxLines: 1,
                                             ),
                                           ),

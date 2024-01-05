@@ -192,6 +192,9 @@ class _RankingIndiScreen_testState extends State<RankingIndiScreen_test> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
+                            SizedBox(
+                              height: 30,
+                            ),
                             Text(
                               (_userModelController.favoriteResort == 12 ||_userModelController.favoriteResort == 2 ||_userModelController.favoriteResort == 0)
                                   ?(widget.isKusbf == false)
@@ -274,7 +277,7 @@ class _RankingIndiScreen_testState extends State<RankingIndiScreen_test> {
                                                   height: 58,
                                                   fit: BoxFit.cover,
                                                 ),
-                                                SizedBox(height: 14,),
+                                                SizedBox(height: 6,),
                                                 ExtendedImage.asset(
                                                   'assets/imgs/icons/icon_crown_1.png',
                                                   width: 28,
@@ -390,7 +393,7 @@ class _RankingIndiScreen_testState extends State<RankingIndiScreen_test> {
                                                   height: 58,
                                                   fit: BoxFit.cover,
                                                 ),
-                                                SizedBox(height: 14,),
+                                                SizedBox(height: 6),
                                                 ExtendedImage.asset(
                                                   'assets/imgs/icons/icon_crown_2.png',
                                                   width: 28,
@@ -507,7 +510,7 @@ class _RankingIndiScreen_testState extends State<RankingIndiScreen_test> {
                                                   height: 58,
                                                   fit: BoxFit.cover,
                                                 ),
-                                                SizedBox(height: 14,),
+                                                SizedBox(height: 6),
                                                 ExtendedImage.asset(
                                                   'assets/imgs/icons/icon_crown_3.png',
                                                   width: 28,
@@ -697,7 +700,7 @@ class _RankingIndiScreen_testState extends State<RankingIndiScreen_test> {
                                           Padding(
                                             padding: const EdgeInsets.only(bottom: 3),
                                             child: Container(
-                                              width: _size.width - 240,
+                                              width: _size.width - 227,
                                               child: Column(
                                                 crossAxisAlignment: CrossAxisAlignment.start,
                                                 children: [

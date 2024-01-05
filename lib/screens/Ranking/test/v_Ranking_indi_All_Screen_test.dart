@@ -328,7 +328,7 @@ class _RankingIndiAllScreen_testState extends State<RankingIndiAllScreen_test> {
                       Padding(
                         padding: const EdgeInsets.only(bottom: 3),
                         child: Container(
-                          width: _size.width - 240,
+                          width: _size.width - 227,
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
