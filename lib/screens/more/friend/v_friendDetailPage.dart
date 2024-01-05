@@ -1,6 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:extended_image/extended_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -46,6 +47,7 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
   var _userStream;
   var _crewStream;
   var _rankStream;
+  var _rankStreamDaily;
   var _rankStream2;
   var _rankStream3;
   final _formKeyProfile = GlobalKey<FormState>();
@@ -70,8 +72,21 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
     false,
   ];
 
+  List<bool> isTapStats = [
+    true,
+    false,
+    false
+  ];
+
   Map? userRankingMap_all;
   List? documents_all;
+
+  List<String> dateItems = []; // 날짜 아이템 목록
+
+  var _selectedDateName = '';
+
+  String? lastDateItem;
+
 
 
   Future<void> _onRefresh() async {
@@ -84,20 +99,25 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
 
   @override
   void initState() {
+    super.initState();
+
+    fetchDateItems();
     _stream = newStream();
     _userStream = userStream();
     _crewStream = crewStream();
     _rankStream = rankStream();
+    _rankStreamDaily = rankStreamDaily();
     _rankStream2 = rankStream2();
     _rankStream3 = rankStream3();
-    // TODO: implement initState
-    super.initState();
     _stateMsgController.text = '';
     _friendTalkController.text = '';
     _displayNameController.text = '';
     _initStateMsg = _userModelController.stateMsg!;
     _initialDisplayName = _userModelController.displayName!;
+
   }
+
+  //TODO: 스트림 모음**************************************************
 
   Stream<QuerySnapshot> newStream() {
     return FirebaseFirestore.instance
@@ -114,6 +134,7 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
         .where('uid', isEqualTo: widget.uid )
         .snapshots();
   }
+
   Stream<QuerySnapshot> crewStream() {
     return FirebaseFirestore.instance
         .collection('liveCrew')
@@ -127,6 +148,17 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
         .doc('${_seasonController.currentSeason}')
         .collection('${widget.favoriteResort}')
         .doc("${widget.uid}")
+        .snapshots();
+  }
+
+  Stream<QuerySnapshot> rankStreamDaily() {
+
+    return FirebaseFirestore.instance
+        .collection('Ranking_Daily')
+        .doc('${_seasonController.currentSeason}')
+        .collection('${widget.favoriteResort}')
+        .where('date', isEqualTo: dateItems.isNotEmpty ? _selectedDateName : '필터')
+        .where('uid', isEqualTo: '${widget.uid}')
         .snapshots();
   }
 
@@ -148,6 +180,98 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
         .orderBy('totalScore', descending: true)
         .snapshots();
   }
+
+  Future<void> fetchDateItems() async {
+    final snapshot = await FirebaseFirestore.instance
+        .collection('Ranking_Daily')
+        .doc('${_seasonController.currentSeason}')
+        .collection('${widget.favoriteResort}')
+        .where('uid', isEqualTo: '${widget.uid}')
+        .get();
+
+    if (snapshot.docs.isNotEmpty) {
+      setState(() {
+        dateItems = snapshot.docs.map((doc) => doc['date'].toString()).toList();
+        if (dateItems.isNotEmpty) {
+          _selectedDateName = dateItems.last;
+        }
+      });
+    }
+    print(dateItems);
+    print(_selectedDateName);
+  }
+
+
+  //TODO: 스트림 모음**************************************************
+
+
+
+  _showCupertinoPicker() async {
+    List<String> filteredData = dateItems; // 초기에는 전체 데이터를 보여줍니다.
+    String today = DateFormat('yyyyMMdd').format(DateTime.now());
+
+    await showCupertinoModalPopup(
+      context: context,
+      builder: (_) {
+        return Padding(
+          padding: EdgeInsets.only(
+              bottom: MediaQuery.of(context).viewInsets.bottom),
+          child: Container(
+            height: 520,
+            padding: EdgeInsets.only(left: 16, right: 16),
+            child: CupertinoActionSheet(
+              actions: [
+                CupertinoActionSheetAction(
+                  onPressed: () {
+                    HapticFeedback.lightImpact();
+                    // 전체를 보여주기 위해 날짜 목록을 초기화합니다.
+                    setState(() {
+                      filteredData = dateItems;
+                      _selectedDateName = dateItems.isNotEmpty ? dateItems.last : '데이터 없음';
+                      isTapStats[0] = true;
+                      isTapStats[1] = false;
+                      isTapStats[2] = false;
+                    });
+                    Navigator.pop(context);
+                  },
+                  child: Text('전체'),
+                ),
+                for (String date in dateItems)
+                  CupertinoActionSheetAction(
+                    onPressed: () async {
+                      HapticFeedback.lightImpact();
+                      // 선택한 날짜에 따라 필터링된 데이터를 업데이트합니다.
+                      setState(() {
+                        filteredData = [date];
+                        _selectedDateName = date;
+                        isTapStats[0] = false;
+                        isTapStats[1] = true;
+                        isTapStats[2] = true;
+                      });
+                      Navigator.pop(context);
+                    },
+                    child: Text(date), // 각 날짜 항목을 별도의 타일로 표시합니다.
+                  ),
+              ],
+              cancelButton: CupertinoActionSheetAction(
+                child: Text('닫기'),
+                onPressed: () {
+                  HapticFeedback.mediumImpact();
+                  Navigator.pop(context);
+                },
+              ),
+            ),
+          ),
+        );
+      },
+    );
+
+    setState(() {
+      // 필터링된 데이터를 사용하여 화면을 업데이트합니다.
+      _rankStreamDaily = rankStreamDaily();
+    });
+  }
+
 
 
 
@@ -1245,6 +1369,10 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                                   setState(() {
                                                                     isTap[0] = false;
                                                                     isTap[1] = true;
+                                                                    isTapStats[0] = true;
+                                                                    isTapStats[1] = false;
+                                                                    isTapStats[2] = false;
+
                                                                   });
                                                                 },
                                                                 style: ElevatedButton.styleFrom(
@@ -1266,7 +1394,7 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                               color:
                                                               (isTap[1]) ? Color(0xFF111111) : Colors.transparent,
                                                             ),
-                                                          )
+                                                          ),
                                                         ],
                                                       ),
                                                     ],
@@ -2376,6 +2504,142 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                         ),
                                                       ],),
                                                   if(isTap[1]==true)
+                                                    Padding(
+                                                      padding: const EdgeInsets.only(bottom: 25, left: 0),
+                                                      child: Container(
+                                                        child: Row(
+                                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                          children: [
+                                                            Expanded(
+                                                              child: SingleChildScrollView(
+                                                                scrollDirection: Axis.horizontal,
+                                                                child: Row(
+                                                                  children: [
+                                                                    GestureDetector(
+                                                                      onTap: (){
+                                                                        HapticFeedback.lightImpact();
+                                                                        setState(() {
+                                                                          isTapStats[0] = true;
+                                                                          isTapStats[1] = false;
+                                                                          isTapStats[2] = false;
+
+                                                                        });
+                                                                      },
+                                                                      child: Padding(
+                                                                        padding: const EdgeInsets.only(left: 16),
+                                                                        child: Container(
+                                                                            decoration: BoxDecoration(
+                                                                              color: (isTapStats[0] == true) ? Color(0xFFD8E7FD) : Color(0xFFFFFFFF),
+                                                                              borderRadius: BorderRadius.circular(30.0),
+                                                                              border: Border.all(
+                                                                                  color: (isTapStats[0] == true) ? Color(0xFFD8E7FD) : Color(0xFFDEDEDE)),
+                                                                            ),
+                                                                            padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                                                                            height: 33,
+                                                                            child: Text('누적 통계',
+                                                                              style: TextStyle(
+                                                                                  fontSize: 13,
+                                                                                  fontWeight: FontWeight.bold,
+                                                                                  color: (isTapStats[0] == true) ? Color(0xFF3D83ED) : Color(0xFF777777)
+                                                                              ),)
+                                                                        ),
+                                                                      ),
+                                                                    ),
+                                                                    SizedBox(width: 6),
+                                                                    GestureDetector(
+                                                                      onTap: (){
+                                                                        HapticFeedback.lightImpact();
+                                                                        setState(() {
+                                                                          isTapStats[0] = false;
+                                                                          isTapStats[1] = true;
+                                                                          isTapStats[2] = true;
+                                                                          _selectedDateName = dateItems.isNotEmpty ? dateItems.last : '데이터 없음';
+                                                                          _rankStreamDaily = rankStreamDaily();
+                                                                        });
+                                                                      },
+                                                                      child: Container(
+                                                                          decoration: BoxDecoration(
+                                                                            color: (isTapStats[1] == true) ? Color(0xFFD8E7FD) : Color(0xFFFFFFFF),
+                                                                            borderRadius: BorderRadius.circular(30.0),
+                                                                            border: Border.all(
+                                                                                color: (isTapStats[1] == true) ? Color(0xFFD8E7FD) : Color(0xFFDEDEDE)),
+                                                                          ),
+                                                                          padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                                                                          height: 33,
+                                                                          child: Text('일간 통계',
+                                                                            style: TextStyle(
+                                                                                fontSize: 13,
+                                                                                fontWeight: FontWeight.bold,
+                                                                                color: (isTapStats[1] == true) ? Color(0xFF3D83ED) : Color(0xFF777777)
+                                                                            ),)
+                                                                      ),
+                                                                    ),
+                                                                    SizedBox(width: 6),
+                                                                  ],
+                                                                ),
+                                                              ),
+                                                            ),
+                                                            if(isTap[1]==true && isTapStats[1] == true)
+                                                              GestureDetector(
+                                                                onTap: () async{
+                                                                  await _showCupertinoPicker();
+                                                                },
+                                                                child: Container(
+                                                                  color: Colors.white,
+                                                                  child: Padding(
+                                                                    padding: const EdgeInsets.only(right: 20),
+                                                                    child: Container(
+                                                                        decoration: BoxDecoration(
+                                                                          color: (isTapStats[2] == true) ? Color(0xFFD8E7FD) : Color(0xFFFFFFFF),
+                                                                          borderRadius: BorderRadius.circular(6),
+                                                                          border: Border.all(
+                                                                              color: (isTapStats[2] == true) ? Color(0xFFD8E7FD) : Color(0xFFDEDEDE)),
+                                                                        ),
+                                                                        padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                                                                        height: 32,
+                                                                        child:(isTapStats[2] == true)
+                                                                            ? Text(_selectedDateName,
+                                                                            style: TextStyle(
+                                                                                fontSize: 12,
+                                                                                fontWeight: FontWeight.bold,
+                                                                                color: (isTapStats[2] == true) ? Color(0xFF3D83ED) : Color(0xFF777777)))
+                                                                            : Row(
+                                                                          children: [
+                                                                            Padding(
+                                                                              padding: const EdgeInsets.only(right: 4),
+                                                                              child:  ExtendedImage.network(
+                                                                                '${IconAssetUrlList[0].filter}',
+                                                                                enableMemoryCache: true,
+                                                                                shape: BoxShape.rectangle,
+                                                                                width: 12,
+                                                                                loadStateChanged: (ExtendedImageState state) {
+                                                                                  switch (state.extendedImageLoadState) {
+                                                                                    case LoadState.loading:
+                                                                                      return SizedBox.shrink();
+                                                                                    default:
+                                                                                      return null;
+                                                                                  }
+                                                                                },
+                                                                              ),
+                                                                            ),
+                                                                            Text('필터',
+                                                                                style: TextStyle(
+                                                                                    fontSize: 12,
+                                                                                    fontWeight: FontWeight.bold,
+                                                                                    color: Color(0xFF777777)))
+                                                                          ],
+                                                                        )
+
+                                                                    ),
+                                                                  ),
+                                                                ),
+
+                                                              )
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  if(isTap[1]==true && isTapStats[0] == true)
                                                     StreamBuilder<DocumentSnapshot>(
                                                         stream: _rankStream,
                                                         builder: (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
@@ -2402,258 +2666,278 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                           isPassDataZero = _liveMapController.areAllSlotValuesZero(passCountTimeData);
 
                                                           return
-                                                            (passCountData != null && passCountTimeData != null || friendDocs[0]['uid'] == _userModelController.uid )
+                                                            (passCountData != null && passCountTimeData != null)
                                                                 ? Column(
                                                               crossAxisAlignment: CrossAxisAlignment.start,
                                                               children: [
-                                                                SizedBox(height: 6),
-                                                                Padding(
-                                                                    padding: EdgeInsets.symmetric(horizontal: 20),
-                                                                    child: Text('라이딩 횟수',
-                                                                      style: TextStyle(
-                                                                          fontWeight: FontWeight.bold,
-                                                                          fontSize: 16,
-                                                                          color: Color(0xFF111111)
-                                                                      ),)),
-                                                                SizedBox(height: 10,),
-                                                                Container(
-                                                                  padding: EdgeInsets.symmetric(horizontal: barData.length < 4 ? 20 : 20),
-                                                                  width: _size.width,
-                                                                  height: 214,
-                                                                  decoration: BoxDecoration(
-                                                                    color: Color(0xFFDFECFF),
-                                                                    borderRadius: BorderRadius.circular(14),
-                                                                  ),
-                                                                  margin: EdgeInsets.symmetric(horizontal: 20),
-                                                                  child: Column(
-                                                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                                                    children: [
-                                                                      Expanded(
+
+                                                                Column(
+                                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                                  children: [
+                                                                    SizedBox(height: 6),
+                                                                    Row(
+                                                                      children: [
+                                                                        Padding(
+                                                                            padding: EdgeInsets.only(left: 20),
+                                                                            child: Text('라이딩 횟수',
+                                                                              style: TextStyle(
+                                                                                  fontWeight: FontWeight.bold,
+                                                                                  fontSize: 16,
+                                                                                  color: Color(0xFF111111)
+                                                                              ),)),
+                                                                        Expanded(child: SizedBox()),
+                                                                        if(data != null)
+                                                                          Padding(
+                                                                            padding: EdgeInsets.only(right: 20),
+                                                                            child: Text('${data['totalPassCount']}회',
+                                                                              style: TextStyle(
+                                                                                  fontWeight: FontWeight.bold,
+                                                                                  fontSize: 16,
+                                                                                  color: Color(0xFF111111)
+                                                                              ),),
+                                                                          ),
+                                                                      ],
+                                                                    ),
+                                                                    SizedBox(height: 10,),
+                                                                    Container(
+                                                                      padding: EdgeInsets.symmetric(horizontal: barData.length < 4 ? 20 : 20),
+                                                                      width: _size.width,
+                                                                      height: 214,
+                                                                      decoration: BoxDecoration(
+                                                                        color: Color(0xFFDFECFF),
+                                                                        borderRadius: BorderRadius.circular(14),
+                                                                      ),
+                                                                      margin: EdgeInsets.symmetric(horizontal: 20),
+                                                                      child: Column(
+                                                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                                                        children: [
+                                                                          Expanded(
+                                                                            child: Container(
+                                                                              margin: EdgeInsets.only(top: 6),
+                                                                              child: passCountData?.entries.isEmpty ?? true
+                                                                                  ? Center(child: Column(
+                                                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                                                children: [
+                                                                                  Image.asset(
+                                                                                    'assets/imgs/icons/icon_profile_nodata_1.png',
+                                                                                    scale: 4,
+                                                                                    width: 43,
+                                                                                    height: 32,
+                                                                                  ),
+                                                                                  SizedBox(
+                                                                                    height: 10,
+                                                                                  ),
+                                                                                  Text('데이터가 없습니다', style: TextStyle(
+                                                                                      color: Color(0xFF7A89A0)
+                                                                                  ),),
+                                                                                ],
+                                                                              ))
+                                                                                  : SingleChildScrollView(
+                                                                                scrollDirection: Axis.horizontal,
+                                                                                child: Row(
+                                                                                  mainAxisAlignment:
+                                                                                  barData.length < 2
+                                                                                      ? MainAxisAlignment.center
+                                                                                      : MainAxisAlignment.spaceBetween,
+                                                                                  children: barData.map((data) {
+                                                                                    String slopeName = data['slopeName'];
+                                                                                    int passCount = data['passCount'];
+                                                                                    double barHeightRatio = data['barHeightRatio'];
+                                                                                    Color barColor = data['barColor'];
+                                                                                    return Container(
+                                                                                      padding: EdgeInsets.only(bottom: 2),
+                                                                                      margin: EdgeInsets.symmetric(horizontal: 10),
+                                                                                      width: barData.length < 5 ? _size.width / 5 - 32 : _size.width / 5 - 32,
+                                                                                      height: 195,
+                                                                                      child: Column(
+                                                                                        mainAxisAlignment: MainAxisAlignment.end,
+                                                                                        children: [
+                                                                                          Text(
+                                                                                            passCount != 0 ? '$passCount' : '',
+                                                                                            style: TextStyle(
+                                                                                                fontSize: 13,
+                                                                                                color: Color(0xFF111111),
+                                                                                                fontWeight: FontWeight.bold
+                                                                                            ),
+                                                                                          ),
+                                                                                          SizedBox(height: 4),
+                                                                                          Container(
+                                                                                            width: 58,
+                                                                                            height: 140 * barHeightRatio,
+                                                                                            child: Container(
+                                                                                              width: 58,
+                                                                                              height: 140 * barHeightRatio,
+                                                                                              decoration: BoxDecoration(
+                                                                                                  color: barColor,
+                                                                                                  borderRadius: BorderRadius.only(
+                                                                                                      topRight: Radius.circular(4),
+                                                                                                      topLeft: Radius.circular(4)
+                                                                                                  )
+                                                                                              ),
+                                                                                            ),
+                                                                                          ),
+                                                                                          SizedBox(height: 10),
+                                                                                          Text(
+                                                                                            slopeName,
+                                                                                            style: TextStyle(fontSize: 12, color: Color(0xFF111111)),
+                                                                                          ),
+                                                                                        ],
+                                                                                      ),
+                                                                                    );
+                                                                                  }).toList(),
+                                                                                ),
+                                                                              ),
+                                                                            ),
+                                                                          ),
+
+                                                                        ],
+                                                                      ),
+                                                                    ),
+                                                                    SizedBox(height: 32),
+                                                                    Padding(
+                                                                        padding: EdgeInsets.symmetric(horizontal: 20),
+                                                                        child: Text('시간대별 라이딩 횟수',
+                                                                          style: TextStyle(
+                                                                              fontWeight: FontWeight.bold,
+                                                                              fontSize: 16,
+                                                                              color: Color(0xFF111111)
+                                                                          ),)),
+                                                                    SizedBox(height: 10),
+                                                                    Container(
+                                                                      height: 234,
+                                                                      decoration: BoxDecoration(
+                                                                        color: Color(0xFFDFECFF),
+                                                                        borderRadius: BorderRadius.circular(14),
+                                                                      ),
+                                                                      padding: EdgeInsets.only(bottom: 12),
+                                                                      margin: EdgeInsets.symmetric(horizontal: 20),
+                                                                      child: Column(
+                                                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                                                        children: [
+                                                                          Expanded(
+                                                                            child: Padding(
+                                                                              padding: const EdgeInsets.symmetric(horizontal: 16),
+                                                                              child: Container(
+                                                                                child: isPassDataZero
+                                                                                    ? Center(
+                                                                                    child: Padding(
+                                                                                      padding: const EdgeInsets.only(top: 20),
+                                                                                      child: Column(
+                                                                                        mainAxisAlignment: MainAxisAlignment.center,
+                                                                                        children: [
+                                                                                          Image.asset(
+                                                                                            'assets/imgs/icons/icon_profile_nodata_1.png',
+                                                                                            scale: 4,
+                                                                                            width: 43,
+                                                                                            height: 32,
+                                                                                          ),
+                                                                                          SizedBox(
+                                                                                            height: 10,
+                                                                                          ),
+                                                                                          Text('데이터가 없습니다', style: TextStyle(
+                                                                                              color: Color(0xFF7A89A0)
+                                                                                          ),),
+                                                                                        ],
+                                                                                      ),
+                                                                                    ))
+                                                                                    : Row(
+                                                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                                                  children: barData2.map((data) {
+                                                                                    String slotName = data['slotName'];
+                                                                                    int passCount = data['passCount'];
+                                                                                    double barHeightRatio = data['barHeightRatio'];
+                                                                                    Color barColor = data['barColor'];
+
+                                                                                    return Container(
+                                                                                      margin: EdgeInsets.symmetric(horizontal: 5),
+                                                                                      width: 25,
+                                                                                      child: Column(
+                                                                                        mainAxisAlignment: MainAxisAlignment.end,
+                                                                                        children: [
+                                                                                          AutoSizeText(
+                                                                                            passCount != 0 ? '$passCount' : '',
+                                                                                            style: TextStyle(
+                                                                                              fontSize: 13,
+                                                                                              color: Color(0xFF111111),
+                                                                                              fontWeight: FontWeight.bold,
+                                                                                            ),
+                                                                                            minFontSize: 8,
+                                                                                            maxLines: 1,
+                                                                                            overflow: TextOverflow.visible,
+                                                                                          ),
+                                                                                          SizedBox(height: 4),
+                                                                                          Container(
+                                                                                            width: 25,
+                                                                                            height: 140 * barHeightRatio,
+                                                                                            child: Container(
+                                                                                              width: 25,
+                                                                                              height: 140 * barHeightRatio,
+                                                                                              decoration: BoxDecoration(
+                                                                                                  color: barColor,
+                                                                                                  borderRadius: BorderRadius.only(
+                                                                                                      topRight: Radius.circular(4),
+                                                                                                      topLeft: Radius.circular(4)
+                                                                                                  )
+                                                                                              ),
+                                                                                            ),
+                                                                                          ),
+                                                                                          SizedBox(height: 10),
+                                                                                          Padding(
+                                                                                            padding: const EdgeInsets.only(left: 3),
+                                                                                            child: Text(
+                                                                                              _resortModelController.getSlotName(slotName),
+                                                                                              style: TextStyle(fontSize: 11, color: Color(0xFF111111)),
+                                                                                            ),
+                                                                                          ),
+                                                                                        ],
+                                                                                      ),
+                                                                                    );
+                                                                                  }).toList(),
+                                                                                ),
+                                                                              ),
+                                                                            ),
+                                                                          ),
+                                                                        ],
+                                                                      ),
+                                                                    ),
+                                                                    SizedBox(height: 7,),
+                                                                    Padding(
+                                                                        padding: EdgeInsets.symmetric(horizontal: 20),
                                                                         child: Container(
-                                                                          margin: EdgeInsets.only(top: 6),
-                                                                          child: passCountData?.entries.isEmpty ?? true
-                                                                              ? Center(child: Column(
-                                                                            mainAxisAlignment: MainAxisAlignment.center,
-                                                                            children: [
-                                                                              Image.asset(
-                                                                                'assets/imgs/icons/icon_profile_nodata_1.png',
-                                                                                scale: 4,
-                                                                                width: 43,
-                                                                                height: 32,
-                                                                              ),
-                                                                              SizedBox(
-                                                                                height: 10,
-                                                                              ),
-                                                                              Text('데이터가 없습니다', style: TextStyle(
-                                                                                  color: Color(0xFF7A89A0)
-                                                                              ),),
-                                                                            ],
-                                                                          ))
-                                                                              : SingleChildScrollView(
-                                                                            scrollDirection: Axis.horizontal,
+                                                                          child: Padding(
+                                                                            padding: const EdgeInsets.only(right: 4),
                                                                             child: Row(
-                                                                              mainAxisAlignment:
-                                                                              barData.length < 2
-                                                                                  ? MainAxisAlignment.center
-                                                                                  : MainAxisAlignment.spaceBetween,
-                                                                              children: barData.map((data) {
-                                                                                String slopeName = data['slopeName'];
-                                                                                int passCount = data['passCount'];
-                                                                                double barHeightRatio = data['barHeightRatio'];
-                                                                                Color barColor = data['barColor'];
-                                                                                return Container(
-                                                                                  padding: EdgeInsets.only(bottom: 2),
-                                                                                  margin: EdgeInsets.symmetric(horizontal: 10),
-                                                                                  width: barData.length < 5 ? _size.width / 5 - 32 : _size.width / 5 - 32,
-                                                                                  height: 195,
-                                                                                  child: Column(
-                                                                                    mainAxisAlignment: MainAxisAlignment.end,
-                                                                                    children: [
-                                                                                      Text(
-                                                                                        passCount != 0 ? '$passCount' : '',
-                                                                                        style: TextStyle(
-                                                                                            fontSize: 13,
-                                                                                            color: Color(0xFF111111),
-                                                                                            fontWeight: FontWeight.bold
-                                                                                        ),
-                                                                                      ),
-                                                                                      SizedBox(height: 4),
-                                                                                      Container(
-                                                                                        width: 58,
-                                                                                        height: 140 * barHeightRatio,
-                                                                                        child: Container(
-                                                                                          width: 58,
-                                                                                          height: 140 * barHeightRatio,
-                                                                                          decoration: BoxDecoration(
-                                                                                              color: barColor,
-                                                                                              borderRadius: BorderRadius.only(
-                                                                                                  topRight: Radius.circular(4),
-                                                                                                  topLeft: Radius.circular(4)
-                                                                                              )
-                                                                                          ),
-                                                                                        ),
-                                                                                      ),
-                                                                                      SizedBox(height: 10),
-                                                                                      Text(
-                                                                                        slopeName,
-                                                                                        style: TextStyle(fontSize: 12, color: Color(0xFF111111)),
-                                                                                      ),
-                                                                                    ],
-                                                                                  ),
-                                                                                );
-                                                                              }).toList(),
+                                                                              mainAxisAlignment: MainAxisAlignment.end,
+                                                                              children: [
+                                                                                Text('마지막 라이딩',
+                                                                                  style: TextStyle(
+                                                                                      fontSize: 13,
+                                                                                      color: Color(0xFF949494)
+                                                                                  ),),
+                                                                                SizedBox(
+                                                                                  width: 4,
+                                                                                ),
+                                                                                isPassDataZero
+                                                                                    ? Text('정보없음',
+                                                                                  style: TextStyle(
+                                                                                      fontSize: 13,
+                                                                                      fontWeight: FontWeight.bold,
+                                                                                      color: Color(0xFF949494)
+                                                                                  ),)
+                                                                                    : Text('${lastPassTimeString}',
+                                                                                  style: TextStyle(
+                                                                                      fontSize: 13,
+                                                                                      fontWeight: FontWeight.bold,
+                                                                                      color: Color(0xFF949494)
+                                                                                  ),)
+                                                                              ],
                                                                             ),
                                                                           ),
-                                                                        ),
-                                                                      ),
-
-                                                                    ],
-                                                                  ),
-                                                                ),
-                                                                SizedBox(height: 32),
-                                                                Padding(
-                                                                    padding: EdgeInsets.symmetric(horizontal: 20),
-                                                                    child: Text('시간대별 라이딩 횟수',
-                                                                      style: TextStyle(
-                                                                          fontWeight: FontWeight.bold,
-                                                                          fontSize: 16,
-                                                                          color: Color(0xFF111111)
-                                                                      ),)),
-                                                                SizedBox(height: 10),
-                                                                Container(
-                                                                  height: 234,
-                                                                  decoration: BoxDecoration(
-                                                                    color: Color(0xFFDFECFF),
-                                                                    borderRadius: BorderRadius.circular(14),
-                                                                  ),
-                                                                  padding: EdgeInsets.only(bottom: 12),
-                                                                  margin: EdgeInsets.symmetric(horizontal: 20),
-                                                                  child: Column(
-                                                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                                                    children: [
-                                                                      Expanded(
-                                                                        child: Padding(
-                                                                          padding: const EdgeInsets.symmetric(horizontal: 16),
-                                                                          child: Container(
-                                                                            child: isPassDataZero
-                                                                                ? Center(
-                                                                                child: Padding(
-                                                                                  padding: const EdgeInsets.only(top: 20),
-                                                                                  child: Column(
-                                                                                    mainAxisAlignment: MainAxisAlignment.center,
-                                                                                    children: [
-                                                                                      Image.asset(
-                                                                                        'assets/imgs/icons/icon_profile_nodata_1.png',
-                                                                                        scale: 4,
-                                                                                        width: 43,
-                                                                                        height: 32,
-                                                                                      ),
-                                                                                      SizedBox(
-                                                                                        height: 10,
-                                                                                      ),
-                                                                                      Text('데이터가 없습니다', style: TextStyle(
-                                                                                          color: Color(0xFF7A89A0)
-                                                                                      ),),
-                                                                                    ],
-                                                                                  ),
-                                                                                ))
-                                                                                : Row(
-                                                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                                              children: barData2.map((data) {
-                                                                                String slotName = data['slotName'];
-                                                                                int passCount = data['passCount'];
-                                                                                double barHeightRatio = data['barHeightRatio'];
-                                                                                Color barColor = data['barColor'];
-
-                                                                                return Container(
-                                                                                  margin: EdgeInsets.symmetric(horizontal: 5),
-                                                                                  width: 25,
-                                                                                  child: Column(
-                                                                                    mainAxisAlignment: MainAxisAlignment.end,
-                                                                                    children: [
-                                                                                      AutoSizeText(
-                                                                                        passCount != 0 ? '$passCount' : '',
-                                                                                        style: TextStyle(
-                                                                                          fontSize: 13,
-                                                                                          color: Color(0xFF111111),
-                                                                                          fontWeight: FontWeight.bold,
-                                                                                        ),
-                                                                                        minFontSize: 8,
-                                                                                        maxLines: 1,
-                                                                                        overflow: TextOverflow.visible,
-                                                                                      ),
-                                                                                      SizedBox(height: 4),
-                                                                                      Container(
-                                                                                        width: 25,
-                                                                                        height: 140 * barHeightRatio,
-                                                                                        child: Container(
-                                                                                          width: 25,
-                                                                                          height: 140 * barHeightRatio,
-                                                                                          decoration: BoxDecoration(
-                                                                                              color: barColor,
-                                                                                              borderRadius: BorderRadius.only(
-                                                                                                  topRight: Radius.circular(4),
-                                                                                                  topLeft: Radius.circular(4)
-                                                                                              )
-                                                                                          ),
-                                                                                        ),
-                                                                                      ),
-                                                                                      SizedBox(height: 10),
-                                                                                      Padding(
-                                                                                        padding: const EdgeInsets.only(left: 3),
-                                                                                        child: Text(
-                                                                                          _resortModelController.getSlotName(slotName),
-                                                                                          style: TextStyle(fontSize: 11, color: Color(0xFF111111)),
-                                                                                        ),
-                                                                                      ),
-                                                                                    ],
-                                                                                  ),
-                                                                                );
-                                                                              }).toList(),
-                                                                            ),
-                                                                          ),
-                                                                        ),
-                                                                      ),
-                                                                    ],
-                                                                  ),
-                                                                ),
-                                                                SizedBox(height: 7,),
-                                                                Padding(
-                                                                    padding: EdgeInsets.symmetric(horizontal: 20),
-                                                                    child: Container(
-                                                                      child: Padding(
-                                                                        padding: const EdgeInsets.only(right: 4),
-                                                                        child: Row(
-                                                                          mainAxisAlignment: MainAxisAlignment.end,
-                                                                          children: [
-                                                                            Text('마지막 라이딩',
-                                                                              style: TextStyle(
-                                                                                  fontSize: 13,
-                                                                                  color: Color(0xFF949494)
-                                                                              ),),
-                                                                            SizedBox(
-                                                                              width: 4,
-                                                                            ),
-                                                                            isPassDataZero
-                                                                                ? Text('정보없음',
-                                                                              style: TextStyle(
-                                                                                  fontSize: 13,
-                                                                                  fontWeight: FontWeight.bold,
-                                                                                  color: Color(0xFF949494)
-                                                                              ),)
-                                                                                : Text('${lastPassTimeString}',
-                                                                              style: TextStyle(
-                                                                                  fontSize: 13,
-                                                                                  fontWeight: FontWeight.bold,
-                                                                                  color: Color(0xFF949494)
-                                                                              ),)
-                                                                          ],
-                                                                        ),
-                                                                      ),
-                                                                      alignment: Alignment.bottomRight,
-                                                                    )),
-                                                                //시간대별 라이딩 횟수
-                                                                SizedBox(height: 30),
+                                                                          alignment: Alignment.bottomRight,
+                                                                        )),
+                                                                    //시간대별 라이딩 횟수
+                                                                    SizedBox(height: 30),
+                                                                  ],)
                                                               ],
                                                             )
                                                                 : Column(
@@ -2685,10 +2969,693 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                               ],
                                                             );
 
-                                                        }), //라이딩횟수 그래프
+                                                        }),
+                                                  if(isTap[1]==true && isTapStats[1] == true)
+                                                    StreamBuilder<QuerySnapshot>(
+                                                        stream: _rankStreamDaily,
+                                                        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                                                          if (snapshot.hasError) {
+                                                            return Text("오류가 발생했습니다");
+                                                          }
+                                                          else if (snapshot.connectionState == ConnectionState.waiting) {
+                                                            return SizedBox.shrink();
+                                                          }
+
+                                                          List<QueryDocumentSnapshot> documents = snapshot.data!.docs;
+
+                                                          if(documents.isEmpty){
+                                                            return Column(
+                                                              crossAxisAlignment: CrossAxisAlignment.center,
+                                                              mainAxisAlignment: MainAxisAlignment.center,
+                                                              children: [
+                                                                SizedBox(
+                                                                  height: _size.height / 5,
+                                                                ),
+                                                                Container(
+                                                                  width: 48,
+                                                                  child: ExtendedImage.asset(
+                                                                    'assets/imgs/ranking/icon_ranking_nodata_2.png',
+                                                                    enableMemoryCache: true,
+                                                                    scale: 4,
+                                                                  ),
+                                                                ),
+                                                                SizedBox(
+                                                                  height: 16,
+                                                                ),
+                                                                Center(
+                                                                  child: Text('라이딩 기록이 없어요',
+                                                                    style: TextStyle(
+                                                                        color: Color(0xFF666666),
+                                                                        fontSize: 15,
+                                                                        fontWeight: FontWeight.normal
+                                                                    ),),
+                                                                ),
+                                                              ],
+                                                            );
+                                                          }
+
+                                                          QueryDocumentSnapshot document = documents[0]; // 예제로 첫 번째 문서를 가져옵니다.
+
+                                                          Map<String, dynamic>? data = document.data() as Map<String, dynamic>?;
+                                                          Map<String, dynamic>? passCountData = data?['passCountData'] as Map<String, dynamic>?;
+                                                          Map<String, dynamic>? passCountTimeData = data?['passCountTimeData'] as Map<String, dynamic>?;
+
+                                                          try{
+                                                            Timestamp lastPassTime = data?['lastPassTime'];
+                                                            lastPassTimeString = _timeStampController.getAgoTime(lastPassTime);
+                                                          }catch(e){
+                                                            lastPassTimeString = '정보 없음';
+                                                          }
+
+                                                          List<Map<String, dynamic>> barData = _liveMapController.calculateBarDataPassCount(passCountData);
+                                                          List<Map<String, dynamic>> barData2 = _liveMapController.calculateBarDataSlot(passCountTimeData);
+                                                          isPassDataZero = _liveMapController.areAllSlotValuesZero(passCountTimeData);
+
+                                                          return
+                                                            (passCountData != null && passCountTimeData != null)
+                                                                ? Column(
+                                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                                              children: [
+
+                                                                Column(
+                                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                                  children: [
+                                                                    SizedBox(height: 6),
+                                                                    Row(
+                                                                      children: [
+                                                                        Padding(
+                                                                            padding: EdgeInsets.only(left: 20),
+                                                                            child: Text('라이딩 횟수',
+                                                                              style: TextStyle(
+                                                                                  fontWeight: FontWeight.bold,
+                                                                                  fontSize: 16,
+                                                                                  color: Color(0xFF111111)
+                                                                              ),)),
+                                                                        Expanded(child: SizedBox()),
+                                                                        if(data != null)
+                                                                          Padding(
+                                                                            padding: EdgeInsets.only(right: 20),
+                                                                            child: Text('${data['totalPassCount']}회',
+                                                                              style: TextStyle(
+                                                                                  fontWeight: FontWeight.bold,
+                                                                                  fontSize: 16,
+                                                                                  color: Color(0xFF111111)
+                                                                              ),),
+                                                                          ),
+                                                                      ],
+                                                                    ),
+                                                                    SizedBox(height: 10,),
+                                                                    Container(
+                                                                      padding: EdgeInsets.symmetric(horizontal: barData.length < 4 ? 20 : 20),
+                                                                      width: _size.width,
+                                                                      height: 214,
+                                                                      decoration: BoxDecoration(
+                                                                        color: Color(0xFFDFECFF),
+                                                                        borderRadius: BorderRadius.circular(14),
+                                                                      ),
+                                                                      margin: EdgeInsets.symmetric(horizontal: 20),
+                                                                      child: Column(
+                                                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                                                        children: [
+                                                                          Expanded(
+                                                                            child: Container(
+                                                                              margin: EdgeInsets.only(top: 6),
+                                                                              child: passCountData?.entries.isEmpty ?? true
+                                                                                  ? Center(child: Column(
+                                                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                                                children: [
+                                                                                  Image.asset(
+                                                                                    'assets/imgs/icons/icon_profile_nodata_1.png',
+                                                                                    scale: 4,
+                                                                                    width: 43,
+                                                                                    height: 32,
+                                                                                  ),
+                                                                                  SizedBox(
+                                                                                    height: 10,
+                                                                                  ),
+                                                                                  Text('데이터가 없습니다', style: TextStyle(
+                                                                                      color: Color(0xFF7A89A0)
+                                                                                  ),),
+                                                                                ],
+                                                                              ))
+                                                                                  : SingleChildScrollView(
+                                                                                scrollDirection: Axis.horizontal,
+                                                                                child: Row(
+                                                                                  mainAxisAlignment:
+                                                                                  barData.length < 2
+                                                                                      ? MainAxisAlignment.center
+                                                                                      : MainAxisAlignment.spaceBetween,
+                                                                                  children: barData.map((data) {
+                                                                                    String slopeName = data['slopeName'];
+                                                                                    int passCount = data['passCount'];
+                                                                                    double barHeightRatio = data['barHeightRatio'];
+                                                                                    Color barColor = data['barColor'];
+                                                                                    return Container(
+                                                                                      padding: EdgeInsets.only(bottom: 2),
+                                                                                      margin: EdgeInsets.symmetric(horizontal: 10),
+                                                                                      width: barData.length < 5 ? _size.width / 5 - 32 : _size.width / 5 - 32,
+                                                                                      height: 195,
+                                                                                      child: Column(
+                                                                                        mainAxisAlignment: MainAxisAlignment.end,
+                                                                                        children: [
+                                                                                          Text(
+                                                                                            passCount != 0 ? '$passCount' : '',
+                                                                                            style: TextStyle(
+                                                                                                fontSize: 13,
+                                                                                                color: Color(0xFF111111),
+                                                                                                fontWeight: FontWeight.bold
+                                                                                            ),
+                                                                                          ),
+                                                                                          SizedBox(height: 4),
+                                                                                          Container(
+                                                                                            width: 58,
+                                                                                            height: 140 * barHeightRatio,
+                                                                                            child: Container(
+                                                                                              width: 58,
+                                                                                              height: 140 * barHeightRatio,
+                                                                                              decoration: BoxDecoration(
+                                                                                                  color: barColor,
+                                                                                                  borderRadius: BorderRadius.only(
+                                                                                                      topRight: Radius.circular(4),
+                                                                                                      topLeft: Radius.circular(4)
+                                                                                                  )
+                                                                                              ),
+                                                                                            ),
+                                                                                          ),
+                                                                                          SizedBox(height: 10),
+                                                                                          Text(
+                                                                                            slopeName,
+                                                                                            style: TextStyle(fontSize: 12, color: Color(0xFF111111)),
+                                                                                          ),
+                                                                                        ],
+                                                                                      ),
+                                                                                    );
+                                                                                  }).toList(),
+                                                                                ),
+                                                                              ),
+                                                                            ),
+                                                                          ),
+
+                                                                        ],
+                                                                      ),
+                                                                    ),
+                                                                    SizedBox(height: 32),
+                                                                    Padding(
+                                                                        padding: EdgeInsets.symmetric(horizontal: 20),
+                                                                        child: Text('시간대별 라이딩 횟수',
+                                                                          style: TextStyle(
+                                                                              fontWeight: FontWeight.bold,
+                                                                              fontSize: 16,
+                                                                              color: Color(0xFF111111)
+                                                                          ),)),
+                                                                    SizedBox(height: 10),
+                                                                    Container(
+                                                                      height: 234,
+                                                                      decoration: BoxDecoration(
+                                                                        color: Color(0xFFDFECFF),
+                                                                        borderRadius: BorderRadius.circular(14),
+                                                                      ),
+                                                                      padding: EdgeInsets.only(bottom: 12),
+                                                                      margin: EdgeInsets.symmetric(horizontal: 20),
+                                                                      child: Column(
+                                                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                                                        children: [
+                                                                          Expanded(
+                                                                            child: Padding(
+                                                                              padding: const EdgeInsets.symmetric(horizontal: 16),
+                                                                              child: Container(
+                                                                                child: isPassDataZero
+                                                                                    ? Center(
+                                                                                    child: Padding(
+                                                                                      padding: const EdgeInsets.only(top: 20),
+                                                                                      child: Column(
+                                                                                        mainAxisAlignment: MainAxisAlignment.center,
+                                                                                        children: [
+                                                                                          Image.asset(
+                                                                                            'assets/imgs/icons/icon_profile_nodata_1.png',
+                                                                                            scale: 4,
+                                                                                            width: 43,
+                                                                                            height: 32,
+                                                                                          ),
+                                                                                          SizedBox(
+                                                                                            height: 10,
+                                                                                          ),
+                                                                                          Text('데이터가 없습니다', style: TextStyle(
+                                                                                              color: Color(0xFF7A89A0)
+                                                                                          ),),
+                                                                                        ],
+                                                                                      ),
+                                                                                    ))
+                                                                                    : Row(
+                                                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                                                  children: barData2.map((data) {
+                                                                                    String slotName = data['slotName'];
+                                                                                    int passCount = data['passCount'];
+                                                                                    double barHeightRatio = data['barHeightRatio'];
+                                                                                    Color barColor = data['barColor'];
+
+                                                                                    return Container(
+                                                                                      margin: EdgeInsets.symmetric(horizontal: 5),
+                                                                                      width: 25,
+                                                                                      child: Column(
+                                                                                        mainAxisAlignment: MainAxisAlignment.end,
+                                                                                        children: [
+                                                                                          AutoSizeText(
+                                                                                            passCount != 0 ? '$passCount' : '',
+                                                                                            style: TextStyle(
+                                                                                              fontSize: 13,
+                                                                                              color: Color(0xFF111111),
+                                                                                              fontWeight: FontWeight.bold,
+                                                                                            ),
+                                                                                            minFontSize: 8,
+                                                                                            maxLines: 1,
+                                                                                            overflow: TextOverflow.visible,
+                                                                                          ),
+                                                                                          SizedBox(height: 4),
+                                                                                          Container(
+                                                                                            width: 25,
+                                                                                            height: 140 * barHeightRatio,
+                                                                                            child: Container(
+                                                                                              width: 25,
+                                                                                              height: 140 * barHeightRatio,
+                                                                                              decoration: BoxDecoration(
+                                                                                                  color: barColor,
+                                                                                                  borderRadius: BorderRadius.only(
+                                                                                                      topRight: Radius.circular(4),
+                                                                                                      topLeft: Radius.circular(4)
+                                                                                                  )
+                                                                                              ),
+                                                                                            ),
+                                                                                          ),
+                                                                                          SizedBox(height: 10),
+                                                                                          Padding(
+                                                                                            padding: const EdgeInsets.only(left: 3),
+                                                                                            child: Text(
+                                                                                              _resortModelController.getSlotName(slotName),
+                                                                                              style: TextStyle(fontSize: 11, color: Color(0xFF111111)),
+                                                                                            ),
+                                                                                          ),
+                                                                                        ],
+                                                                                      ),
+                                                                                    );
+                                                                                  }).toList(),
+                                                                                ),
+                                                                              ),
+                                                                            ),
+                                                                          ),
+                                                                        ],
+                                                                      ),
+                                                                    ),
+                                                                    SizedBox(height: 7,),
+                                                                    Padding(
+                                                                        padding: EdgeInsets.symmetric(horizontal: 20),
+                                                                        child: Container(
+                                                                          child: Padding(
+                                                                            padding: const EdgeInsets.only(right: 4),
+                                                                            child: Row(
+                                                                              mainAxisAlignment: MainAxisAlignment.end,
+                                                                              children: [
+                                                                                Text('마지막 라이딩',
+                                                                                  style: TextStyle(
+                                                                                      fontSize: 13,
+                                                                                      color: Color(0xFF949494)
+                                                                                  ),),
+                                                                                SizedBox(
+                                                                                  width: 4,
+                                                                                ),
+                                                                                isPassDataZero
+                                                                                    ? Text('정보없음',
+                                                                                  style: TextStyle(
+                                                                                      fontSize: 13,
+                                                                                      fontWeight: FontWeight.bold,
+                                                                                      color: Color(0xFF949494)
+                                                                                  ),)
+                                                                                    : Text('${lastPassTimeString}',
+                                                                                  style: TextStyle(
+                                                                                      fontSize: 13,
+                                                                                      fontWeight: FontWeight.bold,
+                                                                                      color: Color(0xFF949494)
+                                                                                  ),)
+                                                                              ],
+                                                                            ),
+                                                                          ),
+                                                                          alignment: Alignment.bottomRight,
+                                                                        )),
+                                                                    //시간대별 라이딩 횟수
+                                                                    SizedBox(height: 30),
+                                                                  ],)
+                                                              ],
+                                                            )
+                                                                : Column(
+                                                              crossAxisAlignment: CrossAxisAlignment.center,
+                                                              mainAxisAlignment: MainAxisAlignment.center,
+                                                              children: [
+                                                                SizedBox(
+                                                                  height: _size.height / 5,
+                                                                ),
+                                                                Container(
+                                                                  width: 48,
+                                                                  child: ExtendedImage.asset(
+                                                                    'assets/imgs/ranking/icon_ranking_nodata_2.png',
+                                                                    enableMemoryCache: true,
+                                                                    scale: 4,
+                                                                  ),
+                                                                ),
+                                                                SizedBox(
+                                                                  height: 16,
+                                                                ),
+                                                                Center(
+                                                                  child: Text('라이딩 기록이 없어요',
+                                                                    style: TextStyle(
+                                                                        color: Color(0xFF666666),
+                                                                        fontSize: 15,
+                                                                        fontWeight: FontWeight.normal
+                                                                    ),),
+                                                                ),
+                                                              ],
+                                                            );
+
+                                                        }),
 
                                                 ],
                                               ),
+                                              (isTap[0]==true && widget.uid != _userModelController.uid)
+                                                  ? Positioned(
+                                                left: 0,
+                                                right: 0,
+                                                bottom: 0,
+                                                child: Container(
+                                                  color: Colors.white,
+                                                  child: Padding(
+                                                    padding: const EdgeInsets.all(16),
+                                                    child: TextFormField(
+                                                      key: _formKeyProfile4,
+                                                      cursorColor: Color(0xff377EEA),
+                                                      controller: _friendTalkController,
+                                                      strutStyle: StrutStyle(leading: 0.3),
+                                                      maxLines: 1,
+                                                      enableSuggestions: false,
+                                                      autocorrect: false,
+                                                      textInputAction: TextInputAction.newline,
+                                                      decoration: InputDecoration(
+                                                          floatingLabelBehavior: FloatingLabelBehavior.never,
+                                                          suffixIcon: IconButton(
+                                                            splashColor: Colors.transparent,
+                                                            onPressed: () async {
+                                                              if (_friendTalkController.text.trim().isEmpty) {
+                                                                return;
+                                                              }
+                                                              try {
+                                                                if (_userModelController.myFriendCommentUidList!.contains(widget.uid)
+                                                                    && _userModelController.commentCheck! == false) {
+                                                                  Get.dialog(
+                                                                      AlertDialog(
+                                                                        contentPadding: EdgeInsets.only(bottom: 0, left: 20, right: 20, top: 30),
+                                                                        elevation: 0,
+                                                                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+                                                                        content: Column(
+                                                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                                                          mainAxisAlignment: MainAxisAlignment.start,
+                                                                          mainAxisSize: MainAxisSize.min,
+                                                                          children: [
+                                                                            Text("친구톡을 새로 등록하면 이전에 등록된 친구톡은 삭제됩니다. 계속하시겠습니까?",
+                                                                              softWrap: true,
+                                                                              overflow: TextOverflow.visible,
+                                                                              style: TextStyle(
+                                                                                  fontSize: 16,
+                                                                                  fontWeight: FontWeight.bold,
+                                                                                  color: Color(0xFF111111),
+                                                                                  height: 1.4
+                                                                              ),
+                                                                            ),
+                                                                            SizedBox(
+                                                                              height: 24,
+                                                                            ),
+                                                                            Obx(() =>
+                                                                                GestureDetector(
+                                                                                  onTap: (){
+                                                                                    _dialogController.isChecked.value = !_dialogController.isChecked.value;
+                                                                                  },
+                                                                                  child: Row(
+                                                                                    children: [
+                                                                                      Image.asset(
+                                                                                        _dialogController.isChecked.value
+                                                                                            ? 'assets/imgs/icons/icon_check_filled.png'
+                                                                                            : 'assets/imgs/icons/icon_check_unfilled.png',
+                                                                                        width: 24,
+                                                                                        height: 24,
+                                                                                      ),
+                                                                                      // Checkbox(
+                                                                                      //   value: _dialogController.isChecked.value,
+                                                                                      //   onChanged: (newValue) {
+                                                                                      //     _dialogController.isChecked.value = newValue!;
+                                                                                      //   },
+                                                                                      // ),
+                                                                                      SizedBox(width: 8),
+                                                                                      Text('다시 보지 않기',
+                                                                                        style: TextStyle(
+                                                                                          fontSize: 14,
+                                                                                        ),
+                                                                                      ),
+                                                                                    ],
+                                                                                  ),
+                                                                                ),
+                                                                            ),
+                                                                            SizedBox(
+                                                                              height: 24,
+                                                                            ),
+                                                                          ],
+                                                                        ),
+                                                                        actions: [
+                                                                          Padding(
+                                                                            padding: const EdgeInsets.only(left: 12, right: 12, bottom: 12),
+                                                                            child: Row(
+                                                                              children: [
+                                                                                Expanded(
+                                                                                  child: ElevatedButton(
+                                                                                    onPressed: () async {
+                                                                                      _dialogController.isChecked.value = false;
+                                                                                      Navigator.pop(context);
+                                                                                    },
+                                                                                    child: Text(
+                                                                                      '취소',
+                                                                                      style: TextStyle(
+                                                                                          color: Color(0xff3D83ED),
+                                                                                          fontSize: 15,
+                                                                                          fontWeight: FontWeight.bold),
+                                                                                    ),
+                                                                                    style: TextButton.styleFrom(
+                                                                                      splashFactory: InkRipple.splashFactory,
+                                                                                      elevation: 0,
+                                                                                      minimumSize: Size(100, 48),
+                                                                                      backgroundColor: Color(0xFF3D83ED).withOpacity(0.2),
+                                                                                    ),
+                                                                                  ),
+                                                                                ),
+                                                                                SizedBox(width: 8,),
+                                                                                Obx(() => Expanded(
+                                                                                  child: ElevatedButton(
+                                                                                    style: TextButton.styleFrom(
+                                                                                      splashFactory: InkRipple.splashFactory,
+                                                                                      elevation: 0,
+                                                                                      minimumSize: Size(100, 48),
+                                                                                      backgroundColor: Color(0xFF3D83ED),
+                                                                                    ),
+                                                                                    child: Text("친구톡 등록",
+                                                                                      style: TextStyle(
+                                                                                          color: Color(0xffffffff),
+                                                                                          fontSize: 15,
+                                                                                          fontWeight: FontWeight.bold),
+                                                                                    ),
+                                                                                    onPressed: _dialogController.isChecked.value
+                                                                                        ? () async {
+                                                                                      CustomFullScreenDialog.showDialog();
+                                                                                      await _userModelController.updateCommentCheck();
+                                                                                      await _friendsCommentModelController.sendMessage(
+                                                                                        displayName: _userModelController.displayName,
+                                                                                        profileImageUrl: _userModelController.profileImageUrl,
+                                                                                        comment: _newComment,
+                                                                                        commentCount: _userModelController.commentCount,
+                                                                                        resortNickname: _userModelController.resortNickname,
+                                                                                        myUid: _userModelController.uid,
+                                                                                        friendsUid: widget.uid,
+                                                                                      );
+                                                                                      String? alarmCategory = AlarmCenterModel().alarmCategory[AlarmCenterModel.friendTalkKey];
+                                                                                      await _alarmCenterController.sendAlarm(
+                                                                                          alarmCount: 'friend',
+                                                                                          receiverUid: widget.uid,
+                                                                                          senderUid: _userModelController.uid,
+                                                                                          senderDisplayName: _userModelController.displayName,
+                                                                                          timeStamp: Timestamp.now(),
+                                                                                          category: alarmCategory,
+                                                                                          msg: '${_userModelController.displayName}님이 $alarmCategory을 등록했습니다.',
+                                                                                          content: _newComment,
+                                                                                          docName: '',
+                                                                                          liveTalk_uid : '',
+                                                                                          liveTalk_commentCount : '',
+                                                                                          bulletinRoomUid :'',
+                                                                                          bulletinRoomCount :'',
+                                                                                          bulletinCrewUid : '',
+                                                                                          bulletinCrewCount : '',
+                                                                                          bulletinFreeUid : '',
+                                                                                          bulletinFreeCount : '',
+                                                                                          bulletinEventUid : '',
+                                                                                          bulletinEventCount : '',
+                                                                                          originContent: 'friend'
+                                                                                      );
+                                                                                      await _userModelController.getCurrentUser(
+                                                                                          _userModelController.uid);
+                                                                                      _friendTalkController.clear();
+                                                                                      Navigator.pop(context);
+                                                                                      FocusScope.of(context).unfocus();
+                                                                                      CustomFullScreenDialog.cancelDialog();
+                                                                                    }
+                                                                                        : () async {
+                                                                                      CustomFullScreenDialog.showDialog();
+                                                                                      await _friendsCommentModelController.sendMessage(
+                                                                                        displayName: _userModelController.displayName,
+                                                                                        profileImageUrl: _userModelController.profileImageUrl,
+                                                                                        comment: _newComment,
+                                                                                        commentCount: _userModelController.commentCount,
+                                                                                        resortNickname: _userModelController.resortNickname,
+                                                                                        myUid: _userModelController.uid,
+                                                                                        friendsUid: widget.uid,
+                                                                                      );
+                                                                                      String? alarmCategory = AlarmCenterModel().alarmCategory[AlarmCenterModel.friendTalkKey];
+                                                                                      await _alarmCenterController.sendAlarm(
+                                                                                          alarmCount: 'friend',
+                                                                                          receiverUid: widget.uid,
+                                                                                          senderUid: _userModelController.uid,
+                                                                                          senderDisplayName: _userModelController.displayName,
+                                                                                          timeStamp: Timestamp.now(),
+                                                                                          category: alarmCategory,
+                                                                                          msg: '${_userModelController.displayName}님이 $alarmCategory을 등록했습니다.',
+                                                                                          content: _newComment,
+                                                                                          docName: '',
+                                                                                          liveTalk_uid : '',
+                                                                                          liveTalk_commentCount : '',
+                                                                                          bulletinRoomUid :'',
+                                                                                          bulletinRoomCount :'',
+                                                                                          bulletinCrewUid : '',
+                                                                                          bulletinCrewCount : '',
+                                                                                          bulletinFreeUid : '',
+                                                                                          bulletinFreeCount : '',
+                                                                                          bulletinEventUid : '',
+                                                                                          bulletinEventCount : '',
+                                                                                          originContent: 'friend'
+                                                                                      );
+                                                                                      _friendTalkController.clear();
+                                                                                      Navigator.pop(context);
+                                                                                      FocusScope.of(context).unfocus();
+                                                                                      CustomFullScreenDialog.cancelDialog();
+                                                                                    },
+                                                                                  ),
+                                                                                ),
+                                                                                ),
+                                                                              ],
+                                                                            ),
+                                                                          ),
+                                                                        ],
+                                                                      )
+                                                                  );
+                                                                  Get.dialog(
+                                                                      AlertDialog()
+                                                                  ); //빈 다이얼로그. 이거없으면 위 다이얼로그가 안나옴..
+
+                                                                } else {
+                                                                  CustomFullScreenDialog.showDialog();
+                                                                  await _friendsCommentModelController.sendMessage(
+                                                                    displayName: _userModelController.displayName,
+                                                                    profileImageUrl: _userModelController.profileImageUrl,
+                                                                    comment: _newComment,
+                                                                    commentCount: _userModelController.commentCount,
+                                                                    resortNickname: _userModelController.resortNickname,
+                                                                    myUid: _userModelController.uid,
+                                                                    friendsUid: widget.uid,
+                                                                  );
+                                                                  await _userModelController
+                                                                      .updateMyFriendCommentUidList(
+                                                                      friendUid: widget.uid);
+                                                                  String? alarmCategory = AlarmCenterModel().alarmCategory[AlarmCenterModel.friendTalkKey];
+                                                                  await _alarmCenterController.sendAlarm(
+                                                                      alarmCount: 'friend',
+                                                                      receiverUid: widget.uid,
+                                                                      senderUid: _userModelController.uid,
+                                                                      senderDisplayName: _userModelController.displayName,
+                                                                      timeStamp: Timestamp.now(),
+                                                                      category: alarmCategory,
+                                                                      msg: '${_userModelController.displayName}님이 $alarmCategory을 등록했습니다.',
+                                                                      content: _newComment,
+                                                                      docName: '',
+                                                                      liveTalk_uid : '',
+                                                                      liveTalk_commentCount : '',
+                                                                      bulletinRoomUid :'',
+                                                                      bulletinRoomCount :'',
+                                                                      bulletinCrewUid : '',
+                                                                      bulletinCrewCount : '',
+                                                                      bulletinFreeUid : '',
+                                                                      bulletinFreeCount : '',
+                                                                      bulletinEventUid : '',
+                                                                      bulletinEventCount : '',
+                                                                      originContent: 'friend'
+                                                                  );
+                                                                  FocusScope.of(context).unfocus();
+                                                                  _friendTalkController.clear();
+                                                                }
+                                                              } catch (e) {
+                                                                CustomFullScreenDialog.cancelDialog();
+                                                              }
+                                                              CustomFullScreenDialog.cancelDialog();
+                                                            },
+                                                            icon: (_friendTalkController.text.trim().isEmpty)
+                                                                ? Image.asset(
+                                                              'assets/imgs/icons/icon_livetalk_send_g.png',
+                                                              width: 27,
+                                                              height: 27,
+                                                            )
+                                                                : Image.asset(
+                                                              'assets/imgs/icons/icon_livetalk_send.png',
+                                                              width: 27,
+                                                              height: 27,
+                                                            ),
+                                                          ),
+                                                          labelStyle: TextStyle(color: Color(0xff949494), fontSize: 15),
+                                                          hintStyle: TextStyle(color: Color(0xffb7b7b7), fontSize: 15),
+                                                          errorStyle: TextStyle(
+                                                            fontSize: 12,
+                                                          ),
+                                                          hintText: '친구톡 남기기',
+                                                          contentPadding: EdgeInsets.only(
+                                                              top: 2, bottom: 2, left: 16, right: 16),
+                                                          fillColor: Color(0xFFEFEFEF),
+                                                          hoverColor: Colors.transparent,
+                                                          filled: true,
+                                                          focusColor: Colors.transparent,
+                                                          border: OutlineInputBorder(
+                                                            borderSide: BorderSide(color: Color(0xFFEFEFEF)),
+                                                            borderRadius: BorderRadius.circular(6),
+                                                          ),
+                                                          errorBorder:  OutlineInputBorder(
+                                                            borderSide: BorderSide(color: Colors.transparent),
+                                                          ),
+                                                          focusedBorder:  OutlineInputBorder(
+                                                            borderSide: BorderSide(color: Colors.transparent),
+                                                          ),
+                                                          enabledBorder: OutlineInputBorder(
+                                                            borderSide: BorderSide(color: Colors.transparent),
+                                                            borderRadius: BorderRadius.circular(6),
+                                                          )),
+                                                      onChanged: (value) {
+                                                        setState(() {
+                                                          _newComment = value;
+
+                                                        });
+                                                      },
+                                                    ),
+                                                  ),
+                                                ),
+                                              )
+                                                  : Container(),
                                             ],
                                           ),
                                         )
@@ -2700,324 +3667,6 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                         ),
                       ),
                     ),
-                    if(isTap[0]==true)
-                      (widget.uid != _userModelController.uid)
-                          ? Positioned(
-                        left: 0,
-                        right: 0,
-                        bottom: 0,
-                        child: Container(
-                          color: Colors.white,
-                          child: Padding(
-                            padding: const EdgeInsets.all(16),
-                            child: TextFormField(
-                              key: _formKeyProfile4,
-                              cursorColor: Color(0xff377EEA),
-                              controller: _friendTalkController,
-                              strutStyle: StrutStyle(leading: 0.3),
-                              maxLines: 1,
-                              enableSuggestions: false,
-                              autocorrect: false,
-                              textInputAction: TextInputAction.newline,
-                              decoration: InputDecoration(
-                                  floatingLabelBehavior: FloatingLabelBehavior.never,
-                                  suffixIcon: IconButton(
-                                    splashColor: Colors.transparent,
-                                    onPressed: () async {
-                                      if (_friendTalkController.text.trim().isEmpty) {
-                                        return;
-                                      }
-                                      try {
-                                        if (_userModelController.myFriendCommentUidList!.contains(widget.uid)
-                                            && _userModelController.commentCheck! == false) {
-                                          Get.dialog(
-                                              AlertDialog(
-                                                contentPadding: EdgeInsets.only(bottom: 0, left: 20, right: 20, top: 30),
-                                                elevation: 0,
-                                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
-                                                content: Column(
-                                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                                  mainAxisAlignment: MainAxisAlignment.start,
-                                                  mainAxisSize: MainAxisSize.min,
-                                                  children: [
-                                                    Text("친구톡을 새로 등록하면 이전에 등록된 친구톡은 삭제됩니다. 계속하시겠습니까?",
-                                                      softWrap: true,
-                                                      overflow: TextOverflow.visible,
-                                                      style: TextStyle(
-                                                          fontSize: 16,
-                                                          fontWeight: FontWeight.bold,
-                                                          color: Color(0xFF111111),
-                                                          height: 1.4
-                                                      ),
-                                                    ),
-                                                    SizedBox(
-                                                      height: 24,
-                                                    ),
-                                                    Obx(() =>
-                                                        GestureDetector(
-                                                          onTap: (){
-                                                            _dialogController.isChecked.value = !_dialogController.isChecked.value;
-                                                          },
-                                                          child: Row(
-                                                            children: [
-                                                              Image.asset(
-                                                                _dialogController.isChecked.value
-                                                                    ? 'assets/imgs/icons/icon_check_filled.png'
-                                                                    : 'assets/imgs/icons/icon_check_unfilled.png',
-                                                                width: 24,
-                                                                height: 24,
-                                                              ),
-                                                              // Checkbox(
-                                                              //   value: _dialogController.isChecked.value,
-                                                              //   onChanged: (newValue) {
-                                                              //     _dialogController.isChecked.value = newValue!;
-                                                              //   },
-                                                              // ),
-                                                              SizedBox(width: 8),
-                                                              Text('다시 보지 않기',
-                                                                style: TextStyle(
-                                                                  fontSize: 14,
-                                                                ),
-                                                              ),
-                                                            ],
-                                                          ),
-                                                        ),
-                                                    ),
-                                                    SizedBox(
-                                                      height: 24,
-                                                    ),
-                                                  ],
-                                                ),
-                                                actions: [
-                                                  Padding(
-                                                    padding: const EdgeInsets.only(left: 12, right: 12, bottom: 12),
-                                                    child: Row(
-                                                      children: [
-                                                        Expanded(
-                                                          child: ElevatedButton(
-                                                            onPressed: () async {
-                                                              _dialogController.isChecked.value = false;
-                                                              Navigator.pop(context);
-                                                            },
-                                                            child: Text(
-                                                              '취소',
-                                                              style: TextStyle(
-                                                                  color: Color(0xff3D83ED),
-                                                                  fontSize: 15,
-                                                                  fontWeight: FontWeight.bold),
-                                                            ),
-                                                            style: TextButton.styleFrom(
-                                                              splashFactory: InkRipple.splashFactory,
-                                                              elevation: 0,
-                                                              minimumSize: Size(100, 48),
-                                                              backgroundColor: Color(0xFF3D83ED).withOpacity(0.2),
-                                                            ),
-                                                          ),
-                                                        ),
-                                                        SizedBox(width: 8,),
-                                                        Obx(() => Expanded(
-                                                          child: ElevatedButton(
-                                                            style: TextButton.styleFrom(
-                                                              splashFactory: InkRipple.splashFactory,
-                                                              elevation: 0,
-                                                              minimumSize: Size(100, 48),
-                                                              backgroundColor: Color(0xFF3D83ED),
-                                                            ),
-                                                            child: Text("친구톡 등록",
-                                                              style: TextStyle(
-                                                                  color: Color(0xffffffff),
-                                                                  fontSize: 15,
-                                                                  fontWeight: FontWeight.bold),
-                                                            ),
-                                                            onPressed: _dialogController.isChecked.value
-                                                                ? () async {
-                                                              CustomFullScreenDialog.showDialog();
-                                                              await _userModelController.updateCommentCheck();
-                                                              await _friendsCommentModelController.sendMessage(
-                                                                displayName: _userModelController.displayName,
-                                                                profileImageUrl: _userModelController.profileImageUrl,
-                                                                comment: _newComment,
-                                                                commentCount: _userModelController.commentCount,
-                                                                resortNickname: _userModelController.resortNickname,
-                                                                myUid: _userModelController.uid,
-                                                                friendsUid: widget.uid,
-                                                              );
-                                                              String? alarmCategory = AlarmCenterModel().alarmCategory[AlarmCenterModel.friendTalkKey];
-                                                              await _alarmCenterController.sendAlarm(
-                                                                  alarmCount: 'friend',
-                                                                  receiverUid: widget.uid,
-                                                                  senderUid: _userModelController.uid,
-                                                                  senderDisplayName: _userModelController.displayName,
-                                                                  timeStamp: Timestamp.now(),
-                                                                  category: alarmCategory,
-                                                                  msg: '${_userModelController.displayName}님이 $alarmCategory을 등록했습니다.',
-                                                                  content: _newComment,
-                                                                  docName: '',
-                                                                  liveTalk_uid : '',
-                                                                  liveTalk_commentCount : '',
-                                                                  bulletinRoomUid :'',
-                                                                  bulletinRoomCount :'',
-                                                                  bulletinCrewUid : '',
-                                                                  bulletinCrewCount : '',
-                                                                  bulletinFreeUid : '',
-                                                                  bulletinFreeCount : '',
-                                                                  bulletinEventUid : '',
-                                                                  bulletinEventCount : '',
-                                                                  originContent: 'friend'
-                                                              );
-                                                              await _userModelController.getCurrentUser(
-                                                                  _userModelController.uid);
-                                                              _friendTalkController.clear();
-                                                              Navigator.pop(context);
-                                                              FocusScope.of(context).unfocus();
-                                                              CustomFullScreenDialog.cancelDialog();
-                                                            }
-                                                                : () async {
-                                                              CustomFullScreenDialog.showDialog();
-                                                              await _friendsCommentModelController.sendMessage(
-                                                                displayName: _userModelController.displayName,
-                                                                profileImageUrl: _userModelController.profileImageUrl,
-                                                                comment: _newComment,
-                                                                commentCount: _userModelController.commentCount,
-                                                                resortNickname: _userModelController.resortNickname,
-                                                                myUid: _userModelController.uid,
-                                                                friendsUid: widget.uid,
-                                                              );
-                                                              String? alarmCategory = AlarmCenterModel().alarmCategory[AlarmCenterModel.friendTalkKey];
-                                                              await _alarmCenterController.sendAlarm(
-                                                                  alarmCount: 'friend',
-                                                                  receiverUid: widget.uid,
-                                                                  senderUid: _userModelController.uid,
-                                                                  senderDisplayName: _userModelController.displayName,
-                                                                  timeStamp: Timestamp.now(),
-                                                                  category: alarmCategory,
-                                                                  msg: '${_userModelController.displayName}님이 $alarmCategory을 등록했습니다.',
-                                                                  content: _newComment,
-                                                                  docName: '',
-                                                                  liveTalk_uid : '',
-                                                                  liveTalk_commentCount : '',
-                                                                  bulletinRoomUid :'',
-                                                                  bulletinRoomCount :'',
-                                                                  bulletinCrewUid : '',
-                                                                  bulletinCrewCount : '',
-                                                                  bulletinFreeUid : '',
-                                                                  bulletinFreeCount : '',
-                                                                  bulletinEventUid : '',
-                                                                  bulletinEventCount : '',
-                                                                  originContent: 'friend'
-                                                              );
-                                                              _friendTalkController.clear();
-                                                              Navigator.pop(context);
-                                                              FocusScope.of(context).unfocus();
-                                                              CustomFullScreenDialog.cancelDialog();
-                                                            },
-                                                          ),
-                                                        ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                ],
-                                              )
-                                          );
-                                          Get.dialog(
-                                              AlertDialog()
-                                          ); //빈 다이얼로그. 이거없으면 위 다이얼로그가 안나옴..
-
-                                        } else {
-                                          CustomFullScreenDialog.showDialog();
-                                          await _friendsCommentModelController.sendMessage(
-                                            displayName: _userModelController.displayName,
-                                            profileImageUrl: _userModelController.profileImageUrl,
-                                            comment: _newComment,
-                                            commentCount: _userModelController.commentCount,
-                                            resortNickname: _userModelController.resortNickname,
-                                            myUid: _userModelController.uid,
-                                            friendsUid: widget.uid,
-                                          );
-                                          await _userModelController
-                                              .updateMyFriendCommentUidList(
-                                              friendUid: widget.uid);
-                                          String? alarmCategory = AlarmCenterModel().alarmCategory[AlarmCenterModel.friendTalkKey];
-                                          await _alarmCenterController.sendAlarm(
-                                              alarmCount: 'friend',
-                                              receiverUid: widget.uid,
-                                              senderUid: _userModelController.uid,
-                                              senderDisplayName: _userModelController.displayName,
-                                              timeStamp: Timestamp.now(),
-                                              category: alarmCategory,
-                                              msg: '${_userModelController.displayName}님이 $alarmCategory을 등록했습니다.',
-                                              content: _newComment,
-                                              docName: '',
-                                              liveTalk_uid : '',
-                                              liveTalk_commentCount : '',
-                                              bulletinRoomUid :'',
-                                              bulletinRoomCount :'',
-                                              bulletinCrewUid : '',
-                                              bulletinCrewCount : '',
-                                              bulletinFreeUid : '',
-                                              bulletinFreeCount : '',
-                                              bulletinEventUid : '',
-                                              bulletinEventCount : '',
-                                              originContent: 'friend'
-                                          );
-                                          FocusScope.of(context).unfocus();
-                                          _friendTalkController.clear();
-                                        }
-                                      } catch (e) {
-                                        CustomFullScreenDialog.cancelDialog();
-                                      }
-                                      CustomFullScreenDialog.cancelDialog();
-                                    },
-                                    icon: (_friendTalkController.text.trim().isEmpty)
-                                        ? Image.asset(
-                                      'assets/imgs/icons/icon_livetalk_send_g.png',
-                                      width: 27,
-                                      height: 27,
-                                    )
-                                        : Image.asset(
-                                      'assets/imgs/icons/icon_livetalk_send.png',
-                                      width: 27,
-                                      height: 27,
-                                    ),
-                                  ),
-                                  labelStyle: TextStyle(color: Color(0xff949494), fontSize: 15),
-                                  hintStyle: TextStyle(color: Color(0xffb7b7b7), fontSize: 15),
-                                  errorStyle: TextStyle(
-                                    fontSize: 12,
-                                  ),
-                                  hintText: '친구톡 남기기',
-                                  contentPadding: EdgeInsets.only(
-                                      top: 2, bottom: 2, left: 16, right: 16),
-                                  fillColor: Color(0xFFEFEFEF),
-                                  hoverColor: Colors.transparent,
-                                  filled: true,
-                                  focusColor: Colors.transparent,
-                                  border: OutlineInputBorder(
-                                    borderSide: BorderSide(color: Color(0xFFEFEFEF)),
-                                    borderRadius: BorderRadius.circular(6),
-                                  ),
-                                  errorBorder:  OutlineInputBorder(
-                                    borderSide: BorderSide(color: Colors.transparent),
-                                  ),
-                                  focusedBorder:  OutlineInputBorder(
-                                    borderSide: BorderSide(color: Colors.transparent),
-                                  ),
-                                  enabledBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(color: Colors.transparent),
-                                    borderRadius: BorderRadius.circular(6),
-                                  )),
-                              onChanged: (value) {
-                                setState(() {
-                                  _newComment = value;
-
-                                });
-                              },
-                            ),
-                          ),
-                        ),
-                      )
-                          : Container()
                   ],
                 ),
               ),

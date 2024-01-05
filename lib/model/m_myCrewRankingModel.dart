@@ -116,8 +116,10 @@ class MyCrewRankingModel {
             .where('crewID', isEqualTo: crewID)
             .get();
 
+
         if (querySnapshot.docs.isNotEmpty) {
           final documentSnapshot = querySnapshot.docs.first;
+          print('1');
           return MyCrewRankingModel.fromSnapshot(documentSnapshot);
         }
       }
