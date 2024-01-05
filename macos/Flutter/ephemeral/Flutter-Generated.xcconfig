@@ -1,20 +1,10 @@
 // This is a generated file; do not edit or check into version control.
-<<<<<<< HEAD
-<<<<<<< HEAD
-FLUTTER_ROOT=/Users/luis/flutter
-FLUTTER_APPLICATION_PATH=/Users/luis/StudioProjects/snowlive
-=======
-FLUTTER_ROOT=/Users/8choon/flutter
-FLUTTER_APPLICATION_PATH=/Users/8choon/project/snowlive
->>>>>>> master
-=======
 FLUTTER_ROOT=/Users/maeng_6/Developer/flutter
 FLUTTER_APPLICATION_PATH=/Users/maeng_6/project/snowlive
->>>>>>> master
 COCOAPODS_PARALLEL_CODE_SIGN=true
 FLUTTER_BUILD_DIR=build
-FLUTTER_BUILD_NAME=3.3.9
-FLUTTER_BUILD_NUMBER=69
+FLUTTER_BUILD_NAME=3.4.0
+FLUTTER_BUILD_NUMBER=70
 DART_OBFUSCATION=false
 TRACK_WIDGET_CREATION=true
 TREE_SHAKE_ICONS=false
