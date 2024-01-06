@@ -180,7 +180,8 @@ class _RankingIndiScreen_testState extends State<RankingIndiScreen_test> {
         bottom: true,
         child: Stack(
           children: [
-            RefreshIndicator(
+            (documents!.isNotEmpty)
+            ? RefreshIndicator(
               onRefresh: _refreshData,
               child: SingleChildScrollView(
                 physics: AlwaysScrollableScrollPhysics(),
@@ -845,6 +846,34 @@ class _RankingIndiScreen_testState extends State<RankingIndiScreen_test> {
                   ),
                 ),
               ),
+            )
+            :Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  width: 48,
+                  child: ExtendedImage.asset(
+                    'assets/imgs/ranking/icon_ranking_nodata_2.png',
+                    enableMemoryCache: true,
+                    scale: 4,
+                  ),
+                ),
+                SizedBox(
+                  height: 16,
+                ),
+                Center(
+                  child: Text('라이딩 기록이 없어요',
+                    style: TextStyle(
+                        color: Color(0xFF666666),
+                        fontSize: 15,
+                        fontWeight: FontWeight.normal
+                    ),),
+                ),
+                SizedBox(
+                  height: _size.height / 10,
+                ),
+              ],
             ),
             Positioned(
               bottom: 0,
@@ -1094,7 +1123,7 @@ class _RankingIndiScreen_testState extends State<RankingIndiScreen_test> {
                             Row(
                               children: [
                                 Text(
-                                  '점수가 없습니다.',
+                                  '점수가 없습니다',
                                   style: TextStyle(
                                     color: Color(0xFFffffff),
                                     fontWeight: FontWeight.normal,
