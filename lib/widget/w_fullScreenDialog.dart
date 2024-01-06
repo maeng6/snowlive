@@ -26,7 +26,7 @@ class CustomFullScreenDialog {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Lottie.asset('assets/json/loadings_wht_final.json'),
-            SizedBox(height: 20),
+            SizedBox(height: 10),
             Obx(() {
               final progress = Get.find<LoadingController>().progress.value;
               return DefaultTextStyle(
@@ -37,7 +37,13 @@ class CustomFullScreenDialog {
                 ),
                 child: Column(
                   children: [
-                    Text('$progress%',)
+                    Text('$progress%',
+                    style: TextStyle(
+                      color: Colors.white70,
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold
+                    ),
+                    )
                   ],
                 ),
               );
