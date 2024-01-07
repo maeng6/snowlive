@@ -746,17 +746,17 @@ class _MoreTabState extends State<MoreTab> {
                               print('통합랭킹 진입');
                               _loadingController.updateProgress(0);
                               await _rankingTierModelController.getRankingDocs_integrated();
-                              _loadingController.updateProgress(20);
+                              _loadingController.updateProgress(10);
                               await _rankingTierModelController.getRankingDocs_integrated_Daily();
-                              _loadingController.updateProgress(30);
+                              _loadingController.updateProgress(20);
                               await _rankingTierModelController.getRankingDocs_integrated_Weekly();
-                              _loadingController.updateProgress(40);
+                              _loadingController.updateProgress(30);
                               await _rankingTierModelController.getRankingDocs_crew_integrated();
-                              _loadingController.updateProgress(60);
+                              _loadingController.updateProgress(40);
                               await _rankingTierModelController.getRankingDocs_crew_integrated_Daily();
-                              _loadingController.updateProgress(80);
+                              _loadingController.updateProgress(50);
                               await _rankingTierModelController.getRankingDocs_crew_integrated_Weekly();
-                              _loadingController.updateProgress(100);
+                              _loadingController.updateProgress(60);
 
                             }else {
                               _loadingController.updateProgress(0);
@@ -765,22 +765,26 @@ class _MoreTabState extends State<MoreTab> {
                               await _rankingTierModelController.getRankingDocsDaily(baseResort: _userModelController.favoriteResort);
                               _loadingController.updateProgress(20);
                               await _rankingTierModelController.getRankingDocsWeekly(baseResort: _userModelController.favoriteResort);
-                              _loadingController.updateProgress(40);
+                              _loadingController.updateProgress(30);
                               await _rankingTierModelController.getRankingDocs_crew(baseResort: _userModelController.favoriteResort);
-                              _loadingController.updateProgress(60);
+                              _loadingController.updateProgress(40);
                               await _rankingTierModelController.getRankingDocs_crew_Daily(baseResort: _userModelController.favoriteResort);
-                              _loadingController.updateProgress(80);
+                              _loadingController.updateProgress(50);
                               await _rankingTierModelController.getRankingDocs_crew_Weekly(baseResort: _userModelController.favoriteResort);
-                              _loadingController.updateProgress(100);
+                              _loadingController.updateProgress(60);
 
                             }
 
                             await _myRankingController.getMyRankingData(_userModelController.uid);
                             await _myRankingController.getMyRankingDataDaily(_userModelController.uid);
                             await _myRankingController.getMyRankingDataWeekly(_userModelController.uid);
+                            _loadingController.updateProgress(70);
                             await _myCrewRankingController.getMyCrewRankingData(_userModelController.liveCrew);
+                            _loadingController.updateProgress(80);
                             await _myCrewRankingController.getMyCrewRankingDataDaily(_userModelController.liveCrew);
+                            _loadingController.updateProgress(90);
                             await _myCrewRankingController.getMyCrewRankingDataWeekly(_userModelController.liveCrew);
+                            _loadingController.updateProgress(100);
 
                             CustomFullScreenDialog.cancelDialog();
                             (_seasonController.dailyOpen ==true || _seasonController.open_uidList!.contains(_userModelController.uid))
