@@ -2,6 +2,7 @@ import 'package:com.snowlive/controller/vm_bulletinRoomController.dart';
 import 'package:com.snowlive/controller/vm_commentController.dart';
 import 'package:com.snowlive/screens/LiveCrew/v_liveCrewHome.dart';
 import 'package:com.snowlive/screens/bulletin/Crew/v_bulletin_Crew_List_Detail.dart';
+import 'package:com.snowlive/screens/bulletin/Event/v_bulletin_Event_List_Detail.dart';
 import 'package:com.snowlive/screens/bulletin/Room/v_bulletin_Room_List_Detail.dart';
 import 'package:com.snowlive/screens/comments/v_noUserScreen.dart';
 import 'package:com.snowlive/screens/comments/v_reply_Screen.dart';
@@ -222,6 +223,20 @@ class _AlarmCenterState extends State<AlarmCenter> {
                   return InkWell(
                     onTap: () async {
                       if (edit == false) {
+                        if (alarmCenterDocs[index].get('category') == '클리닉·행사 글') {
+                          try {
+                            CustomFullScreenDialog.showDialog();
+                            await _bulletinEventModelController.getCurrentBulletinEvent(
+                                uid: alarmCenterDocs[index].get('bulletinEventUid'),
+                                bulletinEventCount: alarmCenterDocs[index].get('bulletinEventCount')
+                            );
+                            CustomFullScreenDialog.cancelDialog();
+                            Get.to(() => Bulletin_Event_List_Detail());
+                          }catch(e){
+                            CustomFullScreenDialog.cancelDialog();
+                            Get.to(() => NoPageScreen());
+                          }
+                        }
                         if (alarmCenterDocs[index].get('category') == '친구요청') {
                           Get.to(() => InvitationScreen_friend());
                         }
@@ -381,6 +396,18 @@ class _AlarmCenterState extends State<AlarmCenter> {
                                         fit: BoxFit.cover,
                                       ),
                                     ),
+                                  if((alarmCenterDocs[index].get('category') == '클리닉·행사 글'))
+                                    Padding(
+                                      padding: const EdgeInsets.only(right: 8),
+                                      child: ExtendedImage.asset(
+                                        'assets/imgs/icons/icon_alarm_community.png',
+                                        enableMemoryCache: true,
+                                        shape: BoxShape.rectangle,
+                                        borderRadius: BorderRadius.circular(7),
+                                        width: 24,
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
 
                                   if((alarmCenterDocs[index].get('category') == '자유게시판 글'))
                                     Padding(
@@ -465,6 +492,7 @@ class _AlarmCenterState extends State<AlarmCenter> {
                                           || (alarmCenterDocs[index].get('category') == '시즌방 게시글')
                                           || (alarmCenterDocs[index].get('category') == '단톡방·동호회 글')
                                           || (alarmCenterDocs[index].get('category') == '자유게시판 글')
+                                          || (alarmCenterDocs[index].get('category') == '클리닉·행사 글')
                                       )
                                       Container(
                                         constraints: BoxConstraints(
@@ -488,6 +516,7 @@ class _AlarmCenterState extends State<AlarmCenter> {
                                           || (alarmCenterDocs[index].get('category') == '시즌방 게시글')
                                           || (alarmCenterDocs[index].get('category') == '단톡방·동호회 글')
                                           || (alarmCenterDocs[index].get('category') == '자유게시판 글')
+                                          || (alarmCenterDocs[index].get('category') == '클리닉·행사 글')
                                       )
                                       SizedBox(
                                         height: 8,
@@ -497,6 +526,7 @@ class _AlarmCenterState extends State<AlarmCenter> {
                                           || (alarmCenterDocs[index].get('category') == '시즌방 게시글')
                                           || (alarmCenterDocs[index].get('category') == '단톡방·동호회 글')
                                           || (alarmCenterDocs[index].get('category') == '자유게시판 글')
+                                          || (alarmCenterDocs[index].get('category') == '클리닉·행사 글')
                                       )
                                         Container(
                                           constraints: BoxConstraints(
@@ -520,6 +550,7 @@ class _AlarmCenterState extends State<AlarmCenter> {
                                           || (alarmCenterDocs[index].get('category') == '시즌방 게시글')
                                           || (alarmCenterDocs[index].get('category') == '단톡방·동호회 글')
                                           || (alarmCenterDocs[index].get('category') == '자유게시판 글')
+                                          || (alarmCenterDocs[index].get('category') == '클리닉·행사 글')
                                       )
                                       SizedBox(
                                         height: 4,

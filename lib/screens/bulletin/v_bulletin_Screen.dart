@@ -250,7 +250,7 @@ class _BulletinScreenState extends State<BulletinScreen> {
                                   height: 40,
                                   child: ElevatedButton(
                                     child: Text(
-                                      '클리닉/행사',
+                                      '클리닉·행사',
                                       style: TextStyle(
                                           color: (isTap[3])
                                               ? Color(0xFF111111)

@@ -99,7 +99,7 @@ class _Bulletin_Event_UploadState extends State<Bulletin_Event_Upload> {
           appBar: PreferredSize(
             preferredSize: Size.fromHeight(58),
             child: AppBar(
-              title: Text('클리닉/행사'),
+              title: Text('클리닉·행사'),
               leading: GestureDetector(
                 child: Image.asset(
                   'assets/imgs/icons/icon_snowLive_back.png',

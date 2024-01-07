@@ -1536,7 +1536,9 @@ class _Bulletin_Event_List_DetailState extends State<Bulletin_Event_List_Detail>
                                             reply: _newReply,
                                             replyLocationUidCount: _bulletinEventModelController.bulletinEventCount,
                                             commentCount: _userModelController.commentCount);
+                                        print('1');
                                         String? alarmCategory = AlarmCenterModel().alarmCategory[AlarmCenterModel.communityReplyKey_event];
+                                        print('12');
                                         await _alarmCenterController.sendAlarm(
                                             alarmCount: _bulletinEventModelController.bulletinEventCount,
                                             receiverUid: _bulletinEventModelController.uid,
@@ -1559,6 +1561,7 @@ class _Bulletin_Event_List_DetailState extends State<Bulletin_Event_List_Detail>
                                             bulletinFreeCount : '',
                                             originContent: _bulletinEventModelController.title
                                         );
+                                        print('2');
                                         CustomFullScreenDialog.cancelDialog();
                                         setState(() {});
                                         //   }catch(e){}

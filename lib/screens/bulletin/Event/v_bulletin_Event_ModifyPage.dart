@@ -111,7 +111,7 @@ class _Bulletin_Event_ModifyPageState extends State<Bulletin_Event_ModifyPage> {
           appBar: PreferredSize(
             preferredSize: Size.fromHeight(58),
             child: AppBar(
-              title: Text('클리닉/행사'),
+              title: Text('클리닉·행사'),
               leading: GestureDetector(
                 child: Image.asset(
                   'assets/imgs/icons/icon_snowLive_back.png',
