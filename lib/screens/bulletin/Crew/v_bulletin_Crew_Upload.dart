@@ -89,7 +89,7 @@ class _Bulletin_Crew_UploadState extends State<Bulletin_Crew_Upload> {
           appBar: PreferredSize(
             preferredSize: Size.fromHeight(58),
             child: AppBar(
-              title: Text('단톡방/동호회'),
+              title: Text('단톡방·동호회'),
               leading: GestureDetector(
                 child: Image.asset(
                   'assets/imgs/icons/icon_snowLive_back.png',
