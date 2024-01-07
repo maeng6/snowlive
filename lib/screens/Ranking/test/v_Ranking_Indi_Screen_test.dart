@@ -852,26 +852,36 @@ class _RankingIndiScreen_testState extends State<RankingIndiScreen_test> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Container(
-                  width: 48,
+                  width: 90,
                   child: ExtendedImage.asset(
-                    'assets/imgs/ranking/icon_ranking_nodata_2.png',
+                    'assets/imgs/icons/icon_nodata_rankin_all.png',
                     enableMemoryCache: true,
-                    scale: 4,
                   ),
                 ),
                 SizedBox(
-                  height: 16,
+                  height: 10,
                 ),
                 Center(
-                  child: Text('라이딩 기록이 없어요',
+                  child: Text('랭킹전 기록이 없어요',
                     style: TextStyle(
                         color: Color(0xFF666666),
                         fontSize: 15,
                         fontWeight: FontWeight.normal
                     ),),
                 ),
+                Center(
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 2),
+                    child: Text('지금 바로 랭킹전에 참여해 보세요',
+                      style: TextStyle(
+                          color: Color(0xFF666666),
+                          fontSize: 15,
+                          fontWeight: FontWeight.normal
+                      ),),
+                  ),
+                ),
                 SizedBox(
-                  height: _size.height / 10,
+                  height: _size.height / 8,
                 ),
               ],
             ),

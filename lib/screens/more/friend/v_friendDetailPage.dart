@@ -709,27 +709,35 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                               mainAxisAlignment: MainAxisAlignment.center,
                                                               crossAxisAlignment: CrossAxisAlignment.center,
                                                               children: [
-                                                                (edit ==true)
-                                                                    ? Container(
-                                                                  child: Text(_initStateMsg, style: TextStyle(
-                                                                      fontSize: 14,
-                                                                      color: Color(0xFF111111)),
-                                                                    maxLines: 2,
-                                                                    overflow: TextOverflow.ellipsis,
+                                                                (edit == true)
+                                                                    ? ConstrainedBox(
+                                                                  constraints: BoxConstraints(
+                                                                    maxWidth: _size.width * 0.5,
                                                                   ),
-                                                                  width: _size.width*0.5,
-                                                                )
-                                                                    :
-                                                                (_initStateMsg.isNotEmpty)
-                                                                    ?Container(
-                                                                    child: Text('${friendDocs[0]['stateMsg']}', style: TextStyle(
+                                                                      child: Container(
+                                                                  child: Text(_initStateMsg, style: TextStyle(
                                                                         fontSize: 14,
                                                                         color: Color(0xFF111111)),
                                                                       maxLines: 2,
                                                                       overflow: TextOverflow.ellipsis,
-                                                                    ),
-                                                                    width: _size.width*0.5
-                                                                )
+                                                                  ),
+                                                                ),
+                                                                    )
+                                                                    :
+                                                                (_initStateMsg.isNotEmpty)
+                                                                    ? ConstrainedBox(
+                                                                  constraints: BoxConstraints(
+                                                                    maxWidth: _size.width * 0.5,
+                                                                  ),
+                                                                      child: Container(
+                                                                      child: Text('${friendDocs[0]['stateMsg']}', style: TextStyle(
+                                                                          fontSize: 14,
+                                                                          color: Color(0xFF111111)),
+                                                                        maxLines: 2,
+                                                                        overflow: TextOverflow.ellipsis,
+                                                                      ),
+                                                                ),
+                                                                    )
                                                                     :SizedBox.shrink(),
                                                                 if(edit == true)
                                                                   GestureDetector(
@@ -1848,7 +1856,8 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                                                 SizedBox(
                                                                                   height: 6,
                                                                                 ),
-                                                                                Text('친구톡이 없습니다', style: TextStyle(
+                                                                                Text('친구톡이 없습니다',
+                                                                                  style: TextStyle(
                                                                                     fontSize: 13, color: Color(
                                                                                     0xFF666666)),),
                                                                                 SizedBox(
@@ -3358,323 +3367,6 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
 
                                                 ],
                                               ),
-                                              (isTap[0]==true && widget.uid != _userModelController.uid)
-                                                  ? Positioned(
-                                                left: 0,
-                                                right: 0,
-                                                bottom: 0,
-                                                child: Container(
-                                                  color: Colors.white,
-                                                  child: Padding(
-                                                    padding: const EdgeInsets.all(16),
-                                                    child: TextFormField(
-                                                      key: _formKeyProfile4,
-                                                      cursorColor: Color(0xff377EEA),
-                                                      controller: _friendTalkController,
-                                                      strutStyle: StrutStyle(leading: 0.3),
-                                                      maxLines: 1,
-                                                      enableSuggestions: false,
-                                                      autocorrect: false,
-                                                      textInputAction: TextInputAction.newline,
-                                                      decoration: InputDecoration(
-                                                          floatingLabelBehavior: FloatingLabelBehavior.never,
-                                                          suffixIcon: IconButton(
-                                                            splashColor: Colors.transparent,
-                                                            onPressed: () async {
-                                                              if (_friendTalkController.text.trim().isEmpty) {
-                                                                return;
-                                                              }
-                                                              try {
-                                                                if (_userModelController.myFriendCommentUidList!.contains(widget.uid)
-                                                                    && _userModelController.commentCheck! == false) {
-                                                                  Get.dialog(
-                                                                      AlertDialog(
-                                                                        contentPadding: EdgeInsets.only(bottom: 0, left: 20, right: 20, top: 30),
-                                                                        elevation: 0,
-                                                                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
-                                                                        content: Column(
-                                                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                                                          mainAxisAlignment: MainAxisAlignment.start,
-                                                                          mainAxisSize: MainAxisSize.min,
-                                                                          children: [
-                                                                            Text("친구톡을 새로 등록하면 이전에 등록된 친구톡은 삭제됩니다. 계속하시겠습니까?",
-                                                                              softWrap: true,
-                                                                              overflow: TextOverflow.visible,
-                                                                              style: TextStyle(
-                                                                                  fontSize: 16,
-                                                                                  fontWeight: FontWeight.bold,
-                                                                                  color: Color(0xFF111111),
-                                                                                  height: 1.4
-                                                                              ),
-                                                                            ),
-                                                                            SizedBox(
-                                                                              height: 24,
-                                                                            ),
-                                                                            Obx(() =>
-                                                                                GestureDetector(
-                                                                                  onTap: (){
-                                                                                    _dialogController.isChecked.value = !_dialogController.isChecked.value;
-                                                                                  },
-                                                                                  child: Row(
-                                                                                    children: [
-                                                                                      Image.asset(
-                                                                                        _dialogController.isChecked.value
-                                                                                            ? 'assets/imgs/icons/icon_check_filled.png'
-                                                                                            : 'assets/imgs/icons/icon_check_unfilled.png',
-                                                                                        width: 24,
-                                                                                        height: 24,
-                                                                                      ),
-                                                                                      // Checkbox(
-                                                                                      //   value: _dialogController.isChecked.value,
-                                                                                      //   onChanged: (newValue) {
-                                                                                      //     _dialogController.isChecked.value = newValue!;
-                                                                                      //   },
-                                                                                      // ),
-                                                                                      SizedBox(width: 8),
-                                                                                      Text('다시 보지 않기',
-                                                                                        style: TextStyle(
-                                                                                          fontSize: 14,
-                                                                                        ),
-                                                                                      ),
-                                                                                    ],
-                                                                                  ),
-                                                                                ),
-                                                                            ),
-                                                                            SizedBox(
-                                                                              height: 24,
-                                                                            ),
-                                                                          ],
-                                                                        ),
-                                                                        actions: [
-                                                                          Padding(
-                                                                            padding: const EdgeInsets.only(left: 12, right: 12, bottom: 12),
-                                                                            child: Row(
-                                                                              children: [
-                                                                                Expanded(
-                                                                                  child: ElevatedButton(
-                                                                                    onPressed: () async {
-                                                                                      _dialogController.isChecked.value = false;
-                                                                                      Navigator.pop(context);
-                                                                                    },
-                                                                                    child: Text(
-                                                                                      '취소',
-                                                                                      style: TextStyle(
-                                                                                          color: Color(0xff3D83ED),
-                                                                                          fontSize: 15,
-                                                                                          fontWeight: FontWeight.bold),
-                                                                                    ),
-                                                                                    style: TextButton.styleFrom(
-                                                                                      splashFactory: InkRipple.splashFactory,
-                                                                                      elevation: 0,
-                                                                                      minimumSize: Size(100, 48),
-                                                                                      backgroundColor: Color(0xFF3D83ED).withOpacity(0.2),
-                                                                                    ),
-                                                                                  ),
-                                                                                ),
-                                                                                SizedBox(width: 8,),
-                                                                                Obx(() => Expanded(
-                                                                                  child: ElevatedButton(
-                                                                                    style: TextButton.styleFrom(
-                                                                                      splashFactory: InkRipple.splashFactory,
-                                                                                      elevation: 0,
-                                                                                      minimumSize: Size(100, 48),
-                                                                                      backgroundColor: Color(0xFF3D83ED),
-                                                                                    ),
-                                                                                    child: Text("친구톡 등록",
-                                                                                      style: TextStyle(
-                                                                                          color: Color(0xffffffff),
-                                                                                          fontSize: 15,
-                                                                                          fontWeight: FontWeight.bold),
-                                                                                    ),
-                                                                                    onPressed: _dialogController.isChecked.value
-                                                                                        ? () async {
-                                                                                      CustomFullScreenDialog.showDialog();
-                                                                                      await _userModelController.updateCommentCheck();
-                                                                                      await _friendsCommentModelController.sendMessage(
-                                                                                        displayName: _userModelController.displayName,
-                                                                                        profileImageUrl: _userModelController.profileImageUrl,
-                                                                                        comment: _newComment,
-                                                                                        commentCount: _userModelController.commentCount,
-                                                                                        resortNickname: _userModelController.resortNickname,
-                                                                                        myUid: _userModelController.uid,
-                                                                                        friendsUid: widget.uid,
-                                                                                      );
-                                                                                      String? alarmCategory = AlarmCenterModel().alarmCategory[AlarmCenterModel.friendTalkKey];
-                                                                                      await _alarmCenterController.sendAlarm(
-                                                                                          alarmCount: 'friend',
-                                                                                          receiverUid: widget.uid,
-                                                                                          senderUid: _userModelController.uid,
-                                                                                          senderDisplayName: _userModelController.displayName,
-                                                                                          timeStamp: Timestamp.now(),
-                                                                                          category: alarmCategory,
-                                                                                          msg: '${_userModelController.displayName}님이 $alarmCategory을 등록했습니다.',
-                                                                                          content: _newComment,
-                                                                                          docName: '',
-                                                                                          liveTalk_uid : '',
-                                                                                          liveTalk_commentCount : '',
-                                                                                          bulletinRoomUid :'',
-                                                                                          bulletinRoomCount :'',
-                                                                                          bulletinCrewUid : '',
-                                                                                          bulletinCrewCount : '',
-                                                                                          bulletinFreeUid : '',
-                                                                                          bulletinFreeCount : '',
-                                                                                          bulletinEventUid : '',
-                                                                                          bulletinEventCount : '',
-                                                                                          originContent: 'friend'
-                                                                                      );
-                                                                                      await _userModelController.getCurrentUser(
-                                                                                          _userModelController.uid);
-                                                                                      _friendTalkController.clear();
-                                                                                      Navigator.pop(context);
-                                                                                      FocusScope.of(context).unfocus();
-                                                                                      CustomFullScreenDialog.cancelDialog();
-                                                                                    }
-                                                                                        : () async {
-                                                                                      CustomFullScreenDialog.showDialog();
-                                                                                      await _friendsCommentModelController.sendMessage(
-                                                                                        displayName: _userModelController.displayName,
-                                                                                        profileImageUrl: _userModelController.profileImageUrl,
-                                                                                        comment: _newComment,
-                                                                                        commentCount: _userModelController.commentCount,
-                                                                                        resortNickname: _userModelController.resortNickname,
-                                                                                        myUid: _userModelController.uid,
-                                                                                        friendsUid: widget.uid,
-                                                                                      );
-                                                                                      String? alarmCategory = AlarmCenterModel().alarmCategory[AlarmCenterModel.friendTalkKey];
-                                                                                      await _alarmCenterController.sendAlarm(
-                                                                                          alarmCount: 'friend',
-                                                                                          receiverUid: widget.uid,
-                                                                                          senderUid: _userModelController.uid,
-                                                                                          senderDisplayName: _userModelController.displayName,
-                                                                                          timeStamp: Timestamp.now(),
-                                                                                          category: alarmCategory,
-                                                                                          msg: '${_userModelController.displayName}님이 $alarmCategory을 등록했습니다.',
-                                                                                          content: _newComment,
-                                                                                          docName: '',
-                                                                                          liveTalk_uid : '',
-                                                                                          liveTalk_commentCount : '',
-                                                                                          bulletinRoomUid :'',
-                                                                                          bulletinRoomCount :'',
-                                                                                          bulletinCrewUid : '',
-                                                                                          bulletinCrewCount : '',
-                                                                                          bulletinFreeUid : '',
-                                                                                          bulletinFreeCount : '',
-                                                                                          bulletinEventUid : '',
-                                                                                          bulletinEventCount : '',
-                                                                                          originContent: 'friend'
-                                                                                      );
-                                                                                      _friendTalkController.clear();
-                                                                                      Navigator.pop(context);
-                                                                                      FocusScope.of(context).unfocus();
-                                                                                      CustomFullScreenDialog.cancelDialog();
-                                                                                    },
-                                                                                  ),
-                                                                                ),
-                                                                                ),
-                                                                              ],
-                                                                            ),
-                                                                          ),
-                                                                        ],
-                                                                      )
-                                                                  );
-                                                                  Get.dialog(
-                                                                      AlertDialog()
-                                                                  ); //빈 다이얼로그. 이거없으면 위 다이얼로그가 안나옴..
-
-                                                                } else {
-                                                                  CustomFullScreenDialog.showDialog();
-                                                                  await _friendsCommentModelController.sendMessage(
-                                                                    displayName: _userModelController.displayName,
-                                                                    profileImageUrl: _userModelController.profileImageUrl,
-                                                                    comment: _newComment,
-                                                                    commentCount: _userModelController.commentCount,
-                                                                    resortNickname: _userModelController.resortNickname,
-                                                                    myUid: _userModelController.uid,
-                                                                    friendsUid: widget.uid,
-                                                                  );
-                                                                  await _userModelController
-                                                                      .updateMyFriendCommentUidList(
-                                                                      friendUid: widget.uid);
-                                                                  String? alarmCategory = AlarmCenterModel().alarmCategory[AlarmCenterModel.friendTalkKey];
-                                                                  await _alarmCenterController.sendAlarm(
-                                                                      alarmCount: 'friend',
-                                                                      receiverUid: widget.uid,
-                                                                      senderUid: _userModelController.uid,
-                                                                      senderDisplayName: _userModelController.displayName,
-                                                                      timeStamp: Timestamp.now(),
-                                                                      category: alarmCategory,
-                                                                      msg: '${_userModelController.displayName}님이 $alarmCategory을 등록했습니다.',
-                                                                      content: _newComment,
-                                                                      docName: '',
-                                                                      liveTalk_uid : '',
-                                                                      liveTalk_commentCount : '',
-                                                                      bulletinRoomUid :'',
-                                                                      bulletinRoomCount :'',
-                                                                      bulletinCrewUid : '',
-                                                                      bulletinCrewCount : '',
-                                                                      bulletinFreeUid : '',
-                                                                      bulletinFreeCount : '',
-                                                                      bulletinEventUid : '',
-                                                                      bulletinEventCount : '',
-                                                                      originContent: 'friend'
-                                                                  );
-                                                                  FocusScope.of(context).unfocus();
-                                                                  _friendTalkController.clear();
-                                                                }
-                                                              } catch (e) {
-                                                                CustomFullScreenDialog.cancelDialog();
-                                                              }
-                                                              CustomFullScreenDialog.cancelDialog();
-                                                            },
-                                                            icon: (_friendTalkController.text.trim().isEmpty)
-                                                                ? Image.asset(
-                                                              'assets/imgs/icons/icon_livetalk_send_g.png',
-                                                              width: 27,
-                                                              height: 27,
-                                                            )
-                                                                : Image.asset(
-                                                              'assets/imgs/icons/icon_livetalk_send.png',
-                                                              width: 27,
-                                                              height: 27,
-                                                            ),
-                                                          ),
-                                                          labelStyle: TextStyle(color: Color(0xff949494), fontSize: 15),
-                                                          hintStyle: TextStyle(color: Color(0xffb7b7b7), fontSize: 15),
-                                                          errorStyle: TextStyle(
-                                                            fontSize: 12,
-                                                          ),
-                                                          hintText: '친구톡 남기기',
-                                                          contentPadding: EdgeInsets.only(
-                                                              top: 2, bottom: 2, left: 16, right: 16),
-                                                          fillColor: Color(0xFFEFEFEF),
-                                                          hoverColor: Colors.transparent,
-                                                          filled: true,
-                                                          focusColor: Colors.transparent,
-                                                          border: OutlineInputBorder(
-                                                            borderSide: BorderSide(color: Color(0xFFEFEFEF)),
-                                                            borderRadius: BorderRadius.circular(6),
-                                                          ),
-                                                          errorBorder:  OutlineInputBorder(
-                                                            borderSide: BorderSide(color: Colors.transparent),
-                                                          ),
-                                                          focusedBorder:  OutlineInputBorder(
-                                                            borderSide: BorderSide(color: Colors.transparent),
-                                                          ),
-                                                          enabledBorder: OutlineInputBorder(
-                                                            borderSide: BorderSide(color: Colors.transparent),
-                                                            borderRadius: BorderRadius.circular(6),
-                                                          )),
-                                                      onChanged: (value) {
-                                                        setState(() {
-                                                          _newComment = value;
-
-                                                        });
-                                                      },
-                                                    ),
-                                                  ),
-                                                ),
-                                              )
-                                                  : Container(),
                                             ],
                                           ),
                                         )
@@ -3686,6 +3378,323 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                         ),
                       ),
                     ),
+                    (isTap[0]==true && widget.uid != _userModelController.uid)
+                        ? Positioned(
+                      left: 0,
+                      right: 0,
+                      bottom: 0,
+                      child: Container(
+                        color: Colors.white,
+                        child: Padding(
+                          padding: const EdgeInsets.all(16),
+                          child: TextFormField(
+                            key: _formKeyProfile4,
+                            cursorColor: Color(0xff377EEA),
+                            controller: _friendTalkController,
+                            strutStyle: StrutStyle(leading: 0.3),
+                            maxLines: 1,
+                            enableSuggestions: false,
+                            autocorrect: false,
+                            textInputAction: TextInputAction.newline,
+                            decoration: InputDecoration(
+                                floatingLabelBehavior: FloatingLabelBehavior.never,
+                                suffixIcon: IconButton(
+                                  splashColor: Colors.transparent,
+                                  onPressed: () async {
+                                    if (_friendTalkController.text.trim().isEmpty) {
+                                      return;
+                                    }
+                                    try {
+                                      if (_userModelController.myFriendCommentUidList!.contains(widget.uid)
+                                          && _userModelController.commentCheck! == false) {
+                                        Get.dialog(
+                                            AlertDialog(
+                                              contentPadding: EdgeInsets.only(bottom: 0, left: 20, right: 20, top: 30),
+                                              elevation: 0,
+                                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+                                              content: Column(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                mainAxisAlignment: MainAxisAlignment.start,
+                                                mainAxisSize: MainAxisSize.min,
+                                                children: [
+                                                  Text("친구톡을 새로 등록하면 이전에 등록된 친구톡은 삭제됩니다. 계속하시겠습니까?",
+                                                    softWrap: true,
+                                                    overflow: TextOverflow.visible,
+                                                    style: TextStyle(
+                                                        fontSize: 16,
+                                                        fontWeight: FontWeight.bold,
+                                                        color: Color(0xFF111111),
+                                                        height: 1.4
+                                                    ),
+                                                  ),
+                                                  SizedBox(
+                                                    height: 24,
+                                                  ),
+                                                  Obx(() =>
+                                                      GestureDetector(
+                                                        onTap: (){
+                                                          _dialogController.isChecked.value = !_dialogController.isChecked.value;
+                                                        },
+                                                        child: Row(
+                                                          children: [
+                                                            Image.asset(
+                                                              _dialogController.isChecked.value
+                                                                  ? 'assets/imgs/icons/icon_check_filled.png'
+                                                                  : 'assets/imgs/icons/icon_check_unfilled.png',
+                                                              width: 24,
+                                                              height: 24,
+                                                            ),
+                                                            // Checkbox(
+                                                            //   value: _dialogController.isChecked.value,
+                                                            //   onChanged: (newValue) {
+                                                            //     _dialogController.isChecked.value = newValue!;
+                                                            //   },
+                                                            // ),
+                                                            SizedBox(width: 8),
+                                                            Text('다시 보지 않기',
+                                                              style: TextStyle(
+                                                                fontSize: 14,
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                  ),
+                                                  SizedBox(
+                                                    height: 24,
+                                                  ),
+                                                ],
+                                              ),
+                                              actions: [
+                                                Padding(
+                                                  padding: const EdgeInsets.only(left: 12, right: 12, bottom: 12),
+                                                  child: Row(
+                                                    children: [
+                                                      Expanded(
+                                                        child: ElevatedButton(
+                                                          onPressed: () async {
+                                                            _dialogController.isChecked.value = false;
+                                                            Navigator.pop(context);
+                                                          },
+                                                          child: Text(
+                                                            '취소',
+                                                            style: TextStyle(
+                                                                color: Color(0xff3D83ED),
+                                                                fontSize: 15,
+                                                                fontWeight: FontWeight.bold),
+                                                          ),
+                                                          style: TextButton.styleFrom(
+                                                            splashFactory: InkRipple.splashFactory,
+                                                            elevation: 0,
+                                                            minimumSize: Size(100, 48),
+                                                            backgroundColor: Color(0xFF3D83ED).withOpacity(0.2),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      SizedBox(width: 8,),
+                                                      Obx(() => Expanded(
+                                                        child: ElevatedButton(
+                                                          style: TextButton.styleFrom(
+                                                            splashFactory: InkRipple.splashFactory,
+                                                            elevation: 0,
+                                                            minimumSize: Size(100, 48),
+                                                            backgroundColor: Color(0xFF3D83ED),
+                                                          ),
+                                                          child: Text("친구톡 등록",
+                                                            style: TextStyle(
+                                                                color: Color(0xffffffff),
+                                                                fontSize: 15,
+                                                                fontWeight: FontWeight.bold),
+                                                          ),
+                                                          onPressed: _dialogController.isChecked.value
+                                                              ? () async {
+                                                            CustomFullScreenDialog.showDialog();
+                                                            await _userModelController.updateCommentCheck();
+                                                            await _friendsCommentModelController.sendMessage(
+                                                              displayName: _userModelController.displayName,
+                                                              profileImageUrl: _userModelController.profileImageUrl,
+                                                              comment: _newComment,
+                                                              commentCount: _userModelController.commentCount,
+                                                              resortNickname: _userModelController.resortNickname,
+                                                              myUid: _userModelController.uid,
+                                                              friendsUid: widget.uid,
+                                                            );
+                                                            String? alarmCategory = AlarmCenterModel().alarmCategory[AlarmCenterModel.friendTalkKey];
+                                                            await _alarmCenterController.sendAlarm(
+                                                                alarmCount: 'friend',
+                                                                receiverUid: widget.uid,
+                                                                senderUid: _userModelController.uid,
+                                                                senderDisplayName: _userModelController.displayName,
+                                                                timeStamp: Timestamp.now(),
+                                                                category: alarmCategory,
+                                                                msg: '${_userModelController.displayName}님이 $alarmCategory을 등록했습니다.',
+                                                                content: _newComment,
+                                                                docName: '',
+                                                                liveTalk_uid : '',
+                                                                liveTalk_commentCount : '',
+                                                                bulletinRoomUid :'',
+                                                                bulletinRoomCount :'',
+                                                                bulletinCrewUid : '',
+                                                                bulletinCrewCount : '',
+                                                                bulletinFreeUid : '',
+                                                                bulletinFreeCount : '',
+                                                                bulletinEventUid : '',
+                                                                bulletinEventCount : '',
+                                                                originContent: 'friend'
+                                                            );
+                                                            await _userModelController.getCurrentUser(
+                                                                _userModelController.uid);
+                                                            _friendTalkController.clear();
+                                                            Navigator.pop(context);
+                                                            FocusScope.of(context).unfocus();
+                                                            CustomFullScreenDialog.cancelDialog();
+                                                          }
+                                                              : () async {
+                                                            CustomFullScreenDialog.showDialog();
+                                                            await _friendsCommentModelController.sendMessage(
+                                                              displayName: _userModelController.displayName,
+                                                              profileImageUrl: _userModelController.profileImageUrl,
+                                                              comment: _newComment,
+                                                              commentCount: _userModelController.commentCount,
+                                                              resortNickname: _userModelController.resortNickname,
+                                                              myUid: _userModelController.uid,
+                                                              friendsUid: widget.uid,
+                                                            );
+                                                            String? alarmCategory = AlarmCenterModel().alarmCategory[AlarmCenterModel.friendTalkKey];
+                                                            await _alarmCenterController.sendAlarm(
+                                                                alarmCount: 'friend',
+                                                                receiverUid: widget.uid,
+                                                                senderUid: _userModelController.uid,
+                                                                senderDisplayName: _userModelController.displayName,
+                                                                timeStamp: Timestamp.now(),
+                                                                category: alarmCategory,
+                                                                msg: '${_userModelController.displayName}님이 $alarmCategory을 등록했습니다.',
+                                                                content: _newComment,
+                                                                docName: '',
+                                                                liveTalk_uid : '',
+                                                                liveTalk_commentCount : '',
+                                                                bulletinRoomUid :'',
+                                                                bulletinRoomCount :'',
+                                                                bulletinCrewUid : '',
+                                                                bulletinCrewCount : '',
+                                                                bulletinFreeUid : '',
+                                                                bulletinFreeCount : '',
+                                                                bulletinEventUid : '',
+                                                                bulletinEventCount : '',
+                                                                originContent: 'friend'
+                                                            );
+                                                            _friendTalkController.clear();
+                                                            Navigator.pop(context);
+                                                            FocusScope.of(context).unfocus();
+                                                            CustomFullScreenDialog.cancelDialog();
+                                                          },
+                                                        ),
+                                                      ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ],
+                                            )
+                                        );
+                                        Get.dialog(
+                                            AlertDialog()
+                                        ); //빈 다이얼로그. 이거없으면 위 다이얼로그가 안나옴..
+
+                                      } else {
+                                        CustomFullScreenDialog.showDialog();
+                                        await _friendsCommentModelController.sendMessage(
+                                          displayName: _userModelController.displayName,
+                                          profileImageUrl: _userModelController.profileImageUrl,
+                                          comment: _newComment,
+                                          commentCount: _userModelController.commentCount,
+                                          resortNickname: _userModelController.resortNickname,
+                                          myUid: _userModelController.uid,
+                                          friendsUid: widget.uid,
+                                        );
+                                        await _userModelController
+                                            .updateMyFriendCommentUidList(
+                                            friendUid: widget.uid);
+                                        String? alarmCategory = AlarmCenterModel().alarmCategory[AlarmCenterModel.friendTalkKey];
+                                        await _alarmCenterController.sendAlarm(
+                                            alarmCount: 'friend',
+                                            receiverUid: widget.uid,
+                                            senderUid: _userModelController.uid,
+                                            senderDisplayName: _userModelController.displayName,
+                                            timeStamp: Timestamp.now(),
+                                            category: alarmCategory,
+                                            msg: '${_userModelController.displayName}님이 $alarmCategory을 등록했습니다.',
+                                            content: _newComment,
+                                            docName: '',
+                                            liveTalk_uid : '',
+                                            liveTalk_commentCount : '',
+                                            bulletinRoomUid :'',
+                                            bulletinRoomCount :'',
+                                            bulletinCrewUid : '',
+                                            bulletinCrewCount : '',
+                                            bulletinFreeUid : '',
+                                            bulletinFreeCount : '',
+                                            bulletinEventUid : '',
+                                            bulletinEventCount : '',
+                                            originContent: 'friend'
+                                        );
+                                        FocusScope.of(context).unfocus();
+                                        _friendTalkController.clear();
+                                      }
+                                    } catch (e) {
+                                      CustomFullScreenDialog.cancelDialog();
+                                    }
+                                    CustomFullScreenDialog.cancelDialog();
+                                  },
+                                  icon: (_friendTalkController.text.trim().isEmpty)
+                                      ? Image.asset(
+                                    'assets/imgs/icons/icon_livetalk_send_g.png',
+                                    width: 27,
+                                    height: 27,
+                                  )
+                                      : Image.asset(
+                                    'assets/imgs/icons/icon_livetalk_send.png',
+                                    width: 27,
+                                    height: 27,
+                                  ),
+                                ),
+                                labelStyle: TextStyle(color: Color(0xff949494), fontSize: 15),
+                                hintStyle: TextStyle(color: Color(0xffb7b7b7), fontSize: 15),
+                                errorStyle: TextStyle(
+                                  fontSize: 12,
+                                ),
+                                hintText: '친구톡 남기기',
+                                contentPadding: EdgeInsets.only(
+                                    top: 2, bottom: 2, left: 16, right: 16),
+                                fillColor: Color(0xFFEFEFEF),
+                                hoverColor: Colors.transparent,
+                                filled: true,
+                                focusColor: Colors.transparent,
+                                border: OutlineInputBorder(
+                                  borderSide: BorderSide(color: Color(0xFFEFEFEF)),
+                                  borderRadius: BorderRadius.circular(6),
+                                ),
+                                errorBorder:  OutlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.transparent),
+                                ),
+                                focusedBorder:  OutlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.transparent),
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.transparent),
+                                  borderRadius: BorderRadius.circular(6),
+                                )),
+                            onChanged: (value) {
+                              setState(() {
+                                _newComment = value;
+
+                              });
+                            },
+                          ),
+                        ),
+                      ),
+                    )
+                        : Container(),
                   ],
                 ),
               ),
