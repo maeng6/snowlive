@@ -159,5 +159,6 @@ List<dynamic> bulletinEventCategoryList = [
   '클리닉(무료)',
   '클리닉(유료)',
   '시승회',
+  '대회',
   '기타',
 ];
