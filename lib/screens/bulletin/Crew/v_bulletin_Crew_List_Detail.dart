@@ -1615,7 +1615,9 @@ class _Bulletin_Crew_List_DetailState extends State<Bulletin_Crew_List_Detail> {
                                             bulletinFreeCount : '',
                                             bulletinEventUid : '',
                                             bulletinEventCount : '',
-                                            originContent: _bulletinCrewModelController.title
+                                            originContent: _bulletinCrewModelController.title,
+                                            bulletinLostUid: '',
+                                            bulletinLostCount: ''
                                         );
                                         CustomFullScreenDialog.cancelDialog();
                                         setState(() {});

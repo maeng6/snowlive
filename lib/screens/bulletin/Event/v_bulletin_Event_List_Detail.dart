@@ -1559,7 +1559,9 @@ class _Bulletin_Event_List_DetailState extends State<Bulletin_Event_List_Detail>
                                             bulletinEventCount : _bulletinEventModelController.bulletinEventCount,
                                             bulletinFreeUid : '',
                                             bulletinFreeCount : '',
-                                            originContent: _bulletinEventModelController.title
+                                            originContent: _bulletinEventModelController.title,
+                                            bulletinLostUid: '',
+                                            bulletinLostCount: ''
                                         );
                                         print('2');
                                         CustomFullScreenDialog.cancelDialog();

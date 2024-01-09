@@ -308,7 +308,9 @@ class _CrewDetailPage_memberState extends State<CrewDetailPage_member> {
                                                           bulletinFreeCount : '',
                                                           bulletinEventUid : '',
                                                           bulletinEventCount : '',
-                                                          originContent: 'crew'
+                                                          originContent: 'crew',
+                                                          bulletinLostUid: '',
+                                                          bulletinLostCount: ''
                                                       );
                                                       await _userModelController.getCurrentUser(_userModelController.uid);
                                                       Navigator.pop(context);
@@ -708,7 +710,9 @@ class _CrewDetailPage_memberState extends State<CrewDetailPage_member> {
                                                                         bulletinFreeCount : '',
                                                                         bulletinEventUid : '',
                                                                         bulletinEventCount : '',
-                                                                        originContent: 'crew'
+                                                                        originContent: 'crew',
+                                                                        bulletinLostUid: '',
+                                                                        bulletinLostCount: ''
                                                                     );
                                                                     await _userModelController.getCurrentUser(_userModelController.uid);
                                                                     Navigator.pop(context);
@@ -972,7 +976,9 @@ class _CrewDetailPage_memberState extends State<CrewDetailPage_member> {
                                                                     bulletinFreeCount : '',
                                                                     bulletinEventUid : '',
                                                                     bulletinEventCount : '',
-                                                                    originContent: 'crew'
+                                                                    originContent: 'crew',
+                                                                    bulletinLostUid: '',
+                                                                    bulletinLostCount: ''
                                                                 );
                                                                 await _userModelController.getCurrentUser(_userModelController.uid);
                                                                 Navigator.pop(context);

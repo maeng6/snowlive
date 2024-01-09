@@ -1,40 +1,35 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:com.snowlive/controller/vm_bulletinLostController.dart';
+import 'package:com.snowlive/controller/vm_bulletinLostReplyController.dart';
 import 'package:com.snowlive/controller/vm_seasonController.dart';
 import 'package:com.snowlive/controller/vm_timeStampController.dart';
-import 'package:com.snowlive/screens/bulletin/Free/v_bulletinFreeImageScreen.dart';
-import 'package:com.snowlive/screens/bulletin/Free/v_bulletin_Free_ModifyPage.dart';
+import 'package:com.snowlive/screens/bulletin/Lost/v_bulletinLostImageScreen.dart';
+import 'package:com.snowlive/screens/bulletin/Lost/v_bulletin_Lost_ModifyPage.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:com.snowlive/controller/vm_userModelController.dart';
-import 'package:com.snowlive/screens/bulletin/Crew/v_bulletinCrewImageScreen.dart';
-import 'package:com.snowlive/screens/bulletin/Crew/v_bulletin_Crew_ModifyPage.dart';
 import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 import '../../../controller/vm_alarmCenterController.dart';
 import '../../../controller/vm_allUserDocsController.dart';
-import '../../../controller/vm_bulletinCrewController.dart';
-import '../../../controller/vm_bulletinCrewReplyController.dart';
-import '../../../controller/vm_bulletinFreeController.dart';
-import '../../../controller/vm_bulletinFreeReplyController.dart';
 import '../../../data/imgaUrls/Data_url_image.dart';
 import '../../../model/m_alarmCenterModel.dart';
-import '../../comments/v_profileImageScreen.dart';
 import '../../more/friend/v_friendDetailPage.dart';
 
-class Bulletin_Free_List_Detail extends StatefulWidget {
-  Bulletin_Free_List_Detail({Key? key}) : super(key: key);
+class Bulletin_Lost_List_Detail extends StatefulWidget {
+  Bulletin_Lost_List_Detail({Key? key}) : super(key: key);
 
   @override
-  State<Bulletin_Free_List_Detail> createState() =>
-      _Bulletin_Free_List_DetailState();
+  State<Bulletin_Lost_List_Detail> createState() =>
+      _Bulletin_Lost_List_DetailState();
 }
 
-class _Bulletin_Free_List_DetailState extends State<Bulletin_Free_List_Detail> {
+class _Bulletin_Lost_List_DetailState extends State<Bulletin_Lost_List_Detail> {
   //TODO: Dependency Injection**************************************************
   UserModelController _userModelController = Get.find<UserModelController>();
-  BulletinFreeModelController _bulletinFreeModelController = Get.find<BulletinFreeModelController>();
+  BulletinLostModelController _bulletinLostModelController = Get.find<BulletinLostModelController>();
   SeasonController _seasonController = Get.find<SeasonController>();
   AlarmCenterController _alarmCenterController = Get.find<AlarmCenterController>();
   TimeStampController _timeStampController = Get.find<TimeStampController>();
@@ -62,7 +57,7 @@ class _Bulletin_Free_List_DetailState extends State<Bulletin_Free_List_Detail> {
     _updateMethod();
     // TODO: implement initState
     super.initState();
-    _seasonController.getBulletinFreeReplyLimit();
+    _seasonController.getBulletinLostReplyLimit();
     _replyStream = replyNewStream();
   }
 
@@ -72,11 +67,11 @@ class _Bulletin_Free_List_DetailState extends State<Bulletin_Free_List_Detail> {
 
   Stream<QuerySnapshot> replyNewStream() {
     return FirebaseFirestore.instance
-        .collection('bulletinFree')
-        .doc('${_bulletinFreeModelController.uid}#${_bulletinFreeModelController.bulletinFreeCount}')
+        .collection('bulletinLost')
+        .doc('${_bulletinLostModelController.uid}#${_bulletinLostModelController.bulletinLostCount}')
         .collection('reply')
         .orderBy('timeStamp', descending: true)
-        .limit(_seasonController.bulletinFreeReplyLimit!)
+        .limit(_seasonController.bulletinLostReplyLimit!)
         .snapshots();
   }
 
@@ -89,14 +84,14 @@ class _Bulletin_Free_List_DetailState extends State<Bulletin_Free_List_Detail> {
   Widget build(BuildContext context) {
 
     //TODO : ****************************************************************
-    Get.put(BulletinFreeReplyModelController(), permanent: true);
-    BulletinFreeReplyModelController _bulletinFreeReplyModelController = Get.find<BulletinFreeReplyModelController>();
+    Get.put(BulletinLostReplyModelController(), permanent: true);
+    BulletinLostReplyModelController _bulletinLostReplyModelController = Get.find<BulletinLostReplyModelController>();
     //TODO : ****************************************************************
 
-    _seasonController.getBulletinFreeReplyLimit();
+    _seasonController.getBulletinLostReplyLimit();
 
     String _time =
-    _timeStampController.yyyymmddFormat(_bulletinFreeModelController.timeStamp);
+    _timeStampController.yyyymmddFormat(_bulletinLostModelController.timeStamp);
     Size _size = MediaQuery.of(context).size;
     return Container(
       color: Colors.white,
@@ -120,7 +115,7 @@ class _Bulletin_Free_List_DetailState extends State<Bulletin_Free_List_Detail> {
                 },
               ),
               actions: [
-                (_bulletinFreeModelController.uid != _userModelController.uid)
+                (_bulletinLostModelController.uid != _userModelController.uid)
                     ? GestureDetector(
                   onTap: () => showModalBottomSheet(
                       enableDrag: false,
@@ -182,7 +177,7 @@ class _Bulletin_Free_List_DetailState extends State<Bulletin_Free_List_Detail> {
                                                 TextButton(
                                                     onPressed: () async {
                                                       var repoUid =
-                                                          _bulletinFreeModelController
+                                                          _bulletinLostModelController
                                                               .uid;
                                                       await _userModelController
                                                           .repoUpdate(
@@ -278,7 +273,7 @@ class _Bulletin_Free_List_DetailState extends State<Bulletin_Free_List_Detail> {
                                                     )),
                                                 TextButton(
                                                     onPressed: () {
-                                                      var repoUid = _bulletinFreeModelController.uid;
+                                                      var repoUid = _bulletinLostModelController.uid;
                                                       _userModelController.updateRepoUid(repoUid);
                                                       Navigator.pop(context);
                                                       Navigator.pop(context);
@@ -334,7 +329,7 @@ class _Bulletin_Free_List_DetailState extends State<Bulletin_Free_List_Detail> {
                                   horizontal: 20.0, vertical: 14),
                               child: Column(
                                 children: [
-                                  (_bulletinFreeModelController.uid == _userModelController.uid)?
+                                  (_bulletinLostModelController.uid == _userModelController.uid)?
                                   GestureDetector(
                                     child: ListTile(
                                       contentPadding: EdgeInsets.zero,
@@ -355,7 +350,7 @@ class _Bulletin_Free_List_DetailState extends State<Bulletin_Free_List_Detail> {
                                             .getCurrentUser(_userModelController.uid);
                                         CustomFullScreenDialog.cancelDialog();
                                         Get.to(
-                                                () => Bulletin_Free_ModifyPage());
+                                                () => Bulletin_Lost_ModifyPage());
                                       },
                                       shape: RoundedRectangleBorder(
                                           borderRadius:
@@ -443,15 +438,15 @@ class _Bulletin_Free_List_DetailState extends State<Bulletin_Free_List_Detail> {
                                                                 CustomFullScreenDialog.showDialog();
                                                                 try {
                                                                   await FirebaseFirestore.instance
-                                                                      .collection('bulletinFree')
-                                                                      .doc('${_userModelController.uid}#${_bulletinFreeModelController.bulletinFreeCount}')
+                                                                      .collection('bulletinLost')
+                                                                      .doc('${_userModelController.uid}#${_bulletinLostModelController.bulletinLostCount}')
                                                                       .delete();
                                                                   try {
-                                                                    await _bulletinFreeModelController.deleteBulletinFreeImage(
+                                                                    await _bulletinLostModelController.deleteBulletinLostImage(
                                                                         uid:
                                                                         _userModelController.uid,
-                                                                        bulletinFreeCount: _bulletinFreeModelController.bulletinFreeCount,
-                                                                        imageCount: _bulletinFreeModelController.itemImagesUrls!.length);
+                                                                        bulletinLostCount: _bulletinLostModelController.bulletinLostCount,
+                                                                        imageCount: _bulletinLostModelController.itemImagesUrls!.length);
                                                                   } catch (e) {
                                                                     print('이미지 삭제 에러');
                                                                   };
@@ -522,11 +517,11 @@ class _Bulletin_Free_List_DetailState extends State<Bulletin_Free_List_Detail> {
                         controller: _scrollController,
                         child: Column(
                           children: [
-                            if (_bulletinFreeModelController.itemImagesUrls!.isEmpty)
+                            if (_bulletinLostModelController.itemImagesUrls!.isEmpty)
                               SizedBox(
                                 height: 6,
                               ),
-                            if (_bulletinFreeModelController.itemImagesUrls!.isNotEmpty)
+                            if (_bulletinLostModelController.itemImagesUrls!.isNotEmpty)
                               Stack(
                                 children: [
                                   CarouselSlider.builder(
@@ -541,7 +536,7 @@ class _Bulletin_Free_List_DetailState extends State<Bulletin_Free_List_Detail> {
                                       },
                                     ),
                                     itemCount:
-                                    _bulletinFreeModelController.itemImagesUrls!.length,
+                                    _bulletinLostModelController.itemImagesUrls!.length,
                                     itemBuilder: (context, index, pageViewIndex) {
                                       return Container(
                                         padding: EdgeInsets.only(bottom: 16),
@@ -553,10 +548,10 @@ class _Bulletin_Free_List_DetailState extends State<Bulletin_Free_List_Detail> {
                                                 children: [
                                                   GestureDetector(
                                                     onTap: () {
-                                                      Get.to(() => BulletinFreeImageScreen());
+                                                      Get.to(() => BulletinLostImageScreen());
                                                     },
                                                     child: ExtendedImage.network(
-                                                      _bulletinFreeModelController
+                                                      _bulletinLostModelController
                                                           .itemImagesUrls![index],
                                                       fit: BoxFit.cover,
                                                       width: _size.width,
@@ -575,7 +570,7 @@ class _Bulletin_Free_List_DetailState extends State<Bulletin_Free_List_Detail> {
                                       child: Row(
                                         mainAxisAlignment: MainAxisAlignment.center,
                                         children: List.generate(
-                                          _bulletinFreeModelController.itemImagesUrls!.length,
+                                          _bulletinLostModelController.itemImagesUrls!.length,
                                               (index) {
                                             return Container(
                                               width: 8,
@@ -606,7 +601,7 @@ class _Bulletin_Free_List_DetailState extends State<Bulletin_Free_List_Detail> {
                                       borderRadius: BorderRadius.circular(4),
                                     ),
                                     child: Text(
-                                      '${_bulletinFreeModelController.category}',
+                                      '${_bulletinLostModelController.category}',
                                       maxLines: 1,
                                       overflow: TextOverflow.ellipsis,
                                       style: TextStyle(
@@ -621,9 +616,9 @@ class _Bulletin_Free_List_DetailState extends State<Bulletin_Free_List_Detail> {
                                   Container(
                                     width: _size.width - 32,
                                     child: Text(
-                                      (_bulletinFreeModelController.soldOut == true)
+                                      (_bulletinLostModelController.soldOut == true)
                                           ? '거래완료'
-                                          : '${_bulletinFreeModelController.title}',
+                                          : '${_bulletinLostModelController.title}',
                                       maxLines: 2,
                                       overflow: TextOverflow.ellipsis,
                                       style: TextStyle(
@@ -644,7 +639,7 @@ class _Bulletin_Free_List_DetailState extends State<Bulletin_Free_List_Detail> {
                                               StreamBuilder(
                                                   stream:  FirebaseFirestore.instance
                                                       .collection('user')
-                                                      .where('uid', isEqualTo: _bulletinFreeModelController.uid)
+                                                      .where('uid', isEqualTo: _bulletinLostModelController.uid)
                                                       .snapshots(),
                                                   builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
                                                     if (!snapshot.hasData || snapshot.data == null) {
@@ -771,7 +766,7 @@ class _Bulletin_Free_List_DetailState extends State<Bulletin_Free_List_Detail> {
                                             Container(
                                               width: _size.width,
                                               child: SelectableText(
-                                                '${_bulletinFreeModelController.description}',
+                                                '${_bulletinLostModelController.description}',
                                                 style: TextStyle(
                                                     fontSize: 16,
                                                     fontWeight: FontWeight.normal),
@@ -794,7 +789,7 @@ class _Bulletin_Free_List_DetailState extends State<Bulletin_Free_List_Detail> {
                                             height: 24,
                                             decoration: BoxDecoration(
                                                 color:
-                                                (_userModelController.likeUidList!.contains('${_bulletinFreeModelController.uid}#${_bulletinFreeModelController.bulletinFreeCount}'))
+                                                (_userModelController.likeUidList!.contains('${_bulletinLostModelController.uid}#${_bulletinLostModelController.bulletinLostCount}'))
                                                     ? Color(0xFFCBE0FF)
                                                     : Color(0xFFECECEC),
                                                 borderRadius: BorderRadius.circular(4)
@@ -802,22 +797,22 @@ class _Bulletin_Free_List_DetailState extends State<Bulletin_Free_List_Detail> {
                                             child: Padding(
                                               padding: EdgeInsets.only(right: 5, top: 2, bottom: 4, left: 3),
                                               child:
-                                              (_userModelController.likeUidList!.contains('${_bulletinFreeModelController.uid}#${_bulletinFreeModelController.bulletinFreeCount}'))
+                                              (_userModelController.likeUidList!.contains('${_bulletinLostModelController.uid}#${_bulletinLostModelController.bulletinLostCount}'))
                                                   ? Row(
                                                 children: [
                                                   Padding(
                                                     padding: const EdgeInsets.only(top: 2),
                                                     child: IconButton(
                                                       onPressed: () async {
-                                                        var docName = '${_bulletinFreeModelController.uid}#${_bulletinFreeModelController.bulletinFreeCount}';
+                                                        var docName = '${_bulletinLostModelController.uid}#${_bulletinLostModelController.bulletinLostCount}';
                                                         HapticFeedback.lightImpact();
                                                         if (_firstPress) {
                                                           _firstPress = false;
                                                           await _userModelController.deleteLikeUid(docName);
-                                                          await _bulletinFreeModelController.likeDelete(docName);
-                                                          await _bulletinFreeModelController.getCurrentBulletinFree(uid: _bulletinFreeModelController.uid, bulletinFreeCount: _bulletinFreeModelController.bulletinFreeCount);
+                                                          await _bulletinLostModelController.likeDelete(docName);
+                                                          await _bulletinLostModelController.getCurrentBulletinLost(uid: _bulletinLostModelController.uid, bulletinLostCount: _bulletinLostModelController.bulletinLostCount);
                                                           setState(() {_firstPress = true;});
-                                                          await _bulletinFreeModelController.scoreDelete_like(bullUid: _bulletinFreeModelController.uid, docName: docName, timeStamp: _bulletinFreeModelController.timeStamp, score: _bulletinFreeModelController.score);
+                                                          await _bulletinLostModelController.scoreDelete_like(bullUid: _bulletinLostModelController.uid, docName: docName, timeStamp: _bulletinLostModelController.timeStamp, score: _bulletinLostModelController.score);
                                                         }
                                                       },
                                                       icon: Icon(
@@ -832,7 +827,7 @@ class _Bulletin_Free_List_DetailState extends State<Bulletin_Free_List_Detail> {
                                                   Padding(
                                                     padding: const EdgeInsets.only(top: 2),
                                                     child: Text(
-                                                      '${_bulletinFreeModelController.likeCount}',
+                                                      '${_bulletinLostModelController.likeCount}',
                                                       style: TextStyle(
                                                         fontWeight: FontWeight.bold,
                                                         fontSize: 11,
@@ -848,15 +843,15 @@ class _Bulletin_Free_List_DetailState extends State<Bulletin_Free_List_Detail> {
                                                     child:
                                                     IconButton(
                                                       onPressed: () async {
-                                                        var docName = '${_bulletinFreeModelController.uid}#${_bulletinFreeModelController.bulletinFreeCount}';
+                                                        var docName = '${_bulletinLostModelController.uid}#${_bulletinLostModelController.bulletinLostCount}';
                                                         HapticFeedback.lightImpact();
                                                         if (_firstPress) {
                                                           _firstPress = false;
                                                           await _userModelController.updateLikeUid(docName);
-                                                          await _bulletinFreeModelController.likeUpdate(docName);
-                                                          await _bulletinFreeModelController.getCurrentBulletinFree(uid: _bulletinFreeModelController.uid, bulletinFreeCount: _bulletinFreeModelController.bulletinFreeCount);
+                                                          await _bulletinLostModelController.likeUpdate(docName);
+                                                          await _bulletinLostModelController.getCurrentBulletinLost(uid: _bulletinLostModelController.uid, bulletinLostCount: _bulletinLostModelController.bulletinLostCount);
                                                           setState(() {_firstPress = true;});
-                                                          await _bulletinFreeModelController.scoreUpdate_like(bullUid: _bulletinFreeModelController.uid, docName: docName, timeStamp: _bulletinFreeModelController.timeStamp, score: _bulletinFreeModelController.score);
+                                                          await _bulletinLostModelController.scoreUpdate_like(bullUid: _bulletinLostModelController.uid, docName: docName, timeStamp: _bulletinLostModelController.timeStamp, score: _bulletinLostModelController.score);
                                                         }
                                                       },
                                                       icon: Icon(Icons.thumb_up_alt,
@@ -869,7 +864,7 @@ class _Bulletin_Free_List_DetailState extends State<Bulletin_Free_List_Detail> {
                                                   ),
                                                   Padding(
                                                     padding: const EdgeInsets.only(top: 2),
-                                                    child: Text('${_bulletinFreeModelController.likeCount}',
+                                                    child: Text('${_bulletinLostModelController.likeCount}',
                                                       style: TextStyle(
                                                           fontWeight: FontWeight.bold,
                                                           fontSize: 11,
@@ -881,29 +876,29 @@ class _Bulletin_Free_List_DetailState extends State<Bulletin_Free_List_Detail> {
                                             ),
                                           ),
                                           onTap: () async{
-                                            if (_userModelController.likeUidList!.contains('${_bulletinFreeModelController.uid}#${_bulletinFreeModelController.bulletinFreeCount}')){
-                                              var docName = '${_bulletinFreeModelController.uid}#${_bulletinFreeModelController.bulletinFreeCount}';
+                                            if (_userModelController.likeUidList!.contains('${_bulletinLostModelController.uid}#${_bulletinLostModelController.bulletinLostCount}')){
+                                              var docName = '${_bulletinLostModelController.uid}#${_bulletinLostModelController.bulletinLostCount}';
                                               print(docName);
                                               HapticFeedback.lightImpact();
                                               if (_firstPress) {
                                                 _firstPress = false;
                                                 await _userModelController.deleteLikeUid(docName);
-                                                await _bulletinFreeModelController.likeDelete(docName);
-                                                await _bulletinFreeModelController.getCurrentBulletinFree(uid: _bulletinFreeModelController.uid, bulletinFreeCount: _bulletinFreeModelController.bulletinFreeCount);
+                                                await _bulletinLostModelController.likeDelete(docName);
+                                                await _bulletinLostModelController.getCurrentBulletinLost(uid: _bulletinLostModelController.uid, bulletinLostCount: _bulletinLostModelController.bulletinLostCount);
                                                 setState(() {_firstPress = true;});
-                                                await _bulletinFreeModelController.scoreDelete_like(bullUid: _bulletinFreeModelController.uid, docName: docName, timeStamp: _bulletinFreeModelController.timeStamp, score: _bulletinFreeModelController.score);
+                                                await _bulletinLostModelController.scoreDelete_like(bullUid: _bulletinLostModelController.uid, docName: docName, timeStamp: _bulletinLostModelController.timeStamp, score: _bulletinLostModelController.score);
                                               }
                                             } else{
-                                              var docName = '${_bulletinFreeModelController.uid}#${_bulletinFreeModelController.bulletinFreeCount}';
+                                              var docName = '${_bulletinLostModelController.uid}#${_bulletinLostModelController.bulletinLostCount}';
                                               print(docName);
                                               HapticFeedback.lightImpact();
                                               if (_firstPress) {
                                                 _firstPress = false;
                                                 await _userModelController.updateLikeUid(docName);
-                                                await _bulletinFreeModelController.likeUpdate(docName);
-                                                await _bulletinFreeModelController.getCurrentBulletinFree(uid: _bulletinFreeModelController.uid, bulletinFreeCount: _bulletinFreeModelController.bulletinFreeCount);
+                                                await _bulletinLostModelController.likeUpdate(docName);
+                                                await _bulletinLostModelController.getCurrentBulletinLost(uid: _bulletinLostModelController.uid, bulletinLostCount: _bulletinLostModelController.bulletinLostCount);
                                                 setState(() {_firstPress = true;});
-                                                await _bulletinFreeModelController.scoreUpdate_like(bullUid: _bulletinFreeModelController.uid, docName: docName, timeStamp: _bulletinFreeModelController.timeStamp, score: _bulletinFreeModelController.score);
+                                                await _bulletinLostModelController.scoreUpdate_like(bullUid: _bulletinLostModelController.uid, docName: docName, timeStamp: _bulletinLostModelController.timeStamp, score: _bulletinLostModelController.score);
                                               }
                                             }
 
@@ -1004,7 +999,7 @@ class _Bulletin_Free_List_DetailState extends State<Bulletin_Free_List_Detail> {
                                                               reverse: _replyReverse,
                                                               itemCount: replyDocs.length,
                                                               itemBuilder: (context, index) {
-                                                                String _time = _bulletinFreeReplyModelController.getAgoTime(replyDocs[index].get('timeStamp'));
+                                                                String _time = _bulletinLostReplyModelController.getAgoTime(replyDocs[index].get('timeStamp'));
                                                                 return Padding(
                                                                   padding: const EdgeInsets.only(top: 16),
                                                                   child: Obx(() => Container(
@@ -1159,7 +1154,7 @@ class _Bulletin_Free_List_DetailState extends State<Bulletin_Free_List_Detail> {
                                                                                                           decoration: BoxDecoration(
                                                                                                             borderRadius: BorderRadius.circular(30),
                                                                                                             color:
-                                                                                                            (replyDocs[index].get('uid')==_bulletinFreeModelController.uid)
+                                                                                                            (replyDocs[index].get('uid')==_bulletinLostModelController.uid)
                                                                                                                 ? Color(0xFFE1EDFF)
                                                                                                                 : Colors.white,
                                                                                                           ),
@@ -1169,7 +1164,7 @@ class _Bulletin_Free_List_DetailState extends State<Bulletin_Free_List_Detail> {
                                                                                                               '글쓴이',
                                                                                                               style: TextStyle(fontSize: 11, fontWeight: FontWeight.normal,
                                                                                                                   color:
-                                                                                                                  (replyDocs[index].get('uid')==_bulletinFreeModelController.uid)
+                                                                                                                  (replyDocs[index].get('uid')==_bulletinLostModelController.uid)
                                                                                                                       ? Color(0xFF3D83ED)
                                                                                                                       : Colors.white),
                                                                                                             ),
@@ -1459,26 +1454,26 @@ class _Bulletin_Free_List_DetailState extends State<Bulletin_Free_List_Detail> {
                                                                                                                         child: ElevatedButton(
                                                                                                                           onPressed: () async {
                                                                                                                             CustomFullScreenDialog.showDialog();
-                                                                                                                            var docName = '${_bulletinFreeModelController.uid}#${_bulletinFreeModelController.bulletinFreeCount}';
+                                                                                                                            var docName = '${_bulletinLostModelController.uid}#${_bulletinLostModelController.bulletinLostCount}';
                                                                                                                             try {
                                                                                                                               await FirebaseFirestore.instance
-                                                                                                                                  .collection('bulletinFree')
-                                                                                                                                  .doc('${_bulletinFreeModelController.uid}#${_bulletinFreeModelController.bulletinFreeCount}')
+                                                                                                                                  .collection('bulletinLost')
+                                                                                                                                  .doc('${_bulletinLostModelController.uid}#${_bulletinLostModelController.bulletinLostCount}')
                                                                                                                                   .collection('reply')
                                                                                                                                   .doc('${_userModelController.uid}${replyDocs[index]['commentCount']}')
                                                                                                                                   .delete();
-                                                                                                                              String? alarmCategory = AlarmCenterModel().alarmCategory[AlarmCenterModel.communityReplyKey_free];
+                                                                                                                              String? alarmCategory = AlarmCenterModel().alarmCategory[AlarmCenterModel.communityReplyKey_lost];
                                                                                                                               await _alarmCenterController.deleteAlarm(
-                                                                                                                                  receiverUid: _bulletinFreeModelController.uid,
+                                                                                                                                  receiverUid: _bulletinLostModelController.uid,
                                                                                                                                   senderUid: _userModelController.uid ,
                                                                                                                                   category: alarmCategory,
-                                                                                                                                  alarmCount: _bulletinFreeModelController.bulletinFreeCount
+                                                                                                                                  alarmCount: _bulletinLostModelController.bulletinLostCount
                                                                                                                               );
-                                                                                                                              await _bulletinFreeModelController.reduceBulletinFreeReplyCount(
-                                                                                                                                  bullUid: _bulletinFreeModelController.uid,
-                                                                                                                                  bullCount: _bulletinFreeModelController.bulletinFreeCount);
-                                                                                                                              await _bulletinFreeModelController.scoreDelete_reply(bullUid: _bulletinFreeModelController.uid, docName: docName, timeStamp: _bulletinFreeModelController.timeStamp, score: _bulletinFreeModelController.score);
-                                                                                                                              await _bulletinFreeModelController.getCurrentBulletinFree(uid: _bulletinFreeModelController.uid, bulletinFreeCount: _bulletinFreeModelController.bulletinFreeCount);
+                                                                                                                              await _bulletinLostModelController.reduceBulletinLostReplyCount(
+                                                                                                                                  bullUid: _bulletinLostModelController.uid,
+                                                                                                                                  bullCount: _bulletinLostModelController.bulletinLostCount);
+                                                                                                                              await _bulletinLostModelController.scoreDelete_reply(bullUid: _bulletinLostModelController.uid, docName: docName, timeStamp: _bulletinLostModelController.timeStamp, score: _bulletinLostModelController.score);
+                                                                                                                              await _bulletinLostModelController.getCurrentBulletinLost(uid: _bulletinLostModelController.uid, bulletinLostCount: _bulletinLostModelController.bulletinLostCount);
                                                                                                                               print('댓글 삭제 완료');
                                                                                                                             } catch (e) {}
                                                                                                                             Navigator.pop(context);
@@ -1575,31 +1570,31 @@ class _Bulletin_Free_List_DetailState extends State<Bulletin_Free_List_Detail> {
                                         _controller.clear();
                                         CustomFullScreenDialog.showDialog();
                                         // try{
-                                        var docName = '${_bulletinFreeModelController.uid}#${_bulletinFreeModelController.bulletinFreeCount}';
+                                        var docName = '${_bulletinLostModelController.uid}#${_bulletinLostModelController.bulletinLostCount}';
                                         await _userModelController.updateCommentCount(_userModelController.commentCount);
-                                        await _bulletinFreeModelController.updateBulletinFreeReplyCount(
-                                            bullUid: _bulletinFreeModelController.uid,
-                                            bullCount: _bulletinFreeModelController.bulletinFreeCount);
-                                        await _bulletinFreeReplyModelController.sendReply(
+                                        await _bulletinLostModelController.updateBulletinLostReplyCount(
+                                            bullUid: _bulletinLostModelController.uid,
+                                            bullCount: _bulletinLostModelController.bulletinLostCount);
+                                        await _bulletinLostReplyModelController.sendReply(
                                             replyResortNickname: _userModelController.resortNickname,
                                             displayName: _userModelController.displayName,
                                             uid: _userModelController.uid,
-                                            replyLocationUid: _bulletinFreeModelController.uid,
+                                            replyLocationUid: _bulletinLostModelController.uid,
                                             profileImageUrl: _userModelController.profileImageUrl,
                                             reply: _newReply,
-                                            replyLocationUidCount: _bulletinFreeModelController.bulletinFreeCount,
+                                            replyLocationUidCount: _bulletinLostModelController.bulletinLostCount,
                                             commentCount: _userModelController.commentCount);
-                                        String? alarmCategory = AlarmCenterModel().alarmCategory[AlarmCenterModel.communityReplyKey_free];
+                                        String? alarmCategory = AlarmCenterModel().alarmCategory[AlarmCenterModel.communityReplyKey_lost];
                                         await _alarmCenterController.sendAlarm(
-                                            alarmCount: _bulletinFreeModelController.bulletinFreeCount,
-                                            receiverUid: _bulletinFreeModelController.uid,
+                                            alarmCount: _bulletinLostModelController.bulletinLostCount,
+                                            receiverUid: _bulletinLostModelController.uid,
                                             senderUid: _userModelController.uid,
                                             senderDisplayName: _userModelController.displayName,
                                             timeStamp: Timestamp.now(),
                                             category: alarmCategory,
                                             msg: '${_userModelController.displayName}님이 $alarmCategory에 댓글을 남겼습니다.',
                                             content: _newReply,
-                                            docName: '${_bulletinFreeModelController.uid}#${_bulletinFreeModelController.bulletinFreeCount}',
+                                            docName: '${_bulletinLostModelController.uid}#${_bulletinLostModelController.bulletinLostCount}',
                                             liveTalk_uid : '',
                                             liveTalk_commentCount : '',
                                             bulletinRoomUid :'',
@@ -1608,14 +1603,13 @@ class _Bulletin_Free_List_DetailState extends State<Bulletin_Free_List_Detail> {
                                             bulletinCrewCount : '',
                                             bulletinEventUid : '',
                                             bulletinEventCount : '',
-                                            bulletinFreeUid : _bulletinFreeModelController.uid,
-                                            bulletinFreeCount : _bulletinFreeModelController.bulletinFreeCount,
-                                            originContent: _bulletinFreeModelController.title,
-                                            bulletinLostUid: '',
-                                            bulletinLostCount: ''
+                                            bulletinLostUid : _bulletinLostModelController.uid,
+                                            bulletinLostCount : _bulletinLostModelController.bulletinLostCount,
+                                            originContent: _bulletinLostModelController.title,
+                                            bulletinFreeUid: '',
+                                            bulletinFreeCount: ''
                                         );
-                                        await _bulletinFreeModelController.scoreUpdate_reply(bullUid: _bulletinFreeModelController.uid, docName: docName, timeStamp: _bulletinFreeModelController.timeStamp, score: _bulletinFreeModelController.score);
-                                        await _bulletinFreeModelController.getCurrentBulletinFree(uid: _bulletinFreeModelController.uid, bulletinFreeCount: _bulletinFreeModelController.bulletinFreeCount);
+                                        await _bulletinLostModelController.getCurrentBulletinLost(uid: _bulletinLostModelController.uid, bulletinLostCount: _bulletinLostModelController.bulletinLostCount);
                                         CustomFullScreenDialog.cancelDialog();
                                         setState(() {});
                                         //   }catch(e){}

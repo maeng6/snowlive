@@ -59,6 +59,7 @@ class UserModelController extends GetxController{
   RxBool? _kusbf = false.obs;
   RxInt? _bulletinFreeCount = 0.obs;
   RxInt? _bulletinEventCount = 0.obs;
+  RxInt? _bulletinLostCount = 0.obs;
 
   List<dynamic> kusbfArray = [];
   Map<String, dynamic> kusbfNameMap = {};
@@ -105,23 +106,32 @@ class UserModelController extends GetxController{
   bool? get kusbf => _kusbf!.value;
   int? get bulletinFreeCount  => _bulletinFreeCount!.value;
   int? get bulletinEventCount  => _bulletinEventCount!.value;
+  int? get bulletinLostCount  => _bulletinLostCount!.value;
 
   @override
   void onInit()  async{
     // TODO: implement onInit
     String? loginUid = await FlutterSecureStorage().read(key: 'uid');
     if(loginUid != null) {
-      setNewField5();
-      getCurrentUser(loginUid).catchError((e) {setNewField5();
-        getCurrentUser(loginUid).catchError((e){setNewField4();
-        getCurrentUser(loginUid).catchError((e) {setNewField3(token: _notificationController.deviceToken, deviceID: _notificationController.deviceID);
-          getCurrentUser(loginUid).catchError((e) {setNewField2();
-            getCurrentUser(loginUid).catchError((e) {setNewField();
-              getCurrentUser(loginUid);
+      getCurrentUser(loginUid).catchError((e) {
+        setNewField6();
+        getCurrentUser(loginUid).catchError((e) {
+          setNewField5();
+          getCurrentUser(loginUid).catchError((e) {
+            setNewField4();
+            getCurrentUser(loginUid).catchError((e) {
+              setNewField3(token: _notificationController.deviceToken,
+                  deviceID: _notificationController.deviceID);
+              getCurrentUser(loginUid).catchError((e) {
+                setNewField2();
+                getCurrentUser(loginUid).catchError((e) {
+                  setNewField();
+                  getCurrentUser(loginUid);
+                });
+              });
             });
           });
         });
-      });
       });
     }else{
     }
@@ -353,6 +363,15 @@ class UserModelController extends GetxController{
     await ref.collection('user').doc(uid).update({
       'lastLogin': Timestamp.now(),
       'bulletinEventCount': 0,
+    });
+    await getCurrentUser(auth.currentUser!.uid);
+  }
+
+  Future<void> setNewField6() async {
+    final User? user = auth.currentUser;
+    final uid = user!.uid;
+    await ref.collection('user').doc(uid).update({
+      'bulletinLostCount': 0,
     });
     await getCurrentUser(auth.currentUser!.uid);
   }
@@ -608,6 +627,38 @@ class UserModelController extends GetxController{
       int bulletinFreeCount = documentSnapshot.get('bulletinFreeCount');
 
       this._bulletinFreeCount!.value = bulletinFreeCount;
+    }
+  }
+
+  Future<void> bulletinLostCountUpdate(uid) async {
+
+    try {
+      DocumentReference<Map<String, dynamic>> documentReference =
+      ref.collection('user').doc(uid);
+
+      final DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
+      await documentReference.get();
+
+      int bulletinLostCount = documentSnapshot.get('bulletinLostCount');
+      int bulletinLostCountPlus = bulletinLostCount + 1;
+
+      await ref.collection('user').doc(uid).update({
+        'bulletinFreeCount': bulletinLostCountPlus,
+      });
+      this._bulletinLostCount!.value = bulletinLostCountPlus;
+    }catch(e){
+      await ref.collection('user').doc(uid).update({
+        'bulletinLostCount': 1,
+      });
+      DocumentReference<Map<String, dynamic>> documentReference =
+      ref.collection('user').doc(uid);
+
+      final DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
+      await documentReference.get();
+
+      int bulletinLostCount = documentSnapshot.get('bulletinLostCount');
+
+      this._bulletinLostCount!.value = bulletinLostCount;
     }
   }
 
