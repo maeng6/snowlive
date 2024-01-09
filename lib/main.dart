@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:com.snowlive/controller/vm_alarmCenterController.dart';
+import 'package:com.snowlive/controller/vm_bulletinLostController.dart';
 import 'package:com.snowlive/controller/vm_loginController.dart';
 import 'package:com.snowlive/controller/vm_myCrewRankingController.dart';
 import 'package:com.snowlive/controller/vm_splashController.dart';
@@ -71,6 +72,7 @@ void main() async {
   Get.put(BulletinCrewModelController(), permanent: true);
   Get.put(BulletinFreeModelController(), permanent: true);
   Get.put(BulletinEventModelController(), permanent: true);
+  Get.put(BulletinLostModelController(), permanent: true);
   //Get.put(FleaChatModelController(), permanent: true);
 
   runApp(MyApp());

@@ -1,145 +1,146 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-class BulletinEventModel {
+class BulletinLostModel {
   final auth = FirebaseAuth.instance;
   final ref = FirebaseFirestore.instance;
 
-  BulletinEventModel(
+  BulletinLostModel(
       {this.displayName,
         this.uid,
         this.profileImageUrl,
-        this.itemImagesUrl,
+        this.itemImagesUrls,
         this.title,
         this.category,
-        this.location,
         this.description,
-        this.bulletinEventCount,
-        this.bulletinEventReplyCount,
+        this.bulletinLostCount,
         this.resortNickname,
+        this.likeCount,
         this.timeStamp,
-        this.snsUrl,
-        this.viewerUid,
+        this.score,
+        this.hot,
+        this.viewerUid
       });
 
   String? displayName;
   String? uid;
   String? profileImageUrl;
-  String? itemImagesUrl;
+  List? itemImagesUrls;
   String? title;
   String? category;
-  String? location;
   String? description;
-  int? bulletinEventCount;
-  int? bulletinEventReplyCount;
+  int? bulletinLostCount;
+  int? bulletinLostReplyCount;
   String? resortNickname;
   Timestamp? timeStamp;
+  int? likeCount;
   bool? soldOut;
   DocumentReference? reference;
-  String? snsUrl;
+  double? score;
+  bool? hot;
   List? viewerUid;
 
-  BulletinEventModel.fromJson(dynamic json, this.reference) {
+  BulletinLostModel.fromJson(dynamic json, this.reference) {
     displayName = json['displayName'];
     uid = json['uid'];
     profileImageUrl = json['profileImageUrl'];
-    itemImagesUrl = json['itemImagesUrl'];
+    itemImagesUrls = json['itemImagesUrls'];
     title = json['title'];
     category = json['category'];
-    location = json['location'];
     description = json['description'];
     timeStamp = json['timeStamp'];
-    bulletinEventCount = json['bulletinEventCount'];
-    bulletinEventReplyCount = json['bulletinEventReplyCount'];
+    bulletinLostCount = json['bulletinLostCount'];
+    bulletinLostReplyCount = json['bulletinLostReplyCount'];
     resortNickname = json['resortNickname'];
     soldOut = json['soldOut'];
-    snsUrl = json['snsUrl'];
+    likeCount = json['likeCount'];
+    score =  json['score']?.toDouble() ?? 0.0;
+    hot = json['hot'];
     viewerUid = json['viewerUid'];
   }
 
-  BulletinEventModel.fromSnapShot(DocumentSnapshot<Map<String, dynamic>> snapshot)
+  BulletinLostModel.fromSnapShot(DocumentSnapshot<Map<String, dynamic>> snapshot)
       : this.fromJson(snapshot.data(), snapshot.reference);
 
-  Future<BulletinEventModel> getBulletinEventModel(String uid,int bulletinEventCount) async {
+  Future<BulletinLostModel> getBulletinLostModel(String uid,int bulletinLostCount) async {
     DocumentReference<Map<String, dynamic>> documentReference =
-    ref.collection('bulletinEvent').doc('$uid#$bulletinEventCount');
+    ref.collection('bulletinLost').doc('$uid#$bulletinLostCount');
     final DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
     await documentReference.get();
-    BulletinEventModel bulletinEventModel = BulletinEventModel.fromSnapShot(documentSnapshot);
-    return bulletinEventModel;
+    BulletinLostModel bulletinLostModel = BulletinLostModel.fromSnapShot(documentSnapshot);
+    return bulletinLostModel;
   }
 
-  Future<void> uploadBulletinEvent(
+  Future<void> uploadBulletinLost(
       {required displayName,
         required uid,
         required profileImageUrl,
-        required itemImagesUrl,
+        required itemImagesUrls,
         required title,
         required category,
-        required location,
         required description,
         timeStamp,
-        required bulletinEventCount,
-        required resortNickname,
-        required snsUrl,
-      }) async {
-    await ref.collection('bulletinEvent').doc('$uid#$bulletinEventCount').set({
+        required bulletinLostCount,
+        required resortNickname}) async {
+    await ref.collection('bulletinLost').doc('$uid#$bulletinLostCount').set({
       'displayName': displayName,
       'uid': uid,
       'profileImageUrl': profileImageUrl,
-      'itemImagesUrl': itemImagesUrl,
+      'itemImagesUrls': itemImagesUrls,
       'title': title,
       'category': category,
-      'location': location,
       'description': description,
       'timeStamp': Timestamp.now(),
-      'bulletinEventCount': bulletinEventCount,
-      'bulletinEventReplyCount': 0,
+      'bulletinLostCount': bulletinLostCount,
+      'bulletinLostReplyCount': 0,
       'resortNickname': resortNickname,
       'soldOut': false,
       'viewerUid': [],
       'lock': false,
-      'snsUrl': snsUrl,
+      'hot': false,
+      'score': 0,
+      'likeCount':0
     });
   }
 
-  Future<void> updateBulletinEvent(
+  Future<void> updateBulletinLost(
       {required displayName,
         required uid,
         required profileImageUrl,
-        required itemImagesUrl,
+        required itemImagesUrls,
         required title,
         required category,
-        required location,
         required description,
+        required likeCount,
         required timeStamp,
-        required bulletinEventCount,
+        required bulletinLostCount,
         required resortNickname,
-        required snsUrl,
+        required score,
+        required hot,
         required viewerUid,
       }) async {
-    await ref.collection('bulletinEvent').doc('$uid#$bulletinEventCount').update({
+    await ref.collection('bulletinLost').doc('$uid#$bulletinLostCount').update({
       'displayName': displayName,
       'uid': uid,
       'profileImageUrl': profileImageUrl,
-      'itemImagesUrl': itemImagesUrl,
+      'itemImagesUrls': itemImagesUrls,
       'title': title,
       'category': category,
-      'location': location,
       'description': description,
-      'bulletinEventCount': bulletinEventCount,
+      'bulletinLostCount': bulletinLostCount,
       'timeStamp': timeStamp,
       'resortNickname': resortNickname,
       'soldOut': false,
-      'viewerUid': viewerUid,
-      'snsUrl': snsUrl,
+      'likeCount':likeCount,
+      'score':score,
+      'hot':hot,
+      'viewerUid':viewerUid,
     });
   }
 
 }
 
-List<dynamic> bulletinEventResortList = [
-  '전국',
+List<dynamic> bulletinLostResortList = [
   '곤지암리조트',
   '무주덕유산리조트',
   '비발디파크',
@@ -152,13 +153,11 @@ List<dynamic> bulletinEventResortList = [
   '웰리힐리파크',
   '지산리조트',
   '하이원리조트',
-  '휘닉스파크',
+  '휘닉스파크'
 ];
 
-List<dynamic> bulletinEventCategoryList = [
-  '클리닉(무료)',
-  '클리닉(유료)',
-  '시승회',
-  '대회',
+List<dynamic> bulletinLostCategoryList = [
+  '분실물',
+  '습득물',
   '기타',
 ];

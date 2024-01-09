@@ -1466,7 +1466,9 @@ class _Bulletin_Room_List_DetailState extends State<Bulletin_Room_List_Detail> {
                                               bulletinFreeCount : '',
                                               bulletinEventUid : '',
                                               bulletinEventCount : '',
-                                              originContent: _bulletinRoomModelController.title
+                                              originContent: _bulletinRoomModelController.title,
+                                              bulletinLostUid: '',
+                                              bulletinLostCount: ''
 
                                           );
                                           CustomFullScreenDialog.cancelDialog();

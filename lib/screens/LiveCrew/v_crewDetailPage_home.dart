@@ -1810,7 +1810,9 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                                                         bulletinFreeCount : '',
                                                                         bulletinEventUid : '',
                                                                         bulletinEventCount : '',
-                                                                        originContent: 'crew'
+                                                                        originContent: 'crew',
+                                                                        bulletinLostUid: '',
+                                                                        bulletinLostCount: ''
                                                                     );
                                                                     await _userModelController.getCurrentUser(_userModelController.uid);
                                                                     CustomFullScreenDialog.cancelDialog();

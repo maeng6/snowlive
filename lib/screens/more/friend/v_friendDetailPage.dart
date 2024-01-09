@@ -1140,7 +1140,9 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                                                           bulletinFreeCount : '',
                                                                                           bulletinEventUid : '',
                                                                                           bulletinEventCount : '',
-                                                                                          originContent: 'friend'
+                                                                                          originContent: 'friend',
+                                                                                          bulletinLostUid: '',
+                                                                                          bulletinLostCount: ''
                                                                                       );
                                                                                       await _userModelController.getCurrentUser(_userModelController.uid);
                                                                                       Navigator.pop(context);
@@ -3540,7 +3542,9 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                                 bulletinFreeCount : '',
                                                                 bulletinEventUid : '',
                                                                 bulletinEventCount : '',
-                                                                originContent: 'friend'
+                                                                originContent: 'friend',
+                                                                bulletinLostUid: '',
+                                                                bulletinLostCount: ''
                                                             );
                                                             await _userModelController.getCurrentUser(
                                                                 _userModelController.uid);
@@ -3581,7 +3585,9 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                                 bulletinFreeCount : '',
                                                                 bulletinEventUid : '',
                                                                 bulletinEventCount : '',
-                                                                originContent: 'friend'
+                                                                originContent: 'friend',
+                                                                bulletinLostUid: '',
+                                                                bulletinLostCount: ''
                                                             );
                                                             _friendTalkController.clear();
                                                             Navigator.pop(context);
@@ -3636,7 +3642,9 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                             bulletinFreeCount : '',
                                             bulletinEventUid : '',
                                             bulletinEventCount : '',
-                                            originContent: 'friend'
+                                            originContent: 'friend',
+                                            bulletinLostUid: '',
+                                            bulletinLostCount: ''
                                         );
                                         FocusScope.of(context).unfocus();
                                         _friendTalkController.clear();

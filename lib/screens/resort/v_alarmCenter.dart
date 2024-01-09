@@ -24,6 +24,7 @@ import '../../controller/vm_bulletinEventController.dart';
 import '../../controller/vm_bulletinFreeController.dart';
 import '../../controller/vm_userModelController.dart';
 import '../bulletin/Free/v_bulletin_Free_List_Detail.dart';
+import '../bulletin/Lost/v_bulletin_Lost_List_Detail.dart';
 import '../more/friend/invitation/v_invitation_Screen_friend.dart';
 
 
@@ -311,6 +312,20 @@ class _AlarmCenterState extends State<AlarmCenter> {
                             Get.to(() => NoPageScreen());
                           }
                         }
+                        if (alarmCenterDocs[index].get('category') == '분실물 글') {
+                          try {
+                            CustomFullScreenDialog.showDialog();
+                            await _bulletinFreeModelController.getCurrentBulletinFree(
+                                uid: alarmCenterDocs[index].get('bulletinLostUid'),
+                                bulletinFreeCount: alarmCenterDocs[index].get('bulletinLostCount')
+                            );
+                            CustomFullScreenDialog.cancelDialog();
+                            Get.to(() => Bulletin_Lost_List_Detail());
+                          }catch(e){
+                            CustomFullScreenDialog.cancelDialog();
+                            Get.to(() => NoPageScreen());
+                          }
+                        }
                         if (alarmCenterDocs[index].get('category') == '친구톡') {
                           try {
                             Get.to(() =>
@@ -332,12 +347,14 @@ class _AlarmCenterState extends State<AlarmCenter> {
                         );
                       }
                     },
-                    child: Container(
+                    child:
+                    (_userModelController.uid == alarmCenterDocs[index].get('senderUid'))
+                    ?SizedBox.shrink()
+                    :Container(
                       padding: EdgeInsets.only(left: 16, right: 16),
                       color: Colors.transparent,
                       child: Column(
                         children: [
-                          if(_userModelController.uid != alarmCenterDocs[index].get('senderUid'))
                             Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -385,6 +402,18 @@ class _AlarmCenterState extends State<AlarmCenter> {
                                     ),
 
                                   if((alarmCenterDocs[index].get('category') == '단톡방·동호회 글'))
+                                    Padding(
+                                      padding: const EdgeInsets.only(right: 8),
+                                      child: ExtendedImage.asset(
+                                        'assets/imgs/icons/icon_alarm_community.png',
+                                        enableMemoryCache: true,
+                                        shape: BoxShape.rectangle,
+                                        borderRadius: BorderRadius.circular(7),
+                                        width: 24,
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+                                  if((alarmCenterDocs[index].get('category') == '분실물 글'))
                                     Padding(
                                       padding: const EdgeInsets.only(right: 8),
                                       child: ExtendedImage.asset(
@@ -493,6 +522,7 @@ class _AlarmCenterState extends State<AlarmCenter> {
                                           || (alarmCenterDocs[index].get('category') == '단톡방·동호회 글')
                                           || (alarmCenterDocs[index].get('category') == '자유게시판 글')
                                           || (alarmCenterDocs[index].get('category') == '클리닉·행사 글')
+                                          || (alarmCenterDocs[index].get('category') == '분실물 글')
                                       )
                                       Container(
                                         constraints: BoxConstraints(
@@ -517,6 +547,7 @@ class _AlarmCenterState extends State<AlarmCenter> {
                                           || (alarmCenterDocs[index].get('category') == '단톡방·동호회 글')
                                           || (alarmCenterDocs[index].get('category') == '자유게시판 글')
                                           || (alarmCenterDocs[index].get('category') == '클리닉·행사 글')
+                                          || (alarmCenterDocs[index].get('category') == '분실물 글')
                                       )
                                       SizedBox(
                                         height: 8,
@@ -527,6 +558,7 @@ class _AlarmCenterState extends State<AlarmCenter> {
                                           || (alarmCenterDocs[index].get('category') == '단톡방·동호회 글')
                                           || (alarmCenterDocs[index].get('category') == '자유게시판 글')
                                           || (alarmCenterDocs[index].get('category') == '클리닉·행사 글')
+                                          || (alarmCenterDocs[index].get('category') == '분실물 글')
                                       )
                                         Container(
                                           constraints: BoxConstraints(
@@ -551,6 +583,7 @@ class _AlarmCenterState extends State<AlarmCenter> {
                                           || (alarmCenterDocs[index].get('category') == '단톡방·동호회 글')
                                           || (alarmCenterDocs[index].get('category') == '자유게시판 글')
                                           || (alarmCenterDocs[index].get('category') == '클리닉·행사 글')
+                                          || (alarmCenterDocs[index].get('category') == '분실물 글')
                                       )
                                       SizedBox(
                                         height: 4,

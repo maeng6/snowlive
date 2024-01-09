@@ -1195,6 +1195,8 @@ class _ReplyScreenState extends State<ReplyScreen> {
                                                   bulletinEventUid : '',
                                                   bulletinEventCount : '',
                                                   originContent: widget.comment,
+                                                    bulletinLostUid: '',
+                                                    bulletinLostCount: ''
                                                 );
                                                 setState(() {
                                                 });}catch(e){}
