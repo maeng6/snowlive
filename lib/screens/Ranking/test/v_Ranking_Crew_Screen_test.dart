@@ -1109,7 +1109,7 @@ class _RankingCrewScreen_testState extends State<RankingCrewScreen_test> {
                                           SizedBox(height: 2,),
                                           if (myCrewDocs[0]['description'].isNotEmpty)
                                             SizedBox(
-                                              width: 200,
+                                              width: _size.width - 240,
                                               child: Text(
                                                 '${myCrewDocs[0]['description']}',
                                                 maxLines: 1,
@@ -1229,7 +1229,7 @@ class _RankingCrewScreen_testState extends State<RankingCrewScreen_test> {
                                           SizedBox(height: 2,),
                                           if (myCrewDocs[0]['description'].isNotEmpty)
                                             SizedBox(
-                                              width: _size.width - 200,
+                                              width: _size.width - 240,
                                               child: Text(
                                                 '${myCrewDocs[0]['description']}',
                                                 maxLines: 1,

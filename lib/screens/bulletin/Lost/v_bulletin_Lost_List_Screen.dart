@@ -755,7 +755,13 @@ class _Bulletin_Lost_List_ScreenState extends State<Bulletin_Lost_List_Screen> {
                                                               style: TextStyle(
                                                                   fontWeight: FontWeight.bold,
                                                                   fontSize: 12,
-                                                                  color: Color(0xFF666666)),
+                                                                  color:
+                                                                  (chatDocs[index].get('category') == '분실물')
+                                                                      ?Color(0xFFD63636)
+                                                                      : (chatDocs[index].get('category') == '습득물')
+                                                                      ? Color(0xFF3D83ED)
+                                                                      : Color(0xFF666666),
+                                                              ),
                                                             ),
                                                           ),
                                                           SizedBox(
