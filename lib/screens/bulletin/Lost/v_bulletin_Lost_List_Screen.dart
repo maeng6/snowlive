@@ -742,7 +742,12 @@ class _Bulletin_Lost_List_ScreenState extends State<Bulletin_Lost_List_Screen> {
                                                           Container(
                                                             padding: EdgeInsets.symmetric(horizontal: 5, vertical: 2),
                                                             decoration: BoxDecoration(
-                                                              color: Color(0xFFECECEC),
+                                                              color:
+                                                              (chatDocs[index].get('category') == '분실물')
+                                                              ?Color(0xFFFFCDCD)
+                                                                : (chatDocs[index].get('category') == '습득물')
+                                                                ? Color(0xFFCBE0FF)
+                                                              : Color(0xFFECECEC),
                                                               borderRadius: BorderRadius.circular(4),
                                                             ),
                                                             child: Text(
