@@ -68,7 +68,6 @@ class _Bulletin_Lost_List_ScreenState extends State<Bulletin_Lost_List_Screen> {
     super.initState();
     _seasonController.getBulletinLostLimit();
     _stream = newStream();
-    _stream_hot = hotStream();
 
     try{
       FirebaseAnalytics.instance.logEvent(
@@ -124,14 +123,6 @@ class _Bulletin_Lost_List_ScreenState extends State<Bulletin_Lost_List_Screen> {
         .snapshots();
   }
 
-  Stream<QuerySnapshot> hotStream() {
-
-    return FirebaseFirestore.instance
-        .collection('bulletinLost')
-        .where('likeCount', isGreaterThan: 9)
-        .limit(_seasonController.bulletinLostLimit!)
-        .snapshots();
-  }
 
   _showCupertinoPicker() async {
     await showCupertinoModalPopup(
@@ -463,61 +454,6 @@ class _Bulletin_Lost_List_ScreenState extends State<Bulletin_Lost_List_Screen> {
                               ),
                             ),
                           ),
-                          GestureDetector(
-                            onTap: () async{
-                              await _showCupertinoPicker();
-                            },
-                            child: Container(
-                              color: Colors.white,
-                              child: Padding(
-                                padding: const EdgeInsets.only(left: 12, right: 16),
-                                child: Container(
-                                    decoration: BoxDecoration(
-                                      color: (_filerTab == true) ? Color(0xFFD8E7FD) : Color(0xFFFFFFFF),
-                                      borderRadius: BorderRadius.circular(6),
-                                      border: Border.all(
-                                          color: (_filerTab == true) ? Color(0xFFD8E7FD) : Color(0xFFDEDEDE)),
-                                    ),
-                                    padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                                    height: 32,
-                                    child: (_filerTab == true)
-                                        ? Text(_filterValue,
-                                        style: TextStyle(
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.bold,
-                                            color: (_filerTab == true) ? Color(0xFF3D83ED) : Color(0xFF777777)))
-                                        : Row(
-                                      children: [
-                                        Padding(
-                                          padding: const EdgeInsets.only(right: 4),
-                                          child:  ExtendedImage.network(
-                                            '${IconAssetUrlList[0].filter}',
-                                            enableMemoryCache: true,
-                                            shape: BoxShape.rectangle,
-                                            width: 12,
-                                            loadStateChanged: (ExtendedImageState state) {
-                                              switch (state.extendedImageLoadState) {
-                                                case LoadState.loading:
-                                                  return SizedBox.shrink();
-                                                default:
-                                                  return null;
-                                              }
-                                            },
-                                          ),
-                                        ),
-                                        Text('필터',
-                                            style: TextStyle(
-                                                fontSize: 12,
-                                                fontWeight: FontWeight.bold,
-                                                color: Color(0xFF777777)))
-                                      ],
-                                    )
-
-                                ),
-                              ),
-                            ),
-
-                          )
                         ],
                       ),
                     ),
@@ -1089,20 +1025,6 @@ class _Bulletin_Lost_List_ScreenState extends State<Bulletin_Lost_List_Screen> {
                                                                           color: Color(0xFF949494),
                                                                           fontWeight: FontWeight.normal)
                                                                   ),
-                                                                  SizedBox(width: 10),
-                                                                  Icon(
-                                                                    Icons.thumb_up_alt,
-                                                                    color: Color(0xFFc8c8c8),
-                                                                    size: 15,
-                                                                  ),
-                                                                  SizedBox(width: 4,),
-                                                                  Text(
-                                                                      '${chatDocs[index]['likeCount']}',
-                                                                      style: TextStyle(
-                                                                          fontSize: 13,
-                                                                          color: Color(0xFF949494),
-                                                                          fontWeight: FontWeight.normal)
-                                                                  )
                                                                 ],
                                                               ),
                                                             ],

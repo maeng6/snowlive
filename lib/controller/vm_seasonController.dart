@@ -60,6 +60,7 @@ class SeasonController extends GetxController{
     await getBulletinCrewReplyLimit();
     await getBulletinRoomReplyLimit();
     await getBulletinLostReplyLimit();
+    await getBulletinFreeReplyLimit();
     await getBulletinEventReplyLimit();
     await getBulletinFreeHot();
     kusbfListener();

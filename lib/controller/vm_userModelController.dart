@@ -643,7 +643,7 @@ class UserModelController extends GetxController{
       int bulletinLostCountPlus = bulletinLostCount + 1;
 
       await ref.collection('user').doc(uid).update({
-        'bulletinFreeCount': bulletinLostCountPlus,
+        'bulletinLostCount': bulletinLostCountPlus,
       });
       this._bulletinLostCount!.value = bulletinLostCountPlus;
     }catch(e){

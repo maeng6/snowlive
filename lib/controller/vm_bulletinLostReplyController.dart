@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
 import '../model/m_bulletinFreeReplyModel.dart';
+import '../model/m_bulletinLostReplyModel.dart';
 
 class BulletinLostReplyModelController extends GetxController {
   RxString? _uid = ''.obs;
@@ -39,7 +40,7 @@ class BulletinLostReplyModelController extends GetxController {
         required commentCount,
         required replyLocationUidCount,
       }) async {
-    await BulletinFreeReplyModel().uploadReply(
+    await BulletinLostReplyModel().uploadReply(
       reply: reply,
       replyLocationUid: replyLocationUid,
       displayName: displayName,
@@ -51,7 +52,7 @@ class BulletinLostReplyModelController extends GetxController {
       uid: uid,
     );
 
-    BulletinFreeReplyModel replyModel = await BulletinFreeReplyModel().getReplyModel(uid,replyLocationUid,replyLocationUidCount, commentCount, replyResortNickname);
+    BulletinLostReplyModel replyModel = await BulletinLostReplyModel().getReplyModel(uid,replyLocationUid,replyLocationUidCount, commentCount, replyResortNickname);
     this._uid!.value = replyModel.uid!;
     this._commentCount!.value = replyModel.commentCount!;
     this._displayName!.value = replyModel.displayName!;
@@ -62,7 +63,7 @@ class BulletinLostReplyModelController extends GetxController {
   }
 
   String getAgoTime(timestamp){
-    String time = BulletinFreeReplyModel().getAgo(timestamp);
+    String time = BulletinLostReplyModel().getAgo(timestamp);
     return time;
   }
 
