@@ -218,364 +218,454 @@ class _RankingCrewScreen_testState extends State<RankingCrewScreen_test> {
                             Row(
                               children: [
                                 if(crewDocs!.length > 0)
-                                  GestureDetector(
-                                    onTap: () async {
-                                      CustomFullScreenDialog.showDialog();
-                                      await _userModelController.getCurrentUser_crew(_userModelController.uid);
-                                      await _liveCrewModelController.getCurrrentCrew(crewDocs![0]['crewID']);
-                                      CustomFullScreenDialog.cancelDialog();
-                                      Get.to(() =>
-                                          CrewDetailPage_screen());
-                                    },
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                        color: Color(
-                                            crewDocs![0]['crewColor']),
-                                        borderRadius: BorderRadius
-                                            .circular(8),
-                                      ),
-                                      height: 154,
-                                      width: (_size.width - 48) / 3,
-                                      child: Column(
-                                        mainAxisAlignment: MainAxisAlignment
-                                            .center,
-                                        children: [
-                                          (crewDocs![0]['profileImageUrl']
-                                              .isNotEmpty)
-                                              ? Container(
-                                            decoration: BoxDecoration(
-                                              boxShadow: [
-                                                BoxShadow(
-                                                  color: Colors
-                                                      .black12,
-                                                  spreadRadius: 0,
-                                                  blurRadius: 8,
-                                                  offset: Offset(0,
-                                                      4), // changes position of shadow
-                                                ),
-                                              ],
-                                            ),
-                                            width: 58,
-                                            height: 58,
-                                            child: ExtendedImage.network(
-                                              crewDocs![0]['profileImageUrl'],
-                                              enableMemoryCache: true,
-                                              shape: BoxShape
-                                                  .rectangle,
-                                              borderRadius: BorderRadius
-                                                  .circular(7),
-                                              width: 100,
-                                              height: 100,
-                                              fit: BoxFit.cover,
-                                              loadStateChanged: (ExtendedImageState state) {
-                                                switch (state.extendedImageLoadState) {
-                                                  case LoadState.loading:
-                                                    return SizedBox.shrink();
-                                                  case LoadState.completed:
-                                                    return state.completedWidget;
-                                                  case LoadState.failed:
-                                                    return ExtendedImage.network(
-                                                      assetTop1,
-                                                      shape: BoxShape.circle,
-                                                      borderRadius: BorderRadius.circular(20),
-                                                      width: 24,
-                                                      height: 24,
-                                                      fit: BoxFit.cover,
-                                                    ); // 예시로 에러 아이콘을 반환하고 있습니다.
-                                                  default:
-                                                    return null;
-                                                }
-                                              },
-                                            ),
-                                          )
-                                              : Container(
-                                            decoration: BoxDecoration(
-                                              boxShadow: [
-                                                BoxShadow(
-                                                  color: Colors.black12,
-                                                  spreadRadius: 0,
-                                                  blurRadius: 8,
-                                                  offset: Offset(0, 4), // changes position of shadow
-                                                ),
-                                              ],
-                                            ),
-                                            child: ExtendedImage.network(
-                                              assetTop1,
-                                              enableMemoryCache: true,
-                                              shape: BoxShape.rectangle,
-                                              borderRadius: BorderRadius.circular(7),
-                                              width: 58,
-                                              height: 58,
-                                              fit: BoxFit.cover,
-                                            ),
+                                  Column(
+                                    children: [
+                                      GestureDetector(
+                                        onTap: () async {
+                                          CustomFullScreenDialog.showDialog();
+                                          await _userModelController.getCurrentUser_crew(_userModelController.uid);
+                                          await _liveCrewModelController.getCurrrentCrew(crewDocs![0]['crewID']);
+                                          CustomFullScreenDialog.cancelDialog();
+                                          Get.to(() =>
+                                              CrewDetailPage_screen());
+                                        },
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                            color: Color(
+                                                crewDocs![0]['crewColor']),
+                                            borderRadius: BorderRadius
+                                                .circular(8),
                                           ),
-                                          SizedBox(height: 14,),
-                                          ExtendedImage.asset(
-                                            'assets/imgs/icons/icon_crown_1.png',
-                                            width: 28,
-                                            height: 28,
-                                            fit: BoxFit.cover,
-                                          ),
-                                          Padding(
-                                            padding: EdgeInsets.symmetric(
-                                                horizontal: 16),
-                                            child: Text(
-                                              crewDocs![0]['crewName'],
-                                              style: TextStyle(
-                                                color: Color(0xFFFFFFFF),
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 13,
+                                          height: 154,
+                                          width: (_size.width - 48) / 3,
+                                          child: Column(
+                                            mainAxisAlignment: MainAxisAlignment
+                                                .center,
+                                            children: [
+                                              (crewDocs![0]['profileImageUrl']
+                                                  .isNotEmpty)
+                                                  ? Container(
+                                                decoration: BoxDecoration(
+                                                  boxShadow: [
+                                                    BoxShadow(
+                                                      color: Colors
+                                                          .black12,
+                                                      spreadRadius: 0,
+                                                      blurRadius: 8,
+                                                      offset: Offset(0,
+                                                          4), // changes position of shadow
+                                                    ),
+                                                  ],
+                                                ),
+                                                width: 58,
+                                                height: 58,
+                                                child: ExtendedImage.network(
+                                                  crewDocs![0]['profileImageUrl'],
+                                                  enableMemoryCache: true,
+                                                  shape: BoxShape
+                                                      .rectangle,
+                                                  borderRadius: BorderRadius
+                                                      .circular(7),
+                                                  width: 100,
+                                                  height: 100,
+                                                  fit: BoxFit.cover,
+                                                  loadStateChanged: (ExtendedImageState state) {
+                                                    switch (state.extendedImageLoadState) {
+                                                      case LoadState.loading:
+                                                        return SizedBox.shrink();
+                                                      case LoadState.completed:
+                                                        return state.completedWidget;
+                                                      case LoadState.failed:
+                                                        return ExtendedImage.network(
+                                                          assetTop1,
+                                                          shape: BoxShape.circle,
+                                                          borderRadius: BorderRadius.circular(20),
+                                                          width: 24,
+                                                          height: 24,
+                                                          fit: BoxFit.cover,
+                                                        ); // 예시로 에러 아이콘을 반환하고 있습니다.
+                                                      default:
+                                                        return null;
+                                                    }
+                                                  },
+                                                ),
+                                              )
+                                                  : Container(
+                                                decoration: BoxDecoration(
+                                                  boxShadow: [
+                                                    BoxShadow(
+                                                      color: Colors.black12,
+                                                      spreadRadius: 0,
+                                                      blurRadius: 8,
+                                                      offset: Offset(0, 4), // changes position of shadow
+                                                    ),
+                                                  ],
+                                                ),
+                                                child: ExtendedImage.network(
+                                                  assetTop1,
+                                                  enableMemoryCache: true,
+                                                  shape: BoxShape.rectangle,
+                                                  borderRadius: BorderRadius.circular(7),
+                                                  width: 58,
+                                                  height: 58,
+                                                  fit: BoxFit.cover,
+                                                ),
                                               ),
-                                              overflow: TextOverflow.ellipsis,
-                                              maxLines: 1,
+                                              SizedBox(height: 14,),
+                                              ExtendedImage.asset(
+                                                'assets/imgs/icons/icon_crown_1.png',
+                                                width: 28,
+                                                height: 28,
+                                                fit: BoxFit.cover,
+                                              ),
+                                              Padding(
+                                                padding: EdgeInsets.symmetric(
+                                                    horizontal: 16),
+                                                child: Text(
+                                                  crewDocs![0]['crewName'],
+                                                  style: TextStyle(
+                                                    color: Color(0xFFFFFFFF),
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 13,
+                                                  ),
+                                                  overflow: TextOverflow.ellipsis,
+                                                  maxLines: 1,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                      if(widget.isWeekly == true && _userModelController.displayName == 'SNOWLIVE')
+                                        GestureDetector(
+                                          onTap:(){
+                                            _rankingTierModelController.updateWeeklyRankingTop_Crew(
+                                                crewDocs![0]['crewID'],
+                                                crewDocs![0]['crewName'],
+                                                crewDocs![0]['profileImageUrl'],
+                                                crewDocs![0]['baseResortNickName'],
+                                                crewDocs![0]['crewColor'],
+                                                crewDocs![0]['baseResort'],
+                                                crewDocs![0]['totalScoreWeekly'],
+                                                crewDocs![0]['totalPassCountWeekly'],
+                                                1
+                                            );
+                                          },
+                                          child: Padding(
+                                            padding: const EdgeInsets.only(top: 10),
+                                            child: Text('서버 등록',
+                                              style: TextStyle(
+                                                  color: Color(0xFF949494),
+                                                  fontSize: 12,
+                                                  fontWeight: FontWeight.bold
+                                              ),
                                             ),
                                           ),
-                                        ],
-                                      ),
-                                    ),
+                                        ),
+                                    ],
                                   ),
                                 SizedBox(width: 8),
                                 if(crewDocs!.length > 1)
-                                  GestureDetector(
-                                    onTap: () async {
-                                      CustomFullScreenDialog.showDialog();
-                                      await _userModelController.getCurrentUser_crew(_userModelController.uid);
-                                      await _liveCrewModelController.getCurrrentCrew(crewDocs![1]['crewID']);
-                                      CustomFullScreenDialog.cancelDialog();
-                                      Get.to(() => CrewDetailPage_screen());
-                                    },
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                        color: Color(
-                                            crewDocs![1]['crewColor']),
-                                        borderRadius: BorderRadius
-                                            .circular(8),
-                                      ),
-                                      height: 154,
-                                      width: (_size.width - 48) / 3,
-                                      child: Column(
-                                        mainAxisAlignment: MainAxisAlignment
-                                            .center,
-                                        children: [
-                                          (crewDocs![1]['profileImageUrl']
-                                              .isNotEmpty)
-                                              ? Container(
-                                            decoration: BoxDecoration(
-                                              boxShadow: [
-                                                BoxShadow(
-                                                  color: Colors
-                                                      .black12,
-                                                  spreadRadius: 0,
-                                                  blurRadius: 8,
-                                                  offset: Offset(0,
-                                                      4), // changes position of shadow
-                                                ),
-                                              ],
-                                            ),
-                                            width: 58,
-                                            height: 58,
-                                            child: ExtendedImage
-                                                .network(
-                                              crewDocs![1]['profileImageUrl'],
-                                              enableMemoryCache: true,
-                                              shape: BoxShape
-                                                  .rectangle,
-                                              borderRadius: BorderRadius
-                                                  .circular(7),
-                                              width: 100,
-                                              height: 100,
-                                              fit: BoxFit.cover,
-                                              loadStateChanged: (ExtendedImageState state) {
-                                                switch (state.extendedImageLoadState) {
-                                                  case LoadState.loading:
-                                                    return SizedBox.shrink();
-                                                  case LoadState.completed:
-                                                    return state.completedWidget;
-                                                  case LoadState.failed:
-                                                    return ExtendedImage.network(
-                                                      assetTop2,
-                                                      shape: BoxShape.circle,
-                                                      borderRadius: BorderRadius.circular(20),
-                                                      width: 24,
-                                                      height: 24,
-                                                      fit: BoxFit.cover,
-                                                    ); // 예시로 에러 아이콘을 반환하고 있습니다.
-                                                  default:
-                                                    return null;
-                                                }
-                                              },
-                                            ),
-                                          )
-                                              : Container(
-                                            decoration: BoxDecoration(
-                                              boxShadow: [
-                                                BoxShadow(
-                                                  color: Colors.black12,
-                                                  spreadRadius: 0,
-                                                  blurRadius: 8,
-                                                  offset: Offset(0, 4), // changes position of shadow
-                                                ),
-                                              ],
-                                            ),
-                                            child: ExtendedImage.network(assetTop2,
-                                              enableMemoryCache: true,
-                                              shape: BoxShape.rectangle,
-                                              borderRadius: BorderRadius.circular(7),
-                                              width: 58,
-                                              height: 58,
-                                              fit: BoxFit.cover,
-                                            ),
+                                  Column(
+                                    children: [
+                                      GestureDetector(
+                                        onTap: () async {
+                                          CustomFullScreenDialog.showDialog();
+                                          await _userModelController.getCurrentUser_crew(_userModelController.uid);
+                                          await _liveCrewModelController.getCurrrentCrew(crewDocs![1]['crewID']);
+                                          CustomFullScreenDialog.cancelDialog();
+                                          Get.to(() => CrewDetailPage_screen());
+                                        },
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                            color: Color(
+                                                crewDocs![1]['crewColor']),
+                                            borderRadius: BorderRadius
+                                                .circular(8),
                                           ),
-                                          SizedBox(height: 14,),
-                                          ExtendedImage.asset(
-                                            'assets/imgs/icons/icon_crown_2.png',
-                                            width: 28,
-                                            height: 28,
-                                            fit: BoxFit.cover,
-                                          ),
-                                          Padding(
-                                            padding: EdgeInsets.symmetric(horizontal: 16),
-                                            child: Text(
-                                              crewDocs![1]['crewName'],
-                                              style: TextStyle(
-                                                color: Color(0xFFFFFFFF),
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 13,
+                                          height: 154,
+                                          width: (_size.width - 48) / 3,
+                                          child: Column(
+                                            mainAxisAlignment: MainAxisAlignment
+                                                .center,
+                                            children: [
+                                              (crewDocs![1]['profileImageUrl']
+                                                  .isNotEmpty)
+                                                  ? Container(
+                                                decoration: BoxDecoration(
+                                                  boxShadow: [
+                                                    BoxShadow(
+                                                      color: Colors
+                                                          .black12,
+                                                      spreadRadius: 0,
+                                                      blurRadius: 8,
+                                                      offset: Offset(0,
+                                                          4), // changes position of shadow
+                                                    ),
+                                                  ],
+                                                ),
+                                                width: 58,
+                                                height: 58,
+                                                child: ExtendedImage
+                                                    .network(
+                                                  crewDocs![1]['profileImageUrl'],
+                                                  enableMemoryCache: true,
+                                                  shape: BoxShape
+                                                      .rectangle,
+                                                  borderRadius: BorderRadius
+                                                      .circular(7),
+                                                  width: 100,
+                                                  height: 100,
+                                                  fit: BoxFit.cover,
+                                                  loadStateChanged: (ExtendedImageState state) {
+                                                    switch (state.extendedImageLoadState) {
+                                                      case LoadState.loading:
+                                                        return SizedBox.shrink();
+                                                      case LoadState.completed:
+                                                        return state.completedWidget;
+                                                      case LoadState.failed:
+                                                        return ExtendedImage.network(
+                                                          assetTop2,
+                                                          shape: BoxShape.circle,
+                                                          borderRadius: BorderRadius.circular(20),
+                                                          width: 24,
+                                                          height: 24,
+                                                          fit: BoxFit.cover,
+                                                        ); // 예시로 에러 아이콘을 반환하고 있습니다.
+                                                      default:
+                                                        return null;
+                                                    }
+                                                  },
+                                                ),
+                                              )
+                                                  : Container(
+                                                decoration: BoxDecoration(
+                                                  boxShadow: [
+                                                    BoxShadow(
+                                                      color: Colors.black12,
+                                                      spreadRadius: 0,
+                                                      blurRadius: 8,
+                                                      offset: Offset(0, 4), // changes position of shadow
+                                                    ),
+                                                  ],
+                                                ),
+                                                child: ExtendedImage.network(assetTop2,
+                                                  enableMemoryCache: true,
+                                                  shape: BoxShape.rectangle,
+                                                  borderRadius: BorderRadius.circular(7),
+                                                  width: 58,
+                                                  height: 58,
+                                                  fit: BoxFit.cover,
+                                                ),
                                               ),
-                                              overflow: TextOverflow.ellipsis,
-                                              maxLines: 1,
+                                              SizedBox(height: 14,),
+                                              ExtendedImage.asset(
+                                                'assets/imgs/icons/icon_crown_2.png',
+                                                width: 28,
+                                                height: 28,
+                                                fit: BoxFit.cover,
+                                              ),
+                                              Padding(
+                                                padding: EdgeInsets.symmetric(horizontal: 16),
+                                                child: Text(
+                                                  crewDocs![1]['crewName'],
+                                                  style: TextStyle(
+                                                    color: Color(0xFFFFFFFF),
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 13,
+                                                  ),
+                                                  overflow: TextOverflow.ellipsis,
+                                                  maxLines: 1,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                      if(widget.isWeekly == true && _userModelController.displayName == 'SNOWLIVE')
+                                        GestureDetector(
+                                          onTap:(){
+                                            _rankingTierModelController.updateWeeklyRankingTop_Crew(
+                                                crewDocs![1]['crewID'],
+                                                crewDocs![1]['crewName'],
+                                                crewDocs![1]['profileImageUrl'],
+                                                crewDocs![1]['resortNickname'],
+                                                crewDocs![1]['crewColor'],
+                                                crewDocs![1]['favoriteResort'],
+                                                crewDocs![1]['totalScoreWeekly'],
+                                                crewDocs![1]['totalPassCountWeekly'],
+                                                2
+                                            );
+                                          },
+                                          child: Padding(
+                                            padding: const EdgeInsets.only(top: 10),
+                                            child: Text('서버 등록',
+                                              style: TextStyle(
+                                                  color: Color(0xFF949494),
+                                                  fontSize: 12,
+                                                  fontWeight: FontWeight.bold
+                                              ),
                                             ),
                                           ),
-                                        ],
-                                      ),
-                                    ),
+                                        ),
+                                    ],
                                   ),
                                 SizedBox(width: 8),
                                 if(crewDocs!.length > 2)
-                                  GestureDetector(
-                                    onTap: () async {
-                                      CustomFullScreenDialog.showDialog();
-                                      await _userModelController.getCurrentUser_crew(_userModelController.uid);
-                                      await _liveCrewModelController.getCurrrentCrew(crewDocs![2]['crewID']);
-                                      CustomFullScreenDialog.cancelDialog();
-                                      Get.to(() => CrewDetailPage_screen());
-                                    },
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                        color: Color(
-                                            crewDocs![2]['crewColor']),
-                                        borderRadius: BorderRadius
-                                            .circular(8),
-                                      ),
-                                      height: 154,
-                                      width: (_size.width - 48) / 3,
-                                      child: Column(
-                                        mainAxisAlignment: MainAxisAlignment
-                                            .center,
-                                        children: [
-                                          (crewDocs![2]['profileImageUrl']
-                                              .isNotEmpty)
-                                              ? Container(
-                                            decoration: BoxDecoration(
-                                              boxShadow: [
-                                                BoxShadow(
-                                                  color: Colors
-                                                      .black12,
-                                                  spreadRadius: 0,
-                                                  blurRadius: 8,
-                                                  offset: Offset(0,
-                                                      4), // changes position of shadow
-                                                ),
-                                              ],
-                                            ),
-                                            width: 58,
-                                            height: 58,
-                                            child: ExtendedImage
-                                                .network(
-                                              crewDocs![2]['profileImageUrl'],
-                                              enableMemoryCache: true,
-                                              shape: BoxShape
-                                                  .rectangle,
-                                              borderRadius: BorderRadius
-                                                  .circular(7),
-                                              width: 100,
-                                              height: 100,
-                                              fit: BoxFit.cover,
-                                              loadStateChanged: (ExtendedImageState state) {
-                                                switch (state.extendedImageLoadState) {
-                                                  case LoadState.loading:
-                                                    return SizedBox.shrink();
-                                                  case LoadState.completed:
-                                                    return state.completedWidget;
-                                                  case LoadState.failed:
-                                                    return ExtendedImage.network(
-                                                      assetTop3,
-                                                      shape: BoxShape.circle,
-                                                      borderRadius: BorderRadius.circular(20),
-                                                      width: 24,
-                                                      height: 24,
-                                                      fit: BoxFit.cover,
-                                                    ); // 예시로 에러 아이콘을 반환하고 있습니다.
-                                                  default:
-                                                    return null;
-                                                }
-                                              },
-                                            ),
-                                          )
-                                              : Container(
-                                            decoration: BoxDecoration(
-                                              boxShadow: [
-                                                BoxShadow(
-                                                  color: Colors
-                                                      .black12,
-                                                  spreadRadius: 0,
-                                                  blurRadius: 8,
-                                                  offset: Offset(0,
-                                                      4), // changes position of shadow
-                                                ),
-                                              ],
-                                            ),
-                                            child: ExtendedImage
-                                                .network(
-                                              assetTop3,
-                                              enableMemoryCache: true,
-                                              shape: BoxShape
-                                                  .rectangle,
-                                              borderRadius: BorderRadius
-                                                  .circular(7),
-                                              width: 58,
-                                              height: 58,
-                                              fit: BoxFit.cover,
-                                            ),
+                                  Column(
+                                    children: [
+                                      GestureDetector(
+                                        onTap: () async {
+                                          CustomFullScreenDialog.showDialog();
+                                          await _userModelController.getCurrentUser_crew(_userModelController.uid);
+                                          await _liveCrewModelController.getCurrrentCrew(crewDocs![2]['crewID']);
+                                          CustomFullScreenDialog.cancelDialog();
+                                          Get.to(() => CrewDetailPage_screen());
+                                        },
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                            color: Color(
+                                                crewDocs![2]['crewColor']),
+                                            borderRadius: BorderRadius
+                                                .circular(8),
                                           ),
-                                          SizedBox(height: 14,),
-                                          ExtendedImage.asset(
-                                            'assets/imgs/icons/icon_crown_3.png',
-                                            width: 28,
-                                            height: 28,
-                                            fit: BoxFit.cover,
-                                          ),
-                                          Padding(
-                                            padding: EdgeInsets
-                                                .symmetric(
-                                                horizontal: 16),
-                                            child: Text(
-                                              crewDocs![2]['crewName'],
-                                              style: TextStyle(
-                                                color: Color(
-                                                    0xFFFFFFFF),
-                                                fontWeight: FontWeight
-                                                    .bold,
-                                                fontSize: 13,
+                                          height: 154,
+                                          width: (_size.width - 48) / 3,
+                                          child: Column(
+                                            mainAxisAlignment: MainAxisAlignment
+                                                .center,
+                                            children: [
+                                              (crewDocs![2]['profileImageUrl']
+                                                  .isNotEmpty)
+                                                  ? Container(
+                                                decoration: BoxDecoration(
+                                                  boxShadow: [
+                                                    BoxShadow(
+                                                      color: Colors
+                                                          .black12,
+                                                      spreadRadius: 0,
+                                                      blurRadius: 8,
+                                                      offset: Offset(0,
+                                                          4), // changes position of shadow
+                                                    ),
+                                                  ],
+                                                ),
+                                                width: 58,
+                                                height: 58,
+                                                child: ExtendedImage
+                                                    .network(
+                                                  crewDocs![2]['profileImageUrl'],
+                                                  enableMemoryCache: true,
+                                                  shape: BoxShape
+                                                      .rectangle,
+                                                  borderRadius: BorderRadius
+                                                      .circular(7),
+                                                  width: 100,
+                                                  height: 100,
+                                                  fit: BoxFit.cover,
+                                                  loadStateChanged: (ExtendedImageState state) {
+                                                    switch (state.extendedImageLoadState) {
+                                                      case LoadState.loading:
+                                                        return SizedBox.shrink();
+                                                      case LoadState.completed:
+                                                        return state.completedWidget;
+                                                      case LoadState.failed:
+                                                        return ExtendedImage.network(
+                                                          assetTop3,
+                                                          shape: BoxShape.circle,
+                                                          borderRadius: BorderRadius.circular(20),
+                                                          width: 24,
+                                                          height: 24,
+                                                          fit: BoxFit.cover,
+                                                        ); // 예시로 에러 아이콘을 반환하고 있습니다.
+                                                      default:
+                                                        return null;
+                                                    }
+                                                  },
+                                                ),
+                                              )
+                                                  : Container(
+                                                decoration: BoxDecoration(
+                                                  boxShadow: [
+                                                    BoxShadow(
+                                                      color: Colors
+                                                          .black12,
+                                                      spreadRadius: 0,
+                                                      blurRadius: 8,
+                                                      offset: Offset(0,
+                                                          4), // changes position of shadow
+                                                    ),
+                                                  ],
+                                                ),
+                                                child: ExtendedImage
+                                                    .network(
+                                                  assetTop3,
+                                                  enableMemoryCache: true,
+                                                  shape: BoxShape
+                                                      .rectangle,
+                                                  borderRadius: BorderRadius
+                                                      .circular(7),
+                                                  width: 58,
+                                                  height: 58,
+                                                  fit: BoxFit.cover,
+                                                ),
                                               ),
-                                              overflow: TextOverflow
-                                                  .ellipsis,
-                                              maxLines: 1,
+                                              SizedBox(height: 14,),
+                                              ExtendedImage.asset(
+                                                'assets/imgs/icons/icon_crown_3.png',
+                                                width: 28,
+                                                height: 28,
+                                                fit: BoxFit.cover,
+                                              ),
+                                              Padding(
+                                                padding: EdgeInsets
+                                                    .symmetric(
+                                                    horizontal: 16),
+                                                child: Text(
+                                                  crewDocs![2]['crewName'],
+                                                  style: TextStyle(
+                                                    color: Color(
+                                                        0xFFFFFFFF),
+                                                    fontWeight: FontWeight
+                                                        .bold,
+                                                    fontSize: 13,
+                                                  ),
+                                                  overflow: TextOverflow
+                                                      .ellipsis,
+                                                  maxLines: 1,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                      if(widget.isWeekly == true && _userModelController.displayName == 'SNOWLIVE')
+                                        GestureDetector(
+                                          onTap:(){
+                                            _rankingTierModelController.updateWeeklyRankingTop_Crew(
+                                                crewDocs![2]['crewID'],
+                                                crewDocs![2]['crewName'],
+                                                crewDocs![2]['profileImageUrl'],
+                                                crewDocs![2]['resortNickname'],
+                                                crewDocs![2]['crewColor'],
+                                                crewDocs![2]['favoriteResort'],
+                                                crewDocs![2]['totalScoreWeekly'],
+                                                crewDocs![2]['totalPassCountWeekly'],
+                                                3
+                                            );
+                                          },
+                                          child: Padding(
+                                            padding: const EdgeInsets.only(top: 10),
+                                            child: Text('서버 등록',
+                                              style: TextStyle(
+                                                  color: Color(0xFF949494),
+                                                  fontSize: 12,
+                                                  fontWeight: FontWeight.bold
+                                              ),
                                             ),
                                           ),
-                                        ],
-                                      ),
-                                    ),
+                                        ),
+                                    ],
                                   ),
                               ],
                             ),

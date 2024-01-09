@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:com.snowlive/controller/vm_liveMapController.dart';
 import 'package:com.snowlive/controller/vm_loadingController.dart';
+import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
 import 'package:com.snowlive/controller/vm_liveCrewModelController.dart';
@@ -1078,6 +1079,7 @@ class RankingTierModelController extends GetxController{
   //TODO: 티어 뱃지 가져오는 메소드********************************************
 
 
+
   //TODO: 랭킹 계산하는 메소드********************************************
 
   Map<String, int> calculateRankIndiAll2({required userRankingDocs}){
@@ -1155,6 +1157,107 @@ class RankingTierModelController extends GetxController{
   }
 
   //TODO: 랭킹 계산하는 메소드********************************************
+
+
+  //TODO: 주간 랭킹 박제 메소드********************************************
+
+  Future<void> updateWeeklyRankingTop(
+      String uid,
+      String displayName,
+      String profileImageUrl,
+      String resortNickname,
+      int favoriteResort,
+      int score,
+      int passCount,
+      int rank
+      ) async{
+
+    DateTime now = DateTime.now();
+    int year = now.year;
+    int month = now.month;
+    int dayOfWeek = now.weekday; // 1 for Monday, 7 for Sunday
+    int week = ((now.day - dayOfWeek + 8) ~/ 7); // Calculate the week number starting from Monday
+
+    String today = DateFormat('yyyyMMdd').format(now);
+
+    DocumentReference docRef = FirebaseFirestore.instance
+        .collection('Ranking_Weekly_Top')
+        .doc('${_seasonController.currentSeason}')
+        .collection('${_userModelController.favoriteResort}')
+        .doc('$uid#$today');
+
+    CustomFullScreenDialog.showDialog();
+
+    await docRef.set({
+      'date': today,
+      'year': year,
+      'month': month,
+      'week': week,
+      'favoriteResort': favoriteResort,
+      'resortNickname': resortNickname,
+      'uid': uid,
+      'displayName': displayName,
+      'profileImageUrl': profileImageUrl,
+      'score': score,
+      'passCount': passCount,
+      'rank': rank
+    });
+
+    CustomFullScreenDialog.cancelDialog();
+
+
+  }
+
+  Future<void> updateWeeklyRankingTop_Crew(
+      String crewID,
+      String crewName,
+      String profileImageUrl,
+      String resortNickname,
+      int crewColor,
+      int favoriteResort,
+      int score,
+      int passCount,
+      int rank
+      ) async{
+
+    DateTime now = DateTime.now();
+    int year = now.year;
+    int month = now.month;
+    int dayOfWeek = now.weekday; // 1 for Monday, 7 for Sunday
+    int week = ((now.day - dayOfWeek + 8) ~/ 7); // Calculate the week number starting from Monday
+
+    String today = DateFormat('yyyyMMdd').format(now);
+
+    DocumentReference docRef = FirebaseFirestore.instance
+        .collection('Ranking_Weekly_Top_Crew')
+        .doc('1')
+        .collection('${_seasonController.currentSeason}')
+        .doc('$crewID#$today');
+
+    CustomFullScreenDialog.showDialog();
+
+    await docRef.set({
+      'date': today,
+      'year': year,
+      'month': month,
+      'week': week,
+      'baseResort': favoriteResort,
+      'baseResortNickName': resortNickname,
+      'crewID': crewID,
+      'crewName': crewName,
+      'profileImageUrl': profileImageUrl,
+      'score': score,
+      'passCount': passCount,
+      'rank': rank,
+      'crewColor': crewColor
+    });
+
+    CustomFullScreenDialog.cancelDialog();
+
+
+  }
+
+//TODO: 주간 랭킹 박제 메소드********************************************
 
 
 }
