@@ -58,27 +58,28 @@ class LiveCrewModelController extends GetxController {
   Future<void> getCurrrentCrew(crewID) async {
     if (crewID != null) {
       LiveCrewModel? crewModel = await LiveCrewModel().getCrewModel(crewID);
-      this._crewID!.value = crewModel!.crewID!;
-      this._crewName!.value = crewModel.crewName!;
-      this._crewLeader!.value = crewModel.crewLeader!;
-      this._crewColor!.value = crewModel.crewColor!;
-      this._leaderUid!.value = crewModel.leaderUid!;
-      this._baseResortNickName!.value = crewModel.baseResortNickName!;
-      this._baseResort!.value = crewModel.baseResort!;
-      this._profileImageUrl!.value = crewModel.profileImageUrl!;
-      this._memberUidList!.value = crewModel.memberUidList!;
-      this._applyUidList!.value = crewModel.applyUidList!;
-      this._galleryUrlList!.value = crewModel.galleryUrlList!;
-      this._description!.value = crewModel.description!;
-      this._notice!.value = crewModel.notice!;
-      this._sns!.value = crewModel.sns!;
-      this._passCountData!.value = crewModel.passCountData!;
-      this._slopeScores!.value = crewModel.slopeScores!;
-      this._passCountTimedata!.value = crewModel.passCountTimeData!;
-      this._totalPassCount!.value = crewModel.totalPassCount!;
-      this._lastPassTime = crewModel.lastPassTime!;
-      this._resistDate = crewModel.resistDate!;
-      print('haha');
+      if (crewModel != null) {
+        this._crewID!.value = crewModel.crewID!;
+        this._crewName!.value = crewModel.crewName!;
+        this._crewLeader!.value = crewModel.crewLeader!;
+        this._crewColor!.value = crewModel.crewColor!;
+        this._leaderUid!.value = crewModel.leaderUid!;
+        this._baseResortNickName!.value = crewModel.baseResortNickName!;
+        this._baseResort!.value = crewModel.baseResort!;
+        this._profileImageUrl!.value = crewModel.profileImageUrl!;
+        this._memberUidList!.value = crewModel.memberUidList!;
+        this._applyUidList!.value = crewModel.applyUidList!;
+        this._galleryUrlList!.value = crewModel.galleryUrlList!;
+        this._description!.value = crewModel.description!;
+        this._notice!.value = crewModel.notice!;
+        this._sns!.value = crewModel.sns!;
+        this._passCountData!.value = crewModel.passCountData!;
+        this._slopeScores!.value = crewModel.slopeScores!;
+        this._passCountTimedata!.value = crewModel.passCountTimeData!;
+        this._totalPassCount!.value = crewModel.totalPassCount!;
+        this._lastPassTime = crewModel.lastPassTime!;
+        this._resistDate = crewModel.resistDate!;
+      } else {}
     }
   }
 

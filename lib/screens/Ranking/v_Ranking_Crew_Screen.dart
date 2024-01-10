@@ -49,7 +49,7 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
 
   Future<void> _refreshData() async {
     if(_userModelController.favoriteResort == 12 ||_userModelController.favoriteResort == 2 ||_userModelController.favoriteResort == 0) {
-      await _rankingTierModelController.getRankingDocs_crew(baseResort: _userModelController.favoriteResort);
+      await _rankingTierModelController.getRankingDocs_crew(baseResort: _userModelController.favoriteResort!);
     }else {
       await _rankingTierModelController.getRankingDocs_crew_integrated();
     }
