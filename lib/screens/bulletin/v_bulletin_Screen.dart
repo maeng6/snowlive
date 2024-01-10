@@ -89,7 +89,7 @@ class _BulletinScreenState extends State<BulletinScreen> {
                     child: Row(
                       children: [
                         Padding(
-                          padding: EdgeInsets.only(left: 16, right: 16),
+                          padding: EdgeInsets.only(left: 16, right: 6),
                           child: Column(
                             children: [
                               Padding(
@@ -141,7 +141,7 @@ class _BulletinScreenState extends State<BulletinScreen> {
                           ),
                         ),//자게
                         Padding(
-                          padding: EdgeInsets.only(right: 12),
+                          padding: EdgeInsets.only(right: 6),
                           child: Column(
                             children: [
                               Padding(
@@ -194,7 +194,7 @@ class _BulletinScreenState extends State<BulletinScreen> {
                           ),
                         ),//클리닉
                         Padding(
-                          padding: EdgeInsets.only(right: 12),
+                          padding: EdgeInsets.only(right: 6),
                           child: Column(
                             children: [
                               Padding(
@@ -247,7 +247,7 @@ class _BulletinScreenState extends State<BulletinScreen> {
                           ),
                         ),//분실물
                         Padding(
-                          padding: EdgeInsets.only(right: 12),
+                          padding: EdgeInsets.only(right: 6),
                           child: Column(
                             children: [
                               Padding(
