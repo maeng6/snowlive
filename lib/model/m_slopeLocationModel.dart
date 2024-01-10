@@ -1102,6 +1102,9 @@ List<LocationModel> phoenix = [
       //보강4
       LatLng(37.578007, 128.312805),
       LatLng(37.576947, 128.312282),
+      //보강5
+      LatLng(37.578047, 128.312782),
+      LatLng(37.577947, 128.313082),
 
     ],
     type: 'slope',
@@ -1129,6 +1132,10 @@ List<LocationModel> phoenix = [
       //보강1
       LatLng(37.578587, 128.314548),
       LatLng(37.578407, 128.314608),
+      //보강2
+      LatLng(37.578354, 128.316249),
+      LatLng(37.578504, 128.316249),
+
     ],
     type: 'slope',
     resort: 12,
@@ -1576,6 +1583,10 @@ List<LocationModel> vivaldi = [
       LatLng(37.639911, 127.685642),
       LatLng(37.642178, 127.686723),
       LatLng(37.642078, 127.687008),
+      //보강
+      LatLng(37.640735, 127.685364),
+      LatLng(37.640635, 127.685764),
+      LatLng(37.640535, 127.685564),
     ],
     type: 'slope',
     resort: 2,
