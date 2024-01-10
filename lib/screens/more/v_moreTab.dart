@@ -766,11 +766,11 @@ class _MoreTabState extends State<MoreTab> {
                               _loadingController.updateProgress(20);
                               await _rankingTierModelController.getRankingDocsWeekly(baseResort: _userModelController.favoriteResort);
                               _loadingController.updateProgress(30);
-                              await _rankingTierModelController.getRankingDocs_crew(baseResort: _userModelController.favoriteResort);
+                              await _rankingTierModelController.getRankingDocs_crew(baseResort: _userModelController.favoriteResort!);
                               _loadingController.updateProgress(40);
-                              await _rankingTierModelController.getRankingDocs_crew_Daily(baseResort: _userModelController.favoriteResort);
+                              await _rankingTierModelController.getRankingDocs_crew_Daily(baseResort: _userModelController.favoriteResort!);
                               _loadingController.updateProgress(50);
-                              await _rankingTierModelController.getRankingDocs_crew_Weekly(baseResort: _userModelController.favoriteResort);
+                              await _rankingTierModelController.getRankingDocs_crew_Weekly(baseResort: _userModelController.favoriteResort!);
                               _loadingController.updateProgress(60);
 
                             }

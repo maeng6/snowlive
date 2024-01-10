@@ -72,14 +72,14 @@ class _RankingCrewScreen_testState extends State<RankingCrewScreen_test> {
     if(_userModelController.favoriteResort == 12 ||_userModelController.favoriteResort == 2 ||_userModelController.favoriteResort == 0) {
 
       if(widget.isDaily == true){
-        await _rankingTierModelController.getRankingDocs_crew_Daily(baseResort: _userModelController.favoriteResort);
+        await _rankingTierModelController.getRankingDocs_crew_Daily(baseResort: _userModelController.favoriteResort!);
         await _myCrewRankingController.getMyCrewRankingDataDaily(_userModelController.liveCrew);
       }
       else if(widget.isWeekly == true){
-        await _rankingTierModelController.getRankingDocs_crew_Weekly(baseResort: _userModelController.favoriteResort);
+        await _rankingTierModelController.getRankingDocs_crew_Weekly(baseResort: _userModelController.favoriteResort!);
         await _myCrewRankingController.getMyCrewRankingDataWeekly(_userModelController.liveCrew);
       }else{
-        await _rankingTierModelController.getRankingDocs_crew(baseResort: _userModelController.favoriteResort);
+        await _rankingTierModelController.getRankingDocs_crew(baseResort: _userModelController.favoriteResort!);
         await _myCrewRankingController.getMyCrewRankingData(_userModelController.liveCrew);
       }
     }else {

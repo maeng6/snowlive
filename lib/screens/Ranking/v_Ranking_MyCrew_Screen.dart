@@ -70,7 +70,7 @@ class _RankingMyCrewScreenState extends State<RankingMyCrewScreen> {
 
   Future<void> _refreshData() async {
     if(_liveCrewModelController.baseResort == 12 ||_liveCrewModelController.baseResort == 2 ||_liveCrewModelController.baseResort == 0) {
-      await _rankingTierModelController.getRankingDocs_crew(baseResort: _liveCrewModelController.baseResort);
+      await _rankingTierModelController.getRankingDocs_crew(baseResort: _liveCrewModelController.baseResort!);
       await _rankingTierModelController.getRankingDocs(baseResort: _liveCrewModelController.baseResort);
       await _rankingTierModelController.getRankingDocs_crewMember(crewID: _liveCrewModelController.crewID, crewBase: _liveCrewModelController.baseResort);
 
