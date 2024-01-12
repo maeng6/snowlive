@@ -539,24 +539,29 @@ class RankingTierModelController extends GetxController{
         .collection('Ranking_Crew_Daily')
         .doc('1')
         .collection('${_seasonController.currentSeason}')
-        .where('baseResort', isEqualTo: baseResort)
         .where('date', isEqualTo: today)
-        .where('totalScore', isGreaterThan: 0)
-        .orderBy('totalScore', descending: true)
         .get();
-    rankingList = rankingSnapshot_crew.docs;
+
+    rankingList = rankingSnapshot_crew.docs.where((doc) {
+      var data = doc.data() as Map<String, dynamic>;
+      var baseResortFromF = data['baseResort'];
+      return baseResortFromF == baseResort; // baseResort 필드가 변수 baseResort와 같은 것만 필터링
+    }).toList();
 
     if(baseResort == 12) {
       QuerySnapshot rankingSnapshot_crew_kusbf = await FirebaseFirestore.instance
           .collection('Ranking_Crew_Daily')
           .doc('1')
           .collection('${_seasonController.currentSeason}')
+          .where('date', isEqualTo: today)
           .where('kusbf', isEqualTo: true)
-          .where('baseResort', isEqualTo: baseResort)
-          .where('totalScore', isGreaterThan: 0)
-          .orderBy('totalScore', descending: true)
           .get();
-      rankingList_kusbf = rankingSnapshot_crew_kusbf.docs;
+
+      rankingList_kusbf = rankingSnapshot_crew_kusbf.docs.where((doc) {
+        var data = doc.data() as Map<String, dynamic>;
+        var baseResortFromF = data['baseResort'];
+        return baseResortFromF == baseResort; // baseResort 필드가 변수 baseResort와 같은 것만 필터링
+      }).toList();
 
       rankingList_kusbf.sort((a, b) {
         final aTotalScore = a['totalScore'] as int;
@@ -628,14 +633,18 @@ class RankingTierModelController extends GetxController{
         .doc('1')
         .collection('${_seasonController.currentSeason}')
         .where('date', whereIn: thisWeekDates)
-        .where('baseResort', isEqualTo: baseResort)
         .where('totalScore', isGreaterThan: 0)
-        .orderBy('totalScore', descending: true)
         .get();
+
+    rankingList = rankingSnapshot_crew.docs.where((doc) {
+      var data = doc.data() as Map<String, dynamic>;
+      var baseResortFromF = data['baseResort'];
+      return baseResortFromF == baseResort; // baseResort 필드가 변수 baseResort와 같은 것만 필터링
+    }).toList();
 
     Map<String, List<DocumentSnapshot>> groupedData = {};
 
-    for (var doc in rankingSnapshot_crew.docs) {
+    for (var doc in rankingList) {
       final crewID = doc['crewID'] as String;
       if (!groupedData.containsKey(crewID)) {
         groupedData[crewID] = [];
@@ -665,15 +674,42 @@ class RankingTierModelController extends GetxController{
           .collection('${_seasonController.currentSeason}')
           .where('date', whereIn: thisWeekDates)
           .where('kusbf', isEqualTo: true)
-          .where('baseResort', isEqualTo: baseResort)
           .where('totalScore', isGreaterThan: 0)
-          .orderBy('totalScore', descending: true)
           .get();
-      rankingList_kusbf = rankingSnapshot_crew_kusbf.docs;
+
+      rankingList_kusbf = rankingSnapshot_crew_kusbf.docs.where((doc) {
+        var data = doc.data() as Map<String, dynamic>;
+        var baseResortFromF = data['baseResort'];
+        return baseResortFromF == baseResort; // baseResort 필드가 변수 baseResort와 같은 것만 필터링
+      }).toList();
+
+      Map<String, List<DocumentSnapshot>> groupedData = {};
+
+      for (var doc in rankingList_kusbf) {
+        final crewID = doc['crewID'] as String;
+        if (!groupedData.containsKey(crewID)) {
+          groupedData[crewID] = [];
+        }
+        groupedData[crewID]?.add(doc);
+      }
+
+      // 각 그룹 내에서 date 필드를 기준으로 소팅하여 최신 데이터를 선택합니다.
+      List<DocumentSnapshot> finalRankingList = [];
+
+      groupedData.forEach((uid, documents) {
+        documents.sort((a, b) {
+          final aDate = a['date'] as String;
+          final bDate = b['date'] as String;
+          return bDate.compareTo(aDate);
+        });
+        finalRankingList.add(documents[0]); // 최신 데이터를 선택하여 결과 목록에 추가합니다.
+      });
+
+      rankingList_kusbf = finalRankingList.cast<QueryDocumentSnapshot<Object?>>();
 
       rankingList_kusbf.sort((a, b) {
-        final aTotalScore = a['totalScore'] as int;
-        final bTotalScore = b['totalScore'] as int;
+        final aTotalScore = a['totalScoreWeekly'] as int;
+        final bTotalScore = b['totalScoreWeekly'] as int;
         final aLastPassTime = a['lastPassTime'] as Timestamp?;
         final bLastPassTime = b['lastPassTime'] as Timestamp?;
 
@@ -689,8 +725,8 @@ class RankingTierModelController extends GetxController{
     }else{}
 
     rankingList.sort((a, b) {
-      final aTotalScore = a['totalScore'] as int;
-      final bTotalScore = b['totalScore'] as int;
+      final aTotalScore = a['totalScoreWeekly'] as int;
+      final bTotalScore = b['totalScoreWeekly'] as int;
       final aLastPassTime = a['lastPassTime'] as Timestamp?;
       final bLastPassTime = b['lastPassTime'] as Timestamp?;
 
@@ -764,10 +800,13 @@ class RankingTierModelController extends GetxController{
   Future<void> getRankingDocs_crew_integrated_Daily() async {
     List<QueryDocumentSnapshot> rankingList = [];
 
+    String today = DateFormat('yyyyMMdd').format(DateTime.now());
+
     QuerySnapshot rankingSnapshot_crew = await FirebaseFirestore.instance
         .collection('Ranking_Crew_Daily')
         .doc('1')
         .collection('${_seasonController.currentSeason}')
+        .where('date', isEqualTo: today)
         .where('totalPassCount', isGreaterThan: 0)
         .orderBy('totalPassCount', descending: true)
         .get();
@@ -799,7 +838,7 @@ class RankingTierModelController extends GetxController{
       return doc.data() as Map<String, dynamic>;
     }).toList();
 
-    this._crewRankingMap_integrated_daily!.value = await calculateRankCrewAll2_integrated(crewDocs: _rankingDocs_crew_integrated_weekly);
+    this._crewRankingMap_integrated_daily!.value = await calculateRankCrewAll2_integrated(crewDocs: _rankingDocs_crew_integrated_daily);
 
     print('통합랭킹 참여 크루 : ${_rankingDocs_crew_integrated_daily!.length}');
   }
@@ -824,12 +863,17 @@ class RankingTierModelController extends GetxController{
         .collection('${_seasonController.currentSeason}')
         .where('date', whereIn: thisWeekDates)
         .where('totalPassCount', isGreaterThan: 0)
-        .orderBy('totalPassCount', descending: true)
         .get();
+
+    rankingList = rankingSnapshot_crew.docs.where((doc) {
+      var data = doc.data() as Map<String, dynamic>;
+      var baseResort = data['baseResort'];
+      return ![0, 2, 12].contains(baseResort);
+    }).toList();
 
     Map<String, List<DocumentSnapshot>> groupedData = {};
 
-    for (var doc in rankingSnapshot_crew.docs) {
+    for (var doc in rankingList) {
       final crewID = doc['crewID'] as String;
       if (!groupedData.containsKey(crewID)) {
         groupedData[crewID] = [];
@@ -851,17 +895,11 @@ class RankingTierModelController extends GetxController{
 
     rankingList = finalRankingList.cast<QueryDocumentSnapshot<Object?>>();
 
-    // favoriteResort가 0, 2, 12가 아닌 문서만 필터링
-    rankingList = rankingSnapshot_crew.docs.where((doc) {
-      var data = doc.data() as Map<String, dynamic>;
-      var baseResort = data['baseResort'];
-      return ![0, 2, 12].contains(baseResort);
-    }).toList();
 
     // 정렬 로직은 동일하게 유지
     rankingList.sort((a, b) {
-      final aTotalScore = a['totalPassCount'] as int;
-      final bTotalScore = b['totalPassCount'] as int;
+      final aTotalScore = a['totalPassCountWeekly'] as int;
+      final bTotalScore = b['totalPassCountWeekly'] as int;
       final aLastPassTime = a['lastPassTime'] as Timestamp?;
       final bLastPassTime = b['lastPassTime'] as Timestamp?;
 
