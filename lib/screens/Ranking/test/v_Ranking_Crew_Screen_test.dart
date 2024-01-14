@@ -489,9 +489,9 @@ class _RankingCrewScreen_testState extends State<RankingCrewScreen_test> {
                                                 crewDocs![1]['crewID'],
                                                 crewDocs![1]['crewName'],
                                                 crewDocs![1]['profileImageUrl'],
-                                                crewDocs![1]['resortNickname'],
+                                                crewDocs![1]['baseResortNickName'],
                                                 crewDocs![1]['crewColor'],
-                                                crewDocs![1]['favoriteResort'],
+                                                crewDocs![1]['baseResort'],
                                                 crewDocs![1]['totalScoreWeekly'],
                                                 crewDocs![1]['totalPassCountWeekly'],
                                                 2
@@ -646,9 +646,9 @@ class _RankingCrewScreen_testState extends State<RankingCrewScreen_test> {
                                                 crewDocs![2]['crewID'],
                                                 crewDocs![2]['crewName'],
                                                 crewDocs![2]['profileImageUrl'],
-                                                crewDocs![2]['resortNickname'],
+                                                crewDocs![2]['baseResortNickName'],
                                                 crewDocs![2]['crewColor'],
-                                                crewDocs![2]['favoriteResort'],
+                                                crewDocs![2]['baseResort'],
                                                 crewDocs![2]['totalScoreWeekly'],
                                                 crewDocs![2]['totalPassCountWeekly'],
                                                 3
