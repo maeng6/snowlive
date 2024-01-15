@@ -84,7 +84,7 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
 
     }else {
       print('개별랭킹 진입');
-      await _rankingTierModelController.getRankingDocs_crew(baseResort: _liveCrewModelController.baseResort);
+      await _rankingTierModelController.getRankingDocs_crew(baseResort: _liveCrewModelController.baseResort!);
       await _rankingTierModelController.getRankingDocs(baseResort: _liveCrewModelController.baseResort);
 
     }
@@ -649,7 +649,7 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                                           await _rankingTierModelController.getRankingDocs_crewMember_integrated(crewID: _liveCrewModelController.crewID, crewBase: _liveCrewModelController.baseResort);
 
                                                         }else {
-                                                          await _rankingTierModelController.getRankingDocs_crew(baseResort: _liveCrewModelController.baseResort);
+                                                          await _rankingTierModelController.getRankingDocs_crew(baseResort: _liveCrewModelController.baseResort!);
                                                           await _rankingTierModelController.getRankingDocs(baseResort: _liveCrewModelController.baseResort);
                                                           await _rankingTierModelController.getRankingDocs_crewMember(crewID: _liveCrewModelController.crewID, crewBase: _liveCrewModelController.baseResort);
                                                         }

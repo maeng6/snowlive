@@ -84,11 +84,13 @@ class LiveCrewModel {
 
 
   Future<LiveCrewModel?> getCrewModel(String crewID) async {
-    if (crewID != null) {
+    // crewID가 null이거나 비어있지 않은지 확인
+    if (crewID != null && crewID.isNotEmpty) {
       DocumentReference<Map<String, dynamic>> documentReference =
       ref.collection('liveCrew').doc(crewID);
       final DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
       await documentReference.get();
+
       if (documentSnapshot.exists) {
         LiveCrewModel crewModel = LiveCrewModel.fromSnapShot(documentSnapshot);
         return crewModel;
@@ -96,6 +98,7 @@ class LiveCrewModel {
     }
     return null;
   }
+
 
 
 

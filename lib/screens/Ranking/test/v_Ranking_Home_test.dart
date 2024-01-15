@@ -1,6 +1,8 @@
 import 'package:com.snowlive/controller/vm_seasonController.dart';
 import 'package:com.snowlive/screens/Ranking/test/v_Ranking_Crew_Screen_test.dart';
 import 'package:com.snowlive/screens/Ranking/test/v_Ranking_Indi_Screen_test.dart';
+import 'package:com.snowlive/screens/Ranking/test/v_Ranking_Weekly_Top_Home.dart';
+import 'package:com.snowlive/screens/Ranking/test/v_Ranking_indi_Weekly_Top_Screen.dart';
 import 'package:com.snowlive/screens/Ranking/v_Ranking_Tutorial_Screen.dart';
 import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 import 'package:extended_image/extended_image.dart';
@@ -97,7 +99,7 @@ class _RankingHome_testState extends State<RankingHome_test> {
                     padding: EdgeInsets.only(top: 14, right: 8),
                     child: GestureDetector(
                       onTap: (){
-                        Get.to(()=>RankingTutorialPage());
+                        Get.to(()=>RankingWeeklyTopHome());
                       },
                       child: Column(
                           children: [
@@ -110,7 +112,7 @@ class _RankingHome_testState extends State<RankingHome_test> {
                                   borderRadius: BorderRadius.circular(30.0), // 테두리 모서리 둥글게
                                 ),
                                 child: Text(
-                                  '튜토리얼',
+                                  '기록실',
                                   style: TextStyle(
                                       fontSize: 12,
                                       fontWeight: FontWeight.bold,
@@ -123,6 +125,36 @@ class _RankingHome_testState extends State<RankingHome_test> {
                       ),
                     ),
                   ),
+                  // Padding(
+                  //   padding: EdgeInsets.only(top: 14, right: 8),
+                  //   child: GestureDetector(
+                  //     onTap: (){
+                  //       Get.to(()=>RankingTutorialPage());
+                  //     },
+                  //     child: Column(
+                  //         children: [
+                  //           Padding(
+                  //             padding: EdgeInsets.only(bottom: 2),
+                  //             child: Container(
+                  //               padding: EdgeInsets.only(top: 6, bottom: 6, left: 10, right: 10), // 텍스트와 테두리 간의 패딩
+                  //               decoration: BoxDecoration(
+                  //                 color: Color(0xFFCBE0FF),
+                  //                 borderRadius: BorderRadius.circular(30.0), // 테두리 모서리 둥글게
+                  //               ),
+                  //               child: Text(
+                  //                 '튜토리얼',
+                  //                 style: TextStyle(
+                  //                     fontSize: 12,
+                  //                     fontWeight: FontWeight.bold,
+                  //                     color: Color(0xFF3D83ED)
+                  //                 ),
+                  //               ),
+                  //             ),
+                  //           )
+                  //         ]
+                  //     ),
+                  //   ),
+                  // ),
                   Padding(
                     padding: EdgeInsets.only(top: 14, right: 16),
                     child: GestureDetector(

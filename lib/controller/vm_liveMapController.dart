@@ -1273,6 +1273,8 @@ class LiveMapController extends GetxController {
   Future<void> updateCrewDataDaily(String locationName, int slopeScore, int timeSlot, DateTime lastPassTime) async {
     String liveCrew = _userModelController.liveCrew ?? '';
 
+    await _liveCrewModelController.getCurrrentCrew(liveCrew);
+
     DateTime now = DateTime.now();
 
     String todayDocName = DateFormat('yyyyMMdd').format(DateTime.now());
@@ -1293,7 +1295,7 @@ class LiveMapController extends GetxController {
           // 문서가 없으면 초기값 설정
 
           await crewDocRef.set({
-            'crewID': _liveCrewModelController.crewID,
+            'crewID': liveCrew,
             'crewName': _liveCrewModelController.crewName,
             'crewLeader': _liveCrewModelController.crewLeader,
             'leaderUid': _liveCrewModelController.leaderUid,
@@ -1374,13 +1376,13 @@ class LiveMapController extends GetxController {
             String formattedDate = DateFormat('yyyyMMdd').format(date);
             thisWeekDates.add(formattedDate);
           }
-          print(thisWeekDates);
+          print('이거야 ${thisWeekDates}');
 
           QuerySnapshot rankingSnapshot = await FirebaseFirestore.instance
               .collection('Ranking_Crew_Daily')
               .doc('1')
               .collection('${_seasonController.currentSeason}')
-              .where('crewID', isEqualTo: _liveCrewModelController.crewID)
+              .where('crewID', isEqualTo: liveCrew)
               .where('date', whereIn: thisWeekDates)
               .where('totalScore', isGreaterThan: 0)
               .orderBy('totalScore', descending: true)
