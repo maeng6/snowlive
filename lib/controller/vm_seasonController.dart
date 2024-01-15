@@ -25,6 +25,7 @@ class SeasonController extends GetxController{
   RxBool? _open = false.obs;
   RxBool? _dailyOpen = false.obs;
   RxList? _open_uidList = [].obs;
+  RxList? _seasonList = [].obs;
 
   String? get currentSeason => _currentSeason!.value;
   int? get liveTalkLimit => _liveTalkLimit!.value;
@@ -44,6 +45,7 @@ class SeasonController extends GetxController{
   bool? get open => _open!.value;
   bool? get dailyOpen => _dailyOpen!.value;
   List? get open_uidList => _open_uidList!;
+  List? get seasonList => _seasonList!;
 
 
   @override
@@ -76,7 +78,9 @@ class SeasonController extends GetxController{
     final DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
     await documentReference.get();
     String currentSeason = documentSnapshot.get('season');
+    List seasonList = documentSnapshot.get('seasonList');
     this._currentSeason!.value = currentSeason;
+    this._seasonList!.value = seasonList;
   }
 
   Future<void> getLiveTalkLimit() async {
