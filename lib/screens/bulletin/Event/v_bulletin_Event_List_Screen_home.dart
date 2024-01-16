@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:com.snowlive/controller/vm_seasonController.dart';
+import 'package:com.snowlive/screens/bulletin/Event/v_bulletinEventImageScreen.dart';
 import 'package:com.snowlive/screens/bulletin/Event/v_bulletin_Event_List_Detail.dart';
 import 'package:com.snowlive/screens/bulletin/Event/v_bulletin_Event_Upload.dart';
 import 'package:extended_image/extended_image.dart';
@@ -91,14 +92,15 @@ class _Bulletin_Event_List_Screen_HomeState extends State<Bulletin_Event_List_Sc
   }
 
   Stream<QuerySnapshot> newStream() {
+    int limit = _seasonController.bulletinEventLimit! > 0 ? _seasonController.bulletinEventLimit! : 1;
+
     return FirebaseFirestore.instance
         .collection('bulletinEvent')
         .where('category',
-        isEqualTo:
-        (_selectedValue == '카테고리') ? _allCategories : '$_selectedValue')
+        isEqualTo: (_selectedValue == '카테고리') ? _allCategories : '$_selectedValue')
         .where('location', isEqualTo: (_selectedValue2 == '지역') ? _allCategories : '$_selectedValue2')
         .orderBy('timeStamp', descending: true)
-        .limit(_seasonController.bulletinEventLimit!)
+        .limit(limit)
         .snapshots();
   }
 
@@ -125,7 +127,7 @@ class _Bulletin_Event_List_Screen_HomeState extends State<Bulletin_Event_List_Sc
           body: Column(
             children: [
               Flexible(
-                child: StreamBuilder<QuerySnapshot>(
+                child: StreamBuilder<QuerySnapshot> (
                   stream: _stream,
                   builder: (context, snapshot) {
                     if (!snapshot.hasData) {
@@ -166,9 +168,9 @@ class _Bulletin_Event_List_Screen_HomeState extends State<Bulletin_Event_List_Sc
                     )
                         : ListView.builder(
                       padding: EdgeInsets.zero,
-                          physics: NeverScrollableScrollPhysics(),
-                          controller: _scrollController,
-                      itemCount: min(chatDocs.length, 5),
+                      physics: NeverScrollableScrollPhysics(),
+                      controller: _scrollController,
+                      itemCount: 5,
                       itemBuilder: (context, index) {
                             Map<String, dynamic>? data = chatDocs[index].data() as Map<String, dynamic>?;
 
@@ -250,17 +252,48 @@ class _Bulletin_Event_List_Screen_HomeState extends State<Bulletin_Event_List_Sc
                                               : Row(
                                             children: [
                                               Padding(
-                                                padding: const EdgeInsets.only(right: 10),
+                                                padding: const EdgeInsets.only(right: 12),
                                                 child: Container(
-                                                  color: Colors.red,
-                                                  width: 60,
-                                                  height: 60,
+                                                  decoration: BoxDecoration(
+                                                      color: Colors.white,
+                                                      borderRadius: BorderRadius.circular(6)
+                                                  ),
+                                                  width: 64,
+                                                  height: 64,
+                                                  child:
+                                                  Column(
+                                                    children: [
+                                                      if (chatDocs[index].get('itemImagesUrl').isEmpty)
+                                                        ExtendedImage.asset('assets/imgs/profile/img_profile_default_.png',
+                                                          shape: BoxShape.rectangle,
+                                                          borderRadius: BorderRadius.circular(6),
+                                                          width: 64,
+                                                          height: 64,
+                                                          fit: BoxFit.cover,
+                                                        ),
+                                                      if (chatDocs[index].get('itemImagesUrl').isNotEmpty)
+                                                      GestureDetector(
+                                                        onTap: () {
+                                                          Get.to(() => BulletinEventImageScreen());
+                                                        },
+                                                        child: ClipRRect(
+                                                          borderRadius: BorderRadius.circular(6),
+                                                          child: ExtendedImage.network(
+                                                            chatDocs[index].get('itemImagesUrl')!,
+                                                            fit: BoxFit.cover,
+                                                            width: 64,
+                                                            height: 64,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
                                                 ),
                                               ),
                                               Padding(
                                                 padding: EdgeInsets.symmetric(vertical: 8),
                                                 child: Container(
-                                                  width: _size.width - 142,
+                                                  width: _size.width - 148,
                                                   child: Column(
                                                     mainAxisAlignment: MainAxisAlignment.start,
                                                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -280,7 +313,7 @@ class _Bulletin_Event_List_Screen_HomeState extends State<Bulletin_Event_List_Sc
                                                         ),
                                                       ),
                                                       SizedBox(
-                                                        height: 6,
+                                                        height: 4,
                                                       ),
                                                       Row(
                                                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -291,11 +324,11 @@ class _Bulletin_Event_List_Screen_HomeState extends State<Bulletin_Event_List_Sc
                                                                 Expanded(
                                                                   child: Container(
                                                                     constraints: BoxConstraints(
-                                                                        maxWidth: _size.width - 142),
+                                                                        maxWidth: _size.width - 148),
                                                                     child: Row(
                                                                       children: [
                                                                         Container(
-                                                                          width: _size.width - 142,
+                                                                          width: _size.width - 148,
                                                                           child: Text(
                                                                             chatDocs[index].get('title'),
                                                                             maxLines: 1,

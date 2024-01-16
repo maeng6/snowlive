@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:com.snowlive/controller/vm_refreshController.dart';
 import 'package:com.snowlive/screens/resort/v_alarmCenter.dart';
+import 'package:dotted_border/dotted_border.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
@@ -36,6 +37,9 @@ import '../bulletin/Lost/v_bulletin_Lost_List_Screen_home.dart';
 import '../fleaMarket/v_fleaMarket_List_Screen_home.dart';
 import 'package:lottie/lottie.dart';
 
+import '../more/friend/v_friendListPage.dart';
+import '../more/friend/v_friendListPage_Home.dart';
+
 class ResortHome extends StatefulWidget {
   @override
   State<ResortHome> createState() => _ResortHomeState();
@@ -48,6 +52,7 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
   bool isSnackbarShown = false;
   List<bool?> _isSelected = List<bool?>.filled(13, false);
   var _alarmStream;
+  var _friendStream;
 
   //TODO: Dependency Injection**************************************************
   UserModelController _userModelController = Get.find<UserModelController>();
@@ -86,12 +91,21 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
         .snapshots();
   }
 
+  Stream<QuerySnapshot> friendStream() {
+    return FirebaseFirestore.instance
+        .collection('user')
+        .where('whoResistMe', arrayContains: _userModelController.uid!)
+        .orderBy('displayName', descending: false)
+        .snapshots();
+  }
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     _userModelController.updateIsOnLiveOff();
     _alarmStream = alarmStream();
+    _friendStream = friendStream();
     _seasonController.getSeasonOpen();
     _liveCrewModelController.getCurrrentCrew(_userModelController.liveCrew);
 
@@ -1002,39 +1016,39 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
                                     );
                                   },
                                 ),
-                                Padding(
-                                  padding: const EdgeInsets.only(left: 6, right: 14),
-                                  child: Builder(
-                                    builder: (BuildContext context) {
-                                      return Padding(
-                                        padding: const EdgeInsets.all(0),
-                                        child: IconButton(
-                                          icon: (lengthOfLivefriends >= 1)
-                                              ? OverflowBox(
-                                            maxHeight: 40,
-                                            maxWidth: 38,
-                                            child: Image.asset(
-                                              'assets/imgs/logos/icon_liveFriend_dot.png',
-                                            ),
-                                          )
-                                              : OverflowBox(
-                                            maxHeight: 40,
-                                            maxWidth: 38,
-                                            child: Image.asset(
-                                              'assets/imgs/logos/icon_liveFriend.png',
-                                            ),
-                                          ), // 여기서 아이콘 변경
-                                          onPressed: () {
-                                            Scaffold.of(context).openEndDrawer();
-                                          },
-                                          tooltip:
-                                          MaterialLocalizations.of(context)
-                                              .openAppDrawerTooltip,
-                                        ),
-                                      );
-                                    },
-                                  ),
-                                )
+                                // Padding(
+                                //   padding: const EdgeInsets.only(left: 6, right: 14),
+                                //   child: Builder(
+                                //     builder: (BuildContext context) {
+                                //       return Padding(
+                                //         padding: const EdgeInsets.all(0),
+                                //         child: IconButton(
+                                //           icon: (lengthOfLivefriends >= 1)
+                                //               ? OverflowBox(
+                                //             maxHeight: 40,
+                                //             maxWidth: 38,
+                                //             child: Image.asset(
+                                //               'assets/imgs/logos/icon_liveFriend_dot.png',
+                                //             ),
+                                //           )
+                                //               : OverflowBox(
+                                //             maxHeight: 40,
+                                //             maxWidth: 38,
+                                //             child: Image.asset(
+                                //               'assets/imgs/logos/icon_liveFriend.png',
+                                //             ),
+                                //           ),
+                                //           onPressed: () {
+                                //             Scaffold.of(context).openEndDrawer();
+                                //           },
+                                //           tooltip:
+                                //           MaterialLocalizations.of(context)
+                                //               .openAppDrawerTooltip,
+                                //         ),
+                                //       );
+                                //     },
+                                //   ),
+                                // )
                               ],
                               systemOverlayStyle: SystemUiOverlayStyle.dark,
                               centerTitle: false,
@@ -1069,6 +1083,181 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
                               SizedBox(
                                 height: _statusBarSize + 64,
                               ),
+                              StreamBuilder(
+                                stream: _friendStream,
+                                builder: (context,
+                                    AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
+                                  if (!snapshot.hasData) {
+                                    return Container(
+                                      color: Colors.white,
+                                    );
+                                  } else if (snapshot.connectionState == ConnectionState.waiting) {
+                                    return Center(
+                                      child: CircularProgressIndicator(),
+                                    );
+                                  }
+
+                                  final bestfriendDocs = snapshot.data!.docs;
+
+                                  return Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Container(
+                                        height: (bestfriendDocs.isEmpty) ? 0 : 100,
+                                        color: Color(0xFFF1F1F3),
+                                        child: StreamBuilder(
+                                          stream: FirebaseFirestore.instance
+                                              .collection('user')
+                                              .where('whoResistMeBF', arrayContains: _userModelController.uid!)
+                                              .orderBy('isOnLive', descending: true)
+                                              .snapshots(),
+                                          builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>>snapshot) {
+                                            try {
+                                              if (!snapshot.hasData || snapshot.data == null) {
+                                                return SizedBox.shrink();
+                                              }
+                                              else if (snapshot.connectionState == ConnectionState.waiting) {
+                                                return SizedBox.shrink();
+                                              }
+                                              else if (snapshot.data!.docs.isNotEmpty) {
+                                                final bestfriendDocs = snapshot.data!.docs;
+                                                return ListView.builder(
+                                                    scrollDirection: Axis.horizontal,
+                                                    itemCount: bestfriendDocs.length + 1,
+                                                    itemBuilder: (BuildContext context, int index) {
+                                                      if (index < bestfriendDocs.length) {
+                                                        var BFdoc = bestfriendDocs[index];
+                                                        return Padding(
+                                                          padding: index == 0 ? EdgeInsets.only(left: 10) : EdgeInsets.zero,
+                                                          child: Row(
+                                                            children: [
+                                                              GestureDetector(
+                                                                onTap: () {
+                                                                  Get.to(() => FriendDetailPage(uid: BFdoc.get('uid'), favoriteResort: BFdoc.get('favoriteResort'),));
+                                                                },
+                                                                child: Container(
+                                                                  width: 70,
+                                                                  child: Column(
+                                                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                                                    children: [
+                                                                      Stack(
+                                                                        fit: StackFit.loose,
+                                                                        children: [
+                                                                          Container(
+                                                                            alignment: Alignment.center,
+                                                                            child: BFdoc.get('profileImageUrl').isNotEmpty
+                                                                                ? ExtendedImage.network(
+                                                                              BFdoc.get('profileImageUrl'),
+                                                                              enableMemoryCache: true,
+                                                                              shape: BoxShape.circle,
+                                                                              borderRadius: BorderRadius.circular(8),
+                                                                              width: 56,
+                                                                              height: 56,
+                                                                              fit: BoxFit.cover,
+                                                                              loadStateChanged: (ExtendedImageState state) {
+                                                                                switch (state.extendedImageLoadState) {
+                                                                                  case LoadState.loading:
+                                                                                    return SizedBox.shrink();
+                                                                                  case LoadState.completed:
+                                                                                    return state.completedWidget;
+                                                                                  case LoadState.failed:
+                                                                                    return ExtendedImage.asset(
+                                                                                      'assets/imgs/profile/img_profile_default_circle.png',
+                                                                                      shape: BoxShape.circle,
+                                                                                      borderRadius: BorderRadius.circular(8),
+                                                                                      width: 56,
+                                                                                      height: 56,
+                                                                                      fit: BoxFit.cover,
+                                                                                    );
+                                                                                  default:
+                                                                                    return null;
+                                                                                }
+                                                                              },
+                                                                            )
+                                                                                : ExtendedImage.asset(
+                                                                              'assets/imgs/profile/img_profile_default_circle.png',
+                                                                              enableMemoryCache: true,
+                                                                              shape: BoxShape.circle,
+                                                                              borderRadius: BorderRadius.circular(8),
+                                                                              width: 56,
+                                                                              height: 56,
+                                                                              fit: BoxFit.cover,
+                                                                            ),
+                                                                          ),
+                                                                          BFdoc.get('isOnLive') == true
+                                                                              ? Positioned(
+                                                                            right: 0,
+                                                                            bottom: 0,
+                                                                            child: Image.asset(
+                                                                              'assets/imgs/icons/icon_badge_live.png',
+                                                                              width: 32,
+                                                                            ),
+                                                                          )
+                                                                              : Container()
+                                                                        ],
+                                                                      ),
+                                                                      SizedBox(height: 6),
+                                                                      Container(
+                                                                        width: 70,
+                                                                        child: Text(
+                                                                          BFdoc.get('displayName'),
+                                                                          overflow: TextOverflow.ellipsis,
+                                                                          textAlign: TextAlign.center,
+                                                                          style: TextStyle(
+                                                                              fontSize: 12,
+                                                                              fontWeight: FontWeight.normal,
+                                                                              color: Color(0xFF111111)
+                                                                          ),
+                                                                        ),
+                                                                      )
+                                                                    ],
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        );
+                                                      } else {
+                                                        return Column(
+                                                          children: [
+                                                            GestureDetector(
+                                                              onTap: () {
+                                                                Get.to(() => FriendListPage());
+                                                              },
+                                                              child: Padding(
+                                                                padding: const EdgeInsets.only(left: 6, right: 16),
+                                                                child: DottedBorder(
+                                                                  borderType: BorderType.RRect,
+                                                                  radius: Radius.circular(50),
+                                                                  color: Color(0xFFDEDEDE),
+                                                                  strokeWidth: 1,
+                                                                  dashPattern: [6, 5],
+                                                                  child: Container(
+                                                                    width: 52,
+                                                                    height: 52,
+                                                                    child: Icon(Icons.add),
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        );
+                                                      }
+                                                    }
+                                                );
+                                              }
+                                              return SizedBox.shrink();
+                                            } catch (e) {
+                                              SizedBox.shrink();
+                                            }
+                                            return SizedBox.shrink();
+                                          },
+                                        ),
+                                      ),
+                                    ],
+                                  );
+                                },
+                              ),
                               Container(
                                 color: Color(0xFFF2F4F6),
                                 child: Padding(
@@ -1078,8 +1267,7 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
                                       mainAxisAlignment: MainAxisAlignment.center,
                                       crossAxisAlignment: CrossAxisAlignment.center,
                                       children: [
-                                        Obx(
-                                              () => Container(
+                                        Obx(() => Container(
                                             decoration: BoxDecoration(
                                                 borderRadius:
                                                 BorderRadius.circular(14),
@@ -1101,8 +1289,7 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
                                                       crossAxisAlignment: CrossAxisAlignment.start,
                                                       children: [
                                                         GestureDetector(
-                                                          child: Obx(
-                                                                () => Row(
+                                                          child: Obx(() => Row(
                                                               crossAxisAlignment: CrossAxisAlignment.center,
                                                               mainAxisAlignment: MainAxisAlignment.start,
                                                               children: [
@@ -1219,8 +1406,7 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
                                                       mainAxisAlignment: MainAxisAlignment.center,
                                                       crossAxisAlignment: CrossAxisAlignment.start,
                                                       children: [
-                                                        Obx(
-                                                              () => (_resortModelController.isLoading == true)
+                                                        Obx(() => (_resortModelController.isLoading == true)
                                                                   ? Padding(
                                                                 padding: const EdgeInsets.only(top: 10),
                                                                 child: Container(
