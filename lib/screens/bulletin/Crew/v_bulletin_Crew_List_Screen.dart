@@ -1091,6 +1091,7 @@ class _Bulletin_Crew_List_ScreenState extends State<Bulletin_Crew_List_Screen> {
                                                             child: ExtendedImage.network(
                                                               chatDocs[index]['profileImageUrl'],
                                                               cache: true,
+                                                              cacheHeight: 100,
                                                               shape: BoxShape.circle,
                                                               borderRadius:
                                                               BorderRadius.circular(20),

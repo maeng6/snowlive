@@ -969,6 +969,7 @@ class _Bulletin_Lost_List_ScreenState extends State<Bulletin_Lost_List_Screen> {
                                                                 child: ExtendedImage.network(
                                                                   profileUrl,
                                                                   cache: true,
+                                                                  cacheHeight: 100,
                                                                   shape: BoxShape.circle,
                                                                   borderRadius:
                                                                   BorderRadius.circular(20),

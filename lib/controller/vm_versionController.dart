@@ -6,13 +6,9 @@ import 'package:get/get.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'dart:io' show Platform, exit;
 
-
-
 final ref = FirebaseFirestore.instance;
 
 UrlLauncherController _urlLauncherController = Get.find<UrlLauncherController>();
-
-
 
 Future<void> checkForUpdate() async {
   try {
