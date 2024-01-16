@@ -531,6 +531,7 @@ class _Bulletin_Free_List_ScreenState extends State<Bulletin_Free_List_Screen> {
                                             '${IconAssetUrlList[0].filter}',
                                             enableMemoryCache: true,
                                             shape: BoxShape.rectangle,
+                                            cacheHeight: 50,
                                             width: 12,
                                             loadStateChanged: (ExtendedImageState state) {
                                               switch (state.extendedImageLoadState) {
@@ -1040,6 +1041,7 @@ class _Bulletin_Free_List_ScreenState extends State<Bulletin_Free_List_Screen> {
                                                       child: ExtendedImage.network(
                                                         chatDocs[0]['profileImageUrl'],
                                                         cache: true,
+                                                        cacheHeight: 100,
                                                         shape: BoxShape.circle,
                                                         borderRadius:
                                                         BorderRadius.circular(20),
@@ -1639,6 +1641,7 @@ class _Bulletin_Free_List_ScreenState extends State<Bulletin_Free_List_Screen> {
                                                                 child: ExtendedImage.network(
                                                                   profileUrl,
                                                                   cache: true,
+                                                                  cacheHeight: 100,
                                                                   shape: BoxShape.circle,
                                                                   borderRadius:
                                                                   BorderRadius.circular(20),
@@ -1735,11 +1738,11 @@ class _Bulletin_Free_List_ScreenState extends State<Bulletin_Free_List_Screen> {
                                         ),
                                       ),
                                       if(chatDocs.length != index + 1)
-                                      Divider(
-                                        color: Color(0xFFDEDEDE),
-                                        height: 15,
-                                        thickness: 0.5,
-                                      ),
+                                        Divider(
+                                          color: Color(0xFFDEDEDE),
+                                          height: 15,
+                                          thickness: 0.5,
+                                        ),
                                     ],
                                   )),
                                 );

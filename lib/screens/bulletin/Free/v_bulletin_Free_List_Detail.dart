@@ -560,6 +560,7 @@ class _Bulletin_Free_List_DetailState extends State<Bulletin_Free_List_Detail> {
                                                           .itemImagesUrls![index],
                                                       fit: BoxFit.cover,
                                                       width: _size.width,
+                                                      cacheHeight: 200,
                                                       height: 280,
                                                     ),
                                                   ),
@@ -674,6 +675,7 @@ class _Bulletin_Free_List_DetailState extends State<Bulletin_Free_List_Detail> {
                                                               child: ExtendedImage.network(
                                                                 userData['profileImageUrl'],
                                                                 cache: true,
+                                                                cacheHeight: 100,
                                                                 shape: BoxShape.circle,
                                                                 borderRadius:
                                                                 BorderRadius.circular(20),
@@ -693,6 +695,8 @@ class _Bulletin_Free_List_DetailState extends State<Bulletin_Free_List_Detail> {
                                                                         borderRadius: BorderRadius.circular(20),
                                                                         width: 20,
                                                                         height: 20,
+                                                                        cacheHeight: 100,
+                                                                        cache: true,
                                                                         fit: BoxFit.cover,
                                                                       ); // 예시로 에러 아이콘을 반환하고 있습니다.
                                                                     default:
@@ -709,6 +713,8 @@ class _Bulletin_Free_List_DetailState extends State<Bulletin_Free_List_Detail> {
                                                               BorderRadius.circular(20),
                                                               width: 20,
                                                               height: 20,
+                                                              cacheHeight: 100,
+                                                              cache: true,
                                                               fit: BoxFit.cover,
                                                             ),
                                                           SizedBox(width: 5,),
@@ -1073,6 +1079,7 @@ class _Bulletin_Free_List_DetailState extends State<Bulletin_Free_List_Detail> {
                                                                                                       child: ExtendedImage.network(
                                                                                                         userData['profileImageUrl'],
                                                                                                         cache: true,
+                                                                                                        cacheHeight: 100,
                                                                                                         shape: BoxShape.circle,
                                                                                                         borderRadius:
                                                                                                         BorderRadius.circular(20),
@@ -1092,6 +1099,8 @@ class _Bulletin_Free_List_DetailState extends State<Bulletin_Free_List_Detail> {
                                                                                                                 borderRadius: BorderRadius.circular(20),
                                                                                                                 width: 26,
                                                                                                                 height: 26,
+                                                                                                                cacheHeight: 100,
+                                                                                                                cache: true,
                                                                                                                 fit: BoxFit.cover,
                                                                                                               ); // 예시로 에러 아이콘을 반환하고 있습니다.
                                                                                                             default:
@@ -1116,6 +1125,8 @@ class _Bulletin_Free_List_DetailState extends State<Bulletin_Free_List_Detail> {
                                                                                                       BorderRadius.circular(20),
                                                                                                       width: 26,
                                                                                                       height: 26,
+                                                                                                      cacheHeight: 100,
+                                                                                                      cache: true,
                                                                                                       fit: BoxFit.cover,
                                                                                                     ),
                                                                                                   ),

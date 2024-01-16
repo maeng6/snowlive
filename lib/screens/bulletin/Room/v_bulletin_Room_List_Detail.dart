@@ -529,6 +529,8 @@ class _Bulletin_Room_List_DetailState extends State<Bulletin_Room_List_Detail> {
                                                         fit: BoxFit.cover,
                                                         width: _size.width,
                                                         height: 280,
+                                                        cacheHeight: 300,
+                                                        cache: true,
                                                       ),
                                                     ),
                                                   ],
@@ -640,6 +642,7 @@ class _Bulletin_Room_List_DetailState extends State<Bulletin_Room_List_Detail> {
                                                                 child: ExtendedImage.network(
                                                                   userData['profileImageUrl'],
                                                                   cache: true,
+                                                                  cacheHeight: 100,
                                                                   shape: BoxShape.circle,
                                                                   borderRadius:
                                                                   BorderRadius.circular(20),
@@ -657,6 +660,8 @@ class _Bulletin_Room_List_DetailState extends State<Bulletin_Room_List_Detail> {
                                                                           '${profileImgUrlList[0].default_round}',
                                                                           shape: BoxShape.circle,
                                                                           borderRadius: BorderRadius.circular(20),
+                                                                          cacheHeight: 100,
+                                                                          cache: true,
                                                                           width: 20,
                                                                           height: 20,
                                                                           fit: BoxFit.cover,
@@ -676,6 +681,7 @@ class _Bulletin_Room_List_DetailState extends State<Bulletin_Room_List_Detail> {
                                                               child: ExtendedImage.network(
                                                                 '${profileImgUrlList[0].default_round}',
                                                                 shape: BoxShape.circle,
+                                                                cacheHeight: 100,
                                                                 borderRadius: BorderRadius.circular(20),
                                                                 width: 20,
                                                                 height: 20,
@@ -927,6 +933,7 @@ class _Bulletin_Room_List_DetailState extends State<Bulletin_Room_List_Detail> {
                                                                                                     child: ExtendedImage.network(
                                                                                                       userData['profileImageUrl'],
                                                                                                       cache: true,
+                                                                                                      cacheHeight: 100,
                                                                                                       shape: BoxShape.circle,
                                                                                                       borderRadius:
                                                                                                       BorderRadius.circular(20),
@@ -946,6 +953,8 @@ class _Bulletin_Room_List_DetailState extends State<Bulletin_Room_List_Detail> {
                                                                                                               borderRadius: BorderRadius.circular(20),
                                                                                                               width: 26,
                                                                                                               height: 26,
+                                                                                                              cacheHeight: 100,
+                                                                                                              cache: true,
                                                                                                               fit: BoxFit.cover,
                                                                                                             ); // 예시로 에러 아이콘을 반환하고 있습니다.
                                                                                                           default:
@@ -970,6 +979,8 @@ class _Bulletin_Room_List_DetailState extends State<Bulletin_Room_List_Detail> {
                                                                                                     width: 26,
                                                                                                     height: 26,
                                                                                                     fit: BoxFit.cover,
+                                                                                                    cacheHeight: 100,
+                                                                                                    cache: true,
                                                                                                   ),
                                                                                                 ),
                                                                                               ),

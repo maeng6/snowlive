@@ -617,6 +617,8 @@ class _Bulletin_Crew_List_DetailState extends State<Bulletin_Crew_List_Detail> {
                                                       fit: BoxFit.cover,
                                                       width: _size.width,
                                                       height: 280,
+                                                      cacheHeight: 300,
+                                                      cache: true,
                                                     ),
                                                   ),
                                                 ],
@@ -735,6 +737,7 @@ class _Bulletin_Crew_List_DetailState extends State<Bulletin_Crew_List_Detail> {
                                                                 BorderRadius.circular(20),
                                                                 width: 20,
                                                                 height: 20,
+                                                                cacheHeight: 100,
                                                                 fit: BoxFit.cover,
                                                                 loadStateChanged: (ExtendedImageState state) {
                                                                   switch (state.extendedImageLoadState) {
@@ -750,6 +753,7 @@ class _Bulletin_Crew_List_DetailState extends State<Bulletin_Crew_List_Detail> {
                                                                         width: 20,
                                                                         height: 20,
                                                                         fit: BoxFit.cover,
+                                                                        cacheHeight: 100,
                                                                       ); // 예시로 에러 아이콘을 반환하고 있습니다.
                                                                     default:
                                                                       return null;
@@ -766,6 +770,7 @@ class _Bulletin_Crew_List_DetailState extends State<Bulletin_Crew_List_Detail> {
                                                               width: 20,
                                                               height: 20,
                                                               fit: BoxFit.cover,
+                                                              cacheHeight: 100,
                                                             ),
                                                           SizedBox(width: 5,),
                                                           Text('${userData['displayName']}',
@@ -1075,6 +1080,7 @@ class _Bulletin_Crew_List_DetailState extends State<Bulletin_Crew_List_Detail> {
                                                                                                       child: ExtendedImage.network(
                                                                                                         userData['profileImageUrl'],
                                                                                                         cache: true,
+                                                                                                        cacheHeight: 100,
                                                                                                         shape: BoxShape.circle,
                                                                                                         borderRadius:
                                                                                                         BorderRadius.circular(20),
@@ -1095,6 +1101,7 @@ class _Bulletin_Crew_List_DetailState extends State<Bulletin_Crew_List_Detail> {
                                                                                                                 width: 26,
                                                                                                                 height: 26,
                                                                                                                 fit: BoxFit.cover,
+                                                                                                                cacheHeight: 100,
                                                                                                               ); // 예시로 에러 아이콘을 반환하고 있습니다.
                                                                                                             default:
                                                                                                               return null;
@@ -1119,6 +1126,7 @@ class _Bulletin_Crew_List_DetailState extends State<Bulletin_Crew_List_Detail> {
                                                                                                       width: 26,
                                                                                                       height: 26,
                                                                                                       fit: BoxFit.cover,
+                                                                                                      cacheHeight: 100,
                                                                                                     ),
                                                                                                   ),
                                                                                                 ),

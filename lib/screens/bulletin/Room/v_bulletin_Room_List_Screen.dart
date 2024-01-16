@@ -1070,6 +1070,7 @@ class _Bulletin_Room_List_ScreenState extends State<Bulletin_Room_List_Screen> {
                                                               BorderRadius.circular(20),
                                                               width: 16,
                                                               height: 16,
+                                                              cacheHeight: 100,
                                                               fit: BoxFit.cover,
                                                               loadStateChanged: (ExtendedImageState state) {
                                                                 switch (state.extendedImageLoadState) {

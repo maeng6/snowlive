@@ -683,11 +683,9 @@ class _Bulletin_Event_List_ScreenState extends State<Bulletin_Event_List_Screen>
                                     await chatDocs[index].reference.update({'viewerUid': []});
                                   }
                                   await _bulletinEventModelController.updateViewerUid();
-                                  await _bulletinEventModelController
-                                      .getCurrentBulletinEvent(
+                                  await _bulletinEventModelController.getCurrentBulletinEvent(
                                       uid: chatDocs[index].get('uid'),
-                                      bulletinEventCount:
-                                      chatDocs[index].get('bulletinEventCount'));
+                                      bulletinEventCount: chatDocs[index].get('bulletinEventCount'));
                                   CustomFullScreenDialog.cancelDialog();
                                   Get.to(() => Bulletin_Event_List_Detail());
                                 }else{}
@@ -1095,6 +1093,7 @@ class _Bulletin_Event_List_ScreenState extends State<Bulletin_Event_List_Screen>
                                                             ),
                                                             child: ExtendedImage.network(
                                                               chatDocs[index]['profileImageUrl'],
+                                                              cacheHeight: 100,
                                                               cache: true,
                                                               shape: BoxShape.circle,
                                                               borderRadius:
