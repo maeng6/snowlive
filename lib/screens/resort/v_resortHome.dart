@@ -2202,6 +2202,9 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
                                                 ],
                                               ),
                                             ),
+                                            SizedBox(
+                                              height: 30,
+                                            ),
                                           ],
                                         ),
                                       ],
