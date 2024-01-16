@@ -1,11 +1,8 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:com.snowlive/controller/vm_liveCrewModelController.dart';
-import 'package:com.snowlive/controller/vm_seasonController.dart';
 import 'package:com.snowlive/controller/vm_userModelController.dart';
-import '../../../controller/vm_liveMapController.dart';
 import '../../../controller/vm_rankingTierModelController.dart';
 import '../../../model/m_crewLogoModel.dart';
 import '../../../widget/w_fullScreenDialog.dart';
@@ -32,8 +29,6 @@ class _RankingCrewAllScreen_testState extends State<RankingCrewAllScreen_test> {
   //TODO: Dependency Injection**************************************************
 
   var assetBases;
-
-  ScrollController _scrollController = ScrollController();
 
   Map<String, GlobalKey> itemKeys = {};
 

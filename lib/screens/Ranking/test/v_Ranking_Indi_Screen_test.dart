@@ -1,23 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:com.snowlive/screens/Ranking/test/v_Ranking_indi_All_Screen_test.dart';
-import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
-import 'package:lottie/lottie.dart';
-import 'package:com.snowlive/controller/vm_liveCrewModelController.dart';
-import 'package:com.snowlive/controller/vm_liveMapController.dart';
-import 'package:com.snowlive/controller/vm_seasonController.dart';
 import 'package:com.snowlive/controller/vm_userModelController.dart';
-import 'package:com.snowlive/screens/Ranking/v_Ranking_indi_All_Screen.dart';
 import '../../../controller/vm_allCrewDocsController.dart';
 import '../../../controller/vm_allUserDocsController.dart';
 import '../../../controller/vm_myRankingController.dart';
 import '../../../controller/vm_rankingTierModelController.dart';
-import '../../../controller/vm_refreshController.dart';
-import '../../../controller/vm_resortModelController.dart';
 import '../../../data/imgaUrls/Data_url_image.dart';
 import '../../../model/m_rankingTierModel.dart';
 import '../../more/friend/v_friendDetailPage.dart';
@@ -41,7 +32,6 @@ class _RankingIndiScreen_testState extends State<RankingIndiScreen_test> {
 
   //TODO: Dependency Injection**************************************************
   UserModelController _userModelController = Get.find<UserModelController>();
-  SeasonController _seasonController = Get.find<SeasonController>();
   MyRankingController _myRankingController = Get.find<MyRankingController>();
   AllCrewDocsController _allCrewDocsController = Get.find<AllCrewDocsController>();
   RankingTierModelController _rankingTierModelController = Get.find<RankingTierModelController>();
