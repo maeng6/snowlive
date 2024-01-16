@@ -1,19 +1,12 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:lottie/lottie.dart';
-import 'package:com.snowlive/controller/vm_liveCrewModelController.dart';
-import 'package:com.snowlive/controller/vm_liveMapController.dart';
-import 'package:com.snowlive/controller/vm_seasonController.dart';
 import 'package:com.snowlive/controller/vm_userModelController.dart';
-import 'package:com.snowlive/screens/Ranking/test/v_Ranking_indi_All_Screen_test.dart';
 import '../../../controller/vm_allCrewDocsController.dart';
 import '../../../controller/vm_allUserDocsController.dart';
 import '../../../controller/vm_rankingTierModelController.dart';
 import '../../../data/imgaUrls/Data_url_image.dart';
 import '../../../model/m_rankingTierModel.dart';
-import '../../../widget/w_fullScreenDialog.dart';
 import '../../more/friend/v_friendDetailPage.dart';
 
 class RankingIndiAllScreen_test extends StatefulWidget {
@@ -32,16 +25,11 @@ class RankingIndiAllScreen_test extends StatefulWidget {
 class _RankingIndiAllScreen_testState extends State<RankingIndiAllScreen_test> {
   //TODO: Dependency Injection**************************************************
   UserModelController _userModelController = Get.find<UserModelController>();
-  SeasonController _seasonController = Get.find<SeasonController>();
-  LiveCrewModelController _liveCrewModelController =
-  Get.find<LiveCrewModelController>();
-  LiveMapController _liveMapController = Get.find<LiveMapController>();
   AllUserDocsController _allUserDocsController = Get.find<AllUserDocsController>();
   AllCrewDocsController _allCrewDocsController = Get.find<AllCrewDocsController>();
   RankingTierModelController _rankingTierModelController = Get.find<RankingTierModelController>();
   //TODO: Dependency Injection**************************************************
 
-  ScrollController _scrollController = ScrollController();
 
   Map<String, GlobalKey> itemKeys = {};
 

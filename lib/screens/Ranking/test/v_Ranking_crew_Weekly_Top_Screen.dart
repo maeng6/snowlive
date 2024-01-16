@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:com.snowlive/controller/vm_resortModelController.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -8,20 +7,21 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:com.snowlive/controller/vm_seasonController.dart';
 import 'package:com.snowlive/controller/vm_userModelController.dart';
+import '../../../controller/vm_resortModelController.dart';
 import '../../../data/imgaUrls/Data_url_image.dart';
 
 
-class RankingIndiWeeklyTopScreen extends StatefulWidget {
-  RankingIndiWeeklyTopScreen({Key? key}) : super(key: key);
+class RankingCrewWeeklyTopScreen extends StatefulWidget {
+  RankingCrewWeeklyTopScreen({Key? key}) : super(key: key);
 
 
   @override
-  State<RankingIndiWeeklyTopScreen> createState() =>
-      _RankingIndiWeeklyTopScreenState();
+  State<RankingCrewWeeklyTopScreen> createState() =>
+      _RankingCrewWeeklyTopScreenState();
 }
 
-class _RankingIndiWeeklyTopScreenState
-    extends State<RankingIndiWeeklyTopScreen> {
+class _RankingCrewWeeklyTopScreenState
+    extends State<RankingCrewWeeklyTopScreen> {
 
   //TODO: Dependency Injection**************************************************
   UserModelController _userModelController = Get.find<UserModelController>();
@@ -50,20 +50,21 @@ class _RankingIndiWeeklyTopScreenState
 
     if(_selectedResort == 12 || _selectedResort == 2 || _selectedResort == 0){
       QuerySnapshot rankingSnapshot = await FirebaseFirestore.instance
-          .collection('Ranking_Weekly_Top')
-          .doc('${_selectedSeason}')
-          .collection('${_selectedResort}')
+          .collection('Ranking_Weekly_Top_Crew')
+          .doc('1')
+          .collection('${_selectedSeason}')
+          .where('baseResort', isEqualTo: _selectedResort)
           .get();
 
-      Map<String, List<DocumentSnapshot>> groupedData_WeeklyTop_Indi = {};
+      Map<String, List<DocumentSnapshot>> groupedData_WeeklyTop_Crew = {};
 
       rankingSnapshot.docs.forEach((doc) {
-        String date = doc['date']; // date 필드의 값 가져오기
-        groupedData_WeeklyTop_Indi.putIfAbsent(date, () => []).add(doc);
+        String date = doc['date'];
+        groupedData_WeeklyTop_Crew.putIfAbsent(date, () => []).add(doc);
       });
 
       List<MapEntry<String, List<DocumentSnapshot>>> sortedEntries =
-      groupedData_WeeklyTop_Indi.entries.toList()
+      groupedData_WeeklyTop_Crew.entries.toList()
         ..sort((a, b) => a.key.compareTo(b.key));
 
       Map<String, List<DocumentSnapshot>> sortedData =
@@ -72,30 +73,30 @@ class _RankingIndiWeeklyTopScreenState
       _groupedDataController.add(sortedData);
 
     } else {
-      List<int> resortIds = List.generate(13, (i) => i)..removeWhere((id) => [0, 2, 12].contains(id));
-      List<Future<QuerySnapshot>> futures = [];
 
-      for (int resortId in resortIds) {
-        futures.add(FirebaseFirestore.instance
-            .collection('Ranking_Weekly_Top')
-            .doc('${_selectedSeason}')
-            .collection('${resortId}')
-            .get());
-      }
+      List<QueryDocumentSnapshot> rankingList = [];
 
-      List<QueryDocumentSnapshot> rankingList = (await Future.wait(futures))
-          .expand((snapshot) => snapshot.docs)
-          .toList();
+      QuerySnapshot rankingSnapshot = await FirebaseFirestore.instance
+          .collection('Ranking_Weekly_Top_Crew')
+          .doc('1')
+          .collection('${_selectedSeason}')
+          .get();
 
-      Map<String, List<DocumentSnapshot>> groupedData_WeeklyTop_Indi = {};
+      rankingList = rankingSnapshot.docs.where((doc) {
+        var data = doc.data() as Map<String, dynamic>;
+        var baseResort = data['baseResort'];
+        return ![0, 2, 12].contains(baseResort);
+      }).toList();
+
+      Map<String, List<DocumentSnapshot>> groupedData_WeeklyTop_Crew = {};
 
       rankingList.forEach((doc) {
         String date = doc['date']; // date 필드의 값 가져오기
-        groupedData_WeeklyTop_Indi.putIfAbsent(date, () => []).add(doc);
+        groupedData_WeeklyTop_Crew.putIfAbsent(date, () => []).add(doc);
       });
 
       List<MapEntry<String, List<DocumentSnapshot>>> sortedEntries =
-      groupedData_WeeklyTop_Indi.entries.toList()
+      groupedData_WeeklyTop_Crew.entries.toList()
         ..sort((a, b) => a.key.compareTo(b.key));
 
       Map<String, List<DocumentSnapshot>> sortedData =
@@ -207,18 +208,18 @@ class _RankingIndiWeeklyTopScreenState
                         },
                         child: Text('곤지암리조트')),
                     if(_selectedSeason != '2324')
-                    CupertinoActionSheetAction(
-                        onPressed: () {
-                          HapticFeedback.lightImpact();
-                          setState(() {
-                            _selectedResort = 1;
-                            _selectedResortName = '무주덕유산리조트';
-                            isTapStats[0] = false;
-                            isTapStats[1] = true;
-                          });
-                          Navigator.pop(context);
-                        },
-                        child: Text('무주덕유산리조트')),
+                      CupertinoActionSheetAction(
+                          onPressed: () {
+                            HapticFeedback.lightImpact();
+                            setState(() {
+                              _selectedResort = 1;
+                              _selectedResortName = '무주덕유산리조트';
+                              isTapStats[0] = false;
+                              isTapStats[1] = true;
+                            });
+                            Navigator.pop(context);
+                          },
+                          child: Text('무주덕유산리조트')),
                     CupertinoActionSheetAction(
                         onPressed: () {
                           HapticFeedback.lightImpact();
@@ -232,122 +233,122 @@ class _RankingIndiWeeklyTopScreenState
                         },
                         child: Text('비발디파크')),
                     if(_selectedSeason != '2324')
-                    CupertinoActionSheetAction(
-                        onPressed: () {
-                          HapticFeedback.lightImpact();
-                          setState(() {
-                            _selectedResort = 3;
-                            _selectedResortName = '알펜시아';
-                            isTapStats[0] = false;
-                            isTapStats[1] = true;
-                          });
-                          Navigator.pop(context);
-                        },
-                        child: Text('알펜시아')),
+                      CupertinoActionSheetAction(
+                          onPressed: () {
+                            HapticFeedback.lightImpact();
+                            setState(() {
+                              _selectedResort = 3;
+                              _selectedResortName = '알펜시아';
+                              isTapStats[0] = false;
+                              isTapStats[1] = true;
+                            });
+                            Navigator.pop(context);
+                          },
+                          child: Text('알펜시아')),
                     if(_selectedSeason != '2324')
-                    CupertinoActionSheetAction(
-                        onPressed: () {
-                          HapticFeedback.lightImpact();
-                          setState(() {
-                            _selectedResort = 4;
-                            _selectedResortName = '에덴밸리리조트';
-                            isTapStats[0] = false;
-                            isTapStats[1] = true;
-                          });
-                          Navigator.pop(context);
-                        },
-                        child: Text('에덴밸리리조트')),
+                      CupertinoActionSheetAction(
+                          onPressed: () {
+                            HapticFeedback.lightImpact();
+                            setState(() {
+                              _selectedResort = 4;
+                              _selectedResortName = '에덴밸리리조트';
+                              isTapStats[0] = false;
+                              isTapStats[1] = true;
+                            });
+                            Navigator.pop(context);
+                          },
+                          child: Text('에덴밸리리조트')),
                     if(_selectedSeason != '2324')
-                    CupertinoActionSheetAction(
-                        onPressed: () {
-                          HapticFeedback.lightImpact();
-                          setState(() {
-                            _selectedResort = 5;
-                            _selectedResortName = '엘리시안강촌';
-                            isTapStats[0] = false;
-                            isTapStats[1] = true;
-                          });
-                          Navigator.pop(context);
-                        },
-                        child: Text('엘리시안강촌')),
+                      CupertinoActionSheetAction(
+                          onPressed: () {
+                            HapticFeedback.lightImpact();
+                            setState(() {
+                              _selectedResort = 5;
+                              _selectedResortName = '엘리시안강촌';
+                              isTapStats[0] = false;
+                              isTapStats[1] = true;
+                            });
+                            Navigator.pop(context);
+                          },
+                          child: Text('엘리시안강촌')),
                     if(_selectedSeason != '2324')
-                    CupertinoActionSheetAction(
-                        onPressed: () {
-                          HapticFeedback.lightImpact();
-                          setState(() {
-                            _selectedResort = 6;
-                            _selectedResortName = '오크밸리리조트';
-                            isTapStats[0] = false;
-                            isTapStats[1] = true;
-                          });
-                          Navigator.pop(context);
-                        },
-                        child: Text('오크밸리리조트')),
+                      CupertinoActionSheetAction(
+                          onPressed: () {
+                            HapticFeedback.lightImpact();
+                            setState(() {
+                              _selectedResort = 6;
+                              _selectedResortName = '오크밸리리조트';
+                              isTapStats[0] = false;
+                              isTapStats[1] = true;
+                            });
+                            Navigator.pop(context);
+                          },
+                          child: Text('오크밸리리조트')),
                     if(_selectedSeason != '2324')
-                    CupertinoActionSheetAction(
-                        onPressed: () {
-                          HapticFeedback.lightImpact();
-                          setState(() {
-                            _selectedResort = 7;
-                            _selectedResortName = '오투리조트';
-                            isTapStats[0] = false;
-                            isTapStats[1] = true;
-                          });
-                          Navigator.pop(context);
-                        },
-                        child: Text('오투리조트')),
+                      CupertinoActionSheetAction(
+                          onPressed: () {
+                            HapticFeedback.lightImpact();
+                            setState(() {
+                              _selectedResort = 7;
+                              _selectedResortName = '오투리조트';
+                              isTapStats[0] = false;
+                              isTapStats[1] = true;
+                            });
+                            Navigator.pop(context);
+                          },
+                          child: Text('오투리조트')),
                     if(_selectedSeason != '2324')
-                    CupertinoActionSheetAction(
-                        onPressed: () {
-                          HapticFeedback.lightImpact();
-                          setState(() {
-                            _selectedResort = 8;
-                            _selectedResortName = '용평리조트';
-                            isTapStats[0] = false;
-                            isTapStats[1] = true;
-                          });
-                          Navigator.pop(context);
-                        },
-                        child: Text('용평리조트')),
+                      CupertinoActionSheetAction(
+                          onPressed: () {
+                            HapticFeedback.lightImpact();
+                            setState(() {
+                              _selectedResort = 8;
+                              _selectedResortName = '용평리조트';
+                              isTapStats[0] = false;
+                              isTapStats[1] = true;
+                            });
+                            Navigator.pop(context);
+                          },
+                          child: Text('용평리조트')),
                     if(_selectedSeason != '2324')
-                    CupertinoActionSheetAction(
-                        onPressed: () {
-                          HapticFeedback.lightImpact();
-                          setState(() {
-                            _selectedResort = 9;
-                            _selectedResortName = '웰리힐리파크';
-                            isTapStats[0] = false;
-                            isTapStats[1] = true;
-                          });
-                          Navigator.pop(context);
-                        },
-                        child: Text('웰리힐리파크')),
+                      CupertinoActionSheetAction(
+                          onPressed: () {
+                            HapticFeedback.lightImpact();
+                            setState(() {
+                              _selectedResort = 9;
+                              _selectedResortName = '웰리힐리파크';
+                              isTapStats[0] = false;
+                              isTapStats[1] = true;
+                            });
+                            Navigator.pop(context);
+                          },
+                          child: Text('웰리힐리파크')),
                     if(_selectedSeason != '2324')
-                    CupertinoActionSheetAction(
-                        onPressed: () {
-                          HapticFeedback.lightImpact();
-                          setState(() {
-                            _selectedResort = 10;
-                            _selectedResortName = '지산리조트';
-                            isTapStats[0] = false;
-                            isTapStats[1] = true;
-                          });
-                          Navigator.pop(context);
-                        },
-                        child: Text('지산리조트')),
+                      CupertinoActionSheetAction(
+                          onPressed: () {
+                            HapticFeedback.lightImpact();
+                            setState(() {
+                              _selectedResort = 10;
+                              _selectedResortName = '지산리조트';
+                              isTapStats[0] = false;
+                              isTapStats[1] = true;
+                            });
+                            Navigator.pop(context);
+                          },
+                          child: Text('지산리조트')),
                     if(_selectedSeason != '2324')
-                    CupertinoActionSheetAction(
-                        onPressed: () {
-                          HapticFeedback.lightImpact();
-                          setState(() {
-                            _selectedResort = 11;
-                            _selectedResortName = '하이원리조트';
-                            isTapStats[0] = false;
-                            isTapStats[1] = true;
-                          });
-                          Navigator.pop(context);
-                        },
-                        child: Text('하이원리조트')),
+                      CupertinoActionSheetAction(
+                          onPressed: () {
+                            HapticFeedback.lightImpact();
+                            setState(() {
+                              _selectedResort = 11;
+                              _selectedResortName = '하이원리조트';
+                              isTapStats[0] = false;
+                              isTapStats[1] = true;
+                            });
+                            Navigator.pop(context);
+                          },
+                          child: Text('하이원리조트')),
                     CupertinoActionSheetAction(
                         onPressed: () {
                           HapticFeedback.lightImpact();
@@ -386,10 +387,10 @@ class _RankingIndiWeeklyTopScreenState
     _selectedSeason = _seasonController.currentSeason;
     _selectedResort = _userModelController.favoriteResort;
     _selectedResortName =
-        _userModelController.favoriteResort == 12
+    _userModelController.favoriteResort == 12
         || _userModelController.favoriteResort == 2
-            || _userModelController.favoriteResort == 0
-            ? _resortModelController.getResortName(_userModelController.resortNickname!) : '통합';
+        || _userModelController.favoriteResort == 0
+        ? _resortModelController.getResortName(_userModelController.resortNickname!) : '통합';
     getRankingDocsWeeklyTop();
 
   }
@@ -609,42 +610,42 @@ class _RankingIndiWeeklyTopScreenState
                                       crossAxisAlignment: CrossAxisAlignment.center,
                                       children: [
                                         Container(
+                                          width: 48,
+                                          height: 48,
+                                          decoration: BoxDecoration(
+                                            color: Color(0xFFDFECFF),
+                                            borderRadius: BorderRadius.circular(50),
+                                          ),
+                                          child: ClipOval(
+                                            child: top3Docs[i]['profileImageUrl'].isNotEmpty
+                                                ? ExtendedImage.network(
+                                              top3Docs[i]['profileImageUrl'],
+                                              enableMemoryCache: true,
+                                              cacheHeight: 100,
                                               width: 48,
                                               height: 48,
-                                              decoration: BoxDecoration(
-                                                color: Color(0xFFDFECFF),
-                                                borderRadius: BorderRadius.circular(50),
-                                              ),
-                                              child: ClipOval(
-                                                child: top3Docs[i]['profileImageUrl'].isNotEmpty
-                                                    ? ExtendedImage.network(
-                                                  top3Docs[i]['profileImageUrl'],
-                                                  enableMemoryCache: true,
-                                                  cacheHeight: 100,
-                                                  width: 48,
-                                                  height: 48,
-                                                  fit: BoxFit.cover,
-                                                  loadStateChanged: (ExtendedImageState state) {
-                                                    switch (state.extendedImageLoadState) {
-                                                      case LoadState.loading:
-                                                        return CircularProgressIndicator();
-                                                      case LoadState.completed:
-                                                        return state.completedWidget;
-                                                      case LoadState.failed:
-                                                        return Icon(Icons.error);
-                                                      default:
-                                                        return null;
-                                                    }
-                                                  },
-                                                )
-                                                    : Image.network(
-                                                  '${profileImgUrlList[0].default_round}',
-                                                  width: 48,
-                                                  height: 48,
-                                                  fit: BoxFit.cover,
-                                                ),
-                                              ),
+                                              fit: BoxFit.cover,
+                                              loadStateChanged: (ExtendedImageState state) {
+                                                switch (state.extendedImageLoadState) {
+                                                  case LoadState.loading:
+                                                    return CircularProgressIndicator();
+                                                  case LoadState.completed:
+                                                    return state.completedWidget;
+                                                  case LoadState.failed:
+                                                    return Icon(Icons.error);
+                                                  default:
+                                                    return null;
+                                                }
+                                              },
+                                            )
+                                                : Image.network(
+                                              '${profileImgUrlList[0].default_round}',
+                                              width: 48,
+                                              height: 48,
+                                              fit: BoxFit.cover,
                                             ),
+                                          ),
+                                        ),
                                         SizedBox(height: 6,),
                                         ExtendedImage.asset(
                                           'assets/imgs/icons/icon_crown_${i+1}.png',
@@ -653,16 +654,16 @@ class _RankingIndiWeeklyTopScreenState
                                           fit: BoxFit.cover,
                                         ),
                                         Text(
-                                              '${top3Docs[i]['displayName']}',
-                                              style: TextStyle(fontSize: 12.0),
-                                            ),
+                                          '${top3Docs[i]['crewName']}',
+                                          style: TextStyle(fontSize: 12.0),
+                                        ),
                                         Text(_selectedResort == 12 ||
-                                              _selectedResort == 2 ||
-                                              _selectedResort == 0
-                                              ? '${top3Docs[i]['score']}점'
-                                              : '${top3Docs[i]['passCount']}회',
-                                              style: TextStyle(fontSize: 12.0),
-                                            ),
+                                            _selectedResort == 2 ||
+                                            _selectedResort == 0
+                                            ? '${top3Docs[i]['score']}점'
+                                            : '${top3Docs[i]['passCount']}회',
+                                          style: TextStyle(fontSize: 12.0),
+                                        ),
                                         SizedBox(height: 8.0),
                                       ],
                                     ),
