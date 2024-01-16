@@ -210,7 +210,7 @@ class _Bulletin_Event_List_Screen_HomeState extends State<Bulletin_Event_List_Sc
                               child: Obx(() => Column(
                                 children: [
                                   Padding(
-                                    padding: EdgeInsets.only(top: 2),
+                                    padding: EdgeInsets.only(top: 6),
                                     child: Container(
                                       color: Colors.white,
                                       child: Column(
