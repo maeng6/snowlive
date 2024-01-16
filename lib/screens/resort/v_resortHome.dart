@@ -26,10 +26,13 @@ import 'package:com.snowlive/controller/vm_resortModelController.dart';
 import 'package:com.snowlive/controller/vm_userModelController.dart';
 import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 import '../../controller/vm_bottomTabBarController.dart';
+import '../../controller/vm_bulletinLostController.dart';
 import '../../controller/vm_commentController.dart';
 import '../../controller/vm_liveCrewModelController.dart';
 import '../../controller/vm_seasonController.dart';
 import '../../controller/vm_urlLauncherController.dart';
+import '../bulletin/Event/v_bulletin_Event_List_Screen_home.dart';
+import '../bulletin/Lost/v_bulletin_Lost_List_Screen_home.dart';
 import '../fleaMarket/v_fleaMarket_List_Screen_home.dart';
 import 'package:lottie/lottie.dart';
 
@@ -134,6 +137,7 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
     Get.put(FleaChatModelController(), permanent: true);
     DialogController _dialogController = Get.put(DialogController(), permanent: true);
     BottomTabBarController _bottomTabBarController = Get.find<BottomTabBarController>();
+    BulletinLostModelController _bulletinLostModelController = Get.find<BulletinLostModelController>();
     //TODO: Dependency Injection**************************************************
 
     return FutureBuilder(
@@ -1071,10 +1075,8 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
                                     padding:
                                     EdgeInsets.only(left: 16, right: 16),
                                     child: Column(
-                                      mainAxisAlignment:
-                                      MainAxisAlignment.center,
-                                      crossAxisAlignment:
-                                      CrossAxisAlignment.center,
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      crossAxisAlignment: CrossAxisAlignment.center,
                                       children: [
                                         Obx(
                                               () => Container(
@@ -1083,203 +1085,199 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
                                                 BorderRadius.circular(14),
                                                 color: (_resortModelController.isLoading == true)
                                                     ? Color(0xffc8c8c8)
-                                                    : _resortModelController
-                                                    .weatherColors),
+                                                    : _resortModelController.weatherColors),
                                             alignment: Alignment.center,
                                             width: double.infinity,
                                             child: Column(
                                               children: [
                                                 SizedBox(
-                                                  height: 40,
-                                                ),
-                                                GestureDetector(
-                                                  child: Obx(
-                                                        () => Row(
-                                                      crossAxisAlignment: CrossAxisAlignment.center,
-                                                      mainAxisAlignment: MainAxisAlignment.center,
-                                                      children: [
-                                                        Padding(
-                                                          padding: const EdgeInsets.only(left: 10),
-                                                          child: Text(
-                                                            '${_resortModelController.resortName}',
-                                                            style: TextStyle(
-                                                                color: Colors.white,
-                                                                fontWeight: FontWeight.bold,
-                                                                fontSize: 23),
-                                                          ),
-                                                        ),
-                                                        SizedBox(
-                                                          width: 3,
-                                                        ),
-                                                        Image.asset(
-                                                          'assets/imgs/icons/icon_dropdown.png',
-                                                          width: 18,
-                                                          height: 18,
-                                                        )
-                                                      ],
-                                                    ),
-                                                  ),
-                                                  onTap: () {
-                                                    showModalBottomSheet(
-                                                        enableDrag: false,
-                                                        context: context,
-                                                        builder: (context) {
-                                                          return Container(
-                                                            color: Colors.white,
-                                                            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 30),
-                                                            height:
-                                                            _size.height * 0.8,
-                                                            child: Column(
-                                                              mainAxisAlignment:
-                                                              MainAxisAlignment
-                                                                  .start,
-                                                              crossAxisAlignment:
-                                                              CrossAxisAlignment
-                                                                  .start,
-                                                              children: [
-                                                                Text(
-                                                                  '스키장을 선택해주세요.',
-                                                                  style: TextStyle(
-                                                                      fontSize:
-                                                                      20,
-                                                                      fontWeight:
-                                                                      FontWeight
-                                                                          .bold),
-                                                                ),
-                                                                SizedBox(
-                                                                  height: 10,
-                                                                ),
-                                                                Text(
-                                                                  '관심있는 스키장을 선택해 스키장과 관련된 실시간 날씨 정보와 웹캠, 슬로프 오픈 현황 등을 확인하세요.',
-                                                                  style: TextStyle(
-                                                                      fontSize:
-                                                                      14,
-                                                                      fontWeight:
-                                                                      FontWeight
-                                                                          .w300,
-                                                                      color: Color(
-                                                                          0xFF666666)),
-                                                                ),
-                                                                Container(
-                                                                  color: Colors
-                                                                      .white,
-                                                                  height: 30,
-                                                                ),
-                                                                Expanded(
-                                                                  child: ListView
-                                                                      .builder(
-                                                                      padding: EdgeInsets
-                                                                          .zero,
-                                                                      itemCount:
-                                                                      13,
-                                                                      itemBuilder:
-                                                                          (context, index) {
-                                                                        return Builder(builder:
-                                                                            (context) {
-                                                                          return Column(
-                                                                            children: [
-                                                                              buildResortListTile(index),
-                                                                              Divider(
-                                                                                height: 20,
-                                                                                thickness: 0.5,
-                                                                              ),
-                                                                            ],
-                                                                          );
-                                                                        });
-                                                                      }),
-                                                                ),
-                                                              ],
-                                                            ),
-                                                          );
-                                                        });
-                                                  },
-                                                ),
-                                                SizedBox(
-                                                  height: 2,
-                                                ),
-                                                SizedBox(
-                                                  height: 36,
-                                                  child: Padding(
-                                                    padding:
-                                                    const EdgeInsets.only(
-                                                        left: 16),
-                                                    child: Row(
-                                                      mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .center,
-                                                      children: [
-                                                        Text(
-                                                          '${_getDateTimeController.date}',
-                                                          style: TextStyle(
-                                                              color:
-                                                              Colors.white,
-                                                              fontWeight:
-                                                              FontWeight
-                                                                  .normal,
-                                                              fontSize: 14),
-                                                        ),
-                                                        Transform.translate(
-                                                            offset:
-                                                            Offset(-2, 0),
-                                                            child: _resortModelController
-                                                                .weatherIcons),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                ),
-                                                SizedBox(
-                                                  height: 30,
+                                                  height: 24,
                                                 ),
                                                 Row(
-                                                  mainAxisAlignment: MainAxisAlignment.center,
-                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                   children: [
-                                                    Obx(
-                                                          () => Padding(
-                                                        padding: EdgeInsets.only(right: 4, left: 12),
-                                                        child: (_resortModelController
-                                                            .isLoading ==
-                                                            true)
-                                                            ? Padding(
-                                                          padding: const EdgeInsets.symmetric(vertical: 51),
-                                                          child: Container(
-                                                              height: 30,
-                                                              width: 50,
-                                                              child: Lottie
-                                                                  .asset(
-                                                                  'assets/json/loadings_wht_final.json')),
-                                                        )
-                                                            : Text('${_resortModelController.resortTemp!}',
-                                                          //u00B0
-                                                          style: GoogleFonts.bebasNeue(
-                                                              fontSize: 110,
-                                                              color: Colors.white),
+                                                    Column(
+                                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                                      children: [
+                                                        GestureDetector(
+                                                          child: Obx(
+                                                                () => Row(
+                                                              crossAxisAlignment: CrossAxisAlignment.center,
+                                                              mainAxisAlignment: MainAxisAlignment.start,
+                                                              children: [
+                                                                Padding(
+                                                                  padding: const EdgeInsets.only(left: 24),
+                                                                  child: Text(
+                                                                    '${_resortModelController.resortName}',
+                                                                    style: TextStyle(
+                                                                        color: Colors.white,
+                                                                        fontWeight: FontWeight.bold,
+                                                                        fontSize: 22),
+                                                                  ),
+                                                                ),
+                                                                SizedBox(
+                                                                  width: 3,
+                                                                ),
+                                                                Padding(
+                                                                  padding: const EdgeInsets.only(bottom: 3),
+                                                                  child: Image.asset(
+                                                                    'assets/imgs/icons/icon_dropdown.png',
+                                                                    width: 18,
+                                                                    height: 18,
+                                                                  ),
+                                                                )
+                                                              ],
+                                                            ),
+                                                          ),
+                                                          onTap: () {
+                                                            showModalBottomSheet(
+                                                                enableDrag: false,
+                                                                context: context,
+                                                                builder: (context) {
+                                                                  return Container(
+                                                                    color: Colors.white,
+                                                                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 30),
+                                                                    height:
+                                                                    _size.height * 0.8,
+                                                                    child: Column(
+                                                                      mainAxisAlignment: MainAxisAlignment.start,
+                                                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                                                      children: [
+                                                                        Text(
+                                                                          '스키장을 선택해주세요.',
+                                                                          style: TextStyle(
+                                                                              fontSize: 20,
+                                                                              fontWeight: FontWeight.bold),
+                                                                        ),
+                                                                        SizedBox(
+                                                                          height: 10,
+                                                                        ),
+                                                                        Text(
+                                                                          '관심있는 스키장을 선택해 스키장과 관련된 실시간 날씨 정보와 웹캠, 슬로프 오픈 현황 등을 확인하세요.',
+                                                                          style: TextStyle(
+                                                                              fontSize: 14,
+                                                                              fontWeight: FontWeight.w300,
+                                                                              color: Color(0xFF666666)),
+                                                                        ),
+                                                                        Container(
+                                                                          color: Colors.white,
+                                                                          height: 30,
+                                                                        ),
+                                                                        Expanded(
+                                                                          child: ListView.builder(
+                                                                              padding: EdgeInsets.zero,
+                                                                              itemCount: 13,
+                                                                              itemBuilder: (context, index) {
+                                                                                return Builder(builder:
+                                                                                    (context) {
+                                                                                  return Column(
+                                                                                    children: [
+                                                                                      buildResortListTile(index),
+                                                                                      Divider(
+                                                                                        height: 20,
+                                                                                        thickness: 0.5,
+                                                                                      ),
+                                                                                    ],
+                                                                                  );
+                                                                                });
+                                                                              }),
+                                                                        ),
+                                                                      ],
+                                                                    ),
+                                                                  );
+                                                                });
+                                                          },
                                                         ),
-                                                      ),
+                                                        SizedBox(
+                                                          height: 2,
+                                                        ),
+                                                        SizedBox(
+                                                          height: 26,
+                                                          child: Padding(
+                                                            padding: const EdgeInsets.only(left: 24),
+                                                            child: Row(
+                                                              mainAxisAlignment: MainAxisAlignment.start,
+                                                              children: [
+                                                                Text('${_getDateTimeController.date}',
+                                                                  style: TextStyle(
+                                                                      color:
+                                                                      Color(0xFFFFFFFF).withOpacity(0.6),
+                                                                      fontWeight: FontWeight.normal,
+                                                                      fontSize: 14),
+                                                                ),
+                                                                Transform.translate(
+                                                                    offset: Offset(-2, 0),
+                                                                    child: _resortModelController.weatherIcons),
+                                                              ],
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ],
                                                     ),
-                                                    Obx(
-                                                          () => Padding(
-                                                        padding:
-                                                        const EdgeInsets.only(top: 12),
-                                                        child: (_resortModelController.isLoading == true)
-                                                            ? Text(' ',
-                                                          style: GoogleFonts.bebasNeue(
-                                                              fontSize: 60,
-                                                              color: Colors.white),
-                                                        )
-                                                            : Text('\u00B0',
-                                                          style: GoogleFonts.bebasNeue(
-                                                              fontSize: 60,
-                                                              color: Colors.white),
+                                                    Row(
+                                                      mainAxisAlignment: MainAxisAlignment.center,
+                                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                                      children: [
+                                                        Obx(
+                                                              () => (_resortModelController.isLoading == true)
+                                                                  ? Padding(
+                                                                padding: const EdgeInsets.only(top: 10),
+                                                                child: Container(
+                                                                    height: 30,
+                                                                    width: 50,
+                                                                    child: Lottie.asset('assets/json/loadings_wht_final.json')),
+                                                              )
+                                                                  : Text('${_resortModelController.resortTemp!}',
+                                                                //u00B0
+                                                                style: GoogleFonts.bebasNeue(
+                                                                    fontSize: 48,
+                                                                    color: Colors.white),
+                                                              ),
                                                         ),
-                                                      ),
-                                                    )
+                                                        Padding(
+                                                          padding: const EdgeInsets.only(right: 24),
+                                                          child: Obx(
+                                                                () => (_resortModelController.isLoading == true)
+                                                                    ? Text(' ',
+                                                                  style: GoogleFonts.bebasNeue(
+                                                                      fontSize: 48,
+                                                                      color: Colors.white),
+                                                                )
+                                                                    : Text('\u00B0',
+                                                                  style: GoogleFonts.bebasNeue(
+                                                                      fontSize: 48,
+                                                                      color: Colors.white),
+                                                                ),
+                                                          ),
+                                                        )
+                                                      ],
+                                                    ),
                                                   ],
                                                 ),
                                                 SizedBox(
-                                                  height: 30,
+                                                  height: 16,
                                                 ),
-                                                //실시간 날씨
+                                                (_resortModelController.isLoading == true)
+                                                ? Padding(
+                                                  padding: const EdgeInsets.symmetric(horizontal: 24),
+                                                  child: Container(
+                                                    color: Color(0xFF949494).withOpacity(0.3),
+                                                    height: 1,
+                                                    width: _size.width,
+                                                  ),
+                                                )
+                                                : Padding(
+                                                  padding: const EdgeInsets.symmetric(horizontal: 24),
+                                                  child: Container(
+                                                    color: Color(0xFF000000).withOpacity(0.1),
+                                                    height: 1,
+                                                    width: _size.width,
+                                                  ),
+                                                ),
+                                                SizedBox(
+                                                  height: 16,
+                                                ),
                                                 Row(
                                                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                                   children: [
@@ -1288,10 +1286,10 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
                                                         Text('바람',
                                                           style: TextStyle(
                                                               color: Colors.white60,
-                                                              fontSize: 13),
+                                                              fontSize: 12),
                                                         ),
                                                         SizedBox(
-                                                          height: 6,
+                                                          height: 2,
                                                         ),
                                                         Row(
                                                           crossAxisAlignment: CrossAxisAlignment.end,
@@ -1299,26 +1297,21 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
                                                             Obx(
                                                                   () => Padding(
                                                                 padding:
-                                                                const EdgeInsets.only(
-                                                                    right: 3),
+                                                                const EdgeInsets.only(right: 3),
                                                                 child: Text(
                                                                   '${_resortModelController.resortWind}',
                                                                   style: GoogleFonts.bebasNeue(
-                                                                      fontSize: 28,
+                                                                      fontSize: 24,
                                                                       color: Colors.white),
                                                                 ),
                                                               ),
                                                             ),
                                                             Padding(
                                                               padding:
-                                                              const EdgeInsets
-                                                                  .only(
-                                                                  bottom:
-                                                                  5),
-                                                              child: Text(
-                                                                'M/S',
+                                                              const EdgeInsets.only(bottom: 4),
+                                                              child: Text('M/S',
                                                                 style: GoogleFonts.bebasNeue(
-                                                                    fontSize: 16,
+                                                                    fontSize: 15,
                                                                     color: Colors.white),
                                                               ),
                                                             ),
@@ -1332,10 +1325,10 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
                                                           '습도',
                                                           style: TextStyle(
                                                               color: Colors.white60,
-                                                              fontSize: 13),
+                                                              fontSize: 12),
                                                         ),
                                                         SizedBox(
-                                                          height: 6,
+                                                          height: 2,
                                                         ),
                                                         Row(
                                                           crossAxisAlignment: CrossAxisAlignment.end,
@@ -1347,23 +1340,18 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
                                                                 child: Text(
                                                                   '${_resortModelController.resortWet}',
                                                                   style: GoogleFonts.bebasNeue(
-                                                                      fontSize: 28,
+                                                                      fontSize: 24,
                                                                       color: Colors.white),
                                                                 ),
                                                               ),
                                                             ),
                                                             Padding(
                                                               padding:
-                                                              const EdgeInsets.only(bottom:
-                                                              5),
-                                                              child: Text(
-                                                                '%',
-                                                                style: GoogleFonts
-                                                                    .bebasNeue(
-                                                                    fontSize:
-                                                                    16,
-                                                                    color: Colors
-                                                                        .white),
+                                                              const EdgeInsets.only(bottom: 5),
+                                                              child: Text('%',
+                                                                style: GoogleFonts.bebasNeue(
+                                                                    fontSize: 15,
+                                                                    color: Colors.white),
                                                               ),
                                                             ),
                                                           ],
@@ -1376,10 +1364,10 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
                                                           '강수',
                                                           style: TextStyle(
                                                               color: Colors.white60,
-                                                              fontSize: 13),
+                                                              fontSize: 12),
                                                         ),
                                                         SizedBox(
-                                                          height: 6,
+                                                          height: 2,
                                                         ),
                                                         Row(
                                                           crossAxisAlignment: CrossAxisAlignment.end,
@@ -1389,7 +1377,7 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
                                                                 padding: const EdgeInsets.only(right: 3),
                                                                 child: Text('${_resortModelController.resortRain}',
                                                                   style: GoogleFonts.bebasNeue(
-                                                                      fontSize: 28,
+                                                                      fontSize: 24,
                                                                       color: Colors.white),
                                                                 ),
                                                               ),
@@ -1412,54 +1400,39 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
                                                         Text(
                                                           '최저/최고기온',
                                                           style: TextStyle(
-                                                              color: Colors
-                                                                  .white60,
-                                                              fontSize: 13),
+                                                              color: Colors.white60,
+                                                              fontSize: 12),
                                                         ),
                                                         SizedBox(
-                                                          height: 6,
+                                                          height: 2,
                                                         ),
                                                         Obx(
                                                               () => Row(
-                                                            crossAxisAlignment:
-                                                            CrossAxisAlignment
-                                                                .end,
+                                                            crossAxisAlignment: CrossAxisAlignment.end,
                                                             children: [
                                                               Text(
                                                                 '${_resortModelController.resortMinTemp}',
-                                                                style: GoogleFonts
-                                                                    .bebasNeue(
-                                                                    fontSize:
-                                                                    28,
-                                                                    color: Colors
-                                                                        .white),
+                                                                style: GoogleFonts.bebasNeue(
+                                                                    fontSize: 24,
+                                                                    color: Colors.white),
                                                               ),
                                                               Padding(
                                                                 padding:
-                                                                const EdgeInsets
-                                                                    .only(
-                                                                    bottom:
-                                                                    5,
-                                                                    left: 3,
-                                                                    right:
-                                                                    2),
+                                                                const EdgeInsets.only(
+                                                                    bottom: 5,
+                                                                    left: 3, right: 2),
                                                                 child: Text(
                                                                   '/',
                                                                   style: GoogleFonts.bebasNeue(
-                                                                      fontSize:
-                                                                      16,
-                                                                      color: Colors
-                                                                          .white),
+                                                                      fontSize: 16,
+                                                                      color: Colors.white),
                                                                 ),
                                                               ),
                                                               Text(
                                                                 '${_resortModelController.resortMaxTemp}',
-                                                                style: GoogleFonts
-                                                                    .bebasNeue(
-                                                                    fontSize:
-                                                                    28,
-                                                                    color: Colors
-                                                                        .white),
+                                                                style: GoogleFonts.bebasNeue(
+                                                                    fontSize: 24,
+                                                                    color: Colors.white),
                                                               ),
                                                             ],
                                                           ),
@@ -1469,7 +1442,7 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
                                                   ],
                                                 ),
                                                 SizedBox(
-                                                  height: 40,
+                                                  height: 20,
                                                 )
                                               ],
                                             ),
@@ -1483,10 +1456,9 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
                                             Container(
                                               decoration: BoxDecoration(
                                                   color: Colors.white,
-                                                  borderRadius: BorderRadius.circular(14)),
-                                              height: 107,
+                                                  borderRadius: BorderRadius.circular(10)),
                                               child: Padding(
-                                                padding: const EdgeInsets.only(right: 20, left: 16, top: 22, bottom: 22),
+                                                padding: const EdgeInsets.only(right: 20, left: 16, top: 16, bottom: 20),
                                                 child: Row(
                                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                   children: [
@@ -1498,8 +1470,8 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
                                                         children: [
                                                           Image.asset(
                                                             'assets/imgs/icons/icon_home_naver.png',
-                                                            width: 40,
-                                                            height: 40,
+                                                            width: 36,
+                                                            height: 36,
                                                           ),
                                                           SizedBox(
                                                             height: 4,
@@ -1507,12 +1479,9 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
                                                           Text(
                                                             '네이버 날씨',
                                                             style: TextStyle(
-                                                                fontWeight:
-                                                                FontWeight
-                                                                    .normal,
+                                                                fontWeight: FontWeight.normal,
                                                                 fontSize: 12,
-                                                                color: Color(
-                                                                    0xFF111111)),
+                                                                color: Color(0xFF111111)),
                                                           ),
                                                         ],
                                                       ),
@@ -1527,18 +1496,16 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
                                                       },
                                                       child: Column(
                                                         children: [
-                                                          (_resortModelController
-                                                              .webcamUrl !=
-                                                              '')
+                                                          (_resortModelController.webcamUrl != '')
                                                               ? Image.asset(
                                                             'assets/imgs/icons/icon_home_livecam.png',
-                                                            width: 40,
-                                                            height: 40,
+                                                            width: 36,
+                                                            height: 36,
                                                           )
                                                               : Image.asset(
                                                             'assets/imgs/icons/icon_home_livecam_off.png',
-                                                            width: 40,
-                                                            height: 40,
+                                                            width: 36,
+                                                            height: 36,
                                                           ),
                                                           SizedBox(
                                                             height: 4,
@@ -1546,17 +1513,11 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
                                                           Text(
                                                             '실시간 웹캠',
                                                             style: TextStyle(
-                                                                fontWeight:
-                                                                FontWeight
-                                                                    .normal,
+                                                                fontWeight: FontWeight.normal,
                                                                 fontSize: 12,
-                                                                color: (_resortModelController
-                                                                    .webcamUrl !=
-                                                                    '')
-                                                                    ? Color(
-                                                                    0xFF111111)
-                                                                    : Color(
-                                                                    0xFFC8C8C8)),
+                                                                color: (_resortModelController.webcamUrl != '')
+                                                                    ? Color(0xFF111111)
+                                                                    : Color(0xFFC8C8C8)),
                                                           ),
                                                         ],
                                                       ),
@@ -1571,18 +1532,16 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
                                                       },
                                                       child: Column(
                                                         children: [
-                                                          (_resortModelController
-                                                              .slopeUrl !=
-                                                              '')
+                                                          (_resortModelController.slopeUrl != '')
                                                               ? Image.asset(
                                                             'assets/imgs/icons/icon_home_slope.png',
-                                                            width: 40,
-                                                            height: 40,
+                                                            width: 36,
+                                                            height: 36,
                                                           )
                                                               : Image.asset(
                                                             'assets/imgs/icons/icon_home_slope_off.png',
-                                                            width: 40,
-                                                            height: 40,
+                                                            width: 36,
+                                                            height: 36,
                                                           ),
                                                           SizedBox(
                                                             height: 4,
@@ -1612,13 +1571,13 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
                                                           (_resortModelController.busUrl != '')
                                                               ? Image.asset(
                                                             'assets/imgs/icons/icon_home_bus.png',
-                                                            width: 40,
-                                                            height: 40,
+                                                            width: 36,
+                                                            height: 36,
                                                           )
                                                               : Image.asset(
                                                             'assets/imgs/icons/icon_home_bus_off.png',
-                                                            width: 40,
-                                                            height: 40,
+                                                            width: 36,
+                                                            height: 36,
                                                           ),
                                                           SizedBox(
                                                             height: 4,
@@ -1646,14 +1605,11 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
                                               padding: EdgeInsets.zero,
                                               child: DiscoverScreen_ResortBanner(),
                                             ),
-                                            SizedBox(
-                                              height: 12,
-                                            ),
-                                            GestureDetector(
-                                                onTap: (){
-                                                  Get.to(()=>Discover_Calendar_Detail_Screen());
-                                                },
-                                                child: DiscoverScreen_Calendar()),
+                                            // GestureDetector(
+                                            //     onTap: (){
+                                            //       Get.to(()=>Discover_Calendar_Detail_Screen());
+                                            //     },
+                                            //     child: DiscoverScreen_Calendar()),
                                             // GestureDetector(
                                             //   onTap: (){
                                             //     _bottomTabBarController..changePage(3)..onItemTapped(3);
@@ -1688,11 +1644,30 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
                                               height: 12,
                                             ),
                                             Container(
+                                                padding: EdgeInsets.only(left: 20, right: 20, top: 20, bottom: 20),
+                                                width: _size.width,
+                                                decoration: BoxDecoration(
+                                                    color: Colors.white,
+                                                    borderRadius: BorderRadius.circular(10)),
+                                                child: Row(
+                                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                                  mainAxisAlignment: MainAxisAlignment.center,
+                                                  children: [
+                                                    Container(
+                                                        width: _size.width - 90,
+                                                        height: 18,
+                                                        child: Bulletin_Lost_List_Screen_Home())
+                                                  ],
+                                                )),
+                                            SizedBox(
+                                              height: 12,
+                                            ),
+                                            Container(
                                                 padding: EdgeInsets.only(left: 20, right: 20, top: 20, bottom: 10),
                                                 width: double.infinity,
                                                 decoration: BoxDecoration(
                                                     color: Colors.white,
-                                                    borderRadius: BorderRadius.circular(14)),
+                                                    borderRadius: BorderRadius.circular(10)),
                                                 child: Column(
                                                   mainAxisAlignment: MainAxisAlignment.start,
                                                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -1701,38 +1676,68 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
                                                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                       children: [
                                                         Text(
-                                                          '스노우마켓',
+                                                          '클리닉·행사',
                                                           style: TextStyle(
                                                               fontSize: 16,
                                                               fontWeight: FontWeight.bold,
                                                               color: Color(0xFFC8C8C8)),
                                                         ),
-                                                        // ElevatedButton(onPressed: (){
-                                                        //   Get.to(() => FleaMarketScreen());
-                                                        //
-                                                        // },
-                                                        //     child: Text('더보기', style:
-                                                        //     TextStyle(
-                                                        //         fontWeight: FontWeight.bold,
-                                                        //         fontSize: 13,
-                                                        //         color: Color(0xFF949494),
-                                                        // ),),
-                                                        //   style: ElevatedButton.styleFrom(
-                                                        //     minimumSize: Size(42, 34),
-                                                        //     backgroundColor: Color(0xFFF2F3F4),
-                                                        //     shape: RoundedRectangleBorder(
-                                                        //         borderRadius: BorderRadius.circular(8)),
-                                                        //     elevation: 0,
-                                                        //   ),
-                                                        // ),
                                                       ],
                                                     ),
                                                     SizedBox(
-                                                      height: 16,
+                                                      height: 10,
                                                     ),
-                                                    FleaMarket_List_Screen_Home(),
+                                                    SizedBox(
+                                                      height: 410,
+                                                        child: Bulletin_Event_List_Screen_Home()),
                                                   ],
                                                 )),
+                                            // Container(
+                                            //     padding: EdgeInsets.only(left: 20, right: 20, top: 20, bottom: 10),
+                                            //     width: double.infinity,
+                                            //     decoration: BoxDecoration(
+                                            //         color: Colors.white,
+                                            //         borderRadius: BorderRadius.circular(14)),
+                                            //     child: Column(
+                                            //       mainAxisAlignment: MainAxisAlignment.start,
+                                            //       crossAxisAlignment: CrossAxisAlignment.start,
+                                            //       children: [
+                                            //         Row(
+                                            //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            //           children: [
+                                            //             Text(
+                                            //               '스노우마켓',
+                                            //               style: TextStyle(
+                                            //                   fontSize: 16,
+                                            //                   fontWeight: FontWeight.bold,
+                                            //                   color: Color(0xFFC8C8C8)),
+                                            //             ),
+                                            //             // ElevatedButton(onPressed: (){
+                                            //             //   Get.to(() => FleaMarketScreen());
+                                            //             //
+                                            //             // },
+                                            //             //     child: Text('더보기', style:
+                                            //             //     TextStyle(
+                                            //             //         fontWeight: FontWeight.bold,
+                                            //             //         fontSize: 13,
+                                            //             //         color: Color(0xFF949494),
+                                            //             // ),),
+                                            //             //   style: ElevatedButton.styleFrom(
+                                            //             //     minimumSize: Size(42, 34),
+                                            //             //     backgroundColor: Color(0xFFF2F3F4),
+                                            //             //     shape: RoundedRectangleBorder(
+                                            //             //         borderRadius: BorderRadius.circular(8)),
+                                            //             //     elevation: 0,
+                                            //             //   ),
+                                            //             // ),
+                                            //           ],
+                                            //         ),
+                                            //         SizedBox(
+                                            //           height: 16,
+                                            //         ),
+                                            //         FleaMarket_List_Screen_Home(),
+                                            //       ],
+                                            //     )),
                                             // SizedBox(
                                             //   height: 12,
                                             // ),
