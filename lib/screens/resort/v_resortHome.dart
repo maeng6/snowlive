@@ -328,6 +328,8 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
                                                                   shape: BoxShape.circle,
                                                                   borderRadius:
                                                                   BorderRadius.circular(8),
+                                                                  cacheHeight: 100,
+                                                                  cache: true,
                                                                   width: 36,
                                                                   height: 36,
                                                                   fit: BoxFit.cover,
