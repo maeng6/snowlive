@@ -1,5 +1,7 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:com.snowlive/controller/vm_liveCrewModelController.dart';
+import 'package:com.snowlive/screens/LiveCrew/v_crewDetailPage_screen.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +11,7 @@ import 'package:com.snowlive/controller/vm_seasonController.dart';
 import 'package:com.snowlive/controller/vm_userModelController.dart';
 import '../../../controller/vm_resortModelController.dart';
 import '../../../data/imgaUrls/Data_url_image.dart';
+import '../../../widget/w_fullScreenDialog.dart';
 
 
 class RankingCrewWeeklyTopScreen extends StatefulWidget {
@@ -27,6 +30,7 @@ class _RankingCrewWeeklyTopScreenState
   UserModelController _userModelController = Get.find<UserModelController>();
   SeasonController _seasonController = Get.find<SeasonController>();
   ResortModelController _resortModelController = Get.find<ResortModelController>();
+  LiveCrewModelController _liveCrewModelController = Get.find<LiveCrewModelController>();
   //TODO: Dependency Injection**************************************************
 
   var _selectedSeason;
@@ -670,66 +674,75 @@ class _RankingCrewWeeklyTopScreenState
                                     ),
                                   ),
                                   for (var i = 0; i < top3Docs.length; i++)
-                                    Row(
-                                      crossAxisAlignment: CrossAxisAlignment.center,
-                                      children: [
-                                        Padding(
-                                          padding: const EdgeInsets.only(right: 4),
-                                          child: Container(
-                                            width: 30,
-                                            height: 30,
-                                            decoration: BoxDecoration(
-                                              color: Color(0xFFDFECFF),
-                                              borderRadius: BorderRadius.circular(50),
-                                            ),
-                                            child: ClipOval(
-                                              child: top3Docs[i]['profileImageUrl'].isNotEmpty
-                                                  ? ExtendedImage.network(
-                                                top3Docs[i]['profileImageUrl'],
-                                                enableMemoryCache: true,
-                                                cacheHeight: 100,
-                                                width: 48,
-                                                height: 48,
-                                                fit: BoxFit.cover,
-                                                loadStateChanged: (ExtendedImageState state) {
-                                                  switch (state.extendedImageLoadState) {
-                                                    case LoadState.loading:
-                                                      return CircularProgressIndicator();
-                                                    case LoadState.completed:
-                                                      return state.completedWidget;
-                                                    case LoadState.failed:
-                                                      return Icon(Icons.error);
-                                                    default:
-                                                      return null;
-                                                  }
-                                                },
-                                              )
-                                                  : Image.network(
-                                                '${profileImgUrlList[0].default_round}',
-                                                width: 48,
-                                                height: 48,
-                                                fit: BoxFit.cover,
+                                    GestureDetector(
+                                      onTap: () async{
+                                        CustomFullScreenDialog.showDialog();
+                                        await _userModelController.getCurrentUser_crew(_userModelController.uid);
+                                        await _liveCrewModelController.getCurrrentCrew(top3Docs[i]['crewID']);
+                                        CustomFullScreenDialog.cancelDialog();
+                                        Get.to(()=>CrewDetailPage_screen());
+                                      },
+                                      child: Row(
+                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                        children: [
+                                          Padding(
+                                            padding: const EdgeInsets.only(right: 4),
+                                            child: Container(
+                                              width: 30,
+                                              height: 30,
+                                              decoration: BoxDecoration(
+                                                color: Color(0xFFDFECFF),
+                                                borderRadius: BorderRadius.circular(50),
+                                              ),
+                                              child: ClipOval(
+                                                child: top3Docs[i]['profileImageUrl'].isNotEmpty
+                                                    ? ExtendedImage.network(
+                                                  top3Docs[i]['profileImageUrl'],
+                                                  enableMemoryCache: true,
+                                                  cacheHeight: 100,
+                                                  width: 48,
+                                                  height: 48,
+                                                  fit: BoxFit.cover,
+                                                  loadStateChanged: (ExtendedImageState state) {
+                                                    switch (state.extendedImageLoadState) {
+                                                      case LoadState.loading:
+                                                        return CircularProgressIndicator();
+                                                      case LoadState.completed:
+                                                        return state.completedWidget;
+                                                      case LoadState.failed:
+                                                        return Icon(Icons.error);
+                                                      default:
+                                                        return null;
+                                                    }
+                                                  },
+                                                )
+                                                    : Image.network(
+                                                  '${profileImgUrlList[0].default_round}',
+                                                  width: 48,
+                                                  height: 48,
+                                                  fit: BoxFit.cover,
+                                                ),
                                               ),
                                             ),
                                           ),
-                                        ),
-                                        Column(
-                                          children: [
-                                            Text(
-                                              '${top3Docs[i]['crewName']}',
-                                              style: TextStyle(fontSize: 12.0),
-                                            ),
-                                            Text(
-                                              _selectedResort == 12 ||
-                                                  _selectedResort == 2 ||
-                                                  _selectedResort == 0
-                                                  ? '${top3Docs[i]['score']}점'
-                                                  : '${top3Docs[i]['passCount']}회',
-                                              style: TextStyle(fontSize: 12.0),
-                                            ),
-                                          ],
-                                        ),
-                                      ],
+                                          Column(
+                                            children: [
+                                              Text(
+                                                '${top3Docs[i]['crewName']}',
+                                                style: TextStyle(fontSize: 12.0),
+                                              ),
+                                              Text(
+                                                _selectedResort == 12 ||
+                                                    _selectedResort == 2 ||
+                                                    _selectedResort == 0
+                                                    ? '${top3Docs[i]['score']}점'
+                                                    : '${top3Docs[i]['passCount']}회',
+                                                style: TextStyle(fontSize: 12.0),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                 ],
                               ),

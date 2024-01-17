@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:com.snowlive/controller/vm_resortModelController.dart';
+import 'package:com.snowlive/screens/more/friend/v_friendDetailPage.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -669,67 +670,74 @@ class _RankingIndiWeeklyTopScreenState
                                     ),
                                   ),
                                   for (var i = 0; i < top3Docs.length; i++)
-                                    Row(
-                                      crossAxisAlignment: CrossAxisAlignment.center,
-                                      children: [
-                                        Padding(
-                                          padding: const EdgeInsets.only(right: 4),
-                                          child: Container(
-                                                width: 30,
-                                                height: 30,
-                                                decoration: BoxDecoration(
-                                                  color: Color(0xFFDFECFF),
-                                                  borderRadius: BorderRadius.circular(50),
-                                                ),
-                                                child: ClipOval(
-                                                  child: top3Docs[i]['profileImageUrl'].isNotEmpty
-                                                      ? ExtendedImage.network(
-                                                    top3Docs[i]['profileImageUrl'],
-                                                    enableMemoryCache: true,
-                                                    cacheHeight: 100,
-                                                    width: 30,
-                                                    height: 30,
-                                                    fit: BoxFit.cover,
-                                                    loadStateChanged: (ExtendedImageState state) {
-                                                      switch (state.extendedImageLoadState) {
-                                                        case LoadState.loading:
-                                                          return CircularProgressIndicator();
-                                                        case LoadState.completed:
-                                                          return state.completedWidget;
-                                                        case LoadState.failed:
-                                                          return Icon(Icons.error);
-                                                        default:
-                                                          return null;
-                                                      }
-                                                    },
-                                                  )
-                                                      : Image.network(
-                                                    '${profileImgUrlList[0].default_round}',
-                                                    width: 30,
-                                                    height: 30,
-                                                    fit: BoxFit.cover,
+                                    GestureDetector(
+                                      onTap: (){
+                                        Get.to(()=>FriendDetailPage(
+                                            uid: top3Docs[i]['uid'],
+                                            favoriteResort: top3Docs[i]['favoriteResort']));
+                                      },
+                                      child: Row(
+                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                        children: [
+                                          Padding(
+                                            padding: const EdgeInsets.only(right: 4),
+                                            child: Container(
+                                                  width: 30,
+                                                  height: 30,
+                                                  decoration: BoxDecoration(
+                                                    color: Color(0xFFDFECFF),
+                                                    borderRadius: BorderRadius.circular(50),
+                                                  ),
+                                                  child: ClipOval(
+                                                    child: top3Docs[i]['profileImageUrl'].isNotEmpty
+                                                        ? ExtendedImage.network(
+                                                      top3Docs[i]['profileImageUrl'],
+                                                      enableMemoryCache: true,
+                                                      cacheHeight: 100,
+                                                      width: 30,
+                                                      height: 30,
+                                                      fit: BoxFit.cover,
+                                                      loadStateChanged: (ExtendedImageState state) {
+                                                        switch (state.extendedImageLoadState) {
+                                                          case LoadState.loading:
+                                                            return CircularProgressIndicator();
+                                                          case LoadState.completed:
+                                                            return state.completedWidget;
+                                                          case LoadState.failed:
+                                                            return Icon(Icons.error);
+                                                          default:
+                                                            return null;
+                                                        }
+                                                      },
+                                                    )
+                                                        : Image.network(
+                                                      '${profileImgUrlList[0].default_round}',
+                                                      width: 30,
+                                                      height: 30,
+                                                      fit: BoxFit.cover,
+                                                    ),
                                                   ),
                                                 ),
+                                          ),
+                                          SizedBox(height: 6,),
+                                          Column(
+                                            children: [
+                                              Text(
+                                                    '${top3Docs[i]['displayName']}',
+                                                    style: TextStyle(fontSize: 12.0),
+                                                  ),
+                                              Text(_selectedResort == 12 ||
+                                                  _selectedResort == 2 ||
+                                                  _selectedResort == 0
+                                                  ? '${top3Docs[i]['score']}점'
+                                                  : '${top3Docs[i]['passCount']}회',
+                                                style: TextStyle(fontSize: 12.0),
                                               ),
-                                        ),
-                                        SizedBox(height: 6,),
-                                        Column(
-                                          children: [
-                                            Text(
-                                                  '${top3Docs[i]['displayName']}',
-                                                  style: TextStyle(fontSize: 12.0),
-                                                ),
-                                            Text(_selectedResort == 12 ||
-                                                _selectedResort == 2 ||
-                                                _selectedResort == 0
-                                                ? '${top3Docs[i]['score']}점'
-                                                : '${top3Docs[i]['passCount']}회',
-                                              style: TextStyle(fontSize: 12.0),
-                                            ),
-                                          ],
-                                        ),
+                                            ],
+                                          ),
 
-                                      ],
+                                        ],
+                                      ),
                                     ),
                                 ],
                               ),
