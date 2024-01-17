@@ -147,7 +147,6 @@ class _Bulletin_Event_ModifyPageState extends State<Bulletin_Event_ModifyPage> {
                             resortNickname: _userModelController.resortNickname,
                             timeStamp: _bulletinEventModelController.timeStamp,
                             snsUrl: _snsUrlTextEditingController.text,
-                            viewerUid: _bulletinEventModelController.viewerUid
                         )
                             : await _bulletinEventModelController.updateBulletinEvent(
                             displayName: _userModelController.displayName,
@@ -162,7 +161,6 @@ class _Bulletin_Event_ModifyPageState extends State<Bulletin_Event_ModifyPage> {
                             resortNickname: _userModelController.resortNickname,
                             timeStamp: _bulletinEventModelController.timeStamp,
                             snsUrl: _snsUrlTextEditingController.text,
-                            viewerUid: _bulletinEventModelController.viewerUid
                         );
                         CustomFullScreenDialog.cancelDialog();
                         for(int i=0; i<2; i++){

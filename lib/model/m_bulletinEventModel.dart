@@ -116,7 +116,6 @@ class BulletinEventModel {
         required bulletinEventCount,
         required resortNickname,
         required snsUrl,
-        required viewerUid,
       }) async {
     await ref.collection('bulletinEvent').doc('$uid#$bulletinEventCount').update({
       'displayName': displayName,
@@ -131,7 +130,6 @@ class BulletinEventModel {
       'timeStamp': timeStamp,
       'resortNickname': resortNickname,
       'soldOut': false,
-      'viewerUid': viewerUid,
       'snsUrl': snsUrl,
     });
   }

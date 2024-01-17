@@ -180,7 +180,6 @@ class BulletinEventModelController extends GetxController {
         required resortNickname,
         required snsUrl,
         required timeStamp,
-        required viewerUid
       }) async {
     await BulletinEventModel().updateBulletinEvent(
         displayName: displayName,
@@ -195,7 +194,6 @@ class BulletinEventModelController extends GetxController {
         resortNickname: resortNickname,
         snsUrl: snsUrl,
         timeStamp: timeStamp,
-        viewerUid: viewerUid,
     );
   }
 
