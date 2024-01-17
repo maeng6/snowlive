@@ -553,6 +553,45 @@ class _RankingIndiWeeklyTopScreenState
             ],
           ),
         ),
+        SizedBox(height: 25,),
+        Padding(
+          padding: const EdgeInsets.only(left: 16, right: 16),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+
+            children: [
+              SizedBox(width: 58,),
+              ExtendedImage.asset(
+                'assets/imgs/icons/icon_crown_1.png',
+                width: 28,
+                height: 28,
+                fit: BoxFit.cover,
+              ),
+              SizedBox(width: 78,),
+              ExtendedImage.asset(
+                'assets/imgs/icons/icon_crown_2.png',
+                width: 28,
+                height: 28,
+                fit: BoxFit.cover,
+              ),
+              SizedBox(width: 78,),
+              ExtendedImage.asset(
+                'assets/imgs/icons/icon_crown_3.png',
+                width: 28,
+                height: 28,
+                fit: BoxFit.cover,
+              ),
+            ],
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(left: 16, right: 16),
+          child: Divider(
+            color: Color(0xFFDEDEDE),
+            height: 20,
+            thickness: 0.5,
+          ),
+        ),
         Container(
           color: Colors.white,
           child: SafeArea(
@@ -564,6 +603,8 @@ class _RankingIndiWeeklyTopScreenState
                 if (snapshot.hasData) {
                   // 스트림에서 데이터를 가져와 리스트 뷰를 생성
                   Map<String, List<DocumentSnapshot>> groupedData = snapshot.data!;
+                  String? prevMonth; // 이전 월을 저장하기 위한 변수
+
                   return ListView.builder(
                     shrinkWrap: true,
                     itemCount: groupedData.length,
@@ -581,95 +622,125 @@ class _RankingIndiWeeklyTopScreenState
                         }
                       }
 
+                      String month = docs[0]['month'].toString(); // 월 정보 가져오기
+
+                      // 이전 월과 현재 월을 비교하여 타이틀 표시 여부 결정
+                      bool showTitle = prevMonth != month;
+                      prevMonth = month; // 현재 월을 이전 월로 설정
+
+                      print('이거 $month');
+
                       return Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Container(
-                          padding: EdgeInsets.all(16.0),
-                          decoration: BoxDecoration(
-                            border: Border.all(color: Colors.grey),
-                            borderRadius: BorderRadius.circular(10.0),
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              SizedBox(height: 30.0),
-                              Row(
+                        padding: const EdgeInsets.only(left: 16, right: 16),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            if (showTitle) // 월이 변경될 때만 타이틀 표시
+                              Padding(
+                                padding: const EdgeInsets.only(top: 3, bottom: 3),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      '$month월',
+                                      style: TextStyle(
+                                          fontSize: 13.0,
+                                          fontWeight: FontWeight.bold
+                                      ),
+                                    ),
+                                    Divider(
+                                      color: Color(0xFFDEDEDE),
+                                      height: 20,
+                                      thickness: 0.5,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            Padding(
+                              padding: const EdgeInsets.only(bottom: 3, top: 3),
+                              child: Row(
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
-                                    '${docs[0]['year']}년\n${docs[0]['month']}월\n${docs[0]['week']}주차',
+                                    '${docs[0]['week']}주차',
                                     style: TextStyle(
-                                      fontSize: 15.0,
-                                      fontWeight: FontWeight.bold,
+                                      fontSize: 13.0,
                                     ),
                                   ),
                                   for (var i = 0; i < top3Docs.length; i++)
-                                    Column(
+                                    Row(
                                       crossAxisAlignment: CrossAxisAlignment.center,
                                       children: [
-                                        Container(
-                                              width: 48,
-                                              height: 48,
-                                              decoration: BoxDecoration(
-                                                color: Color(0xFFDFECFF),
-                                                borderRadius: BorderRadius.circular(50),
-                                              ),
-                                              child: ClipOval(
-                                                child: top3Docs[i]['profileImageUrl'].isNotEmpty
-                                                    ? ExtendedImage.network(
-                                                  top3Docs[i]['profileImageUrl'],
-                                                  enableMemoryCache: true,
-                                                  cacheHeight: 100,
-                                                  width: 48,
-                                                  height: 48,
-                                                  fit: BoxFit.cover,
-                                                  loadStateChanged: (ExtendedImageState state) {
-                                                    switch (state.extendedImageLoadState) {
-                                                      case LoadState.loading:
-                                                        return CircularProgressIndicator();
-                                                      case LoadState.completed:
-                                                        return state.completedWidget;
-                                                      case LoadState.failed:
-                                                        return Icon(Icons.error);
-                                                      default:
-                                                        return null;
-                                                    }
-                                                  },
-                                                )
-                                                    : Image.network(
-                                                  '${profileImgUrlList[0].default_round}',
-                                                  width: 48,
-                                                  height: 48,
-                                                  fit: BoxFit.cover,
+                                        Padding(
+                                          padding: const EdgeInsets.only(right: 4),
+                                          child: Container(
+                                                width: 30,
+                                                height: 30,
+                                                decoration: BoxDecoration(
+                                                  color: Color(0xFFDFECFF),
+                                                  borderRadius: BorderRadius.circular(50),
+                                                ),
+                                                child: ClipOval(
+                                                  child: top3Docs[i]['profileImageUrl'].isNotEmpty
+                                                      ? ExtendedImage.network(
+                                                    top3Docs[i]['profileImageUrl'],
+                                                    enableMemoryCache: true,
+                                                    cacheHeight: 100,
+                                                    width: 30,
+                                                    height: 30,
+                                                    fit: BoxFit.cover,
+                                                    loadStateChanged: (ExtendedImageState state) {
+                                                      switch (state.extendedImageLoadState) {
+                                                        case LoadState.loading:
+                                                          return CircularProgressIndicator();
+                                                        case LoadState.completed:
+                                                          return state.completedWidget;
+                                                        case LoadState.failed:
+                                                          return Icon(Icons.error);
+                                                        default:
+                                                          return null;
+                                                      }
+                                                    },
+                                                  )
+                                                      : Image.network(
+                                                    '${profileImgUrlList[0].default_round}',
+                                                    width: 30,
+                                                    height: 30,
+                                                    fit: BoxFit.cover,
+                                                  ),
                                                 ),
                                               ),
-                                            ),
-                                        SizedBox(height: 6,),
-                                        ExtendedImage.asset(
-                                          'assets/imgs/icons/icon_crown_${i+1}.png',
-                                          width: 28,
-                                          height: 28,
-                                          fit: BoxFit.cover,
                                         ),
-                                        Text(
-                                              '${top3Docs[i]['displayName']}',
+                                        SizedBox(height: 6,),
+                                        Column(
+                                          children: [
+                                            Text(
+                                                  '${top3Docs[i]['displayName']}',
+                                                  style: TextStyle(fontSize: 12.0),
+                                                ),
+                                            Text(_selectedResort == 12 ||
+                                                _selectedResort == 2 ||
+                                                _selectedResort == 0
+                                                ? '${top3Docs[i]['score']}점'
+                                                : '${top3Docs[i]['passCount']}회',
                                               style: TextStyle(fontSize: 12.0),
                                             ),
-                                        Text(_selectedResort == 12 ||
-                                              _selectedResort == 2 ||
-                                              _selectedResort == 0
-                                              ? '${top3Docs[i]['score']}점'
-                                              : '${top3Docs[i]['passCount']}회',
-                                              style: TextStyle(fontSize: 12.0),
-                                            ),
-                                        SizedBox(height: 8.0),
+                                          ],
+                                        ),
+
                                       ],
                                     ),
                                 ],
                               ),
-                            ],
-                          ),
+                            ),
+                            if (docs.length != index + 1)
+                              Divider(
+                                color: Color(0xFFDEDEDE),
+                                height: 20,
+                                thickness: 0.5,
+                              ),
+                          ],
                         ),
                       );
 

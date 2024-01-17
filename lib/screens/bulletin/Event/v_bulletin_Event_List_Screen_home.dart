@@ -99,6 +99,7 @@ class _Bulletin_Event_List_Screen_HomeState extends State<Bulletin_Event_List_Sc
         isEqualTo: (_selectedValue == '카테고리') ? _allCategories : '$_selectedValue')
         .where('location', isEqualTo: (_selectedValue2 == '지역') ? _allCategories : '$_selectedValue2')
         .orderBy('timeStamp', descending: true)
+        .limit(5)
         .snapshots();
   }
 

@@ -94,7 +94,7 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
   Stream<QuerySnapshot> friendStream() {
     return FirebaseFirestore.instance
         .collection('user')
-        .where('whoResistMe', arrayContains: _userModelController.uid!)
+        .where('whoResistMeBF', arrayContains: _userModelController.uid!)
         .orderBy('displayName', descending: false)
         .snapshots();
   }
@@ -1126,7 +1126,7 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
                                                 final bestfriendDocs = snapshot.data!.docs;
                                                 return ListView.builder(
                                                     scrollDirection: Axis.horizontal,
-                                                    itemCount: bestfriendDocs.length + 1,
+                                                    itemCount: bestfriendDocs.isNotEmpty ? bestfriendDocs.length + 1 : 1,
                                                     itemBuilder: (BuildContext context, int index) {
                                                       if (index < bestfriendDocs.length) {
                                                         var BFdoc = bestfriendDocs[index];
@@ -1838,16 +1838,10 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
                                                 decoration: BoxDecoration(
                                                     color: Colors.white,
                                                     borderRadius: BorderRadius.circular(10)),
-                                                child: Row(
-                                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                                  mainAxisAlignment: MainAxisAlignment.center,
-                                                  children: [
-                                                    Container(
-                                                        width: _size.width - 90,
-                                                        height: 18,
-                                                        child: Bulletin_Lost_List_Screen_Home())
-                                                  ],
-                                                )),
+                                                child: Container(
+                                                    width: _size.width - 90,
+                                                    height: 18,
+                                                    child: Bulletin_Lost_List_Screen_Home())),
                                             SizedBox(
                                               height: 12,
                                             ),
@@ -3885,16 +3879,10 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
                                               decoration: BoxDecoration(
                                                   color: Colors.white,
                                                   borderRadius: BorderRadius.circular(10)),
-                                              child: Row(
-                                                crossAxisAlignment: CrossAxisAlignment.center,
-                                                mainAxisAlignment: MainAxisAlignment.center,
-                                                children: [
-                                                  Container(
-                                                      width: _size.width - 90,
-                                                      height: 18,
-                                                      child: Bulletin_Lost_List_Screen_Home())
-                                                ],
-                                              )),
+                                              child: Container(
+                                                  width: _size.width - 90,
+                                                  height: 18,
+                                                  child: Bulletin_Lost_List_Screen_Home())),
                                           SizedBox(
                                             height: 12,
                                           ),

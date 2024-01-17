@@ -113,7 +113,7 @@ class _Bulletin_Lost_List_Screen_HomeState extends State<Bulletin_Lost_List_Scre
         isEqualTo:
         (_selectedValue == '카테고리') ? _allCategories : '$_selectedValue')
         .orderBy('timeStamp', descending: true)
-        .limit(_seasonController.bulletinLostLimit!)
+        .limit(1)
         .snapshots();
   }
 

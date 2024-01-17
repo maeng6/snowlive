@@ -68,115 +68,92 @@ class _RankingWeeklyTopHomeState extends State<RankingWeeklyTopHome> {
                     fontSize: 23),
               ),
             ),
+            actions: [
+              Padding(
+                padding: EdgeInsets.only(left: 16, right: 9),
+                child: ElevatedButton(
+                  child: Text(
+                    '크루랭킹',
+                    style: TextStyle(
+                      fontFamily: 'Spoqa Han Sans Neo',
+                      color: (isTap[0]) ? Color(0xFF111111) : Color(0xFFC8C8C8),
+                      fontWeight: (isTap[0]) ? FontWeight.bold : FontWeight.bold,
+                      fontSize: 17,
+                    ),
+                  ),
+                  onPressed: () async {
+                    print('크루랭킹페이지로 전환');
+                    setState(() {
+                      isTap[0] = true;
+                      isTap[1] = false;
+                    });
+                    print(isTap);
+                  },
+                  style: ElevatedButton.styleFrom(
+                    padding: EdgeInsets.only(top: 0),
+                    minimumSize: Size(40, 10),
+                    backgroundColor: Color(0xFFFFFFFF),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    elevation: 0,
+                  ),
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.only(right: 12),
+                child: ElevatedButton(
+                  child: Text(
+                    '개인랭킹',
+                    style: TextStyle(
+                      color: (isTap[1]) ? Color(0xFF111111) : Color(0xFFC8C8C8),
+                      fontWeight: (isTap[1]) ? FontWeight.bold : FontWeight.bold,
+                      fontSize: 17,
+                    ),
+                  ),
+                  onPressed: () async {
+                    await _seasonController.getCurrentSeason();
+                    print('개인랭킹페이지로 전환');
+                    setState(() {
+                      isTap[0] = false;
+                      isTap[1] = true;
+                    });
+                    print(isTap);
+                  },
+                  style: ElevatedButton.styleFrom(
+                    padding: EdgeInsets.only(top: 0),
+                    minimumSize: Size(40, 10),
+                    backgroundColor: Color(0xFFFFFFFF),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    elevation: 0,
+                  ),
+                ),
+              ),
+            ],
+
           ),
         ),
         body: SafeArea(
           child: Column(
             children: [
-              Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.only(left: 16, right: 12),
-                        child: Column(
-                          children: [
-                            Padding(
-                              padding: EdgeInsets.only(bottom: 2),
-                              child: Container(
-                                height: 44,
-                                child: ElevatedButton(
-                                  child: Text(
-                                    '크루랭킹',
-                                    style: TextStyle(
-                                        fontFamily: 'Spoqa Han Sans Neo',
-                                        color: (isTap[0])
-                                            ? Color(0xFF111111)
-                                            : Color(0xFFC8C8C8),
-                                        fontWeight: (isTap[0])
-                                            ? FontWeight.bold
-                                            : FontWeight.bold,
-                                        fontSize: 20),
-                                  ),
-                                  onPressed: () async{
-                                    print('크루랭킹페이지로 전환');
-                                    setState(() {
-                                      isTap[0] = true;
-                                      isTap[1] = false;
-                                    });
-                                    print(isTap);
-                                  },
-                                  style: ElevatedButton.styleFrom(
-                                    padding: EdgeInsets.only(top: 0),
-                                    minimumSize: Size(40, 10),
-                                    backgroundColor: Color(0xFFFFFFFF),
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                        BorderRadius.circular(8)),
-                                    elevation: 0,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
+              Padding(
+                padding: const EdgeInsets.only(left: 16, top: 2),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Text(
+                      '주간랭킹 기록실',
+                      style: TextStyle(
+                        fontFamily: 'Spoqa Han Sans Neo',
+                        color: Color(0xFF111111),
+                        fontWeight: FontWeight.bold,
+                        fontSize: 20,
                       ),
-                      Padding(
-                        padding: EdgeInsets.only(right: 12),
-                        child: Column(
-                          children: [
-                            Padding(
-                              padding: EdgeInsets.only(bottom: 2),
-                              child: Container(
-                                height: 44,
-                                child: ElevatedButton(
-                                  child: Text(
-                                    '개인랭킹',
-                                    style: TextStyle(
-                                        color: (isTap[1])
-                                            ? Color(0xFF111111)
-                                            : Color(0xFFC8C8C8),
-                                        fontWeight: (isTap[1])
-                                            ? FontWeight.bold
-                                            : FontWeight.bold,
-                                        fontSize: 20),
-                                  ),
-                                  onPressed: () async{
-                                    await _seasonController.getCurrentSeason();
-                                    print('개인랭킹페이지로 전환');
-                                    setState(() {
-                                      isTap[0] = false;
-                                      isTap[1] = true;
-                                    });
-                                    print(isTap);
-                                  },
-                                  style: ElevatedButton.styleFrom(
-                                    padding: EdgeInsets.only(top: 0),
-                                    minimumSize: Size(40, 10),
-                                    backgroundColor: Color(0xFFFFFFFF),
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                        BorderRadius.circular(8)),
-                                    elevation: 0,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-              SizedBox(
-                height: 6,
-              ),
-              Container(
-                width: _size.width,
-                height: 1,
-                color: Color(0xFFececec),
+                    ),
+                  ],
+                ),
               ),
               if(isTap[0] == true)
                 Expanded(child: RankingCrewWeeklyTopScreen()),
