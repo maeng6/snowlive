@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:com.snowlive/controller/vm_refreshController.dart';
 import 'package:com.snowlive/screens/resort/v_alarmCenter.dart';
+import 'package:com.snowlive/screens/resort/w_popUp_bottomSheet.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
@@ -108,6 +109,7 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
     _friendStream = friendStream();
     _seasonController.getSeasonOpen();
     _liveCrewModelController.getCurrrentCrew(_userModelController.liveCrew);
+    bottomPopUp();
 
     try{
       FirebaseAnalytics.instance.logEvent(
