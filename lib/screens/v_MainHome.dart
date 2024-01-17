@@ -74,7 +74,7 @@ class _MainHomeState extends State<MainHome> {
                 children: [
                   ImageIcon(
                       AssetImage('assets/imgs/icons/icon_home_off.png'),
-                    size: 40,
+                    size: 36,
                     color: Color(0xFF444444),
                   ),
                   Positioned(
@@ -116,7 +116,7 @@ class _MainHomeState extends State<MainHome> {
                 children: [
                   ImageIcon(
                     AssetImage( 'assets/imgs/icons/icon_home_on.png'),
-                    size: 40,
+                    size: 36,
                     color: Color(0xFF444444),
                   ),
                   Positioned(
@@ -158,12 +158,12 @@ class _MainHomeState extends State<MainHome> {
             BottomNavigationBarItem(
               icon: ImageIcon(
                 AssetImage('assets/imgs/icons/icon_market_off.png'),
-                size: 40,
+                size: 36,
                 color: Color(0xFF444444),
               ),
               activeIcon: ImageIcon(
                 AssetImage('assets/imgs/icons/icon_market_on.png'),
-                size: 40,
+                size: 36,
                 color: Color(0xFF444444),
               ),
               label: '스노우마켓',
@@ -171,12 +171,12 @@ class _MainHomeState extends State<MainHome> {
             BottomNavigationBarItem(
               icon: ImageIcon(
                 AssetImage('assets/imgs/icons/icon_livetalk_off.png'),
-                size: 40,
+                size: 36,
                 color: Color(0xFF444444),
               ),
               activeIcon: ImageIcon(
                 AssetImage('assets/imgs/icons/icon_livetalk_on.png'),
-                size: 40,
+                size: 36,
                 color: Color(0xFF444444),
               ),
               label: '라이브톡',
@@ -193,14 +193,14 @@ class _MainHomeState extends State<MainHome> {
                   ),
                   ImageIcon(
                     AssetImage('assets/imgs/icons/icon_community_off.png'),
-                    size: 40,
+                    size: 36,
                     color: Color(0xFF444444),
                   ),
                 ],
               ),
               activeIcon: ImageIcon(
                 AssetImage('assets/imgs/icons/icon_community_on.png'),
-                size: 40,
+                size: 36,
                 color: Color(0xFF444444),
               ),
               label: '커뮤니티',
@@ -210,7 +210,7 @@ class _MainHomeState extends State<MainHome> {
                 children: [
                   ImageIcon(
                     AssetImage('assets/imgs/icons/icon_more_off.png'),
-                    size: 40,
+                    size: 36,
                     color: Color(0xFF444444),
                   ),
                   Positioned(
@@ -251,7 +251,7 @@ class _MainHomeState extends State<MainHome> {
                 children: [
                   ImageIcon(
                   AssetImage('assets/imgs/icons/icon_more_on.png'),
-                  size: 40,
+                  size: 36,
                     color: Color(0xFF444444),
                 ),
                   Positioned(
@@ -293,15 +293,15 @@ class _MainHomeState extends State<MainHome> {
           ],
           unselectedLabelStyle: TextStyle(
             color: Color(0xFF222222),
-            fontSize: 12,
+            fontSize: 11,
             fontWeight: FontWeight.normal,
           ),
           selectedItemColor: Color(0xFF222222),
           unselectedItemColor: Color(0xFF222222),
           selectedLabelStyle: TextStyle(
             color: Color(0xFF222222),
-            fontSize: 12,
-            fontWeight: FontWeight.normal,
+            fontSize: 11,
+            fontWeight: FontWeight.bold,
           ),
         ),
         body: PageView(

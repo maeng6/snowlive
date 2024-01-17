@@ -121,8 +121,8 @@ class _RankingCrewWeeklyTopScreenState
               bottom: MediaQuery.of(context).viewInsets.bottom),
           child: ConstrainedBox(
             constraints: BoxConstraints(
-              minHeight: 200,
-              maxHeight: 520,
+              minHeight: 100,
+              maxHeight: 600,
             ),
             child: Container(
               padding: EdgeInsets.only(left: 16, right: 16),
@@ -181,7 +181,6 @@ class _RankingCrewWeeklyTopScreenState
             padding: EdgeInsets.only(
                 bottom: MediaQuery.of(context).viewInsets.bottom),
             child: Container(
-                height: 520,
                 padding: EdgeInsets.only(left: 16, right: 16),
                 child: CupertinoActionSheet(
                   actions: [
@@ -414,7 +413,7 @@ class _RankingCrewWeeklyTopScreenState
     return Column(
       children: [
         Padding(
-          padding: const EdgeInsets.only(left: 16, top: 16),
+          padding: const EdgeInsets.only(left: 16, top: 10),
           child: Row(
             children: [
               GestureDetector(
@@ -424,7 +423,7 @@ class _RankingCrewWeeklyTopScreenState
                 child: Container(
                   color: Colors.white,
                   child: Padding(
-                    padding: const EdgeInsets.only(right: 8),
+                    padding: const EdgeInsets.only(right: 6),
                     child: Container(
                         decoration: BoxDecoration(
                           color: (isTapStats[0] == true) ? Color(0xFFFFFFFF) : Color(0xFFFFFFFF),
@@ -432,7 +431,7 @@ class _RankingCrewWeeklyTopScreenState
                           border: Border.all(
                               color: (isTapStats[0] == true) ? Color(0xFFDEDEDE) : Color(0xFFDEDEDE)),
                         ),
-                        padding: EdgeInsets.only(right: 4, left: 12, top: 8, bottom: 8),
+                        padding: EdgeInsets.only(right: 4, left: 8, top: 8, bottom: 8),
                         height: 32,
                         child:(_selectedSeason != null)
                             ? Row(
@@ -440,7 +439,7 @@ class _RankingCrewWeeklyTopScreenState
                           children: [
                             Text('${_selectedSeason}',
                                 style: TextStyle(
-                                    fontSize: 12,
+                                    fontSize: 13,
                                     fontWeight: FontWeight.bold,
                                     color: (isTapStats[0] == true) ? Color(0xFF777777) : Color(0xFF777777))),
                             Container(
@@ -501,7 +500,7 @@ class _RankingCrewWeeklyTopScreenState
                           border: Border.all(
                               color: (isTapStats[1] == true) ? Color(0xFFDEDEDE) : Color(0xFFDEDEDE)),
                         ),
-                        padding: EdgeInsets.only(right: 4, left: 12, top: 8, bottom: 8),
+                        padding: EdgeInsets.only(right: 4, left: 10, top: 8, bottom: 8),
                         height: 32,
                         child:(_selectedResort != null)
                             ? Row(
@@ -509,7 +508,7 @@ class _RankingCrewWeeklyTopScreenState
                           children: [
                             Text('${_selectedResortName}',
                                 style: TextStyle(
-                                    fontSize: 12,
+                                    fontSize: 13,
                                     fontWeight: FontWeight.bold,
                                     color: (isTapStats[1] == true) ? Color(0xFF777777) : Color(0xFF777777))),
                             Container(
@@ -558,30 +557,29 @@ class _RankingCrewWeeklyTopScreenState
             ],
           ),
         ),
-        SizedBox(height: 25,),
+        SizedBox(height: 30),
         Padding(
           padding: const EdgeInsets.only(left: 16, right: 16),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.start,
-
             children: [
-              SizedBox(width: 58,),
+              SizedBox(width: 42),
               ExtendedImage.asset(
-                'assets/imgs/icons/icon_crown_1.png',
+                'assets/imgs/icons/icon_crown_1_ns.png',
                 width: 28,
                 height: 28,
                 fit: BoxFit.cover,
               ),
-              SizedBox(width: 78,),
+              SizedBox(width: 70),
               ExtendedImage.asset(
-                'assets/imgs/icons/icon_crown_2.png',
+                'assets/imgs/icons/icon_crown_2_ns.png',
                 width: 28,
                 height: 28,
                 fit: BoxFit.cover,
               ),
-              SizedBox(width: 78,),
+              SizedBox(width: 70),
               ExtendedImage.asset(
-                'assets/imgs/icons/icon_crown_3.png',
+                'assets/imgs/icons/icon_crown_3_ns.png',
                 width: 28,
                 height: 28,
                 fit: BoxFit.cover,
@@ -591,10 +589,12 @@ class _RankingCrewWeeklyTopScreenState
         ),
         Padding(
           padding: const EdgeInsets.only(left: 16, right: 16),
-          child: Divider(
-            color: Color(0xFFDEDEDE),
-            height: 20,
-            thickness: 0.5,
+          child: Padding(
+            padding: const EdgeInsets.only(top: 6),
+            child: Container(
+              height: 0.5,
+              color: Color(0xFFDEDEDE),
+            ),
           ),
         ),
         Container(
@@ -611,6 +611,7 @@ class _RankingCrewWeeklyTopScreenState
                   String? prevMonth; // 이전 월을 저장하기 위한 변수
 
                   return ListView.builder(
+                    physics: NeverScrollableScrollPhysics(),
                     shrinkWrap: true,
                     itemCount: groupedData.length,
                     itemBuilder: (context, index) {
@@ -642,21 +643,24 @@ class _RankingCrewWeeklyTopScreenState
                           children: [
                             if (showTitle) // 월이 변경될 때만 타이틀 표시
                               Padding(
-                                padding: const EdgeInsets.only(top: 3, bottom: 3),
+                                padding: const EdgeInsets.only(top: 14),
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     Text(
                                       '$month월',
                                       style: TextStyle(
-                                          fontSize: 13.0,
+                                          fontSize: 14,
                                           fontWeight: FontWeight.bold
                                       ),
                                     ),
-                                    Divider(
-                                      color: Color(0xFFDEDEDE),
-                                      height: 20,
-                                      thickness: 0.5,
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: 14, bottom: 10),
+                                      child: Container(
+                                        height: 0.5,
+                                        color: Color(0xFFDEDEDE),
+                                      ),
                                     ),
                                   ],
                                 ),
@@ -665,12 +669,15 @@ class _RankingCrewWeeklyTopScreenState
                               padding: const EdgeInsets.only(bottom: 3, top: 3),
                               child: Row(
                                 crossAxisAlignment: CrossAxisAlignment.center,
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Text(
-                                    '${docs[0]['week']}주차',
-                                    style: TextStyle(
-                                      fontSize: 13.0,
+                                  Container(
+                                    width: 40,
+                                    child: Text(
+                                      '${docs[0]['week']}주차',
+                                      style: TextStyle(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.normal
+                                      ),
                                     ),
                                   ),
                                   for (var i = 0; i < top3Docs.length; i++)
@@ -682,66 +689,80 @@ class _RankingCrewWeeklyTopScreenState
                                         CustomFullScreenDialog.cancelDialog();
                                         Get.to(()=>CrewDetailPage_screen());
                                       },
-                                      child: Row(
-                                        crossAxisAlignment: CrossAxisAlignment.center,
-                                        children: [
-                                          Padding(
-                                            padding: const EdgeInsets.only(right: 4),
-                                            child: Container(
-                                              width: 30,
-                                              height: 30,
-                                              decoration: BoxDecoration(
-                                                color: Color(0xFFDFECFF),
-                                                borderRadius: BorderRadius.circular(50),
-                                              ),
-                                              child: ClipOval(
-                                                child: top3Docs[i]['profileImageUrl'].isNotEmpty
-                                                    ? ExtendedImage.network(
-                                                  top3Docs[i]['profileImageUrl'],
-                                                  enableMemoryCache: true,
-                                                  cacheHeight: 100,
-                                                  width: 48,
-                                                  height: 48,
-                                                  fit: BoxFit.cover,
-                                                  loadStateChanged: (ExtendedImageState state) {
-                                                    switch (state.extendedImageLoadState) {
-                                                      case LoadState.loading:
-                                                        return CircularProgressIndicator();
-                                                      case LoadState.completed:
-                                                        return state.completedWidget;
-                                                      case LoadState.failed:
-                                                        return Icon(Icons.error);
-                                                      default:
-                                                        return null;
-                                                    }
-                                                  },
-                                                )
-                                                    : Image.network(
-                                                  '${profileImgUrlList[0].default_round}',
-                                                  width: 48,
-                                                  height: 48,
-                                                  fit: BoxFit.cover,
+                                      child: Container(
+                                        width: _size.width - 274,
+                                        child: Row(
+                                          crossAxisAlignment: CrossAxisAlignment.center,
+                                          children: [
+                                            Padding(
+                                              padding: const EdgeInsets.only(right: 4),
+                                              child: Container(
+                                                width: 32,
+                                                height: 32,
+                                                decoration: BoxDecoration(
+                                                  color: Color(0xFFDFECFF),
+                                                  borderRadius: BorderRadius.circular(50),
+                                                  border: Border.all(color: Color(0xFFECECEC))
+                                                ),
+                                                child: ClipOval(
+                                                  child: top3Docs[i]['profileImageUrl'].isNotEmpty
+                                                      ? ExtendedImage.network(
+                                                    top3Docs[i]['profileImageUrl'],
+                                                    enableMemoryCache: true,
+                                                    cacheHeight: 100,
+                                                    width: 32,
+                                                    height: 32,
+                                                    fit: BoxFit.cover,
+                                                    loadStateChanged: (ExtendedImageState state) {
+                                                      switch (state.extendedImageLoadState) {
+                                                        case LoadState.loading:
+                                                          return CircularProgressIndicator();
+                                                        case LoadState.completed:
+                                                          return state.completedWidget;
+                                                        case LoadState.failed:
+                                                          return Icon(Icons.error);
+                                                        default:
+                                                          return null;
+                                                      }
+                                                    },
+                                                  )
+                                                      : Image.network(
+                                                    '${profileImgUrlList[0].default_round}',
+                                                    width: 32,
+                                                    height: 32,
+                                                    fit: BoxFit.cover,
+                                                  ),
                                                 ),
                                               ),
                                             ),
-                                          ),
-                                          Column(
-                                            children: [
-                                              Text(
-                                                '${top3Docs[i]['crewName']}',
-                                                style: TextStyle(fontSize: 12.0),
+                                            Container(
+                                              width: _size.width - 314,
+                                              child: Column(
+                                                mainAxisAlignment: MainAxisAlignment.start,
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                    '${top3Docs[i]['crewName']}',
+                                                    style: TextStyle(fontSize: 11,
+                                                    fontWeight: FontWeight.bold),
+                                                    overflow: TextOverflow.ellipsis,
+                                                    maxLines: 1,
+                                                  ),
+                                                  Text(
+                                                    _selectedResort == 12 ||
+                                                        _selectedResort == 2 ||
+                                                        _selectedResort == 0
+                                                        ? '${top3Docs[i]['score']}점'
+                                                        : '${top3Docs[i]['passCount']}회',
+                                                    style: TextStyle(fontSize: 11),
+                                                    overflow: TextOverflow.ellipsis,
+                                                    maxLines: 1,
+                                                  ),
+                                                ],
                                               ),
-                                              Text(
-                                                _selectedResort == 12 ||
-                                                    _selectedResort == 2 ||
-                                                    _selectedResort == 0
-                                                    ? '${top3Docs[i]['score']}점'
-                                                    : '${top3Docs[i]['passCount']}회',
-                                                style: TextStyle(fontSize: 12.0),
-                                              ),
-                                            ],
-                                          ),
-                                        ],
+                                            ),
+                                          ],
+                                        ),
                                       ),
                                     ),
                                 ],

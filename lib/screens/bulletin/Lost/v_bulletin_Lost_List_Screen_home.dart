@@ -172,29 +172,38 @@ class _Bulletin_Lost_List_Screen_HomeState extends State<Bulletin_Lost_List_Scre
                       );
                     } else {
                       // 첫 번째 타이틀을 표시합니다.
-                      return Row(
-                        children: [
-                          Image.asset(
-                            'assets/imgs/icons/icon_lost_home.png',
-                            width: 18,
-                            height: 18,
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(left: 10),
-                            child: Container(
-                              width: _size.width - 118,
-                              child: Text(
-                                chatDocs[0].get('title'),
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 14,
-                                    color: Color(0xFF111111)),
+                      return Container(
+                        width: _size.width - 72,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Image.asset(
+                              'assets/imgs/icons/icon_lost_home.png',
+                              width: 18,
+                              height: 18,
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 10),
+                              child: ConstrainedBox(
+                                constraints: BoxConstraints(
+                                  minWidth: 1,
+                                  maxWidth: _size.width - 100
+                                ),
+                                child: Container(
+                                  child: Text(
+                                    chatDocs[0].get('title'),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 14,
+                                        color: Color(0xFF111111)),
+                                  ),
+                                ),
                               ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       );
                     }
                   } else {

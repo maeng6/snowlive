@@ -70,18 +70,9 @@ class _RankingWeeklyTopHomeState extends State<RankingWeeklyTopHome> {
             ),
             actions: [
               Padding(
-                padding: EdgeInsets.only(left: 16, right: 9),
-                child: ElevatedButton(
-                  child: Text(
-                    '크루랭킹',
-                    style: TextStyle(
-                      fontFamily: 'Spoqa Han Sans Neo',
-                      color: (isTap[0]) ? Color(0xFF111111) : Color(0xFFC8C8C8),
-                      fontWeight: (isTap[0]) ? FontWeight.bold : FontWeight.bold,
-                      fontSize: 17,
-                    ),
-                  ),
-                  onPressed: () async {
+                padding: EdgeInsets.only(left: 16, right: 8),
+                child: GestureDetector(
+                  onTap: () async {
                     print('크루랭킹페이지로 전환');
                     setState(() {
                       isTap[0] = true;
@@ -89,29 +80,30 @@ class _RankingWeeklyTopHomeState extends State<RankingWeeklyTopHome> {
                     });
                     print(isTap);
                   },
-                  style: ElevatedButton.styleFrom(
-                    padding: EdgeInsets.only(top: 0),
-                    minimumSize: Size(40, 10),
-                    backgroundColor: Color(0xFFFFFFFF),
-                    shape: RoundedRectangleBorder(
+                  child: Container(
+                    height: 40,
+                    decoration: BoxDecoration(
+                      color: Color(0xFFFFFFFF),
                       borderRadius: BorderRadius.circular(8),
                     ),
-                    elevation: 0,
+                    child: Center(
+                      child: Text(
+                        '크루랭킹',
+                        style: TextStyle(
+                          fontFamily: 'Spoqa Han Sans Neo',
+                          color: (isTap[0]) ? Color(0xFF111111) : Color(0xFFC8C8C8),
+                          fontWeight: FontWeight.bold,
+                          fontSize: 19,
+                        ),
+                      ),
+                    ),
                   ),
                 ),
               ),
               Padding(
-                padding: EdgeInsets.only(right: 12),
-                child: ElevatedButton(
-                  child: Text(
-                    '개인랭킹',
-                    style: TextStyle(
-                      color: (isTap[1]) ? Color(0xFF111111) : Color(0xFFC8C8C8),
-                      fontWeight: (isTap[1]) ? FontWeight.bold : FontWeight.bold,
-                      fontSize: 17,
-                    ),
-                  ),
-                  onPressed: () async {
+                padding: EdgeInsets.only(right: 16),
+                child: GestureDetector(
+                  onTap: () async {
                     await _seasonController.getCurrentSeason();
                     print('개인랭킹페이지로 전환');
                     setState(() {
@@ -120,46 +112,57 @@ class _RankingWeeklyTopHomeState extends State<RankingWeeklyTopHome> {
                     });
                     print(isTap);
                   },
-                  style: ElevatedButton.styleFrom(
-                    padding: EdgeInsets.only(top: 0),
-                    minimumSize: Size(40, 10),
-                    backgroundColor: Color(0xFFFFFFFF),
-                    shape: RoundedRectangleBorder(
+                  child: Container(
+                    height: 40,
+                    decoration: BoxDecoration(
+                      color: Color(0xFFFFFFFF),
                       borderRadius: BorderRadius.circular(8),
                     ),
-                    elevation: 0,
+                    child: Center(
+                      child: Text(
+                        '개인랭킹',
+                        style: TextStyle(
+                          fontFamily: 'Spoqa Han Sans Neo',
+                          color: (isTap[1]) ? Color(0xFF111111) : Color(0xFFC8C8C8),
+                          fontWeight: FontWeight.bold,
+                          fontSize: 19,
+                        ),
+                      ),
+                    ),
                   ),
                 ),
-              ),
+              )
             ],
 
           ),
         ),
         body: SafeArea(
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(left: 16, top: 2),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Text(
-                      '주간랭킹 기록실',
-                      style: TextStyle(
-                        fontFamily: 'Spoqa Han Sans Neo',
-                        color: Color(0xFF111111),
-                        fontWeight: FontWeight.bold,
-                        fontSize: 20,
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(left: 16, top: 10),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Text(
+                        '주간랭킹 기록실',
+                        style: TextStyle(
+                          fontFamily: 'Spoqa Han Sans Neo',
+                          color: Color(0xFF111111),
+                          fontWeight: FontWeight.bold,
+                          fontSize: 24,
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-              if(isTap[0] == true)
-                Expanded(child: RankingCrewWeeklyTopScreen()),
-              if(isTap[1] == true)
-                Expanded(child: RankingIndiWeeklyTopScreen()),
-            ],
+                if(isTap[0] == true)
+                  Container(child: RankingCrewWeeklyTopScreen()),
+                if(isTap[1] == true)
+                  Container(child: RankingIndiWeeklyTopScreen()),
+              ],
+            ),
           ),
         )
 
