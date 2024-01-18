@@ -170,61 +170,37 @@ class _Bulletin_Lost_List_Screen_HomeState extends State<Bulletin_Lost_List_Scre
                     );
                   } else {
                     // 첫 번째 타이틀을 표시합니다.
-                    return GestureDetector(
-                      onTap: () async {
-                        var docName = '${_bulletinLostModelController.uid}#${_bulletinLostModelController.bulletinLostCount}';
-                        if(isLocked == false) {
-                          if (_userModelController.repoUidList!
-                              .contains(chatDocs[0].get('uid'))) {
-                            return;
-                          }
-                          CustomFullScreenDialog.showDialog();
-                          await _bulletinLostModelController
-                              .getCurrentBulletinLost(
-                              uid: chatDocs[0].get('uid'),
-                              bulletinLostCount:
-                              chatDocs[0].get('bulletinLostCount'));
-                          if (data?.containsKey('lock') == false) {
-                            await chatDocs[0].reference.update({'viewerUid': []});
-                          }
-                          await _bulletinLostModelController.scoreUpdate_read(bullUid: _bulletinLostModelController.uid, docName: docName, timeStamp: _bulletinLostModelController.timeStamp, score: _bulletinLostModelController.score, viewerUid: _bulletinLostModelController.viewerUid);
-                          await _bulletinLostModelController.updateViewerUid();
-                          CustomFullScreenDialog.cancelDialog();
-                          Get.to(() => Bulletin_Lost_List_Detail());
-                        }else{}
-                      },
-                      child: Container(
-                        width: _size.width - 72,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Image.asset(
-                              'assets/imgs/icons/icon_lost_home.png',
-                              width: 18,
-                              height: 18,
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(left: 10),
-                              child: ConstrainedBox(
-                                constraints: BoxConstraints(
-                                  minWidth: 1,
-                                  maxWidth: _size.width - 100
-                                ),
-                                child: Container(
-                                  child: Text(
-                                    chatDocs[0].get('title'),
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 14,
-                                        color: Color(0xFF111111)),
-                                  ),
+                    return Container(
+                      width: _size.width - 72,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Image.asset(
+                            'assets/imgs/icons/icon_lost_home.png',
+                            width: 18,
+                            height: 18,
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 10),
+                            child: ConstrainedBox(
+                              constraints: BoxConstraints(
+                                minWidth: 1,
+                                maxWidth: _size.width - 100
+                              ),
+                              child: Container(
+                                child: Text(
+                                  chatDocs[0].get('title'),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 14,
+                                      color: Color(0xFF111111)),
                                 ),
                               ),
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
                     );
                   }

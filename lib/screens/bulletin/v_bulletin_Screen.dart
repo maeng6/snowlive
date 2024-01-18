@@ -9,7 +9,13 @@ import 'Event/v_bulletin_Event_List_Screen.dart';
 import 'Free/v_bulletin_Free_List_Screen.dart';
 
 class BulletinScreen extends StatefulWidget {
-  BulletinScreen({Key? key}) : super(key: key);
+  BulletinScreen({required this.tap_1,required this.tap_2,required this.tap_3,required this.tap_4,required this.tap_5 });
+
+  bool? tap_1;
+  bool? tap_2;
+  bool? tap_3;
+  bool? tap_4;
+  bool? tap_5;
 
   @override
   State<BulletinScreen> createState() => _BulletinScreenState();
@@ -17,18 +23,19 @@ class BulletinScreen extends StatefulWidget {
 
 class _BulletinScreenState extends State<BulletinScreen> {
   int counter = 0;
-  List<bool> isTap = [
-    true,
-    false,
-    false,
-    false,
-    false,
-  ];
+  late List<bool?> isTap;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    isTap = [
+      widget.tap_1,
+      widget.tap_2,
+      widget.tap_3,
+      widget.tap_4,
+      widget.tap_5,
+    ];
 
   }
 
@@ -100,10 +107,10 @@ class _BulletinScreenState extends State<BulletinScreen> {
                                     child: Text(
                                       '자유게시판',
                                       style: TextStyle(
-                                          color: (isTap[0])
+                                          color: (isTap[0]!)
                                               ? Color(0xFF111111)
                                               : Color(0xFFc8c8c8),
-                                          fontWeight: (isTap[0])
+                                          fontWeight: (isTap[0]!)
                                               ? FontWeight.bold
                                               : FontWeight.normal,
                                           fontSize: 16),
@@ -135,7 +142,7 @@ class _BulletinScreenState extends State<BulletinScreen> {
                                 width: 78,
                                 height: 3,
                                 color:
-                                (isTap[0]) ? Color(0xFF111111) : Colors.transparent,
+                                (isTap[0]!) ? Color(0xFF111111) : Colors.transparent,
                               )
                             ],
                           ),
@@ -152,11 +159,11 @@ class _BulletinScreenState extends State<BulletinScreen> {
                                     child: Text(
                                       '클리닉·행사',
                                       style: TextStyle(
-                                          color: (isTap[1])
+                                          color: (isTap[1]!)
                                               ? Color(0xFF111111)
                                               : Color(0xFFc8c8c8),
                                           fontWeight:
-                                          (isTap[1])
+                                          (isTap[1]!)
                                               ? FontWeight.bold
                                               : FontWeight.normal,
                                           fontSize: 16),
@@ -188,7 +195,7 @@ class _BulletinScreenState extends State<BulletinScreen> {
                                 width: 86,
                                 height: 3,
                                 color:
-                                (isTap[1]) ? Color(0xFF111111) : Colors.transparent,
+                                (isTap[1]!) ? Color(0xFF111111) : Colors.transparent,
                               )
                             ],
                           ),
@@ -205,11 +212,11 @@ class _BulletinScreenState extends State<BulletinScreen> {
                                     child: Text(
                                       '분실물',
                                       style: TextStyle(
-                                          color: (isTap[2])
+                                          color: (isTap[2]!)
                                               ? Color(0xFF111111)
                                               : Color(0xFFc8c8c8),
                                           fontWeight:
-                                          (isTap[2])
+                                          (isTap[2]!)
                                               ? FontWeight.bold
                                               : FontWeight.normal,
                                           fontSize: 16),
@@ -241,7 +248,7 @@ class _BulletinScreenState extends State<BulletinScreen> {
                                 width: 50,
                                 height: 3,
                                 color:
-                                (isTap[2]) ? Color(0xFF111111) : Colors.transparent,
+                                (isTap[2]!) ? Color(0xFF111111) : Colors.transparent,
                               )
                             ],
                           ),
@@ -258,11 +265,11 @@ class _BulletinScreenState extends State<BulletinScreen> {
                                     child: Text(
                                       '단톡방·동호회',
                                       style: TextStyle(
-                                          color: (isTap[3])
+                                          color: (isTap[3]!)
                                               ? Color(0xFF111111)
                                               : Color(0xFFc8c8c8),
                                           fontWeight:
-                                          (isTap[3])
+                                          (isTap[3]!)
                                               ? FontWeight.bold
                                               : FontWeight.normal,
                                           fontSize: 16),
@@ -294,7 +301,7 @@ class _BulletinScreenState extends State<BulletinScreen> {
                                 width: 102,
                                 height: 3,
                                 color:
-                                (isTap[3]) ? Color(0xFF111111) : Colors.transparent,
+                                (isTap[3]!) ? Color(0xFF111111) : Colors.transparent,
                               )
                             ],
                           ),
@@ -311,10 +318,10 @@ class _BulletinScreenState extends State<BulletinScreen> {
                                     child: Text(
                                       '시즌방',
                                       style: TextStyle(
-                                          color: (isTap[4])
+                                          color: (isTap[4]!)
                                               ? Color(0xFF111111)
                                               : Color(0xFFc8c8c8),
-                                          fontWeight: (isTap[4])
+                                          fontWeight: (isTap[4]!)
                                               ? FontWeight.bold
                                               : FontWeight.normal,
                                           fontSize: 16),
@@ -346,7 +353,7 @@ class _BulletinScreenState extends State<BulletinScreen> {
                                 width: 52,
                                 height: 3,
                                 color:
-                                (isTap[4]) ? Color(0xFF111111) : Colors.transparent,
+                                (isTap[4]!) ? Color(0xFF111111) : Colors.transparent,
                               )
                             ],
                           ),
