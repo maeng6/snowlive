@@ -1,4 +1,5 @@
 import 'package:com.snowlive/controller/vm_seasonController.dart';
+import 'package:com.snowlive/screens/bulletin/Lost/v_bulletin_Lost_List_Detail.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -11,6 +12,7 @@ import '../../../controller/vm_allUserDocsController.dart';
 import '../../../controller/vm_bulletinLostController.dart';
 import '../../../controller/vm_timeStampController.dart';
 import '../../../controller/vm_userModelController.dart';
+import '../../../widget/w_fullScreenDialog.dart';
 
 class Bulletin_Lost_List_Screen_Home extends StatefulWidget {
   const Bulletin_Lost_List_Screen_Home({Key? key}) : super(key: key);
@@ -128,51 +130,70 @@ class _Bulletin_Lost_List_Screen_HomeState extends State<Bulletin_Lost_List_Scre
 
     _seasonController.getBulletinLostLimit();
 
-    return GestureDetector(
-      onTap: () {
-        FocusScope.of(context).unfocus();
-      },
-      child: Scaffold(
-        body: Container(
-          color: Color(0xFFFFFFFF),
-          width: _size.width,
-          child: Column(
-            children: [
-              StreamBuilder<QuerySnapshot>(
-                stream: _stream,
-                builder: (context, snapshot) {
-                  if (!snapshot.hasData) {
-                    return Container(color: Colors.white);
-                  } else if (snapshot.connectionState == ConnectionState.waiting) {
-                    return Center(child: CircularProgressIndicator());
-                  }
+    return Scaffold(
+      body: Container(
+        color: Color(0xFFFFFFFF),
+        width: _size.width,
+        child: Column(
+          children: [
+            StreamBuilder<QuerySnapshot>(
+              stream: _stream,
+              builder: (context, snapshot) {
+                if (!snapshot.hasData) {
+                  return Container(color: Colors.white);
+                } else if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Center(child: CircularProgressIndicator());
+                }
 
-                  final chatDocs = snapshot.data!.docs;
+                final chatDocs = snapshot.data!.docs;
 
-                  if (chatDocs.isNotEmpty) {
-                    // 첫 번째 문서의 데이터를 가져옵니다.
-                    Map<String, dynamic>? data = chatDocs[0].data() as Map<String, dynamic>?;
+                if (chatDocs.isNotEmpty) {
+                  // 첫 번째 문서의 데이터를 가져옵니다.
+                  Map<String, dynamic>? data = chatDocs[0].data() as Map<String, dynamic>?;
 
-                    // 필드가 없을 경우 기본값 설정
-                    bool isLocked = data?.containsKey('lock') == true ? data!['lock'] : false;
+                  // 필드가 없을 경우 기본값 설정
+                  bool isLocked = data?.containsKey('lock') == true ? data!['lock'] : false;
 
-                    if (isLocked) {
-                      // 차단된 게시글의 경우
-                      return Center(
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 12),
-                          child: Text(
-                            '운영자에 의해 차단된 게시글입니다.',
-                            style: TextStyle(
-                                fontWeight: FontWeight.normal,
-                                fontSize: 13,
-                                color: Color(0xff949494)),
-                          ),
+                  if (isLocked) {
+                    // 차단된 게시글의 경우
+                    return Center(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        child: Text(
+                          '운영자에 의해 차단된 게시글입니다.',
+                          style: TextStyle(
+                              fontWeight: FontWeight.normal,
+                              fontSize: 13,
+                              color: Color(0xff949494)),
                         ),
-                      );
-                    } else {
-                      // 첫 번째 타이틀을 표시합니다.
-                      return Container(
+                      ),
+                    );
+                  } else {
+                    // 첫 번째 타이틀을 표시합니다.
+                    return GestureDetector(
+                      onTap: () async {
+                        var docName = '${_bulletinLostModelController.uid}#${_bulletinLostModelController.bulletinLostCount}';
+                        if(isLocked == false) {
+                          if (_userModelController.repoUidList!
+                              .contains(chatDocs[0].get('uid'))) {
+                            return;
+                          }
+                          CustomFullScreenDialog.showDialog();
+                          await _bulletinLostModelController
+                              .getCurrentBulletinLost(
+                              uid: chatDocs[0].get('uid'),
+                              bulletinLostCount:
+                              chatDocs[0].get('bulletinLostCount'));
+                          if (data?.containsKey('lock') == false) {
+                            await chatDocs[0].reference.update({'viewerUid': []});
+                          }
+                          await _bulletinLostModelController.scoreUpdate_read(bullUid: _bulletinLostModelController.uid, docName: docName, timeStamp: _bulletinLostModelController.timeStamp, score: _bulletinLostModelController.score, viewerUid: _bulletinLostModelController.viewerUid);
+                          await _bulletinLostModelController.updateViewerUid();
+                          CustomFullScreenDialog.cancelDialog();
+                          Get.to(() => Bulletin_Lost_List_Detail());
+                        }else{}
+                      },
+                      child: Container(
                         width: _size.width - 72,
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -204,15 +225,15 @@ class _Bulletin_Lost_List_Screen_HomeState extends State<Bulletin_Lost_List_Scre
                             ),
                           ],
                         ),
-                      );
-                    }
-                  } else {
-                    return Center(child: Text('게시글이 없습니다.'));
+                      ),
+                    );
                   }
-                },
-              ),
-            ],
-          ),
+                } else {
+                  return Center(child: Text('게시글이 없습니다.'));
+                }
+              },
+            ),
+          ],
         ),
       ),
     );

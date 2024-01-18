@@ -19,7 +19,7 @@ UserModelController _userModelController = Get.find<UserModelController>();
 UrlLauncherController _urlLauncherController = Get.find<UrlLauncherController>();
 //TODO: Dependency Injection************************************************
 
-Future<void> bottomPopUp() async {
+Future<void> bottomPopUp(BuildContext context) async {
 
   List addUidList = [];
   List addUidViewer = [];
@@ -76,233 +76,395 @@ Future<void> bottomPopUp() async {
     });
   }
 
+  Size _size = MediaQuery.of(context).size;
+
   await getAddUidList();
   await getMinusUidList();
 
     if (addUidBoolean==true &&
         addUidList.contains(_userModelController.uid) &&
         !addUidViewer.contains(_userModelController.uid)) {
-      Get.dialog(
-        WillPopScope(
+
+      showModalBottomSheet(
+        context: context,
+        isScrollControlled: true,
+        backgroundColor: Colors.transparent,
+        builder: (BuildContext context) {
+          return WillPopScope(
             onWillPop: () async {
-              // 뒤로가기 버튼을 눌러도 팝업이 닫히지 않게 하려면 true를 반환합니다.
               return false;
             },
-            child:   Stack(
-                children: <Widget>[
-                  // 반투명 배경
-                  Opacity(
-                    opacity: 0.6,
-                    child: ModalBarrier(dismissible: true, color: Colors.black),
-                  ),
-                  Positioned(
-                      bottom: 0,
-                      left: 0,
-                      right: 0,
-                      child: Container(
-                        padding: EdgeInsets.only(right: 15,left: 15,top: 25),
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(12),
+                  topRight: Radius.circular(12),
+                ),
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  // 여기에 모달의 내용을 추가
+                  // 예를 들어, 팝업 내용
+                  Stack(
+                    children: [
+                      Container(
+                        height: _size.width,
+                        width: _size.width,
                         decoration: BoxDecoration(
                           color: Colors.white,
-                          borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(20),
-                            topRight: Radius.circular(20),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Center(
+                          child: Column(
+                            children: [
+                              ExtendedImage.network(
+                                addUidImageUrl!,
+                                cacheHeight: 500,
+                                fit: BoxFit.cover,
+                              ),
+                            ],
                           ),
                         ),
-                        child: Column(
-                          children: [
-                            GestureDetector(
-                              onTap: (){
-                                Get.back();
-                              },
-                              child: Align(
-                                alignment: Alignment.topRight,
-                                child: SizedBox(
-                                  height: 10,
-                                  child: Icon(Icons.cancel_outlined),
-                                ),
-                              ),
+                      ),
+                      Positioned(
+                        top: 14,
+                        right: 14,
+                        child: GestureDetector(
+                          onTap: () {
+                            Get.back();
+                          },
+                          child: Align(
+                            alignment: Alignment.topRight,
+                            child: ExtendedImage.asset(
+                              'assets/imgs/icons/icon_profile_delete.png',
+                              fit: BoxFit.cover,
+                              width: 24,
+                              height: 24,
                             ),
-                            SizedBox(height: 10,),
-                            Container(
-                              height: 350,
-                              width: 350,
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                              child: Center(
-                                child: Column(
-                                  children: [
-                                    ExtendedImage.network(
-                                      addUidImageUrl!,
-                                      cacheHeight: 500,
-                                      fit: BoxFit.cover,
-                                    )
-                                  ],
-                                ),
-                              ),
-                            ),
-                            SizedBox(height: 10,),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                SizedBox(
-                                  width: 200,
-                                  height: 50,
-                                  child: ElevatedButton(
-                                      onPressed: () async{
-                                        _urlLauncherController.otherShare(contents: '${addUidLandingUrl}');
-                                      },
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor: Colors.white,
-                                        elevation: 0,
-                                      ),
-                                      child: Text('$addUidbottonMsg',
-                                        style: TextStyle(
-                                            color: Colors.grey
-                                        ),)
-                                  ),
-                                ),
-                                SizedBox(
-                                  width: 200,
-                                  height: 50,
-                                  child: ElevatedButton(
-                                      onPressed: () async{
-                                        await updateAddViewerUid();
-                                        Get.back();
-                                      },
-                                      style: ElevatedButton.styleFrom(
-                                          backgroundColor: Colors.white,
-                                          elevation: 0
-                                      ),
-                                      child: Text('다시 보지 않기',
-                                        style: TextStyle(
-                                            color: Colors.grey
-                                        ),)
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
+                          ),
                         ),
-                      )),
-                ])
-        ),
-        barrierDismissible: false, // 외부 영역 터치로 팝업 닫기 금지
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 4),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      SizedBox(
+                        width: _size.width / 2,
+                        height: 58,
+                        child: ElevatedButton(
+                            onPressed: () async{
+                              await updateAddViewerUid();
+                              Get.back();
+                            },
+                            style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.white,
+                                elevation: 0
+                            ),
+                            child: Text('다시 보지 않기',
+                              style: TextStyle(
+                                  color: Color(0xFF949494),
+                                  fontWeight: FontWeight.normal,
+                                  fontSize: 16
+                              ),)
+                        ),
+                      ),
+                      Container(
+                        height: 40,
+                        width: 1,
+                        color: Color(0xFFDEDEDE),
+                      ),
+                      SizedBox(
+                        width: _size.width / 2 - 1,
+                        height: 58,
+                        child: ElevatedButton(
+                            onPressed: () async{
+                              _urlLauncherController.otherShare(contents: '${addUidLandingUrl}');
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.white,
+                              elevation: 0,
+                            ),
+                            child: Text('$addUidbottonMsg',
+                              style: TextStyle(
+                                  color: Color(0xFF111111),
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16
+                              ),)
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 28),
+                ],
+              ),
+            ),
+          );
+        },
       );
+
     } else if(isTotal == true &&
         !minusUidList.contains(_userModelController.uid)&&
     !totalViewer.contains(_userModelController.uid)){
-      Get.dialog(
-        WillPopScope(
+
+
+      showModalBottomSheet(
+        context: context,
+        isScrollControlled: true,
+        backgroundColor: Colors.transparent,
+        builder: (BuildContext context) {
+          return WillPopScope(
             onWillPop: () async {
-              // 뒤로가기 버튼을 눌러도 팝업이 닫히지 않게 하려면 true를 반환합니다.
               return false;
             },
-            child:   Stack(
-                children: <Widget>[
-                  // 반투명 배경
-                  Opacity(
-                    opacity: 0.6,
-                    child: ModalBarrier(dismissible: true, color: Colors.black),
-                  ),
-                  Positioned(
-                      bottom: 0,
-                      left: 0,
-                      right: 0,
-                      child: Container(
-                        padding: EdgeInsets.only(right: 15,left: 15,top: 25),
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(12),
+                  topRight: Radius.circular(12),
+                ),
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  // 여기에 모달의 내용을 추가
+                  // 예를 들어, 팝업 내용
+                  Stack(
+                    children: [
+                      Container(
+                        height: _size.width,
+                        width: _size.width,
                         decoration: BoxDecoration(
                           color: Colors.white,
-                          borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(20),
-                            topRight: Radius.circular(20),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Center(
+                          child: Column(
+                            children: [
+                              ExtendedImage.network(
+                                totalImageUrl!,
+                                cacheHeight: 500,
+                                fit: BoxFit.cover,
+                              ),
+                            ],
                           ),
                         ),
-                        child: Column(
-                          children: [
-                            GestureDetector(
-                              onTap: (){
-                                Get.back();
-                              },
-                              child: Align(
-                                alignment: Alignment.topRight,
-                                child: SizedBox(
-                                  height: 10,
-                                  child: Icon(Icons.cancel_outlined),
-                                ),
-                              ),
+                      ),
+                      Positioned(
+                        top: 14,
+                        right: 14,
+                        child: GestureDetector(
+                          onTap: () {
+                            Get.back();
+                          },
+                          child: Align(
+                            alignment: Alignment.topRight,
+                            child: ExtendedImage.asset(
+                              'assets/imgs/icons/icon_profile_delete.png',
+                              fit: BoxFit.cover,
+                              width: 24,
+                              height: 24,
                             ),
-                            SizedBox(height: 10,),
-                            Container(
-                              height: 350,
-                              width: 350,
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                              child: Center(
-                                child: Column(
-                                  children: [
-                                    ExtendedImage.network(
-                                        totalImageUrl!,
-                                      cacheHeight: 500,
-                                      fit: BoxFit.cover,
-                                    )
-                                  ],
-                                ),
-                              ),
-                            ),
-                            SizedBox(height: 10,),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                SizedBox(
-                                  width: 200,
-                                  height: 50,
-                                  child: ElevatedButton(
-                                      onPressed: () async{
-                                        _urlLauncherController.otherShare(contents: '${totalLandingUrl}');
-                                      },
-                                      style: ElevatedButton.styleFrom(
-                                          backgroundColor: Colors.white,
-                                          elevation: 0,
-                                      ),
-                                      child: Text('$totalbottonMsg',
-                                        style: TextStyle(
-                                            color: Colors.grey
-                                        ),)
-                                  ),
-                                ),
-                                SizedBox(
-                                  width: 200,
-                                  height: 50,
-                                  child: ElevatedButton(
-                                      onPressed: () async{
-                                        await updateTotalViewerUid();
-                                        Get.back();
-                                      },
-                                      style: ElevatedButton.styleFrom(
-                                          backgroundColor: Colors.white,
-                                        elevation: 0
-                                      ),
-                                      child: Text('다시 보지 않기',
-                                        style: TextStyle(
-                                            color: Colors.grey
-                                        ),)
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
+                          ),
                         ),
-                      )),
-                ])
-        ),
-        barrierDismissible: false, // 외부 영역 터치로 팝업 닫기 금지
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 4),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      SizedBox(
+                        width: _size.width / 2,
+                        height: 58,
+                        child: ElevatedButton(
+                            onPressed: () async{
+                              await updateTotalViewerUid();
+                              Get.back();
+                            },
+                            style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.white,
+                                elevation: 0
+                            ),
+                            child: Text('다시 보지 않기',
+                              style: TextStyle(
+                                  color: Color(0xFF949494),
+                                  fontWeight: FontWeight.normal,
+                                  fontSize: 16
+                              ),)
+                        ),
+                      ),
+                      Container(
+                        height: 40,
+                        width: 1,
+                        color: Color(0xFFDEDEDE),
+                      ),
+                      SizedBox(
+                        width: _size.width / 2 - 1,
+                        height: 58,
+                        child: ElevatedButton(
+                            onPressed: () async{
+                              _urlLauncherController.otherShare(contents: '${totalLandingUrl}');
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.white,
+                              elevation: 0,
+                            ),
+                            child: Text('$totalbottonMsg',
+                              style: TextStyle(
+                                  color: Color(0xFF111111),
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16
+                              ),)
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 28),
+                ],
+              ),
+            ),
+          );
+        },
       );
+
+
+
     } else {}
 }
+
+
+
+  // Get.dialog(
+  //   WillPopScope(
+  //       onWillPop: () async {
+  //         // 뒤로가기 버튼을 눌러도 팝업이 닫히지 않게 하려면 true를 반환합니다.
+  //         return false;
+  //       },
+  //       child: Scaffold(
+  //         backgroundColor: Colors.transparent,
+  //         extendBodyBehindAppBar: true,
+  //         body: Stack(
+  //             children: <Widget>[
+  //               // 반투명 배경
+  //               ModalBarrier(dismissible: true, color: Colors.transparent),
+  //               Positioned(
+  //                   bottom: 0,
+  //                   left: 0,
+  //                   right: 0,
+  //                   child: Container(
+  //                     decoration: BoxDecoration(
+  //                       color: Colors.white,
+  //                       borderRadius: BorderRadius.only(
+  //                         topLeft: Radius.circular(12),
+  //                         topRight: Radius.circular(12),
+  //                       ),
+  //                     ),
+  //                     child: Column(
+  //                       children: [
+  //                         Stack(
+  //                           children: [
+  //                             Container(
+  //                               height: _size.width,
+  //                               width: _size.width,
+  //                               decoration: BoxDecoration(
+  //                                 color: Colors.white,
+  //                                 borderRadius: BorderRadius.circular(12),
+  //                               ),
+  //                               child: Center(
+  //                                 child: Column(
+  //                                   children: [
+  //                                     ExtendedImage.network(
+  //                                       addUidImageUrl!,
+  //                                       cacheHeight: 500,
+  //                                       fit: BoxFit.cover,
+  //                                     )
+  //                                   ],
+  //                                 ),
+  //                               ),
+  //                             ),
+  //                             Positioned(
+  //                               top: 14,
+  //                               right: 14,
+  //                               child: GestureDetector(
+  //                                 onTap: (){
+  //                                   Get.back();
+  //                                 },
+  //                                 child: Align(
+  //                                   alignment: Alignment.topRight,
+  //                                   child: ExtendedImage.asset('assets/imgs/icons/icon_profile_delete.png',
+  //                                     fit: BoxFit.cover,
+  //                                     width: 24,
+  //                                     height: 24,
+  //                                   ),
+  //                                 ),
+  //                               ),),
+  //                           ],
+  //                         ),
+  //                         SizedBox(height: 4),
+  //                         Row(
+  //                           crossAxisAlignment: CrossAxisAlignment.center,
+  //                           children: [
+  //                             SizedBox(
+  //                               width: _size.width / 2,
+  //                               height: 58,
+  //                               child: ElevatedButton(
+  //                                   onPressed: () async{
+  //                                     await updateAddViewerUid();
+  //                                     Get.back();
+  //                                   },
+  //                                   style: ElevatedButton.styleFrom(
+  //                                       backgroundColor: Colors.white,
+  //                                       elevation: 0
+  //                                   ),
+  //                                   child: Text('다시 보지 않기',
+  //                                     style: TextStyle(
+  //                                         color: Color(0xFF949494),
+  //                                         fontWeight: FontWeight.normal,
+  //                                         fontSize: 16
+  //                                     ),)
+  //                               ),
+  //                             ),
+  //                             Container(
+  //                               height: 40,
+  //                               width: 1,
+  //                               color: Color(0xFFDEDEDE),
+  //                             ),
+  //                             SizedBox(
+  //                               width: _size.width / 2 - 1,
+  //                               height: 58,
+  //                               child: ElevatedButton(
+  //                                   onPressed: () async{
+  //                                     _urlLauncherController.otherShare(contents: '${addUidLandingUrl}');
+  //                                   },
+  //                                   style: ElevatedButton.styleFrom(
+  //                                     backgroundColor: Colors.white,
+  //                                     elevation: 0,
+  //                                   ),
+  //                                   child: Text('$addUidbottonMsg',
+  //                                     style: TextStyle(
+  //                                         color: Color(0xFF111111),
+  //                                         fontWeight: FontWeight.bold,
+  //                                         fontSize: 16
+  //                                     ),)
+  //                               ),
+  //                             ),
+  //                           ],
+  //                         ),
+  //                         SizedBox(height: 4),
+  //                       ],
+  //                     ),
+  //                   )),
+  //             ]),
+  //       )
+  //   ),
+  //   barrierDismissible: true, // 외부 영역 터치로 팝업 닫기 금지
+  // );
+
 
 
 

@@ -109,7 +109,10 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
     _friendStream = friendStream();
     _seasonController.getSeasonOpen();
     _liveCrewModelController.getCurrrentCrew(_userModelController.liveCrew);
-    bottomPopUp();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      bottomPopUp(context);
+    });
 
     try{
       FirebaseAnalytics.instance.logEvent(
