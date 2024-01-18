@@ -175,13 +175,14 @@ class _Bulletin_Event_List_Screen_HomeState extends State<Bulletin_Event_List_Sc
 
                             // 필드가 없을 경우 기본값 설정
                             bool isLocked = data?.containsKey('lock') == true ? data!['lock'] : false;
-                            List viewerUid = data?.containsKey('viewerUid') == true ? data!['viewerUid'] : [];
-                            String _time = _timeStampController.yyyymmddFormat(chatDocs[index].get('timeStamp'));
-                            String? profileUrl = _allUserDocsController.findProfileUrl(chatDocs[index]['uid'], _allUserDocsController.allUserDocs);
-                            String? displayName = _allUserDocsController.findDisplayName(chatDocs[index]['uid'], _allUserDocsController.allUserDocs);
+
+                            if (index == 0) {
+                              print("0 리스트");
+                            }
 
                             return GestureDetector(
                               onTap: () async {
+                                print("List item $index tapped");
                                 if(isLocked == false) {
                                   if (_userModelController.repoUidList!
                                       .contains(chatDocs[index].get('uid'))) {
@@ -272,8 +273,30 @@ class _Bulletin_Event_List_Screen_HomeState extends State<Bulletin_Event_List_Sc
                                                         ),
                                                       if (chatDocs[index].get('itemImagesUrl').isNotEmpty)
                                                       GestureDetector(
-                                                        onTap: () {
-                                                          Get.to(() => BulletinEventImageScreen());
+                                                        onTap: () async {
+                                                          if(isLocked == false) {
+                                                            if (_userModelController.repoUidList!
+                                                                .contains(chatDocs[index].get('uid'))) {
+                                                              return;
+                                                            }
+                                                            CustomFullScreenDialog.showDialog();
+                                                            await _bulletinEventModelController
+                                                                .getCurrentBulletinEvent(
+                                                                uid: chatDocs[index].get('uid'),
+                                                                bulletinEventCount:
+                                                                chatDocs[index].get('bulletinEventCount'));
+                                                            if (data?.containsKey('lock') == false) {
+                                                              await chatDocs[index].reference.update({'viewerUid': []});
+                                                            }
+                                                            await _bulletinEventModelController.updateViewerUid();
+                                                            await _bulletinEventModelController
+                                                                .getCurrentBulletinEvent(
+                                                                uid: chatDocs[index].get('uid'),
+                                                                bulletinEventCount:
+                                                                chatDocs[index].get('bulletinEventCount'));
+                                                            CustomFullScreenDialog.cancelDialog();
+                                                            Get.to(() => Bulletin_Event_List_Detail());
+                                                          }else{}
                                                         },
                                                         child: ClipRRect(
                                                           borderRadius: BorderRadius.circular(6),
