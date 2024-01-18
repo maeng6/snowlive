@@ -35,6 +35,7 @@ import '../../controller/vm_seasonController.dart';
 import '../../controller/vm_urlLauncherController.dart';
 import '../bulletin/Event/v_bulletin_Event_List_Screen_home.dart';
 import '../bulletin/Lost/v_bulletin_Lost_List_Screen_home.dart';
+import '../bulletin/v_bulletin_Screen.dart';
 import '../fleaMarket/v_fleaMarket_List_Screen_home.dart';
 import 'package:lottie/lottie.dart';
 
@@ -1839,16 +1840,21 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
                                             SizedBox(
                                               height: 12,
                                             ),
-                                            Container(
-                                                padding: EdgeInsets.only(left: 20, right: 20, top: 20, bottom: 20),
+                                            GestureDetector(
+                                              onTap: () {
+                                                _bottomTabBarController..changePage_goto_Lost()..onItemTapped_Lost();
+                                              },
+                                              child: Container(
+                                                padding: EdgeInsets.only(left: 12, right: 16, top: 20, bottom: 20),
                                                 width: _size.width,
+                                                height: 58,
                                                 decoration: BoxDecoration(
-                                                    color: Colors.white,
-                                                    borderRadius: BorderRadius.circular(10)),
-                                                child: Container(
-                                                    width: _size.width - 90,
-                                                    height: 18,
-                                                    child: Bulletin_Lost_List_Screen_Home())),
+                                                  color: Colors.white,
+                                                  borderRadius: BorderRadius.circular(10),
+                                                ),
+                                                child: Bulletin_Lost_List_Screen_Home(),
+                                              ),
+                                            ),
                                             SizedBox(
                                               height: 12,
                                             ),
@@ -3880,16 +3886,21 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
                                           SizedBox(
                                             height: 12,
                                           ),
-                                          Container(
-                                              padding: EdgeInsets.only(left: 20, right: 20, top: 20, bottom: 20),
+                                          GestureDetector(
+                                            onTap: () {
+                                              _bottomTabBarController..changePage_goto_Lost()..onItemTapped_Lost();
+                                            },
+                                            child: Container(
+                                              padding: EdgeInsets.only(left: 12, right: 16, top: 20, bottom: 20),
                                               width: _size.width,
+                                              height: 58,
                                               decoration: BoxDecoration(
-                                                  color: Colors.white,
-                                                  borderRadius: BorderRadius.circular(10)),
-                                              child: Container(
-                                                  width: _size.width - 90,
-                                                  height: 18,
-                                                  child: Bulletin_Lost_List_Screen_Home())),
+                                                color: Colors.white,
+                                                borderRadius: BorderRadius.circular(10),
+                                              ),
+                                              child: Bulletin_Lost_List_Screen_Home(),
+                                            ),
+                                          ),
                                           SizedBox(
                                             height: 12,
                                           ),
