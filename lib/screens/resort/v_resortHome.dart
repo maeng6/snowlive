@@ -1840,20 +1840,29 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
                                             SizedBox(
                                               height: 12,
                                             ),
-                                            GestureDetector(
-                                              onTap: () {
-                                                _bottomTabBarController..changePage_goto_Lost()..onItemTapped_Lost();
-                                              },
-                                              child: Container(
-                                                padding: EdgeInsets.only(left: 12, right: 16, top: 20, bottom: 20),
-                                                width: _size.width,
-                                                height: 58,
-                                                decoration: BoxDecoration(
-                                                  color: Colors.white,
-                                                  borderRadius: BorderRadius.circular(10),
+                                            Stack(
+                                              children: [
+                                                Container(
+                                                  padding: EdgeInsets.only(left: 12, right: 16, top: 20, bottom: 20),
+                                                  width: _size.width,
+                                                  height: 58,
+                                                  decoration: BoxDecoration(
+                                                    color: Colors.white,
+                                                    borderRadius: BorderRadius.circular(10),
+                                                  ),
+                                                  child: Bulletin_Lost_List_Screen_Home(),
                                                 ),
-                                                child: Bulletin_Lost_List_Screen_Home(),
-                                              ),
+                                                GestureDetector(
+                                                  onTap: (){
+                                                    _bottomTabBarController..changePage_goto_Lost()..onItemTapped_Lost();
+                                                  },
+                                                  child: Container(
+                                                    width: _size.width,
+                                                    height: 58,
+                                                    color: Colors.transparent,
+                                                  ),
+                                                )
+                                              ],
                                             ),
                                             SizedBox(
                                               height: 12,
@@ -3886,20 +3895,29 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
                                           SizedBox(
                                             height: 12,
                                           ),
-                                          GestureDetector(
-                                            onTap: () {
-                                              _bottomTabBarController..changePage_goto_Lost()..onItemTapped_Lost();
-                                            },
-                                            child: Container(
-                                              padding: EdgeInsets.only(left: 12, right: 16, top: 20, bottom: 20),
-                                              width: _size.width,
-                                              height: 58,
-                                              decoration: BoxDecoration(
-                                                color: Colors.white,
-                                                borderRadius: BorderRadius.circular(10),
+                                          Stack(
+                                            children: [
+                                              Container(
+                                                padding: EdgeInsets.only(left: 12, right: 16, top: 20, bottom: 20),
+                                                width: _size.width,
+                                                height: 58,
+                                                decoration: BoxDecoration(
+                                                  color: Colors.white,
+                                                  borderRadius: BorderRadius.circular(10),
+                                                ),
+                                                child: Bulletin_Lost_List_Screen_Home(),
                                               ),
-                                              child: Bulletin_Lost_List_Screen_Home(),
-                                            ),
+                                              GestureDetector(
+                                                onTap: (){
+                                                  _bottomTabBarController..changePage_goto_Lost()..onItemTapped_Lost();
+                                                },
+                                                child: Container(
+                                                  width: _size.width,
+                                                  height: 58,
+                                                  color: Colors.transparent,
+                                                ),
+                                              )
+                                            ],
                                           ),
                                           SizedBox(
                                             height: 12,
