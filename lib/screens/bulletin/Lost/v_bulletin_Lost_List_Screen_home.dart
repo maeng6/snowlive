@@ -9,6 +9,7 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import '../../../controller/vm_allUserDocsController.dart';
+import '../../../controller/vm_bottomTabBarController.dart';
 import '../../../controller/vm_bulletinLostController.dart';
 import '../../../controller/vm_timeStampController.dart';
 import '../../../controller/vm_userModelController.dart';
@@ -30,10 +31,10 @@ class _Bulletin_Lost_List_Screen_HomeState extends State<Bulletin_Lost_List_Scre
   TimeStampController _timeStampController = Get.find<TimeStampController>();
   SeasonController _seasonController = Get.find<SeasonController>();
   AllUserDocsController _allUserDocsController = Get.find<AllUserDocsController>();
+  BottomTabBarController _bottomTabBarController = Get.find<BottomTabBarController>();
   //TODO: Dependency Injection**************************************************
 
   var _stream;
-  var _stream_hot;
   var _selectedValue = '카테고리';
   var _allCategories;
   bool _isVisible = false;
@@ -144,7 +145,6 @@ class _Bulletin_Lost_List_Screen_HomeState extends State<Bulletin_Lost_List_Scre
                 } else if (snapshot.connectionState == ConnectionState.waiting) {
                   return Center(child: CircularProgressIndicator());
                 }
-
                 final chatDocs = snapshot.data!.docs;
 
                 if (chatDocs.isNotEmpty) {
@@ -187,16 +187,14 @@ class _Bulletin_Lost_List_Screen_HomeState extends State<Bulletin_Lost_List_Scre
                                 minWidth: 1,
                                 maxWidth: _size.width - 100
                               ),
-                              child: Container(
-                                child: Text(
-                                  chatDocs[0].get('title'),
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 14,
-                                      color: Color(0xFF111111)),
-                                ),
+                              child: Text(
+                                chatDocs[0].get('title'),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 14,
+                                    color: Color(0xFF111111)),
                               ),
                             ),
                           ),
