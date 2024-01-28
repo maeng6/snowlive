@@ -563,21 +563,21 @@ class _RankingCrewWeeklyTopScreenState
           child: Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              SizedBox(width: 42),
+              SizedBox(width: 40),
               ExtendedImage.asset(
                 'assets/imgs/icons/icon_crown_1_ns.png',
                 width: 28,
                 height: 28,
                 fit: BoxFit.cover,
               ),
-              SizedBox(width: 70),
+              SizedBox(width: _size.width / 3 - 52),
               ExtendedImage.asset(
                 'assets/imgs/icons/icon_crown_2_ns.png',
                 width: 28,
                 height: 28,
                 fit: BoxFit.cover,
               ),
-              SizedBox(width: 70),
+              SizedBox(width: _size.width / 3 - 52),
               ExtendedImage.asset(
                 'assets/imgs/icons/icon_crown_3_ns.png',
                 width: 28,
@@ -690,7 +690,7 @@ class _RankingCrewWeeklyTopScreenState
                                         Get.to(()=>CrewDetailPage_screen());
                                       },
                                       child: Container(
-                                        width: _size.width - 274,
+                                        width: _size.width / 3 - 24,
                                         child: Row(
                                           crossAxisAlignment: CrossAxisAlignment.center,
                                           children: [
@@ -736,7 +736,7 @@ class _RankingCrewWeeklyTopScreenState
                                               ),
                                             ),
                                             Container(
-                                              width: _size.width - 314,
+                                              width: _size.width / 3 - 70,
                                               child: Column(
                                                 mainAxisAlignment: MainAxisAlignment.start,
                                                 crossAxisAlignment: CrossAxisAlignment.start,
