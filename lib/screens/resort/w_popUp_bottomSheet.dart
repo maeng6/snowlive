@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:com.snowlive/controller/vm_urlLauncherController.dart';
 import 'package:extended_image/extended_image.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -182,6 +183,21 @@ Future<void> bottomPopUp(BuildContext context) async {
                         height: 58,
                         child: ElevatedButton(
                             onPressed: () async{
+
+                              try{
+                                await FirebaseAnalytics.instance.logEvent(
+                                  name: 'tap_resortHome_bottom_addUid',
+                                  parameters: <String, dynamic>{
+                                    'user_id': _userModelController.uid,
+                                    'user_name': _userModelController.displayName,
+                                    'user_resort': _userModelController.favoriteResort
+                                  },
+                                );
+                              }catch(e, stackTrace){
+                                print('GA 업데이트 오류: $e');
+                                print('Stack trace: $stackTrace');
+                              }
+
                               _urlLauncherController.otherShare(contents: '${addUidLandingUrl}');
                             },
                             style: ElevatedButton.styleFrom(
@@ -308,6 +324,21 @@ Future<void> bottomPopUp(BuildContext context) async {
                         height: 58,
                         child: ElevatedButton(
                             onPressed: () async{
+
+                              try{
+                                await FirebaseAnalytics.instance.logEvent(
+                                  name: 'tap_resortHome_bottom_total',
+                                  parameters: <String, dynamic>{
+                                    'user_id': _userModelController.uid,
+                                    'user_name': _userModelController.displayName,
+                                    'user_resort': _userModelController.favoriteResort
+                                  },
+                                );
+                              }catch(e, stackTrace){
+                                print('GA 업데이트 오류: $e');
+                                print('Stack trace: $stackTrace');
+                              }
+
                               _urlLauncherController.otherShare(contents: '${totalLandingUrl}');
                             },
                             style: ElevatedButton.styleFrom(
