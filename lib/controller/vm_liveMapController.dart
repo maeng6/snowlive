@@ -1840,25 +1840,40 @@ class LiveMapController extends GetxController {
       return []; // 데이터가 없을 경우 빈 리스트 반환
     }
 
+    // 새벽 시간대 합산 (00:00~08:00)
+    int nightTimePassCount = 0;
+    ['9', '10', '11', '12'].forEach((slot) {
+      num slotValue = passCountTimeData[slot] ?? 0; // num 타입으로 값을 받음
+      nightTimePassCount += slotValue.toInt(); // int 타입으로 변환하여 합산
+    });
+
+
+    // 새벽 시간대를 제외한 데이터에서 기존 로직으로 처리
+    passCountTimeData.removeWhere((key, value) => ['9', '10', '11', '12'].contains(key));
+
+    // 새로운 슬롯 추가 (00:00~08:00)
+    passCountTimeData['0'] = nightTimePassCount;
+
+    // 슬롯들을 시간 순서대로 정렬
     List<MapEntry<String, dynamic>> sortedEntries = passCountTimeData.entries.toList()
       ..sort((a, b) {
-        int keyA = int.tryParse(a.key) ?? 0;
-        int keyB = int.tryParse(b.key) ?? 0;
-        return keyA.compareTo(keyB);
+        int slotA = int.tryParse(a.key) ?? 0;
+        int slotB = int.tryParse(b.key) ?? 0;
+        return slotA.compareTo(slotB);
       });
 
+    // 최대 통과 수 계산
     int maxPassCount = sortedEntries.map((entry) {
       return entry.value ?? 0;
     }).reduce((value, element) => value > element ? value : element);
 
-    List<Map<String, dynamic>> barData = sortedEntries.where((entry) {
-      String slotName = entry.key;
-      return ['1', '2', '3', '4', '5', '6', '7', '8'].contains(slotName);
-    }).map((entry) {
+    // 각 슬롯에 대한 바 데이터 계산
+    List<Map<String, dynamic>> barData = sortedEntries.map((entry) {
       String slotName = entry.key;
       int passCount = entry.value ?? 0;
       double barHeightRatio = passCount.toDouble() / maxPassCount.toDouble();
       Color barColor = passCount == maxPassCount ? Color(0xFF05419A) : Color(0xFF3D83ED);
+
 
       return {
         'slotName': slotName,

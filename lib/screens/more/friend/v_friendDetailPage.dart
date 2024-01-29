@@ -2870,60 +2870,63 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                                                         ],
                                                                                       ),
                                                                                     ))
-                                                                                    : Row(
+                                                                                    : SingleChildScrollView(
+                                                                                  scrollDirection: Axis.horizontal,
+                                                                                  child: Row(
                                                                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                                                   children: barData2.map((data) {
-                                                                                    String slotName = data['slotName'];
-                                                                                    int passCount = data['passCount'];
-                                                                                    double barHeightRatio = data['barHeightRatio'];
-                                                                                    Color barColor = data['barColor'];
+                                                                                      String slotName = data['slotName'];
+                                                                                      int passCount = data['passCount'];
+                                                                                      double barHeightRatio = data['barHeightRatio'];
+                                                                                      Color barColor = data['barColor'];
 
-                                                                                    return Container(
-                                                                                      margin: EdgeInsets.symmetric(horizontal: 5),
-                                                                                      width: 25,
-                                                                                      child: Column(
-                                                                                        mainAxisAlignment: MainAxisAlignment.end,
-                                                                                        children: [
-                                                                                          AutoSizeText(
-                                                                                            passCount != 0 ? '$passCount' : '',
-                                                                                            style: TextStyle(
-                                                                                              fontSize: 13,
-                                                                                              color: Color(0xFF111111),
-                                                                                              fontWeight: FontWeight.bold,
+                                                                                      return Container(
+                                                                                        margin: EdgeInsets.symmetric(horizontal: 5),
+                                                                                        width: 25,
+                                                                                        child: Column(
+                                                                                          mainAxisAlignment: MainAxisAlignment.end,
+                                                                                          children: [
+                                                                                            AutoSizeText(
+                                                                                              passCount != 0 ? '$passCount' : '',
+                                                                                              style: TextStyle(
+                                                                                                fontSize: 13,
+                                                                                                color: Color(0xFF111111),
+                                                                                                fontWeight: FontWeight.bold,
+                                                                                              ),
+                                                                                              minFontSize: 8,
+                                                                                              maxLines: 1,
+                                                                                              overflow: TextOverflow.visible,
                                                                                             ),
-                                                                                            minFontSize: 8,
-                                                                                            maxLines: 1,
-                                                                                            overflow: TextOverflow.visible,
-                                                                                          ),
-                                                                                          SizedBox(height: 4),
-                                                                                          Container(
-                                                                                            width: 25,
-                                                                                            height: 140 * barHeightRatio,
-                                                                                            child: Container(
+                                                                                            SizedBox(height: 4),
+                                                                                            Container(
                                                                                               width: 25,
                                                                                               height: 140 * barHeightRatio,
-                                                                                              decoration: BoxDecoration(
-                                                                                                  color: barColor,
-                                                                                                  borderRadius: BorderRadius.only(
-                                                                                                      topRight: Radius.circular(4),
-                                                                                                      topLeft: Radius.circular(4)
-                                                                                                  )
+                                                                                              child: Container(
+                                                                                                width: 25,
+                                                                                                height: 140 * barHeightRatio,
+                                                                                                decoration: BoxDecoration(
+                                                                                                    color: barColor,
+                                                                                                    borderRadius: BorderRadius.only(
+                                                                                                        topRight: Radius.circular(4),
+                                                                                                        topLeft: Radius.circular(4)
+                                                                                                    )
+                                                                                                ),
                                                                                               ),
                                                                                             ),
-                                                                                          ),
-                                                                                          SizedBox(height: 10),
-                                                                                          Padding(
-                                                                                            padding: const EdgeInsets.only(left: 3),
-                                                                                            child: Text(
-                                                                                              _resortModelController.getSlotName(slotName),
-                                                                                              style: TextStyle(fontSize: 11, color: Color(0xFF111111)),
+                                                                                            SizedBox(height: 10),
+                                                                                            Padding(
+                                                                                              padding: const EdgeInsets.only(left: 3),
+                                                                                              child: Text(
+                                                                                                _resortModelController.getSlotName(slotName),
+                                                                                                style: TextStyle(fontSize: 11, color: Color(0xFF111111)),
+                                                                                              ),
                                                                                             ),
-                                                                                          ),
-                                                                                        ],
-                                                                                      ),
-                                                                                    );
+                                                                                          ],
+                                                                                        ),
+                                                                                      );
                                                                                   }).toList(),
                                                                                 ),
+                                                                                    ),
                                                                               ),
                                                                             ),
                                                                           ),
@@ -3236,60 +3239,63 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                                                         ],
                                                                                       ),
                                                                                     ))
-                                                                                    : Row(
+                                                                                    : SingleChildScrollView(
+                                                                                  scrollDirection: Axis.horizontal,
+                                                                                  child: Row(
                                                                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                                                   children: barData2.map((data) {
-                                                                                    String slotName = data['slotName'];
-                                                                                    int passCount = data['passCount'];
-                                                                                    double barHeightRatio = data['barHeightRatio'];
-                                                                                    Color barColor = data['barColor'];
+                                                                                      String slotName = data['slotName'];
+                                                                                      int passCount = data['passCount'];
+                                                                                      double barHeightRatio = data['barHeightRatio'];
+                                                                                      Color barColor = data['barColor'];
 
-                                                                                    return Container(
-                                                                                      margin: EdgeInsets.symmetric(horizontal: 5),
-                                                                                      width: 25,
-                                                                                      child: Column(
-                                                                                        mainAxisAlignment: MainAxisAlignment.end,
-                                                                                        children: [
-                                                                                          AutoSizeText(
-                                                                                            passCount != 0 ? '$passCount' : '',
-                                                                                            style: TextStyle(
-                                                                                              fontSize: 13,
-                                                                                              color: Color(0xFF111111),
-                                                                                              fontWeight: FontWeight.bold,
+                                                                                      return Container(
+                                                                                        margin: EdgeInsets.symmetric(horizontal: 5),
+                                                                                        width: 25,
+                                                                                        child: Column(
+                                                                                          mainAxisAlignment: MainAxisAlignment.end,
+                                                                                          children: [
+                                                                                            AutoSizeText(
+                                                                                              passCount != 0 ? '$passCount' : '',
+                                                                                              style: TextStyle(
+                                                                                                fontSize: 13,
+                                                                                                color: Color(0xFF111111),
+                                                                                                fontWeight: FontWeight.bold,
+                                                                                              ),
+                                                                                              minFontSize: 8,
+                                                                                              maxLines: 1,
+                                                                                              overflow: TextOverflow.visible,
                                                                                             ),
-                                                                                            minFontSize: 8,
-                                                                                            maxLines: 1,
-                                                                                            overflow: TextOverflow.visible,
-                                                                                          ),
-                                                                                          SizedBox(height: 4),
-                                                                                          Container(
-                                                                                            width: 25,
-                                                                                            height: 140 * barHeightRatio,
-                                                                                            child: Container(
+                                                                                            SizedBox(height: 4),
+                                                                                            Container(
                                                                                               width: 25,
                                                                                               height: 140 * barHeightRatio,
-                                                                                              decoration: BoxDecoration(
-                                                                                                  color: barColor,
-                                                                                                  borderRadius: BorderRadius.only(
-                                                                                                      topRight: Radius.circular(4),
-                                                                                                      topLeft: Radius.circular(4)
-                                                                                                  )
+                                                                                              child: Container(
+                                                                                                width: 25,
+                                                                                                height: 140 * barHeightRatio,
+                                                                                                decoration: BoxDecoration(
+                                                                                                    color: barColor,
+                                                                                                    borderRadius: BorderRadius.only(
+                                                                                                        topRight: Radius.circular(4),
+                                                                                                        topLeft: Radius.circular(4)
+                                                                                                    )
+                                                                                                ),
                                                                                               ),
                                                                                             ),
-                                                                                          ),
-                                                                                          SizedBox(height: 10),
-                                                                                          Padding(
-                                                                                            padding: const EdgeInsets.only(left: 3),
-                                                                                            child: Text(
-                                                                                              _resortModelController.getSlotName(slotName),
-                                                                                              style: TextStyle(fontSize: 11, color: Color(0xFF111111)),
+                                                                                            SizedBox(height: 10),
+                                                                                            Padding(
+                                                                                              padding: const EdgeInsets.only(left: 3),
+                                                                                              child: Text(
+                                                                                                _resortModelController.getSlotName(slotName),
+                                                                                                style: TextStyle(fontSize: 11, color: Color(0xFF111111)),
+                                                                                              ),
                                                                                             ),
-                                                                                          ),
-                                                                                        ],
-                                                                                      ),
-                                                                                    );
+                                                                                          ],
+                                                                                        ),
+                                                                                      );
                                                                                   }).toList(),
                                                                                 ),
+                                                                                    ),
                                                                               ),
                                                                             ),
                                                                           ),

@@ -1535,64 +1535,67 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                                               child:
                                                               barData.isEmpty ?
                                                               Center(child: Text('데이터가 없습니다'))
-                                                                  : Row(
+                                                                  : SingleChildScrollView(
+                                                                scrollDirection: Axis.horizontal,
+                                                                child: Row(
                                                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                                 crossAxisAlignment: CrossAxisAlignment.end,
                                                                 children: barData.map((data) {
-                                                                  String slotName = data['slotName'];
-                                                                  int passCount = data['passCount'];
-                                                                  double barHeightRatio = data['barHeightRatio'];
-                                                                  Color barColor = Color(crewDocs[0]['crewColor']).withOpacity(0.4);
-                                                                  return Container(
-                                                                    margin: EdgeInsets.symmetric(horizontal: 5),
-                                                                    width: 25,
-                                                                    child: Column(
-                                                                      mainAxisAlignment: MainAxisAlignment.end,
-                                                                      children: [
-                                                                        AutoSizeText(
-                                                                          passCount != 0 ? '$passCount' : '',
-                                                                          style: TextStyle(
-                                                                            fontSize: 13,
-                                                                            color: Color(0xFF111111),
-                                                                            fontWeight: FontWeight.bold,
+                                                                    String slotName = data['slotName'];
+                                                                    int passCount = data['passCount'];
+                                                                    double barHeightRatio = data['barHeightRatio'];
+                                                                    Color barColor = Color(crewDocs[0]['crewColor']).withOpacity(0.4);
+                                                                    return Container(
+                                                                      margin: EdgeInsets.symmetric(horizontal: 5),
+                                                                      width: 25,
+                                                                      child: Column(
+                                                                        mainAxisAlignment: MainAxisAlignment.end,
+                                                                        children: [
+                                                                          AutoSizeText(
+                                                                            passCount != 0 ? '$passCount' : '',
+                                                                            style: TextStyle(
+                                                                              fontSize: 13,
+                                                                              color: Color(0xFF111111),
+                                                                              fontWeight: FontWeight.bold,
+                                                                            ),
+                                                                            minFontSize: 8,
+                                                                            maxLines: 1,
+                                                                            overflow: TextOverflow.visible,
                                                                           ),
-                                                                          minFontSize: 8,
-                                                                          maxLines: 1,
-                                                                          overflow: TextOverflow.visible,
-                                                                        ),
-                                                                        SizedBox(height: 4),
-                                                                        Container(
-                                                                          width: 25,
-                                                                          height: 140 * barHeightRatio,
-                                                                          child: Container(
+                                                                          SizedBox(height: 4),
+                                                                          Container(
                                                                             width: 25,
                                                                             height: 140 * barHeightRatio,
-                                                                            decoration: BoxDecoration(
-                                                                              color: barColor,
-                                                                              borderRadius: BorderRadius.only(
-                                                                                topRight: Radius.circular(4),
-                                                                                topLeft: Radius.circular(4),
+                                                                            child: Container(
+                                                                              width: 25,
+                                                                              height: 140 * barHeightRatio,
+                                                                              decoration: BoxDecoration(
+                                                                                color: barColor,
+                                                                                borderRadius: BorderRadius.only(
+                                                                                  topRight: Radius.circular(4),
+                                                                                  topLeft: Radius.circular(4),
+                                                                                ),
                                                                               ),
                                                                             ),
                                                                           ),
-                                                                        ),
-                                                                        SizedBox(height: 10),
-                                                                        Padding(
-                                                                          padding: const EdgeInsets.only(left: 3),
-                                                                          child: Container(
-                                                                            child: Text(
-                                                                              _resortModelController.getSlotName(slotName),
-                                                                              style: TextStyle(fontSize: 12, color: Color(0xFF111111)),
+                                                                          SizedBox(height: 10),
+                                                                          Padding(
+                                                                            padding: const EdgeInsets.only(left: 3),
+                                                                            child: Container(
+                                                                              child: Text(
+                                                                                _resortModelController.getSlotName(slotName),
+                                                                                style: TextStyle(fontSize: 12, color: Color(0xFF111111)),
+                                                                              ),
                                                                             ),
                                                                           ),
-                                                                        ),
-                                                                      ],
-                                                                    ),
-                                                                  );
+                                                                        ],
+                                                                      ),
+                                                                    );
 
 
                                                                 }).toList(),
                                                               ),
+                                                                  ),
                                                             ),
 
                                                           ],
