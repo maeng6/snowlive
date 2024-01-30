@@ -406,7 +406,7 @@ class _RankingIndiAllScreen_testState extends State<RankingIndiAllScreen_test> {
                                   rankingTierList: rankingTierList
                               ),
                               enableMemoryCache: true,
-                              cacheWidth: 40,
+                              cacheHeight: 100,
                               fit: BoxFit.cover,
                               width: 36,
                             ),
