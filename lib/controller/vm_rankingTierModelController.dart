@@ -374,18 +374,26 @@ class RankingTierModelController extends GetxController{
     Map<String, QueryDocumentSnapshot> uniqueDocs = {};
     for (var doc in rankingList) {
       String uid = doc['uid'];
-      if (!uniqueDocs.containsKey(uid) || uniqueDocs[uid]!['totalPassCount'] < doc['totalPassCount']) {
+      String dateString = doc['date'];
+
+      // dateString을 정수로 변환
+      int dateValue = int.tryParse(dateString) ?? 0;
+
+      if (!uniqueDocs.containsKey(uid) || uniqueDocs[uid]!['date'] == null || dateValue > (int.tryParse(uniqueDocs[uid]!['date']) ?? 0)) {
         uniqueDocs[uid] = doc;
       }
     }
 
     rankingList = uniqueDocs.values.toList();
-    _sortRankingList(rankingList);
+
+    // 주간 통합 랭킹을 totalPassCountWeekly 값이 큰 순서대로 정렬
+    rankingList.sort((a, b) => (b['totalPassCountWeekly'] ?? 0).compareTo(a['totalPassCountWeekly'] ?? 0));
 
     _rankingDocs_integrated_weekly!.value = rankingList.map((doc) => doc.data() as Map<String, dynamic>).toList();
     _userRankingMap_integrated_weekly!.value = await calculateRankIndiAll2_integrated(userRankingDocs: _rankingDocs_integrated_weekly);
     print('주간 통합랭킹 참여자 : ${_rankingDocs_integrated_weekly!.length}');
   }
+
 
   void sortRankingList2(List<QueryDocumentSnapshot> rankingList, String scoreField) {
     rankingList.sort((a, b) {
