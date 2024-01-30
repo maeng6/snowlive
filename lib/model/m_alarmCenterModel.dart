@@ -13,7 +13,7 @@ class AlarmCenterModel {
   static const String communityReplyKey_crew = 'communityReply_crew';
   static const String communityReplyKey_free = 'communityReply_free';
   static const String communityReplyKey_event = 'communityReply_event';
-  static const String communityReplyKey_lost = 'communityReply_event';
+  static const String communityReplyKey_lost = 'communityReply_lost';
 
   Map<String, String> alarmCategory = {
     friendRequestKey: '친구요청',
