@@ -476,7 +476,7 @@ class _Bulletin_Event_List_Screen_HomeState extends State<Bulletin_Event_List_Sc
                       ),
                     ));
                   }, options: CarouselOptions(
-                    height: 82,
+                    height: 87,
                     scrollPhysics: NeverScrollableScrollPhysics(),
                     viewportFraction: 1,
                     enableInfiniteScroll: false,
@@ -675,7 +675,7 @@ class _Bulletin_Event_List_Screen_HomeState extends State<Bulletin_Event_List_Sc
                       ),
                     ));
                   }, options: CarouselOptions(
-                    height: 82,
+                    height: 87,
                     initialPage: 0,
                     scrollPhysics: NeverScrollableScrollPhysics(),
                     viewportFraction: 1,
@@ -874,7 +874,7 @@ class _Bulletin_Event_List_Screen_HomeState extends State<Bulletin_Event_List_Sc
                       ),
                     ));
                   }, options: CarouselOptions(
-                    height: 82,
+                    height: 87,
                     initialPage: 0,
                     scrollPhysics: NeverScrollableScrollPhysics(),
                     viewportFraction: 1,
@@ -1073,7 +1073,7 @@ class _Bulletin_Event_List_Screen_HomeState extends State<Bulletin_Event_List_Sc
                       ),
                     ));
                   }, options: CarouselOptions(
-                    height: 82,
+                    height: 87,
                     initialPage: 4,
                     scrollPhysics: NeverScrollableScrollPhysics(),
                     viewportFraction: 1,

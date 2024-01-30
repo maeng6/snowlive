@@ -1893,7 +1893,7 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
                                                       height: 10,
                                                     ),
                                                     SizedBox(
-                                                      height: 420,
+                                                        height: 440,
                                                         child: Bulletin_Event_List_Screen_Home()),
                                                   ],
                                                 )),
@@ -3948,7 +3948,7 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
                                                     height: 10,
                                                   ),
                                                   SizedBox(
-                                                      height: 420,
+                                                      height: 440,
                                                       child: Bulletin_Event_List_Screen_Home()),
                                                 ],
                                               )),
