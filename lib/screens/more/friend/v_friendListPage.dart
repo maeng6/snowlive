@@ -8,6 +8,7 @@ import 'package:com.snowlive/screens/more/friend/v_friendDetailPage.dart';
 import 'package:com.snowlive/screens/more/friend/invitation/v_invitation_Screen_friend.dart';
 import 'package:com.snowlive/screens/more/friend/v_setting_friendList.dart';
 import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
+import '../../../controller/vm_streamController_friend.dart';
 import '../../../controller/vm_userModelController.dart';
 import 'v_searchUserPage.dart';
 
@@ -20,44 +21,12 @@ class FriendListPage extends StatefulWidget {
 
 class _FriendListPageState extends State<FriendListPage> {
 
-  var _alarmStream;
-  var _userStream;
-  var _friendStream;
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    _alarmStream = alarmStream();
-    _userStream = userStream();
-    _friendStream = friendStream();
-
-  }
 
   //TODO: Dependency Injection**************************************************
   UserModelController _userModelController = Get.find<UserModelController>();
+  StreamController_Friend _streamController_Friend = Get.find<StreamController_Friend>();
   //TODO: Dependency Injection**************************************************
 
-  Stream<QuerySnapshot> alarmStream() {
-    return FirebaseFirestore.instance
-        .collection('newAlarm')
-        .where('uid', isEqualTo: _userModelController.uid!)
-        .snapshots();
-  }
-
-  Stream<QuerySnapshot> userStream() {
-    return FirebaseFirestore.instance
-        .collection('user')
-        .where('uid', isEqualTo: _userModelController.uid!)
-        .snapshots();
-  }
-
-  Stream<QuerySnapshot> friendStream() {
-    return FirebaseFirestore.instance
-        .collection('user')
-        .where('whoResistMe', arrayContains: _userModelController.uid!)
-        .orderBy('displayName', descending: false)
-        .snapshots();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -71,7 +40,7 @@ class _FriendListPageState extends State<FriendListPage> {
         actions: [
 
           StreamBuilder(
-            stream: _alarmStream,
+            stream: _streamController_Friend.setupStreams_friendListPage_alarm(),
             builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
               if (!snapshot.hasData || snapshot.data == null) {
                 return  Padding(
@@ -301,7 +270,7 @@ class _FriendListPageState extends State<FriendListPage> {
             ),
             SizedBox(height: 12),
             StreamBuilder(
-              stream: _friendStream,
+              stream: _streamController_Friend.setupStreams_friendListPage_friend(),
               builder: (context,
                   AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
                 if (!snapshot.hasData) {
@@ -321,7 +290,7 @@ class _FriendListPageState extends State<FriendListPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     StreamBuilder(
-                      stream: _userStream,
+                      stream: _streamController_Friend.setupStreams_friendListPage_user(),
                       builder: (context,
                           AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>>
                           snapshot) {

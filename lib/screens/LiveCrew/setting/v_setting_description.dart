@@ -28,8 +28,8 @@ class _SetModifyDescription_crewDetailState extends State<SetModifyDescription_c
 
   @override
   Widget build(BuildContext context) {
+
     //TODO : ****************************************************************
-    UserModelController _userModelController = Get.find<UserModelController>();
     LiveCrewModelController _liveCrewModelController = Get.find<LiveCrewModelController>();
     //TODO : ****************************************************************
 

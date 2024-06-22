@@ -7,14 +7,13 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:com.snowlive/screens/LiveCrew/v_crewDetailPage_screen.dart';
 import 'package:com.snowlive/screens/LiveCrew/v_liveCrewList_more.dart';
 import 'package:com.snowlive/screens/LiveCrew/v_searchCrewPage.dart';
-import 'package:com.snowlive/screens/Ranking/test/v_Ranking_Crew_All_Screen_test.dart';
-import 'package:com.snowlive/screens/comments/v_profileImageScreen.dart';
+import 'package:com.snowlive/screens/common/v_profileImageScreen.dart';
 import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 import '../../../controller/vm_userModelController.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import '../../controller/vm_alarmCenterController.dart';
 import '../../controller/vm_liveCrewModelController.dart';
-import '../../controller/vm_rankingTierModelController.dart';
+import '../../controller/vm_streamController_liveCrew.dart';
 import '../../model/m_alarmCenterModel.dart';
 import '../../model/m_crewLogoModel.dart';
 import '../more/friend/v_friendDetailPage.dart';
@@ -34,7 +33,7 @@ class _LiveCrewHomeState extends State<LiveCrewHome> {
   UserModelController _userModelController = Get.find<UserModelController>();
   LiveCrewModelController _liveCrewModelController = Get.find<LiveCrewModelController>();
   AlarmCenterController _alarmCenterController = Get.find<AlarmCenterController>();
-  RankingTierModelController _rankingTierModelController = Get.find<RankingTierModelController>();
+  StreamController_liveCrew _streamController_liveCrew = Get.find<StreamController_liveCrew>();
   //TODO: Dependency Injection**************************************************
 
   var assetMyCrew;
@@ -217,20 +216,14 @@ class _LiveCrewHomeState extends State<LiveCrewHome> {
                 ),
               ),
               StreamBuilder(
-                  stream: FirebaseFirestore.instance
-                      .collection('liveCrew')
-                      .where('crewID', isEqualTo: _userModelController.liveCrew)
-                      .snapshots(),
+                  stream: _streamController_liveCrew.setupStreams_liveCrew_liveCrewHome_myCrew(),
                   builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
                     if (!snapshot.hasData || snapshot.data == null) {}
                     else if (snapshot.data!.docs.isNotEmpty) {
                       final crewDocs = snapshot.data!.docs;
                       if(crewDocs[0]['leaderUid'] == _userModelController.uid) {
                         return StreamBuilder(
-                            stream: FirebaseFirestore.instance
-                                .collection('user')
-                                .where('applyCrewList', arrayContains: _userModelController.liveCrew)
-                                .snapshots(),
+                            stream: _streamController_liveCrew.setupStreams_liveCrew_liveCrewHome_applyCrewList(),
                             builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
                               if (!snapshot.hasData || snapshot.data == null) {}
                               else if (snapshot.data!.docs.isNotEmpty) {
@@ -649,10 +642,7 @@ class _LiveCrewHomeState extends State<LiveCrewHome> {
                 child: Column(
                   children: [
                     StreamBuilder(
-                      stream: FirebaseFirestore.instance
-                          .collection('liveCrew')
-                          .where('memberUidList', arrayContains: _userModelController.uid!)
-                          .snapshots(),
+                      stream: _streamController_liveCrew.setupStreams_liveCrew_liveCrewHome_myCrew(),
                       builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot){
                         if (!snapshot.hasData || snapshot.data == null || snapshot.data!.docs.isEmpty) {
                           return Container(
@@ -705,10 +695,7 @@ class _LiveCrewHomeState extends State<LiveCrewHome> {
                         } else {
                           final crewDoc = snapshot.data!.docs.first;
                           return StreamBuilder(
-                            stream: FirebaseFirestore.instance
-                                .collection('user')
-                                .where('isOnLive', isEqualTo: true)
-                                .snapshots(),
+                            stream: _streamController_liveCrew.setupStreams_liveCrew_liveCrewHome_liveOn(),
                             builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> userSnapshot){
                               if (!userSnapshot.hasData || userSnapshot.data == null) {
                                 return Center(
@@ -970,12 +957,7 @@ class _LiveCrewHomeState extends State<LiveCrewHome> {
                     ),
                     Container(
                       child: StreamBuilder(
-                          stream: FirebaseFirestore.instance
-                              .collection('liveCrew')
-                              .where('baseResort', isEqualTo: _userModelController.favoriteResort!)
-                              .orderBy('resistDate', descending: true)
-                              .limit(10)
-                              .snapshots(),
+                          stream: _streamController_liveCrew.setupStreams_liveCrew_liveCrewHome_baseResortCrewList(),
                           builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
                             if (!snapshot.hasData || snapshot.data == null) {
                               return Padding(
@@ -1006,12 +988,9 @@ class _LiveCrewHomeState extends State<LiveCrewHome> {
                                 child: Column(
                                   children: crewDocs.map((doc) {
 
-                                    return StreamBuilder<QuerySnapshot>(
-                                        stream: FirebaseFirestore.instance
-                                            .collection('user')
-                                            .where('uid', isEqualTo: doc['leaderUid'])
-                                            .snapshots(),
-                                        builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+                                    return StreamBuilder(
+                                        stream: _streamController_liveCrew.setupStreams_liveCrew_liveCrewHome_userInfo(doc['leaderUid']),
+                                        builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
                                           if (!snapshot.hasData || snapshot.data == null) {
                                             return Container();
                                           }

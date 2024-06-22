@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:com.snowlive/controller/vm_alarmCenterController.dart';
-import 'package:com.snowlive/model/m_timeStampModel.dart';
 import 'package:com.snowlive/screens/more/friend/v_snowliveDetailPage.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
@@ -72,14 +71,6 @@ class _SearchUserPageState extends State<SearchUserPage> {
                       Get.back();
                     },
                   ),
-                  // actions: [
-                  //   GestureDetector(
-                  //     onTap: (){
-                  //       Get.to(()=>SearchUserPage());
-                  //     },
-                  //     child: Icon(Icons.search),
-                  //   )
-                  // ],
                   elevation: 0.0,
                   titleSpacing: 0,
                   centerTitle: true,

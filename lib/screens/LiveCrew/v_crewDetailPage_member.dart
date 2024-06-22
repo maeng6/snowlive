@@ -6,6 +6,7 @@ import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 import '../../../controller/vm_userModelController.dart';
 import '../../controller/vm_alarmCenterController.dart';
 import '../../controller/vm_liveCrewModelController.dart';
+import '../../controller/vm_streamController_liveCrew.dart';
 import '../../model/m_alarmCenterModel.dart';
 import '../more/friend/v_friendDetailPage.dart';
 
@@ -22,6 +23,7 @@ class _CrewDetailPage_memberState extends State<CrewDetailPage_member> {
   UserModelController _userModelController = Get.find<UserModelController>();
   LiveCrewModelController _liveCrewModelController = Get.find<LiveCrewModelController>();
   AlarmCenterController _alarmCenterController = Get.find<AlarmCenterController>();
+  StreamController_liveCrew _streamController_liveCrew = Get.find<StreamController_liveCrew>();
   //TODO: Dependency Injection**************************************************
 
 
@@ -32,12 +34,7 @@ class _CrewDetailPage_memberState extends State<CrewDetailPage_member> {
       child: Column(
         children: [
           StreamBuilder(
-            stream: FirebaseFirestore.instance
-                .collection('user')
-                .where('liveCrew', isEqualTo: _liveCrewModelController.crewID)
-                .orderBy('isOnLive', descending: true)
-                .orderBy('displayName', descending: false)
-                .snapshots(),
+            stream: _streamController_liveCrew.setupStreams_liveCrew_crewDetailPage_member(),
             builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
               if (!snapshot.hasData || snapshot.data == null) {
                 return Container();

@@ -1,8 +1,5 @@
-import 'dart:io';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:extended_image/extended_image.dart';
@@ -12,7 +9,7 @@ import 'package:com.snowlive/controller/vm_userModelController.dart';
 import 'package:com.snowlive/screens/LiveCrew/v_crewDetailPage_gallery_viewer.dart';
 import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 
-import '../comments/v_profileImageScreen.dart';
+import '../../controller/vm_streamController_liveCrew.dart';
 
 class CrewDetailPage_Gallery extends StatefulWidget {
   @override
@@ -24,10 +21,10 @@ class _CrewDetailPage_GalleryState extends State<CrewDetailPage_Gallery> {
   //TODO: Dependency Injection**************************************************
   UserModelController _userModelController = Get.find<UserModelController>();
   LiveCrewModelController _liveCrewModelController = Get.find<LiveCrewModelController>();
+  StreamController_liveCrew _streamController_liveCrew = Get.find<StreamController_liveCrew>();
   //TODO: Dependency Injection**************************************************
 
   XFile? _imageFile;
-  // List<XFile> _imageFiles = [];
 
   final picker = ImagePicker();
 
@@ -40,10 +37,7 @@ class _CrewDetailPage_GalleryState extends State<CrewDetailPage_Gallery> {
     return Scaffold(
       backgroundColor: Colors.white,
       body: StreamBuilder<QuerySnapshot>(
-          stream: FirebaseFirestore.instance
-              .collection('liveCrew')
-              .where('crewID', isEqualTo: _liveCrewModelController.crewID)
-              .snapshots(),
+          stream: _streamController_liveCrew.setupStreams_liveCrew_crewDetailPage_gallery(),
           builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
             if (snapshot.hasError) {
               return Text('이미지 로드 실패');

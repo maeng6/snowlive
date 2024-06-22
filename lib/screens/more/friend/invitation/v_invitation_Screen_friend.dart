@@ -4,8 +4,6 @@ import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:com.snowlive/screens/more/friend/invitation/v_inviteListPage_friend.dart';
 import 'package:com.snowlive/screens/more/friend/invitation/v_invitedListPage_friend.dart';
-import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
-
 import '../../../../controller/vm_userModelController.dart';
 
 class InvitationScreen_friend extends StatefulWidget {
@@ -21,10 +19,6 @@ class _InvitationScreen_friendState extends State<InvitationScreen_friend> {
     true,
     false,
   ];
-
-  //TODO: Dependency Injection**************************************************
-  UserModelController _userModelController = Get.find<UserModelController>();
-  //TODO: Dependency Injection**************************************************
 
   @override
   void setState(VoidCallback fn) {

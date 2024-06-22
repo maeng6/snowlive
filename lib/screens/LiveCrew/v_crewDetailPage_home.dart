@@ -1,4 +1,3 @@
-import 'dart:math';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:com.snowlive/controller/vm_imageController.dart';
@@ -10,20 +9,18 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
-import 'package:lottie/lottie.dart';
 import 'package:com.snowlive/controller/vm_liveCrewModelController.dart';
 import 'package:com.snowlive/controller/vm_liveMapController.dart';
 import 'package:com.snowlive/controller/vm_resortModelController.dart';
-import 'package:com.snowlive/controller/vm_seasonController.dart';
-import 'package:com.snowlive/screens/comments/v_profileImageScreen.dart';
+import 'package:com.snowlive/screens/common/v_profileImageScreen.dart';
 import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 import '../../../controller/vm_userModelController.dart';
 import '../../controller/vm_alarmCenterController.dart';
 import '../../controller/vm_rankingTierModelController.dart';
+import '../../controller/vm_streamController_liveCrew.dart';
 import '../../data/imgaUrls/Data_url_image.dart';
 import '../../model/m_alarmCenterModel.dart';
 import '../../model/m_crewLogoModel.dart';
-import '../Ranking/v_Ranking_MyCrew_Screen.dart';
 import '../more/friend/v_friendDetailPage.dart';
 
 class CrewDetailPage_home extends StatefulWidget {
@@ -36,7 +33,6 @@ class CrewDetailPage_home extends StatefulWidget {
 class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
 
   //TODO: Dependency Injection**************************************************
-  SeasonController _seasonController = Get.find<SeasonController>();
   UserModelController _userModelController = Get.find<UserModelController>();
   ResortModelController _resortModelController = Get.find<ResortModelController>();
   LiveCrewModelController _liveCrewModelController = Get.find<LiveCrewModelController>();
@@ -44,50 +40,22 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
   AlarmCenterController _alarmCenterController = Get.find<AlarmCenterController>();
   UrlLauncherController _urlLauncherController = Get.find<UrlLauncherController>();
   RankingTierModelController _rankingTierModelController = Get.find<RankingTierModelController>();
+  StreamController_liveCrew _streamController_liveCrew = Get.find<StreamController_liveCrew>();
   //TODO: Dependency Injection**************************************************
 
   var assetCrew;
 
   Map? crewRankingMap;
 
-  var _crewRankingStream;
-
   List? crewDocs;
 
-
-  Stream<QuerySnapshot> crewRankingStream() {
-    return FirebaseFirestore.instance
-        .collection('Ranking')
-        .doc('${_seasonController.currentSeason}')
-        .collection('${_liveCrewModelController.baseResort}')
-        .where('totalScore', isGreaterThan: 0)
-        .orderBy('totalScore', descending: true)
-        .snapshots();
-  }
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    _crewRankingStream = crewRankingStream();
-    getCrewDocs();
+    _streamController_liveCrew.getCrewDocs();
 
-  }
-
-
-  Future<void> getCrewDocs() async{
-    if(_liveCrewModelController.baseResort != 12 && _liveCrewModelController.baseResort != 2 && _liveCrewModelController.baseResort != 0 ) {
-
-      print('통합랭킹 진입');
-      await _rankingTierModelController.getRankingDocs_crew_integrated();
-      await _rankingTierModelController.getRankingDocs_integrated();
-
-    }else {
-      print('개별랭킹 진입');
-      await _rankingTierModelController.getRankingDocs_crew(baseResort: _liveCrewModelController.baseResort!);
-      await _rankingTierModelController.getRankingDocs(baseResort: _liveCrewModelController.baseResort);
-
-    }
   }
 
 
@@ -109,10 +77,7 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
       backgroundColor: Color(0xFFFFFFFF),
       extendBodyBehindAppBar: true,
       body: StreamBuilder<QuerySnapshot>(
-          stream: FirebaseFirestore.instance
-              .collection('liveCrew')
-              .where('crewID', isEqualTo: _liveCrewModelController.crewID )
-              .snapshots(),
+          stream: _streamController_liveCrew.setupStreams_liveCrew_crewDetailPage_home_currentCrew(),
           builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
             if (!snapshot.hasData || snapshot.data == null) {
               return SizedBox.shrink();
@@ -136,10 +101,7 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
               }
 
               return StreamBuilder<QuerySnapshot>(
-                  stream: FirebaseFirestore.instance
-                      .collection('user')
-                      .where('uid', isEqualTo: crewDocs[0].get('leaderUid'))
-                      .snapshots(),
+                  stream: _streamController_liveCrew.setupStreams_liveCrew_crewDetailPage_home_currentUser(crewDocs[0].get('leaderUid')),
                   builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
                     if (!snapshot.hasData || snapshot.data == null) {
                       return SizedBox.shrink();
@@ -297,68 +259,6 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                                       Row(
                                                         crossAxisAlignment: CrossAxisAlignment.end,
                                                         children: [
-                                                          // StreamBuilder(
-                                                          //     stream: FirebaseFirestore.instance
-                                                          //         .collection('liveCrew')
-                                                          //         .where('crewID', isEqualTo: _liveCrewModelController.crewID)
-                                                          //         .snapshots(),
-                                                          //     builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
-                                                          //       if (snapshot.connectionState == ConnectionState.waiting) {
-                                                          //         return Center(
-                                                          //           child: CircularProgressIndicator(),
-                                                          //         );
-                                                          //       } else if (snapshot.hasError) {
-                                                          //         return Text('Error: ${snapshot.error}');
-                                                          //       } else if (snapshot.hasData && snapshot.data!.docs.isNotEmpty) {
-                                                          //         final crewDocs = snapshot.data!.docs;
-                                                          //         List memberList = crewDocs[0]['memberUidList'];
-                                                          //         return StreamBuilder(
-                                                          //           stream: FirebaseFirestore.instance
-                                                          //               .collection('user')
-                                                          //               .where('uid', whereIn: memberList)
-                                                          //               .where('isOnLive', isEqualTo: true)
-                                                          //               .snapshots(),
-                                                          //           builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
-                                                          //             if (snapshot.connectionState == ConnectionState.waiting) {
-                                                          //               return Center(
-                                                          //                 child: CircularProgressIndicator(),
-                                                          //               );
-                                                          //             } else if (snapshot.hasError) {
-                                                          //               return Text('Error: ${snapshot.error}');
-                                                          //             } else if (snapshot.hasData && snapshot.data!.docs.isNotEmpty) {
-                                                          //               final liveMembersCount = snapshot.data!.docs.length;
-                                                          //               return  Text('$liveMembersCount',
-                                                          //                 style: GoogleFonts.bebasNeue(
-                                                          //                     color: Color(0xFFFFFFFF),
-                                                          //                     fontSize: 28
-                                                          //                 ),
-                                                          //               );
-                                                          //             } else {
-                                                          //               return Text('0',
-                                                          //                 style: GoogleFonts.bebasNeue(
-                                                          //                     color: Color(0xFFFFFFFF),
-                                                          //                     fontSize: 28
-                                                          //                 ),
-                                                          //               );
-                                                          //             }
-                                                          //           },
-                                                          //         );
-                                                          //       }
-                                                          //       return Container();
-                                                          //     }
-                                                          // ),
-                                                          // SizedBox(width: 4),
-                                                          // Padding(
-                                                          //   padding: const EdgeInsets.only(bottom: 4),
-                                                          //   child: Text('/',
-                                                          //   style: GoogleFonts.bebasNeue(
-                                                          //     fontSize: 16,
-                                                          //     color: Color(0xFFFFFFFF),
-                                                          //     fontWeight: FontWeight.bold
-                                                          //   ),
-                                                          //   ),
-                                                          // ),
-                                                          // SizedBox(width: 2),
                                                           Text('${memberUidList.length}',
                                                             style: GoogleFonts.bebasNeue(
                                                                 color: Color(0xFFFFFFFF),
@@ -367,26 +267,6 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                                           )
                                                         ],
                                                       ),
-                                                      // RichText(
-                                                      //   text: TextSpan(
-                                                      //     children: <TextSpan>[
-                                                      //       TextSpan(
-                                                      //         text: '1',
-                                                      //         style: TextStyle(
-                                                      //             color: Color(0xFFFFFFFF),
-                                                      //             fontSize: 28),
-                                                      //       ),
-                                                      //       TextSpan(
-                                                      //           text: ' / ',
-                                                      //           style: TextStyle(fontSize: 16, color: Colors.black,)
-                                                      //       ),
-                                                      //       TextSpan(
-                                                      //         text: '${memberUidList.length}',
-                                                      //         style: TextStyle(color: Colors.black, fontSize: 28),
-                                                      //       ),
-                                                      //     ],
-                                                      //   ),
-                                                      // ),
                                                     ],
                                                   ),
                                                   Column(
@@ -416,20 +296,6 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                                                 fontSize: 28
                                                             ),
                                                           ),
-                                                          // SizedBox(width: 3,),
-                                                          // Text('/',
-                                                          //   style: GoogleFonts.bebasNeue(
-                                                          //       fontSize: 16,
-                                                          //       color: Color(0xFFFFFFFF),
-                                                          //       fontWeight: FontWeight.bold
-                                                          //   ),
-                                                          // ),
-                                                          // Text('${crewDocs.length}',
-                                                          //   style: GoogleFonts.bebasNeue(
-                                                          //       color: Color(0xFFFFFFFF),
-                                                          //       fontSize: 28
-                                                          //   ),
-                                                          // ),
                                                         ],
                                                       ),
                                                     ],
@@ -628,50 +494,17 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                             child: Column(
                                               crossAxisAlignment: CrossAxisAlignment.start,
                                               children: [
-                                                Row(
-                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                  children: [
-                                                    Text(
-                                                      '크루원 랭킹 TOP 3',
-                                                      style: TextStyle(
-                                                        fontSize: 16,
-                                                        color: Color(0xFF111111),
-                                                        fontWeight: FontWeight.bold,
-                                                      ),
-                                                    ),
-                                                    GestureDetector(
-                                                      onTap: () async{
-                                                        CustomFullScreenDialog.showDialog();
-                                                        if(_liveCrewModelController.baseResort != 12 && _liveCrewModelController.baseResort != 2 && _liveCrewModelController.baseResort != 0 ) {
-                                                          print('통합랭킹 진입');
-                                                          await _rankingTierModelController.getRankingDocs_crew_integrated();
-                                                          await _rankingTierModelController.getRankingDocs_integrated();
-                                                          await _rankingTierModelController.getRankingDocs_crewMember_integrated(crewID: _liveCrewModelController.crewID, crewBase: _liveCrewModelController.baseResort);
-
-                                                        }else {
-                                                          await _rankingTierModelController.getRankingDocs_crew(baseResort: _liveCrewModelController.baseResort!);
-                                                          await _rankingTierModelController.getRankingDocs(baseResort: _liveCrewModelController.baseResort);
-                                                          await _rankingTierModelController.getRankingDocs_crewMember(crewID: _liveCrewModelController.crewID, crewBase: _liveCrewModelController.baseResort);
-                                                        }
-                                                        CustomFullScreenDialog.cancelDialog();
-                                                        Get.to(()=> RankingMyCrewScreen());
-                                                      },
-                                                      child: Text('전체 보기',
-                                                        style: TextStyle(
-                                                            color: Color(0xFF949494),
-                                                            fontSize: 12,
-                                                            fontWeight: FontWeight.bold
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ],
+                                                Text(
+                                                  '크루원 랭킹 TOP 3',
+                                                  style: TextStyle(
+                                                    fontSize: 16,
+                                                    color: Color(0xFF111111),
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
                                                 ),
                                                 SizedBox(height: 10),
                                                 StreamBuilder(
-                                                    stream: FirebaseFirestore.instance
-                                                        .collection('liveCrew')
-                                                        .where('crewID', isEqualTo: _liveCrewModelController.crewID)
-                                                        .snapshots(),
+                                                    stream: _streamController_liveCrew.setupStreams_liveCrew_crewDetailPage_home_currentCrew(),
                                                     builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
                                                       if (!snapshot.hasData || snapshot.data == null) {
                                                         return Center(
@@ -706,7 +539,7 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                                         final crewDocs = snapshot.data!.docs;
                                                         List memberList = crewDocs[0]['memberUidList'];
                                                         return StreamBuilder(
-                                                          stream: _crewRankingStream,
+                                                          stream: _streamController_liveCrew.setupStreams_liveCrew_crewDetailPage_home_ranking(),
                                                           builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
                                                             if (!snapshot.hasData || snapshot.data == null) {
                                                               return Center(
@@ -787,10 +620,7 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                                                           SizedBox(height: 10),
                                                                           Container(
                                                                               child:  StreamBuilder(
-                                                                                  stream: FirebaseFirestore.instance
-                                                                                      .collection('user')
-                                                                                      .where('uid', isEqualTo: memberScoreDocs[0]['uid'])
-                                                                                      .snapshots(),
+                                                                                  stream: _streamController_liveCrew.setupStreams_liveCrew_crewDetailPage_home_currentUser(memberScoreDocs[0]['uid']),
                                                                                   builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
                                                                                     if (!snapshot.hasData || snapshot.data == null) {
                                                                                       return SizedBox.shrink();
@@ -946,10 +776,7 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                                                           SizedBox(height: 10,),
                                                                           Container(
                                                                               child:  StreamBuilder(
-                                                                                  stream: FirebaseFirestore.instance
-                                                                                      .collection('user')
-                                                                                      .where('uid', isEqualTo: memberScoreDocs[1]['uid'])
-                                                                                      .snapshots(),
+                                                                                  stream: _streamController_liveCrew.setupStreams_liveCrew_crewDetailPage_home_currentUser(memberScoreDocs[1]['uid']),
                                                                                   builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
                                                                                     if (!snapshot.hasData || snapshot.data == null) {
                                                                                       return SizedBox.shrink();
@@ -1103,10 +930,7 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                                                           SizedBox(height: 10,),
                                                                           Container(
                                                                               child:  StreamBuilder(
-                                                                                  stream: FirebaseFirestore.instance
-                                                                                      .collection('user')
-                                                                                      .where('uid', isEqualTo: memberScoreDocs[2]['uid'])
-                                                                                      .snapshots(),
+                                                                                  stream: _streamController_liveCrew.setupStreams_liveCrew_crewDetailPage_home_currentUser(memberScoreDocs[2]['uid']),
                                                                                   builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
                                                                                     if (!snapshot.hasData || snapshot.data == null) {
                                                                                       return SizedBox.shrink();
@@ -1324,10 +1148,7 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                                   ),
                                                 ),
                                                 StreamBuilder(
-                                                  stream: FirebaseFirestore.instance
-                                                      .collection('liveCrew')
-                                                      .where('crewID', isEqualTo: _liveCrewModelController.crewID)
-                                                      .snapshots(),
+                                                  stream: _streamController_liveCrew.setupStreams_liveCrew_crewDetailPage_home_currentCrew(),
                                                   builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
                                                     if (!snapshot.hasData || snapshot.data == null) {
                                                       return SizedBox.shrink();
@@ -1382,7 +1203,6 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                                                             String slopeName = data['slopeName'];
                                                                             int passCount = data['passCount'];
                                                                             double barHeightRatio = data['barHeightRatio'];
-                                                                            Color barColor = Color(crewDocs[0]['crewColor']);
                                                                             return Container(
                                                                               padding: EdgeInsets.only(bottom: 2),
                                                                               margin: EdgeInsets.symmetric(horizontal: 10),
@@ -1490,10 +1310,7 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                                 ),
                                                 SizedBox(height: 10),
                                                 StreamBuilder(
-                                                    stream: FirebaseFirestore.instance
-                                                        .collection('liveCrew')
-                                                        .where('crewID', isEqualTo: _liveCrewModelController.crewID)
-                                                        .snapshots(),
+                                                    stream: _streamController_liveCrew.setupStreams_liveCrew_crewDetailPage_home_currentCrew(),
                                                     builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
                                                       if (!snapshot.hasData || snapshot.data == null) {
                                                         return SizedBox.shrink();
@@ -1633,10 +1450,7 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                       ),
                                       SizedBox(height: 20),
                                       StreamBuilder<QuerySnapshot>(
-                                        stream: FirebaseFirestore.instance
-                                            .collection('liveCrew')
-                                            .where('crewID', isEqualTo: _liveCrewModelController.crewID)
-                                            .snapshots(),
+                                        stream: _streamController_liveCrew.setupStreams_liveCrew_crewDetailPage_home_currentCrew(),
                                         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
                                           if (snapshot.hasError) {
                                             return Text('이미지 로드 실패');

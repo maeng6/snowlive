@@ -4,12 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:com.snowlive/controller/vm_searchCrewController.dart';
 import 'package:com.snowlive/controller/vm_timeStampController.dart';
-import 'package:com.snowlive/screens/LiveCrew/v_crewDetailPage_home.dart';
 import 'package:com.snowlive/screens/LiveCrew/v_crewDetailPage_screen.dart';
 import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 import '../../../controller/vm_searchUserController.dart';
 import '../../../controller/vm_userModelController.dart';
-import '../../../model/m_userModel.dart';
 import '../../controller/vm_alarmCenterController.dart';
 import '../../controller/vm_liveCrewModelController.dart';
 import '../../model/m_alarmCenterModel.dart';
@@ -74,14 +72,6 @@ class _SearchCrewPageState extends State<SearchCrewPage> {
                   Get.back();
                 },
               ),
-              // actions: [
-              //   GestureDetector(
-              //     onTap: (){
-              //       Get.to(()=>SearchUserPage());
-              //     },
-              //     child: Icon(Icons.search),
-              //   )
-              // ],
               elevation: 0.0,
               titleSpacing: 0,
               centerTitle: true,

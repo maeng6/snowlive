@@ -3,22 +3,19 @@ import 'package:extended_image/extended_image.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:get/get.dart';
-import 'package:lottie/lottie.dart';
-import 'package:com.snowlive/screens/v_webPage.dart';
-
+import '../../controller/vm_streamController_banner.dart';
 import '../../controller/vm_urlLauncherController.dart';
 import '../../controller/vm_userModelController.dart';
 
-class DiscoverScreen_ResortBanner extends StatefulWidget {
+class Banner_resortHome extends StatefulWidget {
   @override
-  _DiscoverScreen_ResortBannerState createState() =>
-      _DiscoverScreen_ResortBannerState();
+  _Banner_resortHomeState createState() =>
+      _Banner_resortHomeState();
 }
 
-class _DiscoverScreen_ResortBannerState
-    extends State<DiscoverScreen_ResortBanner> {
+class _Banner_resortHomeState
+    extends State<Banner_resortHome> {
   UserModelController _userModelController = Get.find<UserModelController>();
   CarouselController _carouselController = CarouselController();
   ValueNotifier<int> _currentIndexNotifier = ValueNotifier<int>(0);
@@ -31,6 +28,7 @@ class _DiscoverScreen_ResortBannerState
 
   //TODO: Dependency Injection**************************************************
   UrlLauncherController _urlLauncherController = Get.find<UrlLauncherController>();
+  StreamController_Banner _streamController_Banner = Get.find<StreamController_Banner>();
   //TODO: Dependency Injection**************************************************
 
   @override
@@ -38,12 +36,7 @@ class _DiscoverScreen_ResortBannerState
     Size _size = MediaQuery.of(context).size;
 
     return StreamBuilder(
-      stream: FirebaseFirestore.instance
-          .collection('discover_banner_url')
-          .doc('${_userModelController.instantResort}')
-          .collection('1')
-          .where('visable', isEqualTo: true)
-          .snapshots(),
+      stream: _streamController_Banner.bannerStream_resortHome.value,
       builder: (context,
           AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
         // 데이터 로드 중이라면

@@ -1,16 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:com.snowlive/controller/vm_bottomTabBarController.dart';
 import 'package:com.snowlive/controller/vm_loginController.dart';
-import 'package:com.snowlive/screens/Ranking/v_ranking_comingSoon_Screen.dart';
+import 'package:com.snowlive/screens/Ranking/v_Ranking_Home.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:com.snowlive/controller/vm_liveMapController.dart';
-import 'package:com.snowlive/screens/Ranking/test/v_Ranking_Home_test.dart';
-import 'package:com.snowlive/screens/comments/v_liveTalk_Screen.dart';
 import 'package:com.snowlive/screens/resort/v_resortHome.dart';
 import '../controller/vm_noticeController.dart';
-import '../controller/vm_rankingTierModelController.dart';
-import '../controller/vm_seasonController.dart';
+import '../controller/vm_streamController_resortHome.dart';
 import '../controller/vm_userModelController.dart';
 import 'bulletin/v_bulletin_Screen.dart';
 import 'fleaMarket/v_fleaMarket_Screen.dart';
@@ -26,13 +22,21 @@ class MainHome extends StatefulWidget {
 }
 
 class _MainHomeState extends State<MainHome> {
+
+  //TODO: Dependency Injection************************************************
+  StreamController_ResortHome _streamController_ResortHome = Get.find<StreamController_ResortHome>();
+  //TODO: Dependency Injection************************************************
+
+
   late LoginController _loginController;
   late UserModelController _userModelController;
+  Stream<QuerySnapshot<Map<String, dynamic>>>? _alarmStream;
 
   @override
   void initState() {
     _loginController = Get.find<LoginController>();
     _userModelController = Get.find<UserModelController>();
+    _alarmStream = _streamController_ResortHome.alarmStream.value;
     deviceIdendtificate();
     super.initState();
 
@@ -46,16 +50,11 @@ class _MainHomeState extends State<MainHome> {
   Widget build(BuildContext context) {
 
     //TODO: Dependency Injection************************************************
-
     Get.put(NoticeController(), permanent: true);
-
     Get.put(BottomTabBarController(),permanent: true);
-    NoticeController _noticeController = Get.find<NoticeController>()..getIsNewNotice();
     UserModelController _userModelController = Get.find<UserModelController>();
     BottomTabBarController _bottomTabBarController = Get.find<BottomTabBarController>();
     PageControllerManager _pageControllerManager = Get.find<PageControllerManager>();
-    LoginController _loginController = Get.find<LoginController>();
-    SeasonController _seasonController = Get.find<SeasonController>();
     //TODO: Dependency Injection************************************************
 
 
@@ -82,10 +81,7 @@ class _MainHomeState extends State<MainHome> {
                       top: 2,
                       right: 0.0,
                       child: StreamBuilder(
-                        stream: FirebaseFirestore.instance
-                            .collection('newAlarm')
-                            .where('uid', isEqualTo: _userModelController.uid!)
-                            .snapshots(),
+                        stream: _alarmStream,
                         builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
                           if (!snapshot.hasData || snapshot.data == null) {
                             return  SizedBox.shrink();
@@ -124,10 +120,7 @@ class _MainHomeState extends State<MainHome> {
                       top: 2,
                       right: 0.0,
                       child: StreamBuilder(
-                        stream: FirebaseFirestore.instance
-                            .collection('newAlarm')
-                            .where('uid', isEqualTo: _userModelController.uid!)
-                            .snapshots(),
+                        stream: _alarmStream,
                         builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
                           if (!snapshot.hasData || snapshot.data == null) {
                             return  SizedBox.shrink();
@@ -167,20 +160,20 @@ class _MainHomeState extends State<MainHome> {
                 color: Color(0xFF444444),
               ),
               label: '스노우마켓',
-            ), //브랜드
+            ),
             BottomNavigationBarItem(
               icon: ImageIcon(
-                AssetImage('assets/imgs/icons/icon_livetalk_off.png'),
+                AssetImage('assets/imgs/icons/icon_discover_off.png'),
                 size: 36,
                 color: Color(0xFF444444),
               ),
               activeIcon: ImageIcon(
-                AssetImage('assets/imgs/icons/icon_livetalk_on.png'),
+                AssetImage('assets/imgs/icons/icon_discover_on.png'),
                 size: 36,
                 color: Color(0xFF444444),
               ),
-              label: '라이브톡',
-            ), //라톡
+              label: '랭킹',
+            ),
             BottomNavigationBarItem(
               icon: Stack(
                 children: [
@@ -311,8 +304,8 @@ class _MainHomeState extends State<MainHome> {
           children: [
             ResortHome(),
             FleaMarketScreen(),
-            LiveTalkScreen(),
-            BulletinScreen(tap_1: _bottomTabBarController.tap_1, tap_2: _bottomTabBarController.tap_2, tap_3: _bottomTabBarController.tap_3, tap_4: _bottomTabBarController.tap_4, tap_5: _bottomTabBarController.tap_5),
+            RankingHome(),
+            BulletinScreen(tap_1: _bottomTabBarController.tap_1, tap_2: _bottomTabBarController.tap_2),
             MoreTab(),
           ],
         )

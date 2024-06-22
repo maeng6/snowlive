@@ -1,6 +1,6 @@
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:com.snowlive/controller/vm_seasonController.dart';
+import 'package:com.snowlive/controller/vm_streamController_bulletin.dart';
 import 'package:com.snowlive/screens/bulletin/Event/v_bulletinEventImageScreen.dart';
 import 'package:com.snowlive/screens/bulletin/Event/v_bulletin_Event_ModifyPage.dart';
 import 'package:extended_image/extended_image.dart';
@@ -33,17 +33,13 @@ class _Bulletin_Event_List_DetailState extends State<Bulletin_Event_List_Detail>
   AlarmCenterController _alarmCenterController = Get.find<AlarmCenterController>();
   TimeStampController _timeStampController = Get.find<TimeStampController>();
   UrlLauncherController _urlLauncherController = Get.find<UrlLauncherController>();
+  StreamController_Bulletin _streamController_Bulletin = Get.find<StreamController_Bulletin>();
   //TODO: Dependency Injection**************************************************
 
   final _controller = TextEditingController();
   var _newReply = '';
   final _formKey = GlobalKey<FormState>();
   bool _replyReverse = true;
-
-  var _replyStream;
-  bool _myReply = false;
-
-  int _currentIndex = 0;
 
 
   ScrollController _scrollController = ScrollController();
@@ -58,22 +54,12 @@ class _Bulletin_Event_List_DetailState extends State<Bulletin_Event_List_Detail>
     // TODO: implement initState
     super.initState();
     _seasonController.getBulletinEventReplyLimit();
-    _replyStream = replyNewStream();
   }
 
   _updateMethod() async {
     await _userModelController.updateRepoUidList();
   }
 
-  Stream<QuerySnapshot> replyNewStream() {
-    return FirebaseFirestore.instance
-        .collection('bulletinEvent')
-        .doc('${_bulletinEventModelController.uid}#${_bulletinEventModelController.bulletinEventCount}')
-        .collection('reply')
-        .orderBy('timeStamp', descending: true)
-        .limit(_seasonController.bulletinEventReplyLimit!)
-        .snapshots();
-  }
 
 
 
@@ -621,10 +607,7 @@ class _Bulletin_Event_List_DetailState extends State<Bulletin_Event_List_Detail>
                                           Row(
                                             children: [
                                               StreamBuilder(
-                                                  stream:  FirebaseFirestore.instance
-                                                      .collection('user')
-                                                      .where('uid', isEqualTo: _bulletinEventModelController.uid)
-                                                      .snapshots(),
+                                                  stream: _streamController_Bulletin.setupStreams_bulletinEvent_detail_user(),
                                                   builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
                                                     if (!snapshot.hasData || snapshot.data == null) {
                                                       return  SizedBox();
@@ -915,7 +898,7 @@ class _Bulletin_Event_List_DetailState extends State<Bulletin_Event_List_Detail>
                                           ),
                                           Container(
                                             child: StreamBuilder<QuerySnapshot>(
-                                                stream: _replyStream,
+                                                stream: _streamController_Bulletin.setupStreams_bulletinEvent_detail_reply(),
                                                 builder: (context, snapshot2) {
                                                   if (!snapshot2.hasData) {
                                                     return Container(
@@ -989,10 +972,7 @@ class _Bulletin_Event_List_DetailState extends State<Bulletin_Event_List_Detail>
                                                                                   crossAxisAlignment: CrossAxisAlignment.start,
                                                                                   children: [
                                                                                     StreamBuilder(
-                                                                                        stream:  FirebaseFirestore.instance
-                                                                                            .collection('user')
-                                                                                            .where('uid', isEqualTo: replyDocs[index]['uid'])
-                                                                                            .snapshots(),
+                                                                                        stream: _streamController_Bulletin.setupStreams_bulletinEvent_detail_user_reply('${replyDocs[index]['uid']}'),
                                                                                         builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
                                                                                           if (!snapshot.hasData || snapshot.data == null) {
                                                                                             return SizedBox();

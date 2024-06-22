@@ -12,6 +12,7 @@ import 'package:com.snowlive/controller/vm_fleaMarketController.dart';
 import 'package:com.snowlive/screens/fleaMarket/v_fleaMarket_List_Detail.dart';
 import 'package:com.snowlive/screens/fleaMarket/v_fleaMarket_Upload.dart';
 import 'package:com.snowlive/screens/fleaMarket/v_phone_Auth_Screen.dart';
+import '../../controller/vm_streamController_fleaMarket.dart';
 import '../../controller/vm_userModelController.dart';
 import '../../widget/w_fullScreenDialog.dart';
 
@@ -27,13 +28,13 @@ class _FleaMarket_List_ScreenState extends State<FleaMarket_List_Screen> {
   UserModelController _userModelController = Get.find<UserModelController>();
   FleaModelController _fleaModelController = Get.find<FleaModelController>();
   SeasonController _seasonController = Get.find<SeasonController>();
-
+  StreamController_fleaMarket _streamController_fleaMarket = Get.find<StreamController_fleaMarket>();
 //TODO: Dependency Injection**************************************************
 
-  var _stream;
   var _selectedValue = '카테고리';
   var _selectedValue2 = '거래장소';
-  var _allCategories;
+
+  Stream<QuerySnapshot<Map<String, dynamic>>>? _fleaStream;
 
   var f = NumberFormat('###,###,###,###');
 
@@ -48,7 +49,12 @@ class _FleaMarket_List_ScreenState extends State<FleaMarket_List_Screen> {
     // TODO: implement initState
     super.initState();
     _seasonController.getFleaMarketLimit();
-    _stream = newStream();
+
+    setState(() {
+      _streamController_fleaMarket.setSelectedValues('카테고리', _selectedValue2);
+      _streamController_fleaMarket.setSelectedValues(_selectedValue, '거래장소');
+      _fleaStream = _streamController_fleaMarket.fleaStream_fleaMarket_List_Screen.value;
+    });
 
     // Add a listener to the ScrollController
     _scrollController.addListener(() {
@@ -88,18 +94,6 @@ class _FleaMarket_List_ScreenState extends State<FleaMarket_List_Screen> {
 
   }
 
-  Stream<QuerySnapshot> newStream() {
-    return FirebaseFirestore.instance
-        .collection('fleaMarket')
-        .where('category',
-        isEqualTo:
-        (_selectedValue == '카테고리') ? _allCategories : '$_selectedValue')
-        .where('location', isEqualTo: (_selectedValue2 == '거래장소') ? _allCategories : '$_selectedValue2')
-        .orderBy('timeStamp', descending: true)
-        .limit(_seasonController.fleaMarketLimit!)
-        .snapshots();
-  }
-
   _showCupertinoPicker() async {
     await showCupertinoModalPopup(
         context: context,
@@ -118,6 +112,7 @@ class _FleaMarket_List_ScreenState extends State<FleaMarket_List_Screen> {
                           setState(() {
                             _selectedValue = '카테고리';
                           });
+                          _streamController_fleaMarket.setSelectedValues('카테고리', _selectedValue2);
                           Navigator.pop(context);
                         },
                         child: Text(
@@ -129,6 +124,7 @@ class _FleaMarket_List_ScreenState extends State<FleaMarket_List_Screen> {
                           setState(() {
                             _selectedValue = '데크';
                           });
+                          _streamController_fleaMarket.setSelectedValues('데크', _selectedValue2);
                           Navigator.pop(context);
                         },
                         child: Text('데크')),
@@ -138,6 +134,7 @@ class _FleaMarket_List_ScreenState extends State<FleaMarket_List_Screen> {
                           setState(() {
                             _selectedValue = '바인딩';
                           });
+                          _streamController_fleaMarket.setSelectedValues('바인딩', _selectedValue2);
                           Navigator.pop(context);
                         },
                         child: Text('바인딩')),
@@ -147,6 +144,7 @@ class _FleaMarket_List_ScreenState extends State<FleaMarket_List_Screen> {
                           setState(() {
                             _selectedValue = '부츠';
                           });
+                          _streamController_fleaMarket.setSelectedValues('부츠', _selectedValue2);
                           Navigator.pop(context);
                         },
                         child: Text('부츠')),
@@ -156,6 +154,7 @@ class _FleaMarket_List_ScreenState extends State<FleaMarket_List_Screen> {
                           setState(() {
                             _selectedValue = '의류';
                           });
+                          _streamController_fleaMarket.setSelectedValues('의류', _selectedValue2);
                           Navigator.pop(context);
                         },
                         child: Text('의류')),
@@ -165,6 +164,7 @@ class _FleaMarket_List_ScreenState extends State<FleaMarket_List_Screen> {
                           setState(() {
                             _selectedValue = '플레이트';
                           });
+                          _streamController_fleaMarket.setSelectedValues('플레이트', _selectedValue2);
                           Navigator.pop(context);
                         },
                         child: Text('플레이트')),
@@ -174,6 +174,7 @@ class _FleaMarket_List_ScreenState extends State<FleaMarket_List_Screen> {
                           setState(() {
                             _selectedValue = '기타';
                           });
+                          _streamController_fleaMarket.setSelectedValues('기타', _selectedValue2);
                           Navigator.pop(context);
                         },
                         child: Text('기타')),
@@ -186,27 +187,11 @@ class _FleaMarket_List_ScreenState extends State<FleaMarket_List_Screen> {
                     },
                   ),
                 )
-
-              // CupertinoPicker(
-              //   magnification: 1.1,
-              //   backgroundColor: Colors.white,
-              //   itemExtent: 40,
-              //   children: [
-              //     ..._categories.map((e) => Text(e))
-              //   ],
-              //   onSelectedItemChanged: (i) {
-              //     setState(() {
-              //       _selectedValue = _categories[i];
-              //     });
-              //   },
-              //   scrollController: _scrollWheelController,
-              // ),
-
             ),
           );
         });
     setState(() {
-      _stream = newStream();
+      _fleaStream = _streamController_fleaMarket.fleaStream_fleaMarket_List_Screen.value;
     });
   }
 
@@ -228,6 +213,7 @@ class _FleaMarket_List_ScreenState extends State<FleaMarket_List_Screen> {
                           setState(() {
                             _selectedValue2 = '거래장소';
                           });
+                          _streamController_fleaMarket.setSelectedValues(_selectedValue, '거래장소');
                           Navigator.pop(context);
                         },
                         child: Text(
@@ -239,6 +225,7 @@ class _FleaMarket_List_ScreenState extends State<FleaMarket_List_Screen> {
                           setState(() {
                             _selectedValue2 = '곤지암리조트';
                           });
+                          _streamController_fleaMarket.setSelectedValues(_selectedValue, '곤지암리조트');
                           Navigator.pop(context);
                         },
                         child: Text('곤지암리조트')),
@@ -248,6 +235,7 @@ class _FleaMarket_List_ScreenState extends State<FleaMarket_List_Screen> {
                           setState(() {
                             _selectedValue2 = '무주덕유산리조트';
                           });
+                          _streamController_fleaMarket.setSelectedValues(_selectedValue, '무주덕유산리조트');
                           Navigator.pop(context);
                         },
                         child: Text('무주덕유산리조트')),
@@ -257,6 +245,7 @@ class _FleaMarket_List_ScreenState extends State<FleaMarket_List_Screen> {
                           setState(() {
                             _selectedValue2 = '비발디파크';
                           });
+                          _streamController_fleaMarket.setSelectedValues(_selectedValue, '비발디파크');
                           Navigator.pop(context);
                         },
                         child: Text('비발디파크')),
@@ -265,6 +254,7 @@ class _FleaMarket_List_ScreenState extends State<FleaMarket_List_Screen> {
                           HapticFeedback.lightImpact();
                           setState(() {
                             _selectedValue2 = '알펜시아';
+                            _streamController_fleaMarket.setSelectedValues(_selectedValue, '알펜시아');
                           });
                           Navigator.pop(context);
                         },
@@ -275,6 +265,7 @@ class _FleaMarket_List_ScreenState extends State<FleaMarket_List_Screen> {
                           setState(() {
                             _selectedValue2 = '에덴밸리리조트';
                           });
+                          _streamController_fleaMarket.setSelectedValues(_selectedValue, '에덴벨리리조트');
                           Navigator.pop(context);
                         },
                         child: Text('에덴밸리리조트')),
@@ -284,6 +275,7 @@ class _FleaMarket_List_ScreenState extends State<FleaMarket_List_Screen> {
                           setState(() {
                             _selectedValue2 = '엘리시안강촌';
                           });
+                          _streamController_fleaMarket.setSelectedValues(_selectedValue, '엘리시안강촌');
                           Navigator.pop(context);
                         },
                         child: Text('엘리시안강촌')),
@@ -293,6 +285,7 @@ class _FleaMarket_List_ScreenState extends State<FleaMarket_List_Screen> {
                           setState(() {
                             _selectedValue2 = '오크밸리리조트';
                           });
+                          _streamController_fleaMarket.setSelectedValues(_selectedValue, '오크밸리리조트');
                           Navigator.pop(context);
                         },
                         child: Text('오크밸리리조트')),
@@ -302,6 +295,7 @@ class _FleaMarket_List_ScreenState extends State<FleaMarket_List_Screen> {
                           setState(() {
                             _selectedValue2 = '오투리조트';
                           });
+                          _streamController_fleaMarket.setSelectedValues(_selectedValue, '오투리조트');
                           Navigator.pop(context);
                         },
                         child: Text('오투리조트')),
@@ -311,6 +305,7 @@ class _FleaMarket_List_ScreenState extends State<FleaMarket_List_Screen> {
                           setState(() {
                             _selectedValue2 = '용평리조트';
                           });
+                          _streamController_fleaMarket.setSelectedValues(_selectedValue, '용평리조트');
                           Navigator.pop(context);
                         },
                         child: Text('용평리조트')),
@@ -320,6 +315,7 @@ class _FleaMarket_List_ScreenState extends State<FleaMarket_List_Screen> {
                           setState(() {
                             _selectedValue2 = '웰리힐리파크';
                           });
+                          _streamController_fleaMarket.setSelectedValues(_selectedValue, '웰리힐리파크');
                           Navigator.pop(context);
                         },
                         child: Text('웰리힐리파크')),
@@ -329,6 +325,7 @@ class _FleaMarket_List_ScreenState extends State<FleaMarket_List_Screen> {
                           setState(() {
                             _selectedValue2 = '지산리조트';
                           });
+                          _streamController_fleaMarket.setSelectedValues(_selectedValue, '지산리조트');
                           Navigator.pop(context);
                         },
                         child: Text('지산리조트')),
@@ -338,6 +335,7 @@ class _FleaMarket_List_ScreenState extends State<FleaMarket_List_Screen> {
                           setState(() {
                             _selectedValue2 = '하이원리조트';
                           });
+                          _streamController_fleaMarket.setSelectedValues(_selectedValue, '하이원리조트');
                           Navigator.pop(context);
                         },
                         child: Text('하이원리조트')),
@@ -347,6 +345,7 @@ class _FleaMarket_List_ScreenState extends State<FleaMarket_List_Screen> {
                           setState(() {
                             _selectedValue2 = '휘닉스파크';
                           });
+                          _streamController_fleaMarket.setSelectedValues(_selectedValue, '휘닉스파크');
                           Navigator.pop(context);
                         },
                         child: Text('휘닉스파크')),
@@ -356,6 +355,7 @@ class _FleaMarket_List_ScreenState extends State<FleaMarket_List_Screen> {
                           setState(() {
                             _selectedValue2 = '기타지역';
                           });
+                          _streamController_fleaMarket.setSelectedValues(_selectedValue, '기타지역');
                           Navigator.pop(context);
                         },
                         child: Text('기타지역')),
@@ -368,27 +368,11 @@ class _FleaMarket_List_ScreenState extends State<FleaMarket_List_Screen> {
                     },
                   ),
                 )
-
-              // CupertinoPicker(
-              //   magnification: 1.1,
-              //   backgroundColor: Colors.white,
-              //   itemExtent: 40,
-              //   children: [
-              //     ..._categories.map((e) => Text(e))
-              //   ],
-              //   onSelectedItemChanged: (i) {
-              //     setState(() {
-              //       _selectedValue = _categories[i];
-              //     });
-              //   },
-              //   scrollController: _scrollWheelController,
-              // ),
-
             ),
           );
         });
     setState(() {
-      _stream = newStream();
+      _fleaStream = _streamController_fleaMarket.fleaStream_fleaMarket_List_Screen.value;
     });
   }
 
@@ -617,7 +601,7 @@ class _FleaMarket_List_ScreenState extends State<FleaMarket_List_Screen> {
                 ),
                 Expanded(
                   child: StreamBuilder<QuerySnapshot>(
-                    stream: _stream,
+                    stream: _fleaStream,
                     builder: (context, snapshot) {
                       if (!snapshot.hasData) {
                         return Container(
@@ -683,6 +667,7 @@ class _FleaMarket_List_ScreenState extends State<FleaMarket_List_Screen> {
                                     if (data?.containsKey('lock') == false) {
                                       await chatDocs[index].reference.update({'viewerUid': []});
                                     }
+                                    await   _streamController_fleaMarket.setupStreams_fleaMarket_List_Detail();
                                     await _fleaModelController.updateViewerUid();
                                     CustomFullScreenDialog.cancelDialog();
                                     print(_fleaModelController.itemImagesUrls);

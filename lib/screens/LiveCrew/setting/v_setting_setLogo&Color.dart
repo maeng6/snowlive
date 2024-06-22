@@ -3,12 +3,9 @@ import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:com.snowlive/controller/vm_imageController.dart';
-import 'package:com.snowlive/screens/LiveCrew/CreateOnboarding/v_setCrewResort.dart';
 import '../../../controller/vm_liveCrewModelController.dart';
-import '../../../controller/vm_userModelController.dart';
 import '../../../model/m_liveCrewModel.dart';
 import '../../../widget/w_fullScreenDialog.dart';
 
@@ -256,8 +253,7 @@ class _SetCrewLogoColor_settingState extends State<SetCrewLogoColor_setting> {
                         ),
                       );
                     },
-                    child: Stack(children: [
-                      Container(
+                    child: Container(
                         decoration: BoxDecoration(
                           color: currentColor_background,
                           borderRadius: BorderRadius.all(Radius.circular(10)),
@@ -290,20 +286,7 @@ class _SetCrewLogoColor_settingState extends State<SetCrewLogoColor_setting> {
                           ),
                         )
                       ),
-                      // Positioned(
-                      //     bottom: 180,
-                      //     right: 70,
-                      //     child: GestureDetector(
-                      //       child: ExtendedImage.asset(
-                      //           'assets/imgs/icons/icon_profile_delete.png',
-                      //           scale: 4),
-                      //       onTap: () {
-                      //         crewImage = false;
-                      //         _croppedFile = null;
-                      //         setState(() {});
-                      //       },
-                      //     )),
-                    ]),
+
                   ),
                 )
                     : Center(

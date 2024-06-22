@@ -3,17 +3,14 @@ import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import '../../../controller/vm_liveCrewModelController.dart';
 import '../../../controller/vm_urlLauncherController.dart';
-import '../../discover/v_discover_Resort_Banner.dart';
-import '../../v_webPage.dart';
+import '../../banner/v_banner_resortHome.dart';
 
 
 class SnowliveDetailPage extends StatelessWidget {
   SnowliveDetailPage({Key? key}) : super(key: key);
 
   //TODO: Dependency Injection**************************************************
-  LiveCrewModelController _liveCrewModelController = Get.find<LiveCrewModelController>();
   UrlLauncherController _urlLauncherController = Get.find<UrlLauncherController>();
   //TODO: Dependency Injection**************************************************
 
@@ -212,7 +209,7 @@ class SnowliveDetailPage extends StatelessWidget {
               ),
               Padding(
                 padding: EdgeInsets.only(bottom: 22),
-                child: DiscoverScreen_ResortBanner(),
+                child: Banner_resortHome(),
               ),
             ],
           ),

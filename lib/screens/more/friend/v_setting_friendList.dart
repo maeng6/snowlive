@@ -9,11 +9,11 @@ class Setting_friendList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     //TODO: Dependency Injection**************************************************
     Get.put(ImageController(), permanent: true);
-    UserModelController _userModelController = Get.find<UserModelController>();
-    ImageController _imageController = Get.find<ImageController>();
     //TODO: Dependency Injection**************************************************
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(

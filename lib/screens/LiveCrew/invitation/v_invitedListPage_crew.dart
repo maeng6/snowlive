@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:com.snowlive/controller/vm_streamController_liveCrew.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
-import '../../../controller/vm_alarmCenterController.dart';
 import '../../../controller/vm_liveCrewModelController.dart';
 import '../../../controller/vm_userModelController.dart';
 
@@ -18,7 +18,7 @@ class _InvitedListPage_crewState extends State<InvitedListPage_crew> {
   //TODO: Dependency Injection**************************************************
   UserModelController _userModelController = Get.find<UserModelController>();
   LiveCrewModelController _liveCrewModelController = Get.find<LiveCrewModelController>();
-  AlarmCenterController _alarmCenterController = Get.find<AlarmCenterController>();
+  StreamController_liveCrew _streamController_liveCrew = Get.find<StreamController_liveCrew>();
   //TODO: Dependency Injection**************************************************
 
   @override
@@ -27,10 +27,7 @@ class _InvitedListPage_crewState extends State<InvitedListPage_crew> {
     return Scaffold(
         backgroundColor: Colors.white,
         body: StreamBuilder(
-          stream: FirebaseFirestore.instance
-              .collection('user')
-              .where('applyCrewList', arrayContains: _liveCrewModelController.crewID)
-              .snapshots(),
+          stream: _streamController_liveCrew.setupStreams_liveCrew_invitedListPage(),
           builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
             if (!snapshot.hasData || snapshot.data == null) {
               print(_userModelController.uid);

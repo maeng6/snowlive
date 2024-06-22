@@ -6,28 +6,23 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:lottie/lottie.dart';
 import 'package:com.snowlive/controller/vm_DialogController_resortHome.dart';
 import 'package:com.snowlive/controller/vm_friendsCommentController.dart';
 import 'package:com.snowlive/controller/vm_liveMapController.dart';
-import 'package:com.snowlive/controller/vm_mainHomeController.dart';
 import 'package:com.snowlive/controller/vm_resortModelController.dart';
-import 'package:com.snowlive/controller/vm_seasonController.dart';
 import 'package:com.snowlive/controller/vm_timeStampController.dart';
-import 'package:com.snowlive/screens/comments/v_profileImageScreen.dart';
-import 'package:com.snowlive/screens/v_MainHome.dart';
+import 'package:com.snowlive/screens/common/v_profileImageScreen.dart';
 import '../../../controller/vm_alarmCenterController.dart';
 import '../../../controller/vm_allUserDocsController.dart';
 import '../../../controller/vm_liveCrewModelController.dart';
-import '../../../controller/vm_myRankingController.dart';
 import '../../../controller/vm_rankingTierModelController.dart';
+import '../../../controller/vm_streamController_friend.dart';
 import '../../../controller/vm_userModelController.dart';
 import '../../../data/imgaUrls/Data_url_image.dart';
 import '../../../model/m_alarmCenterModel.dart';
 import '../../../model/m_crewLogoModel.dart';
 import '../../../model/m_rankingTierModel.dart';
 import '../../../widget/w_fullScreenDialog.dart';
-import '../../LiveCrew/CreateOnboarding/v_FirstPage_createCrew.dart';
 import '../../LiveCrew/v_crewDetailPage_screen.dart';
 import '../v_setProfileImage_moreTab.dart';
 
@@ -43,15 +38,12 @@ class FriendDetailPage extends StatefulWidget {
 
 class _FriendDetailPageState extends State<FriendDetailPage> {
 
-  var _stream;
-  var _userStream;
-  var _crewStream;
-  var _rankStream;
-  var _rankStreamDaily;
-  var _rankStream2;
-  var _rankStream3;
+  //TODO: Dependency Injection**************************************************
+  StreamController_Friend _streamController_Friend = Get.find<StreamController_Friend>();
+  //TODO: Dependency Injection**************************************************
+
+
   final _formKeyProfile = GlobalKey<FormState>();
-  final _formKeyProfile3 = GlobalKey<FormState>();
   final _formKeyProfile2 = GlobalKey<FormState>();
   final _formKeyProfile4 = GlobalKey<FormState>();
   final _stateMsgController = TextEditingController();
@@ -100,15 +92,7 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
   @override
   void initState() {
     super.initState();
-
     fetchDateItems();
-    _stream = newStream();
-    _userStream = userStream();
-    _crewStream = crewStream();
-    _rankStream = rankStream();
-    _rankStreamDaily = rankStreamDaily();
-    _rankStream2 = rankStream2();
-    _rankStream3 = rankStream3();
     _stateMsgController.text = '';
     _friendTalkController.text = '';
     _displayNameController.text = '';
@@ -117,93 +101,13 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
 
   }
 
-  //TODO: 스트림 모음**************************************************
-
-  Stream<QuerySnapshot> newStream() {
-    return FirebaseFirestore.instance
-        .collection('user')
-        .doc('${widget.uid}')
-        .collection('friendsComment')
-        .orderBy('timeStamp', descending: true)
-        .snapshots();
-  }
-
-  Stream<QuerySnapshot> userStream() {
-    return FirebaseFirestore.instance
-        .collection('user')
-        .where('uid', isEqualTo: widget.uid )
-        .snapshots();
-  }
-
-  Stream<QuerySnapshot> crewStream() {
-    return FirebaseFirestore.instance
-        .collection('liveCrew')
-        .where('memberUidList', arrayContains: widget.uid)
-        .snapshots();
-  }
-
-  Stream<DocumentSnapshot> rankStream() {
-    return FirebaseFirestore.instance
-        .collection('Ranking')
-        .doc('${_seasonController.currentSeason}')
-        .collection('${widget.favoriteResort}')
-        .doc("${widget.uid}")
-        .snapshots();
-  }
-
-  Stream<QuerySnapshot> rankStreamDaily() {
-
-    return FirebaseFirestore.instance
-        .collection('Ranking_Daily')
-        .doc('${_seasonController.currentSeason}')
-        .collection('${widget.favoriteResort}')
-        .where('date', isEqualTo: dateItems.isNotEmpty ? _selectedDateName : '필터')
-        .where('uid', isEqualTo: '${widget.uid}')
-        .snapshots();
-  }
-
-  Stream<QuerySnapshot> rankStream2() {
-    return  FirebaseFirestore.instance
-        .collection('Ranking')
-        .doc('${_seasonController.currentSeason}')
-        .collection('${widget.favoriteResort}')
-        .where('uid', isEqualTo: widget.uid )
-        .snapshots();
-  }
-
-  Stream<QuerySnapshot> rankStream3() {
-    return    FirebaseFirestore.instance
-        .collection('Ranking')
-        .doc('${_seasonController.currentSeason}')
-        .collection('${widget.favoriteResort}')
-        .where('totalScore', isGreaterThan: 0)
-        .orderBy('totalScore', descending: true)
-        .snapshots();
-  }
-
   Future<void> fetchDateItems() async {
-    final snapshot = await FirebaseFirestore.instance
-        .collection('Ranking_Daily')
-        .doc('${_seasonController.currentSeason}')
-        .collection('${widget.favoriteResort}')
-        .where('uid', isEqualTo: '${widget.uid}')
-        .get();
-
-    if (snapshot.docs.isNotEmpty) {
-      setState(() {
-        dateItems = snapshot.docs.map((doc) => doc['date'].toString()).toList();
-        if (dateItems.isNotEmpty) {
-          _selectedDateName = dateItems.last;
-        }
-      });
-    }
-    print(dateItems);
-    print(_selectedDateName);
+    List<String> filteredDateItems = await _streamController_Friend.fetchFilteredDateItems(widget.uid!, widget.favoriteResort!);
+    setState(() {
+      dateItems = filteredDateItems;
+      _selectedDateName = dateItems.isNotEmpty ? dateItems.last : '데이터 없음';
+    });
   }
-
-
-  //TODO: 스트림 모음**************************************************
-
 
 
   _showCupertinoPicker() async {
@@ -273,7 +177,7 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
 
     setState(() {
       // 필터링된 데이터를 사용하여 화면을 업데이트합니다.
-      _rankStreamDaily = rankStreamDaily();
+      _streamController_Friend.setupStreams_friendDetailPage_rank_daily(widget.favoriteResort!, dateItems, _selectedDateName, widget.uid!);
     });
   }
 
@@ -282,7 +186,6 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
 
   //TODO: Dependency Injection**************************************************
   DialogController _dialogController = Get.find<DialogController>();
-  SeasonController _seasonController = Get.find<SeasonController>();
   ResortModelController _resortModelController = Get.find<ResortModelController>();
   UserModelController _userModelController = Get.find<UserModelController>();
   FriendsCommentModelController _friendsCommentModelController = Get.find<FriendsCommentModelController>();
@@ -292,14 +195,12 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
   AllUserDocsController _allUserDocsController = Get.find<AllUserDocsController>();
   AlarmCenterController _alarmCenterController = Get.find<AlarmCenterController>();
   RankingTierModelController _rankingTierModelController = Get.find<RankingTierModelController>();
-  MyRankingController _myRankingController = Get.find<MyRankingController>();
   //TODO: Dependency Injection**************************************************
 
   @override
   Widget build(BuildContext context) {
 
     final Size _size = MediaQuery.of(context).size;
-    final double _statusBarSize = MediaQuery.of(context).padding.top;
 
     return Scaffold(
         backgroundColor: Colors.white,
@@ -321,8 +222,6 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
               ],
             ),
             onTap: () {
-              // Navigator.popUntil(context, (route) => route.isFirst);
-              // Navigator.push(context, MaterialPageRoute(builder: (context) => FriendListPage()));
               Get.back();
             },
           )
@@ -403,7 +302,7 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                         child: Column(
                           children: [
                             StreamBuilder(
-                                stream: _userStream,
+                                stream: _streamController_Friend.setupStreams_friendDetailPage_user(widget.uid!),
                                 builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
                                   if (!snapshot.hasData || snapshot.data == null || snapshot.data!.docs.isEmpty) {
                                     return SizedBox.shrink();
@@ -1429,7 +1328,7 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                                 crossAxisAlignment: CrossAxisAlignment.start,
                                                                 children: [
                                                                   StreamBuilder<QuerySnapshot>(
-                                                                      stream: _crewStream,
+                                                                      stream: _streamController_Friend.setupStreams_friendDetailPage_crew(widget.uid!),
                                                                       builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
                                                                         if (!snapshot.hasData || snapshot.data == null) {
                                                                           return SizedBox.shrink();
@@ -1593,7 +1492,7 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                                         );
                                                                       }),
                                                                   StreamBuilder<QuerySnapshot>(
-                                                                      stream: _rankStream2,
+                                                                      stream: _streamController_Friend.setupStreams_friendDetailPage_rank2(widget.favoriteResort!, widget.uid!),
                                                                       builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
                                                                         if (!snapshot.hasData || snapshot.data == null) {
                                                                           return SizedBox.shrink();
@@ -1611,7 +1510,7 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                                           if(rankingDocs[0]['totalScore'] != 0 ) {
 
                                                                             return StreamBuilder<QuerySnapshot>(
-                                                                                stream: _rankStream3,
+                                                                                stream: _streamController_Friend.setupStreams_friendDetailPage_rank3(widget.favoriteResort!),
                                                                                 builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
                                                                                   if (!snapshot.hasData || snapshot.data == null) {
                                                                                     return SizedBox.shrink();
@@ -1839,7 +1738,7 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                             child: Column(
                                                               children: [
                                                                 StreamBuilder(
-                                                                  stream: _stream,
+                                                                  stream: _streamController_Friend.setupStreams_friendDetailPage_friendComment(widget.uid!),
                                                                   builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
                                                                     if (!snapshot.hasData || snapshot.data == null) {
                                                                       return Center(
@@ -2570,7 +2469,7 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                                           isTapStats[1] = true;
                                                                           isTapStats[2] = true;
                                                                           _selectedDateName = dateItems.isNotEmpty ? dateItems.last : '데이터 없음';
-                                                                          _rankStreamDaily = rankStreamDaily();
+                                                                          _streamController_Friend.setupStreams_friendDetailPage_rank_daily(widget.favoriteResort!, dateItems, _selectedDateName, widget.uid!);
                                                                         });
                                                                       },
                                                                       child: Container(
@@ -2671,7 +2570,7 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                     ),
                                                   if(isTap[1]==true && isTapStats[0] == true)
                                                     StreamBuilder<DocumentSnapshot>(
-                                                        stream: _rankStream,
+                                                        stream: _streamController_Friend.setupStreams_friendDetailPage_rank(widget.favoriteResort!, widget.uid!),
                                                         builder: (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
                                                           if (snapshot.hasError) {
                                                             return Text("오류가 발생했습니다");
@@ -3005,7 +2904,7 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                         }),
                                                   if(isTap[1]==true && isTapStats[1] == true)
                                                     StreamBuilder<QuerySnapshot>(
-                                                        stream: _rankStreamDaily,
+                                                        stream: _streamController_Friend.setupStreams_friendDetailPage_rank_daily(widget.favoriteResort!, dateItems, _selectedDateName, widget.uid!),
                                                         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
                                                           if (snapshot.hasError) {
                                                             return Text("오류가 발생했습니다");

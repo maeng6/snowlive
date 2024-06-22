@@ -9,6 +9,7 @@ import 'package:com.snowlive/controller/vm_fleaMarketController.dart';
 import 'package:com.snowlive/screens/fleaMarket/v_fleaMarket_List_Detail.dart';
 import 'package:com.snowlive/screens/fleaMarket/v_fleaMarket_Upload.dart';
 import 'package:com.snowlive/screens/fleaMarket/v_phone_Auth_Screen.dart';
+import '../../controller/vm_streamController_fleaMarket.dart';
 import '../../controller/vm_userModelController.dart';
 import '../../widget/w_fullScreenDialog.dart';
 
@@ -27,10 +28,11 @@ class _FleaMarket_My_ScreenState
   UserModelController _userModelController = Get.find<UserModelController>();
   FleaModelController _fleaModelController =
   Get.find<FleaModelController>();
+  StreamController_fleaMarket _streamController_fleaMarket = Get.find<StreamController_fleaMarket>();
 
 //TODO: Dependency Injection**************************************************
 
-  var _stream;
+  Stream<QuerySnapshot<Map<String, dynamic>>>? _fleaStream;
   var f = NumberFormat('###,###,###,###');
 
   ScrollController _scrollController = ScrollController();
@@ -41,7 +43,7 @@ class _FleaMarket_My_ScreenState
   void initState() {
     // TODO: implement initState
     super.initState();
-    _stream = newStream();
+    _fleaStream = _streamController_fleaMarket.fleaStream_fleaMarket_My_Screen.value;
 
     // Add a listener to the ScrollController
     _scrollController.addListener(() {
@@ -50,16 +52,6 @@ class _FleaMarket_My_ScreenState
         _showAddButton = _scrollController.offset <= 0;
       });
     });
-  }
-
-
-  Stream<QuerySnapshot> newStream() {
-    return FirebaseFirestore.instance
-        .collection('fleaMarket')
-        .where("uid", isEqualTo: "${_userModelController.uid}")
-        .orderBy('timeStamp', descending: true)
-        .limit(500)
-        .snapshots();
   }
 
   @override
@@ -123,7 +115,7 @@ class _FleaMarket_My_ScreenState
               children: [
                 Expanded(
                   child: StreamBuilder<QuerySnapshot>(
-                    stream: _stream,
+                    stream: _fleaStream,
                     builder: (context, snapshot) {
                       if (!snapshot.hasData) {
                         return Container(

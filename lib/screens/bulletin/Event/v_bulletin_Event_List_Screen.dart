@@ -1,4 +1,6 @@
 import 'package:com.snowlive/controller/vm_seasonController.dart';
+import 'package:com.snowlive/controller/vm_streamController_bulletin.dart';
+import 'package:com.snowlive/model/m_bulletinEventModel.dart';
 import 'package:com.snowlive/screens/bulletin/Event/v_bulletin_Event_List_Detail.dart';
 import 'package:com.snowlive/screens/bulletin/Event/v_bulletin_Event_Upload.dart';
 import 'package:extended_image/extended_image.dart';
@@ -31,13 +33,15 @@ class _Bulletin_Event_List_ScreenState extends State<Bulletin_Event_List_Screen>
   TimeStampController _timeStampController = Get.find<TimeStampController>();
   SeasonController _seasonController = Get.find<SeasonController>();
   AllUserDocsController _allUserDocsController = Get.find<AllUserDocsController>();
-//TODO: Dependency Injection**************************************************
+  StreamController_Bulletin _streamController_Bulletin = Get.find<StreamController_Bulletin>();
 
-  var _stream;
+  //TODO: Dependency Injection**************************************************
+
   var _selectedValue = '카테고리';
   var _selectedValue2 = '지역';
-  var _allCategories;
   bool _isVisible = false;
+
+  Stream<QuerySnapshot<Map<String, dynamic>>>? _bulletinEventStream;
 
   var f = NumberFormat('###,###,###,###');
 
@@ -49,7 +53,16 @@ class _Bulletin_Event_List_ScreenState extends State<Bulletin_Event_List_Screen>
     // TODO: implement initState
     super.initState();
     _seasonController.getBulletinEventLimit();
-    _stream = newStream();
+
+    setState(() {
+      _streamController_Bulletin.setSelectedValues_bulletinEvent('카테고리', _selectedValue2);
+      _streamController_Bulletin.setSelectedValues_bulletinEvent(_selectedValue, '지역');
+      _bulletinEventStream = _streamController_Bulletin.bulletinStream_bulletinEvent_List_Screen.value;
+    });
+
+    print('클리닉행사');
+    print(_selectedValue);
+    print(_selectedValue2);
 
     try{
       FirebaseAnalytics.instance.logEvent(
@@ -88,18 +101,6 @@ class _Bulletin_Event_List_ScreenState extends State<Bulletin_Event_List_Screen>
     });
   }
 
-  Stream<QuerySnapshot> newStream() {
-    return FirebaseFirestore.instance
-        .collection('bulletinEvent')
-        .where('category',
-        isEqualTo:
-        (_selectedValue == '카테고리') ? _allCategories : '$_selectedValue')
-        .where('location', isEqualTo: (_selectedValue2 == '지역') ? _allCategories : '$_selectedValue2')
-        .orderBy('timeStamp', descending: true)
-        .limit(_seasonController.bulletinEventLimit!)
-        .snapshots();
-  }
-
 
   _showCupertinoPicker() async {
     await showCupertinoModalPopup(
@@ -119,6 +120,7 @@ class _Bulletin_Event_List_ScreenState extends State<Bulletin_Event_List_Screen>
                             _selectedValue = '카테고리';
                             _isVisible = false;
                           });
+                          _streamController_Bulletin.setSelectedValues_bulletinEvent('카테고리', _selectedValue2);
                           Navigator.pop(context);
                         },
                         child: Text(
@@ -128,42 +130,57 @@ class _Bulletin_Event_List_ScreenState extends State<Bulletin_Event_List_Screen>
                         onPressed: () {
                           HapticFeedback.lightImpact();
                           setState(() {
-                            _selectedValue = '클리닉(무료)';
+                            _selectedValue = '${bulletinEventCategoryList[0]}';
                             _isVisible = false;
                           });
+                          _streamController_Bulletin.setSelectedValues_bulletinEvent('${bulletinEventCategoryList[0]}', _selectedValue2);
                           Navigator.pop(context);
                         },
-                        child: Text('클리닉(무료)')),
+                        child: Text('${bulletinEventCategoryList[0]}')),
                     CupertinoActionSheetAction(
                         onPressed: () {
                           HapticFeedback.lightImpact();
                           setState(() {
-                            _selectedValue = '클리닉(유료)';
+                            _selectedValue = '${bulletinEventCategoryList[1]}';
                             _isVisible = false;
                           });
+                          _streamController_Bulletin.setSelectedValues_bulletinEvent('${bulletinEventCategoryList[1]}', _selectedValue2);
                           Navigator.pop(context);
                         },
-                        child: Text('클리닉(유료)')),
+                        child: Text('${bulletinEventCategoryList[1]}')),
                     CupertinoActionSheetAction(
                         onPressed: () {
                           HapticFeedback.lightImpact();
                           setState(() {
-                            _selectedValue = '시승회';
+                            _selectedValue = '${bulletinEventCategoryList[2]}';
                             _isVisible = false;
                           });
+                          _streamController_Bulletin.setSelectedValues_bulletinEvent('${bulletinEventCategoryList[2]}', _selectedValue2);
                           Navigator.pop(context);
                         },
-                        child: Text('시승회')),
+                        child: Text('${bulletinEventCategoryList[2]}')),
                     CupertinoActionSheetAction(
                         onPressed: () {
                           HapticFeedback.lightImpact();
                           setState(() {
-                            _selectedValue = '기타';
+                            _selectedValue = '${bulletinEventCategoryList[3]}';
                             _isVisible = false;
                           });
+                          _streamController_Bulletin.setSelectedValues_bulletinEvent('${bulletinEventCategoryList[3]}', _selectedValue2);
                           Navigator.pop(context);
                         },
-                        child: Text('기타')),
+                        child: Text('${bulletinEventCategoryList[3]}')),
+                    CupertinoActionSheetAction(
+                        onPressed: () {
+                          HapticFeedback.lightImpact();
+                          setState(() {
+                            _selectedValue = '${bulletinEventCategoryList[4]}';
+                            _isVisible = false;
+                          });
+                          _streamController_Bulletin.setSelectedValues_bulletinEvent('${bulletinEventCategoryList[4]}', _selectedValue2);
+                          Navigator.pop(context);
+                        },
+                        child: Text('${bulletinEventCategoryList[4]}')),
 
                   ],
                   cancelButton: CupertinoActionSheetAction(
@@ -194,7 +211,7 @@ class _Bulletin_Event_List_ScreenState extends State<Bulletin_Event_List_Screen>
           );
         });
     setState(() {
-      _stream = newStream();
+      _bulletinEventStream = _streamController_Bulletin.bulletinStream_bulletinEvent_List_Screen.value;
     });
   }
 
@@ -217,6 +234,7 @@ class _Bulletin_Event_List_ScreenState extends State<Bulletin_Event_List_Screen>
                             _selectedValue2 = '지역';
                             _isVisible = false;
                           });
+                          _streamController_Bulletin.setSelectedValues_bulletinEvent(_selectedValue,'지역');
                           Navigator.pop(context);
                         },
                         child: Text(
@@ -226,144 +244,158 @@ class _Bulletin_Event_List_ScreenState extends State<Bulletin_Event_List_Screen>
                         onPressed: () {
                           HapticFeedback.lightImpact();
                           setState(() {
-                            _selectedValue2 = '전국';
+                            _selectedValue2 = '${bulletinEventResortList[0]}';
                             _isVisible = false;
                           });
+                          _streamController_Bulletin.setSelectedValues_bulletinEvent(_selectedValue,'${bulletinEventResortList[0]}');
                           Navigator.pop(context);
                         },
                         child: Text(
-                          '전국',
+                          '${bulletinEventResortList[0]}',
                         )),
                     CupertinoActionSheetAction(
                         onPressed: () {
                           HapticFeedback.lightImpact();
                           setState(() {
-                            _selectedValue2 = '곤지암리조트';
+                            _selectedValue2 = '${bulletinEventResortList[1]}';
                             _isVisible = false;
                           });
+                          _streamController_Bulletin.setSelectedValues_bulletinEvent(_selectedValue,'${bulletinEventResortList[1]}');
                           Navigator.pop(context);
                         },
-                        child: Text('곤지암리조트')),
+                        child: Text('${bulletinEventResortList[1]}')),
                     CupertinoActionSheetAction(
                         onPressed: () {
                           HapticFeedback.lightImpact();
                           setState(() {
-                            _selectedValue2 = '무주덕유산리조트';
+                            _selectedValue2 = '${bulletinEventResortList[2]}';
                             _isVisible = false;
                           });
+                          _streamController_Bulletin.setSelectedValues_bulletinEvent(_selectedValue, '${bulletinEventResortList[2]}');
                           Navigator.pop(context);
                         },
-                        child: Text('무주덕유산리조트')),
+                        child: Text('${bulletinEventResortList[2]}')),
                     CupertinoActionSheetAction(
                         onPressed: () {
                           HapticFeedback.lightImpact();
                           setState(() {
-                            _selectedValue2 = '비발디파크';
+                            _selectedValue2 = '${bulletinEventResortList[3]}';
                             _isVisible = false;
                           });
+                          _streamController_Bulletin.setSelectedValues_bulletinEvent(_selectedValue, '${bulletinEventResortList[3]}');
                           Navigator.pop(context);
                         },
-                        child: Text('비발디파크')),
+                        child: Text('${bulletinEventResortList[3]}')),
                     CupertinoActionSheetAction(
                         onPressed: () {
                           HapticFeedback.lightImpact();
                           setState(() {
-                            _selectedValue2 = '알펜시아';
+                            _selectedValue2 = '${bulletinEventResortList[4]}';
                             _isVisible = false;
                           });
+                          _streamController_Bulletin.setSelectedValues_bulletinEvent(_selectedValue, '${bulletinEventResortList[4]}');
                           Navigator.pop(context);
                         },
-                        child: Text('알펜시아')),
+                        child: Text('${bulletinEventResortList[4]}')),
                     CupertinoActionSheetAction(
                         onPressed: () {
                           HapticFeedback.lightImpact();
                           setState(() {
-                            _selectedValue2 = '에덴밸리리조트';
+                            _selectedValue2 = '${bulletinEventResortList[5]}';
                             _isVisible = false;
                           });
+                          _streamController_Bulletin.setSelectedValues_bulletinEvent(_selectedValue, '${bulletinEventResortList[5]}');
                           Navigator.pop(context);
                         },
-                        child: Text('에덴밸리리조트')),
+                        child: Text('${bulletinEventResortList[5]}')),
                     CupertinoActionSheetAction(
                         onPressed: () {
                           HapticFeedback.lightImpact();
                           setState(() {
-                            _selectedValue2 = '엘리시안강촌';
+                            _selectedValue2 = '${bulletinEventResortList[6]}';
                             _isVisible = false;
                           });
+                          _streamController_Bulletin.setSelectedValues_bulletinEvent(_selectedValue, '${bulletinEventResortList[6]}');
                           Navigator.pop(context);
                         },
-                        child: Text('엘리시안강촌')),
+                        child: Text('${bulletinEventResortList[6]}')),
                     CupertinoActionSheetAction(
                         onPressed: () {
                           HapticFeedback.lightImpact();
                           setState(() {
-                            _selectedValue2 = '오크밸리리조트';
+                            _selectedValue2 = '${bulletinEventResortList[7]}';
                             _isVisible = false;
                           });
+                          _streamController_Bulletin.setSelectedValues_bulletinEvent(_selectedValue, '${bulletinEventResortList[7]}');
                           Navigator.pop(context);
                         },
-                        child: Text('오크밸리리조트')),
+                        child: Text('${bulletinEventResortList[7]}')),
                     CupertinoActionSheetAction(
                         onPressed: () {
                           HapticFeedback.lightImpact();
                           setState(() {
-                            _selectedValue2 = '오투리조트';
+                            _selectedValue2 = '${bulletinEventResortList[8]}';
                             _isVisible = false;
                           });
+                          _streamController_Bulletin.setSelectedValues_bulletinEvent(_selectedValue, '${bulletinEventResortList[8]}');
                           Navigator.pop(context);
                         },
-                        child: Text('오투리조트')),
+                        child: Text('${bulletinEventResortList[8]}')),
                     CupertinoActionSheetAction(
                         onPressed: () {
                           HapticFeedback.lightImpact();
                           setState(() {
-                            _selectedValue2 = '용평리조트';
+                            _selectedValue2 = '${bulletinEventResortList[9]}';
                             _isVisible = false;
                           });
+                          _streamController_Bulletin.setSelectedValues_bulletinEvent(_selectedValue, '${bulletinEventResortList[9]}');
                           Navigator.pop(context);
                         },
-                        child: Text('용평리조트')),
+                        child: Text('${bulletinEventResortList[9]}')),
                     CupertinoActionSheetAction(
                         onPressed: () {
                           HapticFeedback.lightImpact();
                           setState(() {
-                            _selectedValue2 = '웰리힐리파크';
+                            _selectedValue2 = '${bulletinEventResortList[10]}';
                             _isVisible = false;
                           });
+                          _streamController_Bulletin.setSelectedValues_bulletinEvent(_selectedValue, '${bulletinEventResortList[10]}');
                           Navigator.pop(context);
                         },
-                        child: Text('웰리힐리파크')),
+                        child: Text('${bulletinEventResortList[10]}')),
                     CupertinoActionSheetAction(
                         onPressed: () {
                           HapticFeedback.lightImpact();
                           setState(() {
-                            _selectedValue2 = '지산리조트';
+                            _selectedValue2 = '${bulletinEventResortList[11]}';
                             _isVisible = false;
                           });
+                          _streamController_Bulletin.setSelectedValues_bulletinEvent(_selectedValue, '${bulletinEventResortList[11]}');
                           Navigator.pop(context);
                         },
-                        child: Text('지산리조트')),
+                        child: Text('${bulletinEventResortList[11]}')),
                     CupertinoActionSheetAction(
                         onPressed: () {
                           HapticFeedback.lightImpact();
                           setState(() {
-                            _selectedValue2 = '하이원리조트';
+                            _selectedValue2 = '${bulletinEventResortList[12]}';
                             _isVisible = false;
                           });
+                          _streamController_Bulletin.setSelectedValues_bulletinEvent(_selectedValue, '${bulletinEventResortList[12]}');
                           Navigator.pop(context);
                         },
-                        child: Text('하이원리조트')),
+                        child: Text('${bulletinEventResortList[12]}')),
                     CupertinoActionSheetAction(
                         onPressed: () {
                           HapticFeedback.lightImpact();
                           setState(() {
-                            _selectedValue2 = '휘닉스파크';
+                            _selectedValue2 = '${bulletinEventResortList[13]}';
                             _isVisible = false;
                           });
+                          _streamController_Bulletin.setSelectedValues_bulletinEvent(_selectedValue, '${bulletinEventResortList[13]}');
                           Navigator.pop(context);
                         },
-                        child: Text('휘닉스파크')),
+                        child: Text('${bulletinEventResortList[13]}')),
                   ],
                   cancelButton: CupertinoActionSheetAction(
                     child: Text('닫기'),
@@ -377,7 +409,7 @@ class _Bulletin_Event_List_ScreenState extends State<Bulletin_Event_List_Screen>
           );
         });
     setState(() {
-      _stream = newStream();
+      _bulletinEventStream = _streamController_Bulletin.bulletinStream_bulletinEvent_List_Screen.value;
     });
   }
 
@@ -612,7 +644,7 @@ class _Bulletin_Event_List_ScreenState extends State<Bulletin_Event_List_Screen>
                 ),
                 Expanded(
                   child: StreamBuilder<QuerySnapshot>(
-                    stream: _stream,
+                    stream: _bulletinEventStream,
                     builder: (context, snapshot) {
                       if (!snapshot.hasData) {
                         return Container(

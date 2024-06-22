@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:com.snowlive/screens/login/v_email_login.dart';
 import 'package:com.snowlive/widget/w_loginButton.dart';
 

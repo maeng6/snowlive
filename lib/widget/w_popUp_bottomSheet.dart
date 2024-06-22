@@ -8,7 +8,7 @@ import 'package:get/get.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'dart:io' show Platform, exit;
 
-import '../../controller/vm_userModelController.dart';
+import '../controller/vm_userModelController.dart';
 
 
 

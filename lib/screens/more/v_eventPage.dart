@@ -2,10 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
+import '../../controller/vm_streamController_moreTab.dart';
 import '../../controller/vm_timeStampController.dart';
 import '../../controller/vm_urlLauncherController.dart';
-import '../v_webPage.dart';
 
 class EventPage extends StatefulWidget {
   const EventPage({Key? key}) : super(key: key);
@@ -16,26 +15,12 @@ class EventPage extends StatefulWidget {
 
 class _EventPageState extends State<EventPage> {
 
-  var _eventStream;
 
   //TODO: Dependency Injection**************************************************
   UrlLauncherController _urlLauncherController = Get.find<UrlLauncherController>();
   TimeStampController _timeStampController = Get.find<TimeStampController>();
+  StreamController_MoreTab _streamController_MoreTab = Get.find<StreamController_MoreTab>();
   //TODO: Dependency Injection**************************************************
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    _eventStream = getEventStream();
-  }
-
-  Stream<QuerySnapshot> getEventStream() {
-    return FirebaseFirestore.instance
-        .collection('event')
-        .orderBy('timeStamp', descending: true)
-        .snapshots();
-  }
 
 
   @override
@@ -72,7 +57,7 @@ class _EventPageState extends State<EventPage> {
         ),
       ),
       body: StreamBuilder<QuerySnapshot>(
-          stream: _eventStream,
+          stream: _streamController_MoreTab.setupStreams_moreTab_event(),
           builder: (BuildContext context,AsyncSnapshot<QuerySnapshot> snapshot) {
             if (!snapshot.hasData || snapshot.data == null) {
               return SizedBox.shrink();

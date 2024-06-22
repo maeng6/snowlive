@@ -158,7 +158,7 @@ List<dynamic> bulletinFreeResortList = [
 
 List<dynamic> bulletinFreeCategoryList = [
   '잡담',
-  '질문',
-  '정보',
-  '장비리뷰'
+  '분실물',
+  '단톡·동호회',
+  '시즌방'
 ];

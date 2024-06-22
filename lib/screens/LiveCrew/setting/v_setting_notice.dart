@@ -1,11 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:com.snowlive/controller/vm_fleaMarketController.dart';
-import 'package:com.snowlive/model/m_fleaMarketModel.dart';
-import 'package:com.snowlive/screens/v_MainHome.dart';
 import '../../../controller/vm_liveCrewModelController.dart';
-import '../../../controller/vm_userModelController.dart';
 import '../../../widget/w_fullScreenDialog.dart';
 
 class SetModifyNotice_crewDetail extends StatefulWidget {
@@ -31,7 +27,6 @@ class _SetModifyNotice_crewDetailState extends State<SetModifyNotice_crewDetail>
   @override
   Widget build(BuildContext context) {
     //TODO : ****************************************************************
-    UserModelController _userModelController = Get.find<UserModelController>();
     LiveCrewModelController _liveCrewModelController = Get.find<LiveCrewModelController>();
     //TODO : ****************************************************************
 

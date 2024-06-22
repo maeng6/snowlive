@@ -4,6 +4,11 @@ import 'package:com.snowlive/controller/vm_bulletinLostController.dart';
 import 'package:com.snowlive/controller/vm_loginController.dart';
 import 'package:com.snowlive/controller/vm_myCrewRankingController.dart';
 import 'package:com.snowlive/controller/vm_splashController.dart';
+import 'package:com.snowlive/controller/vm_streamController_alarmCenter.dart';
+import 'package:com.snowlive/controller/vm_streamController_banner.dart';
+import 'package:com.snowlive/controller/vm_streamController_fleaMarket.dart';
+import 'package:com.snowlive/controller/vm_streamController_liveCrew.dart';
+import 'package:com.snowlive/controller/vm_streamController_moreTab.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -19,6 +24,7 @@ import 'controller/vm_bulletinCrewController.dart';
 import 'controller/vm_bulletinEventController.dart';
 import 'controller/vm_bulletinFreeController.dart';
 import 'controller/vm_bulletinRoomController.dart';
+import 'controller/vm_fleaMarketController.dart';
 import 'controller/vm_friendsCommentController.dart';
 import 'controller/vm_getDateTimeController.dart';
 import 'controller/vm_liveCrewModelController.dart';
@@ -30,6 +36,10 @@ import 'controller/vm_rankingTierModelController.dart';
 import 'controller/vm_refreshController.dart';
 import 'controller/vm_resortModelController.dart';
 import 'controller/vm_seasonController.dart';
+import 'controller/vm_streamController_bulletin.dart';
+import 'controller/vm_streamController_friend.dart';
+import 'controller/vm_streamController_ranking.dart';
+import 'controller/vm_streamController_resortHome.dart';
 import 'controller/vm_timeStampController.dart';
 import 'controller/vm_urlLauncherController.dart';
 import 'controller/vm_userModelController.dart';
@@ -47,7 +57,6 @@ void main() async {
   // Dependency Injection
   Get.put(PageControllerManager(),permanent: true);
   Get.put(NotificationController(),permanent: true);
-  Get.put(BottomTabBarController(),permanent: true);
   Get.put(SeasonController(), permanent: true);
   Get.put(UserModelController(), permanent: true);
   Get.put(LoginController(),permanent: true);
@@ -73,7 +82,18 @@ void main() async {
   Get.put(BulletinFreeModelController(), permanent: true);
   Get.put(BulletinEventModelController(), permanent: true);
   Get.put(BulletinLostModelController(), permanent: true);
-  //Get.put(FleaChatModelController(), permanent: true);
+  Get.put(FleaModelController(), permanent: true);
+  Get.put(StreamController_ResortHome(), permanent: true);
+  Get.put(StreamController_AlarmCenter(), permanent: true);
+  Get.put(StreamController_fleaMarket(), permanent: true);
+  Get.put(StreamController_ranking(), permanent: true);
+  Get.put(StreamController_Banner(), permanent: true);
+  Get.put(StreamController_Friend(), permanent: true);
+  Get.put(StreamController_Bulletin(), permanent: true);
+  Get.put(StreamController_MoreTab(), permanent: true);
+  Get.put(StreamController_liveCrew(), permanent: true);
+  Get.put(BottomTabBarController(),permanent: true);
+
 
   runApp(MyApp());
 

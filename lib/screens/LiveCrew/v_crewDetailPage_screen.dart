@@ -14,6 +14,7 @@ import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 
 import '../../../controller/vm_userModelController.dart';
 import '../../controller/vm_liveCrewModelController.dart';
+import '../../controller/vm_streamController_liveCrew.dart';
 
 class CrewDetailPage_screen extends StatefulWidget {
   CrewDetailPage_screen({Key? key,}) : super(key: key);
@@ -34,6 +35,7 @@ class _CrewDetailPage_screenState extends State<CrewDetailPage_screen> {
   //TODO: Dependency Injection**************************************************
   UserModelController _userModelController = Get.find<UserModelController>();
   LiveCrewModelController _liveCrewModelController = Get.find<LiveCrewModelController>();
+  StreamController_liveCrew _streamController_liveCrew = Get.find<StreamController_liveCrew>();
   //TODO: Dependency Injection**************************************************
 
   @override
@@ -58,10 +60,7 @@ class _CrewDetailPage_screenState extends State<CrewDetailPage_screen> {
               actions: [
                 if(_liveCrewModelController.memberUidList!.contains(_userModelController.uid))
                 StreamBuilder(
-                    stream: FirebaseFirestore.instance
-                        .collection('newAlarm')
-                        .where('uid', isEqualTo: _userModelController.uid!)
-                        .snapshots(),
+                    stream: _streamController_liveCrew.setupStreams_liveCrew_crewDetailPage_screen(),
                     builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot){
                       if (!snapshot.hasData || snapshot.data == null) {}
                       else if (snapshot.data!.docs.isNotEmpty) {

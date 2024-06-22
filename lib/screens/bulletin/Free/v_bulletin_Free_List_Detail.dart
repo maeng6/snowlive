@@ -1,6 +1,7 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:com.snowlive/controller/vm_seasonController.dart';
+import 'package:com.snowlive/controller/vm_streamController_bulletin.dart';
 import 'package:com.snowlive/controller/vm_timeStampController.dart';
 import 'package:com.snowlive/screens/bulletin/Free/v_bulletinFreeImageScreen.dart';
 import 'package:com.snowlive/screens/bulletin/Free/v_bulletin_Free_ModifyPage.dart';
@@ -9,18 +10,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:com.snowlive/controller/vm_userModelController.dart';
-import 'package:com.snowlive/screens/bulletin/Crew/v_bulletinCrewImageScreen.dart';
-import 'package:com.snowlive/screens/bulletin/Crew/v_bulletin_Crew_ModifyPage.dart';
 import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 import '../../../controller/vm_alarmCenterController.dart';
 import '../../../controller/vm_allUserDocsController.dart';
-import '../../../controller/vm_bulletinCrewController.dart';
-import '../../../controller/vm_bulletinCrewReplyController.dart';
 import '../../../controller/vm_bulletinFreeController.dart';
 import '../../../controller/vm_bulletinFreeReplyController.dart';
 import '../../../data/imgaUrls/Data_url_image.dart';
 import '../../../model/m_alarmCenterModel.dart';
-import '../../comments/v_profileImageScreen.dart';
 import '../../more/friend/v_friendDetailPage.dart';
 
 class Bulletin_Free_List_Detail extends StatefulWidget {
@@ -38,7 +34,7 @@ class _Bulletin_Free_List_DetailState extends State<Bulletin_Free_List_Detail> {
   SeasonController _seasonController = Get.find<SeasonController>();
   AlarmCenterController _alarmCenterController = Get.find<AlarmCenterController>();
   TimeStampController _timeStampController = Get.find<TimeStampController>();
-  AllUserDocsController _allUserDocsController = Get.find<AllUserDocsController>();
+  StreamController_Bulletin _streamController_Bulletin = Get.find<StreamController_Bulletin>();
   //TODO: Dependency Injection**************************************************
 
   final _controller = TextEditingController();
@@ -46,9 +42,7 @@ class _Bulletin_Free_List_DetailState extends State<Bulletin_Free_List_Detail> {
   final _formKey = GlobalKey<FormState>();
   bool _replyReverse = true;
   var _firstPress = true;
-  var _replyStream;
   int _currentIndex = 0;
-  var _alluser;
 
 
   ScrollController _scrollController = ScrollController();
@@ -63,27 +57,12 @@ class _Bulletin_Free_List_DetailState extends State<Bulletin_Free_List_Detail> {
     // TODO: implement initState
     super.initState();
     _seasonController.getBulletinFreeReplyLimit();
-    _replyStream = replyNewStream();
   }
 
   _updateMethod() async {
     await _userModelController.updateRepoUidList();
   }
 
-  Stream<QuerySnapshot> replyNewStream() {
-    return FirebaseFirestore.instance
-        .collection('bulletinFree')
-        .doc('${_bulletinFreeModelController.uid}#${_bulletinFreeModelController.bulletinFreeCount}')
-        .collection('reply')
-        .orderBy('timeStamp', descending: true)
-        .limit(_seasonController.bulletinFreeReplyLimit!)
-        .snapshots();
-  }
-
-  Future<void> _refreshData() async {
-    await _allUserDocsController.getAllUserDocs();
-    setState(() {});
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -643,10 +622,7 @@ class _Bulletin_Free_List_DetailState extends State<Bulletin_Free_List_Detail> {
                                           Row(
                                             children: [
                                               StreamBuilder(
-                                                  stream:  FirebaseFirestore.instance
-                                                      .collection('user')
-                                                      .where('uid', isEqualTo: _bulletinFreeModelController.uid)
-                                                      .snapshots(),
+                                                  stream: _streamController_Bulletin.setupStreams_bulletinFree_detail_user(),
                                                   builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
                                                     if (!snapshot.hasData || snapshot.data == null) {
                                                       return  SizedBox();
@@ -971,7 +947,7 @@ class _Bulletin_Free_List_DetailState extends State<Bulletin_Free_List_Detail> {
                                           ),
                                           Container(
                                             child: StreamBuilder<QuerySnapshot>(
-                                                stream: _replyStream,
+                                                stream: _streamController_Bulletin.setupStreams_bulletinFree_detail_reply(),
                                                 builder: (context, snapshot2) {
                                                   if (!snapshot2.hasData) {
                                                     return Container(
@@ -1046,10 +1022,7 @@ class _Bulletin_Free_List_DetailState extends State<Bulletin_Free_List_Detail> {
                                                                                   crossAxisAlignment: CrossAxisAlignment.start,
                                                                                   children: [
                                                                                     StreamBuilder(
-                                                                                        stream:  FirebaseFirestore.instance
-                                                                                            .collection('user')
-                                                                                            .where('uid', isEqualTo: replyDocs[index]['uid'])
-                                                                                            .snapshots(),
+                                                                                        stream: _streamController_Bulletin.setupStreams_bulletinFree_detail_user_reply('${replyDocs[index]['uid']}'),
                                                                                         builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
                                                                                           if (!snapshot.hasData || snapshot.data == null) {
                                                                                             return SizedBox();

@@ -1,4 +1,5 @@
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:com.snowlive/controller/vm_streamController_bulletin.dart';
 import 'package:com.snowlive/screens/bulletin/Event/v_bulletin_Event_List_Detail.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
@@ -24,9 +25,10 @@ class _Bulletin_Event_List_Screen_HomeState extends State<Bulletin_Event_List_Sc
   //TODO: Dependency Injection**************************************************
   UserModelController _userModelController = Get.find<UserModelController>();
   BulletinEventModelController _bulletinEventModelController = Get.find<BulletinEventModelController>();
-//TODO: Dependency Injection**************************************************
+  StreamController_Bulletin _streamController_Bulletin = Get.find<StreamController_Bulletin>();
 
-  var _stream;
+  //TODO: Dependency Injection**************************************************
+
 
   var f = NumberFormat('###,###,###,###');
 
@@ -35,7 +37,6 @@ class _Bulletin_Event_List_Screen_HomeState extends State<Bulletin_Event_List_Sc
   void initState() {
     // TODO: implement initState
     super.initState();
-    _stream = newStream();
 
     try{
       FirebaseAnalytics.instance.logEvent(
@@ -53,15 +54,6 @@ class _Bulletin_Event_List_Screen_HomeState extends State<Bulletin_Event_List_Sc
 
   }
 
-  Stream<QuerySnapshot> newStream() {
-
-    return FirebaseFirestore.instance
-        .collection('bulletinEvent')
-        .orderBy('timeStamp', descending: true)
-        .limit(5)
-        .snapshots();
-  }
-
 
   @override
   Widget build(BuildContext context) {
@@ -69,7 +61,7 @@ class _Bulletin_Event_List_Screen_HomeState extends State<Bulletin_Event_List_Sc
 
 
     return StreamBuilder<QuerySnapshot> (
-        stream: _stream,
+        stream: _streamController_Bulletin.setupStreams_bulletinEvent_home(),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
             return Container(
