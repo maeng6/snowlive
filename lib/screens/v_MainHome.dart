@@ -305,7 +305,7 @@ class _MainHomeState extends State<MainHome> {
             ResortHome(),
             FleaMarketScreen(),
             RankingHome(),
-            BulletinScreen(tap_1: _bottomTabBarController.tap_1, tap_2: _bottomTabBarController.tap_2),
+            BulletinScreen(tap_1: _bottomTabBarController.tap_4, tap_2: _bottomTabBarController.tap_5),
             MoreTab(),
           ],
         )
