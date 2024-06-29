@@ -2,9 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../../controller/vm_streamController_moreTab.dart';
-import '../../controller/vm_timeStampController.dart';
-import '../../controller/vm_urlLauncherController.dart';
+import '../../controller/moreTab/vm_streamController_moreTab.dart';
+import '../../controller/public/vm_timeStampController.dart';
+import '../../controller/public/vm_urlLauncherController.dart';
 
 class EventPage extends StatefulWidget {
   const EventPage({Key? key}) : super(key: key);

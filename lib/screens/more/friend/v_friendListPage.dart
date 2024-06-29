@@ -8,8 +8,8 @@ import 'package:com.snowlive/screens/more/friend/v_friendDetailPage.dart';
 import 'package:com.snowlive/screens/more/friend/invitation/v_invitation_Screen_friend.dart';
 import 'package:com.snowlive/screens/more/friend/v_setting_friendList.dart';
 import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
-import '../../../controller/vm_streamController_friend.dart';
-import '../../../controller/vm_userModelController.dart';
+import '../../../controller/friends/vm_streamController_friend.dart';
+import '../../../controller/user/vm_userModelController.dart';
 import 'v_searchUserPage.dart';
 
 class FriendListPage extends StatefulWidget {

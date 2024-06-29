@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
-import 'package:com.snowlive/controller/vm_fleaChatController.dart';
-import 'package:com.snowlive/controller/vm_fleaMarketController.dart';
+import 'package:com.snowlive/controller/fleaMarket/vm_fleaMarketController.dart';
 import 'package:com.snowlive/screens/fleaMarket/v_fleaMarket_List_Screen.dart';
 import 'package:com.snowlive/screens/fleaMarket/v_fleaMarket_My_Screen.dart';
 
@@ -34,7 +33,6 @@ class _FleaMarketScreenState extends State<FleaMarketScreen> {
 
     //TODO : ****************************************************************
     Get.put(FleaModelController(), permanent: true);
-    Get.put(FleaChatModelController(), permanent: true);
     //TODO : ****************************************************************
 
     Size _size = MediaQuery.of(context).size;

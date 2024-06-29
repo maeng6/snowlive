@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:com.snowlive/controller/vm_urlLauncherController.dart';
+import 'package:com.snowlive/controller/public/vm_urlLauncherController.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -8,7 +8,7 @@ import 'package:get/get.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'dart:io' show Platform, exit;
 
-import '../controller/vm_userModelController.dart';
+import '../controller/user/vm_userModelController.dart';
 
 
 

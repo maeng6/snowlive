@@ -5,9 +5,9 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:com.snowlive/controller/vm_imageController.dart';
+import 'package:com.snowlive/controller/public/vm_imageController.dart';
 import 'package:com.snowlive/screens/onboarding/v_favoriteResort.dart';
-import '../../controller/vm_userModelController.dart';
+import '../../controller/user/vm_userModelController.dart';
 import '../../widget/w_fullScreenDialog.dart';
 
 class SetProfileImage extends StatefulWidget {

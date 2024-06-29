@@ -4,9 +4,9 @@ import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:get/get.dart';
-import '../../controller/vm_streamController_banner.dart';
-import '../../controller/vm_urlLauncherController.dart';
-import '../../controller/vm_userModelController.dart';
+import '../../controller/banner/vm_streamController_banner.dart';
+import '../../controller/public/vm_urlLauncherController.dart';
+import '../../controller/user/vm_userModelController.dart';
 
 class Banner_resortHome extends StatefulWidget {
   @override

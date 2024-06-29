@@ -1,6 +1,6 @@
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:com.snowlive/controller/vm_noticeController.dart';
+import 'package:com.snowlive/controller/alarm/vm_noticeController.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
@@ -8,7 +8,7 @@ import 'package:get/get.dart';
 import 'package:com.snowlive/screens/login/v_email_login.dart';
 import 'package:com.snowlive/widget/w_loginButton.dart';
 
-import '../../controller/vm_loginController.dart';
+import '../../controller/login/vm_loginController.dart';
 
 final auth = FirebaseAuth.instance;
 final ref = FirebaseFirestore.instance;

@@ -4,8 +4,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
-import '../../../controller/vm_liveCrewModelController.dart';
-import '../../../controller/vm_streamController_liveCrew.dart';
+import '../../../controller/liveCrew/vm_liveCrewModelController.dart';
+import '../../../controller/liveCrew/vm_streamController_liveCrew.dart';
 import '../../more/friend/v_friendDetailPage.dart';
 
 class Setting_delegation extends StatefulWidget {

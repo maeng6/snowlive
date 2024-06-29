@@ -4,15 +4,15 @@ import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:com.snowlive/controller/vm_fleaMarketController.dart';
-import 'package:com.snowlive/controller/vm_userModelController.dart';
+import 'package:com.snowlive/controller/fleaMarket/vm_fleaMarketController.dart';
+import 'package:com.snowlive/controller/user/vm_userModelController.dart';
 import 'package:com.snowlive/screens/fleaMarket/v_fleaMarketImageScreen.dart';
 import 'package:com.snowlive/screens/fleaMarket/v_fleaMarket_ModifyPage.dart';
 import 'package:com.snowlive/screens/fleaMarket/v_phone_Auth_Screen.dart';
 import 'package:com.snowlive/screens/more/friend/v_friendDetailPage.dart';
 import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
-import '../../controller/vm_streamController_fleaMarket.dart';
-import '../../controller/vm_urlLauncherController.dart';
+import '../../controller/fleaMarket/vm_streamController_fleaMarket.dart';
+import '../../controller/public/vm_urlLauncherController.dart';
 
 class FleaMarket_List_Detail extends StatefulWidget {
   FleaMarket_List_Detail({Key? key}) : super(key: key);

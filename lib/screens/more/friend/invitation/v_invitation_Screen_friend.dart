@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:com.snowlive/screens/more/friend/invitation/v_inviteListPage_friend.dart';
 import 'package:com.snowlive/screens/more/friend/invitation/v_invitedListPage_friend.dart';
-import '../../../../controller/vm_userModelController.dart';
+import '../../../../controller/user/vm_userModelController.dart';
 
 class InvitationScreen_friend extends StatefulWidget {
   InvitationScreen_friend({Key? key}) : super(key: key);

@@ -5,9 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:com.snowlive/screens/LiveCrew/v_crewDetailPage_screen.dart';
 import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
-import '../../../controller/vm_liveCrewModelController.dart';
-import '../../../controller/vm_streamController_liveCrew.dart';
-import '../../../controller/vm_userModelController.dart';
+import '../../../controller/liveCrew/vm_liveCrewModelController.dart';
+import '../../../controller/liveCrew/vm_streamController_liveCrew.dart';
+import '../../../controller/user/vm_userModelController.dart';
 
 class InviteListPage_crew extends StatefulWidget {
   const InviteListPage_crew({Key? key}) : super(key: key);

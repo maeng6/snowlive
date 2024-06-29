@@ -5,7 +5,7 @@ import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
 import 'package:get/get.dart';
 
-import '../../../controller/vm_bulletinFreeController.dart';
+import '../../../controller/bulletin/vm_bulletinFreeController.dart';
 
 class BulletinFreeImageScreen extends StatefulWidget {
   BulletinFreeImageScreen({Key? key}) : super(key: key);

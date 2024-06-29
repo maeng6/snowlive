@@ -1,4 +1,4 @@
-import 'package:com.snowlive/controller/vm_seasonController.dart';
+import 'package:com.snowlive/controller/public/vm_limitController.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/cupertino.dart';
@@ -8,12 +8,12 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:com.snowlive/controller/vm_fleaMarketController.dart';
+import 'package:com.snowlive/controller/fleaMarket/vm_fleaMarketController.dart';
 import 'package:com.snowlive/screens/fleaMarket/v_fleaMarket_List_Detail.dart';
 import 'package:com.snowlive/screens/fleaMarket/v_fleaMarket_Upload.dart';
 import 'package:com.snowlive/screens/fleaMarket/v_phone_Auth_Screen.dart';
-import '../../controller/vm_streamController_fleaMarket.dart';
-import '../../controller/vm_userModelController.dart';
+import '../../controller/fleaMarket/vm_streamController_fleaMarket.dart';
+import '../../controller/user/vm_userModelController.dart';
 import '../../widget/w_fullScreenDialog.dart';
 
 class FleaMarket_List_Screen extends StatefulWidget {
@@ -27,7 +27,7 @@ class _FleaMarket_List_ScreenState extends State<FleaMarket_List_Screen> {
   //TODO: Dependency Injection**************************************************
   UserModelController _userModelController = Get.find<UserModelController>();
   FleaModelController _fleaModelController = Get.find<FleaModelController>();
-  SeasonController _seasonController = Get.find<SeasonController>();
+  limitController _seasonController = Get.find<limitController>();
   StreamController_fleaMarket _streamController_fleaMarket = Get.find<StreamController_fleaMarket>();
 //TODO: Dependency Injection**************************************************
 

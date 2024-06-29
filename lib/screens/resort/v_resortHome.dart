@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:com.snowlive/controller/vm_refreshController.dart';
-import 'package:com.snowlive/controller/vm_streamController_resortHome.dart';
+import 'package:com.snowlive/controller/public/vm_refreshController.dart';
+import 'package:com.snowlive/controller/home/vm_streamController_resortHome.dart';
 import 'package:com.snowlive/screens/resort/v_alarmCenter.dart';
 import 'package:com.snowlive/widget/w_popUp_bottomSheet.dart';
 import 'package:dotted_border/dotted_border.dart';
@@ -12,24 +12,20 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:com.snowlive/controller/vm_DialogController_resortHome.dart';
-import 'package:com.snowlive/controller/vm_fleaChatController.dart';
-import 'package:com.snowlive/controller/vm_fleaMarketController.dart';
-import 'package:com.snowlive/controller/vm_getDateTimeController.dart';
-import 'package:com.snowlive/controller/vm_liveMapController.dart';
-import 'package:com.snowlive/controller/vm_replyModelController.dart';
+import 'package:com.snowlive/controller/public/vm_DialogController_resortHome.dart';
+import 'package:com.snowlive/controller/fleaMarket/vm_fleaMarketController.dart';
+import 'package:com.snowlive/controller/public/vm_getDateTimeController.dart';
+import 'package:com.snowlive/controller/ranking/vm_liveMapController.dart';
 import 'package:com.snowlive/model/m_resortModel.dart';
 import 'package:com.snowlive/screens/banner/v_banner_resortHome.dart';
 import 'package:com.snowlive/screens/more/friend/v_friendDetailPage.dart';
 import 'package:com.snowlive/screens/v_webPage.dart';
-import 'package:com.snowlive/controller/vm_resortModelController.dart';
-import 'package:com.snowlive/controller/vm_userModelController.dart';
+import 'package:com.snowlive/controller/resort/vm_resortModelController.dart';
+import 'package:com.snowlive/controller/user/vm_userModelController.dart';
 import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
-import '../../controller/vm_bottomTabBarController.dart';
-import '../../controller/vm_commentController.dart';
-import '../../controller/vm_liveCrewModelController.dart';
-import '../../controller/vm_seasonController.dart';
-import '../../controller/vm_urlLauncherController.dart';
+import '../../controller/liveCrew/vm_liveCrewModelController.dart';
+import '../../controller/public/vm_limitController.dart';
+import '../../controller/public/vm_urlLauncherController.dart';
 import '../bulletin/Event/v_bulletin_Event_List_Screen_home.dart';
 import 'package:lottie/lottie.dart';
 import '../more/friend/v_friendListPage.dart';
@@ -60,7 +56,7 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
   LiveMapController _liveMapController = Get.find<LiveMapController>();
   UrlLauncherController _urlLauncherController = Get.find<UrlLauncherController>();
   RefreshController _refreshController = Get.find<RefreshController>();
-  SeasonController _seasonController = Get.find<SeasonController>();
+  limitController _seasonController = Get.find<limitController>();
   LiveCrewModelController _liveCrewModelController = Get.find<LiveCrewModelController>();
   StreamController_ResortHome _streamController_ResortHome = Get.find<StreamController_ResortHome>();
   //TODO: Dependency Injection**************************************************
@@ -137,10 +133,7 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
     ));
 
     //TODO: Dependency Injection**************************************************
-    Get.put(CommentModelController(), permanent: true);
-    Get.put(ReplyModelController(), permanent: true);
     Get.put(FleaModelController(), permanent: true);
-    Get.put(FleaChatModelController(), permanent: true);
     DialogController _dialogController = Get.put(DialogController(), permanent: true);
     //TODO: Dependency Injection**************************************************
 

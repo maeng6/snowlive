@@ -2,8 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
-import '../../../controller/vm_streamController_friend.dart';
-import '../../../controller/vm_userModelController.dart';
+import '../../../controller/friends/vm_streamController_friend.dart';
+import '../../../controller/user/vm_userModelController.dart';
 
 class RepoList extends StatefulWidget {
   const RepoList({Key? key}) : super(key: key);

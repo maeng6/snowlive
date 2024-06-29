@@ -1,10 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:com.snowlive/controller/vm_streamController_liveCrew.dart';
+import 'package:com.snowlive/controller/liveCrew/vm_streamController_liveCrew.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
-import '../../../controller/vm_liveCrewModelController.dart';
-import '../../../controller/vm_userModelController.dart';
+import '../../../controller/liveCrew/vm_liveCrewModelController.dart';
+import '../../../controller/user/vm_userModelController.dart';
 
 class InvitedListPage_crew extends StatefulWidget {
   const InvitedListPage_crew({Key? key}) : super(key: key);

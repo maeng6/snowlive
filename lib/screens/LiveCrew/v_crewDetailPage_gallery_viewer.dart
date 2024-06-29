@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:get/get.dart';
-import 'package:com.snowlive/controller/vm_imageController.dart';
-import 'package:com.snowlive/controller/vm_liveCrewModelController.dart';
-import 'package:com.snowlive/controller/vm_userModelController.dart';
+import 'package:com.snowlive/controller/public/vm_imageController.dart';
+import 'package:com.snowlive/controller/liveCrew/vm_liveCrewModelController.dart';
+import 'package:com.snowlive/controller/user/vm_userModelController.dart';
 import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';

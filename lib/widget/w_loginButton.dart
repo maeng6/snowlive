@@ -3,10 +3,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
-import 'package:com.snowlive/controller/vm_loginController.dart';
+import 'package:com.snowlive/controller/login/vm_loginController.dart';
 import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 
-import '../controller/vm_loadingPage.dart';
+import '../controller/login/vm_loadingPage.dart';
 import '../screens/onboarding/v_FirstPage.dart';
 
 enum SignInMethod { google, facebook, apple }

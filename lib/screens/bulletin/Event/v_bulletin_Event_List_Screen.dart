@@ -1,5 +1,5 @@
-import 'package:com.snowlive/controller/vm_seasonController.dart';
-import 'package:com.snowlive/controller/vm_streamController_bulletin.dart';
+import 'package:com.snowlive/controller/public/vm_limitController.dart';
+import 'package:com.snowlive/controller/bulletin/vm_streamController_bulletin.dart';
 import 'package:com.snowlive/model/m_bulletinEventModel.dart';
 import 'package:com.snowlive/screens/bulletin/Event/v_bulletin_Event_List_Detail.dart';
 import 'package:com.snowlive/screens/bulletin/Event/v_bulletin_Event_Upload.dart';
@@ -12,10 +12,10 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import '../../../controller/vm_allUserDocsController.dart';
-import '../../../controller/vm_bulletinEventController.dart';
-import '../../../controller/vm_timeStampController.dart';
-import '../../../controller/vm_userModelController.dart';
+import '../../../controller/user/vm_allUserDocsController.dart';
+import '../../../controller/bulletin/vm_bulletinEventController.dart';
+import '../../../controller/public/vm_timeStampController.dart';
+import '../../../controller/user/vm_userModelController.dart';
 import '../../../data/imgaUrls/Data_url_image.dart';
 import '../../../widget/w_fullScreenDialog.dart';
 
@@ -31,7 +31,7 @@ class _Bulletin_Event_List_ScreenState extends State<Bulletin_Event_List_Screen>
   UserModelController _userModelController = Get.find<UserModelController>();
   BulletinEventModelController _bulletinEventModelController = Get.find<BulletinEventModelController>();
   TimeStampController _timeStampController = Get.find<TimeStampController>();
-  SeasonController _seasonController = Get.find<SeasonController>();
+  limitController _seasonController = Get.find<limitController>();
   AllUserDocsController _allUserDocsController = Get.find<AllUserDocsController>();
   StreamController_Bulletin _streamController_Bulletin = Get.find<StreamController_Bulletin>();
 

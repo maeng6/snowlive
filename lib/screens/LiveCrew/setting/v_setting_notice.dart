@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import '../../../controller/vm_liveCrewModelController.dart';
+import '../../../controller/liveCrew/vm_liveCrewModelController.dart';
 import '../../../widget/w_fullScreenDialog.dart';
 
 class SetModifyNotice_crewDetail extends StatefulWidget {

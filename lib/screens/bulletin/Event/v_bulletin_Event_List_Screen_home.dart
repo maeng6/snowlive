@@ -1,5 +1,5 @@
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:com.snowlive/controller/vm_streamController_bulletin.dart';
+import 'package:com.snowlive/controller/bulletin/vm_streamController_bulletin.dart';
 import 'package:com.snowlive/screens/bulletin/Event/v_bulletin_Event_List_Detail.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
@@ -10,8 +10,8 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import '../../../controller/vm_bulletinEventController.dart';
-import '../../../controller/vm_userModelController.dart';
+import '../../../controller/bulletin/vm_bulletinEventController.dart';
+import '../../../controller/user/vm_userModelController.dart';
 import '../../../widget/w_fullScreenDialog.dart';
 
 class Bulletin_Event_List_Screen_Home extends StatefulWidget {

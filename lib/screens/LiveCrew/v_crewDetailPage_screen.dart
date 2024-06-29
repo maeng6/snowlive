@@ -12,9 +12,9 @@ import 'package:com.snowlive/screens/more/friend/invitation/v_inviteListPage_fri
 import 'package:com.snowlive/screens/more/friend/invitation/v_invitedListPage_friend.dart';
 import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 
-import '../../../controller/vm_userModelController.dart';
-import '../../controller/vm_liveCrewModelController.dart';
-import '../../controller/vm_streamController_liveCrew.dart';
+import '../../controller/user/vm_userModelController.dart';
+import '../../controller/liveCrew/vm_liveCrewModelController.dart';
+import '../../controller/liveCrew/vm_streamController_liveCrew.dart';
 
 class CrewDetailPage_screen extends StatefulWidget {
   CrewDetailPage_screen({Key? key,}) : super(key: key);

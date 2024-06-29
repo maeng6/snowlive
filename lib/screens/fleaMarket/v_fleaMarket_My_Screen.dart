@@ -5,12 +5,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/rendering.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:com.snowlive/controller/vm_fleaMarketController.dart';
+import 'package:com.snowlive/controller/fleaMarket/vm_fleaMarketController.dart';
 import 'package:com.snowlive/screens/fleaMarket/v_fleaMarket_List_Detail.dart';
 import 'package:com.snowlive/screens/fleaMarket/v_fleaMarket_Upload.dart';
 import 'package:com.snowlive/screens/fleaMarket/v_phone_Auth_Screen.dart';
-import '../../controller/vm_streamController_fleaMarket.dart';
-import '../../controller/vm_userModelController.dart';
+import '../../controller/fleaMarket/vm_streamController_fleaMarket.dart';
+import '../../controller/user/vm_userModelController.dart';
 import '../../widget/w_fullScreenDialog.dart';
 
 class FleaMarket_My_Screen extends StatefulWidget {

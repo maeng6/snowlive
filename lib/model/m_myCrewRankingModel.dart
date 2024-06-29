@@ -3,12 +3,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
-import '../controller/vm_seasonController.dart';
-import '../controller/vm_userModelController.dart';
+import '../controller/public/vm_limitController.dart';
+import '../controller/user/vm_userModelController.dart';
 
 class MyCrewRankingModel {
   UserModelController _userModelController = Get.find<UserModelController>();
-  SeasonController _seasonController = Get.find<SeasonController>();
+  limitController _seasonController = Get.find<limitController>();
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;

@@ -1,8 +1,8 @@
-import 'package:com.snowlive/controller/vm_streamController_moreTab.dart';
+import 'package:com.snowlive/controller/moreTab/vm_streamController_moreTab.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
-import 'package:com.snowlive/controller/vm_timeStampController.dart';
+import 'package:com.snowlive/controller/public/vm_timeStampController.dart';
 import 'package:com.snowlive/screens/more/v_noticeDetailPage.dart';
 
 

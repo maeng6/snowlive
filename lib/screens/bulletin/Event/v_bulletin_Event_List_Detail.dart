@@ -1,18 +1,18 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:com.snowlive/controller/vm_seasonController.dart';
-import 'package:com.snowlive/controller/vm_streamController_bulletin.dart';
+import 'package:com.snowlive/controller/public/vm_limitController.dart';
+import 'package:com.snowlive/controller/bulletin/vm_streamController_bulletin.dart';
 import 'package:com.snowlive/screens/bulletin/Event/v_bulletinEventImageScreen.dart';
 import 'package:com.snowlive/screens/bulletin/Event/v_bulletin_Event_ModifyPage.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:com.snowlive/controller/vm_userModelController.dart';
+import 'package:com.snowlive/controller/user/vm_userModelController.dart';
 import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
-import '../../../controller/vm_alarmCenterController.dart';
-import '../../../controller/vm_bulletinEventController.dart';
-import '../../../controller/vm_bulletinEventReplyController.dart';
-import '../../../controller/vm_timeStampController.dart';
-import '../../../controller/vm_urlLauncherController.dart';
+import '../../../controller/alarm/vm_alarmCenterController.dart';
+import '../../../controller/bulletin/vm_bulletinEventController.dart';
+import '../../../controller/bulletin/vm_bulletinEventReplyController.dart';
+import '../../../controller/public/vm_timeStampController.dart';
+import '../../../controller/public/vm_urlLauncherController.dart';
 import '../../../data/imgaUrls/Data_url_image.dart';
 import '../../../model/m_alarmCenterModel.dart';
 import '../../more/friend/v_friendDetailPage.dart';
@@ -29,7 +29,7 @@ class _Bulletin_Event_List_DetailState extends State<Bulletin_Event_List_Detail>
   //TODO: Dependency Injection**************************************************
   UserModelController _userModelController = Get.find<UserModelController>();
   BulletinEventModelController _bulletinEventModelController = Get.find<BulletinEventModelController>();
-  SeasonController _seasonController = Get.find<SeasonController>();
+  limitController _seasonController = Get.find<limitController>();
   AlarmCenterController _alarmCenterController = Get.find<AlarmCenterController>();
   TimeStampController _timeStampController = Get.find<TimeStampController>();
   UrlLauncherController _urlLauncherController = Get.find<UrlLauncherController>();

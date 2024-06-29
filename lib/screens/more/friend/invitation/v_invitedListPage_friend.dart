@@ -3,8 +3,8 @@ import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
-import '../../../../controller/vm_alarmCenterController.dart';
-import '../../../../controller/vm_userModelController.dart';
+import '../../../../controller/alarm/vm_alarmCenterController.dart';
+import '../../../../controller/user/vm_userModelController.dart';
 import '../../../../model/m_alarmCenterModel.dart';
 import '../v_friendDetailPage.dart';
 

@@ -3,10 +3,10 @@ import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
-import '../../../controller/vm_userModelController.dart';
-import '../../controller/vm_alarmCenterController.dart';
-import '../../controller/vm_liveCrewModelController.dart';
-import '../../controller/vm_streamController_liveCrew.dart';
+import '../../controller/user/vm_userModelController.dart';
+import '../../controller/alarm/vm_alarmCenterController.dart';
+import '../../controller/liveCrew/vm_liveCrewModelController.dart';
+import '../../controller/liveCrew/vm_streamController_liveCrew.dart';
 import '../../model/m_alarmCenterModel.dart';
 import '../more/friend/v_friendDetailPage.dart';
 

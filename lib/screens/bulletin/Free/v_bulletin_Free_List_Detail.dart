@@ -1,20 +1,20 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:com.snowlive/controller/vm_seasonController.dart';
-import 'package:com.snowlive/controller/vm_streamController_bulletin.dart';
-import 'package:com.snowlive/controller/vm_timeStampController.dart';
+import 'package:com.snowlive/controller/public/vm_limitController.dart';
+import 'package:com.snowlive/controller/bulletin/vm_streamController_bulletin.dart';
+import 'package:com.snowlive/controller/public/vm_timeStampController.dart';
 import 'package:com.snowlive/screens/bulletin/Free/v_bulletinFreeImageScreen.dart';
 import 'package:com.snowlive/screens/bulletin/Free/v_bulletin_Free_ModifyPage.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:com.snowlive/controller/vm_userModelController.dart';
+import 'package:com.snowlive/controller/user/vm_userModelController.dart';
 import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
-import '../../../controller/vm_alarmCenterController.dart';
-import '../../../controller/vm_allUserDocsController.dart';
-import '../../../controller/vm_bulletinFreeController.dart';
-import '../../../controller/vm_bulletinFreeReplyController.dart';
+import '../../../controller/alarm/vm_alarmCenterController.dart';
+import '../../../controller/user/vm_allUserDocsController.dart';
+import '../../../controller/bulletin/vm_bulletinFreeController.dart';
+import '../../../controller/bulletin/vm_bulletinFreeReplyController.dart';
 import '../../../data/imgaUrls/Data_url_image.dart';
 import '../../../model/m_alarmCenterModel.dart';
 import '../../more/friend/v_friendDetailPage.dart';
@@ -31,7 +31,7 @@ class _Bulletin_Free_List_DetailState extends State<Bulletin_Free_List_Detail> {
   //TODO: Dependency Injection**************************************************
   UserModelController _userModelController = Get.find<UserModelController>();
   BulletinFreeModelController _bulletinFreeModelController = Get.find<BulletinFreeModelController>();
-  SeasonController _seasonController = Get.find<SeasonController>();
+  limitController _seasonController = Get.find<limitController>();
   AlarmCenterController _alarmCenterController = Get.find<AlarmCenterController>();
   TimeStampController _timeStampController = Get.find<TimeStampController>();
   StreamController_Bulletin _streamController_Bulletin = Get.find<StreamController_Bulletin>();
