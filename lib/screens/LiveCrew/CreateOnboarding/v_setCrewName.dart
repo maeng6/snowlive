@@ -2,13 +2,11 @@ import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:com.snowlive/controller/vm_userModelController.dart';
+import 'package:com.snowlive/controller/user/vm_userModelController.dart';
 import 'package:com.snowlive/screens/LiveCrew/CreateOnboarding/v_setCrewImage.dart';
 
-import '../../../controller/vm_liveCrewModelController.dart';
+import '../../../controller/liveCrew/vm_liveCrewModelController.dart';
 
 class SetCrewName extends StatefulWidget {
   SetCrewName({Key? key}) : super(key: key);

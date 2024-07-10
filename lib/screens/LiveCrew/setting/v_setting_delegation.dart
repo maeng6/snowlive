@@ -3,16 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:com.snowlive/screens/LiveCrew/CreateOnboarding/v_FirstPage_createCrew.dart';
-import 'package:com.snowlive/screens/LiveCrew/v_crewDetailPage_screen.dart';
-import 'package:com.snowlive/screens/LiveCrew/v_searchCrewPage.dart';
-import 'package:com.snowlive/screens/v_MainHome.dart';
 import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
-import '../../../../controller/vm_userModelController.dart';
-import 'package:flutter_speed_dial/flutter_speed_dial.dart';
-import '../../../controller/vm_liveCrewModelController.dart';
+import '../../../controller/liveCrew/vm_liveCrewModelController.dart';
+import '../../../controller/liveCrew/vm_streamController_liveCrew.dart';
 import '../../more/friend/v_friendDetailPage.dart';
-import '../invitation/v_invitation_Screen_crew.dart';
 
 class Setting_delegation extends StatefulWidget {
   const Setting_delegation({Key? key}) : super(key: key);
@@ -24,8 +18,8 @@ class Setting_delegation extends StatefulWidget {
 class _Setting_delegationState extends State<Setting_delegation> {
 
   //TODO: Dependency Injection**************************************************
-  UserModelController _userModelController = Get.find<UserModelController>();
   LiveCrewModelController _liveCrewModelController = Get.find<LiveCrewModelController>();
+  StreamController_liveCrew _streamController_liveCrew = Get.find<StreamController_liveCrew>();
   //TODO: Dependency Injection**************************************************
 
   @override
@@ -65,10 +59,7 @@ class _Setting_delegationState extends State<Setting_delegation> {
             height: _statusBarSize + 58,
           ),
           StreamBuilder(
-            stream: FirebaseFirestore.instance
-                .collection('user')
-                .where('liveCrew', isEqualTo: _liveCrewModelController.crewID)
-                .snapshots(),
+            stream: _streamController_liveCrew.setupStreams_liveCrew_setting_delegation(),
             builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
               if (!snapshot.hasData || snapshot.data == null) {
                 return Center();

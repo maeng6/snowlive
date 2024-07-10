@@ -1,10 +1,8 @@
-import 'package:extended_image/extended_image.dart';
+import 'package:com.snowlive/controller/moreTab/vm_streamController_moreTab.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:intl/intl.dart';
-import 'package:com.snowlive/controller/vm_timeStampController.dart';
+import 'package:com.snowlive/controller/public/vm_timeStampController.dart';
 import 'package:com.snowlive/screens/more/v_noticeDetailPage.dart';
 
 
@@ -19,6 +17,7 @@ class _NoticeListState extends State<NoticeList> {
 
   //TODO: Dependency Injection**************************************************
   TimeStampController _timeStampController = Get.find<TimeStampController>();
+  StreamController_MoreTab _streamController_MoreTab = Get.find<StreamController_MoreTab>();
   //TODO: Dependency Injection**************************************************
 
   @override
@@ -51,10 +50,7 @@ class _NoticeListState extends State<NoticeList> {
         ),
       ),
       body: StreamBuilder(
-        stream: FirebaseFirestore.instance
-            .collection('notice')
-            .orderBy('timeStamp', descending: true)
-            .snapshots(),
+        stream: _streamController_MoreTab.setupStreams_moreTab_notice(),
         builder: (context,
             AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
           if (!snapshot.hasData) {

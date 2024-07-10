@@ -3,12 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:com.snowlive/controller/vm_fleaMarketController.dart';
+import 'package:com.snowlive/controller/fleaMarket/vm_fleaMarketController.dart';
 import 'package:com.snowlive/model/m_fleaMarketModel.dart';
-import 'package:com.snowlive/screens/fleaMarket/v_fleaMarket_Screen.dart';
-import 'package:com.snowlive/screens/v_MainHome.dart';
-import '../../controller/vm_imageController.dart';
-import '../../controller/vm_userModelController.dart';
+import '../../controller/public/vm_imageController.dart';
+import '../../controller/user/vm_userModelController.dart';
 import '../../widget/w_fullScreenDialog.dart';
 
 class FleaMarket_ModifyPage extends StatefulWidget {
@@ -44,11 +42,6 @@ class _FleaMarket_ModifyPageState extends State<FleaMarket_ModifyPage> {
   final _formKey = GlobalKey<FormState>();
   RxList? _imageUrls=[].obs;
 
-  PageController _pageController = PageController();
-
-  void _onItemTapped(int index) {
-    _pageController.jumpToPage(index);
-  }
 
 
   ListTile buildCategoryListTile(int index) {
@@ -63,8 +56,6 @@ class _FleaMarket_ModifyPageState extends State<FleaMarket_ModifyPage> {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
     );
   }
-
-
 
   ListTile buildResortListTile(int index) {
     return ListTile(

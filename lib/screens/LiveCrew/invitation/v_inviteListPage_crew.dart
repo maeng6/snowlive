@@ -5,8 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:com.snowlive/screens/LiveCrew/v_crewDetailPage_screen.dart';
 import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
-import '../../../controller/vm_liveCrewModelController.dart';
-import '../../../controller/vm_userModelController.dart';
+import '../../../controller/liveCrew/vm_liveCrewModelController.dart';
+import '../../../controller/liveCrew/vm_streamController_liveCrew.dart';
+import '../../../controller/user/vm_userModelController.dart';
 
 class InviteListPage_crew extends StatefulWidget {
   const InviteListPage_crew({Key? key}) : super(key: key);
@@ -20,6 +21,7 @@ class _InviteListPage_crewState extends State<InviteListPage_crew> {
   //TODO: Dependency Injection**************************************************
   UserModelController _userModelController = Get.find<UserModelController>();
   LiveCrewModelController _liveCrewModelController = Get.find<LiveCrewModelController>();
+  StreamController_liveCrew _streamController_liveCrew = Get.find<StreamController_liveCrew>();
   //TODO: Dependency Injection**************************************************
 
   var assetBases;
@@ -30,10 +32,7 @@ class _InviteListPage_crewState extends State<InviteListPage_crew> {
     return Scaffold(
         backgroundColor: Colors.white,
         body: StreamBuilder(
-          stream: FirebaseFirestore.instance
-              .collection('liveCrew')
-              .where('applyUidList', arrayContains: _userModelController.uid!)
-              .snapshots(),
+          stream: _streamController_liveCrew.setupStreams_liveCrew_inviteListPage(),
           builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
             if (!snapshot.hasData || snapshot.data == null) {
               return Center();

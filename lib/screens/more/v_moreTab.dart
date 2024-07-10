@@ -1,39 +1,29 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:com.snowlive/controller/vm_loadingController.dart';
-import 'package:com.snowlive/controller/vm_myCrewRankingController.dart';
-import 'package:com.snowlive/controller/vm_urlLauncherController.dart';
+import 'package:com.snowlive/controller/public/vm_loadingController.dart';
+import 'package:com.snowlive/controller/ranking/vm_myCrewRankingController.dart';
+import 'package:com.snowlive/controller/public/vm_urlLauncherController.dart';
 import 'package:com.snowlive/screens/more/friend/v_snowliveDetailPage.dart';
 import 'package:com.snowlive/screens/more/v_eventPage.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:com.snowlive/screens/LiveCrew/v_liveCrewHome.dart';
 import 'package:com.snowlive/screens/more/friend/v_friendDetailPage.dart';
-import 'package:com.snowlive/screens/more/v_contactUsPage.dart';
 import 'package:com.snowlive/screens/more/v_favoriteResort_moreTab.dart';
 import 'package:com.snowlive/screens/more/friend/v_friendListPage.dart';
-import 'package:com.snowlive/screens/more/v_licenseListPage.dart';
 import 'package:com.snowlive/screens/more/v_noticeListPage.dart';
 import 'package:com.snowlive/screens/more/v_resortTab.dart';
-import 'package:com.snowlive/screens/more/v_setProfileImage_moreTab.dart';
 import 'package:com.snowlive/screens/more/v_setting_moreTab.dart';
-import 'package:com.snowlive/screens/v_webPage.dart';
 import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
-import '../../controller/vm_allUserDocsController.dart';
-import '../../controller/vm_liveCrewModelController.dart';
-import '../../controller/vm_myRankingController.dart';
-import '../../controller/vm_noticeController.dart';
-import '../../controller/vm_rankingTierModelController.dart';
-import '../../controller/vm_seasonController.dart';
-import '../../controller/vm_userModelController.dart';
+import '../../controller/liveCrew/vm_liveCrewModelController.dart';
+import '../../controller/ranking/vm_myRankingController.dart';
+import '../../controller/alarm/vm_noticeController.dart';
+import '../../controller/ranking/vm_rankingTierModelController.dart';
+import '../../controller/public/vm_limitController.dart';
+import '../../controller/user/vm_userModelController.dart';
 import '../LiveCrew/CreateOnboarding/v_FirstPage_createCrew.dart';
 import '../Ranking/v_Ranking_Home.dart';
-import '../Ranking/test/v_Ranking_Home_test.dart';
-import '../Ranking/v_ranking_comingSoon_Screen.dart';
-import '../bulletin/v_bulletin_Screen.dart';
-import '../fleaMarket/v_fleaMarket_Screen.dart';
 
 class MoreTab extends StatefulWidget {
   MoreTab({Key? key}) : super(key: key);
@@ -52,7 +42,6 @@ class _MoreTabState extends State<MoreTab> {
   UserModelController _userModelController = Get.find<UserModelController>();
   LiveCrewModelController _liveCrewModelController = Get.find<LiveCrewModelController>();
   UrlLauncherController _urlLauncherController = Get.find<UrlLauncherController>();
-  SeasonController _seasonController = Get.find<SeasonController>();
   RankingTierModelController _rankingTierModelController = Get.find<RankingTierModelController>();
   MyRankingController _myRankingController = Get.find<MyRankingController>();
   LoadingController _loadingController = Get.find<LoadingController>();
@@ -236,315 +225,6 @@ class _MoreTabState extends State<MoreTab> {
                                             fontWeight: FontWeight.bold,
                                             fontSize: 15),
                                       ),
-                                      // SizedBox(
-                                      //   width: 2,
-                                      // ),
-                                      // Stack(children: [
-                                      //   GestureDetector(
-                                      //       onTap: () {
-                                      //         _textEditingController.clear();
-                                      //         showModalBottomSheet(
-                                      //           context: context,
-                                      //           isScrollControlled: true,
-                                      //           builder: (BuildContext context) {
-                                      //             return SingleChildScrollView(
-                                      //               padding: EdgeInsets.only(
-                                      //                   bottom:
-                                      //                       MediaQuery.of(context)
-                                      //                           .viewInsets
-                                      //                           .bottom),
-                                      //               child: Container(
-                                      //                 height: 300,
-                                      //                 child: Padding(
-                                      //                   padding: EdgeInsets.only(
-                                      //                       left: 20, right: 20),
-                                      //                   child: Column(
-                                      //                     crossAxisAlignment:
-                                      //                         CrossAxisAlignment
-                                      //                             .start,
-                                      //                     mainAxisAlignment:
-                                      //                         MainAxisAlignment
-                                      //                             .start,
-                                      //                     children: [
-                                      //                       SizedBox(
-                                      //                         height: 30,
-                                      //                       ),
-                                      //                       Text(
-                                      //                         '변경할 활동명을 입력해주세요.',
-                                      //                         style: TextStyle(
-                                      //                             fontSize: 18,
-                                      //                             fontWeight:
-                                      //                                 FontWeight
-                                      //                                     .bold,
-                                      //                             color: Color(
-                                      //                                 0xFF111111)),
-                                      //                       ),
-                                      //                       SizedBox(
-                                      //                         height: 24,
-                                      //                       ),
-                                      //                       Container(
-                                      //                         height: 130,
-                                      //                         child: Column(
-                                      //                           crossAxisAlignment:
-                                      //                               CrossAxisAlignment
-                                      //                                   .start,
-                                      //                           mainAxisAlignment:
-                                      //                               MainAxisAlignment
-                                      //                                   .start,
-                                      //                           children: [
-                                      //                             Form(
-                                      //                               key: _formKey,
-                                      //                               child:
-                                      //                                   TextFormField(
-                                      //                                 cursorColor:
-                                      //                                     Color(
-                                      //                                         0xff377EEA),
-                                      //                                 cursorHeight:
-                                      //                                     16,
-                                      //                                 cursorWidth:
-                                      //                                     2,
-                                      //                                 autovalidateMode:
-                                      //                                     AutovalidateMode
-                                      //                                         .onUserInteraction,
-                                      //                                 controller:
-                                      //                                     _textEditingController,
-                                      //                                 strutStyle:
-                                      //                                     StrutStyle(
-                                      //                                         leading:
-                                      //                                             0.3),
-                                      //                                 decoration:
-                                      //                                     InputDecoration(
-                                      //                                         errorStyle:
-                                      //                                             TextStyle(
-                                      //                                           fontSize:
-                                      //                                               12,
-                                      //                                         ),
-                                      //                                         hintStyle: TextStyle(
-                                      //                                             color: Color(0xff949494),
-                                      //                                             fontSize: 16),
-                                      //                                         hintText:
-                                      //                                             '활동명 입력',
-                                      //                                         labelText:
-                                      //                                             '활동명',
-                                      //                                         contentPadding: EdgeInsets.only(
-                                      //                                             top:
-                                      //                                                 20,
-                                      //                                             bottom:
-                                      //                                                 20,
-                                      //                                             left:
-                                      //                                                 20,
-                                      //                                             right:
-                                      //                                                 20),
-                                      //                                         border:
-                                      //                                             OutlineInputBorder(
-                                      //                                           borderSide:
-                                      //                                               BorderSide(color: Color(0xFFDEDEDE)),
-                                      //                                           borderRadius:
-                                      //                                               BorderRadius.circular(6),
-                                      //                                         ),
-                                      //                                         enabledBorder:
-                                      //                                             OutlineInputBorder(
-                                      //                                           borderSide:
-                                      //                                               BorderSide(color: Color(0xFFDEDEDE)),
-                                      //                                           borderRadius:
-                                      //                                               BorderRadius.circular(6),
-                                      //                                         ),
-                                      //                                         errorBorder:
-                                      //                                             OutlineInputBorder(
-                                      //                                           borderSide:
-                                      //                                               BorderSide(color: Color(0xFFFF3726)),
-                                      //                                           borderRadius:
-                                      //                                               BorderRadius.circular(6),
-                                      //                                         )),
-                                      //                                 validator:
-                                      //                                     (val) {
-                                      //                                   if (val!.length <=
-                                      //                                           20 &&
-                                      //                                       val.length >=
-                                      //                                           1) {
-                                      //                                     return null;
-                                      //                                   } else if (val
-                                      //                                           .length ==
-                                      //                                       0) {
-                                      //                                     return '닉네임을 입력해주세요.';
-                                      //                                   } else {
-                                      //                                     return '최대 글자 수를 초과했습니다.';
-                                      //                                   }
-                                      //                                 },
-                                      //                               ),
-                                      //                             ),
-                                      //                             SizedBox(
-                                      //                               height: 6,
-                                      //                             ),
-                                      //                             Padding(
-                                      //                               padding:
-                                      //                                   const EdgeInsets
-                                      //                                           .only(
-                                      //                                       left:
-                                      //                                           19),
-                                      //                               child: Text(
-                                      //                                 '최대 20글자까지 입력 가능합니다.',
-                                      //                                 style: TextStyle(
-                                      //                                     color: Color(
-                                      //                                         0xff949494),
-                                      //                                     fontSize:
-                                      //                                         12),
-                                      //                               ),
-                                      //                             ),
-                                      //                           ],
-                                      //                         ),
-                                      //                       ),
-                                      //                       Row(
-                                      //                         children: [
-                                      //                           Expanded(
-                                      //                             child: InkWell(
-                                      //                               child:
-                                      //                                   ElevatedButton(
-                                      //                                 onPressed:
-                                      //                                     () {
-                                      //                                   Navigator.pop(
-                                      //                                       context);
-                                      //                                 },
-                                      //                                 child: Text(
-                                      //                                   '취소',
-                                      //                                   style: TextStyle(
-                                      //                                       color: Colors
-                                      //                                           .white,
-                                      //                                       fontSize:
-                                      //                                           15,
-                                      //                                       fontWeight:
-                                      //                                           FontWeight.bold),
-                                      //                                 ),
-                                      //                                 style: TextButton.styleFrom(
-                                      //                                     splashFactory:
-                                      //                                         InkRipple
-                                      //                                             .splashFactory,
-                                      //                                     elevation:
-                                      //                                         0,
-                                      //                                     minimumSize:
-                                      //                                         Size(
-                                      //                                             100,
-                                      //                                             56),
-                                      //                                     backgroundColor:
-                                      //                                         Color(
-                                      //                                             0xff555555),
-                                      //                                     padding: EdgeInsets.symmetric(
-                                      //                                         horizontal:
-                                      //                                             0)),
-                                      //                               ),
-                                      //                             ),
-                                      //                           ),
-                                      //                           SizedBox(
-                                      //                             width: 10,
-                                      //                           ),
-                                      //                           Expanded(
-                                      //                             child: InkWell(
-                                      //                               child:
-                                      //                                   ElevatedButton(
-                                      //                                 onPressed:
-                                      //                                     () async {
-                                      //                                   setState(
-                                      //                                       () {
-                                      //                                     isLoading =
-                                      //                                         true;
-                                      //                                   });
-                                      //                                   if (_formKey
-                                      //                                       .currentState!
-                                      //                                       .validate()) {
-                                      //                                     await _userModelController
-                                      //                                         .updateNickname(
-                                      //                                             _textEditingController.text);
-                                      //                                     Get.snackbar(
-                                      //                                         '닉네임을 변경하였습니다.',
-                                      //                                         '',
-                                      //                                         snackPosition: SnackPosition
-                                      //                                             .BOTTOM,
-                                      //                                         margin: EdgeInsets.only(
-                                      //                                             right:
-                                      //                                                 20,
-                                      //                                             left:
-                                      //                                                 20,
-                                      //                                             bottom:
-                                      //                                                 12),
-                                      //                                         backgroundColor: Colors
-                                      //                                             .black87,
-                                      //                                         colorText: Colors
-                                      //                                             .white,
-                                      //                                         duration:
-                                      //                                             Duration(milliseconds: 3000));
-                                      //                                     Navigator.pop(
-                                      //                                         context);
-                                      //                                   } else {
-                                      //                                     Get.snackbar(
-                                      //                                         '닉네임 저장 실패',
-                                      //                                         '올바른 닉네임을 입력해주세요.',
-                                      //                                         snackPosition: SnackPosition
-                                      //                                             .BOTTOM,
-                                      //                                         margin: EdgeInsets.only(
-                                      //                                             right:
-                                      //                                                 20,
-                                      //                                             left:
-                                      //                                                 20,
-                                      //                                             bottom:
-                                      //                                                 12),
-                                      //                                         backgroundColor: Colors
-                                      //                                             .black87,
-                                      //                                         colorText: Colors
-                                      //                                             .white,
-                                      //                                         duration:
-                                      //                                             Duration(milliseconds: 3000));
-                                      //                                   }
-                                      //                                   setState(
-                                      //                                       () {
-                                      //                                     isLoading =
-                                      //                                         false;
-                                      //                                   });
-                                      //                                 },
-                                      //                                 child: Text(
-                                      //                                   '변경',
-                                      //                                   style: TextStyle(
-                                      //                                       color: Colors
-                                      //                                           .white,
-                                      //                                       fontSize:
-                                      //                                           15,
-                                      //                                       fontWeight:
-                                      //                                           FontWeight.bold),
-                                      //                                 ),
-                                      //                                 style: TextButton.styleFrom(
-                                      //                                     splashFactory:
-                                      //                                         InkRipple
-                                      //                                             .splashFactory,
-                                      //                                     elevation:
-                                      //                                         0,
-                                      //                                     minimumSize:
-                                      //                                         Size(
-                                      //                                             100,
-                                      //                                             56),
-                                      //                                     backgroundColor:
-                                      //                                         Color(
-                                      //                                             0xff2C97FB),
-                                      //                                     padding: EdgeInsets.symmetric(
-                                      //                                         horizontal:
-                                      //                                             0)),
-                                      //                               ),
-                                      //                             ),
-                                      //                           ),
-                                      //                         ],
-                                      //                       )
-                                      //                     ],
-                                      //                   ),
-                                      //                 ),
-                                      //               ),
-                                      //             );
-                                      //           },
-                                      //         );
-                                      //       },
-                                      //       child: Image.asset(
-                                      //         'assets/imgs/icons/icon_edit_pencil.png',
-                                      //         height: 22,
-                                      //         width: 22,
-                                      //       )),
-                                      // ])
                                     ],
                                   ),
                                   SizedBox(
@@ -728,74 +408,6 @@ class _MoreTabState extends State<MoreTab> {
                               ),
                               SizedBox(height: 6),
                               Text('라이브크루',style: TextStyle(
-                                  fontSize: 14,
-                                  color: Color(0xFF555555)
-                              ),)
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                    Column(
-                      children: [
-                        GestureDetector(
-                          onTap: () async{
-                            CustomFullScreenDialog.showDialog_progress();
-                            if(_userModelController.favoriteResort != 12 && _userModelController.favoriteResort != 2 && _userModelController.favoriteResort != 0 ) {
-
-                              print('통합랭킹 진입');
-                              _loadingController.updateProgress(0);
-                              await _rankingTierModelController.getRankingDocs_integrated();
-                              _loadingController.updateProgress(10);
-                              await _rankingTierModelController.getRankingDocs_integrated_Daily();
-                              _loadingController.updateProgress(20);
-                              await _rankingTierModelController.getRankingDocs_integrated_Weekly();
-                              _loadingController.updateProgress(30);
-                              await _rankingTierModelController.getRankingDocs_crew_integrated();
-                              _loadingController.updateProgress(40);
-                              await _rankingTierModelController.getRankingDocs_crew_integrated_Daily();
-                              _loadingController.updateProgress(50);
-                              await _rankingTierModelController.getRankingDocs_crew_integrated_Weekly();
-                              _loadingController.updateProgress(60);
-
-                            }else {
-                              _loadingController.updateProgress(0);
-                              await _rankingTierModelController.getRankingDocs(baseResort: _userModelController.favoriteResort);
-                              _loadingController.updateProgress(10);
-                              await _rankingTierModelController.getRankingDocsDaily(baseResort: _userModelController.favoriteResort);
-                              _loadingController.updateProgress(20);
-                              await _rankingTierModelController.getRankingDocsWeekly(baseResort: _userModelController.favoriteResort);
-                              _loadingController.updateProgress(30);
-                              await _rankingTierModelController.getRankingDocs_crew(baseResort: _userModelController.favoriteResort!);
-                              _loadingController.updateProgress(40);
-                              await _rankingTierModelController.getRankingDocs_crew_Daily(baseResort: _userModelController.favoriteResort!);
-                              _loadingController.updateProgress(50);
-                              await _rankingTierModelController.getRankingDocs_crew_Weekly(baseResort: _userModelController.favoriteResort!);
-                              _loadingController.updateProgress(60);
-
-                            }
-
-                            await _myRankingController.getMyRankingData(_userModelController.uid);
-                            await _myRankingController.getMyRankingDataDaily(_userModelController.uid);
-                            await _myRankingController.getMyRankingDataWeekly(_userModelController.uid);
-                            _loadingController.updateProgress(70);
-                            await _myCrewRankingController.getMyCrewRankingData(_userModelController.liveCrew);
-                            _loadingController.updateProgress(80);
-                            await _myCrewRankingController.getMyCrewRankingDataDaily(_userModelController.liveCrew);
-                            _loadingController.updateProgress(90);
-                            await _myCrewRankingController.getMyCrewRankingDataWeekly(_userModelController.liveCrew);
-                            _loadingController.updateProgress(100);
-
-                            CustomFullScreenDialog.cancelDialog();
-                            (_seasonController.dailyOpen ==true || _seasonController.open_uidList!.contains(_userModelController.uid))
-                                ? Get.to(()=>RankingHome_test())
-                                : Get.to(()=>RankingHome());
-                          },
-                          child: Column(
-                            children: [
-                              Image.asset('assets/imgs/icons/icon_moretab_ranking.png', width: 40),
-                              SizedBox(height: 6),
-                              Text('랭킹', style: TextStyle(
                                   fontSize: 14,
                                   color: Color(0xFF555555)
                               ),)

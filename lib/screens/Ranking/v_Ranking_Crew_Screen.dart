@@ -1,25 +1,30 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:com.snowlive/data/imgaUrls/Data_url_image.dart';
-import 'package:com.snowlive/screens/Ranking/v_Ranking_Crew_All_Screen.dart';
+import 'package:com.snowlive/controller/ranking/vm_myCrewRankingController.dart';
+import 'package:com.snowlive/controller/ranking/vm_streamController_ranking.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:com.snowlive/controller/vm_liveCrewModelController.dart';
-import 'package:com.snowlive/controller/vm_seasonController.dart';
-import 'package:com.snowlive/controller/vm_userModelController.dart';
-import 'package:com.snowlive/screens/Ranking/test/v_Ranking_Crew_All_Screen_test.dart';
-import '../../controller/vm_liveMapController.dart';
-import '../../controller/vm_rankingTierModelController.dart';
-import '../../controller/vm_resortModelController.dart';
+import 'package:com.snowlive/controller/liveCrew/vm_liveCrewModelController.dart';
+import 'package:com.snowlive/controller/user/vm_userModelController.dart';
+import '../../controller/ranking/vm_rankingTierModelController.dart';
+import '../../controller/resort/vm_resortModelController.dart';
+import '../../data/imgaUrls/Data_url_image.dart';
 import '../../model/m_crewLogoModel.dart';
+import '../../model/m_resortModel.dart';
 import '../../widget/w_fullScreenDialog.dart';
+import '../../widget/w_verticalDivider.dart';
 import '../LiveCrew/v_crewDetailPage_screen.dart';
 
 class RankingCrewScreen extends StatefulWidget {
-  RankingCrewScreen({Key? key, required this.isKusbf}) : super(key: key);
+  RankingCrewScreen({Key? key,
+    required this.isKusbf,
+    required this.isDaily,
+    required this.isWeekly,}) : super(key: key);
 
   bool isKusbf = false;
+  bool isDaily = false;
+  bool isWeekly = false;
 
   @override
   State<RankingCrewScreen> createState() => _RankingCrewScreenState();
@@ -31,30 +36,215 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
   UserModelController _userModelController = Get.find<UserModelController>();
   LiveCrewModelController _liveCrewModelController = Get.find<LiveCrewModelController>();
   RankingTierModelController _rankingTierModelController = Get.find<RankingTierModelController>();
+  MyCrewRankingController _myCrewRankingController = Get.find<MyCrewRankingController>();
+  StreamController_ranking _streamController_ranking = Get.find<StreamController_ranking>();
+  ResortModelController _resortModelController = Get.find<ResortModelController>();
   //TODO: Dependency Injection**************************************************
+
+
+
+  var foundCrewLogo;
+
+  List<bool> isTap = [
+    true,
+    false,
+  ];
+
+  var _selectedValue_resort;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    _selectedValue_resort = '${_resortModelController.getResortName(_userModelController.resortNickname!)}';
+
+    for (var crewLogo in crewLogoList) {
+      if (_liveCrewModelController.crewColor == crewLogo.crewColor) {
+        foundCrewLogo = crewLogo;
+        break; // 일치하는 로고를 찾았으므로 루프를 종료합니다.
+      }
+    }
 
   }
 
-  int? myCrewRank;
-  var assetTop1;
-  var assetTop2;
-  var assetTop3;
   List? crewDocs;
   Map? crewRankingMap;
 
-  Future<void> _refreshData() async {
-    if(_userModelController.favoriteResort == 12 ||_userModelController.favoriteResort == 2 ||_userModelController.favoriteResort == 0) {
-      await _rankingTierModelController.getRankingDocs_crew(baseResort: _userModelController.favoriteResort!);
-    }else {
-      await _rankingTierModelController.getRankingDocs_crew_integrated();
-    }
+  int? myCrewTotalScore;
+  int? myCrewTotalPassCount;
+
+  _showCupertinoPicker() async {
+    await showCupertinoModalPopup(
+        context: context,
+        builder: (_) {
+          return Padding(
+            padding: EdgeInsets.only(
+                bottom: MediaQuery.of(context).viewInsets.bottom),
+            child: Container(
+                height: 520,
+                padding: EdgeInsets.only(left: 16, right: 16),
+                child: CupertinoActionSheet(
+                  actions: [
+                    CupertinoActionSheetAction(
+                        onPressed: () {
+                          HapticFeedback.lightImpact();
+                          setState(() {
+                            isTap[0] = true;
+                            isTap[1] = false;
+                            _selectedValue_resort = '${resortFullNameList[0]}';
+                          });
+                          Navigator.pop(context);
+                        },
+                        child: Text(
+                          '${resortFullNameList[0]}',
+                        )),
+                    CupertinoActionSheetAction(
+                        onPressed: () {
+                          HapticFeedback.lightImpact();
+                          setState(() {
+                            isTap[0] = true;
+                            isTap[1] = false;
+                            _selectedValue_resort = '${resortFullNameList[1]}';
+                          });
+                          Navigator.pop(context);
+                        },
+                        child: Text('${resortFullNameList[1]}')),
+                    CupertinoActionSheetAction(
+                        onPressed: () {
+                          HapticFeedback.lightImpact();
+                          setState(() {
+                            isTap[0] = true;
+                            isTap[1] = false;
+                            _selectedValue_resort = '${resortFullNameList[2]}';
+                          });
+                          Navigator.pop(context);
+                        },
+                        child: Text('${resortFullNameList[2]}')),
+                    CupertinoActionSheetAction(
+                        onPressed: () {
+                          HapticFeedback.lightImpact();
+                          setState(() {
+                            isTap[0] = true;
+                            isTap[1] = false;
+                            _selectedValue_resort = '${resortFullNameList[3]}';
+                          });
+                          Navigator.pop(context);
+                        },
+                        child: Text('${resortFullNameList[3]}')),
+                    CupertinoActionSheetAction(
+                        onPressed: () {
+                          HapticFeedback.lightImpact();
+                          setState(() {
+                            isTap[0] = true;
+                            isTap[1] = false;
+                            _selectedValue_resort = '${resortFullNameList[4]}';
+                          });
+                          Navigator.pop(context);
+                        },
+                        child: Text('${resortFullNameList[4]}')),
+                    CupertinoActionSheetAction(
+                        onPressed: () {
+                          HapticFeedback.lightImpact();
+                          setState(() {
+                            isTap[0] = true;
+                            isTap[1] = false;
+                            _selectedValue_resort = '${resortFullNameList[5]}';
+                          });
+                          Navigator.pop(context);
+                        },
+                        child: Text('${resortFullNameList[5]}')),
+                    CupertinoActionSheetAction(
+                        onPressed: () {
+                          HapticFeedback.lightImpact();
+                          setState(() {
+                            isTap[0] = true;
+                            isTap[1] = false;
+                            _selectedValue_resort = '${resortFullNameList[6]}';
+                          });
+                          Navigator.pop(context);
+                        },
+                        child: Text('${resortFullNameList[6]}')),
+                    CupertinoActionSheetAction(
+                        onPressed: () {
+                          HapticFeedback.lightImpact();
+                          setState(() {
+                            isTap[0] = true;
+                            isTap[1] = false;
+                            _selectedValue_resort = '${resortFullNameList[7]}';
+                          });
+                          Navigator.pop(context);
+                        },
+                        child: Text('${resortFullNameList[7]}')),
+                    CupertinoActionSheetAction(
+                        onPressed: () {
+                          HapticFeedback.lightImpact();
+                          setState(() {
+                            isTap[0] = true;
+                            isTap[1] = false;
+                            _selectedValue_resort = '${resortFullNameList[8]}';
+                          });
+                          Navigator.pop(context);
+                        },
+                        child: Text('${resortFullNameList[8]}')),
+                    CupertinoActionSheetAction(
+                        onPressed: () {
+                          HapticFeedback.lightImpact();
+                          setState(() {
+                            isTap[0] = true;
+                            isTap[1] = false;
+                            _selectedValue_resort = '${resortFullNameList[9]}';
+                          });
+                          Navigator.pop(context);
+                        },
+                        child: Text('${resortFullNameList[9]}')),
+                    CupertinoActionSheetAction(
+                        onPressed: () {
+                          HapticFeedback.lightImpact();
+                          setState(() {
+                            isTap[0] = true;
+                            isTap[1] = false;
+                            _selectedValue_resort = '${resortFullNameList[10]}';
+                          });
+                          Navigator.pop(context);
+                        },
+                        child: Text('${resortFullNameList[10]}')),
+                    CupertinoActionSheetAction(
+                        onPressed: () {
+                          HapticFeedback.lightImpact();
+                          setState(() {
+                            isTap[0] = true;
+                            isTap[1] = false;
+                            _selectedValue_resort = '${resortFullNameList[11]}';
+                          });
+                          Navigator.pop(context);
+                        },
+                        child: Text('${resortFullNameList[11]}')),
+                    CupertinoActionSheetAction(
+                        onPressed: () {
+                          HapticFeedback.lightImpact();
+                          setState(() {
+                            isTap[0] = true;
+                            isTap[1] = false;
+                            _selectedValue_resort = '${resortFullNameList[12]}';
+                          });
+                          Navigator.pop(context);
+                        },
+                        child: Text('${resortFullNameList[12]}')),
+                  ],
+                  cancelButton: CupertinoActionSheetAction(
+                    child: Text('닫기'),
+                    onPressed: () {
+                      HapticFeedback.mediumImpact();
+                      Navigator.pop(context);
+                    },
+                  ),
+                )
+            ),
+          );
+        });
     setState(() {});
   }
+
 
 
   @override
@@ -64,40 +254,50 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
     _userModelController.getCurrentUser_kusbf(_userModelController.uid);
 
     if(_userModelController.favoriteResort == 12 ||_userModelController.favoriteResort == 2 ||_userModelController.favoriteResort == 0) {
-      crewDocs = widget.isKusbf == true
-          ? _rankingTierModelController.rankingDocs_crew_kusbf
-          : _rankingTierModelController.rankingDocs_crew;
-      crewRankingMap = widget.isKusbf == true
-          ? _rankingTierModelController.crewRankingMap_kusbf
-          : _rankingTierModelController.crewRankingMap;
+      if(widget.isDaily == true) {
+        crewDocs = widget.isKusbf == true
+            ? _rankingTierModelController.rankingDocs_crew_kusbf_daily
+            : _rankingTierModelController.rankingDocs_crew_daily;
+        crewRankingMap = widget.isKusbf == true
+            ? _rankingTierModelController.crewRankingMap_kusbf_daily
+            : _rankingTierModelController.crewRankingMap_daily;
+        myCrewTotalScore = _myCrewRankingController.totalScore_Daily;
+        myCrewTotalPassCount = _myCrewRankingController.totalPassCount_Daily;
+      } else if(widget.isWeekly == true) {
+        crewDocs = widget.isKusbf == true
+            ? _rankingTierModelController.rankingDocs_crew_kusbf_weekly
+            : _rankingTierModelController.rankingDocs_crew_weekly;
+        crewRankingMap = widget.isKusbf == true
+            ? _rankingTierModelController.crewRankingMap_kusbf_weekly
+            : _rankingTierModelController.crewRankingMap_weekly;
+        myCrewTotalScore = _myCrewRankingController.totalScore_Weekly;
+        myCrewTotalPassCount = _myCrewRankingController.totalPassCount_Weekly;
+      } else {
+        crewDocs = widget.isKusbf == true
+            ? _rankingTierModelController.rankingDocs_crew_kusbf
+            : _rankingTierModelController.rankingDocs_crew;
+        crewRankingMap = widget.isKusbf == true
+            ? _rankingTierModelController.crewRankingMap_kusbf
+            : _rankingTierModelController.crewRankingMap;
+        myCrewTotalScore = _myCrewRankingController.totalScore;
+        myCrewTotalPassCount = _myCrewRankingController.totalPassCount;
+      }
     } else{
-      crewDocs = _rankingTierModelController.rankingDocs_crew_integrated;
-      crewRankingMap = _rankingTierModelController.crewRankingMap_integrated;
-    }
-    if (crewDocs!.isNotEmpty) {
-      for (var crewLogo in crewLogoList) {
-        if (crewLogo.crewColor == crewDocs![0]['crewColor']) {
-          assetTop1 = crewLogo.crewLogoAsset;
-          break;
-        }
-      }
-    }
-
-    if (crewDocs!.length > 1) {
-      for (var crewLogo in crewLogoList) {
-        if (crewLogo.crewColor == crewDocs![1]['crewColor']) {
-          assetTop2 = crewLogo.crewLogoAsset;
-          break;
-        }
-      }
-    }
-
-    if (crewDocs!.length > 2) {
-      for (var crewLogo in crewLogoList) {
-        if (crewLogo.crewColor == crewDocs![2]['crewColor']) {
-          assetTop3 = crewLogo.crewLogoAsset;
-          break;
-        }
+      if(widget.isDaily == true) {
+        crewDocs = _rankingTierModelController.rankingDocs_crew_integrated_daily;
+        crewRankingMap = _rankingTierModelController.crewRankingMap_integrated_daily;
+        myCrewTotalScore = _myCrewRankingController.totalScore_Daily;
+        myCrewTotalPassCount = _myCrewRankingController.totalPassCount_Daily;
+      } else if(widget.isWeekly == true) {
+        crewDocs = _rankingTierModelController.rankingDocs_crew_integrated_weekly;
+        crewRankingMap = _rankingTierModelController.crewRankingMap_integrated_weekly;
+        myCrewTotalScore = _myCrewRankingController.totalScore_Weekly;
+        myCrewTotalPassCount = _myCrewRankingController.totalPassCount_Weekly;
+      }else {
+        crewDocs = _rankingTierModelController.rankingDocs_crew_integrated;
+        crewRankingMap = _rankingTierModelController.crewRankingMap_integrated;
+        myCrewTotalScore = _myCrewRankingController.totalScore;
+        myCrewTotalPassCount = _myCrewRankingController.totalPassCount;
       }
     }
 
@@ -108,81 +308,61 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
         bottom: true,
         child: Stack(
           children: [
-            RefreshIndicator(
-              onRefresh: _refreshData,
+            (crewDocs!.isNotEmpty)
+            ? RefreshIndicator(
+              onRefresh: () async {
+                await _streamController_ranking.refreshData_Crew(isDaily: widget.isDaily, isWeekly: widget.isWeekly);
+                setState(() {});
+                },
               child: SingleChildScrollView(
                 physics: AlwaysScrollableScrollPhysics(),
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: Column(
                     children: [
                       Container(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
-                              (_userModelController.favoriteResort == 12 ||_userModelController.favoriteResort == 2 ||_userModelController.favoriteResort == 0)
-                                  ?(widget.isKusbf == false)
-                                  ? '${_userModelController.resortNickname} 상위 TOP 3 크루' :'KUSBF 상위 TOP 3 크루'
-                                  : '통합 상위 TOP 3 크루',
-                              style: TextStyle(
-                                  color: Color(0xFF949494),
-                                  fontSize: 12
-                              ),
-                            ),
-                            SizedBox(height: 12),
-                            Row(
-                              children: [
-                                if(crewDocs!.length > 0)
-                                  GestureDetector(
-                                    onTap: () async {
-                                      CustomFullScreenDialog.showDialog();
-                                      await _userModelController.getCurrentUser_crew(_userModelController.uid);
-                                      await _liveCrewModelController.getCurrrentCrew(crewDocs![0]['crewID']);
-                                      CustomFullScreenDialog.cancelDialog();
-                                      Get.to(() =>
-                                          CrewDetailPage_screen());
-                                    },
-                                    child: Container(
+                            GestureDetector(
+                              onTap: (){
+                                Get.to(() => CrewDetailPage_screen());
+                              },
+                              child: Obx(() => (crewRankingMap?['${_userModelController.liveCrew}'] != null )
+                                  ? Obx(() => Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  for (var crewLogo in crewLogoList)
+                                    if (_liveCrewModelController.crewColor == crewLogo.crewColor)
+                                    Container(
+                                      width: 73, // 더 큰 배경 크기
+                                      height: 73, // 더 큰 배경 크기
                                       decoration: BoxDecoration(
-                                        color: Color(
-                                            crewDocs![0]['crewColor']),
-                                        borderRadius: BorderRadius
-                                            .circular(8),
+                                        color: Color(0xFFF0F6FF), // 배경 색상 설정
+                                        borderRadius: BorderRadius.circular(10.0),
                                       ),
-                                      height: 154,
-                                      width: (_size.width - 48) / 3,
-                                      child: Column(
-                                        mainAxisAlignment: MainAxisAlignment
-                                            .center,
-                                        children: [
-                                          (crewDocs![0]['profileImageUrl']
-                                              .isNotEmpty)
-                                              ? Container(
-                                            decoration: BoxDecoration(
-                                              boxShadow: [
-                                                BoxShadow(
-                                                  color: Colors
-                                                      .black12,
-                                                  spreadRadius: 0,
-                                                  blurRadius: 8,
-                                                  offset: Offset(0,
-                                                      4), // changes position of shadow
-                                                ),
-                                              ],
-                                            ),
-                                            width: 58,
-                                            height: 58,
-                                            child: ExtendedImage.network(
-                                              crewDocs![0]['profileImageUrl'],
+                                      padding: EdgeInsets.all(16),
+                                      child:
+                                      (_liveCrewModelController.profileImageUrl != "")
+                                          ? Container(
+                                          width: 46,
+                                          height: 46,
+                                          decoration: BoxDecoration(
+                                            color: Color(0xFFF0F6FF), // 선택된 옵션의 배경을 흰색으로 설정
+                                            borderRadius: BorderRadius.circular(12.0),
+                                          ),
+                                          padding: EdgeInsets.all(15),
+                                          child: Transform.translate(
+                                            offset: Offset(0, 0),
+                                            child: ExtendedImage
+                                                .network(
+                                              '${_liveCrewModelController.profileImageUrl}',
                                               enableMemoryCache: true,
                                               shape: BoxShape
                                                   .rectangle,
-                                              cacheHeight: 200,
                                               borderRadius: BorderRadius
-                                                  .circular(7),
-                                              width: 100,
-                                              height: 100,
+                                                  .circular(6),
                                               fit: BoxFit.cover,
                                               loadStateChanged: (ExtendedImageState state) {
                                                 switch (state.extendedImageLoadState) {
@@ -191,373 +371,230 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                                                   case LoadState.completed:
                                                     return state.completedWidget;
                                                   case LoadState.failed:
-                                                    return ExtendedImage.network(
-                                                      assetTop1,
-                                                      shape: BoxShape.circle,
-                                                      borderRadius: BorderRadius.circular(20),
-                                                      width: 24,
-                                                      height: 24,
-                                                      fit: BoxFit.cover,
+                                                    return Container(
+                                                      decoration: BoxDecoration(
+                                                          color: Color(
+                                                              _liveCrewModelController.crewColor!),
+                                                          borderRadius: BorderRadius
+                                                              .circular(8)
+                                                      ),
+                                                      child: Padding(
+                                                        padding: const EdgeInsets
+                                                            .all(2.0),
+                                                        child: ExtendedImage
+                                                            .network(
+                                                          crewLogo.crewLogoAsset,
+                                                          enableMemoryCache: true,
+                                                          shape: BoxShape
+                                                              .rectangle,
+                                                          borderRadius: BorderRadius
+                                                              .circular(6),
+                                                          fit: BoxFit.cover,
+                                                        ),
+                                                      ),
                                                     ); // 예시로 에러 아이콘을 반환하고 있습니다.
                                                   default:
                                                     return null;
                                                 }
                                               },
                                             ),
-                                          )
-                                              : Container(
-                                            decoration: BoxDecoration(
-                                              boxShadow: [
-                                                BoxShadow(
-                                                  color: Colors
-                                                      .black12,
-                                                  spreadRadius: 0,
-                                                  blurRadius: 8,
-                                                  offset: Offset(0,
-                                                      4), // changes position of shadow
-                                                ),
-                                              ],
-                                            ),
-                                            child: ExtendedImage.network(
-                                              assetTop1,
+                                          ))
+                                          : Transform.translate(
+                                            offset: Offset(0, 0),
+                                            child: Container(
+                                        width: 46,
+                                        height: 46,
+                                        decoration: BoxDecoration(
+                                              color: Color(
+                                                  _liveCrewModelController.crewColor!),
+                                              borderRadius: BorderRadius
+                                                  .circular(8)
+                                        ),
+                                        child: Padding(
+                                            padding: const EdgeInsets
+                                                .all(2.0),
+                                            child: ExtendedImage
+                                                .network(
+                                              crewLogo.crewLogoAsset,
                                               enableMemoryCache: true,
-                                              shape: BoxShape.rectangle,
-                                              borderRadius: BorderRadius.circular(7),
-                                              width: 58,
-                                              height: 58,
+                                              shape: BoxShape
+                                                  .rectangle,
+                                              borderRadius: BorderRadius
+                                                  .circular(6),
                                               fit: BoxFit.cover,
                                             ),
+                                        ),
+                                      ),
                                           ),
-                                          SizedBox(height: 14,),
-                                          ExtendedImage.asset(
-                                            'assets/imgs/icons/icon_crown_1.png',
-                                            width: 28,
-                                            height: 28,
-                                            fit: BoxFit.cover,
-                                          ),
-                                          Padding(
-                                            padding: EdgeInsets.symmetric(
-                                                horizontal: 16),
-                                            child: Text(
-                                              crewDocs![0]['crewName'],
+                                    ),
+                                  Expanded(child: SizedBox()),
+                                  Container(
+                                    decoration: BoxDecoration(
+                                      color: Color(0xFF326EF6), // 선택된 옵션의 배경을 흰색으로 설정
+                                      borderRadius: BorderRadius.circular(12.0),
+                                    ),
+                                    padding: EdgeInsets.all(17),
+                                    child: Row(
+                                      children: [
+                                        Column(
+                                          children: [
+                                            Text(
+                                              (_userModelController.favoriteResort == 12
+                                                  || _userModelController.favoriteResort == 2
+                                                  || _userModelController.favoriteResort == 0)
+                                                  ? '${myCrewTotalScore}'
+                                                  :  '${myCrewTotalPassCount}',
                                               style: TextStyle(
                                                 color: Color(0xFFFFFFFF),
                                                 fontWeight: FontWeight.bold,
-                                                fontSize: 13,
+                                                fontSize: 14,
                                               ),
-                                              overflow: TextOverflow.ellipsis,
-                                              maxLines: 1,
                                             ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                SizedBox(width: 8),
-                                if(crewDocs!.length > 1)
-                                  GestureDetector(
-                                    onTap: () async {
-                                      CustomFullScreenDialog.showDialog();
-                                      await _userModelController.getCurrentUser_crew(_userModelController.uid);
-                                      await _liveCrewModelController.getCurrrentCrew(crewDocs![1]['crewID']);
-                                      CustomFullScreenDialog.cancelDialog();
-                                      Get.to(() => CrewDetailPage_screen());
-                                    },
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                        color: Color(
-                                            crewDocs![1]['crewColor']),
-                                        borderRadius: BorderRadius
-                                            .circular(8),
-                                      ),
-                                      height: 154,
-                                      width: (_size.width - 48) / 3,
-                                      child: Column(
-                                        mainAxisAlignment: MainAxisAlignment
-                                            .center,
-                                        children: [
-                                          (crewDocs![1]['profileImageUrl']
-                                              .isNotEmpty)
-                                              ? Container(
-                                            decoration: BoxDecoration(
-                                              boxShadow: [
-                                                BoxShadow(
-                                                  color: Colors
-                                                      .black12,
-                                                  spreadRadius: 0,
-                                                  blurRadius: 8,
-                                                  offset: Offset(0,
-                                                      4), // changes position of shadow
-                                                ),
-                                              ],
-                                            ),
-                                            width: 58,
-                                            height: 58,
-                                            child: ExtendedImage
-                                                .network(
-                                              crewDocs![1]['profileImageUrl'],
-                                              enableMemoryCache: true,
-                                              cacheHeight: 200,
-                                              shape: BoxShape
-                                                  .rectangle,
-                                              borderRadius: BorderRadius
-                                                  .circular(7),
-                                              width: 100,
-                                              height: 100,
-                                              fit: BoxFit.cover,
-                                              loadStateChanged: (ExtendedImageState state) {
-                                                switch (state.extendedImageLoadState) {
-                                                  case LoadState.loading:
-                                                    return SizedBox.shrink();
-                                                  case LoadState.completed:
-                                                    return state.completedWidget;
-                                                  case LoadState.failed:
-                                                    return ExtendedImage.network(
-                                                      assetTop2,
-                                                      shape: BoxShape.circle,
-                                                      borderRadius: BorderRadius.circular(20),
-                                                      width: 24,
-                                                      height: 24,
-                                                      fit: BoxFit.cover,
-                                                    ); // 예시로 에러 아이콘을 반환하고 있습니다.
-                                                  default:
-                                                    return null;
-                                                }
-                                              },
-                                            ),
-                                          )
-                                              : Container(
-                                            decoration: BoxDecoration(
-                                              boxShadow: [
-                                                BoxShadow(
-                                                  color: Colors
-                                                      .black12,
-                                                  spreadRadius: 0,
-                                                  blurRadius: 8,
-                                                  offset: Offset(0,
-                                                      4), // changes position of shadow
-                                                ),
-                                              ],
-                                            ),
-                                            child: ExtendedImage
-                                                .network(
-                                              assetTop2,
-                                              enableMemoryCache: true,
-                                              shape: BoxShape
-                                                  .rectangle,
-                                              borderRadius: BorderRadius
-                                                  .circular(7),
-                                              width: 58,
-                                              height: 58,
-                                              fit: BoxFit.cover,
-                                            ),
-                                          ),
-                                          SizedBox(height: 14,),
-                                          ExtendedImage.asset(
-                                            'assets/imgs/icons/icon_crown_2.png',
-                                            width: 28,
-                                            height: 28,
-                                            fit: BoxFit.cover,
-                                          ),
-                                          Padding(
-                                            padding: EdgeInsets
-                                                .symmetric(
-                                                horizontal: 16),
-                                            child: Text(
-                                              crewDocs![1]['crewName'],
+                                            Text(
+                                              '점수',
                                               style: TextStyle(
-                                                color: Color(
-                                                    0xFFFFFFFF),
-                                                fontWeight: FontWeight
-                                                    .bold,
+                                                color: Color(0xFFFFFFFF),
+                                                fontWeight: FontWeight.normal,
                                                 fontSize: 13,
                                               ),
-                                              overflow: TextOverflow
-                                                  .ellipsis,
-                                              maxLines: 1,
                                             ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                SizedBox(width: 8),
-                                if(crewDocs!.length > 2)
-                                  GestureDetector(
-                                    onTap: () async {
-                                      CustomFullScreenDialog.showDialog();
-                                      await _userModelController.getCurrentUser_crew(_userModelController.uid);
-                                      await _liveCrewModelController.getCurrrentCrew(crewDocs![2]['crewID']);
-                                      CustomFullScreenDialog.cancelDialog();
-                                      Get.to(() => CrewDetailPage_screen());
-                                    },
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                        color: Color(
-                                            crewDocs![2]['crewColor']),
-                                        borderRadius: BorderRadius
-                                            .circular(8),
-                                      ),
-                                      height: 154,
-                                      width: (_size.width - 48) / 3,
-                                      child: Column(
-                                        mainAxisAlignment: MainAxisAlignment
-                                            .center,
-                                        children: [
-                                          (crewDocs![2]['profileImageUrl']
-                                              .isNotEmpty)
-                                              ? Container(
-                                            decoration: BoxDecoration(
-                                              boxShadow: [
-                                                BoxShadow(
-                                                  color: Colors
-                                                      .black12,
-                                                  spreadRadius: 0,
-                                                  blurRadius: 8,
-                                                  offset: Offset(0,
-                                                      4), // changes position of shadow
-                                                ),
-                                              ],
-                                            ),
-                                            width: 58,
-                                            height: 58,
-                                            child: ExtendedImage
-                                                .network(
-                                              crewDocs![2]['profileImageUrl'],
-                                              enableMemoryCache: true,
-                                              cacheHeight: 200,
-                                              shape: BoxShape
-                                                  .rectangle,
-                                              borderRadius: BorderRadius
-                                                  .circular(7),
-                                              width: 100,
-                                              height: 100,
-                                              fit: BoxFit.cover,
-                                              loadStateChanged: (ExtendedImageState state) {
-                                                switch (state.extendedImageLoadState) {
-                                                  case LoadState.loading:
-                                                    return SizedBox.shrink();
-                                                  case LoadState.completed:
-                                                    return state.completedWidget;
-                                                  case LoadState.failed:
-                                                    return ExtendedImage.network(
-                                                      assetTop3,
-                                                      shape: BoxShape.circle,
-                                                      borderRadius: BorderRadius.circular(20),
-                                                      width: 24,
-                                                      height: 24,
-                                                      fit: BoxFit.cover,
-                                                    ); // 예시로 에러 아이콘을 반환하고 있습니다.
-                                                  default:
-                                                    return null;
-                                                }
-                                              },
-                                            ),
-                                          )
-                                              : Container(
-                                            decoration: BoxDecoration(
-                                              boxShadow: [
-                                                BoxShadow(
-                                                  color: Colors
-                                                      .black12,
-                                                  spreadRadius: 0,
-                                                  blurRadius: 8,
-                                                  offset: Offset(0,
-                                                      4), // changes position of shadow
-                                                ),
-                                              ],
-                                            ),
-                                            child: ExtendedImage
-                                                .network(
-                                              assetTop3,
-                                              enableMemoryCache: true,
-                                              shape: BoxShape
-                                                  .rectangle,
-                                              borderRadius: BorderRadius
-                                                  .circular(7),
-                                              width: 58,
-                                              height: 58,
-                                              fit: BoxFit.cover,
-                                            ),
-                                          ),
-                                          SizedBox(height: 14,),
-                                          ExtendedImage.asset(
-                                            'assets/imgs/icons/icon_crown_3.png',
-                                            width: 28,
-                                            height: 28,
-                                            fit: BoxFit.cover,
-                                          ),
-                                          Padding(
-                                            padding: EdgeInsets
-                                                .symmetric(
-                                                horizontal: 16),
-                                            child: Text(
-                                              crewDocs![2]['crewName'],
+                                          ],
+                                        ),
+                                        buildVerticalDivider_ranking_indi_Screen(),
+                                        Column(
+                                          children: [
+                                            Text(
+                                              '${crewRankingMap?['${_userModelController.liveCrew}']}',
                                               style: TextStyle(
-                                                color: Color(
-                                                    0xFFFFFFFF),
-                                                fontWeight: FontWeight
-                                                    .bold,
+                                                color: Color(0xFFFFFFFF),
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                            Text(
+                                              '스키장 랭킹',
+                                              style: TextStyle(
+                                                color: Color(0xFFFFFFFF),
+                                                fontWeight: FontWeight.normal,
                                                 fontSize: 13,
                                               ),
-                                              overflow: TextOverflow
-                                                  .ellipsis,
-                                              maxLines: 1,
                                             ),
-                                          ),
-                                        ],
-                                      ),
+                                          ],
+                                        ),
+                                        buildVerticalDivider_ranking_indi_Screen(),
+                                        Column(
+                                          children: [
+                                            Text(
+                                              '999999',
+                                              style: TextStyle(
+                                                color: Color(0xFFFFFFFF),
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                            Text(
+                                              '통합 랭킹',
+                                              style: TextStyle(
+                                                color: Color(0xFFFFFFFF),
+                                                fontWeight: FontWeight.normal,
+                                                fontSize: 13,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
                                     ),
                                   ),
-                              ],
+
+
+                                ],
+                              ))
+                                  : Text(
+                                '가입된 크루가 없거나\n소속 크루가 랭킹전에 아직 참여하지 않았어요',
+                                style: TextStyle(
+                                  color: Color(0xFF000000),
+                                  fontSize: 15,
+                                ),),
+                              ),
                             ),
-                            SizedBox(height: 40,),
+                            SizedBox(height: 13,),
                             Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                if(widget.isKusbf == true)
-                                  Text('KUSBF 크루 랭킹 TOP 20',
-                                    style: TextStyle(
-                                        color: Color(0xFF111111),
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold
-                                    ),
-                                  ),
-                                if(widget.isKusbf == false &&
-                                    (_userModelController.favoriteResort == 12 ||_userModelController.favoriteResort == 2 ||_userModelController.favoriteResort == 0)
-                                )
-                                  Text('${_userModelController.resortNickname} 크루 랭킹 TOP 20',
-                                    style: TextStyle(
-                                        color: Color(0xFF111111),
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold
-                                    ),
-                                  ),
-                                if(widget.isKusbf == false &&
-                                    (_userModelController.favoriteResort != 12 && _userModelController.favoriteResort != 2 && _userModelController.favoriteResort != 0)
-                                )
-                                  Text('통합 크루 랭킹 TOP 20',
-                                    style: TextStyle(
-                                        color: Color(0xFF111111),
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold
-                                    ),
-                                  ),
-                                GestureDetector(
-                                  onTap: () async{
-                                    Get.to(() => RankingCrewAllScreen(isKusbf: widget.isKusbf,));
-                                  },
-                                  child: Text('전체 보기',
-                                    style: TextStyle(
-                                        color: Color(0xFF949494),
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.bold
+                                Padding(
+                                  padding: EdgeInsets.only(right: 8),
+                                  child: Container(
+                                    height: 56,
+                                    child: Row(
+                                      children: [
+                                        Stack(
+                                          children: [
+                                            ElevatedButton(
+                                                onPressed: () async {
+                                                  await _showCupertinoPicker();
+                                                },
+                                                style: ElevatedButton.styleFrom(
+                                                    padding: EdgeInsets.only(
+                                                        right: 28, left: 12, top: 6, bottom: 6),
+                                                    backgroundColor: isTap[0] ? Color(0xFF111111) : Color(0xFFFFFFFF),
+                                                    side: const BorderSide(
+                                                      width: 1,
+                                                      color: Color(0xFFF5F5F5),
+                                                    ),
+                                                    elevation: 0,
+                                                    shape: RoundedRectangleBorder(
+                                                        borderRadius: BorderRadius.circular(18))),
+                                                child: Text('$_selectedValue_resort',
+                                                    style: TextStyle(
+                                                        fontSize: 13,
+                                                        fontWeight: FontWeight.bold,
+                                                        color: isTap[0] ? Color(0xFFFFFFFF) : Color(0xFF111111) ))),
+                                            Positioned(
+                                              top: 17,
+                                              right: 8,
+                                              child: GestureDetector(
+                                                onTap: () async {
+                                                  await _showCupertinoPicker();
+                                                },
+                                                child: ExtendedImage.asset(
+                                                  'assets/imgs/icons/icon_check_round.png',
+                                                  fit: BoxFit.cover,
+                                                  width: 14,
+                                                  height: 14,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
                                     ),
                                   ),
                                 ),
+                                ElevatedButton(
+                                    onPressed: () async {
+
+                                      setState(() {
+                                        isTap[0] = false;
+                                        isTap[1] = true;
+                                      });
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                        backgroundColor: isTap[1] ? Color(0xFF111111) : Color(0xFFFFFFFF),
+                                        side: const BorderSide(
+                                          width: 1,
+                                          color: Color(0xFFF5F5F5),
+                                        ),
+                                        elevation: 0,
+                                        shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(18))),
+                                    child: Text('전체 스키장 랭킹',
+                                        style: TextStyle(
+                                            fontSize: 13,
+                                            fontWeight: FontWeight.bold,
+                                            color: isTap[1] ? Color(0xFFFFFFFF) : Color(0xFF111111)))),
                               ],
                             ),
-                            SizedBox(height: 18),
+                            SizedBox(height: 13,),
+
                             Container(
                               child: ListView.builder(
                                 physics: NeverScrollableScrollPhysics(),
@@ -610,7 +647,6 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                                                         .network(
                                                       crewDocs![index]['profileImageUrl'],
                                                       enableMemoryCache: true,
-                                                      cacheHeight: 200,
                                                       shape: BoxShape
                                                           .rectangle,
                                                       borderRadius: BorderRadius
@@ -741,10 +777,12 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                                                 (_userModelController.favoriteResort == 12
                                                     || _userModelController.favoriteResort == 2
                                                     || _userModelController.favoriteResort == 0)
-                                                    ?'${crewDocs![index]['totalScore']
-                                                    .toString()}점'
-                                                    : '${crewDocs![index]['totalPassCount']
-                                                    .toString()}회',
+                                                    ? widget.isWeekly == true
+                                                    ?'${crewDocs![index]['totalScoreWeekly'].toString()}점'
+                                                    :'${crewDocs![index]['totalScore'].toString()}점'
+                                                    : widget.isWeekly == true
+                                                    ?'${crewDocs![index]['totalPassCountWeekly'].toString()}회'
+                                                    :'${crewDocs![index]['totalPassCount'].toString()}회',
                                                 style: TextStyle(
                                                   color: Color(0xFF111111),
                                                   fontWeight: FontWeight
@@ -769,305 +807,44 @@ class _RankingCrewScreenState extends State<RankingCrewScreen> {
                   ),
                 ),
               ),
-            ),
-            Positioned(
-              bottom: 0,
-              right: 0,
-              left: 0,
-              child: StreamBuilder<QuerySnapshot>(
-                stream: FirebaseFirestore.instance
-                    .collection('liveCrew')
-                    .where('crewID', isEqualTo: _userModelController.liveCrew)
-                    .snapshots(),
-                builder: (BuildContext context, AsyncSnapshot<
-                    QuerySnapshot> snapshot) {
-                  if (!snapshot.hasData || snapshot.data == null) {
-                    return SizedBox.shrink();
-                  }
-                  else if (snapshot.data!.docs.isNotEmpty && _userModelController.favoriteResort ==snapshot.data!.docs[0]['baseResort'] ) {
-                    final myCrewDocs = snapshot.data!.docs;
-                    for (var crewLogo in crewLogoList)
-                      if (myCrewDocs[0]['crewColor'] == crewLogo.crewColor)
-                        return GestureDetector(
-                          onTap: ()async{
-                            CustomFullScreenDialog.showDialog();
-                            await _userModelController.getCurrentUser_crew(_userModelController.uid);
-                            await _liveCrewModelController.getCurrrentCrew(myCrewDocs[0]['crewID']);
-                            CustomFullScreenDialog.cancelDialog();
-                            Get.to(() => CrewDetailPage_screen());
-                          },
-                          child: Container(
-                            decoration: BoxDecoration(
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black26,
-                                  spreadRadius: 0,
-                                  blurRadius: 6,
-                                  offset: Offset(
-                                      0, 0), // changes position of shadow
-                                ),
-                              ],
-                              color: Color(myCrewDocs[0]['crewColor']),
-                            ),
-                            height: 80,
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 16),
-                              child:
-                              (crewRankingMap?['${_userModelController.uid}'] != null )
-                                  ? Obx(() => Row(
-                                crossAxisAlignment: CrossAxisAlignment
-                                    .center,
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    '${crewRankingMap!['${_userModelController.liveCrew}']}',
-                                    style: TextStyle(
-                                      color: Color(0xFFFFFFFF),
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  SizedBox(width: 14),
-                                  (myCrewDocs[0]['profileImageUrl']
-                                      .isNotEmpty)
-                                      ? Container(
-                                      width: 48,
-                                      height: 48,
-                                      // decoration: BoxDecoration(
-                                      //     color: Color(
-                                      //         myCrewDocs[0]['crewColor']),
-                                      //     borderRadius: BorderRadius
-                                      //         .circular(8)
-                                      // ),
-                                      child: ExtendedImage.network(
-                                        myCrewDocs[0]['profileImageUrl'],
-                                        enableMemoryCache: true,
-                                        shape: BoxShape.rectangle,
-                                        borderRadius: BorderRadius
-                                            .circular(6),
-                                        fit: BoxFit.cover,
-                                        loadStateChanged: (ExtendedImageState state) {
-                                          switch (state.extendedImageLoadState) {
-                                            case LoadState.loading:
-                                              return SizedBox.shrink();
-                                            case LoadState.completed:
-                                              return state.completedWidget;
-                                            case LoadState.failed:
-                                              return ExtendedImage.asset(
-                                                crewLogo.crewLogoAsset,
-                                                enableMemoryCache: true,
-                                                shape: BoxShape.rectangle,
-                                                borderRadius: BorderRadius
-                                                    .circular(6),
-                                                fit: BoxFit.cover,
-                                              ); // 예시로 에러 아이콘을 반환하고 있습니다.
-                                            default:
-                                              return null;
-                                          }
-                                        },
-                                      ))
-                                      : Container(
-                                    width: 48,
-                                    height: 48,
-                                    // decoration: BoxDecoration(
-                                    //     color: Color(
-                                    //         myCrewDocs[0]['crewColor']),
-                                    //     borderRadius: BorderRadius
-                                    //         .circular(8)
-                                    // ),
-                                    child: ExtendedImage.network(
-                                      crewLogo.crewLogoAsset,
-                                      enableMemoryCache: true,
-                                      shape: BoxShape.rectangle,
-                                      borderRadius: BorderRadius
-                                          .circular(6),
-                                      fit: BoxFit.cover,
-                                    ),
-                                  ),
-                                  SizedBox(width: 14),
-                                  Padding(
-                                    padding: const EdgeInsets.only(
-                                        bottom: 3),
-                                    child: Column(
-                                      mainAxisAlignment: MainAxisAlignment
-                                          .center,
-                                      crossAxisAlignment: CrossAxisAlignment
-                                          .start,
-                                      children: [
-                                        Text(
-                                          '${myCrewDocs[0]['crewName']}',
-                                          style: TextStyle(
-                                            color: Color(0xFFFFFFFF),
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                        SizedBox(height: 2,),
-                                        if (myCrewDocs[0]['description'].isNotEmpty)
-                                          SizedBox(
-                                            width: 200,
-                                            child: Text(
-                                              '${myCrewDocs[0]['description']}',
-                                              maxLines: 1,
-                                              overflow: TextOverflow.ellipsis,
-                                              style: TextStyle(
-                                                fontSize: 12,
-                                                color: Color(0xFFFFFFFF),
-                                              ),
-                                            ),
-                                          ),
-                                      ],
-                                    ),
-                                  ),
-                                  Expanded(child: SizedBox()),
-                                  Text(
-                                    (_userModelController.favoriteResort == 12
-                                        || _userModelController.favoriteResort == 2
-                                        || _userModelController.favoriteResort == 0)
-                                        ? '${myCrewDocs[0]['totalScore']}점'
-                                        : '${myCrewDocs[0]['totalPassCount']}회',
-                                    style: TextStyle(
-                                      color: Color(0xFFFFFFFF),
-                                      fontWeight: FontWeight.normal,
-                                      fontSize: 18,
-                                    ),
-                                  ),
-                                ],
-                              ))
-                                  : Row(
-                                crossAxisAlignment: CrossAxisAlignment
-                                    .center,
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    '',
-                                    style: TextStyle(
-                                      color: Color(0xFFFFFFFF),
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  SizedBox(width: 14),
-                                  (myCrewDocs[0]['profileImageUrl']
-                                      .isNotEmpty)
-                                      ? Container(
-                                      width: 48,
-                                      height: 48,
-                                      // decoration: BoxDecoration(
-                                      //     color: Color(
-                                      //         myCrewDocs[0]['crewColor']),
-                                      //     borderRadius: BorderRadius
-                                      //         .circular(8)
-                                      // ),
-                                      child: ExtendedImage.network(
-                                        myCrewDocs[0]['profileImageUrl'],
-                                        enableMemoryCache: true,
-                                        shape: BoxShape.rectangle,
-                                        borderRadius: BorderRadius
-                                            .circular(6),
-                                        fit: BoxFit.cover,
-                                        loadStateChanged: (ExtendedImageState state) {
-                                          switch (state.extendedImageLoadState) {
-                                            case LoadState.loading:
-                                              return SizedBox.shrink();
-                                            case LoadState.completed:
-                                              return state.completedWidget;
-                                            case LoadState.failed:
-                                              return ExtendedImage.asset(
-                                                crewLogo.crewLogoAsset,
-                                                enableMemoryCache: true,
-                                                shape: BoxShape.rectangle,
-                                                borderRadius: BorderRadius
-                                                    .circular(6),
-                                                fit: BoxFit.cover,
-                                              ); // 예시로 에러 아이콘을 반환하고 있습니다.
-                                            default:
-                                              return null;
-                                          }
-                                        },
-                                      ))
-                                      : Container(
-                                    width: 48,
-                                    height: 48,
-                                    // decoration: BoxDecoration(
-                                    //     color: Color(
-                                    //         myCrewDocs[0]['crewColor']),
-                                    //     borderRadius: BorderRadius
-                                    //         .circular(8)
-                                    // ),
-                                    child: ExtendedImage.network(
-                                      crewLogo.crewLogoAsset,
-                                      enableMemoryCache: true,
-                                      shape: BoxShape.rectangle,
-                                      borderRadius: BorderRadius
-                                          .circular(6),
-                                      fit: BoxFit.cover,
-                                    ),
-                                  ),
-                                  SizedBox(width: 14),
-                                  Padding(
-                                    padding: const EdgeInsets.only(
-                                        bottom: 3),
-                                    child: Column(
-                                      mainAxisAlignment: MainAxisAlignment
-                                          .center,
-                                      crossAxisAlignment: CrossAxisAlignment
-                                          .start,
-                                      children: [
-                                        Text(
-                                          '${myCrewDocs[0]['crewName']}',
-                                          style: TextStyle(
-                                            color: Color(0xFFFFFFFF),
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                        SizedBox(height: 2,),
-                                        if (myCrewDocs[0]['description'].isNotEmpty)
-                                          SizedBox(
-                                            width: _size.width - 200,
-                                            child: Text(
-                                              '${myCrewDocs[0]['description']}',
-                                              maxLines: 1,
-                                              overflow: TextOverflow.ellipsis,
-                                              style: TextStyle(
-                                                fontSize: 12,
-                                                color: Color(0xFFFFFFFF),
-                                              ),
-                                            ),
-                                          ),
-                                      ],
-                                    ),
-                                  ),
-                                  Expanded(child: SizedBox()),
-                                  Text(
-                                    (_userModelController.favoriteResort == 12
-                                        || _userModelController.favoriteResort == 2
-                                        || _userModelController.favoriteResort == 0)
-                                        ? '${myCrewDocs[0]['totalScore']}점'
-                                        : '${myCrewDocs[0]['totalPassCount']}회',
-                                    style: TextStyle(
-                                      color: Color(0xFFFFFFFF),
-                                      fontWeight: FontWeight.normal,
-                                      fontSize: 18,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        );
-                  }
-                  else if (snapshot.connectionState == ConnectionState.waiting) {
-                    return Center(child: CircularProgressIndicator(),);
-                  }
-                  else if (snapshot.hasError) {
-                    return SizedBox.shrink();
-                  }
-                  return Center();
-                },
-              ),
+            )
+            : Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  width: 90,
+                  child: ExtendedImage.asset(
+                    'assets/imgs/icons/icon_nodata_rankin_all.png',
+                    enableMemoryCache: true,
+                  ),
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                Center(
+                  child: Text('랭킹전 기록이 없어요',
+                    style: TextStyle(
+                        color: Color(0xFF666666),
+                        fontSize: 15,
+                        fontWeight: FontWeight.normal
+                    ),),
+                ),
+                Center(
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 2),
+                    child: Text('지금 바로 랭킹전에 참여해 보세요',
+                      style: TextStyle(
+                          color: Color(0xFF666666),
+                          fontSize: 15,
+                          fontWeight: FontWeight.normal
+                      ),),
+                  ),
+                ),
+                SizedBox(
+                  height: _size.height / 8,
+                ),
+              ],
             ),
           ],
         ),

@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:com.snowlive/controller/vm_imageController.dart';
+import 'package:com.snowlive/controller/public/vm_imageController.dart';
 import 'package:com.snowlive/screens/more/friend/v_repoList.dart';
-import '../../../controller/vm_userModelController.dart';
+import '../../../controller/user/vm_userModelController.dart';
 
 class Setting_friendList extends StatelessWidget {
   const Setting_friendList({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+
     //TODO: Dependency Injection**************************************************
     Get.put(ImageController(), permanent: true);
-    UserModelController _userModelController = Get.find<UserModelController>();
-    ImageController _imageController = Get.find<ImageController>();
     //TODO: Dependency Injection**************************************************
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(

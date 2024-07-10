@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:com.snowlive/model/m_licenseModel.dart';
 import 'package:com.snowlive/screens/more/v_licenseDetailPage.dart';
 

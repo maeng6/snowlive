@@ -4,7 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
 import 'package:get/get.dart';
-import '../../../controller/vm_bulletinEventController.dart';
+import '../../../controller/bulletin/vm_bulletinEventController.dart';
 
 class BulletinEventImageScreen extends StatefulWidget {
   BulletinEventImageScreen({Key? key}) : super(key: key);

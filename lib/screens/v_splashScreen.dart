@@ -2,7 +2,7 @@ import 'package:animated_splash_screen/animated_splash_screen.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:com.snowlive/controller/vm_loadingPage.dart';
+import 'package:com.snowlive/controller/login/vm_loadingPage.dart';
 class SplashScreen extends StatelessWidget {
   final String imageUrl;
   SplashScreen({Key? key, required this.imageUrl}) : super(key: key);

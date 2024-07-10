@@ -1,10 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:com.snowlive/controller/vm_imageController.dart';
 import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
-import '../../../controller/vm_loginController.dart';
-import '../../../controller/vm_userModelController.dart';
+import '../../../controller/friends/vm_streamController_friend.dart';
+import '../../../controller/user/vm_userModelController.dart';
 
 class RepoList extends StatefulWidget {
   const RepoList({Key? key}) : super(key: key);
@@ -17,6 +16,7 @@ class _RepoListState extends State<RepoList> {
 
   //TODO: Dependency Injection**************************************************
   UserModelController _userModelController = Get.find<UserModelController>();
+  StreamController_Friend _streamController_Friend = Get.find<StreamController_Friend>();
   //TODO: Dependency Injection**************************************************
 
   @override
@@ -39,10 +39,7 @@ class _RepoListState extends State<RepoList> {
         backgroundColor: Colors.white,
       ),
       body: StreamBuilder(
-        stream: FirebaseFirestore.instance
-            .collection('user')
-            .where('whoRepoMe', arrayContains: _userModelController.uid!)
-            .snapshots(),
+        stream: _streamController_Friend.setupStreams_repoList(),
         builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
           if (!snapshot.hasData || snapshot.data == null) {
             return Center(

@@ -1,11 +1,9 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:com.snowlive/screens/more/v_licenseListPage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:com.snowlive/controller/vm_imageController.dart';
-import 'package:com.snowlive/screens/more/friend/v_repoList.dart';
-import '../../controller/vm_loginController.dart';
-import '../../controller/vm_userModelController.dart';
+import 'package:com.snowlive/controller/public/vm_imageController.dart';
+import '../../controller/login/vm_loginController.dart';
+import '../../controller/user/vm_userModelController.dart';
 import '../v_webPage.dart';
 
 class setting_moreTab extends StatelessWidget {

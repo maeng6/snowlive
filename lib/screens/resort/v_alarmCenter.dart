@@ -1,11 +1,7 @@
-import 'package:com.snowlive/controller/vm_bulletinRoomController.dart';
-import 'package:com.snowlive/controller/vm_commentController.dart';
+import 'package:com.snowlive/controller/alarm/vm_streamController_alarmCenter.dart';
 import 'package:com.snowlive/screens/LiveCrew/v_liveCrewHome.dart';
-import 'package:com.snowlive/screens/bulletin/Crew/v_bulletin_Crew_List_Detail.dart';
 import 'package:com.snowlive/screens/bulletin/Event/v_bulletin_Event_List_Detail.dart';
-import 'package:com.snowlive/screens/bulletin/Room/v_bulletin_Room_List_Detail.dart';
-import 'package:com.snowlive/screens/comments/v_noUserScreen.dart';
-import 'package:com.snowlive/screens/comments/v_reply_Screen.dart';
+import 'package:com.snowlive/screens/common/v_noUserScreen.dart';
 import 'package:com.snowlive/screens/more/friend/v_friendDetailPage.dart';
 import 'package:com.snowlive/screens/resort/v_noPageScreen.dart';
 import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
@@ -13,19 +9,12 @@ import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:intl/intl.dart';
-import 'package:com.snowlive/controller/vm_timeStampController.dart';
-import 'package:com.snowlive/screens/more/v_noticeDetailPage.dart';
-
-import '../../controller/vm_alarmCenterController.dart';
-import '../../controller/vm_bulletinCrewController.dart';
-import '../../controller/vm_bulletinEventController.dart';
-import '../../controller/vm_bulletinFreeController.dart';
-import '../../controller/vm_bulletinLostController.dart';
-import '../../controller/vm_userModelController.dart';
+import 'package:com.snowlive/controller/public/vm_timeStampController.dart';
+import '../../controller/alarm/vm_alarmCenterController.dart';
+import '../../controller/bulletin/vm_bulletinEventController.dart';
+import '../../controller/bulletin/vm_bulletinFreeController.dart';
+import '../../controller/user/vm_userModelController.dart';
 import '../bulletin/Free/v_bulletin_Free_List_Detail.dart';
-import '../bulletin/Lost/v_bulletin_Lost_List_Detail.dart';
 import '../more/friend/invitation/v_invitation_Screen_friend.dart';
 
 
@@ -40,17 +29,26 @@ class _AlarmCenterState extends State<AlarmCenter> {
 
   bool edit = false;
 
+  Stream<QuerySnapshot<Map<String, dynamic>>>? _alarmStream;
+
+
   //TODO: Dependency Injection**************************************************
   TimeStampController _timeStampController = Get.find<TimeStampController>();
   UserModelController _userModelController = Get.find<UserModelController>();
-  BulletinRoomModelController _bulletinRoomModelController = Get.find<BulletinRoomModelController>();
-  BulletinCrewModelController _bulletinCrewModelController = Get.find<BulletinCrewModelController>();
   AlarmCenterController _alarmCenterController = Get.find<AlarmCenterController>();
-  CommentModelController _commentModelController = Get.find<CommentModelController>();
   BulletinFreeModelController _bulletinFreeModelController = Get.find<BulletinFreeModelController>();
   BulletinEventModelController _bulletinEventModelController = Get.find<BulletinEventModelController>();
-  BulletinLostModelController _bulletinLostModelController = Get.find<BulletinLostModelController>();
+  StreamController_AlarmCenter _streamController_alarmCenter = Get.find<StreamController_AlarmCenter>();
   //TODO: Dependency Injection**************************************************
+
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _alarmStream = _streamController_alarmCenter.alarmStream.value;
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -169,21 +167,15 @@ class _AlarmCenterState extends State<AlarmCenter> {
         ],
       ),
       body: StreamBuilder(
-        stream: FirebaseFirestore.instance
-            .collection('alarmCenter')
-            .doc('${_userModelController.uid}')
-            .collection('alarmCenter')
-            .orderBy('timeStamp', descending: true)
-            .snapshots(),
+        stream: _alarmStream,
         builder: (context,
             AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
 
           Size _size = MediaQuery.of(context).size;
 
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(
-            child: CircularProgressIndicator(),
-          );}
+            return Center(child: CircularProgressIndicator(),);
+          }
           if (snapshot.hasError) {
             return Container(
               color: Colors.white,
@@ -243,62 +235,8 @@ class _AlarmCenterState extends State<AlarmCenter> {
                         if (alarmCenterDocs[index].get('category') == '친구요청') {
                           Get.to(() => InvitationScreen_friend());
                         }
-                        if ( alarmCenterDocs[index].get('category') == '라이브톡'
-                            || alarmCenterDocs[index].get('category') == '라이브톡익명') {
-
-                          try {
-                            CustomFullScreenDialog.showDialog();
-                            await _commentModelController.getCurrentLiveTalk(
-                                uid: alarmCenterDocs[index].get('liveTalk_uid'),
-                                commentCount: alarmCenterDocs[index].get('liveTalk_commentCount'));
-                            CustomFullScreenDialog.cancelDialog();
-                            Get.to(() =>
-                                ReplyScreen(
-                                  replyUid: _commentModelController.uid,
-                                  replyCount: _commentModelController.commentCount,
-                                  replyImage: _commentModelController.profileImageUrl,
-                                  replyDisplayName: _commentModelController.displayName,
-                                  replyResortNickname: _commentModelController.resortNickname,
-                                  comment: _commentModelController.comment,
-                                  commentTime: _commentModelController.timeStamp,
-                                  kusbf: _commentModelController.kusbf,
-                                  replyLiveTalkImageUrl: _commentModelController.livetalkImageUrl,
-                                ));
-                          }catch(e){
-                            CustomFullScreenDialog.cancelDialog();
-                            Get.to(() => NoPageScreen());
-                          }
-                        }
                         if (alarmCenterDocs[index].get('category') == '크루 가입신청') {
                           Get.to(() => LiveCrewHome());
-                        }
-                        if (alarmCenterDocs[index].get('category') == '시즌방 게시글') {
-                          try {
-                            CustomFullScreenDialog.showDialog();
-                            await _bulletinRoomModelController.getCurrentBulletinRoom(
-                                uid: alarmCenterDocs[index].get('bulletinRoomUid'),
-                                bulletinRoomCount: alarmCenterDocs[index].get('bulletinRoomCount')
-                            );
-                            CustomFullScreenDialog.cancelDialog();
-                            Get.to(() => Bulletin_Room_List_Detail());
-                          }catch(e){
-                            CustomFullScreenDialog.cancelDialog();
-                            Get.to(() => NoPageScreen());
-                          }
-                        }
-                        if (alarmCenterDocs[index].get('category') == '단톡방·동호회 글') {
-                          try {
-                            CustomFullScreenDialog.showDialog();
-                            await _bulletinCrewModelController.getCurrentBulletinCrew(
-                                uid: alarmCenterDocs[index].get('bulletinCrewUid'),
-                                bulletinCrewCount: alarmCenterDocs[index].get('bulletinCrewCount')
-                            );
-                            CustomFullScreenDialog.cancelDialog();
-                            Get.to(() => Bulletin_Crew_List_Detail());
-                          }catch(e){
-                            CustomFullScreenDialog.cancelDialog();
-                            Get.to(() => NoPageScreen());
-                          }
                         }
                         if (alarmCenterDocs[index].get('category') == '자유게시판 글') {
                           try {
@@ -309,20 +247,6 @@ class _AlarmCenterState extends State<AlarmCenter> {
                             );
                             CustomFullScreenDialog.cancelDialog();
                             Get.to(() => Bulletin_Free_List_Detail());
-                          }catch(e){
-                            CustomFullScreenDialog.cancelDialog();
-                            Get.to(() => NoPageScreen());
-                          }
-                        }
-                        if (alarmCenterDocs[index].get('category') == '분실물 글') {
-                          try {
-                            CustomFullScreenDialog.showDialog();
-                            await _bulletinLostModelController.getCurrentBulletinLost(
-                                uid: alarmCenterDocs[index].get('bulletinLostUid'),
-                                bulletinLostCount: alarmCenterDocs[index].get('bulletinLostCount')
-                            );
-                            CustomFullScreenDialog.cancelDialog();
-                            Get.to(() => Bulletin_Lost_List_Detail());
                           }catch(e){
                             CustomFullScreenDialog.cancelDialog();
                             Get.to(() => NoPageScreen());

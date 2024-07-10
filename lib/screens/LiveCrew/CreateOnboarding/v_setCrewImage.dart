@@ -3,11 +3,9 @@ import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:com.snowlive/controller/vm_imageController.dart';
+import 'package:com.snowlive/controller/public/vm_imageController.dart';
 import 'package:com.snowlive/screens/LiveCrew/CreateOnboarding/v_setCrewResort.dart';
-import '../../../controller/vm_userModelController.dart';
 import '../../../model/m_liveCrewModel.dart';
 import '../../../widget/w_fullScreenDialog.dart';
 

@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:com.snowlive/controller/vm_imageController.dart';
-import 'package:com.snowlive/controller/vm_liveCrewModelController.dart';
+import 'package:com.snowlive/controller/public/vm_imageController.dart';
+import 'package:com.snowlive/controller/liveCrew/vm_liveCrewModelController.dart';
 import 'package:com.snowlive/screens/LiveCrew/setting/v_setting_SNS.dart';
 import 'package:com.snowlive/screens/LiveCrew/setting/v_setting_description.dart';
 import 'package:com.snowlive/screens/LiveCrew/setting/v_setting_notice.dart';
 import 'package:com.snowlive/screens/LiveCrew/setting/v_setting_setLogo&Color.dart';
 import 'package:com.snowlive/screens/LiveCrew/setting/v_setting_delegation.dart';
-import '../../../controller/vm_userModelController.dart';
+import '../../../controller/user/vm_userModelController.dart';
 import '../../../widget/w_fullScreenDialog.dart';
 
 class Setting_crewDetail extends StatelessWidget {

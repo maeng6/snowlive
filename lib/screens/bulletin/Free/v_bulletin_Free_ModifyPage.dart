@@ -3,17 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:com.snowlive/screens/bulletin/Crew/v_bulletin_Crew_List_Screen.dart';
-import 'package:com.snowlive/screens/bulletin/v_bulletin_Screen.dart';
-import 'package:com.snowlive/screens/v_MainHome.dart';
-import '../../../controller/vm_bulletinCrewController.dart';
-import '../../../controller/vm_bulletinFreeController.dart';
-import '../../../controller/vm_bulletinRoomController.dart';
-import '../../../controller/vm_imageController.dart';
-import '../../../controller/vm_userModelController.dart';
-import '../../../model/m_bulletinCrewModel.dart';
+import '../../../controller/bulletin/vm_bulletinFreeController.dart';
+import '../../../controller/public/vm_imageController.dart';
+import '../../../controller/user/vm_userModelController.dart';
 import '../../../model/m_bulletinFreeModel.dart';
-import '../../../model/m_bulletinRoomModel.dart';
 import '../../../widget/w_fullScreenDialog.dart';
 
 class Bulletin_Free_ModifyPage extends StatefulWidget {

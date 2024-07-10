@@ -2,10 +2,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
 import 'package:com.snowlive/screens/LiveCrew/CreateOnboarding/v_setCrewName.dart';
-
 import '../v_liveCrewHome.dart';
 import '../v_searchCrewPage.dart';
 

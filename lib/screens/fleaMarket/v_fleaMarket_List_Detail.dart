@@ -4,20 +4,15 @@ import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:com.snowlive/controller/vm_fleaChatController.dart';
-import 'package:com.snowlive/controller/vm_fleaMarketController.dart';
-import 'package:com.snowlive/controller/vm_userModelController.dart';
-import 'package:com.snowlive/screens/comments/v_profileImageScreen.dart';
+import 'package:com.snowlive/controller/fleaMarket/vm_fleaMarketController.dart';
+import 'package:com.snowlive/controller/user/vm_userModelController.dart';
 import 'package:com.snowlive/screens/fleaMarket/v_fleaMarketImageScreen.dart';
-import 'package:com.snowlive/screens/fleaMarket/v_fleaMarket_Chatroom.dart';
-import 'package:com.snowlive/screens/fleaMarket/v_fleaMarket_List_Screen.dart';
 import 'package:com.snowlive/screens/fleaMarket/v_fleaMarket_ModifyPage.dart';
-import 'package:com.snowlive/screens/fleaMarket/v_fleaMarket_Screen.dart';
 import 'package:com.snowlive/screens/fleaMarket/v_phone_Auth_Screen.dart';
 import 'package:com.snowlive/screens/more/friend/v_friendDetailPage.dart';
 import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
-
-import '../../controller/vm_urlLauncherController.dart';
+import '../../controller/fleaMarket/vm_streamController_fleaMarket.dart';
+import '../../controller/public/vm_urlLauncherController.dart';
 
 class FleaMarket_List_Detail extends StatefulWidget {
   FleaMarket_List_Detail({Key? key}) : super(key: key);
@@ -31,26 +26,20 @@ class _FleaMarket_List_DetailState extends State<FleaMarket_List_Detail> {
   //TODO: Dependency Injection**************************************************
   UserModelController _userModelController = Get.find<UserModelController>();
   FleaModelController _fleaModelController = Get.find<FleaModelController>();
-  FleaChatModelController _fleaChatModelController = Get.find<FleaChatModelController>();
   UrlLauncherController _urlLauncherController = Get.find<UrlLauncherController>();
+  StreamController_fleaMarket _streamController_fleaMarket = Get.find<StreamController_fleaMarket>();
 //TODO: Dependency Injection**************************************************
 
-  var _userStream;
+  Stream<QuerySnapshot<Map<String, dynamic>>>? _fleaStream;
   var f = NumberFormat('###,###,###,###');
   int _currentIndex = 0;
 
 
   @override
   void initState() {
-    _userStream = userStream();
+    _fleaStream = _streamController_fleaMarket.fleaStream_fleaMarket_List_Detail.value;
   }
 
-  Stream<QuerySnapshot> userStream() {
-    return FirebaseFirestore.instance
-        .collection('user')
-        .where('uid', isEqualTo: _fleaModelController.uid )
-        .snapshots();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -58,10 +47,10 @@ class _FleaMarket_List_DetailState extends State<FleaMarket_List_Detail> {
     _fleaModelController.getAgoTime(_fleaModelController.timeStamp);
     Size _size = MediaQuery.of(context).size;
     bool isSoldOut = _fleaModelController.soldOut!;
-    return
-      StreamBuilder(
-          stream: _userStream,
-          builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+
+    return StreamBuilder(
+          stream: _fleaStream,
+          builder: (BuildContext context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
             if (!snapshot.hasData || snapshot.data == null) {}
             else if (snapshot.data!.docs.isNotEmpty) {
               final userDocs = snapshot.data!.docs;

@@ -407,3 +407,19 @@ List<String?> resortLogoList = [
   resortList[11].resortLogo,
   resortList[12].resortLogo,
 ];
+
+List<dynamic> resortFullNameList = [
+  '곤지암리조트',
+  '무주덕유산리조트',
+  '비발디파크',
+  '알펜시아',
+  '에덴밸리리조트',
+  '엘리시안강촌',
+  '오크밸리리조트',
+  '오투리조트',
+  '용평리조트',
+  '웰리힐리파크',
+  '지산리조트',
+  '하이원리조트',
+  '휘닉스파크',
+];

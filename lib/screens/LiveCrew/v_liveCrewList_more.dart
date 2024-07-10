@@ -2,11 +2,12 @@ import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
-import 'package:com.snowlive/controller/vm_liveCrewModelController.dart';
-import 'package:com.snowlive/controller/vm_userModelController.dart';
+import 'package:com.snowlive/controller/liveCrew/vm_liveCrewModelController.dart';
+import 'package:com.snowlive/controller/user/vm_userModelController.dart';
 import 'package:com.snowlive/screens/LiveCrew/v_crewDetailPage_screen.dart';
 import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 
+import '../../controller/liveCrew/vm_streamController_liveCrew.dart';
 import '../../model/m_crewLogoModel.dart';
 
 class LiveCrewListMoreScreen extends StatefulWidget {
@@ -19,8 +20,8 @@ class LiveCrewListMoreScreen extends StatefulWidget {
 class _LiveCrewListMoreScreenState extends State<LiveCrewListMoreScreen> {
   //TODO: Dependency Injection**************************************************
   UserModelController _userModelController = Get.find<UserModelController>();
-  LiveCrewModelController _liveCrewModelController =
-  Get.find<LiveCrewModelController>();
+  LiveCrewModelController _liveCrewModelController = Get.find<LiveCrewModelController>();
+  StreamController_liveCrew _streamController_liveCrew = Get.find<StreamController_liveCrew>();
   //TODO: Dependency Injection**************************************************
 
   var assetBases;
@@ -58,10 +59,7 @@ class _LiveCrewListMoreScreenState extends State<LiveCrewListMoreScreen> {
         ),
       ),
       body: StreamBuilder(
-        stream: FirebaseFirestore.instance
-            .collection('liveCrew')
-            .where('baseResort', isEqualTo: _userModelController.favoriteResort!)
-            .snapshots(),
+        stream: _streamController_liveCrew.setupStreams_liveCrew_liveCrewList_more(),
         builder: (
             context,
             AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot,) {
