@@ -1,11 +1,10 @@
+import 'package:com.snowlive/screens/onboarding/v_WelcomePage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:com.snowlive/screens/login/v_email_singup.dart';
 import 'package:com.snowlive/screens/login/v_loginpage.dart';
 import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
-
-import '../onboarding/v_FirstPage.dart';
 
 class EmailLoginPage extends StatefulWidget {
   const EmailLoginPage({Key? key}) : super(key: key);
@@ -242,7 +241,7 @@ class _EmailLoginPageState extends State<EmailLoginPage> {
                               CustomFullScreenDialog.cancelDialog();
                               if(credential.user != null){
                                 print(auth.currentUser!.providerData[0].providerId);
-                                Get.offAll(()=>FirstPage());
+                                Get.offAll(()=>WelcomePage());
                               }
                             }catch(e){
                               CustomFullScreenDialog.cancelDialog();

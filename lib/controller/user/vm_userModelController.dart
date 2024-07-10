@@ -1,3 +1,5 @@
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:com.snowlive/controller/login/vm_loginController.dart';
 import 'package:com.snowlive/controller/login/vm_notificationController.dart';
@@ -140,13 +142,64 @@ class UserModelController extends GetxController{
     super.onInit();
   }
 
+
+  Future<void> registerUser({
+    required String uid,
+    required String email,
+    required int favoriteResort,
+    required String deviceId,
+    required String deviceToken,
+    required String displayName,
+    required String profileImageUrlUser
+  }) async {
+    final url = Uri.parse('https://snowlive-api-0eab29705c9f.herokuapp.com/api/accounts/register/');
+
+    final response = await http.post(
+      url,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: json.encode({
+        'uid': uid,
+        'email': email,
+        'favorite_resort': favoriteResort,
+        'instant_resort': favoriteResort,
+        'device_id': deviceId,
+        'device_token': deviceToken,
+        'display_name': displayName,
+        'profile_image_url_user': profileImageUrlUser,
+      }),
+    );
+
+    if (response.statusCode == 201) {
+      final data = json.decode(response.body);
+      // 상태 변수 업데이트
+      _uid!.value = data['uid'];
+      _displayName!.value = data['display_name'];
+      _userEmail!.value = data['email'];
+      _favoriteResort!.value = data['favorite_resort'];
+      _profileImageUrl!.value = data['profile_image_url_user'];
+      _deviceID!.value = data['device_id'];
+      _deviceToken!.value = data['device_token'];
+      _instantResort!.value = data['instant_resort'];
+
+      print('User registered successfully');
+      print('Body: ${response.body}');
+    } else {
+      print('Failed to register user');
+      print('Status code: ${response.statusCode}');
+      print('Body: ${response.body}');
+    }
+  }
+
+
+
+
   Future<void> getLocalSave() async {
     final prefs = await SharedPreferences.getInstance();
     int? localFavorite = prefs.getInt('favoriteResort');
     this._favoriteSaved = localFavorite;
   }
-
-
 
   Future<void> getCurrentUser(uid) async{
     if(FirebaseAuth.instance.currentUser != null) {

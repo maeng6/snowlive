@@ -54,12 +54,12 @@ class _LoginPageState extends State<LoginPage> {
       onWillPop: ()async{
         return false;
       },
-      child: Scaffold(backgroundColor: Color(0xFFF1F1F3),
+      child: Scaffold(backgroundColor: Color(0xFFFFFFFF),
         extendBodyBehindAppBar: true,
         appBar: PreferredSize(
           preferredSize: Size.fromHeight(0),
           child: AppBar(
-            backgroundColor: Color(0xFFF1F1F3),
+            backgroundColor: Color(0xFFFFFFFF),
             elevation: 0.0,
             centerTitle: false,
             titleSpacing: 0,
@@ -80,7 +80,7 @@ class _LoginPageState extends State<LoginPage> {
           child: Container(
             width: double.infinity,
             height: double.infinity,
-            color: Color(0xFFF1F1F3),
+            color: Color(0xFFFFFFFF),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -89,14 +89,22 @@ class _LoginPageState extends State<LoginPage> {
                     SizedBox(
                       height: _size.height * 0.23,
                     ),
-                    Image.asset('assets/imgs/logos/snowlive_logo_new.png',
-                      height:98 ,
-                      width: 236,
+                    Image.asset('assets/imgs/logos/snowliveLogo_main_new_blue.png',
+                      height:24 ,
+                      width: 140,
                     ),
                     SizedBox(
-                      height: 14,
+                      height: 18,
                     ),
-                    Text('RIDING WITH SNOWLIVE', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xFFBBBBBB)),)
+                    Text('스노우라이브와 함께', style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Color(0xFF000000)),),
+                    SizedBox(
+                      height: 5,
+                    ),
+                    Text('신나는 라이딩을', style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Color(0xFF000000)),),
+                    SizedBox(
+                      height: 5,
+                    ),
+                    Text('지금 바로 함께 하세요', style: TextStyle(fontSize: 15, fontWeight: FontWeight.normal , color: Color(0xFFB7B7B7)),)
 
                   ],
                 ),

@@ -24,6 +24,7 @@ class _LoadingPageState extends State<LoadingPage> {
     // 로그인 관련 작업
     _logInController.loginAgain().then((_) {
       if (_logInController.loginUid != null) {
+        //Compare device Id 날리기 추가
         Get.offAll(() => MainHome(uid: _logInController.loginUid));
       } else {
         Get.offAll(() => LoginPage());

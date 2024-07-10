@@ -5,7 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:com.snowlive/controller/login/vm_loginController.dart';
-import 'package:com.snowlive/screens/onboarding/v_setNickname.dart';
+import 'package:com.snowlive/screens/onboarding/v_setProfile.dart';
 import 'package:com.snowlive/screens/v_webPage.dart';
 import '../login/v_loginpage.dart';
 
@@ -32,10 +32,36 @@ class _WelcomePageState extends State<WelcomePage> {
       "url":
       "https://sites.google.com/view/134creativelabprivacypolicy/%ED%99%88"
     },
+    {
+      "id": 2,
+      "value": false,
+      "title": "(선택) 마케팅 활용 및 광고성 정보 수신 동의",
+      "url":
+      "https://sites.google.com/view/134creativelabprivacypolicy/%ED%99%88"
+    },
+    {
+      "id": 3,
+      "value": false,
+      "title": "(선택) 개인정보 제3자 제공 동의",
+      "url":
+      "https://sites.google.com/view/134creativelabprivacypolicy/%ED%99%88"
+    },
   ];
 
   bool isAllChecked() {
-    return multipleSelected.length == checkListItems.length;
+    return checkListItems[0]["value"] && checkListItems[1]["value"];
+  }
+
+  bool isEveryItemChecked() {
+    return checkListItems.every((item) => item["value"] == true);
+  }
+
+  void toggleAllCheckboxes(bool value) {
+    setState(() {
+      for (var item in checkListItems) {
+        item["value"] = value;
+      }
+    });
   }
 
   @override
@@ -93,22 +119,57 @@ class _WelcomePageState extends State<WelcomePage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              Image.asset('assets/imgs/icons/icon_onboarding.png',
+                scale: 4, width: 73, height: 73,),
+              SizedBox(
+                height: 5,
+              ),
               Column(
                 children: [
                   Text(
-                    '스노우라이브\n서비스 이용 동의',
+                    '스노우라이브 이용을 위해 \n기본 정보를 입력해 주세요',
                     style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold, height: 1.3),
                   ),
                 ],
               ),
               SizedBox(height: 8),
               Text(
-                '스노우라이브의 모든 기능을 편리하게 사용하시기 위해\n아래의 약관동의 및 회원가입을 진행해 주세요.',
+                '스노우라이브의 모든 기능을 편리하게 사용하시기 위해\n아래의 약관동의 후 기본 정보를 입력해 주세요.',
                 style: TextStyle(color: Color(0xff949494), fontSize: 13, height: 1.5),
               ),
               Expanded(
                 child: Container(),
               ),
+              GestureDetector(
+                onTap: () {
+                  bool newValue = !isEveryItemChecked();
+                  toggleAllCheckboxes(newValue);
+                },
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 4),
+                  child: Row(
+                    children: [
+                      Image.asset(
+                        isEveryItemChecked()
+                            ? 'assets/imgs/icons/icon_check_filled.png'
+                            : 'assets/imgs/icons/icon_check_unfilled.png',
+                        height: 24,
+                        width: 24,
+                      ),
+                      SizedBox(width: 10),
+                      Expanded(
+                        child: Text(
+                          "전체 동의",
+                          style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              SizedBox(height: 4),
+              Divider(color: Color(0xFFF5F5F5), thickness: 1),
+              SizedBox(height: 4),
               Padding(
                 padding: const EdgeInsets.only(bottom: 36),
                 child: Column(
@@ -169,11 +230,11 @@ class _WelcomePageState extends State<WelcomePage> {
                 child: ElevatedButton(
                   onPressed: isAllChecked()
                       ? () async {
-                    Get.to(() => SetNickname());
+                    Get.to(() => SetProfile());
                   }
                       : null,
                   child: Text(
-                    '동의하고 계속하기',
+                    '다음',
                     style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16),
                   ),
                   style: TextButton.styleFrom(

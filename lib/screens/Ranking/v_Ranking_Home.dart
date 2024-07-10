@@ -6,10 +6,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 import '../../controller/user/vm_userModelController.dart';
 import '../../data/imgaUrls/Data_url_image.dart';
-
+import '../../widget/w_floatingButton_ranking.dart';
 
 class RankingHome extends StatefulWidget {
   RankingHome({Key? key}) : super(key: key);
@@ -19,7 +18,6 @@ class RankingHome extends StatefulWidget {
 }
 
 class _RankingHomeState extends State<RankingHome> {
-
   //TODO: Dependency Injection**************************************************
   UserModelController _userModelController = Get.find<UserModelController>();
   limitController _seasonController = Get.find<limitController>();
@@ -42,44 +40,21 @@ class _RankingHomeState extends State<RankingHome> {
   bool _isDaily = true;
   bool _isWeekly = false;
 
+  String _selectedOption = '일간';
 
   @override
   Widget build(BuildContext context) {
 
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent, // 상태바 투명하게
+      statusBarIconBrightness: Brightness.dark, // 상태바 아이콘 밝기
+    ));
+
     Size _size = MediaQuery.of(context).size;
+
     return Scaffold(
         backgroundColor: Colors.white,
         extendBodyBehindAppBar: true,
-        appBar: PreferredSize(
-          preferredSize: Size.fromHeight(58),
-          child: AppBar(
-            backgroundColor: Colors.white,
-            elevation: 0.0,
-            leading: GestureDetector(
-              child: Image.asset(
-                'assets/imgs/icons/icon_snowLive_back.png',
-                scale: 4,
-                width: 26,
-                height: 26,
-              ),
-              onTap: () {
-                Get.back();
-              },
-            ),
-            centerTitle: false,
-            titleSpacing: 0,
-            title: Padding(
-              padding: const EdgeInsets.only(left: 16),
-              child: Text(
-                '',
-                style: TextStyle(
-                    color: Color(0xFF111111),
-                    fontWeight: FontWeight.bold,
-                    fontSize: 23),
-              ),
-            ),
-          ),
-        ),
         body: SafeArea(
           child: Column(
             children: [
@@ -98,9 +73,8 @@ class _RankingHomeState extends State<RankingHome> {
                                 height: 44,
                                 child: ElevatedButton(
                                   child: Text(
-                                    '크루랭킹',
+                                    '개인랭킹',
                                     style: TextStyle(
-                                        fontFamily: 'Spoqa Han Sans Neo',
                                         color: (isTap[0])
                                             ? Color(0xFF111111)
                                             : Color(0xFFC8C8C8),
@@ -109,8 +83,9 @@ class _RankingHomeState extends State<RankingHome> {
                                             : FontWeight.bold,
                                         fontSize: 20),
                                   ),
-                                  onPressed: () async{
-                                    print('크루랭킹페이지로 전환');
+                                  onPressed: () async {
+                                    await _seasonController.getCurrentSeason();
+                                    print('개인랭킹페이지로 전환');
                                     setState(() {
                                       isTap[0] = true;
                                       isTap[1] = false;
@@ -122,8 +97,7 @@ class _RankingHomeState extends State<RankingHome> {
                                     minimumSize: Size(40, 10),
                                     backgroundColor: Color(0xFFFFFFFF),
                                     shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                        BorderRadius.circular(8)),
+                                        borderRadius: BorderRadius.circular(8)),
                                     elevation: 0,
                                   ),
                                 ),
@@ -142,8 +116,9 @@ class _RankingHomeState extends State<RankingHome> {
                                 height: 44,
                                 child: ElevatedButton(
                                   child: Text(
-                                    '개인랭킹',
+                                    '크루랭킹',
                                     style: TextStyle(
+                                        fontFamily: 'Spoqa Han Sans Neo',
                                         color: (isTap[1])
                                             ? Color(0xFF111111)
                                             : Color(0xFFC8C8C8),
@@ -152,9 +127,8 @@ class _RankingHomeState extends State<RankingHome> {
                                             : FontWeight.bold,
                                         fontSize: 20),
                                   ),
-                                  onPressed: () async{
-                                    await _seasonController.getCurrentSeason();
-                                    print('개인랭킹페이지로 전환');
+                                  onPressed: () async {
+                                    print('크루랭킹페이지로 전환');
                                     setState(() {
                                       isTap[0] = false;
                                       isTap[1] = true;
@@ -166,8 +140,7 @@ class _RankingHomeState extends State<RankingHome> {
                                     minimumSize: Size(40, 10),
                                     backgroundColor: Color(0xFFFFFFFF),
                                     shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                        BorderRadius.circular(8)),
+                                        borderRadius: BorderRadius.circular(8)),
                                     elevation: 0,
                                   ),
                                 ),
@@ -176,6 +149,7 @@ class _RankingHomeState extends State<RankingHome> {
                           ],
                         ),
                       ),
+
                     ],
                   ),
                   (_userModelController.favoriteResort == 12)
@@ -195,7 +169,8 @@ class _RankingHomeState extends State<RankingHome> {
                                 shape: BoxShape.rectangle,
                                 width: 56,
                                 fit: BoxFit.cover,
-                                loadStateChanged: (ExtendedImageState state) {
+                                loadStateChanged:
+                                    (ExtendedImageState state) {
                                   switch (state.extendedImageLoadState) {
                                     case LoadState.loading:
                                       return SizedBox.shrink();
@@ -224,211 +199,60 @@ class _RankingHomeState extends State<RankingHome> {
                       ],
                     ),
                   )
-                      :SizedBox.shrink()
+                      : SizedBox.shrink()
                 ],
               ),
               SizedBox(
                 height: 6,
               ),
-              Row(
-                children: [
-                  Padding(
-                    padding: EdgeInsets.only(left: 16, right: 6),
-                    child: Column(
-                      children: [
-                        Padding(
-                          padding: EdgeInsets.only(bottom: 2),
-                          child: Container(
-                            height: 32,
-                            child: ElevatedButton(
-                              child: Text(
-                                '일간TOP',
-                                style: TextStyle(
-                                    fontFamily: 'Spoqa Han Sans Neo',
-                                    color: (isTapPeriod[0])
-                                        ? Color(0xFF111111)
-                                        : Color(0xFF949494),
-                                    fontWeight: (isTapPeriod[0])
-                                        ? FontWeight.bold
-                                        : FontWeight.bold,
-                                    fontSize: 13),
-                              ),
-                              onPressed: () async{
-                                print('일간TOP 전환');
-                                setState(() {
-                                  isTapPeriod[0] = true;
-                                  isTapPeriod[1] = false;
-                                  isTapPeriod[2] = false;
-                                  _isDaily = true;
-                                  _isWeekly = false;
-                                });
-                                setState(() {
-                                });
-                                print(isTapPeriod);
-                              },
-                              style: ElevatedButton.styleFrom(
-                                padding: EdgeInsets.symmetric(horizontal: 12, vertical: 0),
-                                minimumSize: Size(40, 10),
-                                backgroundColor: (isTapPeriod[0])
-                                    ? Color(0xFFECECEC)
-                                    : Color(0xFFFFFFFF),
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(5),
-                                    side: BorderSide(
-                                        color: (isTapPeriod[0])
-                                            ? Color(0xFFECECEC)
-                                            : Color(0xFFFFFFFF),
-                                        width: 1
-                                    )
-                                ),
-                                elevation: 0,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(right: 6),
-                    child: Column(
-                      children: [
-                        Padding(
-                          padding: EdgeInsets.only(bottom: 2),
-                          child: Container(
-                            height: 32,
-                            child: ElevatedButton(
-                              child: Text(
-                                '주간TOP',
-                                style: TextStyle(
-                                    color: (isTapPeriod[1])
-                                        ? Color(0xFF111111)
-                                        : Color(0xFF949494),
-                                    fontWeight: (isTapPeriod[1])
-                                        ? FontWeight.bold
-                                        : FontWeight.bold,
-                                    fontSize: 13),
-                              ),
-                              onPressed: () async{
-                                print('주간TOP 전환');
-                                setState(() {
-                                  isTapPeriod[0] = false;
-                                  isTapPeriod[1] = true;
-                                  isTapPeriod[2] = false;
-                                  _isDaily = false;
-                                  _isWeekly = true;
-                                });
-                                setState(() {
-                                });
-                                print(isTapPeriod);
-                              },
-                              style: ElevatedButton.styleFrom(
-                                padding: EdgeInsets.symmetric(horizontal: 12, vertical: 0),
-                                minimumSize: Size(40, 10),
-                                backgroundColor: (isTapPeriod[1])
-                                    ? Color(0xFFECECEC)
-                                    : Color(0xFFFFFFFF),
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(5),
-                                    side: BorderSide(
-                                        color: (isTapPeriod[1])
-                                            ? Color(0xFFECECEC)
-                                            : Color(0xFFFFFFFF),
-                                        width: 1
-                                    )
-                                ),
-                                elevation: 0,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(right: 6),
-                    child: Column(
-                      children: [
-                        Padding(
-                          padding: EdgeInsets.only(bottom: 2),
-                          child: Container(
-                            height: 32,
-                            child: ElevatedButton(
-                              child: Text(
-                                '시즌누적',
-                                style: TextStyle(
-                                    color: (isTapPeriod[2])
-                                        ? Color(0xFF111111)
-                                        : Color(0xFF949494),
-                                    fontWeight: (isTapPeriod[2])
-                                        ? FontWeight.bold
-                                        : FontWeight.bold,
-                                    fontSize: 13),
-                              ),
-                              onPressed: () async{
-                                print('시즌누적 전환');
-                                setState(() {
-                                  isTapPeriod[0] = false;
-                                  isTapPeriod[1] = false;
-                                  isTapPeriod[2] = true;
-                                  _isDaily = false;
-                                  _isWeekly = false;
-                                });
-                                setState(() {
-                                });
-                                print(isTapPeriod);
-                              },
-                              style: ElevatedButton.styleFrom(
-                                padding: EdgeInsets.symmetric(horizontal: 12, vertical: 0),
-                                minimumSize: Size(40, 10),
-                                backgroundColor: (isTapPeriod[2])
-                                    ? Color(0xFFECECEC)
-                                    : Color(0xFFFFFFFF),
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(5),
-                                    side: BorderSide(
-                                        color: (isTapPeriod[2])
-                                            ? Color(0xFFECECEC)
-                                            : Color(0xFFFFFFFF),
-                                        width: 1
-                                    )
-                                ),
-                                elevation: 0,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              Container(
-                width: _size.width,
-                height: 1,
-                color: Color(0xFFececec),
-              ),
               if (isTap[0] == true)
-                Expanded(child: RankingCrewScreen(
-                  isKusbf: _isKusbf,
-                  isDaily: _isDaily,
-                  isWeekly: _isWeekly,
-                )),
+                Expanded(
+                    child: RankingIndiScreen(
+                      isKusbf: _isKusbf,
+                      isDaily: _isDaily,
+                      isWeekly: _isWeekly,
+                    )),
               if (isTap[1] == true)
-                Expanded(child: RankingIndiScreen(
-                  isKusbf: _isKusbf,
-                  isDaily: _isDaily,
-                  isWeekly: _isWeekly,
-                )),
+                Expanded(
+                  child: RankingCrewScreen(
+                    isKusbf: _isKusbf,
+                    isDaily: _isDaily,
+                    isWeekly: _isWeekly,
+                  )),
               // if (isTap[2] == true)
               //   Expanded(child: FleaMarket_Chatroom_List()),
             ],
           ),
-        )
-
-    );
+        ),
+        floatingActionButton: FloatingButtonWithOptions(
+          selectedOption: _selectedOption,
+          onOptionSelected: (String value) {
+            setState(() {
+              if (value == '일간') {
+                isTapPeriod[0] = true;
+                isTapPeriod[1] = false;
+                isTapPeriod[2] = false;
+                _isDaily = true;
+                _isWeekly = false;
+              } else if (value == '주간') {
+                isTapPeriod[0] = false;
+                isTapPeriod[1] = true;
+                isTapPeriod[2] = false;
+                _isDaily = false;
+                _isWeekly = true;
+              } else if (value == '누적') {
+                isTapPeriod[0] = false;
+                isTapPeriod[1] = false;
+                isTapPeriod[2] = true;
+                _isDaily = false;
+                _isWeekly = false;
+              }
+              _selectedOption = value;
+            });
+          },
+        ),
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat);
   }
 }
+
+

@@ -79,18 +79,24 @@ class ImageController extends GetxController {
   }
 
   Future<String> setNewImage(XFile newImage) async {
-    String? uid = auth.currentUser!.uid;
+    String? uid = auth.currentUser?.uid;
+    if (uid == null) {
+      print('Error: User ID is null');
+      return '';
+    }
     var metaData = SettableMetadata(contentType: 'image/jpeg');
     String downloadUrl = '';
-    if (newImage != null) {
+    try {
       Reference ref = FirebaseStorage.instance.ref('images/profile/$uid.jpg');
       await ref.putFile(File(newImage.path), metaData);
       downloadUrl = await ref.getDownloadURL();
-    } else {
-      CustomFullScreenDialog.cancelDialog();
+      print('Download URL: $downloadUrl'); // 디버깅 메시지 추가
+    } catch (e) {
+      print('Error uploading image: $e'); // 에러 메시지 출력
     }
     return downloadUrl;
   }
+
 
   Future<String> setNewImage_Crew({required XFile newImage,required crewID}) async {
     String? uid = await FlutterSecureStorage().read(key: 'uid');

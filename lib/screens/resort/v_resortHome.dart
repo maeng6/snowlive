@@ -7,6 +7,7 @@ import 'package:com.snowlive/widget/w_popUp_bottomSheet.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -26,7 +27,8 @@ import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 import '../../controller/liveCrew/vm_liveCrewModelController.dart';
 import '../../controller/public/vm_limitController.dart';
 import '../../controller/public/vm_urlLauncherController.dart';
-import '../bulletin/Event/v_bulletin_Event_List_Screen_home.dart';
+import '../../controller/ranking/vm_rankingTierModelController.dart';
+import '../../widget/w_shimmer.dart';
 import 'package:lottie/lottie.dart';
 import '../more/friend/v_friendListPage.dart';
 
@@ -37,16 +39,19 @@ class ResortHome extends StatefulWidget {
 
 class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMixin {
 
+  final FirebaseAuth auth = FirebaseAuth.instance;
   bool get wantKeepAlive => true;
   int lengthOfLivefriends = 0;
   bool isSnackbarShown = false;
   List<bool?> _isSelected = List<bool?>.filled(13, false);
+  bool _isWeatherInfoExpanded = false;
 
   Stream<QuerySnapshot<Map<String, dynamic>>>? _alarmStream;
   Stream<QuerySnapshot<Map<String, dynamic>>>? _friendStream;
   Stream<QuerySnapshot<Map<String, dynamic>>>? _bfStream;
   Stream<QuerySnapshot>? _rankingGuideUrlStream;
 
+  Map? userRankingMap_all;
 
 
   //TODO: Dependency Injection**************************************************
@@ -59,6 +64,7 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
   limitController _seasonController = Get.find<limitController>();
   LiveCrewModelController _liveCrewModelController = Get.find<LiveCrewModelController>();
   StreamController_ResortHome _streamController_ResortHome = Get.find<StreamController_ResortHome>();
+  RankingTierModelController _rankingTierModelController = Get.find<RankingTierModelController>();
   //TODO: Dependency Injection**************************************************
 
 
@@ -88,11 +94,12 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
     _userModelController.updateIsOnLiveOff();
     _seasonController.getSeasonOpen();
     _liveCrewModelController.getCurrrentCrew(_userModelController.liveCrew);
-    _userModelController.getCurrentUser(_userModelController.uid);
     _alarmStream = _streamController_ResortHome.alarmStream.value;
     _friendStream = _streamController_ResortHome.friendStream.value;
     _bfStream = _streamController_ResortHome.bfStream.value;
     _rankingGuideUrlStream = _streamController_ResortHome.rankingGuideUrlStream.value;
+
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       bottomPopUp(context);
     });
@@ -572,7 +579,7 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
                         ),
                       ),
                       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-                      backgroundColor: Color(0xFFF1F1F3),
+                      backgroundColor: Colors.white,
                       extendBodyBehindAppBar: true,
                       appBar: PreferredSize(
                         preferredSize: Size.fromHeight(58),
@@ -765,7 +772,7 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
                                   height: 28,
                                 ),
                               ),
-                              backgroundColor: Color(0xFFF1F1F3),
+                              backgroundColor: Colors.white,
                               elevation: 0.0,
                             )
                           ],
@@ -955,7 +962,7 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
                                 },
                               ),
                               Container(
-                                color: Color(0xFFF2F4F6),
+                                color: Colors.white,
                                 child: Padding(
                                     padding:
                                     EdgeInsets.only(left: 16, right: 16),
@@ -1089,9 +1096,6 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
                                                                       fontWeight: FontWeight.normal,
                                                                       fontSize: 14),
                                                                 ),
-                                                                Transform.translate(
-                                                                    offset: Offset(-2, 0),
-                                                                    child: _resortModelController.weatherIcons),
                                                               ],
                                                             ),
                                                           ),
@@ -1102,6 +1106,10 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
                                                       mainAxisAlignment: MainAxisAlignment.center,
                                                       crossAxisAlignment: CrossAxisAlignment.start,
                                                       children: [
+                                                        Transform.translate(
+                                                            offset: Offset(0, 6),
+                                                            child: _resortModelController.weatherIcons),
+                                                        SizedBox(width: 10,),
                                                         Obx(() => (_resortModelController.isLoading == true)
                                                                   ? Padding(
                                                                 padding: const EdgeInsets.only(top: 10),
@@ -1132,14 +1140,40 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
                                                                       color: Colors.white),
                                                                 ),
                                                           ),
-                                                        )
+                                                        ),
+                                                        Transform.translate(
+                                                            offset: Offset(-15, 19),
+                                                            child: GestureDetector(
+                                                              onTap: (){
+                                                                setState(() {
+                                                                  if(_isWeatherInfoExpanded == false){
+                                                                    _isWeatherInfoExpanded = true;
+                                                                  } else{
+                                                                    _isWeatherInfoExpanded = false;
+                                                                  }
+                                                                });
+                                                              },
+                                                              child: ExtendedImage.asset(
+                                                                'assets/imgs/icons/icon_plus_round.png',
+                                                                fit: BoxFit.cover,
+                                                                width: 20,
+                                                                height: 20,
+                                                              ),
+                                                            ),
+                                                        ),
+
                                                       ],
                                                     ),
                                                   ],
                                                 ),
                                                 SizedBox(
+                                                  height: 5,
+                                                ),
+                                                if(_isWeatherInfoExpanded == true)
+                                                SizedBox(
                                                   height: 16,
                                                 ),
+                                                if(_isWeatherInfoExpanded == true)
                                                 (_resortModelController.isLoading == true)
                                                 ? Padding(
                                                   padding: const EdgeInsets.symmetric(horizontal: 24),
@@ -1160,6 +1194,7 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
                                                 SizedBox(
                                                   height: 16,
                                                 ),
+                                                if(_isWeatherInfoExpanded == true)
                                                 Row(
                                                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                                   children: [
@@ -1323,6 +1358,7 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
                                                     ),
                                                   ],
                                                 ),
+                                                if(_isWeatherInfoExpanded == true)
                                                 SizedBox(
                                                   height: 20,
                                                 )
@@ -1337,8 +1373,7 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
                                             ),
                                             Container(
                                               decoration: BoxDecoration(
-                                                  color: Colors.white,
-                                                  borderRadius: BorderRadius.circular(10)),
+                                                  color: Colors.white,),
                                               child: Padding(
                                                 padding: const EdgeInsets.only(right: 20, left: 16, top: 16, bottom: 20),
                                                 child: Row(
@@ -1482,41 +1517,323 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
                                               child: Banner_resortHome(),
                                             ),
                                             SizedBox(
-                                              height: 12,
+                                              height: 32,
                                             ),
-                                            SizedBox(
-                                              height: 12,
+                                            Column(
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              children: [
+                                                Text('내 시즌 정보',
+                                                style: TextStyle(
+                                                  fontSize: 15,
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Color(0xFF111111)
+                                                ),
+                                                ),
+                                                SizedBox(height: 15,),
+
+                                                StreamBuilder<QuerySnapshot>(
+                                                  stream: _streamController_ResortHome.setupStreams_resortHome_myScore(_userModelController.favoriteResort!, _userModelController.uid!),
+                                                  builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                                                    final containerHeight = MediaQuery.of(context).size.height / 8;
+
+                                                    if (!snapshot.hasData || snapshot.data == null || snapshot.connectionState == ConnectionState.waiting) {
+                                                      return loading_resortHome_scoreBox(containerHeight);
+                                                    } else if (snapshot.hasError) {
+                                                      return Text('오류: ${snapshot.error}');
+                                                    } else if (snapshot.data!.docs.isNotEmpty) {
+                                                      final rankingDocs = snapshot.data!.docs;
+
+                                                      if (rankingDocs[0]['totalScore'] != 0) {
+                                                        return StreamBuilder<QuerySnapshot>(
+                                                          stream: _streamController_ResortHome.setupStreams_resortHome_myRank(_userModelController.favoriteResort!),
+                                                          builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                                                            if (!snapshot.hasData || snapshot.data == null || snapshot.connectionState == ConnectionState.waiting) {
+                                                              return loading_resortHome_scoreBox(containerHeight);
+                                                            } else if (snapshot.hasError) {
+                                                              return Text('오류: ${snapshot.error}');
+                                                            } else if (snapshot.data!.docs.isNotEmpty) {
+                                                              final rankingDocs_total = snapshot.data!.docs;
+
+                                                              if (_userModelController.favoriteResort == 12 || _userModelController.favoriteResort == 2 || _userModelController.favoriteResort == 0) {
+                                                                userRankingMap_all = _rankingTierModelController.calculateRankIndiAll2(userRankingDocs: rankingDocs_total);
+                                                              } else {
+                                                                userRankingMap_all = _rankingTierModelController.calculateRankIndiAll2_integrated(userRankingDocs: rankingDocs_total);
+                                                              }
+
+                                                              return Container(
+                                                                height: containerHeight, // Set fixed height for the data container
+                                                                decoration: BoxDecoration(
+                                                                  color: Color(0xFFF5F2F7),
+                                                                  borderRadius: BorderRadius.circular(10),
+                                                                ),
+                                                                child: Row(
+                                                                  children: [
+                                                                    Padding(
+                                                                      padding: const EdgeInsets.only(left: 20, top: 25),
+                                                                      child: Column(
+                                                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                                                        mainAxisAlignment: MainAxisAlignment.start,
+                                                                        children: [
+                                                                          Row(
+                                                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                                                            mainAxisAlignment: MainAxisAlignment.start,
+                                                                            children: [
+                                                                              Container(
+                                                                                child: Column(
+                                                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                  children: [
+                                                                                    Row(
+                                                                                      children: [
+                                                                                        ExtendedImage.asset(
+                                                                                          'assets/imgs/icons/icon_circle_black.png',
+                                                                                          fit: BoxFit.cover,
+                                                                                          width: 15,
+                                                                                          height: 15,
+                                                                                        ),
+                                                                                        SizedBox(width: 5,),
+                                                                                        Text(
+                                                                                          '누적 점수',
+                                                                                          style: TextStyle(
+                                                                                            fontWeight: FontWeight.normal,
+                                                                                            fontSize: 13,
+                                                                                            color: Color(0xFF111111).withOpacity(0.6),
+                                                                                          ),
+                                                                                        ),
+                                                                                      ],
+                                                                                    ),
+                                                                                    SizedBox(height: 10,),
+                                                                                    Text(
+                                                                                      (_userModelController.favoriteResort == 12 || _userModelController.favoriteResort == 2 || _userModelController.favoriteResort == 0)
+                                                                                          ? '${rankingDocs[0]['totalScore']}점'
+                                                                                          : '${rankingDocs[0]['totalPassCount']}회',
+                                                                                      style: TextStyle(
+                                                                                        color: Color(0xFF111111),
+                                                                                        fontWeight: FontWeight.bold,
+                                                                                        fontSize: 16,
+                                                                                      ),
+                                                                                    ),
+                                                                                  ],
+                                                                                ),
+                                                                              ),
+                                                                              SizedBox(width: 30,),
+                                                                              Container(
+                                                                                child: Column(
+                                                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                  children: [
+                                                                                    Row(
+                                                                                      children: [
+                                                                                        ExtendedImage.asset(
+                                                                                          'assets/imgs/icons/icon_circle_black.png',
+                                                                                          fit: BoxFit.cover,
+                                                                                          width: 15,
+                                                                                          height: 15,
+                                                                                        ),
+                                                                                        SizedBox(width: 5,),
+                                                                                        Text(
+                                                                                          '통합 랭킹',
+                                                                                          style: TextStyle(
+                                                                                            fontWeight: FontWeight.normal,
+                                                                                            fontSize: 13,
+                                                                                            color: Color(0xFF111111).withOpacity(0.6),
+                                                                                          ),
+                                                                                        ),
+                                                                                      ],
+                                                                                    ),
+                                                                                    SizedBox(height: 10,),
+                                                                                    Text(
+                                                                                      '${userRankingMap_all!['${_userModelController.uid}']}등',
+                                                                                      style: TextStyle(
+                                                                                        fontSize: 16,
+                                                                                        fontWeight: FontWeight.bold,
+                                                                                        color: Color(0xFF111111),
+                                                                                      ),
+                                                                                    ),
+                                                                                  ],
+                                                                                ),
+                                                                              ),
+                                                                              SizedBox(width: 30,),
+                                                                              Padding(
+                                                                                padding: const EdgeInsets.only(top: 7),
+                                                                                child: GestureDetector(
+                                                                                  onTap: () {
+                                                                                    // Add your share functionality here
+                                                                                  },
+                                                                                  child: Container(
+                                                                                    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                                                                                    decoration: BoxDecoration(
+                                                                                      color: Colors.white,
+                                                                                      borderRadius: BorderRadius.circular(20),
+                                                                                    ),
+                                                                                    child: Row(
+                                                                                      children: [
+                                                                                        Text(
+                                                                                          '공유하기',
+                                                                                          style: TextStyle(
+                                                                                            color: Colors.black,
+                                                                                            fontWeight: FontWeight.bold,
+                                                                                          ),
+                                                                                        ),
+                                                                                        SizedBox(width: 10,),
+                                                                                        ExtendedImage.asset(
+                                                                                          'assets/imgs/icons/icon_arrow_round_black.png',
+                                                                                          fit: BoxFit.cover,
+                                                                                          width: 18,
+                                                                                          height: 18,
+                                                                                        ),
+                                                                                      ],
+                                                                                    ),
+                                                                                  ),
+                                                                                ),
+                                                                              ),
+                                                                            ],
+                                                                          ),
+                                                                        ],
+                                                                      ),
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                              );
+                                                            }
+                                                            return Container();
+                                                          },
+                                                        );
+                                                      } else {
+                                                        return Container(
+                                                          height: containerHeight, // Set fixed height for the data container
+                                                          decoration: BoxDecoration(
+                                                            color: Color(0xFFF5F2F7),
+                                                            borderRadius: BorderRadius.circular(10),
+                                                          ),
+                                                          child: Row(
+                                                            children: [
+                                                              Padding(
+                                                                padding: const EdgeInsets.only(left: 20, top: 25),
+                                                                child: Column(
+                                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                                  mainAxisAlignment: MainAxisAlignment.start,
+                                                                  children: [
+                                                                    Row(
+                                                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                                                      mainAxisAlignment: MainAxisAlignment.start,
+                                                                      children: [
+                                                                        Container(
+                                                                          child: Column(
+                                                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                                                            children: [
+                                                                              Row(
+                                                                                children: [
+                                                                                  SizedBox(width: 5,),
+                                                                                  Text(
+                                                                                    '랭킹 정보가 없습니다',
+                                                                                    style: TextStyle(
+                                                                                      fontWeight: FontWeight.normal,
+                                                                                      fontSize: 13,
+                                                                                      color: Color(0xFF111111).withOpacity(0.6),
+                                                                                    ),
+                                                                                  ),
+                                                                                ],
+                                                                              ),
+                                                                            ],
+                                                                          ),
+                                                                        ),
+                                                                      ],
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        );
+                                                      }
+                                                    }
+
+                                                    return Container(
+                                                      height: 185, // Set fixed height for the data container
+                                                      decoration: BoxDecoration(
+                                                        color: Color(0xFFF5F2F7),
+                                                        borderRadius: BorderRadius.circular(10),
+                                                      ),
+                                                      child: Row(
+                                                        children: [
+                                                          Padding(
+                                                            padding: const EdgeInsets.only(left: 20, top: 25),
+                                                            child: Column(
+                                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                                              mainAxisAlignment: MainAxisAlignment.start,
+                                                              children: [
+                                                                SizedBox(height: 5,),
+                                                                Text(
+                                                                  '지금 바로 랭킹에 참여해보세요!',
+                                                                  style: TextStyle(
+                                                                    fontWeight: FontWeight.bold,
+                                                                    fontSize: 16,
+                                                                    color: Color(0xFF111111),
+                                                                  ),
+                                                                ),
+                                                                SizedBox(height: 15,),
+                                                                Text(
+                                                                  '친구들의 라이브 상태도 확인하고',
+                                                                  style: TextStyle(
+                                                                    fontWeight: FontWeight.normal,
+                                                                    fontSize: 13,
+                                                                    color: Color(0xFF111111),
+                                                                  ),
+                                                                ),
+                                                                SizedBox(height: 5,),
+                                                                Text(
+                                                                  '다른 유저들과 경쟁해보세요!',
+                                                                  style: TextStyle(
+                                                                    fontWeight: FontWeight.normal,
+                                                                    fontSize: 13,
+                                                                    color: Color(0xFF111111),
+                                                                  ),
+                                                                ),
+                                                                SizedBox(height: 10,),
+                                                                Padding(
+                                                                  padding: const EdgeInsets.only(top: 7),
+                                                                  child: GestureDetector(
+                                                                    onTap: () {
+                                                                      // Add your share functionality here
+                                                                    },
+                                                                    child: Container(
+                                                                      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                                                                      decoration: BoxDecoration(
+                                                                        color: Colors.white,
+                                                                        borderRadius: BorderRadius.circular(20),
+                                                                      ),
+                                                                      child: Row(
+                                                                        children: [
+                                                                          Text(
+                                                                            '더 알아보기',
+                                                                            style: TextStyle(
+                                                                              color: Colors.black,
+                                                                              fontWeight: FontWeight.bold,
+                                                                            ),
+                                                                          ),
+                                                                          SizedBox(width: 10,),
+                                                                          ExtendedImage.asset(
+                                                                            'assets/imgs/icons/icon_arrow_round_black.png',
+                                                                            fit: BoxFit.cover,
+                                                                            width: 18,
+                                                                            height: 18,
+                                                                          ),
+                                                                        ],
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    );
+                                                  },
+                                                ),
+                                              ],
                                             ),
-                                            Container(
-                                                padding: EdgeInsets.only(left: 20, right: 20, top: 20, bottom: 10),
-                                                width: double.infinity,
-                                                decoration: BoxDecoration(
-                                                    color: Colors.white,
-                                                    borderRadius: BorderRadius.circular(10)),
-                                                child: Column(
-                                                  mainAxisAlignment: MainAxisAlignment.start,
-                                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                                  children: [
-                                                    Row(
-                                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                      children: [
-                                                        Text(
-                                                          '클리닉·행사',
-                                                          style: TextStyle(
-                                                              fontSize: 16,
-                                                              fontWeight: FontWeight.bold,
-                                                              color: Color(0xFFC8C8C8)),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                    SizedBox(
-                                                      height: 10,
-                                                    ),
-                                                    SizedBox(
-                                                        height: 440,
-                                                        child: Bulletin_Event_List_Screen_Home()),
-                                                  ],
-                                                )),
+
+
                                             SizedBox(
                                               height: 20,
                                             ),

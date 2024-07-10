@@ -1631,7 +1631,8 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                                                   return Container();
                                                                                 }
                                                                             );
-                                                                          } else{
+                                                                          }
+                                                                          else{
                                                                             return Container(
                                                                               width: _size.width / 2 - 25,
                                                                               padding: EdgeInsets.all(16),

@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:com.snowlive/controller/login/vm_notificationController.dart';
+import 'package:com.snowlive/screens/onboarding/v_WelcomePage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -13,8 +14,6 @@ import 'package:com.snowlive/controller/public/vm_limitController.dart';
 import 'package:com.snowlive/controller/user/vm_userModelController.dart';
 import 'package:com.snowlive/screens/login/v_loginpage.dart';
 import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
-
-import '../../screens/onboarding/v_FirstPage.dart';
 import '../../screens/v_MainHome.dart';
 
 class LoginController extends GetxController {
@@ -177,7 +176,7 @@ class LoginController extends GetxController {
     } else {
       print('Document does not exist on the database');
       CustomFullScreenDialog.cancelDialog();
-      Get.offAll(() => FirstPage());
+      Get.offAll(() => WelcomePage());
     }
   }
 
