@@ -1,7 +1,9 @@
 import 'dart:io';
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:com.snowlive/controller/public/vm_refreshController.dart';
 import 'package:com.snowlive/controller/home/vm_streamController_resortHome.dart';
+import 'package:com.snowlive/controller/public/vm_timeStampController.dart';
 import 'package:com.snowlive/screens/resort/v_alarmCenter.dart';
 import 'package:com.snowlive/widget/w_popUp_bottomSheet.dart';
 import 'package:dotted_border/dotted_border.dart';
@@ -65,6 +67,7 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
   LiveCrewModelController _liveCrewModelController = Get.find<LiveCrewModelController>();
   StreamController_ResortHome _streamController_ResortHome = Get.find<StreamController_ResortHome>();
   RankingTierModelController _rankingTierModelController = Get.find<RankingTierModelController>();
+  TimeStampController _timeStampController = Get.find<TimeStampController>();
   //TODO: Dependency Injection**************************************************
 
 
@@ -588,6 +591,188 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
                           children: [
                             AppBar(
                               actions: [
+                                IconButton(
+                                  onPressed: () {
+                                    showModalBottomSheet(
+                                      context: context,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.vertical(
+                                          top: Radius.circular(20),
+                                        ),
+                                      ),
+                                      builder: (context) {
+                                        return Container(
+                                          decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.vertical(
+                                              top: Radius.circular(20),
+                                            ),
+                                            color: Colors.white,
+                                          ),
+                                          height: MediaQuery.of(context).size.height * 0.75, // 팝업의 높이를 설정
+                                          child: Column(
+                                            children: [
+                                              SizedBox(height: 5,),
+                                              Container(
+                                                width: 40,
+                                                height: 4,
+                                                margin: EdgeInsets.symmetric(vertical: 8),
+                                                decoration: BoxDecoration(
+                                                  color: Colors.grey[300],
+                                                  borderRadius: BorderRadius.circular(2),
+                                                ),
+                                              ),
+                                              SizedBox(height: 10,),
+                                              Text(
+                                                '라이브중인 친구',
+                                                style: TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                              Expanded(
+                                                child: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+                                                  stream: _friendStream,
+                                                  builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
+                                                    if (!snapshot.hasData) {
+                                                      return Container(
+                                                        color: Colors.white,
+                                                      );
+                                                    }
+                                                    if (snapshot.connectionState == ConnectionState.waiting) {
+                                                      return Center(
+                                                        child: CircularProgressIndicator(),
+                                                      );
+                                                    }
+
+                                                    final bestfriendDocs = snapshot.data!.docs;
+
+                                                    return Expanded(
+                                                      child: GridView.builder(
+                                                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                                                          crossAxisCount: 4, // 열의 수를 설정
+                                                          crossAxisSpacing: 16,
+                                                          mainAxisSpacing: 16,
+                                                          childAspectRatio: 3 / 4, // 필요한 비율로 조정
+                                                        ),
+                                                        itemCount: bestfriendDocs.length,
+                                                        itemBuilder: (context, index) {
+                                                          var BFdoc = bestfriendDocs[index];
+                                                          return GestureDetector(
+                                                            onTap: () {
+                                                              Get.to(() => FriendDetailPage(
+                                                                uid: BFdoc.get('uid'),
+                                                                favoriteResort: BFdoc.get('favoriteResort'),
+                                                              ));
+                                                            },
+                                                            child: Column(
+                                                              crossAxisAlignment: CrossAxisAlignment.center,
+                                                              children: [
+                                                                Stack(
+                                                                  fit: StackFit.loose,
+                                                                  children: [
+                                                                    Container(
+                                                                      alignment: Alignment.center,
+                                                                      child: BFdoc.get('profileImageUrl').isNotEmpty
+                                                                          ? ExtendedImage.network(
+                                                                        BFdoc.get('profileImageUrl'),
+                                                                        enableMemoryCache: true,
+                                                                        shape: BoxShape.circle,
+                                                                        borderRadius: BorderRadius.circular(8),
+                                                                        width: 70,
+                                                                        height: 70,
+                                                                        fit: BoxFit.cover,
+                                                                        loadStateChanged: (ExtendedImageState state) {
+                                                                          switch (state.extendedImageLoadState) {
+                                                                            case LoadState.loading:
+                                                                              return SizedBox.shrink();
+                                                                            case LoadState.completed:
+                                                                              return state.completedWidget;
+                                                                            case LoadState.failed:
+                                                                              return ExtendedImage.asset(
+                                                                                'assets/imgs/profile/img_profile_default_circle.png',
+                                                                                shape: BoxShape.circle,
+                                                                                borderRadius: BorderRadius.circular(8),
+                                                                                width: 70,
+                                                                                height: 70,
+                                                                                fit: BoxFit.cover,
+                                                                              );
+                                                                            default:
+                                                                              return null;
+                                                                          }
+                                                                        },
+                                                                      )
+                                                                          : ExtendedImage.asset(
+                                                                        'assets/imgs/profile/img_profile_default_circle.png',
+                                                                        enableMemoryCache: true,
+                                                                        shape: BoxShape.circle,
+                                                                        borderRadius: BorderRadius.circular(8),
+                                                                        width: 70,
+                                                                        height: 70,
+                                                                        fit: BoxFit.cover,
+                                                                      ),
+                                                                    ),
+                                                                    BFdoc.get('isOnLive') == true
+                                                                        ? Positioned(
+                                                                      right: 0,
+                                                                      bottom: 0,
+                                                                      child: Image.asset(
+                                                                        'assets/imgs/icons/icon_badge_live.png',
+                                                                        width: 32,
+                                                                      ),
+                                                                    )
+                                                                        : Container()
+                                                                  ],
+                                                                ),
+                                                                SizedBox(height: 6),
+                                                                Container(
+                                                                  width: 70,
+                                                                  child: Text(
+                                                                    BFdoc.get('displayName'),
+                                                                    overflow: TextOverflow.ellipsis,
+                                                                    textAlign: TextAlign.center,
+                                                                    style: TextStyle(
+                                                                      fontSize: 12,
+                                                                      fontWeight: FontWeight.normal,
+                                                                      color: Color(0xFF111111),
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          );
+                                                        },
+                                                      ),
+                                                    );
+                                                  },
+                                                ),
+                                              ),
+                                              Padding(
+                                                padding: const EdgeInsets.only(right: 16.0, left: 16.0, bottom: 30),
+                                                child: SizedBox(
+                                                  width: double.infinity,
+                                                  child: ElevatedButton(
+                                                    onPressed: () {
+                                                      Get.to(() => FriendListPage());
+                                                    },
+                                                    child: Text('친구 관리 바로가기'),
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        );
+                                      },
+                                    );
+                                  },
+                                  icon: OverflowBox(
+                                    maxHeight: 35,
+                                    maxWidth: 35,
+                                    child: Image.asset(
+                                      'assets/imgs/icons/icon_friend_resortHome.png',
+                                    ),
+                                  ),
+                                ),
+
+
                                 Padding(
                                   padding: const EdgeInsets.only(right: 8),
                                   child: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
@@ -610,10 +795,10 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
                                                   Get.to(()=>AlarmCenter());
                                                 },
                                                 icon: OverflowBox(
-                                                  maxHeight: 42,
-                                                  maxWidth: 42,
+                                                  maxHeight: 35,
+                                                  maxWidth: 35,
                                                   child: Image.asset(
-                                                    'assets/imgs/icons/icon_alarm.png',
+                                                    'assets/imgs/icons/icon_alarm_resortHome.png',
                                                   ),
                                                 ),
                                               ),
@@ -649,10 +834,10 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
                                                   Get.to(()=>AlarmCenter());
                                                 },
                                                 icon: OverflowBox(
-                                                  maxHeight: 42,
-                                                  maxWidth: 42,
+                                                  maxHeight: 35,
+                                                  maxWidth: 35,
                                                   child: Image.asset(
-                                                    'assets/imgs/icons/icon_alarm.png',
+                                                    'assets/imgs/icons/icon_alarm_resortHome.png',
                                                   ),
                                                 ),
                                               ),
@@ -754,6 +939,7 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
                                     },
                                   ),
                                 ),
+
                               ],
                               systemOverlayStyle: SystemUiOverlayStyle.dark,
                               centerTitle: false,
@@ -788,179 +974,7 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
                               SizedBox(
                                 height: _statusBarSize + 64,
                               ),
-                              StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-                                stream: _friendStream,
-                                builder: (context,
-                                    AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
-                                  if (!snapshot.hasData) {
-                                    return Container(
-                                      color: Colors.white,
-                                    );
-                                  }
-                                  if (snapshot.connectionState == ConnectionState.waiting) {
-                                    return Center(
-                                      child: CircularProgressIndicator(),
-                                    );
-                                  }
 
-                                  final bestfriendDocs = snapshot.data!.docs;
-                                  print(bestfriendDocs);
-
-                                  return Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Container(
-                                        height: (bestfriendDocs.isEmpty) ? 0 : 100,
-                                        color: Color(0xFFF1F1F3),
-                                        child: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-                                          stream: _bfStream,
-                                          builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>>snapshot) {
-                                            try {
-                                              if (!snapshot.hasData || snapshot.data == null) {
-                                                return SizedBox.shrink();
-                                              }
-                                              if (snapshot.connectionState == ConnectionState.waiting) {
-                                                return SizedBox.shrink();
-                                              }
-                                              if (snapshot.data!.docs.isNotEmpty) {
-                                                final bestfriendDocs = snapshot.data!.docs;
-                                                return ListView.builder(
-                                                    scrollDirection: Axis.horizontal,
-                                                    itemCount: bestfriendDocs.isNotEmpty ? bestfriendDocs.length + 1 : 1,
-                                                    itemBuilder: (BuildContext context, int index) {
-                                                      if (index < bestfriendDocs.length) {
-                                                        var BFdoc = bestfriendDocs[index];
-                                                        return Padding(
-                                                          padding: index == 0 ? EdgeInsets.only(left: 10) : EdgeInsets.zero,
-                                                          child: Row(
-                                                            children: [
-                                                              GestureDetector(
-                                                                onTap: () {
-                                                                  Get.to(() => FriendDetailPage(uid: BFdoc.get('uid'), favoriteResort: BFdoc.get('favoriteResort'),));
-                                                                },
-                                                                child: Container(
-                                                                  width: 70,
-                                                                  child: Column(
-                                                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                                                    children: [
-                                                                      Stack(
-                                                                        fit: StackFit.loose,
-                                                                        children: [
-                                                                          Container(
-                                                                            alignment: Alignment.center,
-                                                                            child: BFdoc.get('profileImageUrl').isNotEmpty
-                                                                                ? ExtendedImage.network(
-                                                                              BFdoc.get('profileImageUrl'),
-                                                                              enableMemoryCache: true,
-                                                                              shape: BoxShape.circle,
-                                                                              borderRadius: BorderRadius.circular(8),
-                                                                              width: 56,
-                                                                              height: 56,
-                                                                              fit: BoxFit.cover,
-                                                                              loadStateChanged: (ExtendedImageState state) {
-                                                                                switch (state.extendedImageLoadState) {
-                                                                                  case LoadState.loading:
-                                                                                    return SizedBox.shrink();
-                                                                                  case LoadState.completed:
-                                                                                    return state.completedWidget;
-                                                                                  case LoadState.failed:
-                                                                                    return ExtendedImage.asset(
-                                                                                      'assets/imgs/profile/img_profile_default_circle.png',
-                                                                                      shape: BoxShape.circle,
-                                                                                      borderRadius: BorderRadius.circular(8),
-                                                                                      width: 56,
-                                                                                      height: 56,
-                                                                                      fit: BoxFit.cover,
-                                                                                    );
-                                                                                  default:
-                                                                                    return null;
-                                                                                }
-                                                                              },
-                                                                            )
-                                                                                : ExtendedImage.asset(
-                                                                              'assets/imgs/profile/img_profile_default_circle.png',
-                                                                              enableMemoryCache: true,
-                                                                              shape: BoxShape.circle,
-                                                                              borderRadius: BorderRadius.circular(8),
-                                                                              width: 56,
-                                                                              height: 56,
-                                                                              fit: BoxFit.cover,
-                                                                            ),
-                                                                          ),
-                                                                          BFdoc.get('isOnLive') == true
-                                                                              ? Positioned(
-                                                                            right: 0,
-                                                                            bottom: 0,
-                                                                            child: Image.asset(
-                                                                              'assets/imgs/icons/icon_badge_live.png',
-                                                                              width: 32,
-                                                                            ),
-                                                                          )
-                                                                              : Container()
-                                                                        ],
-                                                                      ),
-                                                                      SizedBox(height: 6),
-                                                                      Container(
-                                                                        width: 70,
-                                                                        child: Text(
-                                                                          BFdoc.get('displayName'),
-                                                                          overflow: TextOverflow.ellipsis,
-                                                                          textAlign: TextAlign.center,
-                                                                          style: TextStyle(
-                                                                              fontSize: 12,
-                                                                              fontWeight: FontWeight.normal,
-                                                                              color: Color(0xFF111111)
-                                                                          ),
-                                                                        ),
-                                                                      )
-                                                                    ],
-                                                                  ),
-                                                                ),
-                                                              ),
-                                                            ],
-                                                          ),
-                                                        );
-                                                      } else {
-                                                        return Column(
-                                                          children: [
-                                                            GestureDetector(
-                                                              onTap: () {
-                                                                Get.to(() => FriendListPage());
-                                                              },
-                                                              child: Padding(
-                                                                padding: const EdgeInsets.only(left: 6, right: 16),
-                                                                child: DottedBorder(
-                                                                  borderType: BorderType.RRect,
-                                                                  radius: Radius.circular(50),
-                                                                  color: Color(0xFFDEDEDE),
-                                                                  strokeWidth: 1,
-                                                                  dashPattern: [6, 5],
-                                                                  child: Container(
-                                                                    width: 52,
-                                                                    height: 52,
-                                                                    child: Icon(Icons.add),
-                                                                  ),
-                                                                ),
-                                                              ),
-                                                            ),
-                                                          ],
-                                                        );
-                                                      }
-                                                    }
-                                                );
-                                              }
-                                              return SizedBox.shrink();
-                                            } catch (e) {
-                                              SizedBox.shrink();
-                                            }
-                                            return SizedBox.shrink();
-                                          },
-                                        ),
-                                      ),
-                                    ],
-                                  );
-                                },
-                              ),
                               Container(
                                 color: Colors.white,
                                 child: Padding(
@@ -1367,6 +1381,7 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
                                           ),
                                         ),
                                         Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
                                             SizedBox(
                                               height: 12,
@@ -1520,17 +1535,8 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
                                               height: 32,
                                             ),
                                             Column(
-                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              mainAxisAlignment: MainAxisAlignment.start,
                                               children: [
-                                                Text('내 시즌 정보',
-                                                style: TextStyle(
-                                                  fontSize: 15,
-                                                  fontWeight: FontWeight.bold,
-                                                  color: Color(0xFF111111)
-                                                ),
-                                                ),
-                                                SizedBox(height: 15,),
-
                                                 StreamBuilder<QuerySnapshot>(
                                                   stream: _streamController_ResortHome.setupStreams_resortHome_myScore(_userModelController.favoriteResort!, _userModelController.uid!),
                                                   builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
@@ -1560,138 +1566,431 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
                                                                 userRankingMap_all = _rankingTierModelController.calculateRankIndiAll2_integrated(userRankingDocs: rankingDocs_total);
                                                               }
 
-                                                              return Container(
-                                                                height: containerHeight, // Set fixed height for the data container
-                                                                decoration: BoxDecoration(
-                                                                  color: Color(0xFFF5F2F7),
-                                                                  borderRadius: BorderRadius.circular(10),
-                                                                ),
-                                                                child: Row(
-                                                                  children: [
-                                                                    Padding(
-                                                                      padding: const EdgeInsets.only(left: 20, top: 25),
-                                                                      child: Column(
-                                                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                                                        mainAxisAlignment: MainAxisAlignment.start,
-                                                                        children: [
-                                                                          Row(
+                                                              Map<String, dynamic>? passCountData = rankingDocs[0]['passCountData'] as Map<String, dynamic>?;
+                                                              Map<String, dynamic>? passCountTimeData = rankingDocs[0]['passCountTimeData'] as Map<String, dynamic>?;
+                                                              List<Map<String, dynamic>> barData = _liveMapController.calculateBarDataPassCount(passCountData);
+                                                              List<Map<String, dynamic>> barData2 = _liveMapController.calculateBarDataSlot(passCountTimeData);
+
+                                                              String? lastPassTimeString;
+
+                                                              Timestamp lastPassTime = rankingDocs[0]['lastPassTime'];
+                                                              lastPassTimeString = _timeStampController.getAgoTime(lastPassTime);
+
+                                                              return Column(
+                                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                                children: [
+                                                                  Text('내 시즌 정보',
+                                                                    style: TextStyle(
+                                                                        fontSize: 15,
+                                                                        fontWeight: FontWeight.bold,
+                                                                        color: Color(0xFF111111)
+                                                                    ),
+                                                                  ),
+                                                                  SizedBox(height: 15,),
+                                                                  Container(
+                                                                    height: containerHeight, // Set fixed height for the data container
+                                                                    decoration: BoxDecoration(
+                                                                      color: Color(0xFFF5F2F7),
+                                                                      borderRadius: BorderRadius.circular(10),
+                                                                    ),
+                                                                    child: Row(
+                                                                      children: [
+                                                                        Padding(
+                                                                          padding: const EdgeInsets.only(left: 20, top: 25),
+                                                                          child: Column(
                                                                             crossAxisAlignment: CrossAxisAlignment.start,
                                                                             mainAxisAlignment: MainAxisAlignment.start,
                                                                             children: [
-                                                                              Container(
-                                                                                child: Column(
-                                                                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                                                                  children: [
-                                                                                    Row(
+                                                                              Row(
+                                                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                mainAxisAlignment: MainAxisAlignment.start,
+                                                                                children: [
+                                                                                  Container(
+                                                                                    child: Column(
+                                                                                      crossAxisAlignment: CrossAxisAlignment.start,
                                                                                       children: [
-                                                                                        ExtendedImage.asset(
-                                                                                          'assets/imgs/icons/icon_circle_black.png',
-                                                                                          fit: BoxFit.cover,
-                                                                                          width: 15,
-                                                                                          height: 15,
+                                                                                        Row(
+                                                                                          children: [
+                                                                                            ExtendedImage.asset(
+                                                                                              'assets/imgs/icons/icon_circle_black.png',
+                                                                                              fit: BoxFit.cover,
+                                                                                              width: 15,
+                                                                                              height: 15,
+                                                                                            ),
+                                                                                            SizedBox(width: 5,),
+                                                                                            Text(
+                                                                                              '누적 점수',
+                                                                                              style: TextStyle(
+                                                                                                fontWeight: FontWeight.normal,
+                                                                                                fontSize: 13,
+                                                                                                color: Color(0xFF111111).withOpacity(0.6),
+                                                                                              ),
+                                                                                            ),
+                                                                                          ],
                                                                                         ),
-                                                                                        SizedBox(width: 5,),
+                                                                                        SizedBox(height: 10,),
                                                                                         Text(
-                                                                                          '누적 점수',
+                                                                                          (_userModelController.favoriteResort == 12 || _userModelController.favoriteResort == 2 || _userModelController.favoriteResort == 0)
+                                                                                              ? '${rankingDocs[0]['totalScore']}점'
+                                                                                              : '${rankingDocs[0]['totalPassCount']}회',
                                                                                           style: TextStyle(
-                                                                                            fontWeight: FontWeight.normal,
-                                                                                            fontSize: 13,
-                                                                                            color: Color(0xFF111111).withOpacity(0.6),
-                                                                                          ),
-                                                                                        ),
-                                                                                      ],
-                                                                                    ),
-                                                                                    SizedBox(height: 10,),
-                                                                                    Text(
-                                                                                      (_userModelController.favoriteResort == 12 || _userModelController.favoriteResort == 2 || _userModelController.favoriteResort == 0)
-                                                                                          ? '${rankingDocs[0]['totalScore']}점'
-                                                                                          : '${rankingDocs[0]['totalPassCount']}회',
-                                                                                      style: TextStyle(
-                                                                                        color: Color(0xFF111111),
-                                                                                        fontWeight: FontWeight.bold,
-                                                                                        fontSize: 16,
-                                                                                      ),
-                                                                                    ),
-                                                                                  ],
-                                                                                ),
-                                                                              ),
-                                                                              SizedBox(width: 30,),
-                                                                              Container(
-                                                                                child: Column(
-                                                                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                                                                  children: [
-                                                                                    Row(
-                                                                                      children: [
-                                                                                        ExtendedImage.asset(
-                                                                                          'assets/imgs/icons/icon_circle_black.png',
-                                                                                          fit: BoxFit.cover,
-                                                                                          width: 15,
-                                                                                          height: 15,
-                                                                                        ),
-                                                                                        SizedBox(width: 5,),
-                                                                                        Text(
-                                                                                          '통합 랭킹',
-                                                                                          style: TextStyle(
-                                                                                            fontWeight: FontWeight.normal,
-                                                                                            fontSize: 13,
-                                                                                            color: Color(0xFF111111).withOpacity(0.6),
-                                                                                          ),
-                                                                                        ),
-                                                                                      ],
-                                                                                    ),
-                                                                                    SizedBox(height: 10,),
-                                                                                    Text(
-                                                                                      '${userRankingMap_all!['${_userModelController.uid}']}등',
-                                                                                      style: TextStyle(
-                                                                                        fontSize: 16,
-                                                                                        fontWeight: FontWeight.bold,
-                                                                                        color: Color(0xFF111111),
-                                                                                      ),
-                                                                                    ),
-                                                                                  ],
-                                                                                ),
-                                                                              ),
-                                                                              SizedBox(width: 30,),
-                                                                              Padding(
-                                                                                padding: const EdgeInsets.only(top: 7),
-                                                                                child: GestureDetector(
-                                                                                  onTap: () {
-                                                                                    // Add your share functionality here
-                                                                                  },
-                                                                                  child: Container(
-                                                                                    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                                                                                    decoration: BoxDecoration(
-                                                                                      color: Colors.white,
-                                                                                      borderRadius: BorderRadius.circular(20),
-                                                                                    ),
-                                                                                    child: Row(
-                                                                                      children: [
-                                                                                        Text(
-                                                                                          '공유하기',
-                                                                                          style: TextStyle(
-                                                                                            color: Colors.black,
+                                                                                            color: Color(0xFF111111),
                                                                                             fontWeight: FontWeight.bold,
+                                                                                            fontSize: 16,
                                                                                           ),
-                                                                                        ),
-                                                                                        SizedBox(width: 10,),
-                                                                                        ExtendedImage.asset(
-                                                                                          'assets/imgs/icons/icon_arrow_round_black.png',
-                                                                                          fit: BoxFit.cover,
-                                                                                          width: 18,
-                                                                                          height: 18,
                                                                                         ),
                                                                                       ],
                                                                                     ),
                                                                                   ),
-                                                                                ),
+                                                                                  SizedBox(width: 30,),
+                                                                                  Container(
+                                                                                    child: Column(
+                                                                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                      children: [
+                                                                                        Row(
+                                                                                          children: [
+                                                                                            ExtendedImage.asset(
+                                                                                              'assets/imgs/icons/icon_circle_black.png',
+                                                                                              fit: BoxFit.cover,
+                                                                                              width: 15,
+                                                                                              height: 15,
+                                                                                            ),
+                                                                                            SizedBox(width: 5,),
+                                                                                            Text(
+                                                                                              '통합 랭킹',
+                                                                                              style: TextStyle(
+                                                                                                fontWeight: FontWeight.normal,
+                                                                                                fontSize: 13,
+                                                                                                color: Color(0xFF111111).withOpacity(0.6),
+                                                                                              ),
+                                                                                            ),
+                                                                                          ],
+                                                                                        ),
+                                                                                        SizedBox(height: 10,),
+                                                                                        Text(
+                                                                                          '${userRankingMap_all!['${_userModelController.uid}']}등',
+                                                                                          style: TextStyle(
+                                                                                            fontSize: 16,
+                                                                                            fontWeight: FontWeight.bold,
+                                                                                            color: Color(0xFF111111),
+                                                                                          ),
+                                                                                        ),
+                                                                                      ],
+                                                                                    ),
+                                                                                  ),
+                                                                                  SizedBox(width: 30,),
+                                                                                  Padding(
+                                                                                    padding: const EdgeInsets.only(top: 7),
+                                                                                    child: GestureDetector(
+                                                                                      onTap: () {
+                                                                                        // Add your share functionality here
+                                                                                      },
+                                                                                      child: Container(
+                                                                                        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                                                                                        decoration: BoxDecoration(
+                                                                                          color: Colors.white,
+                                                                                          borderRadius: BorderRadius.circular(20),
+                                                                                        ),
+                                                                                        child: Row(
+                                                                                          children: [
+                                                                                            Text(
+                                                                                              '공유하기',
+                                                                                              style: TextStyle(
+                                                                                                color: Colors.black,
+                                                                                                fontWeight: FontWeight.bold,
+                                                                                              ),
+                                                                                            ),
+                                                                                            SizedBox(width: 10,),
+                                                                                            ExtendedImage.asset(
+                                                                                              'assets/imgs/icons/icon_arrow_round_black.png',
+                                                                                              fit: BoxFit.cover,
+                                                                                              width: 18,
+                                                                                              height: 18,
+                                                                                            ),
+                                                                                          ],
+                                                                                        ),
+                                                                                      ),
+                                                                                    ),
+                                                                                  ),
+                                                                                ],
                                                                               ),
                                                                             ],
                                                                           ),
-                                                                        ],
-                                                                      ),
+                                                                        ),
+                                                                      ],
                                                                     ),
-                                                                  ],
-                                                                ),
+                                                                  ),
+                                                                  SizedBox(height: 35),
+                                                                  Text('오늘 가장 많이 이용한 슬로프는',
+                                                                    style: TextStyle(
+                                                                        fontSize: 18,
+                                                                        fontWeight: FontWeight.bold,
+                                                                        color: Color(0xFF111111)
+                                                                    ),
+                                                                  ),
+                                                                  Row(
+                                                                    children: [
+                                                                      Text('${barData[0]['slopeName']}',
+                                                                        style: TextStyle(
+                                                                            fontSize: 18,
+                                                                            fontWeight: FontWeight.bold,
+                                                                            color: Color(0xFF3D83ED)
+                                                                        ),
+                                                                      ),
+                                                                      Text('입니다!',
+                                                                        style: TextStyle(
+                                                                            fontSize: 18,
+                                                                            fontWeight: FontWeight.bold,
+                                                                            color: Color(0xFF111111)
+                                                                        ),
+                                                                      ),
+                                                                    ],
+                                                                  ),
+                                                                  SizedBox(height: 20),
+                                                                  Container(
+                                                                    padding: EdgeInsets.symmetric(horizontal: 20),
+                                                                    width: _size.width,
+                                                                    height: 214,
+                                                                    decoration: BoxDecoration(
+                                                                      color: Color(0xFFF0F6FF),
+                                                                      borderRadius: BorderRadius.circular(14),
+                                                                    ),
+                                                                    child: Column(
+                                                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                                                      children: [
+                                                                        SizedBox(height: 20,),
+                                                                        Text('${barData[0]['slopeName']}'),
+                                                                        SizedBox(height: 5,),
+                                                                        Text('${barData[0]['passCount']}회',
+                                                                        style: TextStyle(
+                                                                          fontSize: 22,
+                                                                          fontWeight: FontWeight.bold
+                                                                        ),
+                                                                        ),
+                                                                        SizedBox(height: 10,),
+                                                                        Expanded(
+                                                                          child: Container(
+                                                                            margin: EdgeInsets.only(top: 6),
+                                                                            child: SingleChildScrollView(
+                                                                              child: Column(
+                                                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                children: barData.map((data) {
+                                                                                  String slopeName = data['slopeName'];
+                                                                                  int passCount = data['passCount'];
+                                                                                  double barWidthRatio = data['barHeightRatio'];
+                                                                                  Color barColor = data['barColor'];
+                                                                                  return Padding(
+                                                                                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                                                                                    child: Row(
+                                                                                      children: [
+                                                                                        Container(
+                                                                                          width: 40,
+                                                                                          child: Text(
+                                                                                            slopeName,
+                                                                                            style: TextStyle(
+                                                                                                fontSize: 12,
+                                                                                                color: Color(0xFF111111),
+                                                                                                fontWeight: FontWeight.bold
+
+                                                                                            ),
+                                                                                          ),
+                                                                                        ),
+                                                                                        SizedBox(width: 10),
+                                                                                        Expanded(
+                                                                                          child: Stack(
+                                                                                            children: [
+                                                                                              Container(
+                                                                                                height: 20,
+                                                                                                width: _size.width * barWidthRatio,
+                                                                                                decoration: BoxDecoration(
+                                                                                                    color: barColor,
+                                                                                                    borderRadius: BorderRadius.only(
+                                                                                                        topRight: Radius.circular(5),
+                                                                                                        bottomRight: Radius.circular(5)
+                                                                                                    )
+                                                                                                ),
+                                                                                              ),
+                                                                                            ],
+                                                                                          ),
+                                                                                        ),
+                                                                                        SizedBox(width: 10),
+                                                                                        Container(
+                                                                                          width: 30,
+                                                                                          child: Text(
+                                                                                            passCount != 0 ? '$passCount' : '',
+                                                                                            style: TextStyle(
+                                                                                              fontSize: 13,
+                                                                                              color: Color(0xFF111111),
+                                                                                              fontWeight: FontWeight.bold,
+                                                                                            ),
+                                                                                          ),
+                                                                                        ),
+                                                                                      ],
+                                                                                    ),
+                                                                                  );
+                                                                                }).toList(),
+                                                                              ),
+                                                                            ),
+                                                                          ),
+                                                                        ),
+                                                                      ],
+                                                                    ),
+                                                                  ),
+                                                                  SizedBox(height: 20),
+                                                                  Text('${_userModelController.displayName}님은 부지런한 모닝 라이더',
+                                                                    style: TextStyle(
+                                                                        fontSize: 18,
+                                                                        fontWeight: FontWeight.bold,
+                                                                        color: Color(0xFF111111)
+                                                                    ),
+                                                                  ),
+                                                                  Row(
+                                                                    children: [
+                                                                      Text('${ _resortModelController.getSlotName(barData2[0]['slotName'])}시에',
+                                                                        style: TextStyle(
+                                                                            fontSize: 18,
+                                                                            fontWeight: FontWeight.bold,
+                                                                            color: Color(0xFF3D83ED)
+                                                                        ),
+                                                                      ),
+                                                                      Text('가장 많이 탔어요!',
+                                                                        style: TextStyle(
+                                                                            fontSize: 18,
+                                                                            fontWeight: FontWeight.bold,
+                                                                            color: Color(0xFF111111)
+                                                                        ),
+                                                                      ),
+                                                                    ],
+                                                                  ),
+                                                                  SizedBox(height: 20),
+                                                                  Container(
+                                                                    width: _size.width,
+                                                                    height: 300,
+                                                                    decoration: BoxDecoration(
+                                                                      color: Color(0xFFF0F6FF),
+                                                                      borderRadius: BorderRadius.circular(14),
+                                                                    ),
+                                                                    padding: EdgeInsets.only(bottom: 12),
+                                                                    child: Column(
+                                                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                                                      children: [
+                                                                        SizedBox(height: 20,),
+                                                                        Row(
+                                                                          children: [
+                                                                          Column(
+                                                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                                                            children: [
+                                                                              Row(
+                                                                                children: [
+                                                                                  Padding(
+                                                                                    padding: const EdgeInsets.only(left: 20),
+                                                                                    child: Text('오늘 총 라이딩 횟수'),
+                                                                                  ),
+                                                                                  SizedBox(width: 60,),
+                                                                                  Row(
+                                                                                    mainAxisAlignment: MainAxisAlignment.end,
+                                                                                    children: [
+                                                                                      Text('마지막 라이딩',
+                                                                                        style: TextStyle(
+                                                                                            fontSize: 10,
+                                                                                            color: Color(0xFF949494)
+                                                                                        ),),
+                                                                                      SizedBox(
+                                                                                        width: 4,
+                                                                                      ),
+                                                                                      Text('${lastPassTimeString}',
+                                                                                        style: TextStyle(
+                                                                                            fontSize: 10,
+                                                                                            fontWeight: FontWeight.bold,
+                                                                                            color: Color(0xFF949494)
+                                                                                        ),)
+                                                                                    ],
+                                                                                  ),
+                                                                                ],
+                                                                              ),
+                                                                              SizedBox(height: 5,),
+                                                                              Padding(
+                                                                                padding: const EdgeInsets.only(left: 20),
+                                                                                child: Text('${rankingDocs[0]['totalPassCount']}회',
+                                                                                  style: TextStyle(
+                                                                                      fontSize: 22,
+                                                                                      fontWeight: FontWeight.bold
+                                                                                  ),
+                                                                                ),
+                                                                              ),
+                                                                            ],
+                                                                          ),],),
+
+                                                                        SizedBox(height: 10,),
+                                                                        Expanded(
+                                                                          child: Padding(
+                                                                            padding: const EdgeInsets.symmetric(horizontal: 16),
+                                                                            child: Container(
+                                                                              child: SingleChildScrollView(
+                                                                                scrollDirection: Axis.horizontal,
+                                                                                child: Row(
+                                                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                                                  children: barData2.map((data) {
+                                                                                    String slotName = data['slotName'];
+                                                                                    int passCount = data['passCount'];
+                                                                                    double barHeightRatio = data['barHeightRatio'];
+                                                                                    Color barColor = data['barColor'];
+
+                                                                                    return Container(
+                                                                                      margin: EdgeInsets.symmetric(horizontal: 5),
+                                                                                      width: 25,
+                                                                                      child: Column(
+                                                                                        mainAxisAlignment: MainAxisAlignment.end,
+                                                                                        children: [
+                                                                                          AutoSizeText(
+                                                                                            passCount != 0 ? '$passCount' : '',
+                                                                                            style: TextStyle(
+                                                                                              fontSize: 13,
+                                                                                              color: Color(0xFF111111),
+                                                                                              fontWeight: FontWeight.bold,
+                                                                                            ),
+                                                                                            minFontSize: 8,
+                                                                                            maxLines: 1,
+                                                                                            overflow: TextOverflow.visible,
+                                                                                          ),
+                                                                                          SizedBox(height: 4),
+                                                                                          Container(
+                                                                                            width: 25,
+                                                                                            height: 140 * barHeightRatio,
+                                                                                            child: Container(
+                                                                                              width: 25,
+                                                                                              height: 140 * barHeightRatio,
+                                                                                              decoration: BoxDecoration(
+                                                                                                  color: barColor,
+                                                                                                  borderRadius: BorderRadius.only(
+                                                                                                      topRight: Radius.circular(4),
+                                                                                                      topLeft: Radius.circular(4)
+                                                                                                  )
+                                                                                              ),
+                                                                                            ),
+                                                                                          ),
+                                                                                          SizedBox(height: 10),
+                                                                                          Padding(
+                                                                                            padding: const EdgeInsets.only(left: 3),
+                                                                                            child: Text(
+                                                                                              _resortModelController.getSlotName(slotName),
+                                                                                              style: TextStyle(fontSize: 11, color: Color(0xFF111111)),
+                                                                                            ),
+                                                                                          ),
+                                                                                        ],
+                                                                                      ),
+                                                                                    );
+                                                                                  }).toList(),
+                                                                                ),
+                                                                              ),
+                                                                            ),
+                                                                          ),
+                                                                        ),
+                                                                      ],
+                                                                    ),
+                                                                  ),
+
+                                                                ],
                                                               );
                                                             }
                                                             return Container();
@@ -1699,7 +1998,7 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
                                                         );
                                                       } else {
                                                         return Container(
-                                                          height: containerHeight, // Set fixed height for the data container
+                                                          height: 185, // Set fixed height for the data container
                                                           decoration: BoxDecoration(
                                                             color: Color(0xFFF5F2F7),
                                                             borderRadius: BorderRadius.circular(10),
@@ -1712,31 +2011,66 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
                                                                   crossAxisAlignment: CrossAxisAlignment.start,
                                                                   mainAxisAlignment: MainAxisAlignment.start,
                                                                   children: [
-                                                                    Row(
-                                                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                                                      mainAxisAlignment: MainAxisAlignment.start,
-                                                                      children: [
-                                                                        Container(
-                                                                          child: Column(
-                                                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                                                    SizedBox(height: 5,),
+                                                                    Text(
+                                                                      '지금 바로 랭킹에 참여해보세요!',
+                                                                      style: TextStyle(
+                                                                        fontWeight: FontWeight.bold,
+                                                                        fontSize: 16,
+                                                                        color: Color(0xFF111111),
+                                                                      ),
+                                                                    ),
+                                                                    SizedBox(height: 15,),
+                                                                    Text(
+                                                                      '친구들의 라이브 상태도 확인하고',
+                                                                      style: TextStyle(
+                                                                        fontWeight: FontWeight.normal,
+                                                                        fontSize: 13,
+                                                                        color: Color(0xFF111111),
+                                                                      ),
+                                                                    ),
+                                                                    SizedBox(height: 5,),
+                                                                    Text(
+                                                                      '다른 유저들과 경쟁해보세요!',
+                                                                      style: TextStyle(
+                                                                        fontWeight: FontWeight.normal,
+                                                                        fontSize: 13,
+                                                                        color: Color(0xFF111111),
+                                                                      ),
+                                                                    ),
+                                                                    SizedBox(height: 10,),
+                                                                    Padding(
+                                                                      padding: const EdgeInsets.only(top: 7),
+                                                                      child: GestureDetector(
+                                                                        onTap: () {
+                                                                          // Add your share functionality here
+                                                                        },
+                                                                        child: Container(
+                                                                          padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                                                                          decoration: BoxDecoration(
+                                                                            color: Colors.white,
+                                                                            borderRadius: BorderRadius.circular(20),
+                                                                          ),
+                                                                          child: Row(
                                                                             children: [
-                                                                              Row(
-                                                                                children: [
-                                                                                  SizedBox(width: 5,),
-                                                                                  Text(
-                                                                                    '랭킹 정보가 없습니다',
-                                                                                    style: TextStyle(
-                                                                                      fontWeight: FontWeight.normal,
-                                                                                      fontSize: 13,
-                                                                                      color: Color(0xFF111111).withOpacity(0.6),
-                                                                                    ),
-                                                                                  ),
-                                                                                ],
+                                                                              Text(
+                                                                                '더 알아보기',
+                                                                                style: TextStyle(
+                                                                                  color: Colors.black,
+                                                                                  fontWeight: FontWeight.bold,
+                                                                                ),
+                                                                              ),
+                                                                              SizedBox(width: 10,),
+                                                                              ExtendedImage.asset(
+                                                                                'assets/imgs/icons/icon_arrow_round_black.png',
+                                                                                fit: BoxFit.cover,
+                                                                                width: 18,
+                                                                                height: 18,
                                                                               ),
                                                                             ],
                                                                           ),
                                                                         ),
-                                                                      ],
+                                                                      ),
                                                                     ),
                                                                   ],
                                                                 ),
@@ -1832,274 +2166,343 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
                                                 ),
                                               ],
                                             ),
-
-
                                             SizedBox(
-                                              height: 20,
+                                              height: 32,
                                             ),
-                                            ElevatedButton(
-                                              child: RichText(
-                                                text: TextSpan(
+                                            Text('지금 ${_userModelController.resortNickname}는',
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.bold
+                                            ),
+                                            ),
+                                            SizedBox(
+                                              height: 15,
+                                            ),
+                                            Row(children: [
+                                              Container(
+                                                padding: EdgeInsets.all(16),
+                                                width: 168,
+                                                height: 94,
+                                                decoration: BoxDecoration(
+                                                  color: Color(0xFF3D83ED),
+                                                  borderRadius: BorderRadius.circular(15),
+                                                ),
+                                                child: Column(
+                                                  crossAxisAlignment: CrossAxisAlignment.start,
                                                   children: [
-                                                    TextSpan(
-                                                      text: '날씨 정보는 ',
+                                                    Text(
+                                                      '라이브중인 사람',
                                                       style: TextStyle(
-                                                          fontSize: 13,
-                                                          color:
-                                                          Color(0xFFc8c8c8),
-                                                          fontWeight: FontWeight
-                                                              .normal),
+                                                        color: Colors.white,
+                                                      ),
                                                     ),
-                                                    TextSpan(
-                                                      text: '기상청',
+                                                    SizedBox(height: 10,),
+                                                    Text(
+                                                      '1,402명',
                                                       style: TextStyle(
-                                                          decoration:
-                                                          TextDecoration
-                                                              .underline,
-                                                          decorationThickness:
-                                                          2,
-                                                          fontSize: 13,
-                                                          color:
-                                                          Color(0xFF80B2FF),
-                                                          fontWeight: FontWeight
-                                                              .normal),
+                                                        color: Colors.white,
+                                                        fontWeight: FontWeight.bold
+                                                      ),
                                                     ),
-                                                    TextSpan(
-                                                      text: ' 정보입니다',
+                                                  ],
+                                                ),
+                                              ),
+                                              Expanded(child: SizedBox()),
+                                              Container(
+                                                padding: EdgeInsets.all(16),
+                                                width: 168,
+                                                height: 94,
+                                                decoration: BoxDecoration(
+                                                  color: Color(0xFFF5F2F7),
+                                                  borderRadius: BorderRadius.circular(15),
+                                                ),
+                                                child: Column(
+                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                  children: [
+                                                    Text(
+                                                      '실시간 인기 슬로프',
                                                       style: TextStyle(
-                                                          fontSize: 13,
-                                                          color:
-                                                          Color(0xFFc8c8c8),
-                                                          fontWeight: FontWeight
-                                                              .normal),
+                                                        color: Color(0xFF111111),
+                                                      ),
+                                                    ),
+                                                    SizedBox(height: 10,),
+                                                    Text(
+                                                      '파노라마',
+                                                      style: TextStyle(
+                                                          color: Color(0xFF111111),
+                                                          fontWeight: FontWeight.bold
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+
+                                            ],),
+                                          ],
+                                        ),
+                                        SizedBox(
+                                          height: 20,
+                                        ),
+                                        ElevatedButton(
+                                          child: RichText(
+                                            text: TextSpan(
+                                              children: [
+                                                TextSpan(
+                                                  text: '날씨 정보는 ',
+                                                  style: TextStyle(
+                                                      fontSize: 13,
+                                                      color:
+                                                      Color(0xFFc8c8c8),
+                                                      fontWeight: FontWeight
+                                                          .normal),
+                                                ),
+                                                TextSpan(
+                                                  text: '기상청',
+                                                  style: TextStyle(
+                                                      decoration:
+                                                      TextDecoration
+                                                          .underline,
+                                                      decorationThickness:
+                                                      2,
+                                                      fontSize: 13,
+                                                      color:
+                                                      Color(0xFF80B2FF),
+                                                      fontWeight: FontWeight
+                                                          .normal),
+                                                ),
+                                                TextSpan(
+                                                  text: ' 정보입니다',
+                                                  style: TextStyle(
+                                                      fontSize: 13,
+                                                      color:
+                                                      Color(0xFFc8c8c8),
+                                                      fontWeight: FontWeight
+                                                          .normal),
+                                                )
+                                              ],
+                                            ),
+                                          ),
+                                          onPressed: () {
+                                            Get.dialog(AlertDialog(
+                                              contentPadding:
+                                              EdgeInsets.only(
+                                                  bottom: 0,
+                                                  left: 20,
+                                                  right: 20,
+                                                  top: 30),
+                                              elevation: 0,
+                                              shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                  BorderRadius.circular(
+                                                      10.0)),
+                                              buttonPadding:
+                                              EdgeInsets.symmetric(
+                                                  horizontal: 20,
+                                                  vertical: 0),
+                                              content: Container(
+                                                height: 260,
+                                                width: _size.width * 0.8,
+                                                color: Colors.white,
+                                                child: Column(
+                                                  crossAxisAlignment:
+                                                  CrossAxisAlignment
+                                                      .start,
+                                                  children: [
+                                                    Container(
+                                                        width: 113,
+                                                        height: 50,
+                                                        child: Transform
+                                                            .translate(
+                                                          offset:
+                                                          Offset(-8, 0),
+                                                          child:
+                                                          ExtendedImage
+                                                              .asset(
+                                                            'assets/imgs/logos/weather_logo.png',
+                                                            fit: BoxFit
+                                                                .cover,
+                                                          ),
+                                                        )),
+                                                    SizedBox(
+                                                      height: 14,
+                                                    ),
+                                                    Text(
+                                                      '날씨는 기상청에서 제공하는 '
+                                                          '데이터를 사용하고 있어요.',
+                                                      style: TextStyle(
+                                                          fontWeight:
+                                                          FontWeight
+                                                              .w600,
+                                                          fontSize: 20),
+                                                    ),
+                                                    SizedBox(
+                                                      height: 14,
+                                                    ),
+                                                    Text(
+                                                      '기상청에서 제공해주는 실시간 데이터를 사용해'
+                                                          '각 스키장별 날씨정보를 제공하고있어요. '
+                                                          '추후 더 자세한 날씨 데이터를 제공하기 위해 '
+                                                          '업데이트 할 예정입니다.',
+                                                      style: TextStyle(
+                                                          color: Color(
+                                                              0xFF666666),
+                                                          fontSize: 14,
+                                                          fontWeight:
+                                                          FontWeight
+                                                              .w300),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                              actions: [
+                                                Center(
+                                                  child: ElevatedButton(
+                                                    onPressed: () {
+                                                      Navigator.pop(
+                                                          context);
+                                                    },
+                                                    child: Padding(
+                                                      padding:
+                                                      const EdgeInsets
+                                                          .only(
+                                                          bottom: 1),
+                                                      child: Text(
+                                                        '확인',
+                                                        style: TextStyle(
+                                                            color: Colors
+                                                                .white,
+                                                            fontWeight:
+                                                            FontWeight
+                                                                .bold,
+                                                            fontSize: 15),
+                                                      ),
+                                                    ),
+                                                    style: TextButton.styleFrom(
+                                                        shape: const RoundedRectangleBorder(
+                                                            borderRadius: BorderRadius
+                                                                .all(Radius
+                                                                .circular(
+                                                                6))),
+                                                        elevation: 0,
+                                                        splashFactory:
+                                                        InkRipple
+                                                            .splashFactory,
+                                                        minimumSize:
+                                                        Size(1000, 50),
+                                                        backgroundColor:
+                                                        Color(
+                                                            0xff377EEA)),
+                                                  ),
+                                                ),
+                                                Center(
+                                                  child: ElevatedButton(
+                                                    onPressed: () {
+                                                      Get.to(
+                                                            () => WebPage(
+                                                          url:
+                                                          'https://www.weather.go.kr/w/index.do',
+                                                        ),
+                                                      );
+                                                    },
+                                                    child: Padding(
+                                                      padding:
+                                                      const EdgeInsets
+                                                          .only(
+                                                          top: 16),
+                                                      child: Text(
+                                                        '기상청 홈페이지',
+                                                        style: TextStyle(
+                                                            color: Color(
+                                                                0xff949494),
+                                                            fontWeight:
+                                                            FontWeight
+                                                                .w300,
+                                                            fontSize: 15),
+                                                      ),
+                                                    ),
+                                                    style: TextButton.styleFrom(
+                                                        shape: const RoundedRectangleBorder(
+                                                            borderRadius: BorderRadius
+                                                                .all(Radius
+                                                                .circular(
+                                                                6))),
+                                                        elevation: 0,
+                                                        splashFactory:
+                                                        InkRipple
+                                                            .splashFactory,
+                                                        minimumSize:
+                                                        Size(1000, 50),
+                                                        backgroundColor:
+                                                        Color(
+                                                            0xffFFFFFF)),
+                                                  ),
+                                                ),
+                                              ],
+                                            ));
+                                          },
+                                          style: ElevatedButton.styleFrom(
+                                            minimumSize: Size(160, 40),
+                                            shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                BorderRadius.circular(
+                                                    6)),
+                                            elevation: 0,
+                                            backgroundColor: Colors.black12
+                                                .withOpacity(0),
+                                            padding: EdgeInsets.symmetric(
+                                                horizontal: 14,
+                                                vertical: 5),
+                                          ),
+                                        ),
+                                        Center(
+                                          child: Column(
+                                            mainAxisAlignment:
+                                            MainAxisAlignment
+                                                .spaceBetween,
+                                            crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                            children: [
+                                              Padding(
+                                                padding:
+                                                const EdgeInsets.only(
+                                                    bottom: 24.0),
+                                                child: Column(
+                                                  children: [
+                                                    Text(
+                                                      'Copyright by 134CreativeLab 2023.',
+                                                      style: TextStyle(
+                                                        color: Color(
+                                                            0xFFc8c8c8),
+                                                        fontWeight:
+                                                        FontWeight
+                                                            .normal,
+                                                        fontSize: 13,
+                                                      ),
+                                                    ),
+                                                    SizedBox(
+                                                      height: 2,
+                                                    ),
+                                                    Text(
+                                                      'All right reserved.',
+                                                      style: TextStyle(
+                                                        color: Color(
+                                                            0xFFc8c8c8),
+                                                        fontWeight:
+                                                        FontWeight
+                                                            .normal,
+                                                        fontSize: 13,
+                                                      ),
+                                                    ),
+                                                    SizedBox(
+                                                      height: 16,
                                                     )
                                                   ],
                                                 ),
                                               ),
-                                              onPressed: () {
-                                                Get.dialog(AlertDialog(
-                                                  contentPadding:
-                                                  EdgeInsets.only(
-                                                      bottom: 0,
-                                                      left: 20,
-                                                      right: 20,
-                                                      top: 30),
-                                                  elevation: 0,
-                                                  shape: RoundedRectangleBorder(
-                                                      borderRadius:
-                                                      BorderRadius.circular(
-                                                          10.0)),
-                                                  buttonPadding:
-                                                  EdgeInsets.symmetric(
-                                                      horizontal: 20,
-                                                      vertical: 0),
-                                                  content: Container(
-                                                    height: 260,
-                                                    width: _size.width * 0.8,
-                                                    color: Colors.white,
-                                                    child: Column(
-                                                      crossAxisAlignment:
-                                                      CrossAxisAlignment
-                                                          .start,
-                                                      children: [
-                                                        Container(
-                                                            width: 113,
-                                                            height: 50,
-                                                            child: Transform
-                                                                .translate(
-                                                              offset:
-                                                              Offset(-8, 0),
-                                                              child:
-                                                              ExtendedImage
-                                                                  .asset(
-                                                                'assets/imgs/logos/weather_logo.png',
-                                                                fit: BoxFit
-                                                                    .cover,
-                                                              ),
-                                                            )),
-                                                        SizedBox(
-                                                          height: 14,
-                                                        ),
-                                                        Text(
-                                                          '날씨는 기상청에서 제공하는 '
-                                                              '데이터를 사용하고 있어요.',
-                                                          style: TextStyle(
-                                                              fontWeight:
-                                                              FontWeight
-                                                                  .w600,
-                                                              fontSize: 20),
-                                                        ),
-                                                        SizedBox(
-                                                          height: 14,
-                                                        ),
-                                                        Text(
-                                                          '기상청에서 제공해주는 실시간 데이터를 사용해'
-                                                              '각 스키장별 날씨정보를 제공하고있어요. '
-                                                              '추후 더 자세한 날씨 데이터를 제공하기 위해 '
-                                                              '업데이트 할 예정입니다.',
-                                                          style: TextStyle(
-                                                              color: Color(
-                                                                  0xFF666666),
-                                                              fontSize: 14,
-                                                              fontWeight:
-                                                              FontWeight
-                                                                  .w300),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                  actions: [
-                                                    Center(
-                                                      child: ElevatedButton(
-                                                        onPressed: () {
-                                                          Navigator.pop(
-                                                              context);
-                                                        },
-                                                        child: Padding(
-                                                          padding:
-                                                          const EdgeInsets
-                                                              .only(
-                                                              bottom: 1),
-                                                          child: Text(
-                                                            '확인',
-                                                            style: TextStyle(
-                                                                color: Colors
-                                                                    .white,
-                                                                fontWeight:
-                                                                FontWeight
-                                                                    .bold,
-                                                                fontSize: 15),
-                                                          ),
-                                                        ),
-                                                        style: TextButton.styleFrom(
-                                                            shape: const RoundedRectangleBorder(
-                                                                borderRadius: BorderRadius
-                                                                    .all(Radius
-                                                                    .circular(
-                                                                    6))),
-                                                            elevation: 0,
-                                                            splashFactory:
-                                                            InkRipple
-                                                                .splashFactory,
-                                                            minimumSize:
-                                                            Size(1000, 50),
-                                                            backgroundColor:
-                                                            Color(
-                                                                0xff377EEA)),
-                                                      ),
-                                                    ),
-                                                    Center(
-                                                      child: ElevatedButton(
-                                                        onPressed: () {
-                                                          Get.to(
-                                                                () => WebPage(
-                                                              url:
-                                                              'https://www.weather.go.kr/w/index.do',
-                                                            ),
-                                                          );
-                                                        },
-                                                        child: Padding(
-                                                          padding:
-                                                          const EdgeInsets
-                                                              .only(
-                                                              top: 16),
-                                                          child: Text(
-                                                            '기상청 홈페이지',
-                                                            style: TextStyle(
-                                                                color: Color(
-                                                                    0xff949494),
-                                                                fontWeight:
-                                                                FontWeight
-                                                                    .w300,
-                                                                fontSize: 15),
-                                                          ),
-                                                        ),
-                                                        style: TextButton.styleFrom(
-                                                            shape: const RoundedRectangleBorder(
-                                                                borderRadius: BorderRadius
-                                                                    .all(Radius
-                                                                    .circular(
-                                                                    6))),
-                                                            elevation: 0,
-                                                            splashFactory:
-                                                            InkRipple
-                                                                .splashFactory,
-                                                            minimumSize:
-                                                            Size(1000, 50),
-                                                            backgroundColor:
-                                                            Color(
-                                                                0xffFFFFFF)),
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ));
-                                              },
-                                              style: ElevatedButton.styleFrom(
-                                                minimumSize: Size(160, 40),
-                                                shape: RoundedRectangleBorder(
-                                                    borderRadius:
-                                                    BorderRadius.circular(
-                                                        6)),
-                                                elevation: 0,
-                                                backgroundColor: Colors.black12
-                                                    .withOpacity(0),
-                                                padding: EdgeInsets.symmetric(
-                                                    horizontal: 14,
-                                                    vertical: 5),
-                                              ),
-                                            ),
-                                            Center(
-                                              child: Column(
-                                                mainAxisAlignment:
-                                                MainAxisAlignment
-                                                    .spaceBetween,
-                                                crossAxisAlignment:
-                                                CrossAxisAlignment.center,
-                                                children: [
-                                                  Padding(
-                                                    padding:
-                                                    const EdgeInsets.only(
-                                                        bottom: 24.0),
-                                                    child: Column(
-                                                      children: [
-                                                        Text(
-                                                          'Copyright by 134CreativeLab 2023.',
-                                                          style: TextStyle(
-                                                            color: Color(
-                                                                0xFFc8c8c8),
-                                                            fontWeight:
-                                                            FontWeight
-                                                                .normal,
-                                                            fontSize: 13,
-                                                          ),
-                                                        ),
-                                                        SizedBox(
-                                                          height: 2,
-                                                        ),
-                                                        Text(
-                                                          'All right reserved.',
-                                                          style: TextStyle(
-                                                            color: Color(
-                                                                0xFFc8c8c8),
-                                                            fontWeight:
-                                                            FontWeight
-                                                                .normal,
-                                                            fontSize: 13,
-                                                          ),
-                                                        ),
-                                                        SizedBox(
-                                                          height: 16,
-                                                        )
-                                                      ],
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                            SizedBox(
-                                              height: 30,
-                                            ),
-                                          ],
+                                            ],
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          height: 30,
                                         ),
                                       ],
                                     )),

@@ -1822,7 +1822,7 @@ class LiveMapController extends GetxController {
       String slopeName = entry.key;
       int passCount = entry.value ?? 0;
       double barHeightRatio = passCount.toDouble() / maxPassCount.toDouble();
-      Color barColor = passCount == maxPassCount ? Color(0xFF05419A) : Color(0xFF3D83ED);
+      Color barColor = passCount == maxPassCount ? Color(0xFF3D83ED) : Color(0xFFCBE0FF);
 
       return {
         'slopeName': slopeName,
@@ -1872,7 +1872,7 @@ class LiveMapController extends GetxController {
       String slotName = entry.key;
       int passCount = entry.value ?? 0;
       double barHeightRatio = passCount.toDouble() / maxPassCount.toDouble();
-      Color barColor = passCount == maxPassCount ? Color(0xFF05419A) : Color(0xFF3D83ED);
+      Color barColor = passCount == maxPassCount ? Color(0xFF3D83ED) : Color(0xFFCBE0FF);
 
 
       return {
