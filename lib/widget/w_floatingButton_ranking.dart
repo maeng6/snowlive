@@ -1,3 +1,4 @@
+import 'package:com.snowlive/screens/snowliveDesignStyle.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -11,15 +12,16 @@ class FloatingButtonWithOptions extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(bottom: 20.0),
-      padding: EdgeInsets.all(5.0),
+      margin: EdgeInsets.only(bottom: 16),
+      padding: EdgeInsets.all(4),
       decoration: BoxDecoration(
         color: Colors.black, // 배경을 검정색으로 설정
-        borderRadius: BorderRadius.circular(24.0),
+        borderRadius: BorderRadius.circular(30.0),
         boxShadow: [
           BoxShadow(
-            color: Colors.black26,
-            blurRadius: 8.0,
+            color: Color(0xFF000000).withOpacity(0.25),
+            blurRadius: 10,
+            offset: Offset(0,5)
           ),
         ],
       ),
@@ -27,9 +29,7 @@ class FloatingButtonWithOptions extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           _buildOption(context, '일간'),
-          SizedBox(width: 10),
           _buildOption(context, '주간'),
-          SizedBox(width: 10),
           _buildOption(context, '누적'),
         ],
       ),
@@ -41,17 +41,24 @@ class FloatingButtonWithOptions extends StatelessWidget {
     return GestureDetector(
       onTap: () => onOptionSelected(option),
       child: Container(
+        height: 40,
         decoration: BoxDecoration(
           color: isSelected ? Colors.white : Colors.black, // 선택된 옵션의 배경을 흰색으로 설정
-          borderRadius: BorderRadius.circular(24.0),
+          borderRadius: BorderRadius.circular(30.0),
         ),
-        padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 14.0),
-        child: Text(
-          option,
-          style: TextStyle(
-            color: isSelected ? Colors.black : Colors.white, // 선택된 옵션의 텍스트 색상 설정
-            fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-          ),
+        padding: EdgeInsets.symmetric(vertical: 12, horizontal: 20),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              option,
+              style: SDSTextStyle.extraBold.copyWith(
+                color: isSelected ? Color(0xFF111111) : Colors.white.withOpacity(0.5), // 선택된 옵션의 텍스트 색상 설정
+                fontWeight: isSelected ? FontWeight.w800 : FontWeight.normal,
+                fontSize: 14
+              ),
+            ),
+          ],
         ),
       ),
     );

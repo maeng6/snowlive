@@ -8,6 +8,7 @@ import 'package:com.snowlive/controller/login/vm_loginController.dart';
 import 'package:com.snowlive/screens/onboarding/v_setProfile.dart';
 import 'package:com.snowlive/screens/v_webPage.dart';
 import '../login/v_loginpage.dart';
+import '../snowliveDesignStyle.dart';
 
 class WelcomePage extends StatefulWidget {
   const WelcomePage({Key? key}) : super(key: key);
@@ -120,22 +121,22 @@ class _WelcomePageState extends State<WelcomePage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Image.asset('assets/imgs/icons/icon_onboarding.png',
-                scale: 4, width: 73, height: 73,),
+                scale: 4, width: 72, height: 72),
               SizedBox(
-                height: 5,
+                height: 6,
               ),
               Column(
                 children: [
                   Text(
                     '스노우라이브 이용을 위해 \n기본 정보를 입력해 주세요',
-                    style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold, height: 1.3),
+                    style: SDSTextStyle.bold.copyWith(fontSize: 24, color: Color(0xFF111111), height: 1.4),
                   ),
                 ],
               ),
               SizedBox(height: 8),
               Text(
                 '스노우라이브의 모든 기능을 편리하게 사용하시기 위해\n아래의 약관동의 후 기본 정보를 입력해 주세요.',
-                style: TextStyle(color: Color(0xff949494), fontSize: 13, height: 1.5),
+                style: SDSTextStyle.regular.copyWith(color: Color(0xff949494), fontSize: 13, height: 1.5),
               ),
               Expanded(
                 child: Container(),
@@ -160,18 +161,19 @@ class _WelcomePageState extends State<WelcomePage> {
                       Expanded(
                         child: Text(
                           "전체 동의",
-                          style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                          style: SDSTextStyle.regular.copyWith(fontSize: 14, color: Color(0xFF111111)),
                         ),
                       ),
                     ],
                   ),
                 ),
               ),
-              SizedBox(height: 4),
-              Divider(color: Color(0xFFF5F5F5), thickness: 1),
-              SizedBox(height: 4),
               Padding(
-                padding: const EdgeInsets.only(bottom: 36),
+                padding: const EdgeInsets.only(top: 6),
+                child: Divider(color: Color(0xFFF5F5F5), thickness: 1),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 30),
                 child: Column(
                   children: List.generate(
                     checkListItems.length,
@@ -188,39 +190,36 @@ class _WelcomePageState extends State<WelcomePage> {
                           }
                         });
                       },
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 4),
-                        child: Row(
-                          children: [
-                            Image.asset(
-                              checkListItems[index]["value"]
-                                  ? 'assets/imgs/icons/icon_check_filled.png'
-                                  : 'assets/imgs/icons/icon_check_unfilled.png',
-                              height: 24,
-                              width: 24,
+                      child: Row(
+                        children: [
+                          Image.asset(
+                            checkListItems[index]["value"]
+                                ? 'assets/imgs/icons/icon_check_filled.png'
+                                : 'assets/imgs/icons/icon_check_unfilled.png',
+                            height: 24,
+                            width: 24,
+                          ),
+                          SizedBox(width: 10),
+                          Expanded(
+                            child: Text(
+                              checkListItems[index]["title"],
+                              style: SDSTextStyle.regular.copyWith(fontSize: 14, color: Color(0xFF111111)),
                             ),
-                            SizedBox(width: 10),
-                            Expanded(
-                              child: Text(
-                                checkListItems[index]["title"],
-                                style: TextStyle(fontSize: 15),
-                              ),
+                          ),
+                          IconButton(
+                            padding: EdgeInsets.all(0),
+                            onPressed: () {
+                              Get.to(() => WebPage(
+                                url: checkListItems[index]["url"],
+                              ));
+                            },
+                            icon: Image.asset(
+                              'assets/imgs/icons/icon_arrow_g.png',
+                              height: 20,
+                              width: 20,
                             ),
-                            IconButton(
-                              padding: EdgeInsets.all(0),
-                              onPressed: () {
-                                Get.to(() => WebPage(
-                                  url: checkListItems[index]["url"],
-                                ));
-                              },
-                              icon: Image.asset(
-                                'assets/imgs/icons/icon_arrow_g.png',
-                                height: 24,
-                                width: 24,
-                              ),
-                            ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
                     ),
                   ),
@@ -235,13 +234,13 @@ class _WelcomePageState extends State<WelcomePage> {
                       : null,
                   child: Text(
                     '다음',
-                    style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16),
+                    style: SDSTextStyle.bold.copyWith(color: Colors.white, fontSize: 16),
                   ),
                   style: TextButton.styleFrom(
                     shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(6))),
                     elevation: 0,
                     splashFactory: InkRipple.splashFactory,
-                    minimumSize: Size(1000, 56),
+                    minimumSize: Size(1000, 48),
                     backgroundColor: isAllChecked() ? Color(0xff377EEA) : Color(0xffDEDEDE),
                   ),
                 ),
