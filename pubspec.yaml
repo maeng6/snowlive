@@ -143,11 +143,13 @@ flutter:
           weight: 600
         - asset: assets/fonts/SF-Pro-Text-Regular.otf
           weight: 300
-   - family: Spoqa Han Sans Neo
+   - family: Pretendard
      fonts:
-        - asset: assets/fonts/SpoqaHanSansNeo-Bold.otf
+        - asset: assets/fonts/Pretendard-ExtraBold.otf
+          weight: 800
+        - asset: assets/fonts/Pretendard-Bold.otf
           weight: 600
-        - asset: assets/fonts/SpoqaHanSansNeo-Regular.otf
+        - asset: assets/fonts/Pretendard-Regular.otf
           weight: 300
 
 

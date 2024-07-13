@@ -1,6 +1,7 @@
 import 'package:com.snowlive/controller/public/vm_limitController.dart';
 import 'package:com.snowlive/screens/Ranking/v_Ranking_Crew_Screen.dart';
 import 'package:com.snowlive/screens/Ranking/v_Ranking_Indi_Screen.dart';
+import 'package:com.snowlive/screens/snowliveDesignStyle.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -36,7 +37,6 @@ class _RankingHomeState extends State<RankingHome> {
   ];
 
   bool _isKusbf = false;
-
   bool _isDaily = true;
   bool _isWeekly = false;
 
@@ -58,152 +58,121 @@ class _RankingHomeState extends State<RankingHome> {
         body: SafeArea(
           child: Column(
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.only(left: 16, right: 12),
-                        child: Column(
-                          children: [
-                            Padding(
-                              padding: EdgeInsets.only(bottom: 2),
-                              child: Container(
-                                height: 44,
-                                child: ElevatedButton(
-                                  child: Text(
-                                    '개인랭킹',
-                                    style: TextStyle(
-                                        color: (isTap[0])
-                                            ? Color(0xFF111111)
-                                            : Color(0xFFC8C8C8),
-                                        fontWeight: (isTap[0])
-                                            ? FontWeight.bold
-                                            : FontWeight.bold,
-                                        fontSize: 20),
-                                  ),
-                                  onPressed: () async {
-                                    await _seasonController.getCurrentSeason();
-                                    print('개인랭킹페이지로 전환');
-                                    setState(() {
-                                      isTap[0] = true;
-                                      isTap[1] = false;
-                                    });
-                                    print(isTap);
-                                  },
-                                  style: ElevatedButton.styleFrom(
-                                    padding: EdgeInsets.only(top: 0),
-                                    minimumSize: Size(40, 10),
-                                    backgroundColor: Color(0xFFFFFFFF),
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(8)),
-                                    elevation: 0,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(right: 12),
-                        child: Column(
-                          children: [
-                            Padding(
-                              padding: EdgeInsets.only(bottom: 2),
-                              child: Container(
-                                height: 44,
-                                child: ElevatedButton(
-                                  child: Text(
-                                    '크루랭킹',
-                                    style: TextStyle(
-                                        fontFamily: 'Spoqa Han Sans Neo',
-                                        color: (isTap[1])
-                                            ? Color(0xFF111111)
-                                            : Color(0xFFC8C8C8),
-                                        fontWeight: (isTap[1])
-                                            ? FontWeight.bold
-                                            : FontWeight.bold,
-                                        fontSize: 20),
-                                  ),
-                                  onPressed: () async {
-                                    print('크루랭킹페이지로 전환');
-                                    setState(() {
-                                      isTap[0] = false;
-                                      isTap[1] = true;
-                                    });
-                                    print(isTap);
-                                  },
-                                  style: ElevatedButton.styleFrom(
-                                    padding: EdgeInsets.only(top: 0),
-                                    minimumSize: Size(40, 10),
-                                    backgroundColor: Color(0xFFFFFFFF),
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(8)),
-                                    elevation: 0,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-
-                    ],
-                  ),
-                  (_userModelController.favoriteResort == 12)
-                      ? Padding(
-                    padding: const EdgeInsets.only(right: 10, bottom: 5),
-                    child: Column(
+              Container(
+                height: 44,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Container(
-                          height: 44,
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              ExtendedImage.network(
-                                '${KusbfAssetUrlList[0].mainLogo}',
-                                enableMemoryCache: true,
-                                shape: BoxShape.rectangle,
-                                width: 56,
-                                fit: BoxFit.cover,
-                                loadStateChanged:
-                                    (ExtendedImageState state) {
-                                  switch (state.extendedImageLoadState) {
-                                    case LoadState.loading:
-                                      return SizedBox.shrink();
-                                    default:
-                                      return null;
-                                  }
-                                },
-                              ),
-                              Transform.scale(
-                                scale: 0.8,
-                                child: CupertinoSwitch(
-                                  value: _isKusbf,
-                                  onChanged: (value) {
-                                    setState(() {
-                                      _isKusbf = value;
-                                      // 여기에서 토글 상태 변경에 따른 추가 작업을 수행할 수 있습니다.
-                                    });
-                                  },
-                                  activeColor: Color(0xFF3D83ED),
-                                  trackColor: Color(0xFFD8E7FD),
-                                ),
-                              ),
-                            ],
+                        Padding(
+                          padding: EdgeInsets.only(left: 16, right: 12),
+                          child: ElevatedButton(
+                            child: Text(
+                              '개인랭킹',
+                              style: SDSTextStyle.extraBold.copyWith(
+                                  color: (isTap[0])
+                                      ? Color(0xFF111111)
+                                      : Color(0xFFDEDEDE),
+                                  fontSize: 18),
+                            ),
+                            onPressed: () async {
+                              await _seasonController.getCurrentSeason();
+                              print('개인랭킹페이지로 전환');
+                              setState(() {
+                                isTap[0] = true;
+                                isTap[1] = false;
+                              });
+                              print(isTap);
+                            },
+                            style: ElevatedButton.styleFrom(
+                              padding: EdgeInsets.only(top: 0),
+                              minimumSize: Size(40, 10),
+                              backgroundColor: Color(0xFFFFFFFF),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8)),
+                              elevation: 0,
+                            ),
                           ),
                         ),
+                        Padding(
+                          padding: EdgeInsets.only(right: 12),
+                          child: ElevatedButton(
+                            onPressed: () async {
+                              print('크루랭킹페이지로 전환');
+                              setState(() {
+                                isTap[0] = false;
+                                isTap[1] = true;
+                              });
+                              print(isTap);
+                            },
+                            style: ElevatedButton.styleFrom(
+                              padding: EdgeInsets.only(top: 0),
+                              minimumSize: Size(40, 10),
+                              backgroundColor: Color(0xFFFFFFFF),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8)),
+                              elevation: 0,
+                            ),
+                            child: Container(
+                              child: Text(
+                                '크루랭킹',
+                                style: SDSTextStyle.extraBold.copyWith(
+                                    color: (isTap[1])
+                                        ? Color(0xFF111111)
+                                        : Color(0xFFC8C8C8),
+                                    fontSize: 18),
+                              ),
+                            ),
+                          ),
+                        ),
+
                       ],
                     ),
-                  )
-                      : SizedBox.shrink()
-                ],
-              ),
-              SizedBox(
-                height: 6,
+                    // (_userModelController.favoriteResort == 12)
+                    //     ? Padding(
+                    //       padding: const EdgeInsets.only(right: 12),
+                    //       child: Row(
+                    //         crossAxisAlignment: CrossAxisAlignment.center,
+                    //         mainAxisAlignment: MainAxisAlignment.end,
+                    //         children: [
+                    //           ExtendedImage.network(
+                    //             '${KusbfAssetUrlList[0].mainLogo}',
+                    //             enableMemoryCache: true,
+                    //             shape: BoxShape.rectangle,
+                    //             width: 56,
+                    //             fit: BoxFit.cover,
+                    //             loadStateChanged:
+                    //                 (ExtendedImageState state) {
+                    //               switch (state.extendedImageLoadState) {
+                    //                 case LoadState.loading:
+                    //                   return SizedBox.shrink();
+                    //                 default:
+                    //                   return null;
+                    //               }
+                    //             },
+                    //           ),
+                    //           Transform.scale(
+                    //             scale: 0.8,
+                    //             child: CupertinoSwitch(
+                    //               value: _isKusbf,
+                    //               onChanged: (value) {
+                    //                 setState(() {
+                    //                   _isKusbf = value;
+                    //                   // 여기에서 토글 상태 변경에 따른 추가 작업을 수행할 수 있습니다.
+                    //                 });
+                    //               },
+                    //               activeColor: Color(0xFF3D83ED),
+                    //               trackColor: Color(0xFFD8E7FD),
+                    //             ),
+                    //           ),
+                    //         ],
+                    //       ),
+                    //     )
+                    //     : SizedBox.shrink()
+                  ],
+                ),
               ),
               if (isTap[0] == true)
                 Expanded(
@@ -251,7 +220,7 @@ class _RankingHomeState extends State<RankingHome> {
             });
           },
         ),
-        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat);
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked);
   }
 }
 

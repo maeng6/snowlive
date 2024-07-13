@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:com.snowlive/controller/alarm/vm_noticeController.dart';
+import 'package:com.snowlive/screens/snowliveDesignStyle.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
@@ -65,18 +66,16 @@ class _LoginPageState extends State<LoginPage> {
             titleSpacing: 0,
             title: Padding(
               padding: const EdgeInsets.only(left: 16),
-              child: Text(
-                '',
-                style: TextStyle(
+              child: Text('',
+                style: SDSTextStyle.bold.copyWith(
                     color: Color(0xFF111111),
-                    fontWeight: FontWeight.bold,
-                    fontSize: 23),
+                    fontSize: 18),
               ),
             ),
           ),
         ),
         body: Padding(
-          padding:  EdgeInsets.only(left: 16,right: 16,bottom: 24, top: _statusBarSize),
+          padding:  EdgeInsets.only(left: 16,right: 16, top: _statusBarSize),
           child: Container(
             width: double.infinity,
             height: double.infinity,
@@ -87,149 +86,148 @@ class _LoginPageState extends State<LoginPage> {
                 Column(
                   children: [
                     SizedBox(
-                      height: _size.height * 0.23,
+                      height: _size.height * 0.1,
                     ),
                     Image.asset('assets/imgs/logos/snowliveLogo_main_new_blue.png',
                       height:24 ,
                       width: 140,
                     ),
                     SizedBox(
-                      height: 18,
+                      height: 16,
                     ),
-                    Text('스노우라이브와 함께', style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Color(0xFF000000)),),
+                    Text('스노우라이브와 함께', style: SDSTextStyle.extraBold.copyWith(fontSize: 30, color: Color(0xFF111111)),),
                     SizedBox(
-                      height: 5,
+                      height: 4,
                     ),
-                    Text('신나는 라이딩을', style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Color(0xFF000000)),),
+                    Text('신나는 라이딩을', style: SDSTextStyle.extraBold.copyWith(fontSize: 30, color: Color(0xFF111111)),),
                     SizedBox(
-                      height: 5,
+                      height: 8,
                     ),
-                    Text('지금 바로 함께 하세요', style: TextStyle(fontSize: 15, fontWeight: FontWeight.normal , color: Color(0xFFB7B7B7)),)
+                    Text('지금 바로 함께 하세요', style: SDSTextStyle.regular.copyWith(fontSize: 14, color: Color(0xFF949494)),),
 
                   ],
                 ),
-                Obx(()=>Column(
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Column(
-                          children: [
-                            LoginButton(
-                              buttonText: 'Google로 로그인하기',
-                              logoAddress: 'assets/imgs/logos/logos_google.png',
-                              signInMethod: SignInMethod.google,
-                              buttonColor: Color(0xffFFFFFF),
-                              borderColor: Colors.transparent,
-                              textColor: Colors.black,
+                Container(
+                  height: 240,
+                  color: Colors.red.withOpacity(0.2),
+                ),
+                Obx(()=>Padding(
+                  padding: EdgeInsets.only(bottom: 48),
+                  child: Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Column(
+                            children: [
+                              if(_loginController.signInMethod == 'google')
+                                Padding(
+                                  padding: const EdgeInsets.only(bottom: 10),
+                                  child: Container(
+                                      decoration: BoxDecoration(
+                                        color: Color(0xFF111111).withOpacity(0.8),
+                                        borderRadius: BorderRadius.circular(4),
+                                      ),
+                                      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+                                      child: Text('마지막\n로그인',
+                                        style: SDSTextStyle.regular.copyWith(
+                                            color: Color(0xFFFFFFFF),
+                                            fontSize: 12,
+                                        ),)),
+                                ),
+                              LoginButton(
+                                buttonText: 'Google로 로그인하기',
+                                logoAddress: 'assets/imgs/logos/logos_google.png',
+                                signInMethod: SignInMethod.google,
+                                buttonColor: Color(0xffFFFFFF),
+                                borderColor: Colors.transparent,
+                                textColor: Colors.black,
 
-                            ),
-                            if(_loginController.signInMethod == 'google')
-                              Padding(
-                                padding: const EdgeInsets.only(top: 10),
-                                child: Container(
-                                    decoration: BoxDecoration(
-                                      color: Color(0xFF111111).withOpacity(0.8),
-                                      borderRadius: BorderRadius.circular(4),
-                                    ),
-                                    padding: EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-                                    child: Text('마지막\n로그인',
-                                      style: TextStyle(
+                              ),
+
+                            ],
+                          ),
+                          SizedBox(
+                            width: 12,
+                          ),
+                          Column(
+                            children: [
+                              if(_loginController.signInMethod == 'facebook')
+                                Padding(
+                                  padding: const EdgeInsets.only(bottom: 10),
+                                  child: Container(
+                                      decoration: BoxDecoration(
+                                        color: Color(0xFF111111).withOpacity(0.8),
+                                        borderRadius: BorderRadius.circular(4),
+                                      ),
+                                      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+                                      child: Text('마지막\n로그인',
+                                        style: SDSTextStyle.regular.copyWith(
                                           color: Color(0xFFFFFFFF),
-                                          fontSize: 13,
-                                          fontWeight: FontWeight.normal
-                                      ),)),
-                              )
-                          ],
-                        ),
-                        SizedBox(
-                          width: 12,
-                        ),
-                        Column(
-                          children: [
-                            LoginButton(
-                              buttonText: 'Facebook으로 로그인하기',
-                              logoAddress: 'assets/imgs/logos/logos_facebook.png',
-                              signInMethod: SignInMethod.facebook,
-                              buttonColor: Color(0xff1877F2),
-                              borderColor: Colors.transparent,
-                              textColor: Colors.white,
-                            ),
-                            if(_loginController.signInMethod == 'facebook')
-                              Padding(
-                                padding: const EdgeInsets.only(top: 10),
-                                child: Container(
-                                    decoration: BoxDecoration(
-                                      color: Color(0xFF111111).withOpacity(0.8),
-                                      borderRadius: BorderRadius.circular(4),
-                                    ),
-                                    padding: EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-                                    child: Text('마지막\n로그인',
-                                      style: TextStyle(
+                                          fontSize: 12,
+                                        ),)),
+                                ),
+                              LoginButton(
+                                buttonText: 'Facebook으로 로그인하기',
+                                logoAddress: 'assets/imgs/logos/logos_facebook.png',
+                                signInMethod: SignInMethod.facebook,
+                                buttonColor: Color(0xff1877F2),
+                                borderColor: Colors.transparent,
+                                textColor: Colors.white,
+                              ),
+
+                            ],
+                          ),
+                          SizedBox(
+                            width: 12,
+                          ),
+                          (Platform.isIOS)
+                              ? Column(
+                            children: [
+                              if(_loginController.signInMethod == 'apple')
+                                Padding(
+                                  padding: const EdgeInsets.only(bottom: 10),
+                                  child: Container(
+                                      decoration: BoxDecoration(
+                                        color: Color(0xFF111111).withOpacity(0.8),
+                                        borderRadius: BorderRadius.circular(4),
+                                      ),
+                                      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+                                      child: Text('마지막\n로그인',
+                                        style: SDSTextStyle.regular.copyWith(
                                           color: Color(0xFFFFFFFF),
-                                          fontSize: 13,
-                                          fontWeight: FontWeight.normal
-                                      ),)),
-                              )
-                          ],
-                        ),
-                        SizedBox(
-                          width: 12,
-                        ),
-                        (Platform.isIOS)
-                            ?Column(
-                          children: [
-                            LoginButton(
-                              buttonText: 'Apple로 로그인하기',
-                              logoAddress: 'assets/imgs/logos/logos_apple.png',
-                              signInMethod: SignInMethod.apple,
-                              buttonColor: Color(0xff111111),
-                              borderColor: Colors.transparent,
-                              textColor: Colors.white,
-                            ),
-                            if(_loginController.signInMethod == 'apple')
-                              Padding(
-                                padding: const EdgeInsets.only(top: 10),
-                                child: Container(
-                                    decoration: BoxDecoration(
-                                      color: Color(0xFF111111).withOpacity(0.8),
-                                      borderRadius: BorderRadius.circular(4),
-                                    ),
-                                    padding: EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-                                    child: Text('마지막\n로그인',
-                                      style: TextStyle(
-                                          color: Color(0xFFFFFFFF),
-                                          fontSize: 13,
-                                          fontWeight: FontWeight.normal
-                                      ),)),
-                              )
-                          ],
-                        )
-                            :SizedBox(width: 0,),
-                      ],
-                    ),
-                    SizedBox(
-                      height: 40,
-                    ),
-                    if(Platform.isAndroid && _noticeController.isAndroidEmailLogIn == true)
-                      GestureDetector(
-                        onTap: (){
-                          Get.to(()=>EmailLoginPage());
-                        },
-                        child: Text('이메일로 로그인하기',
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: Color(0xFF949494),
-                            fontWeight: FontWeight.normal,
-                          ),),
+                                          fontSize: 12,
+                                        ),)),
+                                ),
+                              LoginButton(
+                                buttonText: 'Apple로 로그인하기',
+                                logoAddress: 'assets/imgs/logos/logos_apple.png',
+                                signInMethod: SignInMethod.apple,
+                                buttonColor: Color(0xff111111),
+                                borderColor: Colors.transparent,
+                                textColor: Colors.white,
+                              ),
+
+                            ],
+                          )
+                              : SizedBox(width: 0,),
+                        ],
                       ),
-                    SizedBox(
-                      height: (Platform.isIOS)
-                          ? 64
-                          : 40,
-                    )
-                  ],
+                      if(Platform.isAndroid && _noticeController.isAndroidEmailLogIn == true)
+                        GestureDetector(
+                          onTap: (){
+                            Get.to(()=>EmailLoginPage());
+                          },
+                          child: Text('이메일로 로그인하기',
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: Color(0xFF949494),
+                              fontWeight: FontWeight.normal,
+                            ),),
+                        ),
+                    ],
+                  ),
                 )),
               ],
             ),

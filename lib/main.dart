@@ -136,7 +136,12 @@ class _MyAppState extends State<MyApp> {
           FirebaseAnalyticsObserver(analytics: FirebaseAnalytics.instance)
         ],
         theme: ThemeData(
-          fontFamily: 'Spoqa Han Sans Neo',
+          textTheme: TextTheme(
+            displayLarge: TextStyle(fontFamily: 'Pretendard', fontWeight: FontWeight.w800),
+            displayMedium: TextStyle(fontFamily: 'Pretendard', fontWeight: FontWeight.w600),
+            bodyLarge: TextStyle(fontFamily: 'Pretendard', fontWeight: FontWeight.w300),
+          ),
+          fontFamily: 'Pretendard',
           appBarTheme: AppBarTheme(
             iconTheme: IconThemeData(
                 size: 30,
@@ -144,7 +149,7 @@ class _MyAppState extends State<MyApp> {
             ),
             centerTitle: true,
             titleTextStyle: TextStyle(
-                fontFamily: 'Spoqa Han Sans Neo',
+                fontFamily: 'Pretendard',
                 fontWeight: FontWeight.bold,
                 color: Colors.black,
                 fontSize: 20
