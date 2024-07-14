@@ -60,7 +60,7 @@ class _LoginPageState extends State<LoginPage> {
         appBar: PreferredSize(
           preferredSize: Size.fromHeight(0),
           child: AppBar(
-            backgroundColor: Color(0xFFFFFFFF),
+            backgroundColor: SDSColor.snowliveWhite,
             elevation: 0.0,
             centerTitle: false,
             titleSpacing: 0,
@@ -68,7 +68,7 @@ class _LoginPageState extends State<LoginPage> {
               padding: const EdgeInsets.only(left: 16),
               child: Text('',
                 style: SDSTextStyle.bold.copyWith(
-                    color: Color(0xFF111111),
+                    color: SDSColor.gray900,
                     fontSize: 18),
               ),
             ),
@@ -79,7 +79,7 @@ class _LoginPageState extends State<LoginPage> {
           child: Container(
             width: double.infinity,
             height: double.infinity,
-            color: Color(0xFFFFFFFF),
+            color: SDSColor.snowliveWhite,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -95,15 +95,15 @@ class _LoginPageState extends State<LoginPage> {
                     SizedBox(
                       height: 16,
                     ),
-                    Text('스노우라이브와 함께', style: SDSTextStyle.extraBold.copyWith(fontSize: 30, color: Color(0xFF111111)),),
+                    Text('스노우라이브와 함께', style: SDSTextStyle.extraBold.copyWith(fontSize: 30, color: SDSColor.gray900,),),
                     SizedBox(
                       height: 4,
                     ),
-                    Text('신나는 라이딩을', style: SDSTextStyle.extraBold.copyWith(fontSize: 30, color: Color(0xFF111111)),),
+                    Text('신나는 라이딩을', style: SDSTextStyle.extraBold.copyWith(fontSize: 30, color: SDSColor.gray900,),),
                     SizedBox(
                       height: 8,
                     ),
-                    Text('지금 바로 함께 하세요', style: SDSTextStyle.regular.copyWith(fontSize: 14, color: Color(0xFF949494)),),
+                    Text('지금 바로 함께 하세요', style: SDSTextStyle.regular.copyWith(fontSize: 14, color: SDSColor.gray500,),),
 
                   ],
                 ),
@@ -126,23 +126,26 @@ class _LoginPageState extends State<LoginPage> {
                                   padding: const EdgeInsets.only(bottom: 10),
                                   child: Container(
                                       decoration: BoxDecoration(
-                                        color: Color(0xFF111111).withOpacity(0.8),
-                                        borderRadius: BorderRadius.circular(4),
+                                        color: SDSColor.snowliveBlack.withOpacity(0.8),
+                                        borderRadius: BorderRadius.circular(8),
                                       ),
                                       padding: EdgeInsets.symmetric(horizontal: 8, vertical: 6),
                                       child: Text('마지막\n로그인',
                                         style: SDSTextStyle.regular.copyWith(
-                                            color: Color(0xFFFFFFFF),
+                                            color: SDSColor.snowliveWhite,
                                             fontSize: 12,
-                                        ),)),
+                                        ),
+                                        textAlign: TextAlign.center,
+                                      )),
+
                                 ),
                               LoginButton(
                                 buttonText: 'Google로 로그인하기',
                                 logoAddress: 'assets/imgs/logos/logos_google.png',
                                 signInMethod: SignInMethod.google,
-                                buttonColor: Color(0xffFFFFFF),
-                                borderColor: Colors.transparent,
-                                textColor: Colors.black,
+                                buttonColor: Colors.transparent,
+                                borderColor: SDSColor.gray100,
+                                textColor: Colors.transparent,
 
                               ),
 
@@ -166,7 +169,9 @@ class _LoginPageState extends State<LoginPage> {
                                         style: SDSTextStyle.regular.copyWith(
                                           color: Color(0xFFFFFFFF),
                                           fontSize: 12,
-                                        ),)),
+                                        ),
+                                        textAlign: TextAlign.center,
+                                      )),
                                 ),
                               LoginButton(
                                 buttonText: 'Facebook으로 로그인하기',
@@ -198,7 +203,9 @@ class _LoginPageState extends State<LoginPage> {
                                         style: SDSTextStyle.regular.copyWith(
                                           color: Color(0xFFFFFFFF),
                                           fontSize: 12,
-                                        ),)),
+                                        ),
+                                        textAlign: TextAlign.center,
+                                      )),
                                 ),
                               LoginButton(
                                 buttonText: 'Apple로 로그인하기',
