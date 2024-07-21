@@ -1,48 +1,58 @@
 import 'dart:io';
+import 'package:com.snowlive/screens/LiveCrew/CreateOnboarding/v_FirstPage_createCrew.dart';
+import 'package:com.snowlive/screens/LiveCrew/v_crewDetailPage_screen.dart';
+import 'package:com.snowlive/screens/LiveCrew/v_liveCrewHome.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:com.snowlive/controller/public/vm_imageController.dart';
-import 'package:com.snowlive/screens/LiveCrew/CreateOnboarding/v_setCrewResort.dart';
+import '../../../controller/liveCrew/vm_liveCrewModelController.dart';
+import '../../../controller/user/vm_userModelController.dart';
 import '../../../model/m_liveCrewModel.dart';
 import '../../../widget/w_fullScreenDialog.dart';
 
 class SetCrewImage extends StatefulWidget {
-  SetCrewImage({Key? key,required this.crewName}) : super(key: key);
+  SetCrewImage({Key? key, required this.crewName, required this.baseResort}) : super(key: key);
 
-  String? _profileImageUrl;
-  var crewName;
-  var crewColor;
+  final String crewName;
+  final int baseResort;
 
   @override
   State<SetCrewImage> createState() => _SetCrewImageState();
 }
 
 class _SetCrewImageState extends State<SetCrewImage> {
+
+  //TODO: Dependency Injection********************************************
+  UserModelController _userModelController = Get.find<UserModelController>();
+  LiveCrewModelController _liveCrewModelController = Get.find<LiveCrewModelController>();
+  //TODO: Dependency Injection********************************************
+
   bool crewImage = false;
   XFile? _imageFile;
   XFile? _croppedFile;
   Color? currentColor = crewColorList[6];
   Color? currentColor_background = Color(0xffF1F1F3);
+
   void changeColor(Color color) => setState(() => currentColor = color);
+
+  String colorToHex(Color color) {
+    return color.value.toRadixString(16).substring(2).toUpperCase();
+  }
 
   @override
   void initState() {
     _imageFile = null;
     _croppedFile = null;
-    // TODO: implement initState
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-
-    //TODO : ****************************************************************
     Get.put(ImageController(), permanent: true);
     ImageController _imageController = Get.find<ImageController>();
-    //TODO : ****************************************************************
 
     final Size _size = MediaQuery.of(context).size;
     final double _statusBarSize = MediaQuery.of(context).padding.top;
@@ -93,9 +103,9 @@ class _SetCrewImageState extends State<SetCrewImage> {
                   Column(
                     children: [
                       Text(
-                        '라이브 크루의 로고 이미지와\n대표 컬러를 설정해주세요.',
+                        '라이브크루 이미지와 대표 색상을\n설정해주세요.',
                         style: TextStyle(
-                            fontSize: 26,
+                            fontSize: 23,
                             fontWeight: FontWeight.bold,
                             height: 1.3),
                       ),
@@ -105,7 +115,7 @@ class _SetCrewImageState extends State<SetCrewImage> {
                     height: 8,
                   ),
                   Text(
-                    '이미지와 색상은 설정 메뉴에서 언제든지 변경하실 수 있습니다.',
+                    '이미지와 대표 색상은 크루 설정에서 변경할 수 있어요.',
                     style: TextStyle(
                         color: Color(0xff949494),
                         fontSize: 13,
@@ -117,351 +127,185 @@ class _SetCrewImageState extends State<SetCrewImage> {
                   ),
                   Column(
                     children: [
-                      (crewImage && _imageFile!=null) //이 값이 true이면 이미지업로드가 된 상태이므로, 미리보기 띄움
-                          ? Center(
-                        child: GestureDetector(
-                          onTap: () {
-                            showModalBottomSheet(
-                              context: context,
-                              builder: (context) => SafeArea(
-                                child: Container(
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 24.0),
-                                        child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          mainAxisAlignment: MainAxisAlignment.start,
-                                          children: [
-                                            SizedBox(
-                                              height: 24,
-                                            ),
-                                            Text(
-                                              '업로드 방법을 선택해주세요.',
-                                              style: TextStyle(
-                                                  fontSize: 18,
-                                                  fontWeight: FontWeight.bold,
-                                                  color: Color(0xFF111111)),
-                                            ),
-                                            SizedBox(
-                                              height: 8,
-                                            ),
-                                            Text(
-                                              '프로필 이미지를 나중에 설정 하시려면,\n기본 이미지로 설정해주세요.',
-                                              style: TextStyle(
-                                                color: Color(0xff666666),
-                                                fontSize: 14,
-                                              ),
-                                            ),
-                                            SizedBox(
-                                              height: 24,
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 20),
-                                        child: Row(
-                                          mainAxisAlignment:
-                                          MainAxisAlignment.spaceEvenly,
-                                          children: [
-                                            Expanded(
-                                              child: ElevatedButton(
-                                                onPressed: () async {
-                                                  CustomFullScreenDialog.showDialog();
-                                                  try {
-                                                    _imageFile = await _imageController.getSingleImage(ImageSource.camera);
-                                                    _croppedFile = await _imageController.cropImage(_imageFile);
-                                                    CustomFullScreenDialog.cancelDialog();
-                                                    crewImage = true;
-                                                    setState(() {});
-                                                    Navigator.pop(context);
-                                                  } catch (e) {
-                                                    CustomFullScreenDialog.cancelDialog();
-                                                  }
-                                                },
-                                                child: Text(
-                                                  '사진 촬영',
-                                                  style: TextStyle(
-                                                      color: Colors.white,
-                                                      fontSize: 15,
-                                                      fontWeight: FontWeight.bold),
-                                                ),
-                                                style: TextButton.styleFrom(
-                                                    splashFactory:
-                                                    InkRipple.splashFactory,
-                                                    elevation: 0,
-                                                    minimumSize: Size(100, 56),
-                                                    backgroundColor: currentColor?.withOpacity(0.2),
-                                                    padding: EdgeInsets.symmetric(horizontal: 0)),
-                                              ),
-                                            ),
-                                            SizedBox(
-                                              width: 8,
-                                            ),
-                                            Expanded(
-                                              child: ElevatedButton(
-                                                onPressed: () async {
-                                                  CustomFullScreenDialog.showDialog();
-                                                  try {
-                                                    _imageFile = await _imageController.getSingleImage(ImageSource.gallery);
-                                                    _croppedFile = await _imageController.cropImage(_imageFile);
-                                                    CustomFullScreenDialog.cancelDialog();
-                                                    crewImage = true;
-                                                    setState(() {});
-                                                    Navigator.pop(context);
-                                                  } catch (e) {
-                                                    crewImage = false;
-                                                    CustomFullScreenDialog.cancelDialog();
-                                                  }
-                                                },
-                                                child: Text(
-                                                  '앨범에서 선택',
-                                                  style: TextStyle(
-                                                      color: Colors.white,
-                                                      fontSize: 15,
-                                                      fontWeight: FontWeight.bold),
-                                                ),
-                                                style: TextButton.styleFrom(
-                                                    splashFactory:
-                                                    InkRipple.splashFactory,
-                                                    elevation: 0,
-                                                    minimumSize: Size(100, 56),
-                                                    backgroundColor: currentColor,
-                                                    padding: EdgeInsets.symmetric(
-                                                        horizontal: 0)),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
+                      Center(
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: currentColor_background,
+                            borderRadius: BorderRadius.all(Radius.circular(30)),
+                          ),
+                          width: 150,
+                          height: 150,
+                          child: _croppedFile != null
+                              ? Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              color: Colors.white,
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black26,
+                                  spreadRadius: 0,
+                                  blurRadius: 16,
+                                  offset: Offset(0, 2), // changes position of shadow
                                 ),
-                              ),
-                            );
-                          },
-                          child: Container(
-                              decoration: BoxDecoration(
-                                color: currentColor_background,
-                                borderRadius: BorderRadius.all(Radius.circular(10)),
-                              ),
-                              padding: EdgeInsets.all(60),
-                              width: 200,
-                              height: 200,
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(10),
-                                  color: Colors.white,
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.black26,
-                                      spreadRadius: 0,
-                                      blurRadius: 16,
-                                      offset: Offset(0, 2), // changes position of shadow
-                                    ),
-                                  ],
-                                ),
-                                width: 80,
-                                height: 80,
-                                child: ExtendedImage.file(
-                                  File(_croppedFile!.path),
-                                  fit: BoxFit.fill,
-                                  shape: BoxShape.rectangle,
-                                  borderRadius: BorderRadius.all(Radius.circular(10)),
-                                  cacheRawData: true,
-                                  enableLoadState: true,
-                                ),
-                              )
+                              ],
+                            ),
+                            width: 80,
+                            height: 80,
+                            child: ExtendedImage.file(
+                              File(_croppedFile!.path),
+                              fit: BoxFit.fill,
+                              shape: BoxShape.rectangle,
+                              borderRadius: BorderRadius.all(Radius.circular(10)),
+                              cacheRawData: true,
+                              enableLoadState: true,
+                            ),
+                          )
+                              : Center(
+                            child: ExtendedImage.asset(
+                              'assets/imgs/liveCrew/img_liveCrew_logo_setCrewImage.png',
+                              width: 145,
+                              height: 145,
+                              cacheRawData: true,
+                              enableLoadState: true,
+                            ),
                           ),
                         ),
-                      )
-                          : Center(
-                        child: GestureDetector(
-                          onTap: () {
-                            showModalBottomSheet(
-                              context: context,
-                              builder: (context) => SafeArea(
-                                child: Container(
-                                  height: 191,
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 24.0),
-                                        child: Column(
-                                          crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                          mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                          children: [
-                                            SizedBox(
-                                              height: 24,
-                                            ),
-                                            Text(
-                                              '업로드 방법을 선택해주세요.',
-                                              style: TextStyle(
-                                                  fontSize: 18,
-                                                  fontWeight: FontWeight.bold,
-                                                  color: Color(0xFF111111)),
-                                            ),
-                                            SizedBox(
-                                              height: 8,
-                                            ),
-                                            Text(
-                                              '로고 이미지를 나중에 설정 하시려면,\n기본 이미지로 설정해주세요.',
-                                              style: TextStyle(
-                                                color: Color(0xff666666),
-                                                fontSize: 14,
-                                              ),
-                                            ),
-                                            SizedBox(
-                                              height: 24,
-                                            ),
-                                          ],
-                                        ),
+                      ),
+                      SizedBox(height: 20),
+                      TextButton(
+                        onPressed: () {
+                          showModalBottomSheet(
+                            context: context,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+                            ),
+                            builder: (context) => SafeArea(
+                              child: Container(
+                                padding: EdgeInsets.all(16),
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Container(
+                                      width: 40,
+                                      height: 4,
+                                      decoration: BoxDecoration(
+                                        color: Colors.grey,
+                                        borderRadius: BorderRadius.circular(2),
                                       ),
-                                      Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 20),
-                                        child: Row(
-                                          mainAxisAlignment:
-                                          MainAxisAlignment.spaceEvenly,
-                                          children: [
-                                            Expanded(
-                                              child: ElevatedButton(
-                                                onPressed: () async {
-                                                  CustomFullScreenDialog.showDialog();
-                                                  try {
-                                                    _imageFile =
-                                                    await _imageController
-                                                        .getSingleImage(
-                                                        ImageSource.camera);
-                                                    _croppedFile =
-                                                    await _imageController.cropImage(_imageFile);
-                                                    CustomFullScreenDialog
-                                                        .cancelDialog();
-                                                    crewImage = true;
-                                                    setState(() {});
-                                                    Navigator.pop(context);
-                                                  } catch (e) {
-                                                    CustomFullScreenDialog
-                                                        .cancelDialog();
-                                                  }
-                                                },
-                                                child: Text(
-                                                  '사진 촬영',
-                                                  style: TextStyle(
-                                                      color: currentColor,
-                                                      fontSize: 15,
-                                                      fontWeight: FontWeight.bold),
-                                                ),
-                                                style: TextButton.styleFrom(
-                                                    splashFactory:
-                                                    InkRipple.splashFactory,
-                                                    elevation: 0,
-                                                    minimumSize: Size(100, 56),
-                                                    backgroundColor: currentColor?.withOpacity(0.2),
-                                                    padding: EdgeInsets.symmetric(horizontal: 0)),
-                                              ),
-                                            ),
-                                            SizedBox(
-                                              width: 8,
-                                            ),
-                                            Expanded(
-                                              child: ElevatedButton(
-                                                onPressed: () async {
-                                                  CustomFullScreenDialog.showDialog();
-                                                  try {
-                                                    _imageFile =
-                                                    await _imageController.getSingleImage(ImageSource.gallery);
-                                                    _croppedFile = await _imageController.cropImage(_imageFile);
-                                                    CustomFullScreenDialog.cancelDialog();
-                                                    crewImage = true;
-                                                    setState(() {});
-                                                    Navigator.pop(context);
-                                                  } catch (e) {
-                                                    CustomFullScreenDialog
-                                                        .cancelDialog();
-                                                  }
-                                                },
-                                                child: Text(
-                                                  '앨범에서 선택',
-                                                  style: TextStyle(
-                                                      color: Colors.white,
-                                                      fontSize: 15,
-                                                      fontWeight: FontWeight.bold),
-                                                ),
-                                                style: TextButton.styleFrom(
-                                                    splashFactory:
-                                                    InkRipple.splashFactory,
-                                                    elevation: 0,
-                                                    minimumSize: Size(100, 56),
-                                                    backgroundColor: currentColor,
-                                                    padding: EdgeInsets.symmetric(
-                                                        horizontal: 0)),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
+                                    ),
+                                    SizedBox(height: 20),
+                                    Text(
+                                      '이미지 업로드 방법',
+                                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                                    ),
+                                    SizedBox(height: 16),
+                                    Text(
+                                      '이미지를 등록하지 않으면',
+                                      style: TextStyle(
+                                          fontSize: 13,
+                                        color: Color(0xFF949494)
                                       ),
-                                      SizedBox(
-                                        height: 20,
-                                      )
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            );
-                          },
-                          child: Container(
-                              decoration: BoxDecoration(
-                                color: currentColor_background,
-                                borderRadius: BorderRadius.all(Radius.circular(10)),
-                              ),
-                              padding: EdgeInsets.all(60),
-                              width: 200,
-                              height: 200,
-                              child: Stack(
-                                children: [
-                                  Container(
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(10),
-                                      color: Colors.white,
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Colors.black26,
-                                          spreadRadius: 0,
-                                          blurRadius: 16,
-                                          offset: Offset(0, 2), // changes position of shadow
+                                    ),
+                                    Text(
+                                      '기본 이미지로 설정됩니다.',
+                                      style: TextStyle(
+                                          fontSize: 13,
+                                          color: Color(0xFF949494)
+                                      ),
+                                    ),
+                                    SizedBox(height: 30),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                      children: [
+                                        ElevatedButton(
+                                          onPressed: () async {
+                                            CustomFullScreenDialog.showDialog();
+                                            try {
+                                              _imageFile = await _imageController.getSingleImage(ImageSource.camera);
+                                              _croppedFile = await _imageController.cropImage(_imageFile);
+                                              CustomFullScreenDialog.cancelDialog();
+                                              crewImage = true;
+                                              setState(() {});
+                                            } catch (e) {
+                                              CustomFullScreenDialog.cancelDialog();
+                                            }
+                                            Navigator.pop(context);
+                                          },
+                                          child: Text('사진 촬영',
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            color: Color(0xFFFFFFFF)
+                                          ),
+                                          ),
+                                          style: ElevatedButton.styleFrom(
+                                            minimumSize: Size(160, 45), // 버튼의 최소 크기 설정
+                                            primary: Color(0xFF7C899D), // 배경색 설정
+                                          ),
+                                        ), // 버튼 간 간격을 줄이기 위해 간격 설정
+                                        ElevatedButton(
+                                          onPressed: () async {
+                                            CustomFullScreenDialog.showDialog();
+                                            try {
+                                              _imageFile = await _imageController.getSingleImage(ImageSource.gallery);
+                                              _croppedFile = await _imageController.cropImage(_imageFile);
+                                              CustomFullScreenDialog.cancelDialog();
+                                              crewImage = true;
+                                              setState(() {});
+                                            } catch (e) {
+                                              CustomFullScreenDialog.cancelDialog();
+                                            }
+                                            Navigator.pop(context);
+                                          },
+                                          child: Text('앨범에서 선택',
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                                color: Color(0xFFFFFFFF)
+                                            ),
+                                          ),
+                                          style: ElevatedButton.styleFrom(
+                                            minimumSize: Size(160, 45), // 버튼의 최소 크기 설정
+                                            primary: Color(0xFF3D83ED), // 배경색 설정
+                                          ),
                                         ),
                                       ],
                                     ),
-                                    width: 80,
-                                    height: 80,
-                                  ),
-                                  Center(
-                                    child: ExtendedImage.asset(
-                                      'assets/imgs/liveCrew/img_liveCrew_addimg.png',
-                                      width: 28,
-                                      height: 28,
-                                      cacheRawData: true,
-                                      enableLoadState: true,
-                                    ),
-                                  ),
-                                ],
-                              )
-                          ),//이 컨테이너가 이미지업로드 전에 보여주는 아이콘임
+
+
+                                  ],
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+                        child: Text(
+                          '이미지 직접 등록',
+                          style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+                        ),
+                        style: TextButton.styleFrom(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20),
+                            side: BorderSide(color: Colors.grey),
+                          ),
+                          backgroundColor: Colors.transparent,
+                          padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                        ).copyWith(
+                          overlayColor: MaterialStateProperty.all(Colors.transparent),
+                        ),
+                      ),
+
+                      SizedBox(
+                        height: 40,
+                      ),
+                      Text(
+                        '크루 대표 색상 선택하기',
+                        style: TextStyle(
+                            color: Color(0xff111111),
+                            fontSize: 13,
+                            height: 1.5
                         ),
                       ),
                       SizedBox(
-                        height: 40,
+                        height: 15,
                       ),
                       Center(
                         child: Container(
@@ -471,207 +315,46 @@ class _SetCrewImageState extends State<SetCrewImage> {
                             children: [
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Padding(
-                                      padding: EdgeInsets.all(5),
-                                      child: GestureDetector(
-                                        onTap: (){
-                                          setState(() {
-                                            currentColor = crewColorList[0];
-                                            currentColor_background = crewColorList[0];
-                                          });
-                                        },
-                                        child: Container(
-                                          height: 32,
-                                          width: 32,
-                                          decoration: BoxDecoration(
-                                            shape: BoxShape.circle,
-                                            color: crewColorList[0],
-                                          ),
-                                        ),
-                                      )
-                                  ),
-                                  Padding(
-                                      padding: EdgeInsets.all(5),
-                                      child: GestureDetector(
-                                        onTap: (){
-                                          setState(() {
-                                            currentColor = crewColorList[1];
-                                            currentColor_background = crewColorList[1];
-
-                                          });
-                                        },
-                                        child: Container(
-                                          height: 32,
-                                          width: 32,
-                                          decoration: BoxDecoration(
-                                            shape: BoxShape.circle,
-                                            color: crewColorList[1],
-                                          ),
-                                        ),
-                                      )
-                                  ),
-                                  Padding(
-                                      padding: EdgeInsets.all(5),
-                                      child: GestureDetector(
-                                        onTap: (){
-                                          setState(() {
-                                            currentColor = crewColorList[2];
-                                            currentColor_background = crewColorList[2];
-                                          });
-                                        },
-                                        child: Container(
-                                          height: 32,
-                                          width: 32,
-                                          decoration: BoxDecoration(
-                                            shape: BoxShape.circle,
-                                            color: crewColorList[2],
-                                          ),
-                                        ),
-                                      )
-                                  ),
-                                  Padding(
-                                      padding: EdgeInsets.all(5),
-                                      child: GestureDetector(
-                                        onTap: (){
-                                          setState(() {
-                                            currentColor = crewColorList[3];
-                                            currentColor_background = crewColorList[3];
-                                          });
-                                        },
-                                        child: Container(
-                                          height: 32,
-                                          width: 32,
-                                          decoration: BoxDecoration(
-                                            shape: BoxShape.circle,
-                                            color: crewColorList[3],
-                                          ),
-                                        ),
-                                      )
-                                  ),
-                                  Padding(
-                                      padding: EdgeInsets.all(5),
-                                      child: GestureDetector(
-                                        onTap: (){
-                                          setState(() {
-                                            currentColor = crewColorList[4];
-                                            currentColor_background = crewColorList[4];
-                                          });
-                                        },
-                                        child: Container(
-                                          height: 32,
-                                          width: 32,
-                                          decoration: BoxDecoration(
-                                            shape: BoxShape.circle,
-                                            color: crewColorList[4],
-                                          ),
-                                        ),
-                                      )
-                                  ),
-                                ],
+                                children: crewColorList.sublist(0, 5).map((color) {
+                                  return GestureDetector(
+                                    onTap: () {
+                                      setState(() {
+                                        currentColor = color;
+                                        currentColor_background = color!.withOpacity(0.2);
+                                      });
+                                    },
+                                    child: Container(
+                                      height: 32,
+                                      width: 32,
+                                      decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        color: color,
+                                      ),
+                                    ),
+                                  );
+                                }).toList(),
                               ),
-                              SizedBox(
-                                height: 10,
-                              ),
+                              SizedBox(height: 10),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Padding(
-                                      padding: EdgeInsets.all(5),
-                                      child: GestureDetector(
-                                        onTap: (){
-                                          setState(() {
-                                            currentColor = crewColorList[5];
-                                            currentColor_background = crewColorList[5];
-                                          });
-                                        },
-                                        child: Container(
-                                          height: 32,
-                                          width: 32,
-                                          decoration: BoxDecoration(
-                                            shape: BoxShape.circle,
-                                            color: crewColorList[5],
-                                          ),
-                                        ),
-                                      )
-                                  ),
-                                  Padding(
-                                      padding: EdgeInsets.all(5),
-                                      child: GestureDetector(
-                                        onTap: (){
-                                          setState(() {
-                                            currentColor = crewColorList[6];
-                                            currentColor_background = crewColorList[6];
-                                          });
-                                        },
-                                        child: Container(
-                                          height: 32,
-                                          width: 32,
-                                          decoration: BoxDecoration(
-                                            shape: BoxShape.circle,
-                                            color: crewColorList[6],
-                                          ),
-                                        ),
-                                      )
-                                  ),
-                                  Padding(
-                                      padding: EdgeInsets.all(5),
-                                      child: GestureDetector(
-                                        onTap: (){
-                                          setState(() {
-                                            currentColor = crewColorList[7];
-                                            currentColor_background = crewColorList[7];
-                                          });
-                                        },
-                                        child: Container(
-                                          height: 32,
-                                          width: 32,
-                                          decoration: BoxDecoration(
-                                            shape: BoxShape.circle,
-                                            color: crewColorList[7],
-                                          ),
-                                        ),
-                                      )
-                                  ),
-                                  Padding(
-                                      padding: EdgeInsets.all(5),
-                                      child: GestureDetector(
-                                        onTap: (){
-                                          setState(() {
-                                            currentColor = crewColorList[8];
-                                            currentColor_background = crewColorList[8];
-                                          });
-                                        },
-                                        child: Container(
-                                          height: 32,
-                                          width: 32,
-                                          decoration: BoxDecoration(
-                                            shape: BoxShape.circle,
-                                            color: crewColorList[8],
-                                          ),
-                                        ),
-                                      )
-                                  ),
-                                  Padding(
-                                      padding: EdgeInsets.all(5),
-                                      child: GestureDetector(
-                                        onTap: (){
-                                          setState(() {
-                                            currentColor = crewColorList[9];
-                                            currentColor_background = crewColorList[9];
-                                          });
-                                        },
-                                        child: Container(
-                                          height: 32,
-                                          width: 32,
-                                          decoration: BoxDecoration(
-                                            shape: BoxShape.circle,
-                                            color: crewColorList[9],
-                                          ),
-                                        ),
-                                      )
-                                  ),
-                                ],
+                                children: crewColorList.sublist(5).map((color) {
+                                  return GestureDetector(
+                                    onTap: () {
+                                      setState(() {
+                                        currentColor = color;
+                                        currentColor_background = color!.withOpacity(0.2);
+                                      });
+                                    },
+                                    child: Container(
+                                      height: 32,
+                                      width: 32,
+                                      decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        color: color,
+                                      ),
+                                    ),
+                                  );
+                                }).toList(),
                               ),
                             ],
                           ),
@@ -679,7 +362,6 @@ class _SetCrewImageState extends State<SetCrewImage> {
                       ),
                     ],
                   ),
-
                 ],
               ),
             ),
@@ -692,63 +374,45 @@ class _SetCrewImageState extends State<SetCrewImage> {
           child: SafeArea(
             child: Padding(
               padding: EdgeInsets.only(left: 16, right: 16, bottom: 16),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: ElevatedButton(
-                      onPressed: () async {
-                        Get.to(() => CrewFavoriteResort(crewName: widget.crewName, CrewImageUrl: '', crewColor: currentColor,));
-                      },
-                      child: Text(
-                        '다음에 설정',
-                        style: TextStyle(color: currentColor, fontSize: 16, fontWeight: FontWeight.bold),
-                      ),
-                      style: TextButton.styleFrom(
-                          elevation: 0,
-                          splashFactory: InkRipple.splashFactory,
-                          minimumSize: Size(100, 56),
-                          backgroundColor: currentColor?.withOpacity(0.2)),
-                    ),
-                  ),
-                  SizedBox(
-                    width: 8,
-                  ),
-                  Expanded(
-                    child: ElevatedButton(
-                      onPressed: () async {
-                        if (_croppedFile != null) {
-                          CustomFullScreenDialog.showDialog();
-                          String _profileImageUrl =
-                          await _imageController.setNewImage_Crew(newImage: _croppedFile!, crewID: widget.crewName);
-                          CustomFullScreenDialog.cancelDialog();
-                          Get.to(() => CrewFavoriteResort(crewName: widget.crewName, CrewImageUrl: _profileImageUrl, crewColor: currentColor,));
-                        } else {
-                          Get.snackbar('이미지를 선택해주세요.', '다음에 설정하시려면 기본 이미지로 설정해주세요.',
-                              snackPosition: SnackPosition.BOTTOM,
-                              margin: EdgeInsets.only(
-                                  right: 20, left: 20, bottom: 12),
-                              backgroundColor: Colors.black87,
-                              colorText: Colors.white,
-                              duration: Duration(milliseconds: 3000));
-                        }
-                      },
-                      child: Text(
-                        '다음',
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16),
-                      ),
-                      style: TextButton.styleFrom(
-                          shape: const RoundedRectangleBorder(
-                              borderRadius: BorderRadius.all(Radius.circular(6))),
-                          elevation: 0,
-                          splashFactory: InkRipple.splashFactory,
-                          minimumSize: Size(100, 56),
-                          backgroundColor: currentColor),
-                    ),
-                  ),
-                ],
+              child: ElevatedButton(
+                onPressed: () async {
+                  CustomFullScreenDialog.showDialog();
+                  String _profileImageUrl = '';
+                  if (_croppedFile != null) {
+                    _profileImageUrl = await _imageController.setNewImage_Crew(newImage: _croppedFile!, crewID: widget.crewName);
+                  }
+                  CustomFullScreenDialog.cancelDialog();
+                  print(colorToHex(currentColor!));
+
+                  await _liveCrewModelController.createCrewDoc(
+                      uid: 57346,
+                      crewName: widget.crewName,
+                      resortNum: widget.baseResort,
+                      crewImageUrl: _profileImageUrl,
+                      crewColor: colorToHex(currentColor!),
+                  );
+                  print('크루등록 성공쓰');
+
+                  if(_liveCrewModelController.memberUidList!.contains(_userModelController.uid)){
+                    Get.to(() => CrewDetailPage_screen());
+                  }
+                  Get.to(()=> FirstPage_createCrew());
+
+                },
+                child: Text(
+                  '다음',
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16),
+                ),
+                style: TextButton.styleFrom(
+                    shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(6))),
+                    elevation: 0,
+                    splashFactory: InkRipple.splashFactory,
+                    minimumSize: Size(100, 56),
+                    backgroundColor: currentColor),
               ),
             ),
           ),

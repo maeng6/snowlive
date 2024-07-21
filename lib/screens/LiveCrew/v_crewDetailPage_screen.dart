@@ -64,7 +64,6 @@ class _CrewDetailPage_screenState extends State<CrewDetailPage_screen> {
                     builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot){
                       if (!snapshot.hasData || snapshot.data == null) {}
                       else if (snapshot.data!.docs.isNotEmpty) {
-                        final alarmDocs = snapshot.data!.docs;
                         return  Padding(
                           padding: const EdgeInsets.only(top: 4),
                           child: Padding(
@@ -130,8 +129,7 @@ class _CrewDetailPage_screenState extends State<CrewDetailPage_screen> {
           ],
         ),
       ),
-      body:
-      SafeArea(
+      body: SafeArea(
         child: Stack(
           children: [
             Positioned(

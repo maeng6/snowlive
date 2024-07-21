@@ -17,7 +17,7 @@ import '../../controller/liveCrew/vm_streamController_liveCrew.dart';
 import '../../model/m_alarmCenterModel.dart';
 import '../../model/m_crewLogoModel.dart';
 import '../more/friend/v_friendDetailPage.dart';
-import 'CreateOnboarding/v_setCrewName.dart';
+import 'CreateOnboarding/v_setCrewNameAndResort.dart';
 import 'invitation/v_invitation_Screen_crew.dart';
 
 class LiveCrewHome extends StatefulWidget {
@@ -65,7 +65,7 @@ class _LiveCrewHomeState extends State<LiveCrewHome> {
             await _userModelController.getCurrentUser(_userModelController.uid);
             if(_userModelController.liveCrew!.isEmpty || _userModelController.liveCrew =='') {
               CustomFullScreenDialog.cancelDialog();
-              Get.to(()=>SetCrewName());
+              Get.to(()=>SetCrewNameAndResort());
             } else{
               CustomFullScreenDialog.cancelDialog();
               Get.dialog(AlertDialog(

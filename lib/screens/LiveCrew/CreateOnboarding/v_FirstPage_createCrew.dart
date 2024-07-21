@@ -2,8 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:lottie/lottie.dart';
-import 'package:com.snowlive/screens/LiveCrew/CreateOnboarding/v_setCrewName.dart';
+import 'package:com.snowlive/screens/LiveCrew/CreateOnboarding/v_setCrewNameAndResort.dart';
 import '../v_liveCrewHome.dart';
 import '../v_searchCrewPage.dart';
 
@@ -17,22 +16,136 @@ class FirstPage_createCrew extends StatefulWidget {
 class _FirstPage_createCrewState extends State<FirstPage_createCrew> {
 
 
+  void _showBottomModal(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(25.0),
+        ),
+      ),
+      builder: (context) => Container(
+        height: MediaQuery.of(context).size.height * 0.3,
+        child: Padding(
+          padding: EdgeInsets.only(
+            left: 16,
+            right: 16,
+            bottom: MediaQuery.of(context).viewInsets.bottom + 16,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 50,
+                height: 5,
+                margin: EdgeInsets.only(top: 8, bottom: 16),
+                decoration: BoxDecoration(
+                  color: Colors.grey,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+              SizedBox(height: 10),
+              Text(
+                '라이브크루 시작하기 ',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              SizedBox(height: 15),
+              Text(
+                '이미 존재하는 라이브크루에 참여하시려면 가입하기를,',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Color(0xff949494),
+                  fontSize: 14,
+                ),
+              ),
+              SizedBox(height: 3),
+              Text(
+                '새로운 라이브크루를 만드시려면 생성하기를 선택해 주세요.',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Color(0xff949494),
+                  fontSize: 14,
+                ),
+              ),
+              SizedBox(height: 30),
+              Row(
+                children: [
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () async {
+                        Get.to(() => SetCrewNameAndResort());
+                      },
+                      child: Text(
+                        '만들기',
+                        style: TextStyle(
+                          color: Color(0xFFFFFFFF),
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
+                      ),
+                      style: TextButton.styleFrom(
+                        shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(6)),
+                        ),
+                        elevation: 0,
+                        splashFactory: InkRipple.splashFactory,
+                        minimumSize: Size(100, 56),
+                        backgroundColor: Color(0xff7C899D),
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: 8),
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () async {
+                        Get.to(() => SearchCrewPage());
+                      },
+                      child: Text(
+                        '가입하기',
+                        style: TextStyle(
+                          color: Color(0xFFFFFFFF),
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
+                      ),
+                      style: TextButton.styleFrom(
+                        shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(6)),
+                        ),
+                        elevation: 0,
+                        splashFactory: InkRipple.splashFactory,
+                        minimumSize: Size(100, 56),
+                        backgroundColor: Color(0xFF3D83ED),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-
     SystemChrome.setEnabledSystemUIMode(
       SystemUiMode.manual,
       overlays: [SystemUiOverlay.top, SystemUiOverlay.bottom],
     ); // 상단 StatusBar 생성
     SystemChrome.setSystemUIOverlayStyle(
-        SystemUiOverlayStyle.dark.copyWith(
-            statusBarColor: Colors.white, // Color for Android
-            statusBarIconBrightness: Brightness.dark,
-            statusBarBrightness:
-            (Platform.isAndroid)
-                ?Brightness.light
-                :Brightness.dark //ios:dark, android:light
-        ));
+      SystemUiOverlayStyle.dark.copyWith(
+        statusBarColor: Colors.white, // Color for Android
+        statusBarIconBrightness: Brightness.dark,
+        statusBarBrightness: (Platform.isAndroid)
+            ? Brightness.light
+            : Brightness.dark, //ios:dark, android:light
+      ),
+    );
 
     final double _statusBarSize = MediaQuery.of(context).padding.top;
     final Size _size = MediaQuery.of(context).size;
@@ -45,21 +158,6 @@ class _FirstPage_createCrewState extends State<FirstPage_createCrew> {
           appBar: PreferredSize(
             preferredSize: Size.fromHeight(58),
             child: AppBar(
-              actions: [
-                ElevatedButton(
-                  onPressed: (){
-                    Get.to(()=>LiveCrewHome());
-                  },
-                  child: Text('둘러보기', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Color(0xFF111111)),),
-                  style: ElevatedButton.styleFrom(
-                      backgroundColor: Color(0xFFffffff),
-                      elevation: 0,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8)),
-                      side: BorderSide(
-                          color: Color(0xFFFFFFFF))
-                  ),),
-              ],
               leading: GestureDetector(
                 child: Image.asset(
                   'assets/imgs/icons/icon_snowLive_back.png',
@@ -75,7 +173,8 @@ class _FirstPage_createCrewState extends State<FirstPage_createCrew> {
               elevation: 0.0,
               centerTitle: false,
               titleSpacing: 0,
-              title: Text('',
+              title: Text(
+                '',
                 style: TextStyle(
                     color: Color(0xFF111111),
                     fontWeight: FontWeight.bold,
@@ -90,27 +189,26 @@ class _FirstPage_createCrewState extends State<FirstPage_createCrew> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Container(
-                    width: _size.width,
-                    child: Lottie.asset('assets/json/SL_LT_crew_1.json',
-                    width: _size.width,
-                        fit: BoxFit.fill),
-                  ),
                   Center(
                     child: Column(
                       children: [
+                        Image.asset(
+                          'assets/imgs/liveCrew/img_liveCrew_title_onboarding.png',
+                          scale: 1,
+                          width: 100,
+                        ),
+                        SizedBox(height: 30),
                         Text(
-                          '함께해서 더 즐거운 라이딩',
-                          style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
+                          '또 하나의 즐거움',
+                          style: TextStyle(
+                              fontSize: 26, fontWeight: FontWeight.bold),
                         ),
-                        SizedBox(
-                          height: 4,
+                        Text(
+                          '라이브크루와 함께해요',
+                          style: TextStyle(
+                              fontSize: 26, fontWeight: FontWeight.bold),
                         ),
-                        Image.asset('assets/imgs/liveCrew/img_liveCrew_title_onboarding.png',
-                            scale: 1, width: 150),
-                        SizedBox(
-                          height: 12,
-                        ),
+                        SizedBox(height: 12),
                         Text(
                           '라이브크루를 통해 다양한 사람들과 교류하며',
                           style: TextStyle(
@@ -128,6 +226,12 @@ class _FirstPage_createCrewState extends State<FirstPage_createCrew> {
                             fontSize: 14,
                           ),
                         ),
+                        SizedBox(height: 50),
+                        Image.asset(
+                          'assets/imgs/liveCrew/img_liveCrew_image_onboarding.png',
+                          scale: 1,
+                          width: 400,
+                        ),
                       ],
                     ),
                   ),
@@ -143,56 +247,25 @@ class _FirstPage_createCrewState extends State<FirstPage_createCrew> {
           child: SafeArea(
             child: Padding(
               padding: EdgeInsets.only(left: 16, right: 16, bottom: 16),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: ElevatedButton(
-                      onPressed: () async {
-                        Get.to(()=> SearchCrewPage());
-                      },
-                      child: Text(
-                        '가입하기',
-                        style: TextStyle(
-                            color: Color(0xFF3D83ED),
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16),
-                      ),
-                      style: TextButton.styleFrom(
-                          shape: const RoundedRectangleBorder(
-                              borderRadius: BorderRadius.all(Radius.circular(6))),
-                          elevation: 0,
-                          splashFactory: InkRipple.splashFactory,
-                          minimumSize: Size(100, 56),
-                          backgroundColor:
-                          Color(0xffD8E7FD)),
-                    ),
+              child: ElevatedButton(
+                onPressed: () => _showBottomModal(context),
+                child: Text(
+                  '라이브크루 시작하기',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
                   ),
-                  SizedBox(
-                    width: 8,
+                ),
+                style: TextButton.styleFrom(
+                  shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(6)),
                   ),
-                  Expanded(
-                    child: ElevatedButton(
-                      onPressed: () async {
-                        Get.to(()=>SetCrewName());
-                      },
-                      child: Text(
-                        '만들기',
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16),
-                      ),
-                      style: TextButton.styleFrom(
-                          shape: const RoundedRectangleBorder(
-                              borderRadius: BorderRadius.all(Radius.circular(6))),
-                          elevation: 0,
-                          splashFactory: InkRipple.splashFactory,
-                          minimumSize: Size(100, 56),
-                          backgroundColor:
-                          Color(0xff3D83ED)),
-                    ),
-                  ),
-                ],
+                  elevation: 0,
+                  splashFactory: InkRipple.splashFactory,
+                  minimumSize: Size(200, 56),
+                  backgroundColor: Color(0xff3D83ED),
+                ),
               ),
             ),
           ),
@@ -201,6 +274,3 @@ class _FirstPage_createCrewState extends State<FirstPage_createCrew> {
     );
   }
 }
-
-
-// EdgeInsets.only(top: _statusBarSize+58, left: 16, right: 16, bottom: _statusBarSize),

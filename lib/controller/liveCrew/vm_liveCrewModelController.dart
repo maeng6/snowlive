@@ -1,7 +1,8 @@
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import '../../model/m_liveCrewModel.dart';
 import '../../model/m_resortModel.dart';
@@ -83,6 +84,53 @@ class LiveCrewModelController extends GetxController {
     }
   }
 
+  Future<void> createCrewDoc({
+    required uid,
+    required crewName,
+    required resortNum,
+    required crewImageUrl,
+    required crewColor,
+  }) async {
+
+    final url = Uri.parse('https://snowlive-api-0eab29705c9f.herokuapp.com/api/crew/create/');
+
+    final response = await http.post(
+      url,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode({
+        'user_id': uid,
+        'crew_name': crewName,
+        'crew_logo_url': crewImageUrl ?? "",
+        'color': crewColor,
+        'base_resort_id': resortNum,
+        'notice': '',
+        'description': ''
+      }),
+    );
+
+    if (response.statusCode == 201) {
+      final data = json.decode(response.body);
+      _leaderUid!.value = data['user_id'];
+      _crewName!.value = data['crew_name'];
+      _crewColor!.value = data['color'];
+      _profileImageUrl!.value = data['crew_logo_url'];
+      _baseResort!.value = data['base_resort_id'];
+      _notice!.value = data['notice'];
+      _description!.value = data['description'];
+      print('크루가 성공적으로 생성되었습니다.');
+    } else {
+      // 오류 응답 처리
+      print('크루 생성 실패: ${response.body}');
+    }
+  }
+
+
+
+
+
+
   Future<bool> checkDuplicateCrewName(String crewName) async {
     final querySnapshot = await FirebaseFirestore.instance
         .collection('liveCrew')
@@ -92,7 +140,7 @@ class LiveCrewModelController extends GetxController {
   }
 
 
-  Future<void> createCrewDoc({
+  Future<void> createCrewDoc2({
     required crewLeader,
     required crewName,
     required resortNum,

@@ -1,22 +1,9 @@
-import 'dart:io';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:com.snowlive/controller/resort/vm_resortModelController.dart';
 import 'package:com.snowlive/controller/user/vm_userModelController.dart';
-import 'package:com.snowlive/screens/v_MainHome.dart';
-import '../../controller/user/vm_allUserDocsController.dart';
-import '../../controller/public/vm_bottomTabBarController.dart';
-import '../../controller/login/vm_loginController.dart';
-import '../../controller/ranking/vm_myRankingController.dart';
-import '../../controller/login/vm_notificationController.dart';
 import '../../model/m_resortModel.dart';
-import '../../widget/w_fullScreenDialog.dart';
 import '../snowliveDesignStyle.dart';
 
 class FavoriteResort extends StatefulWidget {

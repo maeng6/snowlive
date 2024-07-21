@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:com.snowlive/controller/public/vm_loadingController.dart';
 import 'package:com.snowlive/controller/ranking/vm_myCrewRankingController.dart';
 import 'package:com.snowlive/controller/public/vm_urlLauncherController.dart';
+import 'package:com.snowlive/screens/LiveCrew/v_crewDetailPage_screen.dart';
 import 'package:com.snowlive/screens/more/friend/v_snowliveDetailPage.dart';
 import 'package:com.snowlive/screens/more/v_eventPage.dart';
 import 'package:extended_image/extended_image.dart';
@@ -344,7 +345,7 @@ class _MoreTabState extends State<MoreTab> {
                             }
                             else{
                               CustomFullScreenDialog.cancelDialog();
-                              Get.to(()=>LiveCrewHome());
+                              Get.to(()=> CrewDetailPage_screen());
                             }
                           },
                           child: Column(

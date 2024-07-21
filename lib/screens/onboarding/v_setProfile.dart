@@ -11,7 +11,6 @@ import 'package:com.snowlive/controller/public/vm_imageController.dart';
 import 'package:com.snowlive/screens/onboarding/v_favoriteResort.dart';
 import '../../controller/login/vm_loginController.dart';
 import '../../controller/login/vm_notificationController.dart';
-import '../../controller/public/vm_bottomTabBarController.dart';
 import '../../controller/ranking/vm_myRankingController.dart';
 import '../../controller/resort/vm_resortModelController.dart';
 import '../../controller/user/vm_allUserDocsController.dart';
