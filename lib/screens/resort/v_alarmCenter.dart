@@ -1,5 +1,5 @@
 import 'package:com.snowlive/controller/alarm/vm_streamController_alarmCenter.dart';
-import 'package:com.snowlive/screens/LiveCrew/v_liveCrewHome.dart';
+import 'package:com.snowlive/screens/LiveCrew/v_crewDetailPage_screen.dart';
 import 'package:com.snowlive/screens/bulletin/Event/v_bulletin_Event_List_Detail.dart';
 import 'package:com.snowlive/screens/common/v_noUserScreen.dart';
 import 'package:com.snowlive/screens/more/friend/v_friendDetailPage.dart';
@@ -236,7 +236,7 @@ class _AlarmCenterState extends State<AlarmCenter> {
                           Get.to(() => InvitationScreen_friend());
                         }
                         if (alarmCenterDocs[index].get('category') == '크루 가입신청') {
-                          Get.to(() => LiveCrewHome());
+                          Get.to(() => CrewDetailPage_screen());
                         }
                         if (alarmCenterDocs[index].get('category') == '자유게시판 글') {
                           try {

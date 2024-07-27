@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:com.snowlive/screens/LiveCrew/CreateOnboarding/v_setCrewNameAndResort.dart';
-import '../v_liveCrewHome.dart';
 import '../v_searchCrewPage.dart';
 
 class FirstPage_createCrew extends StatefulWidget {

@@ -1,7 +1,6 @@
 import 'dart:io';
 import 'package:com.snowlive/screens/LiveCrew/CreateOnboarding/v_FirstPage_createCrew.dart';
 import 'package:com.snowlive/screens/LiveCrew/v_crewDetailPage_screen.dart';
-import 'package:com.snowlive/screens/LiveCrew/v_liveCrewHome.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';

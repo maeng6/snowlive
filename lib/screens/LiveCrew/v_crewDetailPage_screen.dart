@@ -247,7 +247,7 @@ class _CrewDetailPage_screenState extends State<CrewDetailPage_screen> {
                               height: 40,
                               child: ElevatedButton(
                                 child: Text(
-                                  '갤러리',
+                                  '업적',
                                   style: TextStyle(
                                       color: (isTap[2])
                                           ? Color(0xFF111111)
@@ -293,8 +293,8 @@ class _CrewDetailPage_screenState extends State<CrewDetailPage_screen> {
                   Expanded(child: CrewDetailPage_home()),
                 if(isTap[1]==true)
                   Expanded(child: CrewDetailPage_member()),
-                if(isTap[2]==true)
-                  Expanded(child: CrewDetailPage_Gallery()),
+                // if(isTap[2]==true)
+                //   Expanded(child: CrewDetailPage_Gallery()),
               ],
             ),
           ],
