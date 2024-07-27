@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:com.snowlive/screens/bulletin/Free/v_bulletin_Free_List_Detail.dart';
+import 'package:com.snowlive/screens/snowliveDesignStyle.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -36,7 +37,9 @@ class _Bulletin_Free_UploadState extends State<Bulletin_Free_Upload> {
   ListTile buildCategoryListTile(int index) {
     return ListTile(
       contentPadding: EdgeInsets.zero,
-      title: Text('${bulletinFreeCategoryList[index]}'),
+      title: Text('${bulletinFreeCategoryList[index]}',
+        style: SDSTextStyle.regular.copyWith(fontSize: 15, color: SDSColor.gray900),
+      ),
       onTap: () async {
         isCategorySelected = true;
         SelectedCategory = bulletinFreeCategoryList[index];
@@ -67,9 +70,13 @@ class _Bulletin_Free_UploadState extends State<Bulletin_Free_Upload> {
         child: Scaffold(
           backgroundColor: Colors.white,
           appBar: PreferredSize(
-            preferredSize: Size.fromHeight(58),
+            preferredSize: Size.fromHeight(44),
             child: AppBar(
-              title: Text('자유게시판'),
+              title: Text('자유 게시글 작성',
+                style: SDSTextStyle.extraBold.copyWith(
+                fontSize: 18,
+                  color: SDSColor.gray900
+              ),),
               leading: GestureDetector(
                 child: Image.asset(
                   'assets/imgs/icons/icon_snowLive_back.png',
@@ -149,312 +156,256 @@ class _Bulletin_Free_UploadState extends State<Bulletin_Free_Upload> {
                     SizedBox(
                       height: 16,
                     ),
-                    Row(
-                      children: [
-                        GestureDetector(
-                          onTap: () async {
-                            if (imageLength >= 5) {
-                              Get.dialog(
-                                AlertDialog(
-                                  title: Text('사진 개수 초과'),
-                                ),
-                              );
-                            } else {
-                              CustomFullScreenDialog.showDialog();
-                              try {
-                                _imageFiles = await _imageController.getMultiImage(ImageSource.gallery);
-                                CustomFullScreenDialog.cancelDialog();
-                                if (_imageFiles.length <= 5) {
-                                  bulletinFreeImageSelected = true;
-                                  imageLength = _imageFiles.length;
-                                  setState(() {});
-                                } else {
-                                  Get.dialog(
-                                    AlertDialog(
-                                      title: Text('사진 개수 초과'),
-                                    ),
-                                  );
-                                }
-                              } catch (e) {
-                                CustomFullScreenDialog.cancelDialog();
-                              }
-                            }
-                          },
-                          child: Container(
-                            height: 90,
-                            width: 90,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                IconButton(
-                                  onPressed: () async {
-                                    if (imageLength >= 5) {
-                                      Get.dialog(
-                                        AlertDialog(
-                                          title: Text('사진 개수 초과'),
-                                        ),
-                                      );
-                                    } else {
-                                      CustomFullScreenDialog.showDialog();
-                                      try {
-                                        _imageFiles = await _imageController.getMultiImage(ImageSource.gallery);
-                                        CustomFullScreenDialog.cancelDialog();
-                                        if (_imageFiles.length <= 5) {
-                                          bulletinFreeImageSelected = true;
-                                          imageLength = _imageFiles.length;
-                                          setState(() {});
-                                        } else {
-                                          Get.dialog(
-                                            AlertDialog(
-                                              title: Text('사진 개수 초과'),
-                                            ),
-                                          );
-                                        }
-                                      } catch (e) {
-                                        CustomFullScreenDialog.cancelDialog();
-                                      }
-                                    }
-                                  },
-                                  icon: Icon(Icons.camera_alt_rounded),
-                                  color: Color(0xFF949494),
-                                ),
-                                Transform.translate(
-                                  offset: Offset(0, -10),
-                                  child: Text(
-                                    '$imageLength / 5',
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 15,
-                                      color: Color(0xFF949494),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            decoration: BoxDecoration(
-                              border: Border.all(
-                                color: Colors.transparent,
-                              ),
-                              borderRadius: BorderRadius.circular(8),
-                              color: Color(0xFFececec),
-                            ),
-                          ),
-                        ),
-                        SizedBox(
-                          width: 8,
-                        ),
-                        if(_imageFiles.length == 0)
-                          SizedBox(width: 8,),
-                        if(_imageFiles.length == 0)
-                          Text('사진은 게시글에 첨부됩니다.',
-                            style: TextStyle(
-                                color: Color(0xff949494),
-                                fontSize: 12
-                            ),
-                          ),
-                        Expanded(
-                          child: SizedBox(
-                            height: 120,
-                            child: ListView.builder(
-                              scrollDirection: Axis.horizontal,
-                              shrinkWrap: true,
-                              itemCount: imageLength,
-                              itemBuilder: (context, index) {
-                                return Row(
-                                  children: [
-                                    Stack(children: [
-
-                                      Container(
-                                        decoration: BoxDecoration(
-                                            border: Border.all(color: Color(0xFFECECEC)),
-                                            borderRadius: BorderRadius.circular(8),
-                                            color: Colors.white
-                                        ),
-                                        height: 90,
-                                        width: 90,
-                                        child: ClipRRect(
-                                          borderRadius: BorderRadius.circular(7),
-                                          child: Image.file(
-                                            File(_imageFiles[index].path),
-                                            fit: BoxFit.cover,
-                                          ),
-                                        ),
-                                      ),
-                                      Positioned(
-                                        top: -8,
-                                        right: -8,
-                                        child: IconButton(
-                                          onPressed: () {
-                                            _imageFiles.removeAt(index);
-                                            imageLength = _imageFiles.length;
-                                            setState(() {});
-                                          },
-                                          icon: Icon(Icons.cancel), color: Color(0xFF111111),),
-                                      ),
-                                      if(index==0)
-                                        Positioned(
-                                          top: 68,
-                                          child: Opacity(
-                                            opacity:0.8,
-                                            child: Container(
-                                              decoration: BoxDecoration(
-                                                border: Border.all(
-                                                    color: Colors.transparent
-                                                ),
-                                                borderRadius: BorderRadius.only(
-                                                    bottomRight: Radius.circular(8),
-                                                    bottomLeft: Radius.circular(8)
-                                                ),
-                                                color: Colors.black87,
-                                              ),
-                                              height: 22,
-                                              width: 90,
-                                              child: ClipRRect(
-                                                borderRadius: BorderRadius.circular(7),
-                                                child: Text('대표사진',
-                                                  style: TextStyle(color: Colors.white,
-                                                      fontSize: 12),
-                                                  textAlign: TextAlign.center,
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                    ]),
-                                    SizedBox(
-                                      width: 8,
-                                    )
-                                  ],
-                                );
-                              },
-                            ),
-                          ),
-                        )
-                      ],
-                    ),
-                    SizedBox(
-                      height: 30,
-                      width: 100,
-                    ),
+                    // Row(
+                    //   children: [
+                    //     GestureDetector(
+                    //       onTap: () async {
+                    //         if (imageLength >= 5) {
+                    //           Get.dialog(
+                    //             AlertDialog(
+                    //               title: Text('사진 개수 초과'),
+                    //             ),
+                    //           );
+                    //         } else {
+                    //           CustomFullScreenDialog.showDialog();
+                    //           try {
+                    //             _imageFiles = await _imageController.getMultiImage(ImageSource.gallery);
+                    //             CustomFullScreenDialog.cancelDialog();
+                    //             if (_imageFiles.length <= 5) {
+                    //               bulletinFreeImageSelected = true;
+                    //               imageLength = _imageFiles.length;
+                    //               setState(() {});
+                    //             } else {
+                    //               Get.dialog(
+                    //                 AlertDialog(
+                    //                   title: Text('사진 개수 초과'),
+                    //                 ),
+                    //               );
+                    //             }
+                    //           } catch (e) {
+                    //             CustomFullScreenDialog.cancelDialog();
+                    //           }
+                    //         }
+                    //       },
+                    //       child: Container(
+                    //         height: 90,
+                    //         width: 90,
+                    //         child: Column(
+                    //           mainAxisAlignment: MainAxisAlignment.center,
+                    //           children: [
+                    //             IconButton(
+                    //               onPressed: () async {
+                    //                 if (imageLength >= 5) {
+                    //                   Get.dialog(
+                    //                     AlertDialog(
+                    //                       title: Text('사진 개수 초과'),
+                    //                     ),
+                    //                   );
+                    //                 } else {
+                    //                   CustomFullScreenDialog.showDialog();
+                    //                   try {
+                    //                     _imageFiles = await _imageController.getMultiImage(ImageSource.gallery);
+                    //                     CustomFullScreenDialog.cancelDialog();
+                    //                     if (_imageFiles.length <= 5) {
+                    //                       bulletinFreeImageSelected = true;
+                    //                       imageLength = _imageFiles.length;
+                    //                       setState(() {});
+                    //                     } else {
+                    //                       Get.dialog(
+                    //                         AlertDialog(
+                    //                           title: Text('사진 개수 초과'),
+                    //                         ),
+                    //                       );
+                    //                     }
+                    //                   } catch (e) {
+                    //                     CustomFullScreenDialog.cancelDialog();
+                    //                   }
+                    //                 }
+                    //               },
+                    //               icon: Icon(Icons.camera_alt_rounded),
+                    //               color: Color(0xFF949494),
+                    //             ),
+                    //             Transform.translate(
+                    //               offset: Offset(0, -10),
+                    //               child: Text(
+                    //                 '$imageLength / 5',
+                    //                 style: TextStyle(
+                    //                   fontWeight: FontWeight.bold,
+                    //                   fontSize: 15,
+                    //                   color: Color(0xFF949494),
+                    //                 ),
+                    //               ),
+                    //             ),
+                    //           ],
+                    //         ),
+                    //         decoration: BoxDecoration(
+                    //           border: Border.all(
+                    //             color: Colors.transparent,
+                    //           ),
+                    //           borderRadius: BorderRadius.circular(8),
+                    //           color: Color(0xFFececec),
+                    //         ),
+                    //       ),
+                    //     ),
+                    //     SizedBox(
+                    //       width: 8,
+                    //     ),
+                    //     if(_imageFiles.length == 0)
+                    //       SizedBox(width: 8,),
+                    //     if(_imageFiles.length == 0)
+                    //       Text('사진은 게시글에 첨부됩니다.',
+                    //         style: TextStyle(
+                    //             color: Color(0xff949494),
+                    //             fontSize: 12
+                    //         ),
+                    //       ),
+                    //     Expanded(
+                    //       child: SizedBox(
+                    //         height: 120,
+                    //         child: ListView.builder(
+                    //           scrollDirection: Axis.horizontal,
+                    //           shrinkWrap: true,
+                    //           itemCount: imageLength,
+                    //           itemBuilder: (context, index) {
+                    //             return Row(
+                    //               children: [
+                    //                 Stack(children: [
+                    //
+                    //                   Container(
+                    //                     decoration: BoxDecoration(
+                    //                         border: Border.all(color: Color(0xFFECECEC)),
+                    //                         borderRadius: BorderRadius.circular(8),
+                    //                         color: Colors.white
+                    //                     ),
+                    //                     height: 90,
+                    //                     width: 90,
+                    //                     child: ClipRRect(
+                    //                       borderRadius: BorderRadius.circular(7),
+                    //                       child: Image.file(
+                    //                         File(_imageFiles[index].path),
+                    //                         fit: BoxFit.cover,
+                    //                       ),
+                    //                     ),
+                    //                   ),
+                    //                   Positioned(
+                    //                     top: -8,
+                    //                     right: -8,
+                    //                     child: IconButton(
+                    //                       onPressed: () {
+                    //                         _imageFiles.removeAt(index);
+                    //                         imageLength = _imageFiles.length;
+                    //                         setState(() {});
+                    //                       },
+                    //                       icon: Icon(Icons.cancel), color: Color(0xFF111111),),
+                    //                   ),
+                    //                   if(index==0)
+                    //                     Positioned(
+                    //                       top: 68,
+                    //                       child: Opacity(
+                    //                         opacity:0.8,
+                    //                         child: Container(
+                    //                           decoration: BoxDecoration(
+                    //                             border: Border.all(
+                    //                                 color: Colors.transparent
+                    //                             ),
+                    //                             borderRadius: BorderRadius.only(
+                    //                                 bottomRight: Radius.circular(8),
+                    //                                 bottomLeft: Radius.circular(8)
+                    //                             ),
+                    //                             color: Colors.black87,
+                    //                           ),
+                    //                           height: 22,
+                    //                           width: 90,
+                    //                           child: ClipRRect(
+                    //                             borderRadius: BorderRadius.circular(7),
+                    //                             child: Text('대표사진',
+                    //                               style: TextStyle(color: Colors.white,
+                    //                                   fontSize: 12),
+                    //                               textAlign: TextAlign.center,
+                    //                             ),
+                    //                           ),
+                    //                         ),
+                    //                       ),
+                    //                     ),
+                    //                 ]),
+                    //                 SizedBox(
+                    //                   width: 8,
+                    //                 )
+                    //               ],
+                    //             );
+                    //           },
+                    //         ),
+                    //       ),
+                    //     )
+                    //   ],
+                    // ),
                     Form(
                         key: _formKey,
                         child:
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Row(
-                              children: [
-                                Container(
-                                  width: _size.width / 2 - 26,
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      if (isCategorySelected == true)
-                                        Text(
-                                          '구분',
-                                          style:
-                                          TextStyle(color: Color(0xff949494), fontSize: 12),
-                                        ),
-                                      TextButton(
-                                          style: TextButton.styleFrom(
-                                            minimumSize: Size.zero,
-                                            padding: EdgeInsets.symmetric(vertical: 6),
-                                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                          ),
-                                          onPressed: () {
-                                            showModalBottomSheet(
-                                                enableDrag: false,
-                                                context: context,
-                                                builder: (context) {
-                                                  return Container(
-                                                    color: Colors.white,
-                                                    padding: EdgeInsets.symmetric(
-                                                        horizontal: 20,
-                                                        vertical: 30),
-                                                    height: _size.height * 0.45,
-                                                    child: Column(
-                                                      mainAxisAlignment: MainAxisAlignment.start,
-                                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                                      children: [
-                                                        Text(
-                                                          '구분을 선택해주세요.',
-                                                          style: TextStyle(
-                                                              fontSize: 20,
-                                                              fontWeight: FontWeight.bold),
-                                                        ),
-                                                        Container(
-                                                          color: Colors.white,
-                                                          height: 30,
-                                                        ),
-                                                        Expanded(
-                                                          child: ListView.builder(
-                                                              padding: EdgeInsets.zero,
-                                                              itemCount: 4,
-                                                              itemBuilder: (context, index) {
-                                                                return Builder(builder: (context) {
-                                                                  return Column(
-                                                                    children: [
-                                                                      buildCategoryListTile(index),
-                                                                      Divider(
-                                                                        height: 20,
-                                                                        thickness: 0.5,
-                                                                      ),
-                                                                    ],
-                                                                  );
-                                                                });
-                                                              }),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  );
-                                                });
-                                          },
-                                          child: (isCategorySelected!)
-                                              ? Text('$SelectedCategory', style: TextStyle(
-                                              fontSize: 16, color: Color(0xFF111111)
-                                          ),)
-                                              : Text('구분', style: TextStyle(
-                                              fontSize: 16, color: Color(0xFF949494)
-                                          ),)),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                            Divider(
-                              height: 32,
-                              thickness: 0.5,
-                              color: Color(0xFFECECEC),
-                            ),
                             Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                SizedBox(
-                                  height: 4,
+                                SizedBox(height: 30),
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 4),
+                                  child: Text('제목', style: SDSTextStyle.regular.copyWith(
+                                      fontSize: 12,
+                                      color: SDSColor.gray900
+                                  ),),
                                 ),
+                                SizedBox(height: 8),
                                 TextFormField(
                                   textAlignVertical: TextAlignVertical.center,
-                                  cursorColor: Color(0xff3D6FED),
+                                  cursorColor: SDSColor.snowliveBlue,
                                   cursorHeight: 16,
                                   cursorWidth: 2,
                                   autovalidateMode: AutovalidateMode.onUserInteraction,
                                   controller: _titleTextEditingController,
-                                  strutStyle: StrutStyle(leading: 0.3),
+                                  style: SDSTextStyle.regular.copyWith(
+                                      fontSize: 15
+                                  ),
+                                  strutStyle: StrutStyle(
+                                      fontSize: 14, leading: 0),
                                   decoration: InputDecoration(
-                                    floatingLabelBehavior: FloatingLabelBehavior.always,
-                                    errorStyle: TextStyle(
+                                    floatingLabelBehavior: FloatingLabelBehavior.never,
+                                    errorMaxLines: 2,
+                                    errorStyle: SDSTextStyle.regular.copyWith(
                                       fontSize: 12,
+                                      color: SDSColor.red,
                                     ),
-                                    labelStyle: TextStyle(
-                                        color: Color(0xff949494)
-                                    ),
-                                    hintStyle:
-                                    TextStyle(color: Color(0xffDEDEDE), fontSize: 16),
+                                    labelStyle: SDSTextStyle.regular.copyWith(color: SDSColor.gray400, fontSize: 14),
+                                    hintStyle: SDSTextStyle.regular.copyWith(color: SDSColor.gray400, fontSize: 14),
                                     hintText: '글 제목을 입력해 주세요. (최대 50자)',
                                     labelText: '글 제목',
-                                    contentPadding: EdgeInsets.symmetric(vertical: 2),
-                                    border: InputBorder.none,
-                                  ),
+                                      contentPadding: EdgeInsets.only(
+                                          top: 14, bottom: 14, left: 12, right: 12),
+                                      fillColor: SDSColor.gray50,
+                                      hoverColor: SDSColor.snowliveBlue,
+                                      filled: true,
+                                      focusColor: SDSColor.snowliveBlue,
+                                      border: OutlineInputBorder(
+                                        borderSide: BorderSide(color: SDSColor.gray50),
+                                        borderRadius: BorderRadius.circular(6),
+                                      ),
+                                      errorBorder:  OutlineInputBorder(
+                                        borderSide: BorderSide(
+                                            color: SDSColor.red,
+                                            strokeAlign: BorderSide.strokeAlignInside,
+                                            width: 1.5),
+                                      ),
+                                      focusedBorder:  OutlineInputBorder(
+                                        borderSide: BorderSide(
+                                            color: SDSColor.snowliveBlue,
+                                            strokeAlign: BorderSide.strokeAlignInside,
+                                            width: 1.5),
+                                      ),
+                                      enabledBorder: OutlineInputBorder(
+                                        borderSide: BorderSide(color: Colors.transparent),
+                                        borderRadius: BorderRadius.circular(6),
+                                      )),
                                   validator: (val) {
                                     if (val!.length <= 50 && val.length >= 1) {
                                       return null;
@@ -465,56 +416,183 @@ class _Bulletin_Free_UploadState extends State<Bulletin_Free_Upload> {
                                     }
                                   },
                                 ),
-                              ],
-                            ),
-                            Divider(
-                              height: 32,
-                              thickness: 0.5,
-                              color: Color(0xFFECECEC),
-                            ),
-                            Container(
-                              height: _size.height-500,
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Expanded(
-                                    child: TextFormField(
-                                      maxLines: null,
-                                      textAlignVertical: TextAlignVertical.center,
-                                      cursorColor: Color(0xff3D6FED),
-                                      cursorHeight: 16,
-                                      cursorWidth: 2,
-                                      autovalidateMode: AutovalidateMode.onUserInteraction,
-                                      controller: _itemDescribTextEditingController,
-                                      strutStyle: StrutStyle(leading: 0.3),
-                                      decoration: InputDecoration(
-                                        floatingLabelBehavior: FloatingLabelBehavior.always,
-                                        errorStyle: TextStyle(
-                                          fontSize: 12,
-                                        ),
-                                        labelStyle: TextStyle(
-                                            color: Color(0xff949494)
-                                        ),
-                                        hintStyle:
-                                        TextStyle(color: Color(0xffDEDEDE), fontSize: 16),
-                                        hintText: '게시글 내용을 작성해 주세요. (최대 1,000자)',
-                                        labelText: '내용',
-                                        border: InputBorder.none,
+                                SizedBox(height: 30),
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 4),
+                                  child: Text('게시글 종류', style: SDSTextStyle.regular.copyWith(
+                                      fontSize: 12,
+                                      color: SDSColor.gray900
+                                  ),),
+                                ),
+                                SizedBox(height: 8),
+                                GestureDetector(
+                                  onTap: (){
+                                    showModalBottomSheet(
+                                        backgroundColor: Colors.transparent,
+                                        enableDrag: false,
+                                        context: context,
+                                        builder: (context) {
+                                          return Container(
+                                            height: 350,
+                                            decoration: BoxDecoration(
+                                              borderRadius: BorderRadius.only(topLeft: Radius.circular(16), topRight: Radius.circular(16)),
+                                              color: SDSColor.snowliveWhite,
+                                            ),
+                                            padding: EdgeInsets.only(bottom: 20, right: 20, left: 20, top: 12),
+                                            child: Column(
+                                              crossAxisAlignment: CrossAxisAlignment.center,
+                                              children: [
+                                                Column(
+                                                  mainAxisAlignment: MainAxisAlignment.start,
+                                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                                  children: [
+                                                    Padding(
+                                                      padding: const EdgeInsets.only(bottom: 20),
+                                                      child: Container(
+                                                        height: 4,
+                                                        width: 36,
+                                                        decoration: BoxDecoration(
+                                                          borderRadius: BorderRadius.circular(10),
+                                                          color: SDSColor.gray200,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    Text(
+                                                      '구분을 선택해주세요.',
+                                                      style: SDSTextStyle.bold.copyWith(fontSize: 16, color: SDSColor.gray900),
+                                                      textAlign: TextAlign.center,
+                                                    ),
+                                                    SizedBox(height: 24),
+                                                  ],
+                                                ),
+                                                Expanded(
+                                                  child: ListView.builder(
+                                                      padding: EdgeInsets.zero,
+                                                      itemCount: 4,
+                                                      itemBuilder: (context, index) {
+                                                        return Builder(builder: (context) {
+                                                          return Column(
+                                                            children: [
+                                                              buildCategoryListTile(index),
+                                                            ],
+                                                          );
+                                                        });
+                                                      }),
+                                                ),
+                                              ],
+                                            ),
+                                          );
+                                        });
+                                  },
+                                  child: Container(
+                                    height: 48,
+                                    width: _size.width - 32,
+                                    padding: EdgeInsets.symmetric(vertical: 14, horizontal: 12),
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(6),
+                                      border: Border.all(
+                                          color: SDSColor.gray50
                                       ),
-                                      validator: (val) {
-                                        if (val!.length <= 1000 && val.length >= 1) {
-                                          return null;
-                                        } else if (val.length == 0) {
-                                          return '내용을 입력해주세요.';
-                                        } else {
-                                          return '최대 입력 가능한 글자 수를 초과했습니다.';
-                                        }
-                                      },
+                                      color: SDSColor.gray50,
+                                    ),
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        (isCategorySelected!)
+                                            ? Text('$SelectedCategory',
+                                          style: SDSTextStyle.regular.copyWith(color: SDSColor.gray900, fontSize: 14),
+                                        )
+                                            : Text('구분',
+                                          style: SDSTextStyle.regular.copyWith(color: SDSColor.gray400, fontSize: 14),
+                                        ),
+                                        Image.asset(
+                                          'assets/imgs/icons/icon_textform_dropdown.png',
+                                          fit: BoxFit.cover,
+                                          width: 22,
+                                          height: 22,
+                                          color: SDSColor.gray700,
+                                        )
+                                      ],
                                     ),
                                   ),
-                                ],
-                              ),
+                                ),
+                              ],
+                            ),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                SizedBox(height: 30),
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 4),
+                                  child: Text('상세 설명', style: SDSTextStyle.regular.copyWith(
+                                      fontSize: 12,
+                                      color: SDSColor.gray900
+                                  ),),
+                                ),
+                                SizedBox(height: 8),
+                                TextFormField(
+                                  maxLines: null,
+                                  textAlignVertical: TextAlignVertical.top,
+                                  cursorColor: SDSColor.snowliveBlue,
+                                  cursorHeight: 16,
+                                  cursorWidth: 2,
+                                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                                  controller: _itemDescribTextEditingController,
+                                  style: SDSTextStyle.regular.copyWith(
+                                      fontSize: 15
+                                  ),
+                                  strutStyle: StrutStyle(
+                                      fontSize: 14, leading: 0),
+                                  decoration: InputDecoration(
+                                      alignLabelWithHint: true,
+                                      floatingLabelBehavior: FloatingLabelBehavior.never,
+                                      errorMaxLines: 2,
+                                      errorStyle: SDSTextStyle.regular.copyWith(
+                                        fontSize: 12,
+                                        color: SDSColor.red,
+                                      ),
+                                      labelStyle: SDSTextStyle.regular.copyWith(color: SDSColor.gray400, fontSize: 14),
+                                      hintStyle: SDSTextStyle.regular.copyWith(color: SDSColor.gray400, fontSize: 14),
+                                    hintText: '게시글 상세 내용을 작성해 주세요.\n \n 부적절한 부적절한 단어나 문장이 포함되는 경우 사전 고지없이 게시글 삭제가 될 수 있습니다.',
+                                    labelText: '내용',
+                                      contentPadding: EdgeInsets.only(
+                                          top: 14, bottom: 14, left: 12, right: 12),
+                                      fillColor: SDSColor.gray50,
+                                      hoverColor: SDSColor.snowliveBlue,
+                                      filled: true,
+                                      focusColor: SDSColor.snowliveBlue,
+                                      border: OutlineInputBorder(
+                                        borderSide: BorderSide(color: SDSColor.gray50),
+                                        borderRadius: BorderRadius.circular(6),
+                                      ),
+                                      errorBorder:  OutlineInputBorder(
+                                        borderSide: BorderSide(
+                                            color: SDSColor.red,
+                                            strokeAlign: BorderSide.strokeAlignInside,
+                                            width: 1.5),
+                                      ),
+                                      focusedBorder:  OutlineInputBorder(
+                                        borderSide: BorderSide(
+                                            color: SDSColor.snowliveBlue,
+                                            strokeAlign: BorderSide.strokeAlignInside,
+                                            width: 1.5),
+                                      ),
+                                      enabledBorder: OutlineInputBorder(
+                                        borderSide: BorderSide(color: Colors.transparent),
+                                        borderRadius: BorderRadius.circular(6),
+                                      )),
+                                  validator: (val) {
+                                    if (val!.length <= 1000 && val.length >= 1) {
+                                      return null;
+                                    } else if (val.length == 0) {
+                                      return '내용을 입력해주세요.';
+                                    } else {
+                                      return '최대 입력 가능한 글자 수를 초과했습니다.';
+                                    }
+                                  },
+                                ),
+                              ],
                             ),
                           ],
                         )

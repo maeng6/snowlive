@@ -12,12 +12,14 @@ import 'package:get/get.dart';
 import 'package:com.snowlive/controller/user/vm_userModelController.dart';
 import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 import '../../../controller/alarm/vm_alarmCenterController.dart';
+import '../../../controller/liveCrew/vm_allCrewDocsController.dart';
 import '../../../controller/user/vm_allUserDocsController.dart';
 import '../../../controller/bulletin/vm_bulletinFreeController.dart';
 import '../../../controller/bulletin/vm_bulletinFreeReplyController.dart';
 import '../../../data/imgaUrls/Data_url_image.dart';
 import '../../../model/m_alarmCenterModel.dart';
 import '../../more/friend/v_friendDetailPage.dart';
+import '../../snowliveDesignStyle.dart';
 
 class Bulletin_Free_List_Detail extends StatefulWidget {
   Bulletin_Free_List_Detail({Key? key}) : super(key: key);
@@ -35,6 +37,7 @@ class _Bulletin_Free_List_DetailState extends State<Bulletin_Free_List_Detail> {
   AlarmCenterController _alarmCenterController = Get.find<AlarmCenterController>();
   TimeStampController _timeStampController = Get.find<TimeStampController>();
   StreamController_Bulletin _streamController_Bulletin = Get.find<StreamController_Bulletin>();
+  AllCrewDocsController _allCrewDocsController = Get.find<AllCrewDocsController>();
   //TODO: Dependency Injection**************************************************
 
   final _controller = TextEditingController();
@@ -43,6 +46,7 @@ class _Bulletin_Free_List_DetailState extends State<Bulletin_Free_List_Detail> {
   bool _replyReverse = true;
   var _firstPress = true;
   int _currentIndex = 0;
+
 
 
   ScrollController _scrollController = ScrollController();
@@ -85,7 +89,7 @@ class _Bulletin_Free_List_DetailState extends State<Bulletin_Free_List_Detail> {
         child: Scaffold(
           backgroundColor: Colors.white,
           appBar: PreferredSize(
-            preferredSize: Size.fromHeight(58),
+            preferredSize: Size.fromHeight(44),
             child: AppBar(
               leading: GestureDetector(
                 child: Image.asset(
@@ -99,18 +103,40 @@ class _Bulletin_Free_List_DetailState extends State<Bulletin_Free_List_Detail> {
                 },
               ),
               actions: [
+                GestureDetector(
+                  onTap: (){},
+                  child: Padding(
+                    padding: const EdgeInsets.only(right: 14),
+                    child: Image.asset(
+                      'assets/imgs/icons/icon_header_scrap.png',
+                      width: 26,
+                      height: 26,
+                    ),
+                  ),
+                ),
                 (_bulletinFreeModelController.uid != _userModelController.uid)
                     ? GestureDetector(
                   onTap: () => showModalBottomSheet(
                       enableDrag: false,
+                      isScrollControlled: true,
+                      backgroundColor: Colors.transparent,
                       context: context,
                       builder: (context) {
                         return SafeArea(
-                          child: Container(
-                            height: 140,
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 20.0, vertical: 14),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 20),
+                            child: Container(
+                              margin: EdgeInsets.only(
+                                left: 16,
+                                right: 16,
+                                top: 16,
+                              ),
+                              height: 144,
+                              padding: EdgeInsets.all(16),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(16),
+                              ),
                               child: Column(
                                 children: [
                                   GestureDetector(
@@ -119,78 +145,82 @@ class _Bulletin_Free_List_DetailState extends State<Bulletin_Free_List_Detail> {
                                       title: Center(
                                         child: Text(
                                           '신고하기',
-                                          style: TextStyle(
+                                          style: SDSTextStyle.bold.copyWith(
                                             fontSize: 15,
-                                            fontWeight: FontWeight.bold,
+                                            color: SDSColor.gray900
                                           ),
                                         ),
                                       ),
                                       //selected: _isSelected[index]!,
                                       onTap: () async {
-                                        Get.dialog(AlertDialog(
-                                          contentPadding: EdgeInsets.only(bottom: 0, left: 20, right: 20, top: 30),
-                                          elevation: 0,
-                                          shape: RoundedRectangleBorder(
-                                              borderRadius: BorderRadius.circular(10.0)),
-                                          buttonPadding:
-                                          EdgeInsets.symmetric(horizontal: 20, vertical: 0),
-                                          content: Text(
-                                            '이 회원을 신고하시겠습니까?',
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.w600,
-                                                fontSize: 15),
-                                          ),
+                                        Get.dialog(
+                                            AlertDialog(
+                                              contentPadding: EdgeInsets.only(bottom: 0, left: 28, right: 28, top: 30),
+                                              elevation: 0,
+                                              shape: RoundedRectangleBorder(
+                                                  borderRadius: BorderRadius.circular(16)),
+                                              buttonPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+                                              content: Container(
+                                                height: 32,
+                                                child: Column(
+                                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                                  children: [
+                                                    Text('이 회원을 신고하시겠습니까?',
+                                                      style: SDSTextStyle.bold.copyWith(
+                                                      fontSize: 16,
+                                                          color: SDSColor.gray900),
+                                            ),
+                                                  ],
+                                                ),
+                                              ),
                                           actions: [
                                             Row(
+                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                               children: [
-                                                TextButton(
-                                                    onPressed: () {
-                                                      Navigator.pop(
-                                                          context);
-                                                    },
-                                                    child: Text(
-                                                      '취소',
-                                                      style: TextStyle(
-                                                        fontSize: 15,
-                                                        color: Color(
-                                                            0xFF949494),
-                                                        fontWeight:
-                                                        FontWeight.bold,
-                                                      ),
-                                                    )),
-                                                TextButton(
-                                                    onPressed: () async {
-                                                      var repoUid =
-                                                          _bulletinFreeModelController
-                                                              .uid;
-                                                      await _userModelController
-                                                          .repoUpdate(
-                                                          repoUid);
-                                                      Navigator.pop(
-                                                          context);
-                                                      Navigator.pop(
-                                                          context);
-                                                    },
-                                                    child: Text(
-                                                      '신고',
-                                                      style: TextStyle(
-                                                        fontSize: 15,
-                                                        color: Color(
-                                                            0xFF3D83ED),
-                                                        fontWeight:
-                                                        FontWeight.bold,
-                                                      ),
-                                                    ))
+                                                Expanded(
+                                                  child: Container(
+                                                    child: TextButton(
+                                                        onPressed: () {
+                                                          Navigator.pop(
+                                                              context);
+                                                        },
+                                                        child: Text(
+                                                          '취소',
+                                                          style: SDSTextStyle.bold.copyWith(
+                                                            fontSize: 16,
+                                                            color: SDSColor.gray500,
+                                                          ),
+                                                        )),
+                                                  ),
+                                                ),
+                                                Expanded(
+                                                  child: Container(
+                                                    child: TextButton(
+                                                        onPressed: () async {
+                                                          var repoUid = _bulletinFreeModelController.uid;
+                                                          await _userModelController.repoUpdate(
+                                                              repoUid);
+                                                          Navigator.pop(context);
+                                                          Navigator.pop(context);
+                                                        },
+                                                        child: Text(
+                                                          '신고하기',
+                                                          style: SDSTextStyle.bold.copyWith(
+                                                            fontSize: 16,
+                                                            color: SDSColor.gray900,
+                                                          ),
+                                                        )),
+                                                  ),
+                                                )
                                               ],
-                                              mainAxisAlignment:
-                                              MainAxisAlignment.end,
+
                                             )
                                           ],
                                         ));
                                       },
                                       shape: RoundedRectangleBorder(
                                           borderRadius:
-                                          BorderRadius.circular(10)),
+                                          BorderRadius.circular(16)),
                                     ),
                                   ),
                                   GestureDetector(
@@ -199,83 +229,86 @@ class _Bulletin_Free_List_DetailState extends State<Bulletin_Free_List_Detail> {
                                       title: Center(
                                         child: Text(
                                           '이 회원의 글 모두 숨기기',
-                                          style: TextStyle(
-                                            fontSize: 15,
-                                            fontWeight: FontWeight.bold,
+                                          style: SDSTextStyle.bold.copyWith(
+                                              fontSize: 15,
+                                              color: SDSColor.gray900
                                           ),
                                         ),
                                       ),
                                       //selected: _isSelected[index]!,
                                       onTap: () async {
-                                        Get.dialog(AlertDialog(
-                                          contentPadding: EdgeInsets.only(bottom: 0, left: 20, right: 20, top: 30),
-                                          elevation: 0,
-                                          shape: RoundedRectangleBorder(
-                                              borderRadius: BorderRadius.circular(10.0)),
-                                          buttonPadding:
-                                          EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+                                        Get.dialog(
+                                            AlertDialog(
+                                              contentPadding: EdgeInsets.only(bottom: 0, left: 28, right: 28, top: 30),
+                                              elevation: 0,
+                                              shape: RoundedRectangleBorder(
+                                                  borderRadius: BorderRadius.circular(16)),
+                                              buttonPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
                                           content:  Container(
-                                            height: _size.width * 0.17,
+                                            height: 70,
                                             child: Column(
-                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              crossAxisAlignment: CrossAxisAlignment.center,
                                               children: [
                                                 Text(
                                                   '이 회원의 게시물을 모두 숨길까요?',
-                                                  style: TextStyle(
-                                                      fontWeight: FontWeight.w600,
-                                                      fontSize: 15),
+                                                  style: SDSTextStyle.bold.copyWith(
+                                                      fontSize: 16,
+                                                      color: SDSColor.gray900),
                                                 ),
-                                                SizedBox(
-                                                  height: 10,
-                                                ),
-                                                Text(
-                                                  '차단해제는 [더보기 - 친구 - 설정 - 차단목록]에서\n하실 수 있습니다.',
-                                                  style: TextStyle(
-                                                      fontWeight: FontWeight.w600,
-                                                      fontSize: 12,
-                                                      color: Color(0xFF555555)),
+                                                Padding(
+                                                  padding: const EdgeInsets.only(top: 8),
+                                                  child: Text(
+                                                    '차단해제는 [더보기 - 친구 - 설정 - 차단목록]에서하실 수 있습니다.',
+                                                    style: SDSTextStyle.regular.copyWith(
+                                                        fontSize: 14,
+                                                        color: SDSColor.gray600,
+                                                        height: 1.4),
+                                                    textAlign: TextAlign.center,
+                                                  ),
                                                 ),
                                               ],
                                             ),
                                           ),
                                           actions: [
                                             Row(
+                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                               children: [
-                                                TextButton(
-                                                    onPressed: () {
-                                                      Navigator.pop(context);
-                                                    },
-                                                    child: Text(
-                                                      '취소',
-                                                      style: TextStyle(
-                                                        fontSize: 15,
-                                                        color: Color(
-                                                            0xFF949494),
-                                                        fontWeight:
-                                                        FontWeight.bold,
-                                                      ),
-                                                    )),
-                                                TextButton(
-                                                    onPressed: () {
-                                                      var repoUid = _bulletinFreeModelController.uid;
-                                                      _userModelController.updateRepoUid(repoUid);
-                                                      Navigator.pop(context);
-                                                      Navigator.pop(context);
-                                                      Navigator.pop(context);
-                                                    },
-                                                    child: Text(
-                                                      '확인',
-                                                      style: TextStyle(
-                                                        fontSize: 15,
-                                                        color: Color(
-                                                            0xFF3D83ED),
-                                                        fontWeight:
-                                                        FontWeight.bold,
-                                                      ),
-                                                    ))
+                                                Expanded(
+                                                  child: Container(
+                                                    child: TextButton(
+                                                        onPressed: () {
+                                                          Navigator.pop(context);
+                                                        },
+                                                        child: Text(
+                                                          '취소',
+                                                          style: SDSTextStyle.bold.copyWith(
+                                                            fontSize: 16,
+                                                            color: SDSColor.gray500,
+                                                          ),
+                                                        )),
+                                                  ),
+                                                ),
+                                                Expanded(
+                                                  child: Container(
+                                                    child: TextButton(
+                                                        onPressed: () {
+                                                          var repoUid = _bulletinFreeModelController.uid;
+                                                          _userModelController.updateRepoUid(repoUid);
+                                                          Navigator.pop(context);
+                                                          Navigator.pop(context);
+                                                          Navigator.pop(context);
+                                                        },
+                                                        child: Text(
+                                                          '확인',
+                                                          style: SDSTextStyle.bold.copyWith(
+                                                            fontSize: 16,
+                                                            color: SDSColor.gray900,
+                                                          ),
+                                                        )),
+                                                  ),
+                                                )
                                               ],
-                                              mainAxisAlignment:
-                                              MainAxisAlignment.end,
+
                                             )
                                           ],
                                         ));
@@ -292,25 +325,36 @@ class _Bulletin_Free_List_DetailState extends State<Bulletin_Free_List_Detail> {
                         );
                       }),
                   child: Padding(
-                    padding: const EdgeInsets.only(bottom: 1, right: 10),
-                    child: Icon(
-                      Icons.more_horiz_rounded,
-                      size: 28,
-                      color: Color(0xFF111111),
+                    padding: const EdgeInsets.only(right: 14),
+                    child: Image.asset(
+                      'assets/imgs/icons/icon_header_more.png',
+                      width: 26,
+                      height: 26,
                     ),
                   ),
                 )
                     : GestureDetector(
                   onTap: () => showModalBottomSheet(
                       enableDrag: false,
+                      isScrollControlled: true,
+                      backgroundColor: Colors.transparent,
                       context: context,
                       builder: (context) {
-                        return SafeArea(
-                          child: Container(
-                            height: 140,
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 20.0, vertical: 14),
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 20),
+                          child: SafeArea(
+                            child: Container(
+                              margin: EdgeInsets.only(
+                                left: 16,
+                                right: 16,
+                                top: 16,
+                              ),
+                              height: 144,
+                              padding: EdgeInsets.all(16),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(16),
+                              ),
                               child: Column(
                                 children: [
                                   (_bulletinFreeModelController.uid == _userModelController.uid)?
@@ -320,9 +364,9 @@ class _Bulletin_Free_List_DetailState extends State<Bulletin_Free_List_Detail> {
                                       title: Center(
                                         child: Text(
                                           '수정하기',
-                                          style: TextStyle(
-                                            fontSize: 15,
-                                            fontWeight: FontWeight.bold,
+                                          style: SDSTextStyle.bold.copyWith(
+                                              fontSize: 15,
+                                              color: SDSColor.gray900
                                           ),
                                         ),
                                       ),
@@ -348,10 +392,9 @@ class _Bulletin_Free_List_DetailState extends State<Bulletin_Free_List_Detail> {
                                       title: Center(
                                         child: Text(
                                           '삭제',
-                                          style: TextStyle(
+                                          style: SDSTextStyle.bold.copyWith(
                                               fontSize: 15,
-                                              fontWeight: FontWeight.bold,
-                                              color: Color(0xFFD63636)
+                                              color: SDSColor.red
                                           ),
                                         ),
                                       ),
@@ -361,28 +404,35 @@ class _Bulletin_Free_List_DetailState extends State<Bulletin_Free_List_Detail> {
                                         showModalBottomSheet(
                                             context: context,
                                             builder: (context) {
-                                              return Container(
-                                                color: Colors.white,
-                                                height: 180,
-                                                child: Padding(
-                                                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                                              return SafeArea(
+                                                child: Container(
+                                                  decoration: BoxDecoration(
+                                                    borderRadius: BorderRadius.only(topLeft: Radius.circular(16), topRight: Radius.circular(16)),
+                                                    color: SDSColor.snowliveWhite,
+                                                  ),
+                                                  padding: EdgeInsets.only(bottom: 20, right: 20, left: 20, top: 12),
+                                                  height: 160,
                                                   child: Column(
-                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                    crossAxisAlignment: CrossAxisAlignment.center,
                                                     mainAxisAlignment: MainAxisAlignment.start,
                                                     children: [
-                                                      SizedBox(
-                                                        height: 30,
+                                                      Padding(
+                                                        padding: const EdgeInsets.only(bottom: 20),
+                                                        child: Container(
+                                                          height: 4,
+                                                          width: 36,
+                                                          decoration: BoxDecoration(
+                                                            borderRadius: BorderRadius.circular(10),
+                                                            color: SDSColor.gray200,
+                                                          ),
+                                                        ),
                                                       ),
                                                       Text(
                                                         '삭제하시겠습니까?',
-                                                        style: TextStyle(
-                                                            fontSize: 20,
-                                                            fontWeight: FontWeight.bold,
-                                                            color: Color(0xFF111111)),
+                                                        style: SDSTextStyle.bold.copyWith(fontSize: 16, color: SDSColor.gray900),
+                                                        textAlign: TextAlign.center,
                                                       ),
-                                                      SizedBox(
-                                                        height: 30,
-                                                      ),
+                                                      Expanded(child: Container()),
                                                       Row(
                                                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                                         children: [
@@ -394,21 +444,16 @@ class _Bulletin_Free_List_DetailState extends State<Bulletin_Free_List_Detail> {
                                                               },
                                                               child: Text(
                                                                 '취소',
-                                                                style: TextStyle(
-                                                                    color: Colors
-                                                                        .white,
-                                                                    fontSize:
-                                                                    15,
-                                                                    fontWeight:
-                                                                    FontWeight.bold),
+                                                                style: SDSTextStyle.bold.copyWith(
+                                                                    color: SDSColor.snowliveWhite,
+                                                                    fontSize: 16),
                                                               ),
                                                               style: TextButton.styleFrom(
                                                                   splashFactory: InkRipple.splashFactory,
                                                                   elevation: 0,
-                                                                  minimumSize: Size(100, 56),
-                                                                  backgroundColor:
-                                                                  Color(0xff555555),
-                                                                  padding: EdgeInsets.symmetric(horizontal: 0)),
+                                                                  minimumSize: Size(100, 48),
+                                                                  backgroundColor: SDSColor.sBlue500
+                                                              ),
                                                             ),
                                                           ),
                                                           SizedBox(
@@ -441,19 +486,18 @@ class _Bulletin_Free_List_DetailState extends State<Bulletin_Free_List_Detail> {
                                                                 CustomFullScreenDialog.cancelDialog();
                                                               },
                                                               child: Text('확인',
-                                                                style: TextStyle(
-                                                                    color: Colors.white,
-                                                                    fontSize: 15,
-                                                                    fontWeight: FontWeight.bold),
+                                                                style: SDSTextStyle.bold.copyWith(
+                                                                    color: SDSColor.snowliveWhite,
+                                                                    fontSize: 16),
                                                               ),
                                                               style: TextButton.styleFrom(
-                                                                  splashFactory: InkRipple.splashFactory,
-                                                                  elevation: 0,
-                                                                  minimumSize: Size(100, 56),
-                                                                  backgroundColor: Color(0xff2C97FB),
-                                                                  padding: EdgeInsets.symmetric(horizontal: 0)),
-                                                            ),
+                                                                splashFactory: InkRipple.splashFactory,
+                                                                elevation: 0,
+                                                                minimumSize: Size(100, 48),
+                                                                backgroundColor: SDSColor.snowliveBlue,
+                                                              ),
                                                           ),
+                                                          )
                                                         ],
                                                       )
                                                     ],
@@ -473,11 +517,11 @@ class _Bulletin_Free_List_DetailState extends State<Bulletin_Free_List_Detail> {
                         );
                       }),
                   child: Padding(
-                    padding: const EdgeInsets.only(bottom: 1, right: 10),
-                    child: Icon(
-                      Icons.more_horiz_rounded,
-                      size: 28,
-                      color: Color(0xFF111111),
+                    padding: const EdgeInsets.only(right: 14),
+                    child: Image.asset(
+                      'assets/imgs/icons/icon_header_more.png',
+                      width: 26,
+                      height: 26,
                     ),
                   ),
                 )
@@ -501,102 +545,32 @@ class _Bulletin_Free_List_DetailState extends State<Bulletin_Free_List_Detail> {
                         controller: _scrollController,
                         child: Column(
                           children: [
-                            if (_bulletinFreeModelController.itemImagesUrls!.isEmpty)
-                              SizedBox(
-                                height: 6,
-                              ),
-                            if (_bulletinFreeModelController.itemImagesUrls!.isNotEmpty)
-                              Stack(
-                                children: [
-                                  CarouselSlider.builder(
-                                    options: CarouselOptions(
-                                      height: 280,
-                                      viewportFraction: 1,
-                                      enableInfiniteScroll: false,
-                                      onPageChanged: (index, reason) {
-                                        setState(() {
-                                          _currentIndex = index;
-                                        });
-                                      },
-                                    ),
-                                    itemCount:
-                                    _bulletinFreeModelController.itemImagesUrls!.length,
-                                    itemBuilder: (context, index, pageViewIndex) {
-                                      return Container(
-                                        padding: EdgeInsets.only(bottom: 16),
-                                        child: StreamBuilder<Object>(
-                                            stream: null,
-                                            builder: (context, snapshot) {
-                                              return Row(
-                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                children: [
-                                                  GestureDetector(
-                                                    onTap: () {
-                                                      Get.to(() => BulletinFreeImageScreen());
-                                                    },
-                                                    child: ExtendedImage.network(
-                                                      _bulletinFreeModelController
-                                                          .itemImagesUrls![index],
-                                                      fit: BoxFit.cover,
-                                                      width: _size.width,
-                                                      cacheHeight: 200,
-                                                      height: 280,
-                                                    ),
-                                                  ),
-                                                ],
-                                              );
-                                            }),
-                                      );
-                                    },
-                                  ),
-                                  Center(
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(top: 245),
-                                      child: Row(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        children: List.generate(
-                                          _bulletinFreeModelController.itemImagesUrls!.length,
-                                              (index) {
-                                            return Container(
-                                              width: 8,
-                                              height: 8,
-                                              margin: EdgeInsets.symmetric(horizontal: 4),
-                                              decoration: BoxDecoration(
-                                                shape: BoxShape.circle,
-                                                color: _currentIndex == index ? Color(0xFFFFFFFF) : Color(0xFF111111).withOpacity(0.5),
-                                              ),
-                                            );
-                                          },
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
                             Padding(
                               padding: const EdgeInsets.symmetric(horizontal: 16),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Container(
-                                    padding: EdgeInsets.symmetric(horizontal: 6, vertical: 3),
-                                    decoration: BoxDecoration(
-                                      color: Color(0xFFECECEC),
-                                      borderRadius: BorderRadius.circular(4),
-                                    ),
-                                    child: Text(
-                                      '${_bulletinFreeModelController.category}',
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: TextStyle(
-                                          fontSize: 13,
-                                          fontWeight: FontWeight.bold,
-                                          color: Color(0xFF666666)),
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: 10),
+                                    child: Container(
+                                      padding: EdgeInsets.symmetric(horizontal: 6, vertical: 3),
+                                      decoration: BoxDecoration(
+                                        color: SDSColor.blue50,
+                                        borderRadius: BorderRadius.circular(4),
+                                      ),
+                                      child: Text(
+                                        '${_bulletinFreeModelController.category}',
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: SDSTextStyle.regular.copyWith(
+                                            fontSize: 12,
+                                            color: SDSColor.snowliveBlue),
+                                      ),
                                     ),
                                   ),
                                   SizedBox(
-                                    height: 12,
+                                    height: 8,
                                   ),
                                   Container(
                                     width: _size.width - 32,
@@ -604,125 +578,197 @@ class _Bulletin_Free_List_DetailState extends State<Bulletin_Free_List_Detail> {
                                       (_bulletinFreeModelController.soldOut == true)
                                           ? '거래완료'
                                           : '${_bulletinFreeModelController.title}',
-                                      maxLines: 2,
+                                      maxLines: 3,
                                       overflow: TextOverflow.ellipsis,
-                                      style: TextStyle(
+                                      style: SDSTextStyle.bold.copyWith(
                                           fontSize: 18,
-                                          fontWeight: FontWeight.bold),
+                                      ),
                                     ),
                                   ),
                                   SizedBox(
-                                    height: 10,
+                                    height: 8,
                                   ),
                                   Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
-                                      Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Row(
-                                            children: [
-                                              StreamBuilder(
-                                                  stream: _streamController_Bulletin.setupStreams_bulletinFree_detail_user(),
-                                                  builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-                                                    if (!snapshot.hasData || snapshot.data == null) {
-                                                      return  SizedBox();
-                                                    }
-                                                    final userDoc = snapshot.data!.docs;
-                                                    final userData = userDoc.isNotEmpty ? userDoc[0] : null;
-                                                    if (userData == null) {
-                                                      return SizedBox();
-                                                    }
-                                                    return GestureDetector(
-                                                      onTap: (){
-                                                        Get.to(() => FriendDetailPage(uid: userData['uid'], favoriteResort: userData['favoriteResort'],));
-                                                      },
-                                                      child: Row(
-                                                        crossAxisAlignment: CrossAxisAlignment.center,
-                                                        mainAxisAlignment: MainAxisAlignment.start,
-                                                        children: [
-                                                          if (userData['profileImageUrl'] != "")
-                                                            Container(
-                                                              width: 20,
-                                                              height: 20,
-                                                              decoration: BoxDecoration(
-                                                                  color: Color(0xFFDFECFF),
-                                                                  borderRadius: BorderRadius.circular(50)
-                                                              ),
-                                                              child: ExtendedImage.network(
-                                                                userData['profileImageUrl'],
-                                                                cache: true,
-                                                                cacheHeight: 100,
-                                                                shape: BoxShape.circle,
-                                                                borderRadius:
-                                                                BorderRadius.circular(20),
-                                                                width: 20,
-                                                                height: 20,
-                                                                fit: BoxFit.cover,
-                                                                loadStateChanged: (ExtendedImageState state) {
-                                                                  switch (state.extendedImageLoadState) {
-                                                                    case LoadState.loading:
-                                                                      return SizedBox.shrink();
-                                                                    case LoadState.completed:
-                                                                      return state.completedWidget;
-                                                                    case LoadState.failed:
-                                                                      return ExtendedImage.network(
-                                                                        '${profileImgUrlList[0].default_round}',
-                                                                        shape: BoxShape.circle,
-                                                                        borderRadius: BorderRadius.circular(20),
-                                                                        width: 20,
-                                                                        height: 20,
-                                                                        cacheHeight: 100,
-                                                                        cache: true,
-                                                                        fit: BoxFit.cover,
-                                                                      ); // 예시로 에러 아이콘을 반환하고 있습니다.
-                                                                    default:
-                                                                      return null;
-                                                                  }
-                                                                },
+                                      StreamBuilder(
+                                          stream: _streamController_Bulletin.setupStreams_bulletinFree_detail_user(),
+                                          builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+
+                                            if (!snapshot.hasData || snapshot.data == null) {
+                                              return  SizedBox();
+                                            }
+                                            final userDoc = snapshot.data!.docs;
+                                            final userData = userDoc.isNotEmpty ? userDoc[0] : null;
+
+                                            String? crewName = _allCrewDocsController.findCrewName(userData['liveCrew'], _allCrewDocsController.allCrewDocs);
+
+                                            if (userData == null) {
+                                              return SizedBox();
+                                            }
+                                            return Column(
+                                              children: [
+                                                Row(
+                                                  children: [
+                                                    Text('$_time',
+                                                      style: SDSTextStyle.regular.copyWith(
+                                                        fontSize: 12,
+                                                        color: SDSColor.gray700,
+                                                      ),
+                                                    ),
+                                                    Text('  |  ',
+                                                      style: SDSTextStyle.regular.copyWith(
+                                                        fontSize: 12,
+                                                        color: SDSColor.gray300,
+                                                      ),
+                                                    ),
+                                                    Row(
+                                                      mainAxisAlignment: MainAxisAlignment.center,
+                                                      children: [
+                                                        Image.asset('assets/imgs/icons/icon_eye_rounded.png',
+                                                          width: 14,
+                                                          height: 14,),
+                                                        Padding(
+                                                          padding: const EdgeInsets.only(left: 2),
+                                                          child: Text('48',
+                                                            // '${viewerUid.length.toString()}',
+                                                            style: SDSTextStyle.regular.copyWith(
+                                                              fontSize: 12,
+                                                              color: SDSColor.gray700,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        SizedBox(width: 6),
+                                                        Image.asset('assets/imgs/icons/icon_reply_rounded.png',
+                                                          width: 14,
+                                                          height: 14,),
+                                                        Padding(
+                                                          padding: const EdgeInsets.only(left: 2),
+                                                          child: Text('492',
+                                                            // chatDocs[index].get('bulletinFreeReplyCount').toString(),
+                                                            style: SDSTextStyle.regular.copyWith(
+                                                              fontSize: 12,
+                                                              color: SDSColor.gray700,
+                                                            ),
+                                                          ),
+                                                        )
+                                                      ],
+                                                    ),
+                                                  ],
+                                                ),
+                                                GestureDetector(
+                                                  onTap: (){
+                                                    Get.to(() => FriendDetailPage(uid: userData['uid'], favoriteResort: userData['favoriteResort'],));
+                                                  },
+                                                  child: Padding(
+                                                    padding: const EdgeInsets.only(top: 16),
+                                                    child: Row(
+                                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                                      mainAxisAlignment: MainAxisAlignment.start,
+                                                      children: [
+                                                        if (userData['profileImageUrl'] != "")
+                                                          Container(
+                                                            width: 32,
+                                                            height: 32,
+                                                            decoration: BoxDecoration(
+                                                                color: SDSColor.blue50,
+                                                                borderRadius: BorderRadius.circular(50),
+                                                              border: Border.all(
+                                                                color: SDSColor.gray100,
+                                                                width: 1,
                                                               ),
                                                             ),
-                                                          if (userData['profileImageUrl'] == "")
-                                                            ExtendedImage.network(
-                                                              '${profileImgUrlList[0].default_round}',
+                                                            child: ExtendedImage.network(
+                                                              userData['profileImageUrl'],
+                                                              cache: true,
+                                                              cacheHeight: 100,
                                                               shape: BoxShape.circle,
                                                               borderRadius:
                                                               BorderRadius.circular(20),
-                                                              width: 20,
-                                                              height: 20,
-                                                              cacheHeight: 100,
-                                                              cache: true,
+                                                              width: 32,
+                                                              height: 32,
                                                               fit: BoxFit.cover,
+                                                              loadStateChanged: (ExtendedImageState state) {
+                                                                switch (state.extendedImageLoadState) {
+                                                                  case LoadState.loading:
+                                                                    return SizedBox.shrink();
+                                                                  case LoadState.completed:
+                                                                    return state.completedWidget;
+                                                                  case LoadState.failed:
+                                                                    return ExtendedImage.network(
+                                                                      '${profileImgUrlList[0].default_round}',
+                                                                      shape: BoxShape.circle,
+                                                                      borderRadius: BorderRadius.circular(20),
+                                                                      width: 32,
+                                                                      height: 32,
+                                                                      cacheHeight: 100,
+                                                                      cache: true,
+                                                                      fit: BoxFit.cover,
+                                                                    ); // 예시로 에러 아이콘을 반환하고 있습니다.
+                                                                  default:
+                                                                    return null;
+                                                                }
+                                                              },
                                                             ),
-                                                          SizedBox(width: 5,),
-                                                          Text('${userData['displayName']}',
-                                                            //chatDocs[index].get('displayName'),
-                                                            style: TextStyle(
-                                                                fontWeight: FontWeight.normal,
-                                                                fontSize: 14,
-                                                                color: Color(0xFF949494)),
                                                           ),
-                                                        ],
-                                                      ),
-                                                    );
-                                                  }),
-
-                                            ],
-
-                                          ),
-                                          Text('$_time',
-                                            style: TextStyle(
-                                                fontSize: 14,
-                                                color: Color(0xFF949494),
-                                                fontWeight: FontWeight.normal),
-                                          ),
-                                        ],
-                                      ),
+                                                        if (userData['profileImageUrl'] == "")
+                                                          ExtendedImage.network(
+                                                            '${profileImgUrlList[0].default_round}',
+                                                            shape: BoxShape.circle,
+                                                            borderRadius:
+                                                            BorderRadius.circular(20),
+                                                            width: 32,
+                                                            height: 32,
+                                                            cacheHeight: 100,
+                                                            cache: true,
+                                                            fit: BoxFit.cover,
+                                                          ),
+                                                        Padding(
+                                                          padding: const EdgeInsets.only(left: 10),
+                                                          child: Column(
+                                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                                            children: [
+                                                              Text('${userData['displayName']}',
+                                                                //chatDocs[index].get('displayName'),
+                                                                style: SDSTextStyle.regular.copyWith(
+                                                                    fontSize: 12,
+                                                                    color: SDSColor.gray900),
+                                                              ),
+                                                              Padding(
+                                                                padding: const EdgeInsets.only(top: 2),
+                                                                child: Row(
+                                                                  children: [
+                                                                    Text('${userData['resortNickname']}',
+                                                                      //chatDocs[index].get('displayName'),
+                                                                      style: SDSTextStyle.regular.copyWith(
+                                                                          fontSize: 12,
+                                                                          color: SDSColor.gray500),
+                                                                    ),
+                                                                    Text(' · ${crewName}',
+                                                                      //chatDocs[index].get('displayName'),
+                                                                      style: SDSTextStyle.regular.copyWith(
+                                                                          fontSize: 12,
+                                                                          color: SDSColor.gray500),
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            );
+                                          }),
                                     ],
                                   ),
                                   Divider(
-                                    color: Color(0xFFdedede),
+                                    color: SDSColor.gray50,
                                     height: 32,
-                                    thickness: 0.5,
+                                    thickness: 1,
                                   )
                                 ],
                               ),
@@ -740,164 +786,95 @@ class _Bulletin_Free_List_DetailState extends State<Bulletin_Free_List_Detail> {
                                         Column(
                                           crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
-                                            Text(
-                                              '내용',
-                                              style: TextStyle(
-                                                  fontSize: 13,
-                                                  fontWeight: FontWeight.normal,
-                                                  color: Color(0xFFB7B7B7)),
-                                            ),
-                                            SizedBox(
-                                              height: 6,
-                                            ),
+                                            if (_bulletinFreeModelController.itemImagesUrls!.isEmpty)
+                                              Container(),
+                                            if (_bulletinFreeModelController.itemImagesUrls!.isNotEmpty)
+                                              Stack(
+                                                children: [
+                                                  CarouselSlider.builder(
+                                                    options: CarouselOptions(
+                                                      height: 280,
+                                                      viewportFraction: 1,
+                                                      enableInfiniteScroll: false,
+                                                      onPageChanged: (index, reason) {
+                                                        setState(() {
+                                                          _currentIndex = index;
+                                                        });
+                                                      },
+                                                    ),
+                                                    itemCount:
+                                                    _bulletinFreeModelController.itemImagesUrls!.length,
+                                                    itemBuilder: (context, index, pageViewIndex) {
+                                                      return Container(
+                                                        padding: EdgeInsets.only(bottom: 16),
+                                                        child: StreamBuilder<Object>(
+                                                            stream: null,
+                                                            builder: (context, snapshot) {
+                                                              return Row(
+                                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                                children: [
+                                                                  GestureDetector(
+                                                                    onTap: () {
+                                                                      Get.to(() => BulletinFreeImageScreen());
+                                                                    },
+                                                                    child: ExtendedImage.network(
+                                                                      _bulletinFreeModelController.itemImagesUrls![index],
+                                                                      fit: BoxFit.fitWidth,
+                                                                      width: _size.width - 32,
+                                                                      cacheHeight: 500,
+                                                                        borderRadius: BorderRadius.circular(8)
+                                                                    ),
+                                                                  ),
+                                                                ],
+                                                              );
+                                                            }),
+                                                      );
+                                                    },
+                                                  ),
+                                                  Center(
+                                                    child: Padding(
+                                                      padding: const EdgeInsets.only(top: 245),
+                                                      child: Row(
+                                                        mainAxisAlignment: MainAxisAlignment.center,
+                                                        children: List.generate(
+                                                          _bulletinFreeModelController.itemImagesUrls!.length,
+                                                              (index) {
+                                                            return Container(
+                                                              width: 8,
+                                                              height: 8,
+                                                              margin: EdgeInsets.symmetric(horizontal: 4),
+                                                              decoration: BoxDecoration(
+                                                                shape: BoxShape.circle,
+                                                                color: _currentIndex == index ? Color(0xFFFFFFFF) : Color(0xFF111111).withOpacity(0.5),
+                                                              ),
+                                                            );
+                                                          },
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
                                             Container(
                                               width: _size.width,
                                               child: SelectableText(
                                                 '${_bulletinFreeModelController.description}',
-                                                style: TextStyle(
-                                                    fontSize: 16,
-                                                    fontWeight: FontWeight.normal),
+                                                style: SDSTextStyle.regular.copyWith(
+                                                    fontSize: 15,
+                                                    height: 1.4
+                                                ),
                                               ),
                                             ),
-
+                                            Container(
+                                              height: 20,
+                                            )
                                           ],
                                         ),
                                       ]),
                                 ),
-                                SizedBox(height: 16),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    Padding(
-                                      padding: const EdgeInsets.only(left: 16),
-                                      child: Center(
-                                        child: GestureDetector(
-                                          child: Container(
-                                            height: 24,
-                                            decoration: BoxDecoration(
-                                                color:
-                                                (_userModelController.likeUidList!.contains('${_bulletinFreeModelController.uid}#${_bulletinFreeModelController.bulletinFreeCount}'))
-                                                    ? Color(0xFFCBE0FF)
-                                                    : Color(0xFFECECEC),
-                                                borderRadius: BorderRadius.circular(4)
-                                            ),
-                                            child: Padding(
-                                              padding: EdgeInsets.only(right: 5, top: 2, bottom: 4, left: 3),
-                                              child:
-                                              (_userModelController.likeUidList!.contains('${_bulletinFreeModelController.uid}#${_bulletinFreeModelController.bulletinFreeCount}'))
-                                                  ? Row(
-                                                children: [
-                                                  Padding(
-                                                    padding: const EdgeInsets.only(top: 2),
-                                                    child: IconButton(
-                                                      onPressed: () async {
-                                                        var docName = '${_bulletinFreeModelController.uid}#${_bulletinFreeModelController.bulletinFreeCount}';
-                                                        HapticFeedback.lightImpact();
-                                                        if (_firstPress) {
-                                                          _firstPress = false;
-                                                          await _userModelController.deleteLikeUid(docName);
-                                                          await _bulletinFreeModelController.likeDelete(docName);
-                                                          await _bulletinFreeModelController.getCurrentBulletinFree(uid: _bulletinFreeModelController.uid, bulletinFreeCount: _bulletinFreeModelController.bulletinFreeCount);
-                                                          setState(() {_firstPress = true;});
-                                                          await _bulletinFreeModelController.scoreDelete_like(bullUid: _bulletinFreeModelController.uid, docName: docName, timeStamp: _bulletinFreeModelController.timeStamp, score: _bulletinFreeModelController.score);
-                                                        }
-                                                      },
-                                                      icon: Icon(
-                                                        Icons.thumb_up_alt,
-                                                        size: 16,
-                                                        color: Color(0xFF3D83ED),
-                                                      ),
-                                                      padding: EdgeInsets.zero,
-                                                      constraints: BoxConstraints(),
-                                                    ),
-                                                  ),
-                                                  Padding(
-                                                    padding: const EdgeInsets.only(top: 2),
-                                                    child: Text(
-                                                      '${_bulletinFreeModelController.likeCount}',
-                                                      style: TextStyle(
-                                                        fontWeight: FontWeight.bold,
-                                                        fontSize: 11,
-                                                        color: Color(0xFF111111),
-                                                      ),),
-                                                  ),
-                                                ],
-                                              )
-                                                  : Row(
-                                                children: [
-                                                  Padding(
-                                                    padding: const EdgeInsets.only(top: 2),
-                                                    child:
-                                                    IconButton(
-                                                      onPressed: () async {
-                                                        var docName = '${_bulletinFreeModelController.uid}#${_bulletinFreeModelController.bulletinFreeCount}';
-                                                        HapticFeedback.lightImpact();
-                                                        if (_firstPress) {
-                                                          _firstPress = false;
-                                                          await _userModelController.updateLikeUid(docName);
-                                                          await _bulletinFreeModelController.likeUpdate(docName);
-                                                          await _bulletinFreeModelController.getCurrentBulletinFree(uid: _bulletinFreeModelController.uid, bulletinFreeCount: _bulletinFreeModelController.bulletinFreeCount);
-                                                          setState(() {_firstPress = true;});
-                                                          await _bulletinFreeModelController.scoreUpdate_like(bullUid: _bulletinFreeModelController.uid, docName: docName, timeStamp: _bulletinFreeModelController.timeStamp, score: _bulletinFreeModelController.score);
-                                                        }
-                                                      },
-                                                      icon: Icon(Icons.thumb_up_alt,
-                                                        size: 16,
-                                                        color: Color(0xFFC8C8C8),
-                                                      ),
-                                                      padding: EdgeInsets.zero,
-                                                      constraints: BoxConstraints(),
-                                                    ),
-                                                  ),
-                                                  Padding(
-                                                    padding: const EdgeInsets.only(top: 2),
-                                                    child: Text('${_bulletinFreeModelController.likeCount}',
-                                                      style: TextStyle(
-                                                          fontWeight: FontWeight.bold,
-                                                          fontSize: 11,
-                                                          color: Color(0xFF666666)),
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          ),
-                                          onTap: () async{
-                                            if (_userModelController.likeUidList!.contains('${_bulletinFreeModelController.uid}#${_bulletinFreeModelController.bulletinFreeCount}')){
-                                              var docName = '${_bulletinFreeModelController.uid}#${_bulletinFreeModelController.bulletinFreeCount}';
-                                              print(docName);
-                                              HapticFeedback.lightImpact();
-                                              if (_firstPress) {
-                                                _firstPress = false;
-                                                await _userModelController.deleteLikeUid(docName);
-                                                await _bulletinFreeModelController.likeDelete(docName);
-                                                await _bulletinFreeModelController.getCurrentBulletinFree(uid: _bulletinFreeModelController.uid, bulletinFreeCount: _bulletinFreeModelController.bulletinFreeCount);
-                                                setState(() {_firstPress = true;});
-                                                await _bulletinFreeModelController.scoreDelete_like(bullUid: _bulletinFreeModelController.uid, docName: docName, timeStamp: _bulletinFreeModelController.timeStamp, score: _bulletinFreeModelController.score);
-                                              }
-                                            } else{
-                                              var docName = '${_bulletinFreeModelController.uid}#${_bulletinFreeModelController.bulletinFreeCount}';
-                                              print(docName);
-                                              HapticFeedback.lightImpact();
-                                              if (_firstPress) {
-                                                _firstPress = false;
-                                                await _userModelController.updateLikeUid(docName);
-                                                await _bulletinFreeModelController.likeUpdate(docName);
-                                                await _bulletinFreeModelController.getCurrentBulletinFree(uid: _bulletinFreeModelController.uid, bulletinFreeCount: _bulletinFreeModelController.bulletinFreeCount);
-                                                setState(() {_firstPress = true;});
-                                                await _bulletinFreeModelController.scoreUpdate_like(bullUid: _bulletinFreeModelController.uid, docName: docName, timeStamp: _bulletinFreeModelController.timeStamp, score: _bulletinFreeModelController.score);
-                                              }
-                                            }
-
-                                          },
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
                                 Divider(
-                                  color: Color(0xFFf5f5f5),
-                                  height: 50,
+                                  color: SDSColor.gray50,
+                                  height: 60,
                                   thickness: 8,
                                 ),
                                 Column(
@@ -908,42 +885,74 @@ class _Bulletin_Free_List_DetailState extends State<Bulletin_Free_List_Detail> {
                                         mainAxisAlignment: MainAxisAlignment.start,
                                         crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
-                                          Row(
-                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Text(
-                                                '답글',
-                                                style: TextStyle(
-                                                    fontSize: 13,
-                                                    fontWeight: FontWeight.normal,
-                                                    color: Color(0xFFB7B7B7)),
-                                              ),
-                                              GestureDetector(
-                                                onTap: (){
-                                                  if(_replyReverse == true){
-                                                    setState(() {
-                                                      _replyReverse = false;
-                                                    });
-                                                  }else{
-                                                    setState(() {
-                                                      _replyReverse = true;
-                                                    });
-                                                  }
-                                                },
-                                                child: Text(
-                                                  '최신순⇅',
-                                                  style: TextStyle(
-                                                      fontSize: 13,
-                                                      fontWeight: FontWeight.normal,
-                                                      color:
-                                                      (_replyReverse == true)
-                                                          ? Color(0xFFB7B7B7) : Colors.blue),
+                                          Padding(
+                                            padding: const EdgeInsets.only(bottom: 20),
+                                            child: Row(
+                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                              children: [
+                                                Row(
+                                                  children: [
+                                                    Text(
+                                                      '답글',
+                                                      style: SDSTextStyle.bold.copyWith(
+                                                          fontSize: 14,
+                                                          color: SDSColor.gray900),
+                                                    ),
+                                                    Text(
+                                                      ' 24',
+                                                      style: SDSTextStyle.bold.copyWith(
+                                                          fontSize: 14,
+                                                          color: SDSColor.gray900),
+                                                    ),
+                                                  ],
                                                 ),
-                                              ),
-                                            ],
-                                          ),
-                                          SizedBox(
-                                            height: 4,
+                                                GestureDetector(
+                                                  onTap: (){
+                                                    if(_replyReverse == true){
+                                                      setState(() {
+                                                        _replyReverse = false;
+                                                      });
+                                                    }else{
+                                                      setState(() {
+                                                        _replyReverse = true;
+                                                      });
+                                                    }
+                                                  },
+                                                  child: Row(
+                                                    mainAxisAlignment: MainAxisAlignment.center,
+                                                    children: [
+                                                      (_replyReverse == true)
+                                                      ? Padding(
+                                                        padding: const EdgeInsets.only(bottom: 1),
+                                                        child: Image.asset('assets/imgs/icons/icon_filter_latest.png',
+                                                          fit: BoxFit.cover,
+                                                          width: 14,
+                                                          height: 14,
+                                                          color: SDSColor.gray300,
+                                                        ),
+                                                      )
+                                                      : Padding(
+                                                        padding: const EdgeInsets.only(bottom: 1),
+                                                        child: Image.asset('assets/imgs/icons/icon_filter_latest.png',
+                                                          fit: BoxFit.cover,
+                                                          width: 14,
+                                                          height: 14,
+                                                          color: SDSColor.gray900,
+                                                        ),
+                                                      ),
+                                                      Text(
+                                                        '최신순',
+                                                        style: SDSTextStyle.regular.copyWith(
+                                                            fontSize: 13,
+                                                            color:
+                                                            (_replyReverse == true)
+                                                                ? SDSColor.gray500 : SDSColor.gray900),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
                                           ),
                                           Container(
                                             child: StreamBuilder<QuerySnapshot>(
@@ -968,18 +977,17 @@ class _Bulletin_Free_List_DetailState extends State<Bulletin_Free_List_Detail> {
                                                           crossAxisAlignment: CrossAxisAlignment.start,
                                                           children: [
                                                             (replyDocs.length == 0)
-                                                                ? Column(
-                                                              children: [
-                                                                Text('첫 답글을 남겨주세요!', style: TextStyle(
-                                                                    fontSize: 15,
-                                                                    fontWeight: FontWeight.normal,
-                                                                    color: Color(0xFF111111)
-                                                                ),),
-                                                                SizedBox(
-                                                                  height: 20,
+                                                                ? Center(
+                                                                  child: Padding(
+                                                                    padding: const EdgeInsets.symmetric(vertical: 80),
+                                                                    child: Text('첫 답글을 남겨주세요!',
+                                                                      style: SDSTextStyle.regular.copyWith(
+                                                                          fontSize: 14,
+                                                                          color: SDSColor.gray500
+                                                                      ),
+                                                                    ),
+                                                                  ),
                                                                 )
-                                                              ],
-                                                            )
                                                                 : ListView.builder(
                                                               controller: _scrollController2,
                                                               shrinkWrap: true,
@@ -988,7 +996,7 @@ class _Bulletin_Free_List_DetailState extends State<Bulletin_Free_List_Detail> {
                                                               itemBuilder: (context, index) {
                                                                 String _time = _bulletinFreeReplyModelController.getAgoTime(replyDocs[index].get('timeStamp'));
                                                                 return Padding(
-                                                                  padding: const EdgeInsets.only(top: 16),
+                                                                  padding: const EdgeInsets.only(bottom: 30),
                                                                   child: Obx(() => Container(
                                                                     color: Colors.white,
                                                                     child: Column(
@@ -997,19 +1005,7 @@ class _Bulletin_Free_List_DetailState extends State<Bulletin_Free_List_Detail> {
                                                                       children: [
                                                                         (_userModelController.repoUidList!.contains(
                                                                             replyDocs[index].get('uid')))
-                                                                            ? Center(
-                                                                          child: Padding(
-                                                                            padding:
-                                                                            const EdgeInsets.symmetric(vertical: 16),
-                                                                            child: Text(
-                                                                              '이 게시글은 회원님의 요청에 의해 숨김 처리되었습니다.',
-                                                                              style: TextStyle(
-                                                                                  fontWeight: FontWeight.normal,
-                                                                                  fontSize: 12,
-                                                                                  color: Color(0xffc8c8c8)),
-                                                                            ),
-                                                                          ),
-                                                                        )
+                                                                            ? Container()
                                                                             : Row(
                                                                           crossAxisAlignment: CrossAxisAlignment.start,
                                                                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -1043,11 +1039,16 @@ class _Bulletin_Free_List_DetailState extends State<Bulletin_Free_List_Detail> {
                                                                                                   child: Padding(
                                                                                                     padding: const EdgeInsets.only(bottom: 8),
                                                                                                     child: Container(
-                                                                                                      width: 26,
-                                                                                                      height: 26,
+                                                                                                      width: 32,
+                                                                                                      height: 32,
                                                                                                       decoration: BoxDecoration(
-                                                                                                          color: Color(0xFFDFECFF),
-                                                                                                          borderRadius: BorderRadius.circular(50)
+                                                                                                          color: SDSColor.blue50,
+                                                                                                          borderRadius: BorderRadius.circular(50),
+                                                                                                        border: Border.all(
+                                                                                                          color: SDSColor.gray100,
+                                                                                                          width: 1,
+                                                                                                        ),
+
                                                                                                       ),
                                                                                                       child: ExtendedImage.network(
                                                                                                         userData['profileImageUrl'],
@@ -1056,8 +1057,8 @@ class _Bulletin_Free_List_DetailState extends State<Bulletin_Free_List_Detail> {
                                                                                                         shape: BoxShape.circle,
                                                                                                         borderRadius:
                                                                                                         BorderRadius.circular(20),
-                                                                                                        width: 26,
-                                                                                                        height: 26,
+                                                                                                        width: 32,
+                                                                                                        height: 32,
                                                                                                         fit: BoxFit.cover,
                                                                                                         loadStateChanged: (ExtendedImageState state) {
                                                                                                           switch (state.extendedImageLoadState) {
@@ -1070,8 +1071,8 @@ class _Bulletin_Free_List_DetailState extends State<Bulletin_Free_List_Detail> {
                                                                                                                 '${profileImgUrlList[0].default_round}',
                                                                                                                 shape: BoxShape.circle,
                                                                                                                 borderRadius: BorderRadius.circular(20),
-                                                                                                                width: 26,
-                                                                                                                height: 26,
+                                                                                                                width: 32,
+                                                                                                                height: 32,
                                                                                                                 cacheHeight: 100,
                                                                                                                 cache: true,
                                                                                                                 fit: BoxFit.cover,
@@ -1096,93 +1097,93 @@ class _Bulletin_Free_List_DetailState extends State<Bulletin_Free_List_Detail> {
                                                                                                       shape: BoxShape.circle,
                                                                                                       borderRadius:
                                                                                                       BorderRadius.circular(20),
-                                                                                                      width: 26,
-                                                                                                      height: 26,
+                                                                                                      width: 32,
+                                                                                                      height: 32,
                                                                                                       cacheHeight: 100,
                                                                                                       cache: true,
                                                                                                       fit: BoxFit.cover,
                                                                                                     ),
                                                                                                   ),
                                                                                                 ),
-                                                                                              SizedBox(width: 12,),
+                                                                                              SizedBox(width: 10),
                                                                                               Column(
                                                                                                 crossAxisAlignment: CrossAxisAlignment.start,
                                                                                                 children: [
                                                                                                   Row(
+                                                                                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                                                                                    mainAxisAlignment: MainAxisAlignment.center,
                                                                                                     children: [
                                                                                                       Text(
                                                                                                         userData['displayName'],
-                                                                                                        style: TextStyle(
-                                                                                                            fontWeight: FontWeight.bold,
-                                                                                                            fontSize: 14,
-                                                                                                            color: Color(0xFF111111)),
+                                                                                                        style: SDSTextStyle.bold.copyWith(
+                                                                                                            fontSize: 13,
+                                                                                                            color: SDSColor.gray900),
                                                                                                       ),
                                                                                                       SizedBox(
                                                                                                           width: 6),
                                                                                                       Text(
                                                                                                         userData['resortNickname'],
-                                                                                                        style: TextStyle(
-                                                                                                            fontSize: 13,
-                                                                                                            color: Color(0xFF949494),
-                                                                                                            fontWeight: FontWeight.w300),
+                                                                                                        style: SDSTextStyle.regular.copyWith(
+                                                                                                            fontSize: 12,
+                                                                                                            color: SDSColor.gray500,
+                                                                                                        ),
                                                                                                       ),
                                                                                                       SizedBox(
                                                                                                           width: 1),
                                                                                                       Text(
                                                                                                         '· $_time',
-                                                                                                        style: TextStyle(
-                                                                                                            fontSize: 13,
-                                                                                                            color: Color(0xFF949494),
-                                                                                                            fontWeight: FontWeight.w300),
-                                                                                                      ),
-                                                                                                      SizedBox(
-                                                                                                          width: 6),
-                                                                                                      Padding(
-                                                                                                        padding: EdgeInsets.only(top: 1),
-                                                                                                        child: Container(
-                                                                                                          decoration: BoxDecoration(
-                                                                                                            borderRadius: BorderRadius.circular(30),
-                                                                                                            color:
-                                                                                                            (replyDocs[index].get('uid')==_bulletinFreeModelController.uid)
-                                                                                                                ? Color(0xFFE1EDFF)
-                                                                                                                : Colors.white,
-                                                                                                          ),
-                                                                                                          child: Padding(
-                                                                                                            padding: const EdgeInsets.only(top: 1, bottom: 3, left: 6, right: 6),
-                                                                                                            child: Text(
-                                                                                                              '글쓴이',
-                                                                                                              style: TextStyle(fontSize: 11, fontWeight: FontWeight.normal,
-                                                                                                                  color:
-                                                                                                                  (replyDocs[index].get('uid')==_bulletinFreeModelController.uid)
-                                                                                                                      ? Color(0xFF3D83ED)
-                                                                                                                      : Colors.white),
-                                                                                                            ),
-                                                                                                          ),
+                                                                                                        style: SDSTextStyle.regular.copyWith(
+                                                                                                          fontSize: 12,
+                                                                                                          color: SDSColor.gray500,
                                                                                                         ),
                                                                                                       ),
-                                                                                                    ],
-                                                                                                  ),
-                                                                                                  SizedBox(
-                                                                                                    height: 2,
-                                                                                                  ),
-                                                                                                  Row(
-                                                                                                    children: [
+                                                                                                      SizedBox(width: 6),
                                                                                                       Container(
-                                                                                                        constraints:
-                                                                                                        BoxConstraints(maxWidth: _size.width - 100),
-                                                                                                        child:
-                                                                                                        SelectableText(
-                                                                                                          replyDocs[index].get('reply'),
-                                                                                                          style: TextStyle(
-                                                                                                              color: Color(0xFF111111),
-                                                                                                              fontWeight: FontWeight.normal,
-                                                                                                              fontSize: 13),
+                                                                                                        decoration: BoxDecoration(
+                                                                                                          borderRadius: BorderRadius.circular(30),
+                                                                                                          color:
+                                                                                                          (replyDocs[index].get('uid')==_bulletinFreeModelController.uid)
+                                                                                                              ? SDSColor.blue100
+                                                                                                              : Colors.transparent,
+                                                                                                        ),
+                                                                                                        child: Padding(
+                                                                                                          padding: const EdgeInsets.only(top: 3, bottom: 3, left: 6, right: 6),
+                                                                                                          child: Text(
+                                                                                                            '글쓴이',
+                                                                                                            style: SDSTextStyle.bold.copyWith(fontSize: 11,
+                                                                                                                color:
+                                                                                                                (replyDocs[index].get('uid')==_bulletinFreeModelController.uid)
+                                                                                                                    ? SDSColor.snowliveBlue
+                                                                                                                    : Colors.transparent),
+                                                                                                          ),
                                                                                                         ),
                                                                                                       ),
                                                                                                     ],
                                                                                                   ),
                                                                                                   SizedBox(
-                                                                                                    height: 8,
+                                                                                                    height: 4,
+                                                                                                  ),
+                                                                                                  Container(
+                                                                                                    constraints:
+                                                                                                    BoxConstraints(maxWidth: _size.width - 110),
+                                                                                                    child:
+                                                                                                    SelectableText(
+                                                                                                      replyDocs[index].get('reply'),
+                                                                                                      style: SDSTextStyle.regular.copyWith(
+                                                                                                          color: SDSColor.gray900,
+                                                                                                          fontSize: 14,
+                                                                                                      height: 1.4),
+                                                                                                    ),
+                                                                                                  ),
+                                                                                                  Padding(
+                                                                                                    padding: const EdgeInsets.only(top: 10),
+                                                                                                    child: Text(
+                                                                                                      '답글 4개 보기',
+                                                                                                      style: SDSTextStyle.bold.copyWith(
+                                                                                                          color: SDSColor.gray900,
+                                                                                                          fontSize: 14,
+                                                                                                          height: 1.4),
+                                                                                                    ),
                                                                                                   ),
                                                                                                 ],
                                                                                               )
@@ -1197,15 +1198,25 @@ class _Bulletin_Free_List_DetailState extends State<Bulletin_Free_List_Detail> {
                                                                                 ? GestureDetector(
                                                                               onTap: () => showModalBottomSheet(
                                                                                   enableDrag: false,
+                                                                                  isScrollControlled: true,
+                                                                                  backgroundColor: Colors.transparent,
                                                                                   context: context,
                                                                                   builder: (context) {
                                                                                     return SafeArea(
-                                                                                      child: Container(
-                                                                                        height:
-                                                                                        140,
-                                                                                        child:
-                                                                                        Padding(
-                                                                                          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+                                                                                      child: Padding(
+                                                                                        padding: const EdgeInsets.symmetric(vertical: 20),
+                                                                                        child: Container(
+                                                                                          margin: EdgeInsets.only(
+                                                                                            left: 16,
+                                                                                            right: 16,
+                                                                                            top: 16,
+                                                                                          ),
+                                                                                          height: 144,
+                                                                                          padding: EdgeInsets.all(16),
+                                                                                          decoration: BoxDecoration(
+                                                                                            color: Colors.white,
+                                                                                            borderRadius: BorderRadius.circular(16),
+                                                                                          ),
                                                                                           child: Column(
                                                                                             children: [
                                                                                               GestureDetector(
@@ -1222,45 +1233,62 @@ class _Bulletin_Free_List_DetailState extends State<Bulletin_Free_List_Detail> {
                                                                                                   ),
                                                                                                   //selected: _isSelected[index]!,
                                                                                                   onTap: () async {
-                                                                                                    Get.dialog(AlertDialog(
-                                                                                                      contentPadding: EdgeInsets.only(bottom: 0, left: 20, right: 20, top: 30),
-                                                                                                      elevation: 0,
-                                                                                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
-                                                                                                      buttonPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
-                                                                                                      content: Text(
-                                                                                                        '이 회원을 신고하시겠습니까?',
-                                                                                                        style: TextStyle(fontWeight: FontWeight.w600, fontSize: 15),
-                                                                                                      ),
+                                                                                                    Get.dialog(
+                                                                                                        AlertDialog(
+                                                                                                          contentPadding: EdgeInsets.only(bottom: 0, left: 28, right: 28, top: 30),
+                                                                                                          elevation: 0,
+                                                                                                          shape: RoundedRectangleBorder(
+                                                                                                              borderRadius: BorderRadius.circular(16)),
+                                                                                                          buttonPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+                                                                                                          content: Container(
+                                                                                                            height: 32,
+                                                                                                            child: Column(
+                                                                                                              crossAxisAlignment: CrossAxisAlignment.center,
+                                                                                                              children: [
+                                                                                                                Text('이 회원을 신고하시겠습니까?',
+                                                                                                                  style: SDSTextStyle.bold.copyWith(
+                                                                                                                      fontSize: 16,
+                                                                                                                      color: SDSColor.gray900),
+                                                                                                                ),
+                                                                                                              ],
+                                                                                                            ),
+                                                                                                          ),
                                                                                                       actions: [
                                                                                                         Row(
                                                                                                           children: [
-                                                                                                            TextButton(
-                                                                                                                onPressed: () {
-                                                                                                                  Navigator.pop(context);
-                                                                                                                },
-                                                                                                                child: Text(
-                                                                                                                  '취소',
-                                                                                                                  style: TextStyle(
-                                                                                                                    fontSize: 15,
-                                                                                                                    color: Color(0xFF949494),
-                                                                                                                    fontWeight: FontWeight.bold,
-                                                                                                                  ),
-                                                                                                                )),
-                                                                                                            TextButton(
-                                                                                                                onPressed: () async {
-                                                                                                                  var repoUid = replyDocs[index].get('uid');
-                                                                                                                  await _userModelController.repoUpdate(repoUid);
-                                                                                                                  Navigator.pop(context);
-                                                                                                                  Navigator.pop(context);
-                                                                                                                },
-                                                                                                                child: Text(
-                                                                                                                  '신고',
-                                                                                                                  style: TextStyle(
-                                                                                                                    fontSize: 15,
-                                                                                                                    color: Color(0xFF3D83ED),
-                                                                                                                    fontWeight: FontWeight.bold,
-                                                                                                                  ),
-                                                                                                                ))
+                                                                                                            Expanded(
+                                                                                                              child: Container(
+                                                                                                                child: TextButton(
+                                                                                                                    onPressed: () {
+                                                                                                                      Navigator.pop(context);
+                                                                                                                    },
+                                                                                                                    child: Text(
+                                                                                                                      '취소',
+                                                                                                                      style: SDSTextStyle.bold.copyWith(
+                                                                                                                        fontSize: 16,
+                                                                                                                        color: SDSColor.gray500,
+                                                                                                                      ),
+                                                                                                                    )),
+                                                                                                              ),
+                                                                                                            ),
+                                                                                                            Expanded(
+                                                                                                              child: Container(
+                                                                                                                child: TextButton(
+                                                                                                                    onPressed: () async {
+                                                                                                                      var repoUid = replyDocs[index].get('uid');
+                                                                                                                      await _userModelController.repoUpdate(repoUid);
+                                                                                                                      Navigator.pop(context);
+                                                                                                                      Navigator.pop(context);
+                                                                                                                    },
+                                                                                                                    child: Text(
+                                                                                                                      '신고',
+                                                                                                                      style: SDSTextStyle.bold.copyWith(
+                                                                                                                        fontSize: 16,
+                                                                                                                        color: SDSColor.gray900,
+                                                                                                                      ),
+                                                                                                                    )),
+                                                                                                              ),
+                                                                                                            )
                                                                                                           ],
                                                                                                           mainAxisAlignment: MainAxisAlignment.end,
                                                                                                         )
@@ -1284,65 +1312,74 @@ class _Bulletin_Free_List_DetailState extends State<Bulletin_Free_List_Detail> {
                                                                                                   ),
                                                                                                   //selected: _isSelected[index]!,
                                                                                                   onTap: () async {
-                                                                                                    Get.dialog(AlertDialog(
-                                                                                                      contentPadding: EdgeInsets.only(bottom: 0, left: 20, right: 20, top: 30),
-                                                                                                      elevation: 0,
-                                                                                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
-                                                                                                      buttonPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
-                                                                                                      content:  Container(
-                                                                                                        height: _size.width*0.17,
-                                                                                                        child: Column(
-                                                                                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                                                                                          children: [
-                                                                                                            Text(
-                                                                                                              '이 회원의 게시물을 모두 숨길까요?',
-                                                                                                              style: TextStyle(
-                                                                                                                  fontWeight: FontWeight.w600,
-                                                                                                                  fontSize: 15),
+                                                                                                    Get.dialog(
+                                                                                                        AlertDialog(
+                                                                                                          contentPadding: EdgeInsets.only(bottom: 0, left: 28, right: 28, top: 30),
+                                                                                                          elevation: 0,
+                                                                                                          shape: RoundedRectangleBorder(
+                                                                                                              borderRadius: BorderRadius.circular(16)),
+                                                                                                          buttonPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+                                                                                                          content:  Container(
+                                                                                                            height: 70,
+                                                                                                            child: Column(
+                                                                                                              crossAxisAlignment: CrossAxisAlignment.center,
+                                                                                                              children: [
+                                                                                                                Text(
+                                                                                                                  '이 회원의 게시물을 모두 숨길까요?',
+                                                                                                                  style: SDSTextStyle.bold.copyWith(
+                                                                                                                      fontSize: 16,
+                                                                                                                      color: SDSColor.gray900),
+                                                                                                                ),
+                                                                                                                Padding(
+                                                                                                                  padding: const EdgeInsets.only(top: 8),
+                                                                                                                  child: Text(
+                                                                                                                    '차단해제는 [더보기 - 친구 - 설정 - 차단목록]에서하실 수 있습니다.',
+                                                                                                                    style: SDSTextStyle.regular.copyWith(
+                                                                                                                        fontSize: 14,
+                                                                                                                        color: SDSColor.gray600,
+                                                                                                                        height: 1.4),
+                                                                                                                    textAlign: TextAlign.center,
+                                                                                                                  ),
+                                                                                                                ),
+                                                                                                              ],
                                                                                                             ),
-                                                                                                            SizedBox(
-                                                                                                              height: 10,
-                                                                                                            ),
-                                                                                                            Text(
-                                                                                                              '차단해제는 [더보기 - 친구 - 설정 - 차단목록]에서\n하실 수 있습니다.',
-                                                                                                              style: TextStyle(
-                                                                                                                  fontWeight: FontWeight.w600,
-                                                                                                                  fontSize: 12,
-                                                                                                                  color: Color(0xFF555555)),
-                                                                                                            ),
-                                                                                                          ],
-                                                                                                        ),
-                                                                                                      ),
+                                                                                                          ),
                                                                                                       actions: [
                                                                                                         Row(
                                                                                                           children: [
-                                                                                                            TextButton(
-                                                                                                                onPressed: () {
-                                                                                                                  Navigator.pop(context);
-                                                                                                                },
-                                                                                                                child: Text(
-                                                                                                                  '취소',
-                                                                                                                  style: TextStyle(
-                                                                                                                    fontSize: 15,
-                                                                                                                    color: Color(0xFF949494),
-                                                                                                                    fontWeight: FontWeight.bold,
-                                                                                                                  ),
-                                                                                                                )),
-                                                                                                            TextButton(
-                                                                                                                onPressed: () {
-                                                                                                                  var repoUid = replyDocs[index].get('uid');
-                                                                                                                  _userModelController.updateRepoUid(repoUid);
-                                                                                                                  Navigator.pop(context);
-                                                                                                                  Navigator.pop(context);
-                                                                                                                },
-                                                                                                                child: Text(
-                                                                                                                  '확인',
-                                                                                                                  style: TextStyle(
-                                                                                                                    fontSize: 15,
-                                                                                                                    color: Color(0xFF3D83ED),
-                                                                                                                    fontWeight: FontWeight.bold,
-                                                                                                                  ),
-                                                                                                                ))
+                                                                                                            Expanded(
+                                                                                                              child: Container(
+                                                                                                                child: TextButton(
+                                                                                                                    onPressed: () {
+                                                                                                                      Navigator.pop(context);
+                                                                                                                    },
+                                                                                                                    child: Text(
+                                                                                                                        '취소',
+                                                                                                                      style: SDSTextStyle.bold.copyWith(
+                                                                                                                        fontSize: 16,
+                                                                                                                        color: SDSColor.gray500,
+                                                                                                                      ),
+                                                                                                                    )),
+                                                                                                              ),
+                                                                                                            ),
+                                                                                                            Expanded(
+                                                                                                              child: Container(
+                                                                                                                child: TextButton(
+                                                                                                                    onPressed: () {
+                                                                                                                      var repoUid = replyDocs[index].get('uid');
+                                                                                                                      _userModelController.updateRepoUid(repoUid);
+                                                                                                                      Navigator.pop(context);
+                                                                                                                      Navigator.pop(context);
+                                                                                                                    },
+                                                                                                                    child: Text(
+                                                                                                                      '확인',
+                                                                                                                      style: SDSTextStyle.bold.copyWith(
+                                                                                                                        fontSize: 16,
+                                                                                                                        color: SDSColor.gray900,
+                                                                                                                      ),
+                                                                                                                    )),
+                                                                                                              ),
+                                                                                                            )
                                                                                                           ],
                                                                                                           mainAxisAlignment: MainAxisAlignment.end,
                                                                                                         )
@@ -1360,13 +1397,12 @@ class _Bulletin_Free_List_DetailState extends State<Bulletin_Free_List_Detail> {
                                                                                   }),
                                                                               child:
                                                                               Padding(
-                                                                                padding: const EdgeInsets.only(
-                                                                                    bottom: 22),
+                                                                                padding: const EdgeInsets.only(bottom: 22),
                                                                                 child:
                                                                                 Icon(
                                                                                   Icons.more_vert,
-                                                                                  color: Color(0xFFdedede),
-                                                                                  size: 22,
+                                                                                  color: SDSColor.gray200,
+                                                                                  size: 20,
                                                                                 ),
                                                                               ),
                                                                             )
@@ -1528,22 +1564,33 @@ class _Bulletin_Free_List_DetailState extends State<Bulletin_Free_List_Detail> {
                       ),
                     ),
                   ),
-                  Container(
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                    ),
-                    padding:
-                    EdgeInsets.only(top: 16, left: 16, right: 16),
-                    child: Column(
-                      children: [
-                        Row(
+                  Column(
+                    children: [
+                      Container(
+                        width: _size.width,
+                        color: SDSColor.gray50,
+                        height: 1,
+                      ),
+                      Container(
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                        ),
+                        padding: EdgeInsets.only(top: 12, left: 12, right: 12, bottom: 12),
+                        child: Row(
                           children: [
                             Expanded(
                               child: TextFormField(
                                 key: _formKey,
-                                cursorColor: Color(0xff377EEA),
+                                textAlignVertical: TextAlignVertical.center,
+                                cursorColor: SDSColor.snowliveBlue,
+                                cursorHeight: 16,
+                                cursorWidth: 2,
+                                autovalidateMode: AutovalidateMode.onUserInteraction,
                                 controller: _controller,
-                                strutStyle: StrutStyle(leading: 0.3),
+                                style: SDSTextStyle.regular.copyWith(
+                                    fontSize: 15
+                                ),
+                                strutStyle: StrutStyle(fontSize: 14, leading: 0),
                                 maxLines: null,
                                 keyboardType: TextInputType.multiline,
                                 enableSuggestions: false,
@@ -1611,32 +1658,46 @@ class _Bulletin_Free_List_DetailState extends State<Bulletin_Free_List_Detail> {
                                       icon: (_controller.text.trim().isEmpty)
                                           ? Image.asset(
                                         'assets/imgs/icons/icon_livetalk_send_g.png',
-                                        width: 27,
-                                        height: 27,
+                                        width: 24,
+                                        height: 24,
                                       )
                                           : Image.asset(
                                         'assets/imgs/icons/icon_livetalk_send.png',
-                                        width: 27,
-                                        height: 27,
+                                        width: 24,
+                                        height: 24,
                                       ),
                                     ),
-                                    errorStyle: TextStyle(
+                                    errorStyle: SDSTextStyle.regular.copyWith(
                                       fontSize: 12,
+                                      color: SDSColor.red,
                                     ),
-                                    hintStyle: TextStyle(color: Color(0xff949494), fontSize: 14),
-                                    hintText: '답글 남기기',
-                                    contentPadding:
-                                    EdgeInsets.only(top: 10, bottom: 10, left: 16, right: 16),
+                                    labelStyle: SDSTextStyle.regular.copyWith(color: SDSColor.gray400, fontSize: 14),
+                                    hintStyle: SDSTextStyle.regular.copyWith(color: SDSColor.gray400, fontSize: 14),
+                                    hintText: '답글을 남겨 주세요.',
+                                    contentPadding: EdgeInsets.only(
+                                        top: 14, bottom: 14, left: 12, right: 12),
+                                    fillColor: SDSColor.gray50,
+                                    hoverColor: SDSColor.snowliveBlue,
+                                    filled: true,
+                                    focusColor: SDSColor.snowliveBlue,
                                     border: OutlineInputBorder(
-                                      borderSide: BorderSide(color: Color(0xFFDEDEDE)),
+                                      borderSide: BorderSide(color: SDSColor.gray50),
                                       borderRadius: BorderRadius.circular(6),
+                                    ),
+                                    errorBorder:  OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                          color: SDSColor.red,
+                                          strokeAlign: BorderSide.strokeAlignInside,
+                                          width: 1.5),
+                                    ),
+                                    focusedBorder:  OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                          color: SDSColor.snowliveBlue,
+                                          strokeAlign: BorderSide.strokeAlignInside,
+                                          width: 1.5),
                                     ),
                                     enabledBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(color: Color(0xFFDEDEDE)),
-                                      borderRadius: BorderRadius.circular(6),
-                                    ),
-                                    errorBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(color: Color(0xFFFF3726)),
+                                      borderSide: BorderSide(color: Colors.transparent),
                                       borderRadius: BorderRadius.circular(6),
                                     )),
                                 onChanged: (value) {
@@ -1648,12 +1709,9 @@ class _Bulletin_Free_List_DetailState extends State<Bulletin_Free_List_Detail> {
                             ),
                           ],
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
-                  SizedBox(
-                    height: 16,
-                  )
                 ],
               ),
             ),
