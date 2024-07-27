@@ -122,10 +122,10 @@ class StreamController_liveCrew extends GetxController {
         .snapshots();
   }
 
-  Stream<QuerySnapshot<Map<String, dynamic>>> setupStreams_liveCrew_liveCrewHome_liveOn() {
+  Stream<QuerySnapshot<Map<String, dynamic>>> setupStreams_liveCrew_crewDetailPage_home_liveOn() {
     return FirebaseFirestore.instance
         .collection('user')
-        .where('isOnLive', isEqualTo: true)
+        .where('liveCrew', isEqualTo: _userModelController.liveCrew)
         .snapshots();
   }
 

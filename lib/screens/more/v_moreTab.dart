@@ -9,7 +9,6 @@ import 'package:extended_image/extended_image.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:com.snowlive/screens/LiveCrew/v_liveCrewHome.dart';
 import 'package:com.snowlive/screens/more/friend/v_friendDetailPage.dart';
 import 'package:com.snowlive/screens/more/v_favoriteResort_moreTab.dart';
 import 'package:com.snowlive/screens/more/friend/v_friendListPage.dart';
@@ -21,10 +20,8 @@ import '../../controller/liveCrew/vm_liveCrewModelController.dart';
 import '../../controller/ranking/vm_myRankingController.dart';
 import '../../controller/alarm/vm_noticeController.dart';
 import '../../controller/ranking/vm_rankingTierModelController.dart';
-import '../../controller/public/vm_limitController.dart';
 import '../../controller/user/vm_userModelController.dart';
 import '../LiveCrew/CreateOnboarding/v_FirstPage_createCrew.dart';
-import '../Ranking/v_Ranking_Home.dart';
 
 class MoreTab extends StatefulWidget {
   MoreTab({Key? key}) : super(key: key);
