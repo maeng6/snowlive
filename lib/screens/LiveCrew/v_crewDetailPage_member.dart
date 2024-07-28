@@ -319,9 +319,12 @@ class _CrewDetailPage_memberState extends State<CrewDetailPage_member> {
                                                         padding: const EdgeInsets.only(left: 16, right: 16),
                                                         child: ElevatedButton(
                                                           style: ElevatedButton.styleFrom(
-                                                            primary: Colors.white, // 버튼 배경색
-                                                            onPrimary: Colors.black, // 버튼 텍스트 색상
-                                                            minimumSize: Size(double.infinity, 50), // 버튼의 최소 크기 설정 (가로: 최대, 세로: 50)
+                                                            backgroundColor: SDSColor.snowliveWhite,
+                                                            textStyle: SDSTextStyle.bold.copyWith(
+                                                              fontSize: 15,
+                                                              color: SDSColor.gray900
+                                                            ),
+                                                            minimumSize: Size(double.infinity, 50),
                                                           ),
                                                           onPressed: () {
                                                             Get.to(() => FriendDetailPage(

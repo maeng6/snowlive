@@ -18,6 +18,7 @@ import '../../../controller/public/vm_timeStampController.dart';
 import '../../../controller/user/vm_userModelController.dart';
 import '../../../data/imgaUrls/Data_url_image.dart';
 import '../../../widget/w_fullScreenDialog.dart';
+import '../../snowliveDesignStyle.dart';
 
 class Bulletin_Event_List_Screen extends StatefulWidget {
   const Bulletin_Event_List_Screen({Key? key}) : super(key: key);
@@ -550,7 +551,7 @@ class _Bulletin_Event_List_ScreenState extends State<Bulletin_Event_List_Screen>
                                             width: 1,
                                             color: Color(0xFFF5F5F5),
                                           ),
-                                          primary: Color(0xFFF5F5F5),
+                                          backgroundColor: SDSColor.snowliveBlue,
                                           elevation: 0,
                                           shape: RoundedRectangleBorder(
                                               borderRadius: BorderRadius.circular(8))),
@@ -604,7 +605,7 @@ class _Bulletin_Event_List_ScreenState extends State<Bulletin_Event_List_Screen>
                                             width: 1,
                                             color: Color(0xFFF5F5F5),
                                           ),
-                                          primary: Color(0xFFF5F5F5),
+                                          backgroundColor: SDSColor.gray50,
                                           elevation: 0,
                                           shape: RoundedRectangleBorder(
                                               borderRadius: BorderRadius.circular(8))),

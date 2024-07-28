@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:com.snowlive/controller/user/vm_userModelController.dart';
 import '../../../model/m_resortModel.dart';
+import '../../snowliveDesignStyle.dart';
 
 class SetCrewNameAndResort extends StatefulWidget {
   SetCrewNameAndResort({Key? key}) : super(key: key);
@@ -229,7 +230,7 @@ class _SetCrewNameAndResortState extends State<SetCrewNameAndResort> {
                     style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16),
                   ),
                   style: ElevatedButton.styleFrom(
-                    primary: Colors.blue,
+                    backgroundColor: SDSColor.snowliveBlue,
                     minimumSize: Size(double.infinity, 56),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(6),

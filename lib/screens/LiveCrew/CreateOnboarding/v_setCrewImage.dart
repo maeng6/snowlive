@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:com.snowlive/screens/LiveCrew/CreateOnboarding/v_FirstPage_createCrew.dart';
 import 'package:com.snowlive/screens/LiveCrew/v_crewDetailPage_screen.dart';
+import 'package:com.snowlive/screens/snowliveDesignStyle.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -238,7 +239,7 @@ class _SetCrewImageState extends State<SetCrewImage> {
                                           ),
                                           style: ElevatedButton.styleFrom(
                                             minimumSize: Size(160, 45), // 버튼의 최소 크기 설정
-                                            primary: Color(0xFF7C899D), // 배경색 설정
+                                            backgroundColor: SDSColor.gray700,
                                           ),
                                         ), // 버튼 간 간격을 줄이기 위해 간격 설정
                                         ElevatedButton(
@@ -263,7 +264,7 @@ class _SetCrewImageState extends State<SetCrewImage> {
                                           ),
                                           style: ElevatedButton.styleFrom(
                                             minimumSize: Size(160, 45), // 버튼의 최소 크기 설정
-                                            primary: Color(0xFF3D83ED), // 배경색 설정
+                                            backgroundColor: SDSColor.snowliveBlue,
                                           ),
                                         ),
                                       ],
