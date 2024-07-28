@@ -151,10 +151,10 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
     try {
       FirebaseAnalytics.instance.logEvent(
         name: 'visit_resortHome',
-        parameters: <String, dynamic>{
-          'user_id': _userModelController.uid,
-          'user_name': _userModelController.displayName,
-          'user_resort': _userModelController.favoriteResort,
+        parameters: <String, Object>{
+          'user_id': _userModelController.uid!,
+          'user_name': _userModelController.displayName!,
+          'user_resort': _userModelController.favoriteResort!,
         },
       );
     } catch (e, stackTrace) {
@@ -582,10 +582,10 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
                                                                   try{
                                                                     await FirebaseAnalytics.instance.logEvent(
                                                                       name: 'live_on_button_pressed_Success',
-                                                                      parameters: <String, dynamic>{
-                                                                        'user_id': _userModelController.uid,
-                                                                        'user_name': _userModelController.displayName,
-                                                                        'user_resort': _userModelController.favoriteResort
+                                                                      parameters: <String, Object>{
+                                                                        'user_id': _userModelController.uid!,
+                                                                        'user_name': _userModelController.displayName!,
+                                                                        'user_resort': _userModelController.favoriteResort!
                                                                       },
                                                                     );
                                                                   }catch(e, stackTrace){
