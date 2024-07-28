@@ -565,7 +565,7 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                               mainAxisAlignment: MainAxisAlignment.center,
                                               children: [
                                                 Text(
-                                                  '140,405',
+                                                  '1',
                                                   style: TextStyle(
                                                     fontWeight: FontWeight.bold,
                                                   ),
@@ -573,7 +573,7 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                                 Padding(
                                                   padding: const EdgeInsets.only(top: 3),
                                                   child: Text(
-                                                    '총 점수',
+                                                    '통합 랭킹',
                                                     style: SDSTextStyle.regular.copyWith(
                                                       color: Color(0xFF111111).withOpacity(0.5),
                                                       fontSize: 13,
@@ -597,7 +597,7 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                                 Padding(
                                                   padding: const EdgeInsets.only(top: 3),
                                                   child: Text(
-                                                    '자주가는 스키장 점수',
+                                                    '총 점수',
                                                     style: SDSTextStyle.regular.copyWith(
                                                       color: Color(0xFF111111).withOpacity(0.5),
                                                       fontSize: 13,

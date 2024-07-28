@@ -2005,163 +2005,12 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
                                                               crossAxisAlignment: CrossAxisAlignment.start,
                                                               children: [
                                                                 Padding(
-                                                                  padding: const EdgeInsets.only(bottom: 16, left: 4),
-                                                                  child: Text('내 시즌 정보',
+                                                                  padding: const EdgeInsets.only(right: 4, left: 4),
+                                                                  child: Text('오늘의 기록',
                                                                     style: SDSTextStyle.extraBold.copyWith(
                                                                         fontSize: 15,
                                                                         color: SDSColor.gray900
                                                                     ),
-                                                                  ),
-                                                                ),
-                                                                Container(
-                                                                  padding: const EdgeInsets.only(left: 24, right: 20, top: 24, bottom: 24),
-                                                                  decoration: BoxDecoration(
-                                                                    color: SDSColor.gray50,
-                                                                    borderRadius: BorderRadius.circular(16),
-                                                                  ),
-                                                                  child: Row(
-                                                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                                    children: [
-                                                                      Row(
-                                                                        children: [
-                                                                          Container(
-                                                                            width: 92,
-                                                                            child: Column(
-                                                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                                                              children: [
-                                                                                Padding(
-                                                                                  padding: const EdgeInsets.only(bottom: 6),
-                                                                                  child: Row(
-                                                                                    children: [
-                                                                                      ExtendedImage.asset(
-                                                                                        'assets/imgs/icons/icon_circle_black.png',
-                                                                                        fit: BoxFit.cover,
-                                                                                        width: 16,
-                                                                                        height: 16,
-                                                                                      ),
-                                                                                      SizedBox(width: 4),
-                                                                                      Text(
-                                                                                        '누적 점수',
-                                                                                        style: SDSTextStyle.regular.copyWith(
-                                                                                          fontSize: 13,
-                                                                                          color: SDSColor.gray900.withOpacity(0.7),
-                                                                                        ),
-                                                                                      ),
-                                                                                    ],
-                                                                                  ),
-                                                                                ),
-                                                                                Text(
-                                                                                  (_userModelController.favoriteResort == 12 || _userModelController.favoriteResort == 2 || _userModelController.favoriteResort == 0)
-                                                                                      ? '${rankingDocs[0]['totalScore']}점'
-                                                                                      : '${rankingDocs[0]['totalPassCount']}회',
-                                                                                  style: SDSTextStyle.bold.copyWith(
-                                                                                    color: SDSColor.gray900,
-                                                                                    fontSize: 16,
-                                                                                  ),
-                                                                                ),
-                                                                              ],
-                                                                            ),
-                                                                          ),
-                                                                          Container(
-                                                                            width: 92,
-                                                                            child: Column(
-                                                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                                                              children: [
-                                                                                Padding(
-                                                                                  padding: const EdgeInsets.only(bottom: 6),
-                                                                                  child: Row(
-                                                                                    children: [
-                                                                                      ExtendedImage.asset(
-                                                                                        'assets/imgs/icons/icon_circle_black.png',
-                                                                                        fit: BoxFit.cover,
-                                                                                        width: 16,
-                                                                                        height: 16,
-                                                                                      ),
-                                                                                      SizedBox(width: 4),
-                                                                                      Text(
-                                                                                        '통합 랭킹',
-                                                                                        style: SDSTextStyle.regular.copyWith(
-                                                                                          fontSize: 13,
-                                                                                          color: SDSColor.gray900.withOpacity(0.7),
-                                                                                        ),
-                                                                                      ),
-                                                                                    ],
-                                                                                  ),
-                                                                                ),
-                                                                                Text(
-                                                                                  '${userRankingMap_all!['${_userModelController.uid}']}등',
-                                                                                  style: SDSTextStyle.bold.copyWith(
-                                                                                    color: SDSColor.gray900,
-                                                                                    fontSize: 16,
-                                                                                  ),
-                                                                                ),
-                                                                              ],
-                                                                            ),
-                                                                          ),
-                                                                        ],
-                                                                      ),
-                                                                      GestureDetector(
-                                                                        onTap: () {
-                                                                          // Add your share functionality here
-                                                                        },
-                                                                        child: Container(
-                                                                          padding: EdgeInsets.symmetric(horizontal: 12, vertical: 9),
-                                                                          decoration: BoxDecoration(
-                                                                            color: SDSColor.snowliveWhite,
-                                                                            borderRadius: BorderRadius.circular(20),
-                                                                          ),
-                                                                          child: Row(
-                                                                            children: [
-                                                                              Padding(
-                                                                                padding: const EdgeInsets.only(right: 6),
-                                                                                child: Text(
-                                                                                  '공유하기',
-                                                                                  style: SDSTextStyle.extraBold.copyWith(
-                                                                                    color: Colors.black,
-                                                                                    fontSize: 13
-                                                                                  ),
-                                                                                ),
-                                                                              ),
-                                                                              ExtendedImage.asset(
-                                                                                'assets/imgs/icons/icon_arrow_round_black.png',
-                                                                                fit: BoxFit.cover,
-                                                                                width: 18,
-                                                                                height: 18,
-                                                                              ),
-                                                                            ],
-                                                                          ),
-                                                                        ),
-                                                                      ),
-                                                                    ],
-                                                                  ),
-                                                                ),
-                                                                Padding(
-                                                                  padding: const EdgeInsets.only(top: 40, right: 4, left: 4),
-                                                                  child: Text('오늘 가장 많이 이용한 슬로프는',
-                                                                    style: SDSTextStyle.extraBold.copyWith(
-                                                                        fontSize: 20,
-                                                                        color: SDSColor.gray900
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                                Padding(
-                                                                  padding: const EdgeInsets.only(top: 4, left: 4),
-                                                                  child: Row(
-                                                                    children: [
-                                                                      Text('${barData[0]['slopeName']}',
-                                                                        style: SDSTextStyle.extraBold.copyWith(
-                                                                            fontSize: 20,
-                                                                            color: SDSColor.snowliveBlue
-                                                                        ),
-                                                                      ),
-                                                                      Text('입니다!',
-                                                                        style: SDSTextStyle.extraBold.copyWith(
-                                                                            fontSize: 20,
-                                                                            color: SDSColor.gray900
-                                                                        ),
-                                                                      ),
-                                                                    ],
                                                                   ),
                                                                 ),
                                                                 Padding(
@@ -2264,37 +2113,7 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
                                                                     ),
                                                                   ),
                                                                 ),
-                                                                Padding(
-                                                                  padding: const EdgeInsets.only(top: 40, left: 4),
-                                                                  child: Text('${_userModelController.displayName}님은 부지런한 모닝 라이더',
-                                                                    style: SDSTextStyle.extraBold.copyWith(
-                                                                        fontSize: 20,
-                                                                        color: SDSColor.gray900
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                                Padding(
-                                                                  padding: const EdgeInsets.only(top: 4, left: 4),
-                                                                  child: Row(
-                                                                    children: [
-                                                                      Text('${ _resortModelController.getSlotName(barData2[0]['slotName'])}시에',
-                                                                        style: SDSTextStyle.extraBold.copyWith(
-                                                                            fontSize: 20,
-                                                                            color: SDSColor.snowliveBlue
-                                                                        ),
-                                                                      ),
-                                                                      Padding(
-                                                                        padding: const EdgeInsets.only(left: 4),
-                                                                        child: Text('가장 많이 탔어요!',
-                                                                          style: SDSTextStyle.extraBold.copyWith(
-                                                                              fontSize: 20,
-                                                                              color: SDSColor.gray900
-                                                                          ),
-                                                                        ),
-                                                                      ),
-                                                                    ],
-                                                                  ),
-                                                                ),
+
                                                                 Padding(
                                                                   padding: const EdgeInsets.only(top: 16),
                                                                   child: Container(
@@ -2310,22 +2129,11 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
                                                                         Column(
                                                                           crossAxisAlignment: CrossAxisAlignment.start,
                                                                           children: [
-                                                                            Row(
-                                                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                                              children: [
-                                                                                Text('오늘 총 라이딩 횟수',
-                                                                                  style: SDSTextStyle.regular.copyWith(
-                                                                                      color: SDSColor.gray900.withOpacity(0.5),
-                                                                                      fontSize: 14
-                                                                                  ),
-                                                                                ),
-                                                                                Text('마지막 라이딩 ${lastPassTimeString}',
-                                                                                  style: SDSTextStyle.regular.copyWith(
-                                                                                      color: SDSColor.snowliveBlack.withOpacity(0.4),
-                                                                                      fontSize: 12
-                                                                                  ),
-                                                                                ),
-                                                                              ],
+                                                                            Text('오늘 총 라이딩 횟수',
+                                                                              style: SDSTextStyle.regular.copyWith(
+                                                                                  color: SDSColor.gray900.withOpacity(0.5),
+                                                                                  fontSize: 14
+                                                                              ),
                                                                             ),
                                                                             Padding(
                                                                               padding: const EdgeInsets.only(top: 4, bottom: 20),
@@ -2598,95 +2406,7 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
                                             color: SDSColor.gray50,
                                           ),
                                         ),
-                                        Padding(
-                                          padding: const EdgeInsets.symmetric(horizontal: 16),
-                                          child: Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: [
-                                              Padding(
-                                                padding: const EdgeInsets.only(bottom: 16, left: 4),
-                                                child: Text('지금 ${_userModelController.resortNickname}는',
-                                                  style: SDSTextStyle.extraBold.copyWith(
-                                                      fontSize: 15,
-                                                      color: SDSColor.gray900
-                                                  ),
-                                                ),
-                                              ),
-                                              Row(
-                                                children: [
-                                                Container(
-                                                  padding: EdgeInsets.all(24),
-                                                  width: _size.width / 2 - 21,
-                                                  height: 94,
-                                                  decoration: BoxDecoration(
-                                                    color: SDSColor.snowliveBlue,
-                                                    borderRadius: BorderRadius.circular(16),
-                                                  ),
-                                                  child: Column(
-                                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                                    children: [
-                                                      Text(
-                                                        '라이브중인 사람',
-                                                        style: SDSTextStyle.regular.copyWith(
-                                                          color: SDSColor.snowliveWhite.withOpacity(0.6),
-                                                          fontSize: 13
-                                                        ),
-                                                      ),
-                                                      Padding(
-                                                        padding: const EdgeInsets.only(top: 8),
-                                                        child: Text(
-                                                          '1,402명',
-                                                          style: SDSTextStyle.bold.copyWith(
-                                                            color: SDSColor.snowliveWhite,
-                                                            fontSize: 18
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                                Padding(
-                                                  padding: const EdgeInsets.only(left: 10),
-                                                  child: Container(
-                                                    padding: EdgeInsets.all(24),
-                                                    width: _size.width / 2 - 21,
-                                                    height: 94,
-                                                    decoration: BoxDecoration(
-                                                      color: SDSColor.gray50,
-                                                      borderRadius: BorderRadius.circular(16),
-                                                    ),
-                                                    child: Column(
-                                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                                      children: [
-                                                        Text(
-                                                          '실시간 인기 슬로프',
-                                                          style: SDSTextStyle.regular.copyWith(
-                                                              color: SDSColor.gray900.withOpacity(0.6),
-                                                              fontSize: 13
-                                                          ),
-                                                        ),
-                                                        Padding(
-                                                          padding: const EdgeInsets.only(top: 8),
-                                                          child: AutoSizeText(
-                                                            '파노라마',
-                                                            style: SDSTextStyle.bold.copyWith(
-                                                                color: SDSColor.gray900,
-                                                                fontSize: 18
-                                                            ),
-                                                            minFontSize: 12,
-                                                            maxLines: 1,
-                                                            overflow: TextOverflow.visible,
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                ),
-                                                ],
-                                              ),
-                                            ],
-                                          ),
-                                        ),
+                                        
 
                                       ],
                                     ),
