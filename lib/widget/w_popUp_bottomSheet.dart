@@ -187,10 +187,10 @@ Future<void> bottomPopUp(BuildContext context) async {
                               try{
                                 await FirebaseAnalytics.instance.logEvent(
                                   name: 'tap_resortHome_bottom_addUid',
-                                  parameters: <String, dynamic>{
-                                    'user_id': _userModelController.uid,
-                                    'user_name': _userModelController.displayName,
-                                    'user_resort': _userModelController.favoriteResort
+                                  parameters: <String, Object>{
+                                    'user_id': _userModelController.uid!,
+                                    'user_name': _userModelController.displayName!,
+                                    'user_resort': _userModelController.favoriteResort!
                                   },
                                 );
                               }catch(e, stackTrace){
@@ -328,10 +328,10 @@ Future<void> bottomPopUp(BuildContext context) async {
                               try{
                                 await FirebaseAnalytics.instance.logEvent(
                                   name: 'tap_resortHome_bottom_total',
-                                  parameters: <String, dynamic>{
-                                    'user_id': _userModelController.uid,
-                                    'user_name': _userModelController.displayName,
-                                    'user_resort': _userModelController.favoriteResort
+                                  parameters: <String, Object>{
+                                    'user_id': _userModelController.uid!,
+                                    'user_name': _userModelController.displayName!,
+                                    'user_resort': _userModelController.favoriteResort!
                                   },
                                 );
                               }catch(e, stackTrace){

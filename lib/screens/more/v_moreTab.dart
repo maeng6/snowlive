@@ -51,20 +51,19 @@ class _MoreTabState extends State<MoreTab> {
     // TODO: implement initState
     super.initState();
 
-    try{
+    try {
       FirebaseAnalytics.instance.logEvent(
         name: 'visit_moreTab',
-        parameters: <String, dynamic>{
-          'user_id': _userModelController.uid,
-          'user_name': _userModelController.displayName,
-          'user_resort': _userModelController.favoriteResort
+        parameters: <String, Object>{
+          'user_id': _userModelController.uid!,
+          'user_name': _userModelController.displayName!,
+          'user_resort': _userModelController.favoriteResort!
         },
       );
-    }catch(e, stackTrace){
+    } catch (e, stackTrace) {
       print('GA 업데이트 오류: $e');
       print('Stack trace: $stackTrace');
     }
-
   }
 
 

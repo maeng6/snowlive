@@ -64,20 +64,21 @@ class _Banner_resortHomeState
                   String landingUrl =
                   _imageUrls[_currentIndexNotifier.value]['landingUrl'];
                   _urlLauncherController.otherShare(contents: landingUrl);
-                  try{
+                  try {
                     FirebaseAnalytics.instance.logEvent(
                       name: 'tap_banner_resortHome',
-                      parameters: <String, dynamic>{
-                        'user_id': _userModelController.uid,
-                        'user_name': _userModelController.displayName,
-                        'user_resort': _userModelController.favoriteResort,
+                      parameters: <String, Object>{
+                        'user_id': _userModelController.uid!,
+                        'user_name': _userModelController.displayName!,
+                        'user_resort': _userModelController.favoriteResort!,
                         'banner_number': _currentIndexNotifier.value
                       },
                     );
-                  }catch(e, stackTrace){
+                  } catch (e, stackTrace) {
                     print('GA 업데이트 오류: $e');
                     print('Stack trace: $stackTrace');
                   }
+
 
                 },
                 child: Container(

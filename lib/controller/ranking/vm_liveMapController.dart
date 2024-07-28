@@ -166,8 +166,8 @@ class LiveMapController extends GetxController {
           speed: location.coords.speed,
           speedAccuracy: location.coords.speedAccuracy,
           timestamp: DateTime.parse(location.timestamp),
-          altitudeAccuracy: location.coords.altitudeAccuracy ?? 0.0,
-          headingAccuracy: location.coords.headingAccuracy ?? 0.0,
+          altitudeAccuracy: 0,
+          headingAccuracy: 0,
         );
 
         // await updateFirebaseWithLocation(position);

@@ -68,10 +68,10 @@ class _Bulletin_Event_List_ScreenState extends State<Bulletin_Event_List_Screen>
     try{
       FirebaseAnalytics.instance.logEvent(
         name: 'visit_bulletinEvent',
-        parameters: <String, dynamic>{
-          'user_id': _userModelController.uid,
-          'user_name': _userModelController.displayName,
-          'user_resort': _userModelController.favoriteResort
+        parameters: <String, Object>{
+          'user_id': _userModelController.uid!,
+          'user_name': _userModelController.displayName!,
+          'user_resort': _userModelController.favoriteResort!
         },
       );
     }catch(e, stackTrace){

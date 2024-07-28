@@ -1,7 +1,7 @@
 #!/bin/sh
 # This is a generated file; do not edit or check into version control.
-export "FLUTTER_ROOT=/Users/8choon/flutter"
-export "FLUTTER_APPLICATION_PATH=/Users/8choon/project/snowlive"
+export "FLUTTER_ROOT=/Users/luis/flutter"
+export "FLUTTER_APPLICATION_PATH=/Users/luis/StudioProjects/snowlive"
 export "COCOAPODS_PARALLEL_CODE_SIGN=true"
 export "FLUTTER_BUILD_DIR=build"
 export "FLUTTER_BUILD_NAME=3.4.4"
