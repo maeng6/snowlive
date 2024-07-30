@@ -9,6 +9,7 @@ import 'package:com.snowlive/controller/banner/vm_streamController_banner.dart';
 import 'package:com.snowlive/controller/fleaMarket/vm_streamController_fleaMarket.dart';
 import 'package:com.snowlive/controller/liveCrew/vm_streamController_liveCrew.dart';
 import 'package:com.snowlive/controller/moreTab/vm_streamController_moreTab.dart';
+import 'package:com.snowlive/screens/snowliveDesignStyle.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -42,9 +43,13 @@ import 'controller/home/vm_streamController_resortHome.dart';
 import 'controller/public/vm_timeStampController.dart';
 import 'controller/public/vm_urlLauncherController.dart';
 import 'controller/user/vm_userModelController.dart';
+import 'package:intl/intl.dart';
+import 'package:intl/date_symbol_data_local.dart';
+
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await initializeDateFormatting('ko', null);
 
   await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
@@ -136,6 +141,9 @@ class _MyAppState extends State<MyApp> {
           FirebaseAnalyticsObserver(analytics: FirebaseAnalytics.instance)
         ],
         theme: ThemeData(
+          primaryColor: SDSColor.snowliveBlue,
+          primaryColorLight: SDSColor.blue50,
+          primaryColorDark: SDSColor.blue700,
           textTheme: TextTheme(
             displayLarge: TextStyle(fontFamily: 'Pretendard', fontWeight: FontWeight.w800),
             displayMedium: TextStyle(fontFamily: 'Pretendard', fontWeight: FontWeight.w600),
