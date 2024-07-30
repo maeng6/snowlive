@@ -87,6 +87,7 @@ dependencies:
   animate_gradient: ^0.0.3
   adaptive_action_sheet: ^2.0.3
   flutter_quill: ^8.2.2
+  bubble: ^1.2.1
 
 dev_dependencies:
   flutter_test:
