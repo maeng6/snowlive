@@ -5,6 +5,7 @@ import 'package:com.snowlive/controller/public/vm_refreshController.dart';
 import 'package:com.snowlive/controller/home/vm_streamController_resortHome.dart';
 import 'package:com.snowlive/controller/public/vm_timeStampController.dart';
 import 'package:com.snowlive/screens/resort/v_alarmCenter.dart';
+import 'package:com.snowlive/screens/resort/v_chat_resortHome.dart';
 import 'package:com.snowlive/screens/snowliveDesignStyle.dart';
 import 'package:com.snowlive/widget/w_liveOn_animatedGradient.dart';
 import 'package:com.snowlive/widget/w_popUp_bottomSheet.dart';
@@ -58,6 +59,8 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
   Stream<QuerySnapshot<Map<String, dynamic>>>? _friendStream;
   Stream<QuerySnapshot<Map<String, dynamic>>>? _bfStream;
   Stream<QuerySnapshot>? _rankingGuideUrlStream;
+
+  final TextEditingController _textEditingController = TextEditingController();
 
   Map? userRankingMap_all;
 
@@ -767,211 +770,6 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
                         preferredSize: Size.fromHeight(44),
                         child: AppBar(
                           actions: [
-                            // (_userModelController.isOnLive == true)
-                            // ? Padding(
-                            //   padding: const EdgeInsets.only(top: 8, bottom: 8, right: 10),
-                            //   child: GestureDetector(
-                            //     onTap: () {
-                            //       _tempSelectedOnlineView = List.from(_isSelected_onlineView); // 기존 선택 상태를 임시 상태에 복사
-                            //       showModalBottomSheet(
-                            //         context: context,
-                            //         shape: RoundedRectangleBorder(
-                            //           borderRadius: BorderRadius.vertical(
-                            //             top: Radius.circular(20),
-                            //           ),
-                            //         ),
-                            //         builder: (context) {
-                            //           return StatefulBuilder(
-                            //             builder: (BuildContext context, StateSetter setModalState) {
-                            //               return Container(
-                            //                 height: 370,
-                            //                 decoration: BoxDecoration(
-                            //                   borderRadius: BorderRadius.only(topLeft: Radius.circular(16), topRight: Radius.circular(16)),
-                            //                   color: SDSColor.snowliveWhite,
-                            //                 ),
-                            //                 padding: EdgeInsets.only(bottom: 20, right: 20, left: 20, top: 12),
-                            //                 child: Column(
-                            //                   crossAxisAlignment: CrossAxisAlignment.center,
-                            //                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            //                   children: [
-                            //                     Padding(
-                            //                       padding: const EdgeInsets.only(bottom: 20),
-                            //                       child: Container(
-                            //                         height: 4,
-                            //                         width: 36,
-                            //                         decoration: BoxDecoration(
-                            //                           borderRadius: BorderRadius.circular(10),
-                            //                           color: SDSColor.gray200,
-                            //                         ),
-                            //                       ),
-                            //                     ),
-                            //                     Text(
-                            //                       '온라인 상태를 선택해 주세요',
-                            //                       style: SDSTextStyle.bold.copyWith(fontSize: 16, color: SDSColor.gray900),
-                            //                     ),
-                            //                     SizedBox(height: 8),
-                            //                     Text(
-                            //                       '라이브온 상태와 상관없이 다른 사람에게 보여지는 \n내 라이브 표시를 자유롭게 온/오프할 수 있어요',
-                            //                       style: SDSTextStyle.regular.copyWith(fontSize: 14, color: SDSColor.gray500, height: 1.4),
-                            //                       textAlign: TextAlign.center,
-                            //                     ),
-                            //                     SizedBox(height: 24),
-                            //                     Expanded(
-                            //                       child: ListView(
-                            //                         shrinkWrap: true,
-                            //                         children: [
-                            //                           ListTile(
-                            //                             contentPadding: EdgeInsets.symmetric(horizontal: 0),
-                            //                             trailing: _tempSelectedOnlineView[0]
-                            //                                 ? Image.asset(
-                            //                               'assets/imgs/icons/icon_check_filled.png',
-                            //                               width: 24,
-                            //                               height: 24,
-                            //                             )
-                            //                                 : Image.asset(
-                            //                               'assets/imgs/icons/icon_check_unfilled.png',
-                            //                               width: 24,
-                            //                               height: 24,
-                            //                             ),
-                            //                             title: Row(
-                            //                               children: [
-                            //                                 Container(
-                            //                                   width: 8,
-                            //                                   height: 8,
-                            //                                   decoration: BoxDecoration(
-                            //                                     borderRadius: BorderRadius.circular(20),
-                            //                                     color: SDSColor.snowliveBlue,
-                            //                                   ),
-                            //                                 ),
-                            //                                 Padding(
-                            //                                   padding: const EdgeInsets.only(left: 10),
-                            //                                   child: Text(
-                            //                                     '온라인으로 표시',
-                            //                                     style: SDSTextStyle.regular.copyWith(fontSize: 15, color: SDSColor.gray900),
-                            //                                   ),
-                            //                                 ),
-                            //                               ],
-                            //                             ),
-                            //                             selected: _tempSelectedOnlineView[0],
-                            //                             onTap: () {
-                            //                               setModalState(() {
-                            //                                 _tempSelectedOnlineView = [true, false];
-                            //                               });
-                            //                             },
-                            //                           ),
-                            //                           ListTile(
-                            //                             contentPadding: EdgeInsets.symmetric(horizontal: 0),
-                            //                             trailing: _tempSelectedOnlineView[1]
-                            //                                 ? Image.asset(
-                            //                               'assets/imgs/icons/icon_check_filled.png',
-                            //                               width: 24,
-                            //                               height: 24,
-                            //                             )
-                            //                                 : Image.asset(
-                            //                               'assets/imgs/icons/icon_check_unfilled.png',
-                            //                               width: 24,
-                            //                               height: 24,
-                            //                             ),
-                            //                             title: Row(
-                            //                               children: [
-                            //                                 Container(
-                            //                                   width: 8,
-                            //                                   height: 8,
-                            //                                   decoration: BoxDecoration(
-                            //                                     borderRadius: BorderRadius.circular(20),
-                            //                                     color: SDSColor.gray500,
-                            //                                   ),
-                            //                                 ),
-                            //                                 Padding(
-                            //                                   padding: const EdgeInsets.only(left: 10),
-                            //                                   child: Text(
-                            //                                     '오프라인으로 표시',
-                            //                                     style: SDSTextStyle.regular.copyWith(fontSize: 15, color: SDSColor.gray900),
-                            //                                   ),
-                            //                                 ),
-                            //                               ],
-                            //                             ),
-                            //                             selected: _tempSelectedOnlineView[1],
-                            //                             onTap: () {
-                            //                               setModalState(() {
-                            //                                 _tempSelectedOnlineView = [false, true];
-                            //                               });
-                            //                             },
-                            //                           ),
-                            //                         ],
-                            //                       ),
-                            //                     ),
-                            //                     SafeArea(
-                            //                       child: Container(
-                            //                         width: _size.width,
-                            //                         padding: EdgeInsets.only(top: 16),
-                            //                         child: ElevatedButton(
-                            //                           onPressed: () {
-                            //                             setState(() {
-                            //                               _isSelected_onlineView = List.from(_tempSelectedOnlineView);
-                            //                               isOnlineView = _isSelected_onlineView[0];
-                            //                             });
-                            //                             Navigator.pop(context);
-                            //                           },
-                            //                           child: Text(
-                            //                             '표시 상태 저장하기',
-                            //                             style: SDSTextStyle.bold.copyWith(color: Colors.white, fontSize: 16),
-                            //                           ),
-                            //                           style: TextButton.styleFrom(
-                            //                             shape: const RoundedRectangleBorder(
-                            //                                 borderRadius: BorderRadius.all(
-                            //                                     Radius.circular(6)
-                            //                                 )
-                            //                             ),
-                            //                             elevation: 0,
-                            //                             splashFactory: InkRipple.splashFactory,
-                            //                             minimumSize: Size(double.infinity, 48),
-                            //                             backgroundColor: SDSColor.snowliveBlue,
-                            //                           ),
-                            //                         ),
-                            //                       ),
-                            //                     ),
-                            //                   ],
-                            //                 ),
-                            //               );
-                            //             },
-                            //           );
-                            //         },
-                            //       );
-                            //     },
-                            //     child: Container(
-                            //       height: 24,
-                            //       padding: EdgeInsets.symmetric(horizontal: 8),
-                            //       decoration: BoxDecoration(
-                            //         borderRadius: BorderRadius.circular(20),
-                            //         border: Border.all(color: SDSColor.gray200),
-                            //       ),
-                            //       child: Row(
-                            //         children: [
-                            //           Container(
-                            //             width: 8,
-                            //             height: 8,
-                            //             decoration: BoxDecoration(
-                            //               borderRadius: BorderRadius.circular(20),
-                            //               color: isOnlineView ? SDSColor.snowliveBlue : SDSColor.gray500,
-                            //             ),
-                            //           ),
-                            //           Padding(
-                            //             padding: const EdgeInsets.only(left: 4),
-                            //             child: Text(
-                            //               isOnlineView ? '온라인' : '오프라인',
-                            //               style: SDSTextStyle.regular.copyWith(
-                            //                 color: SDSColor.gray700,
-                            //                 fontSize: 13,
-                            //               ),
-                            //             ),
-                            //           ),
-                            //         ],
-                            //       ),
-                            //     ),
-                            //   ),
-                            // )
-                            // : Container(),
                             SizedBox(
                               width: 36,
                               child: IconButton(
@@ -2406,7 +2204,17 @@ class _ResortHomeState extends State<ResortHome> with AutomaticKeepAliveClientMi
                                             color: SDSColor.gray50,
                                           ),
                                         ),
-                                        
+                                        Padding(
+                                          padding: const EdgeInsets.only(left: 16, right: 16),
+                                          child: Text('스키장 오픈채팅',
+                                          style: TextStyle(
+                                            fontSize: 15,
+                                            fontWeight: FontWeight.bold
+                                          ),
+                                          ),
+                                        ),
+                                        SizedBox(height: 10,),
+                                        ChatScreen(),
 
                                       ],
                                     ),
