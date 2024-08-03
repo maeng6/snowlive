@@ -48,3 +48,9 @@ build/
 /android/gradle/
 /android/app/key.properties
 **/*.iml
+
+# iOS specific
+/ios/Flutter/.last_build_id
+/ios/Pods/
+Runner.xcworkspace
+Podfile.lock
