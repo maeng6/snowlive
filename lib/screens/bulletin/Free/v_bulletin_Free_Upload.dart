@@ -1,6 +1,8 @@
+import 'dart:convert';
 import 'dart:io' as io;
 import 'package:com.snowlive/screens/bulletin/Free/v_bulletin_Free_List_Detail.dart';
 import 'package:com.snowlive/screens/snowliveDesignStyle.dart';
+import 'package:dart_quill_delta/dart_quill_delta.dart' as quill;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_quill/flutter_quill.dart';
@@ -13,6 +15,8 @@ import '../../../controller/public/vm_imageController.dart';
 import '../../../controller/user/vm_userModelController.dart';
 import '../../../model/m_bulletinFreeModel.dart';
 import '../../../widget/w_fullScreenDialog.dart';
+import './w_bulletin_Free_Quill_editor.dart';
+import './w_bulletin_Free_Quill_toolbar.dart';
 
 class Bulletin_Free_Upload extends StatefulWidget {
   const Bulletin_Free_Upload({Key? key}) : super(key: key);
@@ -38,6 +42,7 @@ class _Bulletin_Free_UploadState extends State<Bulletin_Free_Upload> {
   late quill.QuillController _quillController = quill.QuillController.basic();
   final FocusNode _focusNode = FocusNode();
   ScrollController _scrollController = ScrollController();
+  var _isReadOnly = false;
 
   @override
   void initState() {
@@ -89,8 +94,62 @@ class _Bulletin_Free_UploadState extends State<Bulletin_Free_Upload> {
     if (!mounted) return;
     final index = _quillController.selection.baseOffset;
     final length = _quillController.selection.extentOffset - index;
-    _quillController.replaceText(index, length, quill.BlockEmbed.custom(CustomImageEmbed(imageUrl)), TextSelection.collapsed(offset: index + 1));
+    _quillController.replaceText(index, length, quill.BlockEmbed.image(imageUrl), TextSelection.collapsed(offset: index + 1));
     print('insertImage : ${_imageFiles}');
+  }
+
+  Future<void> _uploadBulletin() async {
+    final isValid = _formKey.currentState!.validate();
+
+    if (_tileSelected["구분"]!.isEmpty) {
+      Get.snackbar('선택되지않은 항목', '구분을 선택해주세요.',
+          margin: EdgeInsets.only(right: 20, left: 20, bottom: 12),
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.black87,
+          colorText: Colors.white,
+          duration: Duration(milliseconds: 3000));
+    } else {
+      if (isValid) {
+        CustomFullScreenDialog.showDialog();
+        UserModelController _userModelController = Get.find<UserModelController>();
+        BulletinFreeModelController _bulletinFreeModelController = Get.find<BulletinFreeModelController>();
+        ImageController _imageController = Get.find<ImageController>();
+
+        await _userModelController.bulletinFreeCountUpdate(_userModelController.uid);
+
+        // bulletinFreeCount가 null인지 확인하고 초기화
+        int bulletinFreeCount = _userModelController.bulletinFreeCount ?? 0;
+
+        await _imageController.setNewMultiImage_bulletinFree(_imageFiles, bulletinFreeCount);
+
+        // Delta 문서의 이미지를 Firebase Storage에 업로드
+        List<quill.Operation> ops = _quillController.document.toDelta().toList();
+        await _imageController.uploadDeltaImages(ops, bulletinFreeCount);
+
+        final deltaJson = jsonEncode(ops);
+
+        await _bulletinFreeModelController.uploadBulletinFree(
+            displayName: _userModelController.displayName,
+            uid: _userModelController.uid,
+            profileImageUrl: _userModelController.profileImageUrl,
+            itemImagesUrls: _imageController.imagesUrlList,
+            title: _titleTextEditingController.text,
+            category: SelectedCategory,
+            description: deltaJson, // Quill 문서를 Delta 형식으로 저장
+            bulletinFreeCount: bulletinFreeCount,
+            resortNickname: _userModelController.resortNickname
+        );
+
+        await _bulletinFreeModelController.getCurrentBulletinFree(
+            uid: _userModelController.uid,
+            bulletinFreeCount: bulletinFreeCount
+        );
+
+        CustomFullScreenDialog.cancelDialog();
+        Get.off(() => Bulletin_Free_List_Detail());
+        _imageController.imagesUrlList.clear();
+      }
+    }
   }
 
   @override
@@ -103,12 +162,9 @@ class _Bulletin_Free_UploadState extends State<Bulletin_Free_Upload> {
 
   @override
   Widget build(BuildContext context) {
-    //TODO : ****************************************************************
     Get.put(ImageController(), permanent: true);
-    UserModelController _userModelController = Get.find<UserModelController>();
-    BulletinFreeModelController _bulletinFreeModelController = Get.find<BulletinFreeModelController>();
-    ImageController _imageController = Get.find<ImageController>();
-    //TODO : ****************************************************************
+    Get.put(UserModelController(), permanent: true);
+    Get.put(BulletinFreeModelController(), permanent: true);
 
     Size _size = MediaQuery.of(context).size;
     return Container(
@@ -139,46 +195,7 @@ class _Bulletin_Free_UploadState extends State<Bulletin_Free_Upload> {
               ),
               actions: [
                 TextButton(
-                    onPressed: () async{
-                      final isValid = _formKey.currentState!.validate();
-
-                      if(_tileSelected["구분"]!.isEmpty){
-                        Get.snackbar('선택되지않은 항목', '구분을 선택해주세요.',
-                            margin: EdgeInsets.only(right: 20, left: 20, bottom: 12),
-                            snackPosition: SnackPosition.BOTTOM,
-                            backgroundColor: Colors.black87,
-                            colorText: Colors.white,
-                            duration: Duration(milliseconds: 3000));
-                      }
-                      else{
-
-                        if(isValid){
-                          CustomFullScreenDialog.showDialog();
-                          await _userModelController.bulletinFreeCountUpdate(_userModelController.uid);
-                          await _imageController.setNewMultiImage_bulletinFree(_imageFiles, _userModelController.bulletinFreeCount);
-                          await _bulletinFreeModelController.uploadBulletinFree(
-                              displayName: _userModelController.displayName,
-                              uid: _userModelController.uid,
-                              profileImageUrl: _userModelController.profileImageUrl,
-                              itemImagesUrls: _imageController.imagesUrlList,
-                              title: _titleTextEditingController.text,
-                              category: SelectedCategory,
-                              description: _quillController.document.toPlainText(),
-                              bulletinFreeCount: _userModelController.bulletinFreeCount,
-                              resortNickname: _userModelController.resortNickname
-                          );
-
-                          await _bulletinFreeModelController.getCurrentBulletinFree(
-                              uid: _userModelController.uid,
-                              bulletinFreeCount: _userModelController.bulletinFreeCount);
-
-                          CustomFullScreenDialog.cancelDialog();
-                          Get.off(() => Bulletin_Free_List_Detail());
-                        }
-                        _imageController.imagesUrlList.clear();
-                      }
-
-                    },
+                    onPressed: _uploadBulletin,
                     child: Padding(
                       padding: EdgeInsets.only(right: 10),
                       child: Text('올리기', style: TextStyle(
@@ -399,123 +416,21 @@ class _Bulletin_Free_UploadState extends State<Bulletin_Free_Upload> {
                                 ),),
                               ),
                               SizedBox(height: 8),
-                              Column(
-                                children: [
-                                  quill.QuillToolbar.simple(
-                                    configurations:
-                                    quill.QuillSimpleToolbarConfigurations(
+                              if (!_isReadOnly)
+                                BulletinQuillToolbar(
+                                  controller: _quillController,
+                                  focusNode: _focusNode,
+                                ),
+                              Builder(
+                                builder: (context) {
+                                  return MyQuillEditor(
+                                    configurations: QuillEditorConfigurations(
                                       controller: _quillController,
-                                      sharedConfigurations: quill.QuillSharedConfigurations(
-                                          dialogBarrierColor: SDSColor.snowliveBlack.withOpacity(0.3),
-                                          dialogTheme: quill.QuillDialogTheme(
-                                            buttonTextStyle: SDSTextStyle.bold.copyWith(
-                                                color: SDSColor.gray900,
-                                                fontSize: 16
-                                            ),
-                                            labelTextStyle: SDSTextStyle.bold.copyWith(
-                                                color: SDSColor.gray400,
-                                                fontSize: 14
-                                            ),
-                                            inputTextStyle:  SDSTextStyle.bold.copyWith(
-                                                color: SDSColor.gray900,
-                                                fontSize: 14
-                                            ),
-                                            dialogBackgroundColor: SDSColor.snowliveWhite,
-                                          )
-                                      ),
-                                      showFontFamily: false,
-                                      showFontSize: false,
-                                      showBoldButton: true,
-                                      showItalicButton: true,
-                                      showSmallButton: false,
-                                      showUnderLineButton: true,
-                                      showStrikeThrough: true,
-                                      showInlineCode: false,
-                                      showColorButton: false,
-                                      showBackgroundColorButton: false,
-                                      showClearFormat: false,
-                                      showAlignmentButtons: false,
-                                      showLeftAlignment: false,
-                                      showCenterAlignment: false,
-                                      showRightAlignment: false,
-                                      showJustifyAlignment: false,
-                                      showHeaderStyle: false,
-                                      showListNumbers: false,
-                                      showListBullets: false,
-                                      showListCheck: false,
-                                      showCodeBlock: false,
-                                      showQuote: false,
-                                      showIndent: false,
-                                      showLink: true,
-                                      showUndo: false,
-                                      showRedo: false,
-                                      showDirection: false,
-                                      showSearchButton: false,
-                                      showSubscript: false,
-                                      showSuperscript: false,
-                                      showClipboardCut: false,
-                                      showClipboardCopy: false,
-                                      showClipboardPaste: false,
-                                      customButtons: [
-                                        quill.QuillToolbarCustomButtonOptions(
-                                          icon: quill.QuillToolbarCustomButton(
-                                            controller: _quillController,
-                                            options: quill.QuillToolbarCustomButtonOptions(
-                                              icon: Icon(Icons.image),
-                                              onPressed: _pickImage,
-                                            ),
-                                          ),
-                                        )
-                                      ],
                                     ),
-                                  ),
-                                  Container(
-                                    height: 1000,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(6),
-                                      color: SDSColor.gray50,
-                                    ),
-                                    child: Container(
-                                      height: 1000,
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(6),
-                                        color: SDSColor.gray50,
-                                      ),
-                                      child: quill.QuillEditor(
-                                        focusNode: _focusNode,
-                                        scrollController: _scrollController,
-                                        configurations: quill.QuillEditorConfigurations(
-                                          controller: _quillController,
-                                          padding: const EdgeInsets.all(16),
-                                          scrollable: true,
-                                          placeholder: 'Start writing your notes...',
-                                          embedBuilders: [
-                                            CustomEmbedBuilder(
-                                              type: 'image',
-                                              builder: _imageBuilder,
-                                            ),
-                                          ],
-                                          customStyles: DefaultStyles(
-                                            h1: DefaultTextBlockStyle(
-                                              TextStyle(fontSize: 32, height: 1.15, fontWeight: FontWeight.w300),
-                                              const HorizontalSpacing(0, 0),
-                                              const VerticalSpacing(16, 0),
-                                              const VerticalSpacing(0, 0),
-                                              null,
-                                            ),
-                                            sizeSmall: TextStyle(fontSize: 9),
-                                          ),
-                                          onImagePaste: (imageBytes) async {
-                                            final newFileName = 'imageFile-${DateTime.now().toIso8601String()}.png';
-                                            final newPath = io.Directory.systemTemp.path + newFileName;
-                                            final file = await io.File(newPath).writeAsBytes(imageBytes, flush: true);
-                                            return file.path;
-                                          },
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ],
+                                    scrollController: _scrollController,
+                                    focusNode: _focusNode,
+                                  );
+                                },
                               ),
                             ],
                           ),
@@ -534,8 +449,4 @@ class _Bulletin_Free_UploadState extends State<Bulletin_Free_Upload> {
       ),
     );
   }
-}
-
-Widget _imageBuilder(BuildContext context, String imageUrl, bool readOnly) {
-  return Image.network(imageUrl);
 }
