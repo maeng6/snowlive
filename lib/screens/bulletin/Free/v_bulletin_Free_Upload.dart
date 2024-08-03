@@ -402,6 +402,7 @@ class _Bulletin_Free_UploadState extends State<Bulletin_Free_Upload> {
                             ],
                           ),
                         ),
+
                         SizedBox(height: 30),
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 16.0),
