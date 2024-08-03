@@ -31,6 +31,7 @@ migrate_working_dir/
 .pub-cache/
 .pub/
 /build/
+/ios/Podfile.lock
 
 # Web related
 lib/generated_plugin_registrant.dart
@@ -48,8 +49,3 @@ app.*.map.json
 
 
 
-# iOS specific
-/ios/Flutter/.last_build_id
-/ios/Pods/
-/ios/Runner.xcworkspace/
-/ios/Podfile.lock
