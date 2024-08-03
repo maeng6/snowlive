@@ -50,7 +50,7 @@ build/
 **/*.iml
 
 # iOS specific
-ios/Flutter/.last_build_id
-ios/Pods/
-ios/Podfile.lock
-ios/Runner.xcworkspace/
+/ios/Flutter/.last_build_id
+/ios/Pods/
+/ios/Podfile.lock
+/ios/Runner.xcworkspace/
