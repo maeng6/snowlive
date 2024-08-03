@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:typed_data';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dart_quill_delta/dart_quill_delta.dart' as quill;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -11,6 +12,8 @@ import 'package:image_picker/image_picker.dart';
 import 'package:com.snowlive/controller/liveCrew/vm_liveCrewModelController.dart';
 import 'package:com.snowlive/controller/user/vm_userModelController.dart';
 import '../../widget/w_fullScreenDialog.dart';
+import 'package:flutter_quill/flutter_quill.dart' as quill;
+
 
 class ImageController extends GetxController {
   var imageSource;
@@ -406,6 +409,33 @@ class ImageController extends GetxController {
       await deleteCrewGalleryImage(imageUrl, crewID);
     }
   }
+
+  Future<void> uploadDeltaImages(List<quill.Operation> ops, int bulletinFreeCount) async {
+    for (var op in ops) {
+      if (op.key == 'insert' && op.value is Map && op.value.containsKey('image')) {
+        String localPath = op.value['image'];
+        String downloadUrl = await _uploadImage(localPath, bulletinFreeCount);
+        op.value['image'] = downloadUrl;
+      }
+    }
+  }
+
+  Future<String> _uploadImage(String localPath, int bulletinFreeCount) async {
+    String? uid = await FlutterSecureStorage().read(key: 'uid');
+    var metaData = SettableMetadata(contentType: 'image/jpeg');
+    String downloadUrl = '';
+
+    try {
+      String fileName = '${DateTime.now().millisecondsSinceEpoch}.jpg';
+      Reference ref = FirebaseStorage.instance.ref('images/bulletinFree/$uid#$bulletinFreeCount/$fileName');
+      await ref.putFile(File(localPath), metaData);
+      downloadUrl = await ref.getDownloadURL();
+    } catch (e) {
+      print('Error uploading image: $e');
+    }
+    return downloadUrl;
+  }
+
 
 
 }

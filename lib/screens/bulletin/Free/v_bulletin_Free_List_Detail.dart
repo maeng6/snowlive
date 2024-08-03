@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:com.snowlive/controller/public/vm_limitController.dart';
@@ -20,6 +22,10 @@ import '../../../data/imgaUrls/Data_url_image.dart';
 import '../../../model/m_alarmCenterModel.dart';
 import '../../more/friend/v_friendDetailPage.dart';
 import '../../snowliveDesignStyle.dart';
+import 'package:flutter_quill/flutter_quill.dart' as quill;
+import 'package:flutter_quill_extensions/flutter_quill_extensions.dart';
+
+
 
 class Bulletin_Free_List_Detail extends StatefulWidget {
   Bulletin_Free_List_Detail({Key? key}) : super(key: key);
@@ -50,9 +56,9 @@ class _Bulletin_Free_List_DetailState extends State<Bulletin_Free_List_Detail> {
 
 
   ScrollController _scrollController = ScrollController();
-
   ScrollController _scrollController2 = ScrollController();
 
+  quill.QuillController? _quillController;
 
 
   @override
@@ -61,7 +67,16 @@ class _Bulletin_Free_List_DetailState extends State<Bulletin_Free_List_Detail> {
     // TODO: implement initState
     super.initState();
     _seasonController.getBulletinFreeReplyLimit();
+
+    // Initialize QuillController
+    final deltaJson = _bulletinFreeModelController.description;
+    if (deltaJson != null) {
+      final List<dynamic> deltaList = jsonDecode(deltaJson);
+      final doc = quill.Document.fromJson(deltaList);
+      _quillController = quill.QuillController(document: doc, selection: TextSelection.collapsed(offset: 0));
+    }
   }
+
 
   _updateMethod() async {
     await _userModelController.updateRepoUidList();
@@ -857,13 +872,34 @@ class _Bulletin_Free_List_DetailState extends State<Bulletin_Free_List_Detail> {
                                               ),
                                             Container(
                                               width: _size.width,
-                                              child: SelectableText(
-                                                '${_bulletinFreeModelController.description}',
-                                                style: SDSTextStyle.regular.copyWith(
-                                                    fontSize: 15,
-                                                    height: 1.4
+                                              child: _quillController != null
+                                                  ? quill.QuillEditor.basic(
+                                                configurations: quill.QuillEditorConfigurations(
+                                                  controller: _quillController!,
+                                                  scrollable: true,
+                                                  padding: EdgeInsets.zero,
+                                                  embedBuilders: FlutterQuillEmbeds.defaultEditorBuilders(),
+                                                  customStyles: quill.DefaultStyles(
+                                                    h1: quill.DefaultTextBlockStyle(
+                                                      TextStyle(
+                                                        fontSize: 32,
+                                                        height: 1.15,
+                                                        fontWeight: FontWeight.w300,
+                                                      ),
+                                                      quill.HorizontalSpacing(0, 0),
+                                                      quill.VerticalSpacing(16, 0), // 첫 번째 VerticalSpacing
+                                                      quill.VerticalSpacing(0, 0), // 두 번째 VerticalSpacing
+                                                      null, // BoxDecoration? - null 허용
+                                                    ),
+                                                    sizeSmall: TextStyle(
+                                                      fontSize: 9,
+                                                    ),
+                                                  ),
                                                 ),
-                                              ),
+                                                focusNode: FocusNode(),
+                                                scrollController: ScrollController(),
+                                              )
+                                                  : Container(),
                                             ),
                                             Container(
                                               height: 20,
@@ -1721,3 +1757,4 @@ class _Bulletin_Free_List_DetailState extends State<Bulletin_Free_List_Detail> {
     );
   }
 }
+

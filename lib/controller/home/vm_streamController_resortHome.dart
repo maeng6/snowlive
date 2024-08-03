@@ -65,4 +65,21 @@ class StreamController_ResortHome extends GetxController {
         .snapshots();
   }
 
+  Future<void> sendMessage(String message, String uid) async {
+    if (message.isNotEmpty) {
+      await FirebaseFirestore.instance.collection('chat').add({
+        'text': message,
+        'createdAt': Timestamp.now(),
+        'uid' : uid
+      });
+    }
+  }
+
+  Stream<QuerySnapshot<Map<String, dynamic>>> setupStreams_resortHome_chat() {
+    return FirebaseFirestore.instance
+      .collection('chat')
+      .orderBy('createdAt', descending: true)
+      .snapshots();
+  }
+
 }
