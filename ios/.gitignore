@@ -52,5 +52,5 @@ build/
 # iOS specific
 /ios/Flutter/.last_build_id
 /ios/Pods/
-/ios/Runner.xcworkspace/
-/ios/Podfile.lock
+Runner.xcworkspace
+Podfile.lock
