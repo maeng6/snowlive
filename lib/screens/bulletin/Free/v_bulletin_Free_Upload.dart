@@ -68,35 +68,6 @@ class _Bulletin_Free_UploadState extends State<Bulletin_Free_Upload> {
     );
   }
 
-  Future<void> _pickImage() async {
-    final ImagePicker _picker = ImagePicker();
-    final XFile? pickedImage = await _picker.pickImage(source: ImageSource.gallery);
-    if (pickedImage != null) {
-      final bytes = await pickedImage.readAsBytes();
-      final imageUrl = await _uploadImageToServer(bytes); // 이미지 업로드 로직 구현 필요
-      if (mounted) {
-        setState(() {
-          _imageFiles.add(pickedImage);
-          _insertImage(imageUrl);
-        });
-      }
-      print('pickImage : ${_imageFiles}');
-    }
-  }
-
-  Future<String> _uploadImageToServer(Uint8List bytes) async {
-    // 여기에 서버 업로드 로직을 구현하세요.
-    // 서버에 업로드 후 이미지 URL을 반환합니다.
-    return 'https://yourserver.com/uploaded_image.png';
-  }
-
-  void _insertImage(String imageUrl) {
-    if (!mounted) return;
-    final index = _quillController.selection.baseOffset;
-    final length = _quillController.selection.extentOffset - index;
-    _quillController.replaceText(index, length, quill.BlockEmbed.image(imageUrl), TextSelection.collapsed(offset: index + 1));
-    print('insertImage : ${_imageFiles}');
-  }
 
   Future<void> _uploadBulletin() async {
     final isValid = _formKey.currentState!.validate();

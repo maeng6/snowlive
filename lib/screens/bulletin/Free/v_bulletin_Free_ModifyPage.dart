@@ -1,6 +1,9 @@
+import 'dart:convert';
 import 'dart:io';
+import 'package:dart_quill_delta/dart_quill_delta.dart' as quill;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_quill/flutter_quill.dart' as quill;
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../../controller/bulletin/vm_bulletinFreeController.dart';
@@ -8,6 +11,7 @@ import '../../../controller/public/vm_imageController.dart';
 import '../../../controller/user/vm_userModelController.dart';
 import '../../../model/m_bulletinFreeModel.dart';
 import '../../../widget/w_fullScreenDialog.dart';
+import '../../snowliveDesignStyle.dart';
 
 class Bulletin_Free_ModifyPage extends StatefulWidget {
   const Bulletin_Free_ModifyPage({Key? key}) : super(key: key);
@@ -22,23 +26,24 @@ class _Bulletin_Free_ModifyPageState extends State<Bulletin_Free_ModifyPage> {
     "구분": '',
     "스키장": ''
   };
+
+
   bool? bulletinFreeImageSelected = false;
   int i = 0;
   int imageLength = 0;
   TextEditingController _titleTextEditingController = TextEditingController();
   TextEditingController _itemDescribTextEditingController = TextEditingController();
   bool? isCategorySelected = false;
-  bool? isLocationSelected = false;
-  bool? isMethodSelected = false;
   bool? isModifiedImageSelected = false;
   RxString? SelectedCategory = ''.obs;
   RxString? SelectedLocation = ''.obs;
-  RxString? SelectedMethod = ''.obs;
   String? title = '';
   final _formKey = GlobalKey<FormState>();
   RxList? _imageUrls=[].obs;
   String? _initTitle ;
   String? _initdescrip ;
+  late quill.QuillController _quillController = quill.QuillController.basic();
+
 
   ListTile buildCategoryListTile(int index) {
     return ListTile(
@@ -65,6 +70,7 @@ class _Bulletin_Free_ModifyPageState extends State<Bulletin_Free_ModifyPage> {
     SelectedCategory = _bulletinFreeModelController.category!.obs;
     _initTitle =_bulletinFreeModelController.title;
     _initdescrip =_bulletinFreeModelController.description;
+    _quillController = quill.QuillController.basic();
   }
 
   @override
@@ -76,6 +82,108 @@ class _Bulletin_Free_ModifyPageState extends State<Bulletin_Free_ModifyPage> {
     ImageController _imageController = Get.find<ImageController>();
     //TODO : ****************************************************************
 
+
+    Future<void> _modifyBulletin() async {
+      final isValid = _formKey.currentState!.validate();
+
+      if (_tileSelected["구분"]!.isEmpty) {
+        Get.snackbar(
+          '선택되지않은 항목',
+          '구분을 선택해주세요.',
+          margin: EdgeInsets.only(right: 20, left: 20, bottom: 12),
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.black87,
+          colorText: Colors.white,
+          duration: Duration(milliseconds: 3000),
+        );
+      } else {
+        if (isValid) {
+          CustomFullScreenDialog.showDialog();
+          await _userModelController.bulletinFreeCountUpdate(_userModelController.uid);
+
+          // bulletinFreeCount가 null인지 확인하고 초기화
+          int bulletinFreeCount = _userModelController.bulletinFreeCount ?? 0;
+
+          await _imageController.setNewMultiImage_bulletinFree(_imageFiles, bulletinFreeCount);
+
+          // Delta 문서의 이미지를 Firebase Storage에 업로드
+          List<quill.Operation> ops = _quillController.document.toDelta().toList();
+          await _imageController.uploadDeltaImages(ops, bulletinFreeCount);
+
+          final deltaJson = jsonEncode(ops);
+
+          if (isModifiedImageSelected == true) {
+            await _bulletinFreeModelController.updateBulletinFree(
+              displayName: _userModelController.displayName,
+              uid: _userModelController.uid,
+              profileImageUrl: _userModelController.profileImageUrl,
+              itemImagesUrls: _imageController.imagesUrlList,
+              title: _titleTextEditingController.text,
+              category: SelectedCategory!.value,
+              location: SelectedLocation!.value,
+              description: deltaJson, // Quill 문서를 Delta 형식으로 저장
+              bulletinFreeCount: bulletinFreeCount,
+              resortNickname: _userModelController.resortNickname,
+              likeCount: _bulletinFreeModelController.likeCount,
+              hot: _bulletinFreeModelController.hot,
+              score: _bulletinFreeModelController.score,
+              viewerUid: _bulletinFreeModelController.viewerUid,
+              timeStamp: _bulletinFreeModelController.timeStamp,
+            );
+          } else {
+            await _bulletinFreeModelController.updateBulletinFree(
+              displayName: _userModelController.displayName,
+              uid: _userModelController.uid,
+              profileImageUrl: _userModelController.profileImageUrl,
+              itemImagesUrls: _imageUrls,
+              title: _titleTextEditingController.text,
+              category: SelectedCategory!.value,
+              location: SelectedLocation!.value,
+              description: deltaJson, // Quill 문서를 Delta 형식으로 저장
+              bulletinFreeCount: bulletinFreeCount,
+              resortNickname: _userModelController.resortNickname,
+              likeCount: _bulletinFreeModelController.likeCount,
+              hot: _bulletinFreeModelController.hot,
+              score: _bulletinFreeModelController.score,
+              viewerUid: _bulletinFreeModelController.viewerUid,
+              timeStamp: _bulletinFreeModelController.timeStamp,
+            );
+          }
+
+          await _bulletinFreeModelController.getCurrentBulletinFree(
+              uid: _userModelController.uid,
+              bulletinFreeCount: bulletinFreeCount
+          );
+
+          CustomFullScreenDialog.cancelDialog();
+
+          for (int i = 0; i < 2; i++) {
+            Get.back();
+          }
+
+          _imageController.imagesUrlList.clear();
+        }
+      }
+    }
+
+    TextButton(
+      onPressed: _modifyBulletin,
+      child: Padding(
+        padding: EdgeInsets.only(right: 10),
+        child: Text(
+          '수정완료',
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+            color: Color(0xFF3D83ED),
+          ),
+        ),
+      ),
+    );
+
+
+
+
     Size _size = MediaQuery.of(context).size;
     return Container(
       color: Colors.white,
@@ -85,9 +193,14 @@ class _Bulletin_Free_ModifyPageState extends State<Bulletin_Free_ModifyPage> {
         child: Scaffold(
           backgroundColor: Colors.white,
           appBar: PreferredSize(
-            preferredSize: Size.fromHeight(58),
+            preferredSize: Size.fromHeight(44),
             child: AppBar(
-              title: Text('시즌방'),
+              title: Text('게시글 수정',
+                style: SDSTextStyle.extraBold.copyWith(
+                    fontSize: 18,
+                    color: SDSColor.gray900
+                ),
+              ),
               leading: GestureDetector(
                 child: Image.asset(
                   'assets/imgs/icons/icon_snowLive_back.png',
@@ -101,55 +214,7 @@ class _Bulletin_Free_ModifyPageState extends State<Bulletin_Free_ModifyPage> {
               ),
               actions: [
                 TextButton(
-                    onPressed: () async{
-                      final isValid = _formKey.currentState!.validate();
-
-                      if(isValid){
-                        CustomFullScreenDialog.showDialog();
-                        await _imageController.setNewMultiImage_bulletinFree(_imageFiles, _bulletinFreeModelController.bulletinFreeCount);
-                        (isModifiedImageSelected==true)
-                            ? await _bulletinFreeModelController.updateBulletinFree(
-                            displayName: _userModelController.displayName,
-                            uid: _userModelController.uid,
-                            profileImageUrl: _userModelController.profileImageUrl,
-                            itemImagesUrls: _imageController.imagesUrlList,
-                            title: _titleTextEditingController.text,
-                            category: SelectedCategory!.value,
-                            location: SelectedLocation!.value,
-                            description: _itemDescribTextEditingController.text,
-                            bulletinFreeCount: _bulletinFreeModelController.bulletinFreeCount,
-                            resortNickname: _userModelController.resortNickname,
-                            likeCount: _bulletinFreeModelController.likeCount,
-                            hot: _bulletinFreeModelController.hot,
-                            score: _bulletinFreeModelController.score,
-                            viewerUid: _bulletinFreeModelController.viewerUid,
-                            timeStamp: _bulletinFreeModelController.timeStamp
-                        )
-                            : await _bulletinFreeModelController.updateBulletinFree(
-                            displayName: _userModelController.displayName,
-                            uid: _userModelController.uid,
-                            profileImageUrl: _userModelController.profileImageUrl,
-                            itemImagesUrls: _imageUrls,
-                            title: _titleTextEditingController.text,
-                            category: SelectedCategory!.value,
-                            location: SelectedLocation!.value,
-                            description: _itemDescribTextEditingController.text,
-                            bulletinFreeCount: _bulletinFreeModelController.bulletinFreeCount,
-                            resortNickname: _userModelController.resortNickname,
-                            likeCount: _bulletinFreeModelController.likeCount,
-                            hot: _bulletinFreeModelController.hot,
-                            score: _bulletinFreeModelController.score,
-                            viewerUid: _bulletinFreeModelController.viewerUid,
-                            timeStamp: _bulletinFreeModelController.timeStamp
-                        );
-                        CustomFullScreenDialog.cancelDialog();
-                        for(int i=0; i<2; i++){
-                          Get.back();
-                        }
-                      }
-                      _imageController.imagesUrlList.clear();
-
-                    },
+                    onPressed: _modifyBulletin,
                     child: Padding(
                       padding: EdgeInsets.only(right: 10),
                       child: Text('수정완료', style: TextStyle(
@@ -175,269 +240,6 @@ class _Bulletin_Free_ModifyPageState extends State<Bulletin_Free_ModifyPage> {
                   children: [
                     SizedBox(
                       height: 16,
-                    ),
-                    Row(
-                      children: [
-                        GestureDetector(
-                          onTap: () async {
-                            if (imageLength >= 5) {
-                              Get.dialog(
-                                AlertDialog(
-                                  title: Text('사진 개수 초과'),
-                                ),
-                              );
-                            } else {
-                              CustomFullScreenDialog.showDialog();
-                              try {
-                                _imageFiles = await _imageController.getMultiImage(ImageSource.gallery);
-                                CustomFullScreenDialog.cancelDialog();
-                                if (_imageFiles.length <= 5) {
-                                  bulletinFreeImageSelected = true;
-                                  imageLength = _imageFiles.length;
-                                  setState(() {});
-                                } else {
-                                  Get.dialog(
-                                    AlertDialog(
-                                      title: Text('사진 개수 초과'),
-                                    ),
-                                  );
-                                }
-                              } catch (e) {
-                                CustomFullScreenDialog.cancelDialog();
-                              }
-                            }
-                          },
-                          child: Container(
-                            height: 90,
-                            width: 90,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                IconButton(
-                                  onPressed: () async {
-                                    if (imageLength >= 5) {
-                                      Get.dialog(
-                                        AlertDialog(
-                                          title: Text('사진 개수 초과'),
-                                        ),
-                                      );
-                                    } else {
-                                      CustomFullScreenDialog.showDialog();
-                                      try {
-                                        _imageFiles = await _imageController.getMultiImage(ImageSource.gallery);
-                                        CustomFullScreenDialog.cancelDialog();
-                                        if (_imageFiles.length <= 5) {
-                                          bulletinFreeImageSelected = true;
-                                          imageLength = _imageFiles.length;
-                                          setState(() {});
-                                        } else {
-                                          Get.dialog(
-                                            AlertDialog(
-                                              title: Text('사진 개수 초과'),
-                                            ),
-                                          );
-                                        }
-                                      } catch (e) {
-                                        CustomFullScreenDialog.cancelDialog();
-                                      }
-                                    }
-                                  },
-                                  icon: Icon(Icons.camera_alt_rounded),
-                                  color: Color(0xFF949494),
-                                ),
-                                Transform.translate(
-                                  offset: Offset(0, -10),
-                                  child: Text(
-                                    '$imageLength / 5',
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 15,
-                                      color: Color(0xFF949494),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            decoration: BoxDecoration(
-                              border: Border.all(
-                                color: Colors.transparent,
-                              ),
-                              borderRadius: BorderRadius.circular(8),
-                              color: Color(0xFFececec),
-                            ),
-                          ),
-                        ),
-                        SizedBox(
-                          width: 8,
-                        ),
-                        if(_imageFiles.length == 0)
-                          SizedBox(width: 8,),
-                        if(_imageUrls!.length==0 && _imageFiles.length==0)
-                          Text('사진은 게시글에 첨부됩니다.',
-                            style: TextStyle(
-                                color: Color(0xff949494),
-                                fontSize: 12
-                            ),
-                          ),
-                        (isModifiedImageSelected==true)
-                            ?Expanded(
-                          child: SizedBox(
-                            height: 100,
-                            child: ListView.builder(
-                              scrollDirection: Axis.horizontal,
-                              shrinkWrap: true,
-                              itemCount: imageLength,
-                              itemBuilder: (context, index) {
-                                return Row(
-                                  children: [
-                                    Stack(children: [
-                                      Container(
-                                        decoration: BoxDecoration(
-                                          border: Border.all(color: Color(0xFFECECEC)),
-                                          borderRadius: BorderRadius.circular(8),
-                                        ),
-                                        height: 90,
-                                        width: 90,
-                                        child: ClipRRect(
-                                          borderRadius: BorderRadius.circular(7),
-                                          child: Image.file(
-                                            File(_imageFiles[index].path),
-                                            fit: BoxFit.cover,
-                                          ),
-                                        ),
-                                      ),
-                                      Positioned(
-                                        top: -8,
-                                        right: -8,
-                                        child: IconButton(
-                                          onPressed: () {
-                                            _imageFiles.removeAt(index);
-                                            imageLength = _imageFiles.length;
-                                            setState(() {});
-                                          },
-                                          icon: Icon(Icons.cancel), color: Color(0xFF111111),),
-                                      ),
-                                      if(index==0)
-                                        Positioned(
-                                          top: 68,
-                                          child: Opacity(
-                                            opacity:0.8,
-                                            child: Container(
-                                              decoration: BoxDecoration(
-                                                border: Border.all(
-                                                    color: Colors.transparent
-                                                ),
-                                                borderRadius: BorderRadius.only(
-                                                    bottomRight: Radius.circular(8),
-                                                    bottomLeft: Radius.circular(8)
-                                                ),
-                                                color: Colors.black87,
-                                              ),
-                                              height: 22,
-                                              width: 90,
-                                              child: ClipRRect(
-                                                borderRadius: BorderRadius.circular(7),
-                                                child: Text('대표사진',
-                                                  style: TextStyle(color: Colors.white,
-                                                      fontSize: 12),
-                                                  textAlign: TextAlign.center,
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                    ]),
-                                    SizedBox(
-                                      width: 8,
-                                    )
-                                  ],
-                                );
-                              },
-                            ),
-                          ),
-                        )
-                            :Expanded(
-                          child: SizedBox(
-                            height: 100,
-                            child:
-                            Obx(() => ListView.builder(
-                              scrollDirection: Axis.horizontal,
-                              shrinkWrap: true,
-                              itemCount: _imageUrls!.length,
-                              itemBuilder: (context, index) {
-                                return Row(
-                                  children: [
-                                    Stack(children: [
-                                      Container(
-                                        decoration: BoxDecoration(
-                                          border: Border.all(color: Color(0xFFECECEC)),
-                                          borderRadius: BorderRadius.circular(8),
-                                        ),
-                                        height: 90,
-                                        width: 90,
-                                        child: ClipRRect(
-                                          borderRadius: BorderRadius.circular(7),
-                                          child: Image.network(
-                                            '${_imageUrls![index]}',
-                                            fit: BoxFit.cover,
-                                          ),
-                                        ),
-                                      ),
-                                      Positioned(
-                                        top: -8,
-                                        right: -8,
-                                        child: IconButton(
-                                          onPressed: () {
-                                            _imageUrls!.removeAt(index);
-                                            setState(() {
-                                            });
-                                          },
-                                          icon: Icon(Icons.cancel), color: Color(0xFF111111),),
-                                      ),
-                                      if(index==0)
-                                        Positioned(
-                                          top: 68,
-                                          child: Opacity(
-                                            opacity:0.8,
-                                            child: Container(
-                                              decoration: BoxDecoration(
-                                                border: Border.all(
-                                                    color: Colors.transparent
-                                                ),
-                                                borderRadius: BorderRadius.only(
-                                                    bottomRight: Radius.circular(8),
-                                                    bottomLeft: Radius.circular(8)
-                                                ),
-                                                color: Colors.black87,
-                                              ),
-                                              height: 22,
-                                              width: 90,
-                                              child: ClipRRect(
-                                                borderRadius: BorderRadius.circular(7),
-                                                child: Text('대표사진',
-                                                  style: TextStyle(color: Colors.white,
-                                                      fontSize: 12),
-                                                  textAlign: TextAlign.center,
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                    ]),
-                                    SizedBox(
-                                      width: 8,
-                                    )
-                                  ],
-                                );
-                              },
-                            )),
-                          ),
-                        )
-                      ],
-                    ),
-                    SizedBox(
-                      height: 30,
-                      width: 100,
                     ),
                     Form(
                         key: _formKey,
