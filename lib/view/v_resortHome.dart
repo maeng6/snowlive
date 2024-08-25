@@ -5,7 +5,6 @@ import 'package:com.snowlive/routes/routes.dart';
 import 'package:com.snowlive/screens/resort/v_chat_resortHome.dart';
 import 'package:com.snowlive/screens/snowliveDesignStyle.dart';
 import 'package:com.snowlive/widget/w_liveOn_animatedGradient.dart';
-import 'package:com.snowlive/widget/w_popUp_bottomSheet.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -44,6 +43,37 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
   //TODO: Dependency Injection**************************************************
 
   @override
+  void initState() {
+    super.initState();
+print(_userViewModel.user.user_id);
+    _controller = AnimationController(
+      vsync: this,
+      duration: Duration(milliseconds: 1500),
+    )..repeat(reverse: true);
+
+    _colorAnimation1 = ColorTween(
+      begin: SDSColor.snowliveBlue,
+      end: SDSColor.blue100,
+    ).animate(_controller);
+
+    _colorAnimation2 = ColorTween(
+      begin: SDSColor.blue700,
+      end: SDSColor.snowliveBlue,
+    ).animate(_controller);
+
+    _colorAnimation3 = ColorTween(
+      begin: SDSColor.gray300,
+      end: SDSColor.gray600,
+    ).animate(_controller);
+
+    _colorAnimation4 = ColorTween(
+      begin: SDSColor.gray50,
+      end: SDSColor.gray300,
+    ).animate(_controller);
+  }
+
+
+  @override
   void dispose() {
     _controller.dispose();
     super.dispose();
@@ -51,30 +81,6 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
 
   @override
   Widget build(BuildContext context) {
-
-    _controller = AnimationController(
-      vsync: this,
-      duration: Duration(milliseconds: 1500),
-    )..repeat(reverse: true);
-    _colorAnimation1 = ColorTween(
-      begin: SDSColor.snowliveBlue,
-      end: SDSColor.blue100,
-    ).animate(_controller);
-    _colorAnimation2 = ColorTween(
-      begin: SDSColor.blue700,
-      end: SDSColor.snowliveBlue,
-    ).animate(_controller);
-    _colorAnimation3 = ColorTween(
-      begin: SDSColor.gray300,
-      end: SDSColor.gray600,
-    ).animate(_controller);
-    _colorAnimation4 = ColorTween(
-      begin: SDSColor.gray50,
-      end: SDSColor.gray300,
-    ).animate(_controller);
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      bottomPopUp(context);
-    });
 
     final Size _size = MediaQuery.of(context).size;
     final double _statusBarSize = MediaQuery.of(context).padding.top;
@@ -182,15 +188,15 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                                             mainAxisAlignment: MainAxisAlignment.center,
                                             children: [
                                               Text(
-                                                '현재까지 ',
+                                                '오늘 ',
                                                 style: SDSTextStyle.bold.copyWith(fontSize: 18, height: 1.4, color: SDSColor.gray900),
                                               ),
                                               Text(
-                                                '56점',
+                                                '${_resortHomeViewModel.resortHomeModel.todayTotalScore.toInt()}',
                                                 style: SDSTextStyle.bold.copyWith(fontSize: 18, height: 1.4, color: SDSColor.snowliveBlue),
                                               ),
                                               Text(
-                                                '을 획득했어요!',
+                                                '점을 획득했어요!',
                                                 style: SDSTextStyle.bold.copyWith(fontSize: 18, height: 1.4, color: SDSColor.gray900),
                                               ),
                                             ],
@@ -279,7 +285,7 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                           : Image.asset('assets/imgs/icons/icon_live_off.png', width: 40),
                       label: (_userViewModel.user.within_boundary == true)
                           ? Text(
-                        '${_resortHomeViewModel.resortHomeModel.todayTotalScore}',
+                        '${_resortHomeViewModel.resortHomeModel.todayTotalScore.toInt()}점 획득',
                         style: SDSTextStyle.extraBold.copyWith(
                           fontSize: 16,
                           letterSpacing: -0.1,
@@ -321,9 +327,11 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                         ),
                         isScrollControlled: true,
                         builder: (context) {
-                          return Obx(()=> DraggableScrollableSheet(
-                            initialChildSize: _resortHomeViewModel.initialHeightFriend,
-                            minChildSize: 0.2,
+                          return Obx(() => DraggableScrollableSheet(
+                            initialChildSize: _resortHomeViewModel.initialHeightFriend > 0.2
+                                ? _resortHomeViewModel.initialHeightFriend
+                                : 0.4,
+                            minChildSize: 0.4,
                             maxChildSize: 0.88,
                             expand: false,
                             builder: (context, scrollController) {
@@ -353,8 +361,7 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                                     ),
                                     SizedBox(height: 24),
                                     Expanded(
-                                      child:
-                                      _resortHomeViewModel.bestFriendList.isEmpty
+                                      child: _resortHomeViewModel.bestFriendList.isEmpty
                                           ? Center(
                                         child: Padding(
                                           padding: const EdgeInsets.only(bottom: 24),
@@ -365,147 +372,154 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                                           ),
                                         ),
                                       )
-                                          : Padding(
-                                        padding: const EdgeInsets.symmetric(horizontal: 10),
-                                        child: GridView.builder(
-                                          controller: scrollController,
-                                          shrinkWrap: true,
-                                          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                                            crossAxisCount: 4,
-                                            crossAxisSpacing: 14,
-                                            mainAxisSpacing: 28,
-                                            childAspectRatio: 3 / 4,
-                                          ),
-                                          itemCount: _resortHomeViewModel.bestFriendList.length,
-                                          itemBuilder: (context, index) {
-                                            var BFdoc = _resortHomeViewModel.bestFriendList[index];
-                                            return GestureDetector(
-                                              onTap: () async{
-                                                await _friendDetailViewModel.fetchFriendDetailInfo(userId: _userViewModel.user.user_id, friendUserId: BFdoc['friend_info']['user_id'], season: _friendDetailViewModel.seasonDate);
-                                                Get.toNamed(AppRoutes.friendDetail);
-                                              },
-                                              child: Column(
-                                                crossAxisAlignment: CrossAxisAlignment.center,
-                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                children: [
-                                                  Stack(
-                                                    children: [
-                                                      Container(
-                                                        width: 68,
-                                                        height: 68,
-                                                        decoration: BoxDecoration(
-                                                          borderRadius: BorderRadius.circular(100),
-                                                          border: (BFdoc['friend_info']['within_boundary'] == true && BFdoc['friend_info']['reveal_wb'] == true)
-                                                              ? Border.all(
-                                                            color: SDSColor.snowliveBlue,
-                                                            width: 2,
+                                          : SingleChildScrollView(
+                                        child: Padding(
+                                          padding: const EdgeInsets.symmetric(horizontal: 10),
+                                          child: GridView.builder(
+                                            controller: scrollController,
+                                            shrinkWrap: true,
+                                            physics: NeverScrollableScrollPhysics(), // 내부 스크롤 비활성화
+                                            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                                              crossAxisCount: 4,
+                                              crossAxisSpacing: 14,
+                                              mainAxisSpacing: 28,
+                                              childAspectRatio: 3 / 4,
+                                            ),
+                                            itemCount: _resortHomeViewModel.bestFriendList.length,
+                                            itemBuilder: (context, index) {
+                                              var BFdoc = _resortHomeViewModel.bestFriendList[index];
+                                              return GestureDetector(
+                                                onTap: () async {
+
+                                                  await _friendDetailViewModel.fetchFriendDetailInfo(
+                                                      userId: _userViewModel.user.user_id,
+                                                      friendUserId: BFdoc['friend_info']['user_id'],
+                                                      season: _friendDetailViewModel.seasonDate);
+                                                  Get.toNamed(AppRoutes.friendDetail);
+                                                },
+                                                child: Column(
+                                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                  children: [
+                                                    Stack(
+                                                      children: [
+                                                        Container(
+                                                          width: 68,
+                                                          height: 68,
+                                                          decoration: BoxDecoration(
+                                                            borderRadius: BorderRadius.circular(100),
+                                                            border: (BFdoc['friend_info']['within_boundary'] == true && BFdoc['friend_info']['reveal_wb'] == true)
+                                                                ? Border.all(
+                                                              color: SDSColor.snowliveBlue,
+                                                              width: 2,
+                                                            )
+                                                                : Border.all(
+                                                              color: SDSColor.gray100,
+                                                              width: 1,
+                                                            ),
+                                                          ),
+                                                          alignment: Alignment.center,
+                                                          child: BFdoc['friend_info']['profile_image_url_user'].isNotEmpty
+                                                              ? ExtendedImage.network(
+                                                            BFdoc['friend_info']['profile_image_url_user'],
+                                                            enableMemoryCache: true,
+                                                            shape: BoxShape.circle,
+                                                            borderRadius: BorderRadius.circular(100),
+                                                            width: 68,
+                                                            height: 68,
+                                                            fit: BoxFit.cover,
+                                                            loadStateChanged: (ExtendedImageState state) {
+                                                              switch (state.extendedImageLoadState) {
+                                                                case LoadState.loading:
+                                                                  return SizedBox.shrink();
+                                                                case LoadState.completed:
+                                                                  return state.completedWidget;
+                                                                case LoadState.failed:
+                                                                  return ExtendedImage.asset(
+                                                                    'assets/imgs/profile/img_profile_default_circle.png',
+                                                                    shape: BoxShape.circle,
+                                                                    borderRadius: BorderRadius.circular(100),
+                                                                    width: 68,
+                                                                    height: 68,
+                                                                    fit: BoxFit.cover,
+                                                                  );
+                                                                default:
+                                                                  return null;
+                                                              }
+                                                            },
                                                           )
-                                                              : Border.all(
-                                                            color: SDSColor.gray100,
-                                                            width: 1,
+                                                              : ExtendedImage.asset(
+                                                            'assets/imgs/profile/img_profile_default_circle.png',
+                                                            enableMemoryCache: true,
+                                                            shape: BoxShape.circle,
+                                                            borderRadius: BorderRadius.circular(100),
+                                                            width: 68,
+                                                            height: 68,
+                                                            fit: BoxFit.cover,
                                                           ),
                                                         ),
-                                                        alignment: Alignment.center,
-                                                        child: BFdoc['friend_info']['within_boundary']['profile_image_url_user'].isNotEmpty
-                                                            ? ExtendedImage.network(
-                                                          BFdoc['friend_info']['within_boundary']['profile_image_url_user'],
-                                                          enableMemoryCache: true,
-                                                          shape: BoxShape.circle,
-                                                          borderRadius: BorderRadius.circular(100),
-                                                          width: 68,
-                                                          height: 68,
-                                                          fit: BoxFit.cover,
-                                                          loadStateChanged: (ExtendedImageState state) {
-                                                            switch (state.extendedImageLoadState) {
-                                                              case LoadState.loading:
-                                                                return SizedBox.shrink();
-                                                              case LoadState.completed:
-                                                                return state.completedWidget;
-                                                              case LoadState.failed:
-                                                                return ExtendedImage.asset(
-                                                                  'assets/imgs/profile/img_profile_default_circle.png',
-                                                                  shape: BoxShape.circle,
-                                                                  borderRadius: BorderRadius.circular(100),
-                                                                  width: 68,
-                                                                  height: 68,
-                                                                  fit: BoxFit.cover,
-                                                                );
-                                                              default:
-                                                                return null;
-                                                            }
-                                                          },
-                                                        )
-                                                            : ExtendedImage.asset(
-                                                          'assets/imgs/profile/img_profile_default_circle.png',
-                                                          enableMemoryCache: true,
-                                                          shape: BoxShape.circle,
-                                                          borderRadius: BorderRadius.circular(100),
-                                                          width: 68,
-                                                          height: 68,
-                                                          fit: BoxFit.cover,
-                                                        ),
-                                                      ),
-                                                      if (BFdoc['friend_info']['within_boundary'] == true && BFdoc['friend_info']['reveal_wb'] == true)
-                                                        Positioned(
-                                                          right: 0,
-                                                          bottom: 0,
-                                                          child: Image.asset(
-                                                            'assets/imgs/icons/icon_badge_live.png',
-                                                            width: 32,
+                                                        if (BFdoc['friend_info']['within_boundary'] == true && BFdoc['friend_info']['reveal_wb'] == true)
+                                                          Positioned(
+                                                            right: 0,
+                                                            bottom: 0,
+                                                            child: Image.asset(
+                                                              'assets/imgs/icons/icon_badge_live.png',
+                                                              width: 32,
+                                                            ),
                                                           ),
+                                                      ],
+                                                    ),
+                                                    SizedBox(height: 6),
+                                                    Container(
+                                                      width: 72,
+                                                      child: Text(
+                                                        BFdoc['friend_info']['display_name'],
+                                                        overflow: TextOverflow.ellipsis,
+                                                        textAlign: TextAlign.center,
+                                                        style: TextStyle(
+                                                          fontSize: 12,
+                                                          fontWeight: FontWeight.normal,
+                                                          color: Color(0xFF111111),
                                                         ),
-                                                    ],
-                                                  ),
-                                                  SizedBox(height: 6),
-                                                  Container(
-                                                    width: 72,
-                                                    child: Text(
-                                                      BFdoc['friend_info']['display_name'],
-                                                      overflow: TextOverflow.ellipsis,
-                                                      textAlign: TextAlign.center,
-                                                      style: TextStyle(
-                                                        fontSize: 12,
-                                                        fontWeight: FontWeight.normal,
-                                                        color: Color(0xFF111111),
                                                       ),
                                                     ),
-                                                  ),
-                                                  SizedBox(height: 6),
-                                                  Row(
-                                                    children: [
-                                                      Container(
-                                                        width: 72,
-                                                        child: Text(
-                                                          BFdoc['last_pass_slope'],
-                                                          overflow: TextOverflow.ellipsis,
-                                                          textAlign: TextAlign.center,
-                                                          style: TextStyle(
-                                                            fontSize: 12,
-                                                            fontWeight: FontWeight.normal,
-                                                            color: Color(0xFF111111),
+                                                    SizedBox(height: 6),
+                                                    Row(
+                                                      children: [
+                                                        Container(
+                                                          width: 72,
+                                                          child: Text(
+                                                            BFdoc['last_pass_slope'],
+                                                            overflow: TextOverflow.ellipsis,
+                                                            textAlign: TextAlign.center,
+                                                            style: TextStyle(
+                                                              fontSize: 12,
+                                                              fontWeight: FontWeight.normal,
+                                                              color: Color(0xFF111111),
+                                                            ),
                                                           ),
                                                         ),
-                                                      ),
-                                                      SizedBox(height: 6),
-                                                      Container(
-                                                        width: 72,
-                                                        child: Text(
-                                                          GetDatetime().getAgo(BFdoc['last_pass_time']),
-                                                          overflow: TextOverflow.ellipsis,
-                                                          textAlign: TextAlign.center,
-                                                          style: TextStyle(
-                                                            fontSize: 12,
-                                                            fontWeight: FontWeight.normal,
-                                                            color: Color(0xFF111111),
+                                                        SizedBox(height: 2),
+                                                        Container(
+                                                          width: 72,
+                                                          child: Text(
+                                                            GetDatetime().getAgoString(BFdoc['last_pass_time']),
+                                                            overflow: TextOverflow.ellipsis,
+                                                            textAlign: TextAlign.center,
+                                                            style: TextStyle(
+                                                              fontSize: 12,
+                                                              fontWeight: FontWeight.normal,
+                                                              color: Color(0xFF111111),
+                                                            ),
                                                           ),
                                                         ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ],
-                                              ),
-                                            );
-                                          },
+                                                      ],
+                                                    ),
+                                                  ],
+                                                ),
+                                              );
+                                            },
+                                          ),
                                         ),
                                       ),
                                     ),
@@ -584,7 +598,7 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
           body: RefreshIndicator(
             strokeWidth: 2,
             edgeOffset: 20,
-            onRefresh: _refreshController.onRefresh_resortHome,
+            onRefresh: _resortHomeViewModel.onRefresh_resortHome,
             child: SingleChildScrollView(
               child: Column(
                 children: [
@@ -603,7 +617,7 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                             decoration: BoxDecoration(
                                 borderRadius:
                                 BorderRadius.circular(16),
-                                color: (_resortHomeViewModel.isLoading == true)
+                                color: (_resortHomeViewModel.isLoading_weather == true)
                                     ? SDSColor.gray200
                                     : _resortHomeViewModel.weatherColors),
                             alignment: Alignment.center,
@@ -692,7 +706,7 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                                         mainAxisAlignment: MainAxisAlignment.center,
                                         crossAxisAlignment: CrossAxisAlignment.center,
                                         children: [
-                                          (_resortHomeViewModel.isLoading == true)
+                                          (_resortHomeViewModel.isLoading_weather == true)
                                               ? Container()
                                               : Padding(
                                             padding: const EdgeInsets.only(bottom: 2),
@@ -701,7 +715,7 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                                                 child: _resortHomeViewModel.weatherIcons),
                                           ),
                                           SizedBox(width: 10,),
-                                          Obx(() => (_resortHomeViewModel.isLoading == true)
+                                          Obx(() => (_resortHomeViewModel.isLoading_weather == true)
                                               ? Padding(
                                             padding: const EdgeInsets.only(right: 16),
                                             child: Container(
@@ -719,7 +733,7 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                                           Padding(
                                             padding: const EdgeInsets.only(right: 10),
                                             child: Obx(
-                                                  () => (_resortHomeViewModel.isLoading == true)
+                                                  () => (_resortHomeViewModel.isLoading_weather == true)
                                                   ? Text(' ',
                                                 style: GoogleFonts.bebasNeue(
                                                     fontSize: 48,
@@ -760,7 +774,7 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                                     height: 16,
                                   ),
                                 if(_resortHomeViewModel.isWeatherInfoExpanded == true)
-                                  (_resortHomeViewModel.isLoading == true)
+                                  (_resortHomeViewModel.isLoading_weather == true)
                                       ? Padding(
                                     padding: const EdgeInsets.symmetric(horizontal: 20),
                                     child: Container(
@@ -954,7 +968,7 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            //TODO: 날씨 영역
+                            //TODO: url 아이콘 영역
                             Container(
                               decoration: BoxDecoration(
                                 color: Colors.white,),

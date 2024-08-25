@@ -50,7 +50,7 @@ class FriendDetailViewModel extends GetxController {
   late RxString _ridingStatisticsTabName;
 
   var _friendDetailModel = FriendDetailModel().obs;
-  var _friendsTalk = FriendsTalk().obs;
+  RxList<FriendsTalk> _friendsTalk = <FriendsTalk>[].obs;
 
   final TextEditingController textEditingController = TextEditingController();
   final formKey = GlobalKey<FormState>();
@@ -113,10 +113,9 @@ class FriendDetailViewModel extends GetxController {
   Future<void> fetchFriendDetailInfo({required int userId, required int friendUserId, required String season}) async {
     isLoading(true);
     ApiResponse response = await FriendDetailAPI().fetchFriendDetail(userId,friendUserId,season);
-    ApiResponse response_talk = await FriendDetailAPI().fetchFriendsTalkList(userId,friendUserId);
+    await FriendDetailAPI().fetchFriendsTalkList(userId,friendUserId);
     if(response.success)
-      _friendDetailModel.value = FriendDetailModel.fromJson(response.data);
-    _friendsTalk.value = FriendsTalk.fromJson(response_talk.data);
+      _friendDetailModel.value = response.data as FriendDetailModel;
     if(!response.success)
       Get.snackbar('Error', '데이터 로딩 실패');
     isLoading(false);
@@ -125,10 +124,15 @@ class FriendDetailViewModel extends GetxController {
   Future<void> fetchFriendsTalkList({required int userId, required int friendUserId}) async {
     isLoading(true);
     ApiResponse response_talk = await FriendDetailAPI().fetchFriendsTalkList(userId,friendUserId);
-    if(response_talk.success)
-    _friendsTalk.value = FriendsTalk.fromJson(response_talk.data);
-    if(!response_talk.success)
+    if (response_talk.success) {
+      // 리스트 형식으로 변환
+      List<FriendsTalk> talkList = (response_talk.data as List)
+          .map((item) => FriendsTalk.fromJson(item))
+          .toList();
+      _friendsTalk.value = talkList;
+    } else {
       Get.snackbar('Error', '데이터 로딩 실패');
+    }
     isLoading(false);
   }
 

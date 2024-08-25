@@ -23,10 +23,12 @@ class _ProfilePageCalendarState extends State<ProfilePageCalendar> {
   @override
   void initState() {
 
-     ridingHistory = {
+    ridingHistory = {
       for (var info in _friendDetailViewModel.friendDetailModel.calendarInfo)
-        DateTime.parse(info['date']): info['daily_total_count'] as int,
+        DateTime(DateTime.parse(info.date).year, DateTime.parse(info.date).month, DateTime.parse(info.date).day): info.daily_total_count,
     };
+
+    print(ridingHistory);
 
     // 가장 최근 날짜로 초기 포커스를 설정
     focusedDay = ridingHistory.keys.first;
@@ -89,6 +91,8 @@ class _ProfilePageCalendarState extends State<ProfilePageCalendar> {
 
 
   void _onDaySelected(DateTime selectDay, DateTime focusDay) {
+    print(selectDay);
+    print(focusDay);
     setState(() {
       if (_isMonthAllowed(selectDay)) {
         selectedDay = selectDay;
@@ -96,8 +100,13 @@ class _ProfilePageCalendarState extends State<ProfilePageCalendar> {
         selectedDateFormatted = DateFormat('yyyy-MM-dd').format(selectDay);
         print('Selected date: $selectedDateFormatted');
 
+        // selectDay의 시간 부분을 00:00:00으로 설정
+        DateTime selectDayWithoutTime = DateTime(selectDay.year, selectDay.month, selectDay.day);
+
         // 인덱스를 계산해서 뷰모델의 메서드를 호출
-        int index = ridingHistory.keys.toList().indexOf(selectDay);
+        int index = ridingHistory.keys.toList().indexOf(selectDayWithoutTime);
+        print(ridingHistory);
+        print(index);
         if (index != -1) {
           _friendDetailViewModel.updateSelectedDailyIndex(index);
         } else {

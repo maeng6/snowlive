@@ -72,7 +72,7 @@ class SeasonRankingInfo {
   late List<SlopeCountInfo> countInfo;
   late Map<String, dynamic> timeInfo;
   late double overallTotalScore;
-  late double overallTotalCount;
+  late int overallTotalCount;
   late int overallRank;
   late int timeInfo_maxCount;
   late double overallRankPercentage;
@@ -84,7 +84,7 @@ class SeasonRankingInfo {
     timeInfo = {};
     timeInfo_maxCount = 0;
     overallTotalScore = 0.0;
-    overallTotalCount = 0.0;
+    overallTotalCount = 0;
     overallRank = 0;
     overallRankPercentage = 0.0;
     overallTierIconUrl = '';
@@ -106,7 +106,7 @@ class SeasonRankingInfo {
       "20-22": json['time_info'][7],
       "22-00": json['time_info'][8],
     };
-    timeInfo_maxCount = timeInfo_maxCount = timeInfo.values.reduce((a, b) => a > b ? a : b);
+    timeInfo_maxCount = timeInfo.values.reduce((a, b) => a > b ? a : b);
     overallTotalScore = json['overall_total_score'];
     overallTotalCount = json['overall_total_count'];
     overallRank = json['overall_rank'];
@@ -120,6 +120,7 @@ class CalendarInfo {
   late List<SlopeCountInfo> dailyInfo;
   late Map<String, dynamic> timeInfo;
   late int daily_total_count;
+  late int timeInfo_maxCount;
 
   // 기본 생성자
   CalendarInfo() {
@@ -127,6 +128,7 @@ class CalendarInfo {
     dailyInfo = [];
     timeInfo = {};
     daily_total_count = 0;
+    timeInfo_maxCount=0;
   }
 
   // fromJson 생성자
@@ -147,6 +149,7 @@ class CalendarInfo {
       "20-22": json['time_info'][7],
       "22-00": json['time_info'][8],
     };
+    timeInfo_maxCount = timeInfo.values.reduce((a, b) => a > b ? a : b);
   }
 }
 

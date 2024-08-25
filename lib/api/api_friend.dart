@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 import 'ApiResponse.dart';
 
 class FriendAPI {
-  static const String baseUrl = 'https://your-api-url.com/api/friend/';
+  static const String baseUrl = 'https://snowlive-api-0eab29705c9f.herokuapp.com/api/friend';
 
   // Add a friend request
   Future<ApiResponse> addFriend(body) async {
@@ -114,16 +114,16 @@ class FriendAPI {
   }
 
   // Fetch friend list
-  Future<ApiResponse> fetchFriendList(int userId,String bestFriend) async {
+  Future<ApiResponse> fetchFriendList(int userId,bool bestFriend) async {
     final Uri uri = Uri.parse('$baseUrl/friend-list/').replace(
       queryParameters: {
-        'user_id': userId,
-        'best_friend': bestFriend,
+        'user_id': userId.toString(),
+        'best_friend': bestFriend.toString(),
       },
     );
-
+    print(userId);
+    print(bestFriend);
     final response = await http.get(uri);
-
     if (response.statusCode == 200) {
       final data = json.decode(utf8.decode(response.bodyBytes));
       return ApiResponse.success(data);

@@ -15,7 +15,6 @@ class RefreshController extends GetxController {
   Future<void> onRefresh_resortHome() async {
     await _userModelController.updateInstantResort(_userModelController.favoriteResort);
     await _resortModelController.getSelectedResort(_userModelController.instantResort!);
-
   }
 
   Future<void> onRefresh_ranking_indi() async {

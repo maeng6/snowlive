@@ -5,7 +5,7 @@ import '../model/m_friendDetail.dart';
 import 'ApiResponse.dart';
 
 class FriendDetailAPI {
-  static const String baseUrl = 'https://your-api-url.com/api/friend-detail-page/';
+  static const String baseUrl = 'https://snowlive-api-0eab29705c9f.herokuapp.com/api/friend-detail-page';
 
   // Fetch friend detail data
   Future<ApiResponse> fetchFriendDetail(int userId, int friendUserId, String season) async {
@@ -83,6 +83,8 @@ class FriendDetailAPI {
 
   // Fetch friends talk list
   Future<ApiResponse> fetchFriendsTalkList(int userId, int friendUserId) async {
+    print(userId);
+    print(friendUserId);
     final Uri uri = Uri.parse('$baseUrl/friends-talk-list/').replace(
       queryParameters: {
         'user_id': userId.toString(),
@@ -96,6 +98,7 @@ class FriendDetailAPI {
       final data = json.decode(utf8.decode(response.bodyBytes));
       return ApiResponse.success(data);
     } else {
+      print(response.body);
       final data = json.decode(utf8.decode(response.bodyBytes));
       return ApiResponse.error(data);
     }

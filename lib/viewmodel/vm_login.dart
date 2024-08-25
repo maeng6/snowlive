@@ -70,6 +70,7 @@ class LoginViewModel extends GetxController {
         await FlutterSecureStorage().write(key: 'localUid', value: loginUid!.value);
         await FlutterSecureStorage().write(key: 'device_id', value: device_id!.value);
         await FlutterSecureStorage().write(key: 'device_token', value: device_token!.value);
+
       }
     }
   }
@@ -137,9 +138,10 @@ class LoginViewModel extends GetxController {
         await FlutterSecureStorage().write(key: 'localUid', value: loginUid!.value);
         await FlutterSecureStorage().write(key: 'device_id', value: device_id!.value);
         await FlutterSecureStorage().write(key: 'device_token', value: device_token!.value);
-
+        await FlutterSecureStorage().write(key: 'user_id', value: data['user']['user_id']);
         Get.offAllNamed(AppRoutes.mainHome);
       } else if (message == '기존기기') {
+        await FlutterSecureStorage().write(key: 'user_id', value: data['user']['user_id']);
         Get.offAllNamed(AppRoutes.mainHome);
       } else {
         // 추가 처리

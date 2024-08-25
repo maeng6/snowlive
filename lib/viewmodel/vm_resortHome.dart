@@ -24,6 +24,7 @@ import 'package:flutter_background_geolocation/flutter_background_geolocation.da
 class ResortHomeViewModel extends GetxController {
   var _resortHomeModel = ResortHomeModel().obs;
   var isLoading = true.obs;
+  var isLoading_weather = true.obs;
   RxString _rankingGuideUrl_ios = ''.obs;
   RxString _rankingGuideUrl_aos = ''.obs;
   RxDouble _latitude = 0.0.obs;
@@ -58,6 +59,8 @@ class ResortHomeViewModel extends GetxController {
   List<Map<String, dynamic>> get respawn_point => _respawn_point;
   List<Map<String, dynamic>> get bestFriendList => _bestFriendList;
 
+  UserViewModel _userViewModel = Get.find<UserViewModel>();
+
   @override
   void onInit() async{
     super.onInit();
@@ -78,24 +81,31 @@ class ResortHomeViewModel extends GetxController {
   }
 
   Future<void> fetchWeatherModel() async {
-    isLoading(true);
+    isLoading_weather(true);
     try {
       _weatherInfo.value = await WeatherModel().parseWeatherData(
           _resortHomeModel.value.nx, _resortHomeModel.value.ny);
+      print('파스웨더 끝');
       weatherColors = WeatherModel().getWeatherColor(_weatherInfo['pty'], _weatherInfo['sky']);
       weatherIcons = WeatherModel().getWeatherIcon(_weatherInfo['pty'], _weatherInfo['sky']);
     }catch(e) {
       print(e);
       Get.snackbar('Error', '날씨 불러오기 실패');
     }
-    isLoading(false);
+    isLoading_weather(false);
   }
 
   Future<void> fetchBestFriendList({required user_id}) async {
     isLoading(true);
-    ApiResponse response = await FriendAPI().fetchFriendList(user_id, 'true');
+    ApiResponse response = await FriendAPI().fetchFriendList(user_id, true);
     if(response.success)
-      _bestFriendList.value = response.data;
+      try {
+      print(response.data);
+        _bestFriendList.value = List<Map<String, dynamic>>.from(response.data);
+      }catch(e) {
+      print(e);
+        print('친구없는놈');
+      }
     if(_bestFriendList.length < 5){
       _initialHeightFriend.value == 0.38;
     }else{
@@ -106,6 +116,12 @@ class ResortHomeViewModel extends GetxController {
     isLoading(false);
   }
 
+  Future<void> onRefresh_resortHome() async {
+    await fetchResortHome(_userViewModel.user.user_id);
+    await fetchWeatherModel();
+  }
+
+
   Future<void> changeInstantResort(Map<String, dynamic> body, user_id) async {
 
     isLoading(true);
@@ -114,6 +130,7 @@ class ResortHomeViewModel extends GetxController {
       ApiResponse response_fetchResortHome = await ResortHomeAPI().fetchResortHomeData(user_id);
       if (response_fetchResortHome.success)
         _resortHomeModel.value = ResortHomeModel.fromJson(response_fetchResortHome.data);
+      await fetchWeatherModel();
     } else {
       Get.snackbar('Error', '데이터 로딩 실패');
       isLoading(false);
@@ -196,10 +213,8 @@ class ResortHomeViewModel extends GetxController {
         return Future.error('Location permissions are denied');
       }
     }
-    print('라이브온시작스');
     // 일회성으로 현재 위치 정보를 가져옴
       Position currentPosition = await Geolocator.getCurrentPosition();
-    print('라이브온시작스22');
       _latitude.value = currentPosition.latitude;
       _longitude.value = currentPosition.longitude;
       ApiResponse response = await liveOn({
