@@ -4,7 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:com.snowlive/controller/fleaMarket/vm_fleaMarketController.dart';
-import 'package:com.snowlive/model/m_fleaMarketModel.dart';
+import 'package:com.snowlive/model_2/m_fleaMarketModel.dart';
 import '../../controller/public/vm_imageController.dart';
 import '../../controller/user/vm_userModelController.dart';
 import '../../widget/w_fullScreenDialog.dart';

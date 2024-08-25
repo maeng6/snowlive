@@ -13,7 +13,7 @@ import 'package:flutter_quill_extensions/flutter_quill_extensions.dart';
 import '../../../controller/bulletin/vm_bulletinFreeController.dart';
 import '../../../controller/public/vm_imageController.dart';
 import '../../../controller/user/vm_userModelController.dart';
-import '../../../model/m_bulletinFreeModel.dart';
+import '../../../model_2/m_bulletinFreeModel.dart';
 import '../../../widget/w_fullScreenDialog.dart';
 import './w_bulletin_Free_Quill_editor.dart';
 import './w_bulletin_Free_Quill_toolbar.dart';

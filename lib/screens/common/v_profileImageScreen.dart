@@ -2,18 +2,17 @@ import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:photo_view/photo_view.dart';
-import 'package:photo_view/photo_view_gallery.dart';
 
-class ProfileImagePage extends StatefulWidget {
-  ProfileImagePage({Key? key, required this.CommentProfileUrl}) : super(key: key);
+class ProfileImageView extends StatefulWidget {
+  ProfileImageView({Key? key, required this.userProfileUrl}) : super(key: key);
 
-  final String CommentProfileUrl;
+  final String userProfileUrl;
 
   @override
-  State<ProfileImagePage> createState() => _ProfileImagePageState();
+  State<ProfileImageView> createState() => _ProfileImageViewState();
 }
 
-class _ProfileImagePageState extends State<ProfileImagePage> {
+class _ProfileImageViewState extends State<ProfileImageView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -35,9 +34,9 @@ class _ProfileImagePageState extends State<ProfileImagePage> {
         ),
       ),
       body: PhotoView(
-        imageProvider: widget.CommentProfileUrl.isNotEmpty
+        imageProvider: widget.userProfileUrl.isNotEmpty
             ? ExtendedNetworkImageProvider(
-            widget.CommentProfileUrl,
+            widget.userProfileUrl,
             cache: true
         )
             : AssetImage('assets/imgs/profile/img_profile_default_.png') as ImageProvider,

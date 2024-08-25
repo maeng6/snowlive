@@ -1,7 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:com.snowlive/controller/resort/vm_resortModelController.dart';
-import 'package:com.snowlive/model/m_resortModel.dart';
+import 'package:com.snowlive/model_2/m_resortModel.dart';
 import 'package:com.snowlive/screens/snowliveDesignStyle.dart';
 import 'package:com.snowlive/widget/w_verticalDivider.dart';
 import 'package:extended_image/extended_image.dart';
@@ -16,7 +16,7 @@ import '../../controller/ranking/vm_myRankingController.dart';
 import '../../controller/ranking/vm_rankingTierModelController.dart';
 import '../../controller/ranking/vm_streamController_ranking.dart';
 import '../../data/imgaUrls/Data_url_image.dart';
-import '../../model/m_rankingTierModel.dart';
+import '../../model_2/m_rankingTierModel.dart';
 import '../more/friend/v_friendDetailPage.dart';
 
 class RankingIndiScreen extends StatefulWidget {

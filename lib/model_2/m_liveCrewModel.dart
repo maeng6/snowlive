@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:com.snowlive/model/m_timeStampModel.dart';
+import 'package:com.snowlive/model_2/m_timeStampModel.dart';
 
 class LiveCrewModel {
 

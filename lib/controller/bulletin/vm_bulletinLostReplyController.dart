@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
-import '../../model/m_bulletinFreeReplyModel.dart';
-import '../../model/m_bulletinLostReplyModel.dart';
+import '../../model_2/m_bulletinFreeReplyModel.dart';
+import '../../model_2/m_bulletinLostReplyModel.dart';
 
 class BulletinLostReplyModelController extends GetxController {
   RxString? _uid = ''.obs;

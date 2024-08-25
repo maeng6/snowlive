@@ -1,6 +1,6 @@
 import 'package:com.snowlive/controller/public/vm_limitController.dart';
 import 'package:com.snowlive/controller/bulletin/vm_streamController_bulletin.dart';
-import 'package:com.snowlive/model/m_bulletinEventModel.dart';
+import 'package:com.snowlive/model_2/m_bulletinEventModel.dart';
 import 'package:com.snowlive/screens/bulletin/Event/v_bulletin_Event_List_Detail.dart';
 import 'package:com.snowlive/screens/bulletin/Event/v_bulletin_Event_Upload.dart';
 import 'package:extended_image/extended_image.dart';

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:com.snowlive/controller/user/vm_userModelController.dart';
-import '../../../model/m_resortModel.dart';
+import '../../../model_2/m_resortModel.dart';
 import '../../snowliveDesignStyle.dart';
 
 class SetCrewNameAndResort extends StatefulWidget {

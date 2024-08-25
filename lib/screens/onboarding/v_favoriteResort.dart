@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:com.snowlive/controller/user/vm_userModelController.dart';
-import '../../model/m_resortModel.dart';
+import '../../model_2/m_resortModel.dart';
 import '../snowliveDesignStyle.dart';
 
 class FavoriteResort extends StatefulWidget {

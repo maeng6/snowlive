@@ -27,24 +27,14 @@ class _MainHomeState extends State<MainHome> {
   StreamController_ResortHome _streamController_ResortHome = Get.find<StreamController_ResortHome>();
   //TODO: Dependency Injection************************************************
 
-
-  late LoginController _loginController;
-  late UserModelController _userModelController;
   Stream<QuerySnapshot<Map<String, dynamic>>>? _alarmStream;
 
   @override
   void initState() {
-    _loginController = Get.find<LoginController>();
-    _userModelController = Get.find<UserModelController>();
     _alarmStream = _streamController_ResortHome.alarmStream.value;
-    deviceIdendtificate();
     super.initState();
 
   }
-
-  Future<void> deviceIdendtificate() async{
-    await _loginController.deviceIdentificate(uid: _userModelController.uid);
-}
 
   @override
   Widget build(BuildContext context) {
@@ -140,7 +130,6 @@ class _MainHomeState extends State<MainHome> {
                             return SizedBox.shrink();
                           }
                           return SizedBox.shrink();
-
                         },
                       )
                   )

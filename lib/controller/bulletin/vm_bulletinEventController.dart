@@ -2,9 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:get/get.dart';
-import 'package:com.snowlive/model/m_commentModel.dart';
-import '../../model/m_bulletinCrewModel.dart';
-import '../../model/m_bulletinEventModel.dart';
+import 'package:com.snowlive/model_2/m_commentModel.dart';
+import '../../model_2/m_bulletinCrewModel.dart';
+import '../../model_2/m_bulletinEventModel.dart';
 class BulletinEventModelController extends GetxController {
   final ref = FirebaseFirestore.instance;
   final auth = FirebaseAuth.instance;

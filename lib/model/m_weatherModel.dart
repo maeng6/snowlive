@@ -38,22 +38,21 @@ class WeatherModel {
 
   Future<Map> parseWeatherData(int nX, int nY) async {
     var getWeatherJson = await getJsonData(nX, nY);
-
     this.temp =
-        getWeatherJson['response']['body']['items']['item'][3]['obsrValue'];
+    getWeatherJson['response']['body']['items']['item'][3]['obsrValue'];
     this.rain =
-        getWeatherJson["response"]["body"]["items"]["item"][2]["obsrValue"];
+    getWeatherJson["response"]["body"]["items"]["item"][2]["obsrValue"];
     this.wind =
-        getWeatherJson["response"]["body"]["items"]["item"][7]["obsrValue"];
+    getWeatherJson["response"]["body"]["items"]["item"][7]["obsrValue"];
     this.wet =
-        getWeatherJson["response"]["body"]["items"]["item"][1]["obsrValue"];
+    getWeatherJson["response"]["body"]["items"]["item"][1]["obsrValue"];
     this.pty =
     getWeatherJson['response']['body']['items']['item'][0]['obsrValue'];
     var getMaxMinTempJson = await getMaxMinJsonData(nX, nY);
     this.maxTemp = getMaxMinTempJson["response"]["body"]["items"]["item"][157]
-        ["fcstValue"];
+    ["fcstValue"];
     this.minTemp =
-        getMaxMinTempJson["response"]["body"]["items"]["item"][48]["fcstValue"];
+    getMaxMinTempJson["response"]["body"]["items"]["item"][48]["fcstValue"];
     this.sky =
     getMaxMinTempJson["response"]["body"]["items"]["item"][114]["fcstValue"];
 
@@ -108,14 +107,14 @@ class WeatherModel {
     var time = baseTime_2am;
     http.Response response = await http.get(Uri.parse(
         'http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst'
-        '?serviceKey=$apiKey'
-        '&numOfRows=1000'
-        '&pageNo=1'
-        '&base_date=$date'
-        '&base_time=$time'
-        '&nx=$nX'
-        '&ny=$nY'
-        '&dataType=JSON'));
+            '?serviceKey=$apiKey'
+            '&numOfRows=1000'
+            '&pageNo=1'
+            '&base_date=$date'
+            '&base_time=$time'
+            '&nx=$nX'
+            '&ny=$nY'
+            '&dataType=JSON'));
     if (response.statusCode == 200) {
       String jsonData = response.body;
       var parsingData = jsonDecode(jsonData);
@@ -127,16 +126,17 @@ class WeatherModel {
     currentWeatherDate();
     var date = currentBaseDate;
     var time = currentBaseTime;
+    print('기상청 시작');
     http.Response response = await http.get(Uri.parse(
         'https://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getUltraSrtNcst'
-        '?serviceKey=$apiKey'
-        '&numOfRows=1000'
-        '&pageNo=1'
-        '&base_date=$date'
-        '&base_time=$time'
-        '&nx=$nX'
-        '&ny=$nY'
-        '&dataType=JSON'));
+            '?serviceKey=$apiKey'
+            '&numOfRows=1000'
+            '&pageNo=1'
+            '&base_date=$date'
+            '&base_time=$time'
+            '&nx=$nX'
+            '&ny=$nY'
+            '&dataType=JSON'));
     if (response.statusCode == 200) {
       String jsonData = response.body;
       var parsingData = await jsonDecode(jsonData);

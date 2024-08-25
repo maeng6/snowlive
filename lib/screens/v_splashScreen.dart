@@ -1,15 +1,17 @@
 import 'package:animated_splash_screen/animated_splash_screen.dart';
+import 'package:com.snowlive/viewmodel/vm_authcheck.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:com.snowlive/controller/login/vm_loadingPage.dart';
-class SplashScreen extends StatelessWidget {
+import 'package:get/get.dart';
+
+class SplashScreen extends GetView<AuthCheckViewModel> {
   final String imageUrl;
+
   SplashScreen({Key? key, required this.imageUrl}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-
     return AnimatedSplashScreen(
         curve: Curves.easeInCirc,
         splashTransition: SplashTransition.fadeTransition,
@@ -19,8 +21,13 @@ class SplashScreen extends StatelessWidget {
           imageUrl,
           fit: BoxFit.fitHeight,
           enableMemoryCache: true,
-              ),
-        nextScreen: LoadingPage()
-    );
+        ),
+        nextScreen: Builder(
+          builder: (context) {
+            controller.checkForUpdate();
+            controller.userCheck();
+            return Container();
+          },
+        ));
   }
 }

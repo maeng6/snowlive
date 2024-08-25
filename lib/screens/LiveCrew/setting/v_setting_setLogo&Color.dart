@@ -6,7 +6,7 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:com.snowlive/controller/public/vm_imageController.dart';
 import '../../../controller/liveCrew/vm_liveCrewModelController.dart';
-import '../../../model/m_liveCrewModel.dart';
+import '../../../model_2/m_liveCrewModel.dart';
 import '../../../widget/w_fullScreenDialog.dart';
 
 class SetCrewLogoColor_setting extends StatefulWidget {

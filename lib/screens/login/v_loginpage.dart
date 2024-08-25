@@ -2,12 +2,13 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:com.snowlive/controller/alarm/vm_noticeController.dart';
 import 'package:com.snowlive/screens/snowliveDesignStyle.dart';
+import 'package:com.snowlive/view/v_login.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:com.snowlive/screens/login/v_email_login.dart';
-import 'package:com.snowlive/widget/w_loginButton.dart';
+
 
 import '../../controller/login/vm_loginController.dart';
 
@@ -139,15 +140,7 @@ class _LoginPageState extends State<LoginPage> {
                                       )),
 
                                 ),
-                              LoginButton(
-                                buttonText: 'Google로 로그인하기',
-                                logoAddress: 'assets/imgs/logos/logos_google.png',
-                                signInMethod: SignInMethod.google,
-                                buttonColor: Colors.transparent,
-                                borderColor: SDSColor.gray100,
-                                textColor: Colors.transparent,
 
-                              ),
 
                             ],
                           ),
@@ -173,14 +166,7 @@ class _LoginPageState extends State<LoginPage> {
                                         textAlign: TextAlign.center,
                                       )),
                                 ),
-                              LoginButton(
-                                buttonText: 'Facebook으로 로그인하기',
-                                logoAddress: 'assets/imgs/logos/logos_facebook.png',
-                                signInMethod: SignInMethod.facebook,
-                                buttonColor: Color(0xff1877F2),
-                                borderColor: Colors.transparent,
-                                textColor: Colors.white,
-                              ),
+
 
                             ],
                           ),
@@ -207,14 +193,7 @@ class _LoginPageState extends State<LoginPage> {
                                         textAlign: TextAlign.center,
                                       )),
                                 ),
-                              LoginButton(
-                                buttonText: 'Apple로 로그인하기',
-                                logoAddress: 'assets/imgs/logos/logos_apple.png',
-                                signInMethod: SignInMethod.apple,
-                                buttonColor: Color(0xff111111),
-                                borderColor: Colors.transparent,
-                                textColor: Colors.white,
-                              ),
+
 
                             ],
                           )

@@ -20,9 +20,9 @@ import '../../../controller/ranking/vm_rankingTierModelController.dart';
 import '../../../controller/friends/vm_streamController_friend.dart';
 import '../../../controller/user/vm_userModelController.dart';
 import '../../../data/imgaUrls/Data_url_image.dart';
-import '../../../model/m_alarmCenterModel.dart';
-import '../../../model/m_crewLogoModel.dart';
-import '../../../model/m_rankingTierModel.dart';
+import '../../../model_2/m_alarmCenterModel.dart';
+import '../../../model_2/m_crewLogoModel.dart';
+import '../../../model_2/m_rankingTierModel.dart';
 import '../../../widget/w_fullScreenDialog.dart';
 import '../../LiveCrew/v_crewDetailPage_screen.dart';
 import '../../snowliveDesignStyle.dart';
@@ -332,8 +332,8 @@ class _FriendDetailPageState extends State<FriendDetailPage> {
                                                         }
                                                         else {
                                                           Get.to(() =>
-                                                              ProfileImagePage(
-                                                                  CommentProfileUrl: friendDocs[0]['profileImageUrl']));
+                                                              ProfileImageView(
+                                                                  userProfileUrl: friendDocs[0]['profileImageUrl']));
                                                         }
                                                       },
                                                       child: Container(

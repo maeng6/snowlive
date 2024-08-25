@@ -7,7 +7,7 @@ import 'package:image_picker/image_picker.dart';
 import '../../../controller/bulletin/vm_bulletinEventController.dart';
 import '../../../controller/public/vm_imageController.dart';
 import '../../../controller/user/vm_userModelController.dart';
-import '../../../model/m_bulletinEventModel.dart';
+import '../../../model_2/m_bulletinEventModel.dart';
 import '../../../widget/w_fullScreenDialog.dart';
 
 class Bulletin_Event_Upload extends StatefulWidget {

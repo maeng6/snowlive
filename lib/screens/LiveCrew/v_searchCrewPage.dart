@@ -10,9 +10,9 @@ import '../../controller/friends/vm_searchUserController.dart';
 import '../../controller/user/vm_userModelController.dart';
 import '../../controller/alarm/vm_alarmCenterController.dart';
 import '../../controller/liveCrew/vm_liveCrewModelController.dart';
-import '../../model/m_alarmCenterModel.dart';
-import '../../model/m_crewLogoModel.dart';
-import '../../model/m_liveCrewModel.dart';
+import '../../model_2/m_alarmCenterModel.dart';
+import '../../model_2/m_crewLogoModel.dart';
+import '../../model_2/m_liveCrewModel.dart';
 
 class SearchCrewPage extends StatefulWidget {
   const SearchCrewPage({Key? key}) : super(key: key);

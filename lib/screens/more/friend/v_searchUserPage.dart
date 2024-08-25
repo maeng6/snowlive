@@ -9,9 +9,9 @@ import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 
 import '../../../controller/friends/vm_searchUserController.dart';
 import '../../../controller/user/vm_userModelController.dart';
-import '../../../model/m_alarmCenterModel.dart';
-import '../../../model/m_rankingTierModel.dart';
-import '../../../model/m_userModel.dart';
+import '../../../model_2/m_alarmCenterModel.dart';
+import '../../../model_2/m_rankingTierModel.dart';
+import '../../../model_2/m_userModel.dart';
 
 class SearchUserPage extends StatefulWidget {
   const SearchUserPage({Key? key}) : super(key: key);

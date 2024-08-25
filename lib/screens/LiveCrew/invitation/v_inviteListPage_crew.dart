@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:com.snowlive/model/m_crewLogoModel.dart';
+import 'package:com.snowlive/model_2/m_crewLogoModel.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
