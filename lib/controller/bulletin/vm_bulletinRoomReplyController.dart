@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
-import '../../model/m_bulletinRoomReplyModel.dart';
+import '../../model_2/m_bulletinRoomReplyModel.dart';
 
 class BulletinRoomReplyModelController extends GetxController {
   RxString? _uid = ''.obs;

@@ -15,7 +15,7 @@ import '../../controller/ranking/vm_myRankingController.dart';
 import '../../controller/resort/vm_resortModelController.dart';
 import '../../controller/user/vm_allUserDocsController.dart';
 import '../../controller/user/vm_userModelController.dart';
-import '../../model/m_resortModel.dart';
+import '../../model_2/m_resortModel.dart';
 import '../../widget/w_fullScreenDialog.dart';
 import '../v_MainHome.dart';
 

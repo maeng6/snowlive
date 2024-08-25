@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -14,9 +15,13 @@ class NotificationController extends GetxController {
   FirebaseMessaging messaging = FirebaseMessaging.instance;
   RxString? _deviceToken=''.obs;
   RxString? _deviceID=''.obs;
+  RxBool? _isAndroidEmailLogIn = false.obs;
 
   String? get deviceToken => _deviceToken!.value;
   String? get deviceID => _deviceID!.value;
+  bool? get isAndroidEmailLogIn => _isAndroidEmailLogIn!.value;
+
+  final ref = FirebaseFirestore.instance;
 
   @override
   void onInit() async{
@@ -191,11 +196,14 @@ class NotificationController extends GetxController {
         }
       }
     });
-
-
-
-
-
+  }
+  Future<void> getIsAndroidEmailLogIn() async {
+    DocumentReference<Map<String, dynamic>> documentReference =
+    ref.collection('emailLogIn').doc('1');
+    final DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
+    await documentReference.get();
+    bool isAndroidEmailLogIn = documentSnapshot.get('visible');
+    this._isAndroidEmailLogIn!.value = isAndroidEmailLogIn;
   }
 
 }

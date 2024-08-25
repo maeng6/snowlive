@@ -8,7 +8,7 @@ import 'package:com.snowlive/screens/LiveCrew/v_crewDetailPage_screen.dart';
 import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 
 import '../../controller/liveCrew/vm_streamController_liveCrew.dart';
-import '../../model/m_crewLogoModel.dart';
+import '../../model_2/m_crewLogoModel.dart';
 
 class LiveCrewListMoreScreen extends StatefulWidget {
   const LiveCrewListMoreScreen({Key? key}) : super(key: key);

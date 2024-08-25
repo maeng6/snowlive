@@ -4,8 +4,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
 import 'package:url_launcher/url_launcher_string.dart';
-import '../../model/m_liveCrewModel.dart';
-import '../../model/m_resortModel.dart';
+import '../../model_2/m_liveCrewModel.dart';
+import '../../model_2/m_resortModel.dart';
 
 class LiveCrewModelController extends GetxController {
 

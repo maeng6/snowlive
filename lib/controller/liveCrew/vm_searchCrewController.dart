@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 
-import '../../model/m_liveCrewModel.dart';
+import '../../model_2/m_liveCrewModel.dart';
 
 
 class SearchCrewController extends GetxController{

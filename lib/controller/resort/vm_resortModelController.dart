@@ -1,9 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:com.snowlive/model/m_resortModel.dart';
-import 'package:com.snowlive/model/m_weatherModel.dart';
+import 'package:com.snowlive/model_2/m_resortModel.dart';
+import 'package:com.snowlive/model_2/m_weatherModel2.dart';
 
 class ResortModelController extends GetxController{
 

@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 import 'package:com.snowlive/controller/public/vm_limitController.dart';
 import 'package:com.snowlive/controller/user/vm_userModelController.dart';
-import '../../model/m_userModel.dart';
+import '../../model_2/m_userModel.dart';
 
 class SearchUserController extends GetxController{
 

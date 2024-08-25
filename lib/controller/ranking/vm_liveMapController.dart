@@ -14,8 +14,8 @@ import 'package:com.snowlive/controller/ranking/vm_rankingTierModelController.da
 import 'package:com.snowlive/controller/resort/vm_resortModelController.dart';
 import 'package:com.snowlive/controller/public/vm_limitController.dart';
 import 'package:com.snowlive/controller/user/vm_userModelController.dart';
-import 'package:com.snowlive/model/m_slopeLocationModel.dart';
-import 'package:com.snowlive/model/m_slopeScoreModel.dart';
+import 'package:com.snowlive/model_2/m_slopeLocationModel.dart';
+import 'package:com.snowlive/model_2/m_slopeScoreModel.dart';
 import 'package:flutter_background_geolocation/flutter_background_geolocation.dart' as bg;
 import 'package:intl/intl.dart';
 
@@ -1198,7 +1198,6 @@ class LiveMapController extends GetxController {
 
   }
 
-
   Future<void> updateCrewData(String locationName, int slopeScore, int timeSlot, DateTime lastPassTime) async {
     String liveCrew = _userModelController.liveCrew ?? '';
 
@@ -1442,7 +1441,6 @@ class LiveMapController extends GetxController {
     }
   }
 
-
   int getTimeSlot(DateTime now) {
     int hour = now.hour;
 
@@ -1474,7 +1472,6 @@ class LiveMapController extends GetxController {
 
     return -1; // default return value in case of an error
   }
-
 
   Future<void> stopBackgroundLocationService() async {
     await bg.BackgroundGeolocation.stop();
@@ -1574,7 +1571,6 @@ class LiveMapController extends GetxController {
       return distanceInMeters <= 5000;
     }
   }
-
 
   Future<Map<String, int>> calculateRank(int myScore) async {
     int totalUsers = 0;

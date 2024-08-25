@@ -2,10 +2,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:get/get.dart';
-import 'package:com.snowlive/model/m_commentModel.dart';
-import 'package:com.snowlive/model/m_fleaMarketModel.dart';
+import 'package:com.snowlive/model_2/m_commentModel.dart';
+import 'package:com.snowlive/model_2/m_fleaMarketModel.dart';
 
-import '../../model/m_bulletinRoomModel.dart';
+import '../../model_2/m_bulletinRoomModel.dart';
 
 class BulletinRoomModelController extends GetxController {
   final ref = FirebaseFirestore.instance;

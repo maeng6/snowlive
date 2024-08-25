@@ -21,8 +21,8 @@ import '../../controller/alarm/vm_alarmCenterController.dart';
 import '../../controller/ranking/vm_rankingTierModelController.dart';
 import '../../controller/liveCrew/vm_streamController_liveCrew.dart';
 import '../../data/imgaUrls/Data_url_image.dart';
-import '../../model/m_alarmCenterModel.dart';
-import '../../model/m_crewLogoModel.dart';
+import '../../model_2/m_alarmCenterModel.dart';
+import '../../model_2/m_crewLogoModel.dart';
 import '../../widget/w_verticalDivider.dart';
 import '../more/friend/v_friendDetailPage.dart';
 import '../snowliveDesignStyle.dart';
@@ -175,8 +175,8 @@ class _CrewDetailPage_homeState extends State<CrewDetailPage_home> {
                                                   (crewDocs[0]['profileImageUrl'].isNotEmpty)
                                                       ? GestureDetector(
                                                     onTap: () {
-                                                      Get.to(() => ProfileImagePage(
-                                                          CommentProfileUrl: crewDocs[0]['profileImageUrl']));
+                                                      Get.to(() => ProfileImageView(
+                                                          userProfileUrl: crewDocs[0]['profileImageUrl']));
                                                     },
                                                     child: Container(
                                                         decoration: BoxDecoration(

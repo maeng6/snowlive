@@ -59,7 +59,6 @@ class ImageController extends GetxController {
       if (croppedFile != null) {
         return XFile(croppedFile.path);
       } else {
-        CustomFullScreenDialog.cancelDialog();
       }
     }
     return null;
@@ -90,7 +89,7 @@ class ImageController extends GetxController {
     var metaData = SettableMetadata(contentType: 'image/jpeg');
     String downloadUrl = '';
     try {
-      Reference ref = FirebaseStorage.instance.ref('images/profile/$uid.jpg');
+      Reference ref = FirebaseStorage.instance.ref('user_profile/$uid.jpg');
       await ref.putFile(File(newImage.path), metaData);
       downloadUrl = await ref.getDownloadURL();
       print('Download URL: $downloadUrl'); // 디버깅 메시지 추가

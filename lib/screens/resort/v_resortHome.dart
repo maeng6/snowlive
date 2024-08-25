@@ -22,7 +22,7 @@ import 'package:com.snowlive/controller/public/vm_DialogController_resortHome.da
 import 'package:com.snowlive/controller/fleaMarket/vm_fleaMarketController.dart';
 import 'package:com.snowlive/controller/public/vm_getDateTimeController.dart';
 import 'package:com.snowlive/controller/ranking/vm_liveMapController.dart';
-import 'package:com.snowlive/model/m_resortModel.dart';
+import 'package:com.snowlive/model_2/m_resortModel.dart';
 import 'package:com.snowlive/screens/banner/v_banner_resortHome.dart';
 import 'package:com.snowlive/screens/more/friend/v_friendDetailPage.dart';
 import 'package:com.snowlive/screens/v_webPage.dart';

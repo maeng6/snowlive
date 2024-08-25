@@ -5,7 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
 import 'package:com.snowlive/controller/public/vm_limitController.dart';
 import 'package:com.snowlive/controller/user/vm_userModelController.dart';
-import 'package:com.snowlive/model/m_rankingTierModel.dart';
+import 'package:com.snowlive/model_2/m_rankingTierModel.dart';
 import 'package:intl/intl.dart';
 
 class RankingTierModelController extends GetxController{

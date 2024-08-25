@@ -14,7 +14,7 @@ import '../../../controller/bulletin/vm_bulletinEventReplyController.dart';
 import '../../../controller/public/vm_timeStampController.dart';
 import '../../../controller/public/vm_urlLauncherController.dart';
 import '../../../data/imgaUrls/Data_url_image.dart';
-import '../../../model/m_alarmCenterModel.dart';
+import '../../../model_2/m_alarmCenterModel.dart';
 import '../../more/friend/v_friendDetailPage.dart';
 
 class Bulletin_Event_List_Detail extends StatefulWidget {

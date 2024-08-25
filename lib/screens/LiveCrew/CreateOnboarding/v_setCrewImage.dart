@@ -10,7 +10,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:com.snowlive/controller/public/vm_imageController.dart';
 import '../../../controller/liveCrew/vm_liveCrewModelController.dart';
 import '../../../controller/user/vm_userModelController.dart';
-import '../../../model/m_liveCrewModel.dart';
+import '../../../model_2/m_liveCrewModel.dart';
 import '../../../widget/w_fullScreenDialog.dart';
 
 class SetCrewImage extends StatefulWidget {

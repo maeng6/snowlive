@@ -19,7 +19,7 @@ import '../../../controller/user/vm_allUserDocsController.dart';
 import '../../../controller/bulletin/vm_bulletinFreeController.dart';
 import '../../../controller/bulletin/vm_bulletinFreeReplyController.dart';
 import '../../../data/imgaUrls/Data_url_image.dart';
-import '../../../model/m_alarmCenterModel.dart';
+import '../../../model_2/m_alarmCenterModel.dart';
 import '../../more/friend/v_friendDetailPage.dart';
 import '../../snowliveDesignStyle.dart';
 import 'package:flutter_quill/flutter_quill.dart' as quill;

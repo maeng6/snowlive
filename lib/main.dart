@@ -9,7 +9,10 @@ import 'package:com.snowlive/controller/banner/vm_streamController_banner.dart';
 import 'package:com.snowlive/controller/fleaMarket/vm_streamController_fleaMarket.dart';
 import 'package:com.snowlive/controller/liveCrew/vm_streamController_liveCrew.dart';
 import 'package:com.snowlive/controller/moreTab/vm_streamController_moreTab.dart';
+import 'package:com.snowlive/routes/routes.dart';
 import 'package:com.snowlive/screens/snowliveDesignStyle.dart';
+import 'package:com.snowlive/viewmodel/vm_authcheck.dart';
+import 'package:com.snowlive/viewmodel/vm_user.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -59,11 +62,13 @@ void main() async {
   HttpOverrides.global = MyHttpOverrides();
 
   // Dependency Injection
+  Get.put(UserViewModel(), permanent: true);
+
+  Get.put(AuthCheckViewModel());
   Get.put(PageControllerManager(),permanent: true);
   Get.put(NotificationController(),permanent: true);
   Get.put(limitController(), permanent: true);
   Get.put(UserModelController(), permanent: true);
-  Get.put(LoginController(),permanent: true);
   Get.put(ResortModelController(), permanent: true);
   Get.put(GetDateTimeController(), permanent: true);
   Get.put(TimeStampController(), permanent: true);
@@ -137,6 +142,7 @@ class _MyAppState extends State<MyApp> {
 
     return GetMaterialApp(
         debugShowCheckedModeBanner: false,
+        getPages: AppRoutes.pages,
         navigatorObservers: [
           FirebaseAnalyticsObserver(analytics: FirebaseAnalytics.instance)
         ],

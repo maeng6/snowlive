@@ -16,7 +16,7 @@ import '../../../controller/bulletin/vm_bulletinFreeController.dart';
 import '../../../controller/public/vm_timeStampController.dart';
 import '../../../controller/user/vm_userModelController.dart';
 import '../../../data/imgaUrls/Data_url_image.dart';
-import '../../../model/m_bulletinFreeModel.dart';
+import '../../../model_2/m_bulletinFreeModel.dart';
 import '../../../widget/w_fullScreenDialog.dart';
 import '../../snowliveDesignStyle.dart';
 

@@ -1,6 +1,6 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
-import 'package:com.snowlive/model/m_splashScreen.dart';
+import 'package:com.snowlive/model_2/m_splashScreen.dart';
 
 class SplashController extends GetxController{
 
