@@ -328,9 +328,9 @@ print(_userViewModel.user.user_id);
                         isScrollControlled: true,
                         builder: (context) {
                           return Obx(() => DraggableScrollableSheet(
-                            initialChildSize: _resortHomeViewModel.initialHeightFriend > 0.2
+                            initialChildSize: _resortHomeViewModel.initialHeightFriend > 0.4
                                 ? _resortHomeViewModel.initialHeightFriend
-                                : 0.4,
+                                : 0.4, // Ensure this value is at least equal to minChildSize
                             minChildSize: 0.4,
                             maxChildSize: 0.88,
                             expand: false,
@@ -390,10 +390,9 @@ print(_userViewModel.user.user_id);
                                               var BFdoc = _resortHomeViewModel.bestFriendList[index];
                                               return GestureDetector(
                                                 onTap: () async {
-
                                                   await _friendDetailViewModel.fetchFriendDetailInfo(
                                                       userId: _userViewModel.user.user_id,
-                                                      friendUserId: BFdoc['friend_info']['user_id'],
+                                                      friendUserId: BFdoc.friendInfo.userId,
                                                       season: _friendDetailViewModel.seasonDate);
                                                   Get.toNamed(AppRoutes.friendDetail);
                                                 },
@@ -408,7 +407,7 @@ print(_userViewModel.user.user_id);
                                                           height: 68,
                                                           decoration: BoxDecoration(
                                                             borderRadius: BorderRadius.circular(100),
-                                                            border: (BFdoc['friend_info']['within_boundary'] == true && BFdoc['friend_info']['reveal_wb'] == true)
+                                                            border: (BFdoc.friendInfo.withinBoundary == true && BFdoc.friendInfo.revealWb == true)
                                                                 ? Border.all(
                                                               color: SDSColor.snowliveBlue,
                                                               width: 2,
@@ -419,9 +418,9 @@ print(_userViewModel.user.user_id);
                                                             ),
                                                           ),
                                                           alignment: Alignment.center,
-                                                          child: BFdoc['friend_info']['profile_image_url_user'].isNotEmpty
+                                                          child: BFdoc.friendInfo.profileImageUrlUser.isNotEmpty
                                                               ? ExtendedImage.network(
-                                                            BFdoc['friend_info']['profile_image_url_user'],
+                                                            BFdoc.friendInfo.profileImageUrlUser,
                                                             enableMemoryCache: true,
                                                             shape: BoxShape.circle,
                                                             borderRadius: BorderRadius.circular(100),
@@ -458,7 +457,7 @@ print(_userViewModel.user.user_id);
                                                             fit: BoxFit.cover,
                                                           ),
                                                         ),
-                                                        if (BFdoc['friend_info']['within_boundary'] == true && BFdoc['friend_info']['reveal_wb'] == true)
+                                                        if (BFdoc.friendInfo.withinBoundary == true && BFdoc.friendInfo.revealWb == true)
                                                           Positioned(
                                                             right: 0,
                                                             bottom: 0,
@@ -473,7 +472,7 @@ print(_userViewModel.user.user_id);
                                                     Container(
                                                       width: 72,
                                                       child: Text(
-                                                        BFdoc['friend_info']['display_name'],
+                                                        BFdoc.friendInfo.displayName,
                                                         overflow: TextOverflow.ellipsis,
                                                         textAlign: TextAlign.center,
                                                         style: TextStyle(
@@ -489,7 +488,9 @@ print(_userViewModel.user.user_id);
                                                         Container(
                                                           width: 72,
                                                           child: Text(
-                                                            BFdoc['last_pass_slope'],
+                                                            (BFdoc.friendInfo.lastPassSlope == null)
+                                                                ? ''
+                                                                :'${BFdoc.friendInfo.lastPassSlope}',
                                                             overflow: TextOverflow.ellipsis,
                                                             textAlign: TextAlign.center,
                                                             style: TextStyle(
@@ -503,7 +504,9 @@ print(_userViewModel.user.user_id);
                                                         Container(
                                                           width: 72,
                                                           child: Text(
-                                                            GetDatetime().getAgoString(BFdoc['last_pass_time']),
+                                                            (BFdoc.friendInfo.lastPassTime == null)
+                                                                ? ''
+                                                                : GetDatetime().getAgoString(BFdoc.friendInfo.lastPassTime!),
                                                             overflow: TextOverflow.ellipsis,
                                                             textAlign: TextAlign.center,
                                                             style: TextStyle(
@@ -529,7 +532,7 @@ print(_userViewModel.user.user_id);
                                         padding: EdgeInsets.only(top: 16, bottom: 20),
                                         child: ElevatedButton(
                                           onPressed: () {
-                                           Get.toNamed(AppRoutes.friendList);
+                                            Get.toNamed(AppRoutes.friendList);
                                           },
                                           child: Text(
                                             '친구 관리 바로가기',
@@ -554,6 +557,7 @@ print(_userViewModel.user.user_id);
                           ));
                         },
                       );
+
                     },
                     icon: Image.asset(
                       'assets/imgs/icons/icon_friend_resortHome.png',

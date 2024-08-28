@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import '../model/m_bestFriendListModel.dart';
 import 'ApiResponse.dart';
 
 class FriendAPI {
@@ -113,23 +114,27 @@ class FriendAPI {
     }
   }
 
-  // Fetch friend list
-  Future<ApiResponse> fetchFriendList(int userId,bool bestFriend) async {
+
+  Future<ApiResponse> fetchFriendList(int userId, bool bestFriend) async {
     final Uri uri = Uri.parse('$baseUrl/friend-list/').replace(
       queryParameters: {
-        'user_id': userId.toString(),
+        'my_user_id': userId.toString(),
         'best_friend': bestFriend.toString(),
       },
     );
-    print(userId);
-    print(bestFriend);
-    final response = await http.get(uri);
-    if (response.statusCode == 200) {
-      final data = json.decode(utf8.decode(response.bodyBytes));
-      return ApiResponse.success(data);
-    } else {
-      final data = json.decode(utf8.decode(response.bodyBytes));
-      return ApiResponse.error(data);
+
+    try {
+      final response = await http.get(uri);
+
+      if (response.statusCode == 200 || response.statusCode == 204) {
+        final data = json.decode(utf8.decode(response.bodyBytes)) as List<dynamic>;
+        return ApiResponse.success(data);
+      } else {
+        return ApiResponse.error('Failed to fetch data: ${response.statusCode}');
+      }
+    } catch (e) {
+      return ApiResponse.error('An error occurred: $e');
     }
   }
+
 }

@@ -1,61 +1,124 @@
+class FleamarketResponse {
+  int? count;
+  String? next;
+  String? previous;
+  List<Fleamarket>? results;
+
+  FleamarketResponse({
+    this.count,
+    this.next,
+    this.previous,
+    this.results,
+  });
+
+  FleamarketResponse.fromJson(Map<String, dynamic> json) {
+    count = json['count'];
+    next = json['next'];
+    previous = json['previous'];
+    if (json['results'] != null) {
+      results = [];
+      json['results'].forEach((v) {
+        results?.add(Fleamarket.fromJson(v));
+      });
+    }
+  }
+}
 
 class Fleamarket {
-  int? user_id;
-  String? uid;
-  String? display_name;
-  int? crew_id;
-  String? profile_image_url_user;
-  String? state_msg;
-  String? email;
-  int? favorite_resort;
-  int? instant_resort;
-  String? skiorboard;
-  String? sex;
-  bool? within_boundary;
-  bool? reveal_wb;
-  String? device_id;
-  String? device_token;
-  String? major;
-  bool? hide_profile;
+  int? fleaId;
+  int? userId;
+  String? productName;
+  String? categoryMain;
+  String? categorySub;
+  int? price;
+  bool? negotiable;
+  String? method;
+  String? spot;
+  String? snsUrl;
+  String? title;
+  String? description;
+  String? updateTime;
+  String? uploadTime;
+  List<Photo>? photos;
+  int? favoriteCount;
+  int? viewsCount;
+  UserInfo? userInfo;
+  int? commentCount;
 
   Fleamarket({
-    this.user_id,
-    this.uid,
-    this.display_name,
-    this.crew_id,
-    this.profile_image_url_user,
-    this.state_msg,
-    this.email,
-    this.favorite_resort,
-    this.instant_resort,
-    this.skiorboard,
-    this.sex,
-    this.within_boundary,
-    this.reveal_wb,
-    this.device_id,
-    this.device_token,
-    this.major,
-    this.hide_profile,
+    this.fleaId,
+    this.userId,
+    this.productName,
+    this.categoryMain,
+    this.categorySub,
+    this.price,
+    this.negotiable,
+    this.method,
+    this.spot,
+    this.snsUrl,
+    this.title,
+    this.description,
+    this.updateTime,
+    this.uploadTime,
+    this.photos,
+    this.favoriteCount,
+    this.viewsCount,
+    this.userInfo,
+    this.commentCount,
   });
 
   Fleamarket.fromJson(Map<String, dynamic> json) {
-    user_id = json['user_id'];
-    uid = json['uid'];
-    display_name = json['display_name'];
-    crew_id = json['crew_id'];
-    profile_image_url_user = json['profile_image_url_user'];
-    state_msg = json['state_msg'];
-    email = json['email'];
-    favorite_resort = json['favorite_resort'];
-    instant_resort = json['instant_resort'];
-    skiorboard = json['skiorboard'];
-    sex = json['sex'];
-    within_boundary = json['within_boundary'];
-    reveal_wb = json['reveal_wb'];
-    device_id = json['device_id'];
-    device_token = json['device_token'];
-    major = json['major'];
-    hide_profile = json['hide_profile'];
+    fleaId = json['flea_id'];
+    userId = json['user_id'];
+    productName = json['product_name'];
+    categoryMain = json['category_main'];
+    categorySub = json['category_sub'];
+    price = json['price'];
+    negotiable = json['negotiable'];
+    method = json['method'];
+    spot = json['spot'];
+    snsUrl = json['sns_url'];
+    title = json['title'];
+    description = json['description'];
+    updateTime = json['update_time'];
+    uploadTime = json['upload_time'];
+    if (json['photos'] != null) {
+      photos = [];
+      json['photos'].forEach((v) {
+        photos?.add(Photo.fromJson(v));
+      });
+    }
+    favoriteCount = json['favorite_count'];
+    viewsCount = json['views_count'];
+    userInfo = json['user_info'] != null
+        ? UserInfo.fromJson(json['user_info'])
+        : null;
+    commentCount = json['comment_count'];
   }
+}
 
+class Photo {
+  int? displayOrder;
+  String? urlFleaPhoto;
+
+  Photo({this.displayOrder, this.urlFleaPhoto});
+
+  Photo.fromJson(Map<String, dynamic> json) {
+    displayOrder = json['display_order'];
+    urlFleaPhoto = json['url_flea_photo'];
+  }
+}
+
+class UserInfo {
+  int? userId;
+  String? displayName;
+  String? profileImageUrlUser;
+
+  UserInfo({this.userId, this.displayName, this.profileImageUrlUser});
+
+  UserInfo.fromJson(Map<String, dynamic> json) {
+    userId = json['user_id'];
+    displayName = json['display_name'];
+    profileImageUrlUser = json['profile_image_url_user'];
+  }
 }

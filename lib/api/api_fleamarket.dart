@@ -2,43 +2,11 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 import 'ApiResponse.dart';
-import 'api_user.dart';
 
 class FleamarketAPI {
-  static const String baseUrl = 'https://snowlive-api-0eab29705c9f.herokuapp.com/api/fleamarket/';
-
-  //TODO: 요청바디와 Photos예시
-  // Map<String, dynamic> body = {
-  //   "user_id": 57346,
-  //   "product_name": "Updated Snowboard",
-  //   "category_main": "스노보드22222",
-  //   "category_sub": "Gear",
-  //   "price": 550,
-  //   "negotiable": false,
-  //   "method": "택배",
-  //   "spot": "Incheon",
-  //   "sns_url": "http://example.com/sns-updated",
-  //   "title": "Updated Snowboard for Sale",
-  //   "description": "This is an updated snowboard in excellent condition."
-  // };
-  //
-  // List<Map<String, dynamic>> photos = [
-  //   {
-  //     "display_order": 1,
-  //     "url_flea_photo": "http://example222.com/photo1-updated.jpg"
-  //   },
-  //   {
-  //     "display_order": 2,
-  //     "url_flea_photo": "http://example22332.com/photo1-updated.jpg"
-  //   },
-  //   {
-  //     "display_order": 3,
-  //     "url_flea_photo": "http://example2555522.com/photo1-updated.jpg"
-  //   }
-  // ];
+  static const String baseUrl = 'https://snowlive-api-0eab29705c9f.herokuapp.com/api/fleamarket';
 
   Future<ApiResponse> uploadFleamarket(Map<String, dynamic> body, List<Map<String, dynamic>> photos) async {
-    // 기존 바디에 photos 리스트를 추가
     body['photos'] = photos;
 
     final response = await http.post(
@@ -56,11 +24,10 @@ class FleamarketAPI {
     }
   }
 
-  Future<ApiResponse> updateFleamarket(int fleamerket_id, Map<String, dynamic> body, List<Map<String, dynamic>> photos) async {
-    // 기존 바디에 photos 리스트를 추가
+  Future<ApiResponse> updateFleamarket(int fleamarketId, Map<String, dynamic> body, List<Map<String, dynamic>> photos) async {
     body['photos'] = photos;
 
-    final Uri uri = Uri.parse('$baseUrl/$fleamerket_id/');
+    final Uri uri = Uri.parse('$baseUrl/$fleamarketId/');
 
     final response = await http.put(
       uri,
@@ -78,10 +45,10 @@ class FleamarketAPI {
   }
 
   Future<ApiResponse> deleteFleamarket({
-    required int fleamerket_id,
+    required int fleamarketId,
     required int userId,
   }) async {
-    final Uri uri = Uri.parse('$baseUrl/$fleamerket_id/').replace(
+    final Uri uri = Uri.parse('$baseUrl/$fleamarketId/').replace(
       queryParameters: {
         'user_id': userId.toString(),
       },
@@ -90,8 +57,7 @@ class FleamarketAPI {
     final response = await http.delete(uri);
 
     if (response.statusCode == 204) {
-      final data = json.decode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
-      return ApiResponse.success(data);
+      return ApiResponse.success({});
     } else {
       final data = json.decode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
       return ApiResponse.error(data);
@@ -99,10 +65,9 @@ class FleamarketAPI {
   }
 
   Future<ApiResponse> detailFleamarket({
-    required int fleamerket_id,
+    required int fleamarketId,
   }) async {
-
-    final Uri uri = Uri.parse('$baseUrl/$fleamerket_id/');
+    final Uri uri = Uri.parse('$baseUrl/$fleamarketId/');
 
     final response = await http.get(uri);
 
@@ -120,17 +85,20 @@ class FleamarketAPI {
     String? categoryMain,
     String? categorySub,
     String? spot,
-    int? favoriteUserId,
-    String? searchQuery,
+    int? favorite_list,
+    String? search_query,
+    bool? myflea,
+    String? url,
   }) async {
-    final Uri uri = Uri.parse('$baseUrl').replace(
+    final Uri uri = Uri.parse(url ?? baseUrl).replace(
       queryParameters: {
         'user_id': userId.toString(),
         if (categoryMain != null) 'category_main': categoryMain,
         if (categorySub != null) 'category_sub': categorySub,
         if (spot != null) 'spot': spot,
-        if (favoriteUserId != null) 'favorite_user_id': favoriteUserId.toString(),
-        if (searchQuery != null) 'search_query': searchQuery,
+        if (favorite_list != null) 'favorite_list': favorite_list.toString(),
+        if (search_query != null) 'search_query': search_query,
+        if (myflea != null) 'myflea': myflea,
       },
     );
 
@@ -145,47 +113,35 @@ class FleamarketAPI {
     }
   }
 
-  Future<ApiResponse> addFavoriteFleamarket(int fleamarket_id,Map<String, dynamic> body) async {
+  Future<ApiResponse> addFavoriteFleamarket(int fleamarketId, Map<String, dynamic> body) async {
     final response = await http.post(
-      Uri.parse('$baseUrl/$fleamarket_id/favorite/'),
+      Uri.parse('$baseUrl/$fleamarketId/favorite/'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode(body),
     );
 
-    if(response.statusCode==200){
+    if (response.statusCode == 200) {
       final data = json.decode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
       return ApiResponse.success(data);
-    } else{
+    } else {
       final data = json.decode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
       return ApiResponse.error(data);
     }
-
   }
 
-  Future<ApiResponse> deleteFavoriteFleamarket(int fleamarket_id,Map<String, dynamic> body) async {
+  Future<ApiResponse> deleteFavoriteFleamarket(int fleamarketId, Map<String, dynamic> body) async {
     final response = await http.post(
-      Uri.parse('$baseUrl/$fleamarket_id/unfavorite/'),
+      Uri.parse('$baseUrl/$fleamarketId/unfavorite/'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode(body),
     );
 
-    if(response.statusCode==200){
+    if (response.statusCode == 200) {
       final data = json.decode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
       return ApiResponse.success(data);
-    } else{
+    } else {
       final data = json.decode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
       return ApiResponse.error(data);
     }
-
   }
-
-
-
-
-
-
-
-
-
 }
-

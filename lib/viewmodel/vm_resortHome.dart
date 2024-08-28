@@ -21,6 +21,8 @@ import '../api/api_user.dart';
 
 import 'package:flutter_background_geolocation/flutter_background_geolocation.dart' as bg;
 
+import '../model/m_bestFriendListModel.dart';
+
 class ResortHomeViewModel extends GetxController {
   var _resortHomeModel = ResortHomeModel().obs;
   var isLoading = true.obs;
@@ -35,7 +37,7 @@ class ResortHomeViewModel extends GetxController {
   RxList<Map<String, dynamic>> _slope_info = <Map<String, dynamic>>[].obs;
   RxList<Map<String, dynamic>> _reset_point = <Map<String, dynamic>>[].obs;
   RxList<Map<String, dynamic>> _respawn_point = <Map<String, dynamic>>[].obs;
-  RxList<Map<String, dynamic>> _bestFriendList = <Map<String, dynamic>>[].obs;
+  RxList<BestFriendListModel> _bestFriendList = <BestFriendListModel>[].obs;
   RxBool _isSnackbarShown = false.obs;
   RxBool _isWeatherInfoExpanded = false.obs;
 
@@ -57,7 +59,7 @@ class ResortHomeViewModel extends GetxController {
   List<Map<String, dynamic>> get slope_info => _slope_info;
   List<Map<String, dynamic>> get reset_point => _reset_point;
   List<Map<String, dynamic>> get respawn_point => _respawn_point;
-  List<Map<String, dynamic>> get bestFriendList => _bestFriendList;
+  List<BestFriendListModel> get bestFriendList => _bestFriendList;
 
   UserViewModel _userViewModel = Get.find<UserViewModel>();
 
@@ -95,26 +97,43 @@ class ResortHomeViewModel extends GetxController {
     isLoading_weather(false);
   }
 
-  Future<void> fetchBestFriendList({required user_id}) async {
+
+  Future<void> fetchBestFriendList({required int user_id}) async {
     isLoading(true);
     ApiResponse response = await FriendAPI().fetchFriendList(user_id, true);
-    if(response.success)
+
+    if (response.success) {
       try {
-      print(response.data);
-        _bestFriendList.value = List<Map<String, dynamic>>.from(response.data);
-      }catch(e) {
-      print(e);
-        print('친구없는놈');
+        // JSON 데이터를 List<Map<String, dynamic>>로 변환
+        List<dynamic> dataList = response.data as List<dynamic>;
+
+        // List<Map<String, dynamic>>를 List<BestFriendListModel>로 변환
+        List<BestFriendListModel> friendList = dataList
+            .map((e) => BestFriendListModel.fromJson(e as Map<String, dynamic>))
+            .toList();
+
+        // _bestFriendList를 업데이트
+        _bestFriendList.value = friendList;
+
+        // 초기 높이 설정
+        if (_bestFriendList.length < 5) {
+          _initialHeightFriend.value = 0.38;
+        } else {
+          _initialHeightFriend.value = 0.525;
+        }
+
+      } catch (e) {
+        print('Error parsing friend list: $e');
       }
-    if(_bestFriendList.length < 5){
-      _initialHeightFriend.value == 0.38;
-    }else{
-      _initialHeightFriend.value == 0.525;
+    } else {
+      print('친구없는놈');
     }
-    if(!response.success)
-      Get.snackbar('Error', '데이터 로딩 실패');
+
     isLoading(false);
   }
+
+
+
 
   Future<void> onRefresh_resortHome() async {
     await fetchResortHome(_userViewModel.user.user_id);

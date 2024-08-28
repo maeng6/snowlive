@@ -279,7 +279,7 @@ class FriendDetailView extends StatelessWidget {
                                           GestureDetector(
                                             onTap:() async{
                                               await _friendDetailViewModel.checkFriendRelationship({
-                                                "user_id": _userViewModel.user.user_id,
+                                                "my_user_id": _userViewModel.user.user_id,
                                                 "friend_user_id": _friendDetailViewModel.friendDetailModel.friendUserInfo.userId
                                               });
                                               if(_friendDetailViewModel.friend_id !=0)
