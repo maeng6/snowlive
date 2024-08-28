@@ -450,16 +450,16 @@ class _FleaMarketListView_totalState extends State<FleaMarketListView_total> {
                                                 right: 16,
                                                 top: 16,
                                               ),
-                                              height: 144,
+                                              height: MediaQuery.of(context).size.height * 0.4,
                                               padding: EdgeInsets.all(16),
                                               decoration: BoxDecoration(
                                                 color: Colors.white,
                                                 borderRadius: BorderRadius.circular(16),
                                               ),
-                                              child: Column(
-                                                children: [
-                                                  GestureDetector(
-                                                    child: ListTile(
+                                              child: SingleChildScrollView(
+                                                child: Wrap(
+                                                  children: [
+                                                    ListTile(
                                                       contentPadding: EdgeInsets.zero,
                                                       title: Center(
                                                         child: Text(
@@ -472,20 +472,20 @@ class _FleaMarketListView_totalState extends State<FleaMarketListView_total> {
                                                       ),
                                                       //selected: _isSelected[index]!,
                                                       onTap: () async {
+                                                        Navigator.pop(context);
                                                         _fleamarketViewModel.changeCategory_main_total('${FleamarketCategory_main.total.korean}');
                                                         await _fleamarketViewModel.fetchFleamarketData_total(
                                                           userId: _userViewModel.user.user_id,
                                                           categoryMain: _fleamarketViewModel.selectedCategory_main_total,
                                                           categorySub: _fleamarketViewModel.selectedCategory_sub_total
                                                         );
+
                                                       },
                                                       shape: RoundedRectangleBorder(
                                                           borderRadius:
                                                           BorderRadius.circular(16)),
                                                     ),
-                                                  ),
-                                                  GestureDetector(
-                                                    child: ListTile(
+                                                    ListTile(
                                                       contentPadding: EdgeInsets.zero,
                                                       title: Center(
                                                         child: Text(
@@ -498,6 +498,7 @@ class _FleaMarketListView_totalState extends State<FleaMarketListView_total> {
                                                       ),
                                                       //selected: _isSelected[index]!,
                                                       onTap: () async {
+                                                        Navigator.pop(context);
                                                         _fleamarketViewModel.changeCategory_main_total('${FleamarketCategory_main.deck.korean}');
                                                         await _fleamarketViewModel.fetchFleamarketData_total(
                                                             userId: _userViewModel.user.user_id,
@@ -509,9 +510,7 @@ class _FleaMarketListView_totalState extends State<FleaMarketListView_total> {
                                                           borderRadius:
                                                           BorderRadius.circular(16)),
                                                     ),
-                                                  ),
-                                                  GestureDetector(
-                                                    child: ListTile(
+                                                    ListTile(
                                                       contentPadding: EdgeInsets.zero,
                                                       title: Center(
                                                         child: Text(
@@ -524,6 +523,7 @@ class _FleaMarketListView_totalState extends State<FleaMarketListView_total> {
                                                       ),
                                                       //selected: _isSelected[index]!,
                                                       onTap: () async {
+                                                        Navigator.pop(context);
                                                         _fleamarketViewModel.changeCategory_main_total('${FleamarketCategory_main.binding.korean}');
                                                         await _fleamarketViewModel.fetchFleamarketData_total(
                                                             userId: _userViewModel.user.user_id,
@@ -535,9 +535,7 @@ class _FleaMarketListView_totalState extends State<FleaMarketListView_total> {
                                                           borderRadius:
                                                           BorderRadius.circular(16)),
                                                     ),
-                                                  ),
-                                                  GestureDetector(
-                                                    child: ListTile(
+                                                    ListTile(
                                                       contentPadding: EdgeInsets.zero,
                                                       title: Center(
                                                         child: Text(
@@ -550,6 +548,7 @@ class _FleaMarketListView_totalState extends State<FleaMarketListView_total> {
                                                       ),
                                                       //selected: _isSelected[index]!,
                                                       onTap: () async {
+                                                        Navigator.pop(context);
                                                         _fleamarketViewModel.changeCategory_main_total('${FleamarketCategory_main.boots.korean}');
                                                         await _fleamarketViewModel.fetchFleamarketData_total(
                                                             userId: _userViewModel.user.user_id,
@@ -561,9 +560,7 @@ class _FleaMarketListView_totalState extends State<FleaMarketListView_total> {
                                                           borderRadius:
                                                           BorderRadius.circular(16)),
                                                     ),
-                                                  ),
-                                                  GestureDetector(
-                                                    child: ListTile(
+                                                    ListTile(
                                                       contentPadding: EdgeInsets.zero,
                                                       title: Center(
                                                         child: Text(
@@ -576,6 +573,7 @@ class _FleaMarketListView_totalState extends State<FleaMarketListView_total> {
                                                       ),
                                                       //selected: _isSelected[index]!,
                                                       onTap: () async {
+                                                        Navigator.pop(context);
                                                         _fleamarketViewModel.changeCategory_main_total('${FleamarketCategory_main.cloth.korean}');
                                                         await _fleamarketViewModel.fetchFleamarketData_total(
                                                             userId: _userViewModel.user.user_id,
@@ -587,9 +585,7 @@ class _FleaMarketListView_totalState extends State<FleaMarketListView_total> {
                                                           borderRadius:
                                                           BorderRadius.circular(16)),
                                                     ),
-                                                  ),
-                                                  GestureDetector(
-                                                    child: ListTile(
+                                                    ListTile(
                                                       contentPadding: EdgeInsets.zero,
                                                       title: Center(
                                                         child: Text(
@@ -602,6 +598,7 @@ class _FleaMarketListView_totalState extends State<FleaMarketListView_total> {
                                                       ),
                                                       //selected: _isSelected[index]!,
                                                       onTap: () async {
+                                                        Navigator.pop(context);
                                                         _fleamarketViewModel.changeCategory_main_total('${FleamarketCategory_main.plate.korean}');
                                                         await _fleamarketViewModel.fetchFleamarketData_total(
                                                             userId: _userViewModel.user.user_id,
@@ -613,9 +610,7 @@ class _FleaMarketListView_totalState extends State<FleaMarketListView_total> {
                                                           borderRadius:
                                                           BorderRadius.circular(16)),
                                                     ),
-                                                  ),
-                                                  GestureDetector(
-                                                    child: ListTile(
+                                                    ListTile(
                                                       contentPadding: EdgeInsets.zero,
                                                       title: Center(
                                                         child: Text(
@@ -628,6 +623,7 @@ class _FleaMarketListView_totalState extends State<FleaMarketListView_total> {
                                                       ),
                                                       //selected: _isSelected[index]!,
                                                       onTap: () async {
+                                                        Navigator.pop(context);
                                                         _fleamarketViewModel.changeCategory_main_total('${FleamarketCategory_main.etc.korean}');
                                                         await _fleamarketViewModel.fetchFleamarketData_total(
                                                             userId: _userViewModel.user.user_id,
@@ -639,8 +635,8 @@ class _FleaMarketListView_totalState extends State<FleaMarketListView_total> {
                                                           borderRadius:
                                                           BorderRadius.circular(16)),
                                                     ),
-                                                  ),
-                                                ],
+                                                  ],
+                                                ),
                                               ),
                                             ),
                                           ),
@@ -685,16 +681,16 @@ class _FleaMarketListView_totalState extends State<FleaMarketListView_total> {
                                                 right: 16,
                                                 top: 16,
                                               ),
-                                              height: 144,
+                                              height: MediaQuery.of(context).size.height * 0.4,
                                               padding: EdgeInsets.all(16),
                                               decoration: BoxDecoration(
                                                 color: Colors.white,
                                                 borderRadius: BorderRadius.circular(16),
                                               ),
-                                              child: Column(
-                                                children: [
-                                                  GestureDetector(
-                                                    child: ListTile(
+                                              child: SingleChildScrollView(
+                                                child: Wrap(
+                                                  children: [
+                                                    ListTile(
                                                       contentPadding: EdgeInsets.zero,
                                                       title: Center(
                                                         child: Text(
@@ -707,6 +703,7 @@ class _FleaMarketListView_totalState extends State<FleaMarketListView_total> {
                                                       ),
                                                       //selected: _isSelected[index]!,
                                                       onTap: () async {
+                                                        Navigator.pop(context);
                                                         _fleamarketViewModel.changeCategory_main_total('${FleamarketCategory_main.total.korean}');
                                                         await _fleamarketViewModel.fetchFleamarketData_total(
                                                             userId: _userViewModel.user.user_id,
@@ -718,9 +715,7 @@ class _FleaMarketListView_totalState extends State<FleaMarketListView_total> {
                                                           borderRadius:
                                                           BorderRadius.circular(16)),
                                                     ),
-                                                  ),
-                                                  GestureDetector(
-                                                    child: ListTile(
+                                                    ListTile(
                                                       contentPadding: EdgeInsets.zero,
                                                       title: Center(
                                                         child: Text(
@@ -733,6 +728,7 @@ class _FleaMarketListView_totalState extends State<FleaMarketListView_total> {
                                                       ),
                                                       //selected: _isSelected[index]!,
                                                       onTap: () async {
+                                                        Navigator.pop(context);
                                                         _fleamarketViewModel.changeCategory_main_total('${FleamarketCategory_main.deck.korean}');
                                                         await _fleamarketViewModel.fetchFleamarketData_total(
                                                             userId: _userViewModel.user.user_id,
@@ -744,9 +740,7 @@ class _FleaMarketListView_totalState extends State<FleaMarketListView_total> {
                                                           borderRadius:
                                                           BorderRadius.circular(16)),
                                                     ),
-                                                  ),
-                                                  GestureDetector(
-                                                    child: ListTile(
+                                                    ListTile(
                                                       contentPadding: EdgeInsets.zero,
                                                       title: Center(
                                                         child: Text(
@@ -759,6 +753,7 @@ class _FleaMarketListView_totalState extends State<FleaMarketListView_total> {
                                                       ),
                                                       //selected: _isSelected[index]!,
                                                       onTap: () async {
+                                                        Navigator.pop(context);
                                                         _fleamarketViewModel.changeCategory_main_total('${FleamarketCategory_main.binding.korean}');
                                                         await _fleamarketViewModel.fetchFleamarketData_total(
                                                             userId: _userViewModel.user.user_id,
@@ -770,9 +765,7 @@ class _FleaMarketListView_totalState extends State<FleaMarketListView_total> {
                                                           borderRadius:
                                                           BorderRadius.circular(16)),
                                                     ),
-                                                  ),
-                                                  GestureDetector(
-                                                    child: ListTile(
+                                                    ListTile(
                                                       contentPadding: EdgeInsets.zero,
                                                       title: Center(
                                                         child: Text(
@@ -785,6 +778,7 @@ class _FleaMarketListView_totalState extends State<FleaMarketListView_total> {
                                                       ),
                                                       //selected: _isSelected[index]!,
                                                       onTap: () async {
+                                                        Navigator.pop(context);
                                                         _fleamarketViewModel.changeCategory_main_total('${FleamarketCategory_main.boots.korean}');
                                                         await _fleamarketViewModel.fetchFleamarketData_total(
                                                             userId: _userViewModel.user.user_id,
@@ -796,9 +790,7 @@ class _FleaMarketListView_totalState extends State<FleaMarketListView_total> {
                                                           borderRadius:
                                                           BorderRadius.circular(16)),
                                                     ),
-                                                  ),
-                                                  GestureDetector(
-                                                    child: ListTile(
+                                                    ListTile(
                                                       contentPadding: EdgeInsets.zero,
                                                       title: Center(
                                                         child: Text(
@@ -811,6 +803,7 @@ class _FleaMarketListView_totalState extends State<FleaMarketListView_total> {
                                                       ),
                                                       //selected: _isSelected[index]!,
                                                       onTap: () async {
+                                                        Navigator.pop(context);
                                                         _fleamarketViewModel.changeCategory_main_total('${FleamarketCategory_main.cloth.korean}');
                                                         await _fleamarketViewModel.fetchFleamarketData_total(
                                                             userId: _userViewModel.user.user_id,
@@ -822,9 +815,7 @@ class _FleaMarketListView_totalState extends State<FleaMarketListView_total> {
                                                           borderRadius:
                                                           BorderRadius.circular(16)),
                                                     ),
-                                                  ),
-                                                  GestureDetector(
-                                                    child: ListTile(
+                                                    ListTile(
                                                       contentPadding: EdgeInsets.zero,
                                                       title: Center(
                                                         child: Text(
@@ -837,6 +828,7 @@ class _FleaMarketListView_totalState extends State<FleaMarketListView_total> {
                                                       ),
                                                       //selected: _isSelected[index]!,
                                                       onTap: () async {
+                                                        Navigator.pop(context);
                                                         _fleamarketViewModel.changeCategory_main_total('${FleamarketCategory_main.plate.korean}');
                                                         await _fleamarketViewModel.fetchFleamarketData_total(
                                                             userId: _userViewModel.user.user_id,
@@ -848,9 +840,7 @@ class _FleaMarketListView_totalState extends State<FleaMarketListView_total> {
                                                           borderRadius:
                                                           BorderRadius.circular(16)),
                                                     ),
-                                                  ),
-                                                  GestureDetector(
-                                                    child: ListTile(
+                                                    ListTile(
                                                       contentPadding: EdgeInsets.zero,
                                                       title: Center(
                                                         child: Text(
@@ -863,6 +853,7 @@ class _FleaMarketListView_totalState extends State<FleaMarketListView_total> {
                                                       ),
                                                       //selected: _isSelected[index]!,
                                                       onTap: () async {
+                                                        Navigator.pop(context);
                                                         _fleamarketViewModel.changeCategory_main_total('${FleamarketCategory_main.etc.korean}');
                                                         await _fleamarketViewModel.fetchFleamarketData_total(
                                                             userId: _userViewModel.user.user_id,
@@ -874,8 +865,8 @@ class _FleaMarketListView_totalState extends State<FleaMarketListView_total> {
                                                           borderRadius:
                                                           BorderRadius.circular(16)),
                                                     ),
-                                                  ),
-                                                ],
+                                                  ],
+                                                ),
                                               ),
                                             ),
                                           ),
@@ -916,16 +907,16 @@ class _FleaMarketListView_totalState extends State<FleaMarketListView_total> {
                                                 right: 16,
                                                 top: 16,
                                               ),
-                                              height: 144,
+                                              height: MediaQuery.of(context).size.height * 0.5,
                                               padding: EdgeInsets.all(16),
                                               decoration: BoxDecoration(
                                                 color: Colors.white,
                                                 borderRadius: BorderRadius.circular(16),
                                               ),
-                                              child: Column(
-                                                children: [
-                                                  GestureDetector(
-                                                    child: ListTile(
+                                              child: SingleChildScrollView(
+                                                child: Wrap(
+                                                  children: [
+                                                    ListTile(
                                                       contentPadding: EdgeInsets.zero,
                                                       title: Center(
                                                         child: Text(
@@ -938,6 +929,7 @@ class _FleaMarketListView_totalState extends State<FleaMarketListView_total> {
                                                       ),
                                                       //selected: _isSelected[index]!,
                                                       onTap: () async {
+                                                        Navigator.pop(context);
                                                         _fleamarketViewModel.changeCategory_sub_total('${FleamarketCategory_sub.total.korean}');
                                                         await _fleamarketViewModel.fetchFleamarketData_total(
                                                             userId: _userViewModel.user.user_id,
@@ -949,9 +941,7 @@ class _FleaMarketListView_totalState extends State<FleaMarketListView_total> {
                                                           borderRadius:
                                                           BorderRadius.circular(16)),
                                                     ),
-                                                  ),
-                                                  GestureDetector(
-                                                    child: ListTile(
+                                                    ListTile(
                                                       contentPadding: EdgeInsets.zero,
                                                       title: Center(
                                                         child: Text(
@@ -964,6 +954,7 @@ class _FleaMarketListView_totalState extends State<FleaMarketListView_total> {
                                                       ),
                                                       //selected: _isSelected[index]!,
                                                       onTap: () async {
+                                                        Navigator.pop(context);
                                                         _fleamarketViewModel.changeCategory_sub_total('${FleamarketCategory_sub.konjiam.korean}');
                                                         await _fleamarketViewModel.fetchFleamarketData_total(
                                                             userId: _userViewModel.user.user_id,
@@ -975,9 +966,7 @@ class _FleaMarketListView_totalState extends State<FleaMarketListView_total> {
                                                           borderRadius:
                                                           BorderRadius.circular(16)),
                                                     ),
-                                                  ),
-                                                  GestureDetector(
-                                                    child: ListTile(
+                                                    ListTile(
                                                       contentPadding: EdgeInsets.zero,
                                                       title: Center(
                                                         child: Text(
@@ -990,6 +979,7 @@ class _FleaMarketListView_totalState extends State<FleaMarketListView_total> {
                                                       ),
                                                       //selected: _isSelected[index]!,
                                                       onTap: () async {
+                                                        Navigator.pop(context);
                                                         _fleamarketViewModel.changeCategory_sub_total('${FleamarketCategory_sub.muju.korean}');
                                                         await _fleamarketViewModel.fetchFleamarketData_total(
                                                             userId: _userViewModel.user.user_id,
@@ -1001,9 +991,7 @@ class _FleaMarketListView_totalState extends State<FleaMarketListView_total> {
                                                           borderRadius:
                                                           BorderRadius.circular(16)),
                                                     ),
-                                                  ),
-                                                  GestureDetector(
-                                                    child: ListTile(
+                                                    ListTile(
                                                       contentPadding: EdgeInsets.zero,
                                                       title: Center(
                                                         child: Text(
@@ -1016,6 +1004,7 @@ class _FleaMarketListView_totalState extends State<FleaMarketListView_total> {
                                                       ),
                                                       //selected: _isSelected[index]!,
                                                       onTap: () async {
+                                                        Navigator.pop(context);
                                                         _fleamarketViewModel.changeCategory_sub_total('${FleamarketCategory_sub.vivaldi.korean}');
                                                         await _fleamarketViewModel.fetchFleamarketData_total(
                                                             userId: _userViewModel.user.user_id,
@@ -1027,9 +1016,7 @@ class _FleaMarketListView_totalState extends State<FleaMarketListView_total> {
                                                           borderRadius:
                                                           BorderRadius.circular(16)),
                                                     ),
-                                                  ),
-                                                  GestureDetector(
-                                                    child: ListTile(
+                                                    ListTile(
                                                       contentPadding: EdgeInsets.zero,
                                                       title: Center(
                                                         child: Text(
@@ -1042,6 +1029,7 @@ class _FleaMarketListView_totalState extends State<FleaMarketListView_total> {
                                                       ),
                                                       //selected: _isSelected[index]!,
                                                       onTap: () async {
+                                                        Navigator.pop(context);
                                                         _fleamarketViewModel.changeCategory_sub_total('${FleamarketCategory_sub.alphen.korean}');
                                                         await _fleamarketViewModel.fetchFleamarketData_total(
                                                             userId: _userViewModel.user.user_id,
@@ -1053,9 +1041,7 @@ class _FleaMarketListView_totalState extends State<FleaMarketListView_total> {
                                                           borderRadius:
                                                           BorderRadius.circular(16)),
                                                     ),
-                                                  ),
-                                                  GestureDetector(
-                                                    child: ListTile(
+                                                    ListTile(
                                                       contentPadding: EdgeInsets.zero,
                                                       title: Center(
                                                         child: Text(
@@ -1068,6 +1054,7 @@ class _FleaMarketListView_totalState extends State<FleaMarketListView_total> {
                                                       ),
                                                       //selected: _isSelected[index]!,
                                                       onTap: () async {
+                                                        Navigator.pop(context);
                                                         _fleamarketViewModel.changeCategory_sub_total('${FleamarketCategory_sub.gangchon.korean}');
                                                         await _fleamarketViewModel.fetchFleamarketData_total(
                                                             userId: _userViewModel.user.user_id,
@@ -1079,9 +1066,7 @@ class _FleaMarketListView_totalState extends State<FleaMarketListView_total> {
                                                           borderRadius:
                                                           BorderRadius.circular(16)),
                                                     ),
-                                                  ),
-                                                  GestureDetector(
-                                                    child: ListTile(
+                                                    ListTile(
                                                       contentPadding: EdgeInsets.zero,
                                                       title: Center(
                                                         child: Text(
@@ -1094,6 +1079,7 @@ class _FleaMarketListView_totalState extends State<FleaMarketListView_total> {
                                                       ),
                                                       //selected: _isSelected[index]!,
                                                       onTap: () async {
+                                                        Navigator.pop(context);
                                                         _fleamarketViewModel.changeCategory_sub_total('${FleamarketCategory_sub.oak.korean}');
                                                         await _fleamarketViewModel.fetchFleamarketData_total(
                                                             userId: _userViewModel.user.user_id,
@@ -1105,9 +1091,7 @@ class _FleaMarketListView_totalState extends State<FleaMarketListView_total> {
                                                           borderRadius:
                                                           BorderRadius.circular(16)),
                                                     ),
-                                                  ),
-                                                  GestureDetector(
-                                                    child: ListTile(
+                                                    ListTile(
                                                       contentPadding: EdgeInsets.zero,
                                                       title: Center(
                                                         child: Text(
@@ -1120,6 +1104,7 @@ class _FleaMarketListView_totalState extends State<FleaMarketListView_total> {
                                                       ),
                                                       //selected: _isSelected[index]!,
                                                       onTap: () async {
+                                                        Navigator.pop(context);
                                                         _fleamarketViewModel.changeCategory_sub_total('${FleamarketCategory_sub.o2.korean}');
                                                         await _fleamarketViewModel.fetchFleamarketData_total(
                                                             userId: _userViewModel.user.user_id,
@@ -1131,9 +1116,7 @@ class _FleaMarketListView_totalState extends State<FleaMarketListView_total> {
                                                           borderRadius:
                                                           BorderRadius.circular(16)),
                                                     ),
-                                                  ),
-                                                  GestureDetector(
-                                                    child: ListTile(
+                                                    ListTile(
                                                       contentPadding: EdgeInsets.zero,
                                                       title: Center(
                                                         child: Text(
@@ -1146,6 +1129,7 @@ class _FleaMarketListView_totalState extends State<FleaMarketListView_total> {
                                                       ),
                                                       //selected: _isSelected[index]!,
                                                       onTap: () async {
+                                                        Navigator.pop(context);
                                                         _fleamarketViewModel.changeCategory_sub_total('${FleamarketCategory_sub.yongpyong.korean}');
                                                         await _fleamarketViewModel.fetchFleamarketData_total(
                                                             userId: _userViewModel.user.user_id,
@@ -1157,9 +1141,7 @@ class _FleaMarketListView_totalState extends State<FleaMarketListView_total> {
                                                           borderRadius:
                                                           BorderRadius.circular(16)),
                                                     ),
-                                                  ),
-                                                  GestureDetector(
-                                                    child: ListTile(
+                                                    ListTile(
                                                       contentPadding: EdgeInsets.zero,
                                                       title: Center(
                                                         child: Text(
@@ -1172,6 +1154,7 @@ class _FleaMarketListView_totalState extends State<FleaMarketListView_total> {
                                                       ),
                                                       //selected: _isSelected[index]!,
                                                       onTap: () async {
+                                                        Navigator.pop(context);
                                                         _fleamarketViewModel.changeCategory_sub_total('${FleamarketCategory_sub.welli.korean}');
                                                         await _fleamarketViewModel.fetchFleamarketData_total(
                                                             userId: _userViewModel.user.user_id,
@@ -1183,9 +1166,7 @@ class _FleaMarketListView_totalState extends State<FleaMarketListView_total> {
                                                           borderRadius:
                                                           BorderRadius.circular(16)),
                                                     ),
-                                                  ),
-                                                  GestureDetector(
-                                                    child: ListTile(
+                                                    ListTile(
                                                       contentPadding: EdgeInsets.zero,
                                                       title: Center(
                                                         child: Text(
@@ -1198,6 +1179,7 @@ class _FleaMarketListView_totalState extends State<FleaMarketListView_total> {
                                                       ),
                                                       //selected: _isSelected[index]!,
                                                       onTap: () async {
+                                                        Navigator.pop(context);
                                                         _fleamarketViewModel.changeCategory_sub_total('${FleamarketCategory_sub.jisan.korean}');
                                                         await _fleamarketViewModel.fetchFleamarketData_total(
                                                             userId: _userViewModel.user.user_id,
@@ -1209,9 +1191,7 @@ class _FleaMarketListView_totalState extends State<FleaMarketListView_total> {
                                                           borderRadius:
                                                           BorderRadius.circular(16)),
                                                     ),
-                                                  ),
-                                                  GestureDetector(
-                                                    child: ListTile(
+                                                    ListTile(
                                                       contentPadding: EdgeInsets.zero,
                                                       title: Center(
                                                         child: Text(
@@ -1224,6 +1204,7 @@ class _FleaMarketListView_totalState extends State<FleaMarketListView_total> {
                                                       ),
                                                       //selected: _isSelected[index]!,
                                                       onTap: () async {
+                                                        Navigator.pop(context);
                                                         _fleamarketViewModel.changeCategory_sub_total('${FleamarketCategory_sub.high1.korean}');
                                                         await _fleamarketViewModel.fetchFleamarketData_total(
                                                             userId: _userViewModel.user.user_id,
@@ -1235,9 +1216,7 @@ class _FleaMarketListView_totalState extends State<FleaMarketListView_total> {
                                                           borderRadius:
                                                           BorderRadius.circular(16)),
                                                     ),
-                                                  ),
-                                                  GestureDetector(
-                                                    child: ListTile(
+                                                    ListTile(
                                                       contentPadding: EdgeInsets.zero,
                                                       title: Center(
                                                         child: Text(
@@ -1250,6 +1229,7 @@ class _FleaMarketListView_totalState extends State<FleaMarketListView_total> {
                                                       ),
                                                       //selected: _isSelected[index]!,
                                                       onTap: () async {
+                                                        Navigator.pop(context);
                                                         _fleamarketViewModel.changeCategory_sub_total('${FleamarketCategory_sub.phoenix.korean}');
                                                         await _fleamarketViewModel.fetchFleamarketData_total(
                                                             userId: _userViewModel.user.user_id,
@@ -1261,9 +1241,7 @@ class _FleaMarketListView_totalState extends State<FleaMarketListView_total> {
                                                           borderRadius:
                                                           BorderRadius.circular(16)),
                                                     ),
-                                                  ),
-                                                  GestureDetector(
-                                                    child: ListTile(
+                                                    ListTile(
                                                       contentPadding: EdgeInsets.zero,
                                                       title: Center(
                                                         child: Text(
@@ -1276,6 +1254,7 @@ class _FleaMarketListView_totalState extends State<FleaMarketListView_total> {
                                                       ),
                                                       //selected: _isSelected[index]!,
                                                       onTap: () async {
+                                                        Navigator.pop(context);
                                                         _fleamarketViewModel.changeCategory_sub_total('${FleamarketCategory_sub.etc.korean}');
                                                         await _fleamarketViewModel.fetchFleamarketData_total(
                                                             userId: _userViewModel.user.user_id,
@@ -1287,8 +1266,8 @@ class _FleaMarketListView_totalState extends State<FleaMarketListView_total> {
                                                           borderRadius:
                                                           BorderRadius.circular(16)),
                                                     ),
-                                                  ),
-                                                ],
+                                                  ],
+                                                ),
                                               ),
                                             ),
                                           ),
@@ -1333,7 +1312,7 @@ class _FleaMarketListView_totalState extends State<FleaMarketListView_total> {
                                                 right: 16,
                                                 top: 16,
                                               ),
-                                              height: 144,
+                                              height: MediaQuery.of(context).size.height * 0.5,
                                               padding: EdgeInsets.all(16),
                                               decoration: BoxDecoration(
                                                 color: Colors.white,
@@ -1341,369 +1320,355 @@ class _FleaMarketListView_totalState extends State<FleaMarketListView_total> {
                                               ),
                                               child: Column(
                                                 children: [
-                                                  GestureDetector(
-                                                    child: ListTile(
-                                                      contentPadding: EdgeInsets.zero,
-                                                      title: Center(
-                                                        child: Text(
-                                                          '${FleamarketCategory_sub.total.korean}',
-                                                          style: SDSTextStyle.bold.copyWith(
-                                                              fontSize: 15,
-                                                              color: SDSColor.gray900
-                                                          ),
+                                                  ListTile(
+                                                    contentPadding: EdgeInsets.zero,
+                                                    title: Center(
+                                                      child: Text(
+                                                        '${FleamarketCategory_sub.total.korean}',
+                                                        style: SDSTextStyle.bold.copyWith(
+                                                            fontSize: 15,
+                                                            color: SDSColor.gray900
                                                         ),
                                                       ),
-                                                      //selected: _isSelected[index]!,
-                                                      onTap: () async {
-                                                        _fleamarketViewModel.changeCategory_sub_total('${FleamarketCategory_sub.total.korean}');
-                                                        await _fleamarketViewModel.fetchFleamarketData_total(
-                                                            userId: _userViewModel.user.user_id,
-                                                            categoryMain: _fleamarketViewModel.selectedCategory_main_total,
-                                                            categorySub: _fleamarketViewModel.selectedCategory_sub_total
-                                                        );
-                                                      },
-                                                      shape: RoundedRectangleBorder(
-                                                          borderRadius:
-                                                          BorderRadius.circular(16)),
                                                     ),
+                                                    //selected: _isSelected[index]!,
+                                                    onTap: () async {
+                                                      Navigator.pop(context);
+                                                      _fleamarketViewModel.changeCategory_sub_total('${FleamarketCategory_sub.total.korean}');
+                                                      await _fleamarketViewModel.fetchFleamarketData_total(
+                                                          userId: _userViewModel.user.user_id,
+                                                          categoryMain: _fleamarketViewModel.selectedCategory_main_total,
+                                                          categorySub: _fleamarketViewModel.selectedCategory_sub_total
+                                                      );
+                                                    },
+                                                    shape: RoundedRectangleBorder(
+                                                        borderRadius:
+                                                        BorderRadius.circular(16)),
                                                   ),
-                                                  GestureDetector(
-                                                    child: ListTile(
-                                                      contentPadding: EdgeInsets.zero,
-                                                      title: Center(
-                                                        child: Text(
-                                                          '${FleamarketCategory_sub.konjiam.korean}',
-                                                          style: SDSTextStyle.bold.copyWith(
-                                                              fontSize: 15,
-                                                              color: SDSColor.gray900
-                                                          ),
+                                                  ListTile(
+                                                    contentPadding: EdgeInsets.zero,
+                                                    title: Center(
+                                                      child: Text(
+                                                        '${FleamarketCategory_sub.konjiam.korean}',
+                                                        style: SDSTextStyle.bold.copyWith(
+                                                            fontSize: 15,
+                                                            color: SDSColor.gray900
                                                         ),
                                                       ),
-                                                      //selected: _isSelected[index]!,
-                                                      onTap: () async {
-                                                        _fleamarketViewModel.changeCategory_sub_total('${FleamarketCategory_sub.konjiam.korean}');
-                                                        await _fleamarketViewModel.fetchFleamarketData_total(
-                                                            userId: _userViewModel.user.user_id,
-                                                            categoryMain: _fleamarketViewModel.selectedCategory_main_total,
-                                                            categorySub: _fleamarketViewModel.selectedCategory_sub_total
-                                                        );
-                                                      },
-                                                      shape: RoundedRectangleBorder(
-                                                          borderRadius:
-                                                          BorderRadius.circular(16)),
                                                     ),
+                                                    //selected: _isSelected[index]!,
+                                                    onTap: () async {
+                                                      Navigator.pop(context);
+                                                      _fleamarketViewModel.changeCategory_sub_total('${FleamarketCategory_sub.konjiam.korean}');
+                                                      await _fleamarketViewModel.fetchFleamarketData_total(
+                                                          userId: _userViewModel.user.user_id,
+                                                          categoryMain: _fleamarketViewModel.selectedCategory_main_total,
+                                                          categorySub: _fleamarketViewModel.selectedCategory_sub_total
+                                                      );
+                                                    },
+                                                    shape: RoundedRectangleBorder(
+                                                        borderRadius:
+                                                        BorderRadius.circular(16)),
                                                   ),
-                                                  GestureDetector(
-                                                    child: ListTile(
-                                                      contentPadding: EdgeInsets.zero,
-                                                      title: Center(
-                                                        child: Text(
-                                                          '${FleamarketCategory_sub.muju.korean}',
-                                                          style: SDSTextStyle.bold.copyWith(
-                                                              fontSize: 15,
-                                                              color: SDSColor.gray900
-                                                          ),
+                                                  ListTile(
+                                                    contentPadding: EdgeInsets.zero,
+                                                    title: Center(
+                                                      child: Text(
+                                                        '${FleamarketCategory_sub.muju.korean}',
+                                                        style: SDSTextStyle.bold.copyWith(
+                                                            fontSize: 15,
+                                                            color: SDSColor.gray900
                                                         ),
                                                       ),
-                                                      //selected: _isSelected[index]!,
-                                                      onTap: () async {
-                                                        _fleamarketViewModel.changeCategory_sub_total('${FleamarketCategory_sub.muju.korean}');
-                                                        await _fleamarketViewModel.fetchFleamarketData_total(
-                                                            userId: _userViewModel.user.user_id,
-                                                            categoryMain: _fleamarketViewModel.selectedCategory_main_total,
-                                                            categorySub: _fleamarketViewModel.selectedCategory_sub_total
-                                                        );
-                                                      },
-                                                      shape: RoundedRectangleBorder(
-                                                          borderRadius:
-                                                          BorderRadius.circular(16)),
                                                     ),
+                                                    //selected: _isSelected[index]!,
+                                                    onTap: () async {
+                                                      Navigator.pop(context);
+                                                      _fleamarketViewModel.changeCategory_sub_total('${FleamarketCategory_sub.muju.korean}');
+                                                      await _fleamarketViewModel.fetchFleamarketData_total(
+                                                          userId: _userViewModel.user.user_id,
+                                                          categoryMain: _fleamarketViewModel.selectedCategory_main_total,
+                                                          categorySub: _fleamarketViewModel.selectedCategory_sub_total
+                                                      );
+                                                    },
+                                                    shape: RoundedRectangleBorder(
+                                                        borderRadius:
+                                                        BorderRadius.circular(16)),
                                                   ),
-                                                  GestureDetector(
-                                                    child: ListTile(
-                                                      contentPadding: EdgeInsets.zero,
-                                                      title: Center(
-                                                        child: Text(
-                                                          '${FleamarketCategory_sub.vivaldi.korean}',
-                                                          style: SDSTextStyle.bold.copyWith(
-                                                              fontSize: 15,
-                                                              color: SDSColor.gray900
-                                                          ),
+                                                  ListTile(
+                                                    contentPadding: EdgeInsets.zero,
+                                                    title: Center(
+                                                      child: Text(
+                                                        '${FleamarketCategory_sub.vivaldi.korean}',
+                                                        style: SDSTextStyle.bold.copyWith(
+                                                            fontSize: 15,
+                                                            color: SDSColor.gray900
                                                         ),
                                                       ),
-                                                      //selected: _isSelected[index]!,
-                                                      onTap: () async {
-                                                        _fleamarketViewModel.changeCategory_sub_total('${FleamarketCategory_sub.vivaldi.korean}');
-                                                        await _fleamarketViewModel.fetchFleamarketData_total(
-                                                            userId: _userViewModel.user.user_id,
-                                                            categoryMain: _fleamarketViewModel.selectedCategory_main_total,
-                                                            categorySub: _fleamarketViewModel.selectedCategory_sub_total
-                                                        );
-                                                      },
-                                                      shape: RoundedRectangleBorder(
-                                                          borderRadius:
-                                                          BorderRadius.circular(16)),
                                                     ),
+                                                    //selected: _isSelected[index]!,
+                                                    onTap: () async {
+                                                      Navigator.pop(context);
+                                                      _fleamarketViewModel.changeCategory_sub_total('${FleamarketCategory_sub.vivaldi.korean}');
+                                                      await _fleamarketViewModel.fetchFleamarketData_total(
+                                                          userId: _userViewModel.user.user_id,
+                                                          categoryMain: _fleamarketViewModel.selectedCategory_main_total,
+                                                          categorySub: _fleamarketViewModel.selectedCategory_sub_total
+                                                      );
+                                                    },
+                                                    shape: RoundedRectangleBorder(
+                                                        borderRadius:
+                                                        BorderRadius.circular(16)),
                                                   ),
-                                                  GestureDetector(
-                                                    child: ListTile(
-                                                      contentPadding: EdgeInsets.zero,
-                                                      title: Center(
-                                                        child: Text(
-                                                          '${FleamarketCategory_sub.alphen.korean}',
-                                                          style: SDSTextStyle.bold.copyWith(
-                                                              fontSize: 15,
-                                                              color: SDSColor.gray900
-                                                          ),
+                                                  ListTile(
+                                                    contentPadding: EdgeInsets.zero,
+                                                    title: Center(
+                                                      child: Text(
+                                                        '${FleamarketCategory_sub.alphen.korean}',
+                                                        style: SDSTextStyle.bold.copyWith(
+                                                            fontSize: 15,
+                                                            color: SDSColor.gray900
                                                         ),
                                                       ),
-                                                      //selected: _isSelected[index]!,
-                                                      onTap: () async {
-                                                        _fleamarketViewModel.changeCategory_sub_total('${FleamarketCategory_sub.alphen.korean}');
-                                                        await _fleamarketViewModel.fetchFleamarketData_total(
-                                                            userId: _userViewModel.user.user_id,
-                                                            categoryMain: _fleamarketViewModel.selectedCategory_main_total,
-                                                            categorySub: _fleamarketViewModel.selectedCategory_sub_total
-                                                        );
-                                                      },
-                                                      shape: RoundedRectangleBorder(
-                                                          borderRadius:
-                                                          BorderRadius.circular(16)),
                                                     ),
+                                                    //selected: _isSelected[index]!,
+                                                    onTap: () async {
+                                                      Navigator.pop(context);
+                                                      _fleamarketViewModel.changeCategory_sub_total('${FleamarketCategory_sub.alphen.korean}');
+                                                      await _fleamarketViewModel.fetchFleamarketData_total(
+                                                          userId: _userViewModel.user.user_id,
+                                                          categoryMain: _fleamarketViewModel.selectedCategory_main_total,
+                                                          categorySub: _fleamarketViewModel.selectedCategory_sub_total
+                                                      );
+                                                    },
+                                                    shape: RoundedRectangleBorder(
+                                                        borderRadius:
+                                                        BorderRadius.circular(16)),
                                                   ),
-                                                  GestureDetector(
-                                                    child: ListTile(
-                                                      contentPadding: EdgeInsets.zero,
-                                                      title: Center(
-                                                        child: Text(
-                                                          '${FleamarketCategory_sub.gangchon.korean}',
-                                                          style: SDSTextStyle.bold.copyWith(
-                                                              fontSize: 15,
-                                                              color: SDSColor.gray900
-                                                          ),
+                                                  ListTile(
+                                                    contentPadding: EdgeInsets.zero,
+                                                    title: Center(
+                                                      child: Text(
+                                                        '${FleamarketCategory_sub.gangchon.korean}',
+                                                        style: SDSTextStyle.bold.copyWith(
+                                                            fontSize: 15,
+                                                            color: SDSColor.gray900
                                                         ),
                                                       ),
-                                                      //selected: _isSelected[index]!,
-                                                      onTap: () async {
-                                                        _fleamarketViewModel.changeCategory_sub_total('${FleamarketCategory_sub.gangchon.korean}');
-                                                        await _fleamarketViewModel.fetchFleamarketData_total(
-                                                            userId: _userViewModel.user.user_id,
-                                                            categoryMain: _fleamarketViewModel.selectedCategory_main_total,
-                                                            categorySub: _fleamarketViewModel.selectedCategory_sub_total
-                                                        );
-                                                      },
-                                                      shape: RoundedRectangleBorder(
-                                                          borderRadius:
-                                                          BorderRadius.circular(16)),
                                                     ),
+                                                    //selected: _isSelected[index]!,
+                                                    onTap: () async {
+                                                      Navigator.pop(context);
+                                                      _fleamarketViewModel.changeCategory_sub_total('${FleamarketCategory_sub.gangchon.korean}');
+                                                      await _fleamarketViewModel.fetchFleamarketData_total(
+                                                          userId: _userViewModel.user.user_id,
+                                                          categoryMain: _fleamarketViewModel.selectedCategory_main_total,
+                                                          categorySub: _fleamarketViewModel.selectedCategory_sub_total
+                                                      );
+                                                    },
+                                                    shape: RoundedRectangleBorder(
+                                                        borderRadius:
+                                                        BorderRadius.circular(16)),
                                                   ),
-                                                  GestureDetector(
-                                                    child: ListTile(
-                                                      contentPadding: EdgeInsets.zero,
-                                                      title: Center(
-                                                        child: Text(
-                                                          '${FleamarketCategory_sub.oak.korean}',
-                                                          style: SDSTextStyle.bold.copyWith(
-                                                              fontSize: 15,
-                                                              color: SDSColor.gray900
-                                                          ),
+                                                  ListTile(
+                                                    contentPadding: EdgeInsets.zero,
+                                                    title: Center(
+                                                      child: Text(
+                                                        '${FleamarketCategory_sub.oak.korean}',
+                                                        style: SDSTextStyle.bold.copyWith(
+                                                            fontSize: 15,
+                                                            color: SDSColor.gray900
                                                         ),
                                                       ),
-                                                      //selected: _isSelected[index]!,
-                                                      onTap: () async {
-                                                        _fleamarketViewModel.changeCategory_sub_total('${FleamarketCategory_sub.oak.korean}');
-                                                        await _fleamarketViewModel.fetchFleamarketData_total(
-                                                            userId: _userViewModel.user.user_id,
-                                                            categoryMain: _fleamarketViewModel.selectedCategory_main_total,
-                                                            categorySub: _fleamarketViewModel.selectedCategory_sub_total
-                                                        );
-                                                      },
-                                                      shape: RoundedRectangleBorder(
-                                                          borderRadius:
-                                                          BorderRadius.circular(16)),
                                                     ),
+                                                    //selected: _isSelected[index]!,
+                                                    onTap: () async {
+                                                      Navigator.pop(context);
+                                                      _fleamarketViewModel.changeCategory_sub_total('${FleamarketCategory_sub.oak.korean}');
+                                                      await _fleamarketViewModel.fetchFleamarketData_total(
+                                                          userId: _userViewModel.user.user_id,
+                                                          categoryMain: _fleamarketViewModel.selectedCategory_main_total,
+                                                          categorySub: _fleamarketViewModel.selectedCategory_sub_total
+                                                      );
+                                                    },
+                                                    shape: RoundedRectangleBorder(
+                                                        borderRadius:
+                                                        BorderRadius.circular(16)),
                                                   ),
-                                                  GestureDetector(
-                                                    child: ListTile(
-                                                      contentPadding: EdgeInsets.zero,
-                                                      title: Center(
-                                                        child: Text(
-                                                          '${FleamarketCategory_sub.o2.korean}',
-                                                          style: SDSTextStyle.bold.copyWith(
-                                                              fontSize: 15,
-                                                              color: SDSColor.gray900
-                                                          ),
+                                                  ListTile(
+                                                    contentPadding: EdgeInsets.zero,
+                                                    title: Center(
+                                                      child: Text(
+                                                        '${FleamarketCategory_sub.o2.korean}',
+                                                        style: SDSTextStyle.bold.copyWith(
+                                                            fontSize: 15,
+                                                            color: SDSColor.gray900
                                                         ),
                                                       ),
-                                                      //selected: _isSelected[index]!,
-                                                      onTap: () async {
-                                                        _fleamarketViewModel.changeCategory_sub_total('${FleamarketCategory_sub.o2.korean}');
-                                                        await _fleamarketViewModel.fetchFleamarketData_total(
-                                                            userId: _userViewModel.user.user_id,
-                                                            categoryMain: _fleamarketViewModel.selectedCategory_main_total,
-                                                            categorySub: _fleamarketViewModel.selectedCategory_sub_total
-                                                        );
-                                                      },
-                                                      shape: RoundedRectangleBorder(
-                                                          borderRadius:
-                                                          BorderRadius.circular(16)),
                                                     ),
+                                                    //selected: _isSelected[index]!,
+                                                    onTap: () async {
+                                                      Navigator.pop(context);
+                                                      _fleamarketViewModel.changeCategory_sub_total('${FleamarketCategory_sub.o2.korean}');
+                                                      await _fleamarketViewModel.fetchFleamarketData_total(
+                                                          userId: _userViewModel.user.user_id,
+                                                          categoryMain: _fleamarketViewModel.selectedCategory_main_total,
+                                                          categorySub: _fleamarketViewModel.selectedCategory_sub_total
+                                                      );
+                                                    },
+                                                    shape: RoundedRectangleBorder(
+                                                        borderRadius:
+                                                        BorderRadius.circular(16)),
                                                   ),
-                                                  GestureDetector(
-                                                    child: ListTile(
-                                                      contentPadding: EdgeInsets.zero,
-                                                      title: Center(
-                                                        child: Text(
-                                                          '${FleamarketCategory_sub.yongpyong.korean}',
-                                                          style: SDSTextStyle.bold.copyWith(
-                                                              fontSize: 15,
-                                                              color: SDSColor.gray900
-                                                          ),
+                                                  ListTile(
+                                                    contentPadding: EdgeInsets.zero,
+                                                    title: Center(
+                                                      child: Text(
+                                                        '${FleamarketCategory_sub.yongpyong.korean}',
+                                                        style: SDSTextStyle.bold.copyWith(
+                                                            fontSize: 15,
+                                                            color: SDSColor.gray900
                                                         ),
                                                       ),
-                                                      //selected: _isSelected[index]!,
-                                                      onTap: () async {
-                                                        _fleamarketViewModel.changeCategory_sub_total('${FleamarketCategory_sub.yongpyong.korean}');
-                                                        await _fleamarketViewModel.fetchFleamarketData_total(
-                                                            userId: _userViewModel.user.user_id,
-                                                            categoryMain: _fleamarketViewModel.selectedCategory_main_total,
-                                                            categorySub: _fleamarketViewModel.selectedCategory_sub_total
-                                                        );
-                                                      },
-                                                      shape: RoundedRectangleBorder(
-                                                          borderRadius:
-                                                          BorderRadius.circular(16)),
                                                     ),
+                                                    //selected: _isSelected[index]!,
+                                                    onTap: () async {
+                                                      Navigator.pop(context);
+                                                      _fleamarketViewModel.changeCategory_sub_total('${FleamarketCategory_sub.yongpyong.korean}');
+                                                      await _fleamarketViewModel.fetchFleamarketData_total(
+                                                          userId: _userViewModel.user.user_id,
+                                                          categoryMain: _fleamarketViewModel.selectedCategory_main_total,
+                                                          categorySub: _fleamarketViewModel.selectedCategory_sub_total
+                                                      );
+                                                    },
+                                                    shape: RoundedRectangleBorder(
+                                                        borderRadius:
+                                                        BorderRadius.circular(16)),
                                                   ),
-                                                  GestureDetector(
-                                                    child: ListTile(
-                                                      contentPadding: EdgeInsets.zero,
-                                                      title: Center(
-                                                        child: Text(
-                                                          '${FleamarketCategory_sub.welli.korean}',
-                                                          style: SDSTextStyle.bold.copyWith(
-                                                              fontSize: 15,
-                                                              color: SDSColor.gray900
-                                                          ),
+                                                  ListTile(
+                                                    contentPadding: EdgeInsets.zero,
+                                                    title: Center(
+                                                      child: Text(
+                                                        '${FleamarketCategory_sub.welli.korean}',
+                                                        style: SDSTextStyle.bold.copyWith(
+                                                            fontSize: 15,
+                                                            color: SDSColor.gray900
                                                         ),
                                                       ),
-                                                      //selected: _isSelected[index]!,
-                                                      onTap: () async {
-                                                        _fleamarketViewModel.changeCategory_sub_total('${FleamarketCategory_sub.welli.korean}');
-                                                        await _fleamarketViewModel.fetchFleamarketData_total(
-                                                            userId: _userViewModel.user.user_id,
-                                                            categoryMain: _fleamarketViewModel.selectedCategory_main_total,
-                                                            categorySub: _fleamarketViewModel.selectedCategory_sub_total
-                                                        );
-                                                      },
-                                                      shape: RoundedRectangleBorder(
-                                                          borderRadius:
-                                                          BorderRadius.circular(16)),
                                                     ),
+                                                    //selected: _isSelected[index]!,
+                                                    onTap: () async {
+                                                      Navigator.pop(context);
+                                                      _fleamarketViewModel.changeCategory_sub_total('${FleamarketCategory_sub.welli.korean}');
+                                                      await _fleamarketViewModel.fetchFleamarketData_total(
+                                                          userId: _userViewModel.user.user_id,
+                                                          categoryMain: _fleamarketViewModel.selectedCategory_main_total,
+                                                          categorySub: _fleamarketViewModel.selectedCategory_sub_total
+                                                      );
+                                                    },
+                                                    shape: RoundedRectangleBorder(
+                                                        borderRadius:
+                                                        BorderRadius.circular(16)),
                                                   ),
-                                                  GestureDetector(
-                                                    child: ListTile(
-                                                      contentPadding: EdgeInsets.zero,
-                                                      title: Center(
-                                                        child: Text(
-                                                          '${FleamarketCategory_sub.jisan.korean}',
-                                                          style: SDSTextStyle.bold.copyWith(
-                                                              fontSize: 15,
-                                                              color: SDSColor.gray900
-                                                          ),
+                                                  ListTile(
+                                                    contentPadding: EdgeInsets.zero,
+                                                    title: Center(
+                                                      child: Text(
+                                                        '${FleamarketCategory_sub.jisan.korean}',
+                                                        style: SDSTextStyle.bold.copyWith(
+                                                            fontSize: 15,
+                                                            color: SDSColor.gray900
                                                         ),
                                                       ),
-                                                      //selected: _isSelected[index]!,
-                                                      onTap: () async {
-                                                        _fleamarketViewModel.changeCategory_sub_total('${FleamarketCategory_sub.jisan.korean}');
-                                                        await _fleamarketViewModel.fetchFleamarketData_total(
-                                                            userId: _userViewModel.user.user_id,
-                                                            categoryMain: _fleamarketViewModel.selectedCategory_main_total,
-                                                            categorySub: _fleamarketViewModel.selectedCategory_sub_total
-                                                        );
-                                                      },
-                                                      shape: RoundedRectangleBorder(
-                                                          borderRadius:
-                                                          BorderRadius.circular(16)),
                                                     ),
+                                                    //selected: _isSelected[index]!,
+                                                    onTap: () async {
+                                                      Navigator.pop(context);
+                                                      _fleamarketViewModel.changeCategory_sub_total('${FleamarketCategory_sub.jisan.korean}');
+                                                      await _fleamarketViewModel.fetchFleamarketData_total(
+                                                          userId: _userViewModel.user.user_id,
+                                                          categoryMain: _fleamarketViewModel.selectedCategory_main_total,
+                                                          categorySub: _fleamarketViewModel.selectedCategory_sub_total
+                                                      );
+                                                    },
+                                                    shape: RoundedRectangleBorder(
+                                                        borderRadius:
+                                                        BorderRadius.circular(16)),
                                                   ),
-                                                  GestureDetector(
-                                                    child: ListTile(
-                                                      contentPadding: EdgeInsets.zero,
-                                                      title: Center(
-                                                        child: Text(
-                                                          '${FleamarketCategory_sub.high1.korean}',
-                                                          style: SDSTextStyle.bold.copyWith(
-                                                              fontSize: 15,
-                                                              color: SDSColor.gray900
-                                                          ),
+                                                  ListTile(
+                                                    contentPadding: EdgeInsets.zero,
+                                                    title: Center(
+                                                      child: Text(
+                                                        '${FleamarketCategory_sub.high1.korean}',
+                                                        style: SDSTextStyle.bold.copyWith(
+                                                            fontSize: 15,
+                                                            color: SDSColor.gray900
                                                         ),
                                                       ),
-                                                      //selected: _isSelected[index]!,
-                                                      onTap: () async {
-                                                        _fleamarketViewModel.changeCategory_sub_total('${FleamarketCategory_sub.high1.korean}');
-                                                        await _fleamarketViewModel.fetchFleamarketData_total(
-                                                            userId: _userViewModel.user.user_id,
-                                                            categoryMain: _fleamarketViewModel.selectedCategory_main_total,
-                                                            categorySub: _fleamarketViewModel.selectedCategory_sub_total
-                                                        );
-                                                      },
-                                                      shape: RoundedRectangleBorder(
-                                                          borderRadius:
-                                                          BorderRadius.circular(16)),
                                                     ),
+                                                    //selected: _isSelected[index]!,
+                                                    onTap: () async {
+                                                      Navigator.pop(context);
+                                                      _fleamarketViewModel.changeCategory_sub_total('${FleamarketCategory_sub.high1.korean}');
+                                                      await _fleamarketViewModel.fetchFleamarketData_total(
+                                                          userId: _userViewModel.user.user_id,
+                                                          categoryMain: _fleamarketViewModel.selectedCategory_main_total,
+                                                          categorySub: _fleamarketViewModel.selectedCategory_sub_total
+                                                      );
+                                                    },
+                                                    shape: RoundedRectangleBorder(
+                                                        borderRadius:
+                                                        BorderRadius.circular(16)),
                                                   ),
-                                                  GestureDetector(
-                                                    child: ListTile(
-                                                      contentPadding: EdgeInsets.zero,
-                                                      title: Center(
-                                                        child: Text(
-                                                          '${FleamarketCategory_sub.phoenix.korean}',
-                                                          style: SDSTextStyle.bold.copyWith(
-                                                              fontSize: 15,
-                                                              color: SDSColor.gray900
-                                                          ),
+                                                  ListTile(
+                                                    contentPadding: EdgeInsets.zero,
+                                                    title: Center(
+                                                      child: Text(
+                                                        '${FleamarketCategory_sub.phoenix.korean}',
+                                                        style: SDSTextStyle.bold.copyWith(
+                                                            fontSize: 15,
+                                                            color: SDSColor.gray900
                                                         ),
                                                       ),
-                                                      //selected: _isSelected[index]!,
-                                                      onTap: () async {
-                                                        _fleamarketViewModel.changeCategory_sub_total('${FleamarketCategory_sub.phoenix.korean}');
-                                                        await _fleamarketViewModel.fetchFleamarketData_total(
-                                                            userId: _userViewModel.user.user_id,
-                                                            categoryMain: _fleamarketViewModel.selectedCategory_main_total,
-                                                            categorySub: _fleamarketViewModel.selectedCategory_sub_total
-                                                        );
-                                                      },
-                                                      shape: RoundedRectangleBorder(
-                                                          borderRadius:
-                                                          BorderRadius.circular(16)),
                                                     ),
+                                                    //selected: _isSelected[index]!,
+                                                    onTap: () async {
+                                                      Navigator.pop(context);
+                                                      _fleamarketViewModel.changeCategory_sub_total('${FleamarketCategory_sub.phoenix.korean}');
+                                                      await _fleamarketViewModel.fetchFleamarketData_total(
+                                                          userId: _userViewModel.user.user_id,
+                                                          categoryMain: _fleamarketViewModel.selectedCategory_main_total,
+                                                          categorySub: _fleamarketViewModel.selectedCategory_sub_total
+                                                      );
+                                                    },
+                                                    shape: RoundedRectangleBorder(
+                                                        borderRadius:
+                                                        BorderRadius.circular(16)),
                                                   ),
-                                                  GestureDetector(
-                                                    child: ListTile(
-                                                      contentPadding: EdgeInsets.zero,
-                                                      title: Center(
-                                                        child: Text(
-                                                          '${FleamarketCategory_sub.etc.korean}',
-                                                          style: SDSTextStyle.bold.copyWith(
-                                                              fontSize: 15,
-                                                              color: SDSColor.gray900
-                                                          ),
+                                                  ListTile(
+                                                    contentPadding: EdgeInsets.zero,
+                                                    title: Center(
+                                                      child: Text(
+                                                        '${FleamarketCategory_sub.etc.korean}',
+                                                        style: SDSTextStyle.bold.copyWith(
+                                                            fontSize: 15,
+                                                            color: SDSColor.gray900
                                                         ),
                                                       ),
-                                                      //selected: _isSelected[index]!,
-                                                      onTap: () async {
-                                                        _fleamarketViewModel.changeCategory_sub_total('${FleamarketCategory_sub.etc.korean}');
-                                                        await _fleamarketViewModel.fetchFleamarketData_total(
-                                                            userId: _userViewModel.user.user_id,
-                                                            categoryMain: _fleamarketViewModel.selectedCategory_main_total,
-                                                            categorySub: _fleamarketViewModel.selectedCategory_sub_total
-                                                        );
-                                                      },
-                                                      shape: RoundedRectangleBorder(
-                                                          borderRadius:
-                                                          BorderRadius.circular(16)),
                                                     ),
+                                                    //selected: _isSelected[index]!,
+                                                    onTap: () async {
+                                                      Navigator.pop(context);
+                                                      _fleamarketViewModel.changeCategory_sub_total('${FleamarketCategory_sub.etc.korean}');
+                                                      await _fleamarketViewModel.fetchFleamarketData_total(
+                                                          userId: _userViewModel.user.user_id,
+                                                          categoryMain: _fleamarketViewModel.selectedCategory_main_total,
+                                                          categorySub: _fleamarketViewModel.selectedCategory_sub_total
+                                                      );
+                                                    },
+                                                    shape: RoundedRectangleBorder(
+                                                        borderRadius:
+                                                        BorderRadius.circular(16)),
                                                   ),
                                                 ],
                                               ),
