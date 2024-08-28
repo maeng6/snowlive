@@ -60,7 +60,7 @@ class SetProfileView extends StatelessWidget {
           children: [
             SingleChildScrollView(
               child: Padding(
-                padding: EdgeInsets.only(top: 20, left: 16, right: 16, bottom: _statusBarSize),
+                padding: EdgeInsets.only(top: 20, left: 16, right: 16),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
