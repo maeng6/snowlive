@@ -25,8 +25,8 @@ class FleamarketViewModel extends GetxController {
   RxBool _isVisible = false.obs;
   RxString _tapName = '전체'.obs;
 
-  RxString _selectedCategory_main_total = '${FleamarketCategory_main.total}'.obs;
-  RxString _selectedCategory_sub_total = '${FleamarketCategory_sub.total}'.obs;
+  RxString _selectedCategory_main_total = '전체 카테고리'.obs;
+  RxString _selectedCategory_sub_total = '전체 장소'.obs;
   RxString _selectedCategory_main_ski = '${FleamarketCategory_main.total}'.obs;
   RxString _selectedCategory_sub_ski = '${FleamarketCategory_sub.total}'.obs;
   RxString _selectedCategory_main_board = '${FleamarketCategory_main.total}'.obs;
