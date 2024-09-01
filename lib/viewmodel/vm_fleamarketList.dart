@@ -141,7 +141,6 @@ class FleamarketListViewModel extends GetxController {
 
         _nextPageUrl_total.value = fleamarketResponse.next ?? '';
         _previousPageUrl_total.value = fleamarketResponse.previous ?? '';
-        print(_nextPageUrl_total.value);
 
       } else {
         // Handle error response
@@ -400,12 +399,18 @@ class FleamarketListViewModel extends GetxController {
     _selectedCategory_spot_board.value = value;
   }
 
-
-
-
-
-
-
+  Future<void> onRefresh_flea_total() async {
+    await fetchFleamarketData_total(userId:  _userViewModel.user.user_id);
+  }
+  Future<void> onRefresh_flea_ski() async {
+    await fetchFleamarketData_ski(userId:  _userViewModel.user.user_id);
+  }
+  Future<void> onRefresh_flea_board() async {
+    await fetchFleamarketData_board(userId:  _userViewModel.user.user_id);
+  }
+  Future<void> onRefresh_flea_my() async {
+    await fetchFleamarketData_my(userId:  _userViewModel.user.user_id);
+  }
 }
 
 

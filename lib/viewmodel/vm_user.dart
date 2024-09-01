@@ -27,4 +27,16 @@ class UserViewModel extends GetxController {
       _user.value = UserModel.fromJson(data);
   }
 
+  Future<void> block_user(body)  async{
+
+    isLoading(true);
+    ApiResponse response = await UserAPI().blockUser(body);
+    if(response.success) {
+      print('유저 차단 완료');
+    }else {
+      Get.snackbar('Error', '유저 차단 실패');
+    }
+    isLoading(false);
+  }
+
 }

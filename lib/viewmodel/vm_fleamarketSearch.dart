@@ -47,20 +47,33 @@ class FleamarketSearchViewModel extends GetxController {
   void onInit() async {
     super.onInit();
 
-    _scrollController.addListener(() {
-        _showAddButton.value = _scrollController.offset <= 0;
-    });
 
-    _scrollController.addListener(() {
-        if (_scrollController.position.userScrollDirection == ScrollDirection.reverse) {
-          _isVisible.value = true;
-        } else if (_scrollController.position.userScrollDirection == ScrollDirection.forward ||
-            _scrollController.position.pixels <=
-                _scrollController.position.maxScrollExtent) {
-          _isVisible.value = false;
-        }
-    });
+    _scrollController = ScrollController()
+      ..addListener(_scrollListener);
 
+  }
+
+  Future<void> _scrollListener() async {
+    // 스크롤이 리스트의 끝에 도달했을 때
+    if (_scrollController.position.pixels == _scrollController.position.maxScrollExtent) {
+      if (_nextPageUrl_total.value.isNotEmpty) {
+        await fetchFleamarketData_total(
+            userId: _userViewModel.user.user_id,
+            url: _nextPageUrl_total.value
+        ); // 추가 데이터 로딩
+      }
+    }
+
+    // 버튼 표시 여부 결정
+    _showAddButton.value = _scrollController.offset <= 0;
+
+    // 숨김/표시 여부 결정
+    if (_scrollController.position.userScrollDirection == ScrollDirection.reverse) {
+      _isVisible.value = true;
+    } else if (_scrollController.position.userScrollDirection == ScrollDirection.forward ||
+        _scrollController.position.pixels <= _scrollController.position.maxScrollExtent) {
+      _isVisible.value = false;
+    }
   }
 
   Future<void> fetchFleamarketData_total({

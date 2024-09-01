@@ -1,6 +1,7 @@
 import 'package:com.snowlive/screens/common/v_profileImageScreen.dart';
 import 'package:com.snowlive/screens/resort/v_resortHome.dart';
 import 'package:com.snowlive/view/v_MainHome.dart';
+import 'package:com.snowlive/view/v_fleaMarketDetail.dart';
 import 'package:com.snowlive/view/v_fleaMarketMain.dart';
 import 'package:com.snowlive/view/v_friendDetail.dart';
 import 'package:com.snowlive/view/v_friendList.dart';
@@ -23,6 +24,7 @@ class AppRoutes {
   static const String userProfileIamge = '/userProfileIamge';
   static const String fleamarket = '/fleamarket';
   static const String fleamarketSearch = '/fleamarketSearch';
+  static const String fleamarketDetail = '/fleamarketDetail';
 
   static final List<GetPage> pages = [
     GetPage(
@@ -77,6 +79,11 @@ class AppRoutes {
       name: fleamarketSearch,
       page: () => FleaMarketListView_search(),
       binding: FleamarketSearchBinding(),
+    ),
+    GetPage(
+      name: fleamarketDetail,
+      page: () => FleaMarketDetailView(),
+      binding: FleamarketDetailBinding(),
     ),
   ];
 }

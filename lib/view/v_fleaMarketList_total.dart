@@ -1,3 +1,4 @@
+import 'package:com.snowlive/routes/routes.dart';
 import 'package:com.snowlive/viewmodel/vm_fleamarketList.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/cupertino.dart';
@@ -9,6 +10,7 @@ import 'package:intl/intl.dart';
 import '../model/m_fleamarket.dart';
 import '../screens/snowliveDesignStyle.dart';
 import '../util/util_1.dart';
+import '../viewmodel/vm_fleamarketDetail.dart';
 import '../viewmodel/vm_user.dart';
 
 class FleaMarketListView_total extends StatelessWidget {
@@ -17,6 +19,8 @@ class FleaMarketListView_total extends StatelessWidget {
 
   final FleamarketListViewModel _fleamarketViewModel = Get.find<FleamarketListViewModel>();
   final UserViewModel _userViewModel = Get.find<UserViewModel>();
+  final FleamarketDetailViewModel _fleamarketDetailViewModel = Get.find<FleamarketDetailViewModel>();
+
 
   @override
   Widget build(BuildContext context) {
@@ -116,7 +120,11 @@ class FleaMarketListView_total extends StatelessWidget {
           )),
           floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
           backgroundColor: Colors.white,
-          body: Obx(()=>Padding(
+          body: Obx(()=>RefreshIndicator(
+              strokeWidth: 2,
+              edgeOffset: 20,
+              onRefresh: _fleamarketViewModel.onRefresh_flea_total,
+              child: Padding(
             padding: const EdgeInsets.only(top: 4, bottom: 6),
             child: Column(
               children: [
@@ -1524,7 +1532,10 @@ class FleaMarketListView_total extends StatelessWidget {
 
                             return GestureDetector(
                                 onTap: () async {
-
+                                  await _fleamarketDetailViewModel.fetchFleamarketDetail(
+                                      fleamarketId: _fleamarketViewModel.fleamarketListTotal[index].fleaId!,
+                                      userId: _userViewModel.user.user_id);
+                                  Get.toNamed(AppRoutes.fleamarketDetail);
                                 },
                                 child: Column(
                                   children: [
@@ -1784,7 +1795,7 @@ class FleaMarketListView_total extends StatelessWidget {
                 ),
               ],
             ),
-          )),
+          ))),
         ),
       ),
     );

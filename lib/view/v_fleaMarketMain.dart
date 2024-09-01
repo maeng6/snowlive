@@ -1,4 +1,3 @@
-
 import 'package:com.snowlive/routes/routes.dart';
 import 'package:com.snowlive/view/v_fleaMarketList_board.dart';
 import 'package:com.snowlive/view/v_fleaMarketList_my.dart';
@@ -13,7 +12,7 @@ import '../viewmodel/vm_fleamarketList.dart';
 class FleaMarketMainView extends StatelessWidget {
   FleaMarketMainView({Key? key}) : super(key: key);
 
-  FleamarketListViewModel _fleamarketViewModel = Get.find<FleamarketListViewModel>();
+  final FleamarketListViewModel _fleamarketViewModel = Get.find<FleamarketListViewModel>();
 
   @override
   Widget build(BuildContext context) {

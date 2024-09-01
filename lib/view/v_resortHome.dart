@@ -36,7 +36,6 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
   late Animation<Color?> _colorAnimation4;
 
   //TODO: Dependency Injection**************************************************
-  RefreshController _refreshController = Get.find<RefreshController>();
   ResortHomeViewModel _resortHomeViewModel = Get.find<ResortHomeViewModel>();
   UserViewModel _userViewModel = Get.find<UserViewModel>();
   FriendDetailViewModel _friendDetailViewModel = Get.find<FriendDetailViewModel>();

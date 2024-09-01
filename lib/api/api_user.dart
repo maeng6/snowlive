@@ -31,8 +31,6 @@ class UserAPI {
       body: jsonEncode(body),
     );
 
-    print(response.statusCode);
-
     if(response.statusCode==200){
       final data = json.decode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
       return ApiResponse.success(data);
@@ -41,6 +39,21 @@ class UserAPI {
       return ApiResponse.error(data);
     }
 
+  }
+
+  Future<ApiResponse> blockUser(Map<String, dynamic> body) async {
+    final response = await http.post(
+      Uri.parse('https://snowlive-api-0eab29705c9f.herokuapp.com/api/community/block/'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode(body),
+    );
+    if(response.statusCode==201){
+      final data = json.decode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
+      return ApiResponse.success(data);
+    } else{
+      final data = json.decode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
+      return ApiResponse.error(data);
+    }
   }
 
 
