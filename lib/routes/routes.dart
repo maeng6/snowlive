@@ -1,6 +1,5 @@
 import 'package:com.snowlive/screens/common/v_profileImageScreen.dart';
 import 'package:com.snowlive/screens/resort/v_resortHome.dart';
-import 'package:com.snowlive/screens/v_MainHome.dart';
 import 'package:com.snowlive/view/v_MainHome.dart';
 import 'package:com.snowlive/view/v_fleaMarketMain.dart';
 import 'package:com.snowlive/view/v_friendDetail.dart';
@@ -8,11 +7,8 @@ import 'package:com.snowlive/view/v_friendList.dart';
 import 'package:com.snowlive/view/v_login.dart';
 import 'package:com.snowlive/view/v_setProfile.dart';
 import 'package:com.snowlive/view/v_tos.dart';
-import 'package:com.snowlive/viewmodel/vm_fleamarket.dart';
 import 'package:get/get.dart';
-
-import '../main.dart';
-import '../view/v_fleaMarketList_total.dart';
+import '../view/v_fleaMarketList_search.dart';
 import 'bindings.dart';
 
 class AppRoutes {
@@ -26,6 +22,7 @@ class AppRoutes {
   static const String friendDetail = '/friendDetail';
   static const String userProfileIamge = '/userProfileIamge';
   static const String fleamarket = '/fleamarket';
+  static const String fleamarketSearch = '/fleamarketSearch';
 
   static final List<GetPage> pages = [
     GetPage(
@@ -75,6 +72,11 @@ class AppRoutes {
       name: fleamarket,
       page: () => FleaMarketMainView(),
       binding: FleamarketListBinding(),
+    ),
+    GetPage(
+      name: fleamarketSearch,
+      page: () => FleaMarketListView_search(),
+      binding: FleamarketSearchBinding(),
     ),
   ];
 }

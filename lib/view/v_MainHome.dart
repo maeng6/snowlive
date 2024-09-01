@@ -1,11 +1,8 @@
-import 'package:com.snowlive/screens/Ranking/v_Ranking_Home.dart';
-import 'package:com.snowlive/view/v_fleaMarketList_total.dart';
 import 'package:com.snowlive/view/v_fleaMarketMain.dart';
 import 'package:com.snowlive/view/v_resortHome.dart';
 import 'package:com.snowlive/viewmodel/vm_mainHome.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:com.snowlive/screens/resort/v_resortHome.dart';
 
 class MainHomeView extends StatelessWidget {
   final MainHomeViewModel _MainHomeViewModel = Get.find<MainHomeViewModel>();

@@ -6,7 +6,7 @@ import 'package:get/get_rx/get_rx.dart';
 import '../api/api_fleamarket.dart';
 import '../model/m_fleamarket.dart';
 
-class FleamarketViewModel extends GetxController {
+class FleamarketListViewModel extends GetxController {
 
   var isLoading = true.obs;
   var _fleamarketList_total = <Fleamarket>[].obs;
@@ -25,12 +25,12 @@ class FleamarketViewModel extends GetxController {
   RxBool _isVisible = false.obs;
   RxString _tapName = '전체'.obs;
 
-  RxString _selectedCategory_main_total = '전체 카테고리'.obs;
-  RxString _selectedCategory_sub_total = '전체 장소'.obs;
-  RxString _selectedCategory_main_ski = '${FleamarketCategory_main.total}'.obs;
-  RxString _selectedCategory_sub_ski = '${FleamarketCategory_sub.total}'.obs;
-  RxString _selectedCategory_main_board = '${FleamarketCategory_main.total}'.obs;
-  RxString _selectedCategory_sub_board = '${FleamarketCategory_sub.total}'.obs;
+  RxString _selectedCategory_sub_total = '전체 카테고리'.obs;
+  RxString _selectedCategory_spot_total = '전체 거래장소'.obs;
+  RxString _selectedCategory_sub_ski = '전체 카테고리'.obs;
+  RxString _selectedCategory_spot_ski = '전체 거래장소'.obs;
+  RxString _selectedCategory_sub_board = '전체 카테고리'.obs;
+  RxString _selectedCategory_spot_board = '전체 거래장소'.obs;
 
   List<Fleamarket> get fleamarketListTotal => _fleamarketList_total;
   List<Fleamarket> get fleamarketListSki => _fleamarketList_ski;
@@ -50,12 +50,12 @@ class FleamarketViewModel extends GetxController {
   bool get isVisible => _isVisible.value;
   String get tapName => _tapName.value;
 
-  String get selectedCategory_main_total => _selectedCategory_main_total.value;
   String get selectedCategory_sub_total => _selectedCategory_sub_total.value;
-  String get selectedCategory_main_ski => _selectedCategory_main_ski.value;
+  String get selectedCategory_spot_total => _selectedCategory_spot_total.value;
   String get selectedCategory_sub_ski => _selectedCategory_sub_ski.value;
-  String get selectedCategory_main_board => _selectedCategory_main_board.value;
+  String get selectedCategory_spot_ski => _selectedCategory_spot_ski.value;
   String get selectedCategory_sub_board => _selectedCategory_sub_board.value;
+  String get selectedCategory_spot_board => _selectedCategory_spot_board.value;
 
   ScrollController get scrollController => _scrollController;
 
@@ -74,20 +74,32 @@ class FleamarketViewModel extends GetxController {
     await fetchFleamarketData_board(userId: _userViewModel.user.user_id, categoryMain:'스노보드');
     await fetchFleamarketData_my(userId: _userViewModel.user.user_id, myflea: true);
 
-    _scrollController.addListener(() {
-        _showAddButton.value = _scrollController.offset <= 0;
-    });
+    _scrollController = ScrollController()
+      ..addListener(_scrollListener);
 
-    _scrollController.addListener(() {
-        if (_scrollController.position.userScrollDirection == ScrollDirection.reverse) {
-          _isVisible.value = true;
-        } else if (_scrollController.position.userScrollDirection == ScrollDirection.forward ||
-            _scrollController.position.pixels <=
-                _scrollController.position.maxScrollExtent) {
-          _isVisible.value = false;
-        }
-    });
+  }
 
+  Future<void> _scrollListener() async {
+    // 스크롤이 리스트의 끝에 도달했을 때
+    if (_scrollController.position.pixels == _scrollController.position.maxScrollExtent) {
+      if (_nextPageUrl_total.value.isNotEmpty) {
+        await fetchFleamarketData_total(
+            userId: _userViewModel.user.user_id,
+            url: _nextPageUrl_total.value
+        ); // 추가 데이터 로딩
+      }
+    }
+
+    // 버튼 표시 여부 결정
+    _showAddButton.value = _scrollController.offset <= 0;
+
+    // 숨김/표시 여부 결정
+    if (_scrollController.position.userScrollDirection == ScrollDirection.reverse) {
+      _isVisible.value = true;
+    } else if (_scrollController.position.userScrollDirection == ScrollDirection.forward ||
+        _scrollController.position.pixels <= _scrollController.position.maxScrollExtent) {
+      _isVisible.value = false;
+    }
   }
 
   Future<void> fetchFleamarketData_total({
@@ -103,6 +115,7 @@ class FleamarketViewModel extends GetxController {
     isLoading(true);
 
     try {
+
       final response = await _fleamarketAPI.fetchFleamarketList(
           userId: userId,
           categoryMain: categoryMain,
@@ -113,6 +126,7 @@ class FleamarketViewModel extends GetxController {
           myflea: myflea,
           url: url
       );
+
 
       if (response.success) {
         final fleamarketResponse = FleamarketResponse.fromJson(response.data!);
@@ -127,6 +141,8 @@ class FleamarketViewModel extends GetxController {
 
         _nextPageUrl_total.value = fleamarketResponse.next ?? '';
         _previousPageUrl_total.value = fleamarketResponse.previous ?? '';
+        print(_nextPageUrl_total.value);
+
       } else {
         // Handle error response
         print('Failed to load data: ${response.error}');
@@ -184,6 +200,7 @@ class FleamarketViewModel extends GetxController {
     } finally {
       isLoading(false);
     }
+    //_scrollController.jumpTo(0);
   }
 
   Future<void> fetchFleamarketData_board({
@@ -232,6 +249,7 @@ class FleamarketViewModel extends GetxController {
     } finally {
       isLoading(false);
     }
+    //_scrollController.jumpTo(0);
   }
 
   Future<void> fetchFleamarketData_my({
@@ -358,18 +376,6 @@ class FleamarketViewModel extends GetxController {
     _tapName.value = value;
   }
 
-  void changeCategory_main_total(value) {
-    _selectedCategory_main_total.value = value;
-  }
-
-  void changeCategory_main_ski(value) {
-    _selectedCategory_main_ski.value = value;
-  }
-
-  void changeCategory_main_board(value) {
-    _selectedCategory_main_board.value = value;
-  }
-
   void changeCategory_sub_total(value) {
     _selectedCategory_sub_total.value = value;
   }
@@ -382,6 +388,20 @@ class FleamarketViewModel extends GetxController {
     _selectedCategory_sub_board.value = value;
   }
 
+  void changeCategory_spot_total(value) {
+    _selectedCategory_spot_total.value = value;
+  }
+
+  void changeCategory_spot_ski(value) {
+    _selectedCategory_spot_ski.value = value;
+  }
+
+  void changeCategory_spot_board(value) {
+    _selectedCategory_spot_board.value = value;
+  }
+
+
+
 
 
 
@@ -389,7 +409,7 @@ class FleamarketViewModel extends GetxController {
 }
 
 
-enum FleamarketCategory_main {
+enum FleamarketCategory_sub {
   total("전체 카테고리", "total"),
   deck("데크", "deck"),
   binding("바인딩", "binding"),
@@ -400,10 +420,10 @@ enum FleamarketCategory_main {
 
   final String korean;
   final String english;
-  const FleamarketCategory_main(this.korean, this.english);
+  const FleamarketCategory_sub(this.korean, this.english);
 }
 
-enum FleamarketCategory_sub {
+enum FleamarketCategory_spot {
   total("전체 거래장소", "total"),
   konjiam("곤지암리조트", ""),
   muju("무주덕유산리조트", ""),
@@ -421,6 +441,16 @@ enum FleamarketCategory_sub {
 
   final String korean;
   final String english;
-  const FleamarketCategory_sub(this.korean, this.english);
+  const FleamarketCategory_spot(this.korean, this.english);
+}
+
+enum FleamarketStatus {
+  soldOut("거래완료", ""),
+  forSale("거래가능", ""),
+  onBooking("예약중", "");
+
+  final String korean;
+  final String english;
+  const FleamarketStatus(this.korean, this.english);
 }
 

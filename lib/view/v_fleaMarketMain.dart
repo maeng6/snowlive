@@ -1,15 +1,19 @@
 
+import 'package:com.snowlive/routes/routes.dart';
+import 'package:com.snowlive/view/v_fleaMarketList_board.dart';
+import 'package:com.snowlive/view/v_fleaMarketList_my.dart';
+import 'package:com.snowlive/view/v_fleaMarketList_ski.dart';
 import 'package:com.snowlive/view/v_fleaMarketList_total.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
-import '../viewmodel/vm_fleamarket.dart';
+import '../viewmodel/vm_fleamarketList.dart';
 
 class FleaMarketMainView extends StatelessWidget {
   FleaMarketMainView({Key? key}) : super(key: key);
 
-  FleamarketViewModel _fleamarketViewModel = Get.find<FleamarketViewModel>();
+  FleamarketListViewModel _fleamarketViewModel = Get.find<FleamarketListViewModel>();
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +22,7 @@ class FleaMarketMainView extends StatelessWidget {
       backgroundColor: Colors.white,
       extendBodyBehindAppBar: true,
       appBar: PreferredSize(
-        preferredSize: Size.fromHeight(58),
+        preferredSize: Size.fromHeight(106),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
@@ -39,7 +43,44 @@ class FleaMarketMainView extends StatelessWidget {
               ),
               backgroundColor: Colors.white,
               elevation: 0.0,
-            )
+            ),
+            GestureDetector(
+              onTap: () {
+                Get.toNamed(AppRoutes.fleamarketSearch);
+              },
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16),
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(6),
+                    color: Color(0xFFEFEFEF),
+                  ),
+                  height: 50,
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 16),
+                    child: Row(
+                      children: [
+                        Icon(
+                          Icons.search,
+                          color: Color(0xFF666666),
+                        ),
+                        SizedBox(
+                          width: 5,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 1),
+                          child: Text(
+                            '물품 검색',
+                            style:
+                            TextStyle(fontSize: 15, color: Color(0xFF666666)),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
           ],
         ),
       ),
@@ -252,12 +293,12 @@ class FleaMarketMainView extends StatelessWidget {
                   ),
                   if (_fleamarketViewModel.tapName == '전체')
                     Expanded(child: FleaMarketListView_total()),
-                  // if (_fleamarketViewModel.tapName == '스키')
-                  //   Expanded(child: FleaMarketListView_ski()),
-                  // if (_fleamarketViewModel.tapName == '스노보드')
-                  //   Expanded(child: FleaMarketListView_board()),
-                  // if (_fleamarketViewModel.tapName == '내 게시글')
-                  //   Expanded(child: FleaMarketListView_my()),
+                  if (_fleamarketViewModel.tapName == '스키')
+                    Expanded(child: FleaMarketListView_ski()),
+                  if (_fleamarketViewModel.tapName == '스노보드')
+                    Expanded(child: FleaMarketListView_board()),
+                  if (_fleamarketViewModel.tapName == '내 게시글')
+                    Expanded(child: FleaMarketListView_my()),
                 ],
               ),
             )),

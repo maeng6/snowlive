@@ -11,7 +11,7 @@ import '../screens/snowliveDesignStyle.dart';
 import '../util/util_1.dart';
 import '../viewmodel/vm_user.dart';
 
-class FleaMarketListView_total extends StatelessWidget {
+class FleaMarketListView_ski extends StatelessWidget {
 
   final f = NumberFormat('###,###,###,###');
 
@@ -28,11 +28,11 @@ class FleaMarketListView_total extends StatelessWidget {
       child: Container(
         color: Colors.white,
         child: Scaffold(
-          floatingActionButton: Obx(()=>Stack(
+          floatingActionButton: Stack(
             children: [
               Center(
                 child: Padding(
-                  padding: EdgeInsets.only(top: _size.height - 360),
+                  padding: EdgeInsets.only(top: _size.height - 308),
                   child: Visibility(
                     visible: _fleamarketViewModel.isVisible,
                     child: Padding(
@@ -89,6 +89,7 @@ class FleaMarketListView_total extends StatelessWidget {
                         elevation: 4,
                         heroTag: 'fleaListScreen',
                         onPressed: () async {
+
                         },
                         icon: Transform.translate(
                             offset: Offset(6,0),
@@ -113,7 +114,7 @@ class FleaMarketListView_total extends StatelessWidget {
                 ),
               ),
             ],
-          )),
+          ),
           floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
           backgroundColor: Colors.white,
           body: Obx(()=>Padding(
@@ -169,44 +170,16 @@ class FleaMarketListView_total extends StatelessWidget {
                                                       //selected: _isSelected[index]!,
                                                       onTap: () async {
                                                         Navigator.pop(context);
-                                                        _fleamarketViewModel.changeCategory_sub_total('${FleamarketCategory_sub.total.korean}');
-                                                        await _fleamarketViewModel.fetchFleamarketData_total(
+                                                        _fleamarketViewModel.changeCategory_sub_ski('${FleamarketCategory_sub.total.korean}');
+                                                        await _fleamarketViewModel.fetchFleamarketData_ski(
                                                           userId: _userViewModel.user.user_id,
+                                                          categoryMain: '스키',
                                                           spot:
-                                                            (_fleamarketViewModel.selectedCategory_spot_total == '전체 거래장소')
+                                                            (_fleamarketViewModel.selectedCategory_spot_ski == '전체 거래장소')
                                                               ? null
-                                                              :_fleamarketViewModel.selectedCategory_spot_total,
+                                                              :_fleamarketViewModel.selectedCategory_spot_ski,
                                                         );
 
-                                                      },
-                                                      shape: RoundedRectangleBorder(
-                                                          borderRadius:
-                                                          BorderRadius.circular(16)),
-                                                    ),
-                                                    ListTile(
-                                                      contentPadding: EdgeInsets.zero,
-                                                      title: Center(
-                                                        child: Text(
-                                                          '${FleamarketCategory_sub.deck.korean}',
-                                                          style: SDSTextStyle.bold.copyWith(
-                                                              fontSize: 15,
-                                                              color: SDSColor.gray900
-                                                          ),
-                                                        ),
-                                                      ),
-                                                      //selected: _isSelected[index]!,
-                                                      onTap: () async {
-                                                        print('${_fleamarketViewModel.selectedCategory_spot_total }');
-                                                        Navigator.pop(context);
-                                                        _fleamarketViewModel.changeCategory_sub_total('${FleamarketCategory_sub.deck.korean}');
-                                                        await _fleamarketViewModel.fetchFleamarketData_total(
-                                                            userId: _userViewModel.user.user_id,
-                                                          categorySub:_fleamarketViewModel.selectedCategory_sub_total,
-                                                          spot:
-                                                          (_fleamarketViewModel.selectedCategory_spot_total == '전체 거래장소')
-                                                              ? null
-                                                              :_fleamarketViewModel.selectedCategory_spot_total,
-                                                        );
                                                       },
                                                       shape: RoundedRectangleBorder(
                                                           borderRadius:
@@ -226,11 +199,15 @@ class FleaMarketListView_total extends StatelessWidget {
                                                       //selected: _isSelected[index]!,
                                                       onTap: () async {
                                                         Navigator.pop(context);
-                                                        _fleamarketViewModel.changeCategory_sub_total('${FleamarketCategory_sub.binding.korean}');
-                                                        await _fleamarketViewModel.fetchFleamarketData_total(
+                                                        _fleamarketViewModel.changeCategory_sub_ski('${FleamarketCategory_sub.binding.korean}');
+                                                        await _fleamarketViewModel.fetchFleamarketData_ski(
                                                             userId: _userViewModel.user.user_id,
-                                                            categoryMain: _fleamarketViewModel.selectedCategory_sub_total,
-                                                            categorySub: _fleamarketViewModel.selectedCategory_spot_total
+                                                          categoryMain: '스키',
+                                                          categorySub:_fleamarketViewModel.selectedCategory_sub_ski,
+                                                          spot:
+                                                          (_fleamarketViewModel.selectedCategory_spot_ski == '전체 거래장소')
+                                                              ? null
+                                                              :_fleamarketViewModel.selectedCategory_spot_ski,
                                                         );
                                                       },
                                                       shape: RoundedRectangleBorder(
@@ -251,14 +228,15 @@ class FleaMarketListView_total extends StatelessWidget {
                                                       //selected: _isSelected[index]!,
                                                       onTap: () async {
                                                         Navigator.pop(context);
-                                                        _fleamarketViewModel.changeCategory_sub_total('${FleamarketCategory_sub.boots.korean}');
-                                                        await _fleamarketViewModel.fetchFleamarketData_total(
+                                                        _fleamarketViewModel.changeCategory_sub_ski('${FleamarketCategory_sub.boots.korean}');
+                                                        await _fleamarketViewModel.fetchFleamarketData_ski(
                                                             userId: _userViewModel.user.user_id,
-                                                          categorySub:_fleamarketViewModel.selectedCategory_sub_total,
+                                                          categoryMain: '스키',
+                                                          categorySub:_fleamarketViewModel.selectedCategory_sub_ski,
                                                           spot:
-                                                          (_fleamarketViewModel.selectedCategory_spot_total == '전체 거래장소')
+                                                          (_fleamarketViewModel.selectedCategory_spot_ski == '전체 거래장소')
                                                               ? null
-                                                              :_fleamarketViewModel.selectedCategory_spot_total,
+                                                              :_fleamarketViewModel.selectedCategory_spot_ski,
                                                         );
                                                       },
                                                       shape: RoundedRectangleBorder(
@@ -279,14 +257,15 @@ class FleaMarketListView_total extends StatelessWidget {
                                                       //selected: _isSelected[index]!,
                                                       onTap: () async {
                                                         Navigator.pop(context);
-                                                        _fleamarketViewModel.changeCategory_sub_total('${FleamarketCategory_sub.cloth.korean}');
-                                                        await _fleamarketViewModel.fetchFleamarketData_total(
+                                                        _fleamarketViewModel.changeCategory_sub_ski('${FleamarketCategory_sub.cloth.korean}');
+                                                        await _fleamarketViewModel.fetchFleamarketData_ski(
                                                             userId: _userViewModel.user.user_id,
-                                                          categorySub:_fleamarketViewModel.selectedCategory_sub_total,
+                                                          categoryMain: '스키',
+                                                          categorySub:_fleamarketViewModel.selectedCategory_sub_ski,
                                                           spot:
-                                                          (_fleamarketViewModel.selectedCategory_spot_total == '전체 거래장소')
+                                                          (_fleamarketViewModel.selectedCategory_spot_ski == '전체 거래장소')
                                                               ? null
-                                                              :_fleamarketViewModel.selectedCategory_spot_total,
+                                                              :_fleamarketViewModel.selectedCategory_spot_ski,
                                                         );
                                                       },
                                                       shape: RoundedRectangleBorder(
@@ -307,14 +286,15 @@ class FleaMarketListView_total extends StatelessWidget {
                                                       //selected: _isSelected[index]!,
                                                       onTap: () async {
                                                         Navigator.pop(context);
-                                                        _fleamarketViewModel.changeCategory_sub_total('${FleamarketCategory_sub.plate.korean}');
-                                                        await _fleamarketViewModel.fetchFleamarketData_total(
+                                                        _fleamarketViewModel.changeCategory_sub_ski('${FleamarketCategory_sub.plate.korean}');
+                                                        await _fleamarketViewModel.fetchFleamarketData_ski(
                                                             userId: _userViewModel.user.user_id,
-                                                          categorySub:_fleamarketViewModel.selectedCategory_sub_total,
+                                                          categoryMain: '스키',
+                                                          categorySub:_fleamarketViewModel.selectedCategory_sub_ski,
                                                           spot:
-                                                          (_fleamarketViewModel.selectedCategory_spot_total == '전체 거래장소')
+                                                          (_fleamarketViewModel.selectedCategory_spot_ski == '전체 거래장소')
                                                               ? null
-                                                              :_fleamarketViewModel.selectedCategory_spot_total,
+                                                              :_fleamarketViewModel.selectedCategory_spot_ski,
                                                         );
                                                       },
                                                       shape: RoundedRectangleBorder(
@@ -335,14 +315,15 @@ class FleaMarketListView_total extends StatelessWidget {
                                                       //selected: _isSelected[index]!,
                                                       onTap: () async {
                                                         Navigator.pop(context);
-                                                        _fleamarketViewModel.changeCategory_sub_total('${FleamarketCategory_sub.etc.korean}');
-                                                        await _fleamarketViewModel.fetchFleamarketData_total(
+                                                        _fleamarketViewModel.changeCategory_sub_ski('${FleamarketCategory_sub.etc.korean}');
+                                                        await _fleamarketViewModel.fetchFleamarketData_ski(
                                                             userId: _userViewModel.user.user_id,
-                                                          categorySub:_fleamarketViewModel.selectedCategory_sub_total,
+                                                          categoryMain: '스키',
+                                                          categorySub:_fleamarketViewModel.selectedCategory_sub_ski,
                                                           spot:
-                                                          (_fleamarketViewModel.selectedCategory_spot_total == '전체 거래장소')
+                                                          (_fleamarketViewModel.selectedCategory_spot_ski == '전체 거래장소')
                                                               ? null
-                                                              :_fleamarketViewModel.selectedCategory_spot_total,
+                                                              :_fleamarketViewModel.selectedCategory_spot_ski,
                                                         );
                                                       },
                                                       shape: RoundedRectangleBorder(
@@ -369,7 +350,7 @@ class FleaMarketListView_total extends StatelessWidget {
                                     shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(8))),
                                 child:
-                                     Text('${_fleamarketViewModel.selectedCategory_sub_total}',
+                                     Text('${_fleamarketViewModel.selectedCategory_sub_ski}',
                                     style: TextStyle(
                                         fontSize: 14,
                                         fontWeight: FontWeight.bold,
@@ -418,42 +399,14 @@ class FleaMarketListView_total extends StatelessWidget {
                                                       //selected: _isSelected[index]!,
                                                       onTap: () async {
                                                         Navigator.pop(context);
-                                                        _fleamarketViewModel.changeCategory_sub_total('${FleamarketCategory_sub.total.korean}');
-                                                        await _fleamarketViewModel.fetchFleamarketData_total(
+                                                        _fleamarketViewModel.changeCategory_sub_ski('${FleamarketCategory_sub.total.korean}');
+                                                        await _fleamarketViewModel.fetchFleamarketData_ski(
                                                           userId: _userViewModel.user.user_id,
+                                                          categoryMain: '스키',
                                                           spot:
-                                                          (_fleamarketViewModel.selectedCategory_spot_total == '전체 거래장소')
+                                                          (_fleamarketViewModel.selectedCategory_spot_ski == '전체 거래장소')
                                                               ? null
-                                                              :_fleamarketViewModel.selectedCategory_spot_total,
-                                                        );
-                                                      },
-                                                      shape: RoundedRectangleBorder(
-                                                          borderRadius:
-                                                          BorderRadius.circular(16)),
-                                                    ),
-                                                    ListTile(
-                                                      contentPadding: EdgeInsets.zero,
-                                                      title: Center(
-                                                        child: Text(
-                                                          '${FleamarketCategory_sub.deck.korean}',
-                                                          style: SDSTextStyle.bold.copyWith(
-                                                              fontSize: 15,
-                                                              color: SDSColor.gray900
-                                                          ),
-                                                        ),
-                                                      ),
-                                                      //selected: _isSelected[index]!,
-                                                      onTap: () async {
-                                                        print('${_fleamarketViewModel.selectedCategory_spot_total }');
-                                                        Navigator.pop(context);
-                                                        _fleamarketViewModel.changeCategory_sub_total('${FleamarketCategory_sub.deck.korean}');
-                                                        await _fleamarketViewModel.fetchFleamarketData_total(
-                                                          userId: _userViewModel.user.user_id,
-                                                          categorySub:_fleamarketViewModel.selectedCategory_sub_total,
-                                                          spot:
-                                                          (_fleamarketViewModel.selectedCategory_spot_total == '전체 거래장소')
-                                                              ? null
-                                                              :_fleamarketViewModel.selectedCategory_spot_total,
+                                                              :_fleamarketViewModel.selectedCategory_spot_ski,
                                                         );
                                                       },
                                                       shape: RoundedRectangleBorder(
@@ -473,16 +426,16 @@ class FleaMarketListView_total extends StatelessWidget {
                                                       ),
                                                       //selected: _isSelected[index]!,
                                                       onTap: () async {
-                                                        print('${_fleamarketViewModel.selectedCategory_spot_total }');
+                                                        print('${_fleamarketViewModel.selectedCategory_spot_ski }');
                                                         Navigator.pop(context);
-                                                        _fleamarketViewModel.changeCategory_sub_total('${FleamarketCategory_sub.binding.korean}');
-                                                        await _fleamarketViewModel.fetchFleamarketData_total(
+                                                        _fleamarketViewModel.changeCategory_sub_ski('${FleamarketCategory_sub.binding.korean}');
+                                                        await _fleamarketViewModel.fetchFleamarketData_ski(
                                                           userId: _userViewModel.user.user_id,
-                                                          categorySub:_fleamarketViewModel.selectedCategory_sub_total,
+                                                          categorySub:_fleamarketViewModel.selectedCategory_sub_ski,
                                                           spot:
-                                                          (_fleamarketViewModel.selectedCategory_spot_total == '전체 거래장소')
+                                                          (_fleamarketViewModel.selectedCategory_spot_ski == '전체 거래장소')
                                                               ? null
-                                                              :_fleamarketViewModel.selectedCategory_spot_total,
+                                                              :_fleamarketViewModel.selectedCategory_spot_ski,
                                                         );
                                                       },
                                                       shape: RoundedRectangleBorder(
@@ -502,16 +455,17 @@ class FleaMarketListView_total extends StatelessWidget {
                                                       ),
                                                       //selected: _isSelected[index]!,
                                                       onTap: () async {
-                                                        print('${_fleamarketViewModel.selectedCategory_spot_total }');
+                                                        print('${_fleamarketViewModel.selectedCategory_spot_ski }');
                                                         Navigator.pop(context);
-                                                        _fleamarketViewModel.changeCategory_sub_total('${FleamarketCategory_sub.boots.korean}');
-                                                        await _fleamarketViewModel.fetchFleamarketData_total(
+                                                        _fleamarketViewModel.changeCategory_sub_ski('${FleamarketCategory_sub.boots.korean}');
+                                                        await _fleamarketViewModel.fetchFleamarketData_ski(
                                                           userId: _userViewModel.user.user_id,
-                                                          categorySub:_fleamarketViewModel.selectedCategory_sub_total,
+                                                          categoryMain: '스키',
+                                                          categorySub:_fleamarketViewModel.selectedCategory_sub_ski,
                                                           spot:
-                                                          (_fleamarketViewModel.selectedCategory_spot_total == '전체 거래장소')
+                                                          (_fleamarketViewModel.selectedCategory_spot_ski == '전체 거래장소')
                                                               ? null
-                                                              :_fleamarketViewModel.selectedCategory_spot_total,
+                                                              :_fleamarketViewModel.selectedCategory_spot_ski,
                                                         );
                                                       },
                                                       shape: RoundedRectangleBorder(
@@ -531,16 +485,17 @@ class FleaMarketListView_total extends StatelessWidget {
                                                       ),
                                                       //selected: _isSelected[index]!,
                                                       onTap: () async {
-                                                        print('${_fleamarketViewModel.selectedCategory_spot_total }');
+                                                        print('${_fleamarketViewModel.selectedCategory_spot_ski }');
                                                         Navigator.pop(context);
-                                                        _fleamarketViewModel.changeCategory_sub_total('${FleamarketCategory_sub.cloth.korean}');
-                                                        await _fleamarketViewModel.fetchFleamarketData_total(
+                                                        _fleamarketViewModel.changeCategory_sub_ski('${FleamarketCategory_sub.cloth.korean}');
+                                                        await _fleamarketViewModel.fetchFleamarketData_ski(
                                                           userId: _userViewModel.user.user_id,
-                                                          categorySub:_fleamarketViewModel.selectedCategory_sub_total,
+                                                          categoryMain: '스키',
+                                                          categorySub:_fleamarketViewModel.selectedCategory_sub_ski,
                                                           spot:
-                                                          (_fleamarketViewModel.selectedCategory_spot_total == '전체 거래장소')
+                                                          (_fleamarketViewModel.selectedCategory_spot_ski == '전체 거래장소')
                                                               ? null
-                                                              :_fleamarketViewModel.selectedCategory_spot_total,
+                                                              :_fleamarketViewModel.selectedCategory_spot_ski,
                                                         );
                                                       },
                                                       shape: RoundedRectangleBorder(
@@ -560,16 +515,17 @@ class FleaMarketListView_total extends StatelessWidget {
                                                       ),
                                                       //selected: _isSelected[index]!,
                                                       onTap: () async {
-                                                        print('${_fleamarketViewModel.selectedCategory_spot_total }');
+                                                        print('${_fleamarketViewModel.selectedCategory_spot_ski }');
                                                         Navigator.pop(context);
-                                                        _fleamarketViewModel.changeCategory_sub_total('${FleamarketCategory_sub.plate.korean}');
-                                                        await _fleamarketViewModel.fetchFleamarketData_total(
+                                                        _fleamarketViewModel.changeCategory_sub_ski('${FleamarketCategory_sub.plate.korean}');
+                                                        await _fleamarketViewModel.fetchFleamarketData_ski(
                                                           userId: _userViewModel.user.user_id,
-                                                          categorySub:_fleamarketViewModel.selectedCategory_sub_total,
+                                                          categoryMain: '스키',
+                                                          categorySub:_fleamarketViewModel.selectedCategory_sub_ski,
                                                           spot:
-                                                          (_fleamarketViewModel.selectedCategory_spot_total == '전체 거래장소')
+                                                          (_fleamarketViewModel.selectedCategory_spot_ski == '전체 거래장소')
                                                               ? null
-                                                              :_fleamarketViewModel.selectedCategory_spot_total,
+                                                              :_fleamarketViewModel.selectedCategory_spot_ski,
                                                         );
                                                       },
                                                       shape: RoundedRectangleBorder(
@@ -589,16 +545,17 @@ class FleaMarketListView_total extends StatelessWidget {
                                                       ),
                                                       //selected: _isSelected[index]!,
                                                       onTap: () async {
-                                                        print('${_fleamarketViewModel.selectedCategory_spot_total }');
+                                                        print('${_fleamarketViewModel.selectedCategory_spot_ski }');
                                                         Navigator.pop(context);
-                                                        _fleamarketViewModel.changeCategory_sub_total('${FleamarketCategory_sub.etc.korean}');
-                                                        await _fleamarketViewModel.fetchFleamarketData_total(
+                                                        _fleamarketViewModel.changeCategory_sub_ski('${FleamarketCategory_sub.etc.korean}');
+                                                        await _fleamarketViewModel.fetchFleamarketData_ski(
                                                           userId: _userViewModel.user.user_id,
-                                                          categorySub:_fleamarketViewModel.selectedCategory_sub_total,
+                                                          categoryMain: '스키',
+                                                          categorySub:_fleamarketViewModel.selectedCategory_sub_ski,
                                                           spot:
-                                                          (_fleamarketViewModel.selectedCategory_spot_total == '전체 거래장소')
+                                                          (_fleamarketViewModel.selectedCategory_spot_ski == '전체 거래장소')
                                                               ? null
-                                                              :_fleamarketViewModel.selectedCategory_spot_total,
+                                                              :_fleamarketViewModel.selectedCategory_spot_ski,
                                                         );
                                                       },
                                                       shape: RoundedRectangleBorder(
@@ -670,12 +627,13 @@ class FleaMarketListView_total extends StatelessWidget {
                                                       //selected: _isSelected[index]!,
                                                       onTap: () async {
                                                         Navigator.pop(context);
-                                                        _fleamarketViewModel.changeCategory_spot_total('${FleamarketCategory_spot.total.korean}');
-                                                        await _fleamarketViewModel.fetchFleamarketData_total(
+                                                        _fleamarketViewModel.changeCategory_spot_ski('${FleamarketCategory_spot.total.korean}');
+                                                        await _fleamarketViewModel.fetchFleamarketData_ski(
                                                             userId: _userViewModel.user.user_id,
-                                                            categorySub: (_fleamarketViewModel.selectedCategory_sub_total == '전체 카테고리')
+                                                          categoryMain: '스키',
+                                                            categorySub: (_fleamarketViewModel.selectedCategory_sub_ski == '전체 카테고리')
                                                               ? null
-                                                              :_fleamarketViewModel.selectedCategory_sub_total,
+                                                              :_fleamarketViewModel.selectedCategory_sub_ski,
                                                         );
                                                       },
                                                       shape: RoundedRectangleBorder(
@@ -696,13 +654,14 @@ class FleaMarketListView_total extends StatelessWidget {
                                                       //selected: _isSelected[index]!,
                                                       onTap: () async {
                                                         Navigator.pop(context);
-                                                        _fleamarketViewModel.changeCategory_spot_total('${FleamarketCategory_spot.konjiam.korean}');
-                                                        await _fleamarketViewModel.fetchFleamarketData_total(
+                                                        _fleamarketViewModel.changeCategory_spot_ski('${FleamarketCategory_spot.konjiam.korean}');
+                                                        await _fleamarketViewModel.fetchFleamarketData_ski(
                                                             userId: _userViewModel.user.user_id,
-                                                          categorySub: (_fleamarketViewModel.selectedCategory_sub_total == '전체 카테고리')
+                                                          categoryMain: '스키',
+                                                          categorySub: (_fleamarketViewModel.selectedCategory_sub_ski == '전체 카테고리')
                                                               ? null
-                                                              :_fleamarketViewModel.selectedCategory_sub_total,
-                                                          spot: _fleamarketViewModel.selectedCategory_spot_total,
+                                                              :_fleamarketViewModel.selectedCategory_sub_ski,
+                                                          spot: _fleamarketViewModel.selectedCategory_spot_ski,
                                                         );
                                                       },
                                                       shape: RoundedRectangleBorder(
@@ -723,13 +682,14 @@ class FleaMarketListView_total extends StatelessWidget {
                                                       //selected: _isSelected[index]!,
                                                       onTap: () async {
                                                         Navigator.pop(context);
-                                                        _fleamarketViewModel.changeCategory_spot_total('${FleamarketCategory_spot.muju.korean}');
-                                                        await _fleamarketViewModel.fetchFleamarketData_total(
+                                                        _fleamarketViewModel.changeCategory_spot_ski('${FleamarketCategory_spot.muju.korean}');
+                                                        await _fleamarketViewModel.fetchFleamarketData_ski(
                                                             userId: _userViewModel.user.user_id,
-                                                          categorySub: (_fleamarketViewModel.selectedCategory_sub_total == '전체 카테고리')
+                                                          categoryMain: '스키',
+                                                          categorySub: (_fleamarketViewModel.selectedCategory_sub_ski == '전체 카테고리')
                                                               ? null
-                                                              :_fleamarketViewModel.selectedCategory_sub_total,
-                                                          spot: _fleamarketViewModel.selectedCategory_spot_total,
+                                                              :_fleamarketViewModel.selectedCategory_sub_ski,
+                                                          spot: _fleamarketViewModel.selectedCategory_spot_ski,
                                                         );
                                                       },
                                                       shape: RoundedRectangleBorder(
@@ -750,13 +710,14 @@ class FleaMarketListView_total extends StatelessWidget {
                                                       //selected: _isSelected[index]!,
                                                       onTap: () async {
                                                         Navigator.pop(context);
-                                                        _fleamarketViewModel.changeCategory_spot_total('${FleamarketCategory_spot.vivaldi.korean}');
-                                                        await _fleamarketViewModel.fetchFleamarketData_total(
+                                                        _fleamarketViewModel.changeCategory_spot_ski('${FleamarketCategory_spot.vivaldi.korean}');
+                                                        await _fleamarketViewModel.fetchFleamarketData_ski(
                                                             userId: _userViewModel.user.user_id,
-                                                          categorySub: (_fleamarketViewModel.selectedCategory_sub_total == '전체 카테고리')
+                                                          categoryMain: '스키',
+                                                          categorySub: (_fleamarketViewModel.selectedCategory_sub_ski == '전체 카테고리')
                                                               ? null
-                                                              :_fleamarketViewModel.selectedCategory_sub_total,
-                                                          spot: _fleamarketViewModel.selectedCategory_spot_total,
+                                                              :_fleamarketViewModel.selectedCategory_sub_ski,
+                                                          spot: _fleamarketViewModel.selectedCategory_spot_ski,
                                                         );
                                                       },
                                                       shape: RoundedRectangleBorder(
@@ -777,13 +738,14 @@ class FleaMarketListView_total extends StatelessWidget {
                                                       //selected: _isSelected[index]!,
                                                       onTap: () async {
                                                         Navigator.pop(context);
-                                                        _fleamarketViewModel.changeCategory_spot_total('${FleamarketCategory_spot.alphen.korean}');
-                                                        await _fleamarketViewModel.fetchFleamarketData_total(
+                                                        _fleamarketViewModel.changeCategory_spot_ski('${FleamarketCategory_spot.alphen.korean}');
+                                                        await _fleamarketViewModel.fetchFleamarketData_ski(
                                                             userId: _userViewModel.user.user_id,
-                                                          categorySub: (_fleamarketViewModel.selectedCategory_sub_total == '전체 카테고리')
+                                                          categoryMain: '스키',
+                                                          categorySub: (_fleamarketViewModel.selectedCategory_sub_ski == '전체 카테고리')
                                                               ? null
-                                                              :_fleamarketViewModel.selectedCategory_sub_total,
-                                                          spot: _fleamarketViewModel.selectedCategory_spot_total,
+                                                              :_fleamarketViewModel.selectedCategory_sub_ski,
+                                                          spot: _fleamarketViewModel.selectedCategory_spot_ski,
                                                         );
                                                       },
                                                       shape: RoundedRectangleBorder(
@@ -804,13 +766,14 @@ class FleaMarketListView_total extends StatelessWidget {
                                                       //selected: _isSelected[index]!,
                                                       onTap: () async {
                                                         Navigator.pop(context);
-                                                        _fleamarketViewModel.changeCategory_spot_total('${FleamarketCategory_spot.gangchon.korean}');
-                                                        await _fleamarketViewModel.fetchFleamarketData_total(
+                                                        _fleamarketViewModel.changeCategory_spot_ski('${FleamarketCategory_spot.gangchon.korean}');
+                                                        await _fleamarketViewModel.fetchFleamarketData_ski(
                                                             userId: _userViewModel.user.user_id,
-                                                          categorySub: (_fleamarketViewModel.selectedCategory_sub_total == '전체 카테고리')
+                                                          categoryMain: '스키',
+                                                          categorySub: (_fleamarketViewModel.selectedCategory_sub_ski == '전체 카테고리')
                                                               ? null
-                                                              :_fleamarketViewModel.selectedCategory_sub_total,
-                                                          spot: _fleamarketViewModel.selectedCategory_spot_total,
+                                                              :_fleamarketViewModel.selectedCategory_sub_ski,
+                                                          spot: _fleamarketViewModel.selectedCategory_spot_ski,
                                                         );
                                                       },
                                                       shape: RoundedRectangleBorder(
@@ -831,13 +794,14 @@ class FleaMarketListView_total extends StatelessWidget {
                                                       //selected: _isSelected[index]!,
                                                       onTap: () async {
                                                         Navigator.pop(context);
-                                                        _fleamarketViewModel.changeCategory_spot_total('${FleamarketCategory_spot.oak.korean}');
-                                                        await _fleamarketViewModel.fetchFleamarketData_total(
+                                                        _fleamarketViewModel.changeCategory_spot_ski('${FleamarketCategory_spot.oak.korean}');
+                                                        await _fleamarketViewModel.fetchFleamarketData_ski(
                                                             userId: _userViewModel.user.user_id,
-                                                          categorySub: (_fleamarketViewModel.selectedCategory_sub_total == '전체 카테고리')
+                                                          categoryMain: '스키',
+                                                          categorySub: (_fleamarketViewModel.selectedCategory_sub_ski == '전체 카테고리')
                                                               ? null
-                                                              :_fleamarketViewModel.selectedCategory_sub_total,
-                                                          spot: _fleamarketViewModel.selectedCategory_spot_total,
+                                                              :_fleamarketViewModel.selectedCategory_sub_ski,
+                                                          spot: _fleamarketViewModel.selectedCategory_spot_ski,
                                                         );
                                                       },
                                                       shape: RoundedRectangleBorder(
@@ -858,13 +822,14 @@ class FleaMarketListView_total extends StatelessWidget {
                                                       //selected: _isSelected[index]!,
                                                       onTap: () async {
                                                         Navigator.pop(context);
-                                                        _fleamarketViewModel.changeCategory_spot_total('${FleamarketCategory_spot.o2.korean}');
-                                                        await _fleamarketViewModel.fetchFleamarketData_total(
+                                                        _fleamarketViewModel.changeCategory_spot_ski('${FleamarketCategory_spot.o2.korean}');
+                                                        await _fleamarketViewModel.fetchFleamarketData_ski(
                                                             userId: _userViewModel.user.user_id,
-                                                          categorySub: (_fleamarketViewModel.selectedCategory_sub_total == '전체 카테고리')
+                                                          categoryMain: '스키',
+                                                          categorySub: (_fleamarketViewModel.selectedCategory_sub_ski == '전체 카테고리')
                                                               ? null
-                                                              :_fleamarketViewModel.selectedCategory_sub_total,
-                                                          spot: _fleamarketViewModel.selectedCategory_spot_total,
+                                                              :_fleamarketViewModel.selectedCategory_sub_ski,
+                                                          spot: _fleamarketViewModel.selectedCategory_spot_ski,
                                                         );
                                                       },
                                                       shape: RoundedRectangleBorder(
@@ -885,13 +850,14 @@ class FleaMarketListView_total extends StatelessWidget {
                                                       //selected: _isSelected[index]!,
                                                       onTap: () async {
                                                         Navigator.pop(context);
-                                                        _fleamarketViewModel.changeCategory_spot_total('${FleamarketCategory_spot.yongpyong.korean}');
-                                                        await _fleamarketViewModel.fetchFleamarketData_total(
+                                                        _fleamarketViewModel.changeCategory_spot_ski('${FleamarketCategory_spot.yongpyong.korean}');
+                                                        await _fleamarketViewModel.fetchFleamarketData_ski(
                                                             userId: _userViewModel.user.user_id,
-                                                          categorySub: (_fleamarketViewModel.selectedCategory_sub_total == '전체 카테고리')
+                                                          categoryMain: '스키',
+                                                          categorySub: (_fleamarketViewModel.selectedCategory_sub_ski == '전체 카테고리')
                                                               ? null
-                                                              :_fleamarketViewModel.selectedCategory_sub_total,
-                                                          spot: _fleamarketViewModel.selectedCategory_spot_total,
+                                                              :_fleamarketViewModel.selectedCategory_sub_ski,
+                                                          spot: _fleamarketViewModel.selectedCategory_spot_ski,
                                                         );
                                                       },
                                                       shape: RoundedRectangleBorder(
@@ -912,13 +878,14 @@ class FleaMarketListView_total extends StatelessWidget {
                                                       //selected: _isSelected[index]!,
                                                       onTap: () async {
                                                         Navigator.pop(context);
-                                                        _fleamarketViewModel.changeCategory_spot_total('${FleamarketCategory_spot.welli.korean}');
-                                                        await _fleamarketViewModel.fetchFleamarketData_total(
+                                                        _fleamarketViewModel.changeCategory_spot_ski('${FleamarketCategory_spot.welli.korean}');
+                                                        await _fleamarketViewModel.fetchFleamarketData_ski(
                                                             userId: _userViewModel.user.user_id,
-                                                          categorySub: (_fleamarketViewModel.selectedCategory_sub_total == '전체 카테고리')
+                                                          categoryMain: '스키',
+                                                          categorySub: (_fleamarketViewModel.selectedCategory_sub_ski == '전체 카테고리')
                                                               ? null
-                                                              :_fleamarketViewModel.selectedCategory_sub_total,
-                                                          spot: _fleamarketViewModel.selectedCategory_spot_total,
+                                                              :_fleamarketViewModel.selectedCategory_sub_ski,
+                                                          spot: _fleamarketViewModel.selectedCategory_spot_ski,
                                                         );
                                                       },
                                                       shape: RoundedRectangleBorder(
@@ -939,13 +906,14 @@ class FleaMarketListView_total extends StatelessWidget {
                                                       //selected: _isSelected[index]!,
                                                       onTap: () async {
                                                         Navigator.pop(context);
-                                                        _fleamarketViewModel.changeCategory_spot_total('${FleamarketCategory_spot.jisan.korean}');
-                                                        await _fleamarketViewModel.fetchFleamarketData_total(
+                                                        _fleamarketViewModel.changeCategory_spot_ski('${FleamarketCategory_spot.jisan.korean}');
+                                                        await _fleamarketViewModel.fetchFleamarketData_ski(
                                                             userId: _userViewModel.user.user_id,
-                                                          categorySub: (_fleamarketViewModel.selectedCategory_sub_total == '전체 카테고리')
+                                                          categoryMain: '스키',
+                                                          categorySub: (_fleamarketViewModel.selectedCategory_sub_ski == '전체 카테고리')
                                                               ? null
-                                                              :_fleamarketViewModel.selectedCategory_sub_total,
-                                                          spot: _fleamarketViewModel.selectedCategory_spot_total,
+                                                              :_fleamarketViewModel.selectedCategory_sub_ski,
+                                                          spot: _fleamarketViewModel.selectedCategory_spot_ski,
                                                         );
                                                       },
                                                       shape: RoundedRectangleBorder(
@@ -966,13 +934,14 @@ class FleaMarketListView_total extends StatelessWidget {
                                                       //selected: _isSelected[index]!,
                                                       onTap: () async {
                                                         Navigator.pop(context);
-                                                        _fleamarketViewModel.changeCategory_spot_total('${FleamarketCategory_spot.high1.korean}');
-                                                        await _fleamarketViewModel.fetchFleamarketData_total(
+                                                        _fleamarketViewModel.changeCategory_spot_ski('${FleamarketCategory_spot.high1.korean}');
+                                                        await _fleamarketViewModel.fetchFleamarketData_ski(
                                                             userId: _userViewModel.user.user_id,
-                                                          categorySub: (_fleamarketViewModel.selectedCategory_sub_total == '전체 카테고리')
+                                                          categoryMain: '스키',
+                                                          categorySub: (_fleamarketViewModel.selectedCategory_sub_ski == '전체 카테고리')
                                                               ? null
-                                                              :_fleamarketViewModel.selectedCategory_sub_total,
-                                                          spot: _fleamarketViewModel.selectedCategory_spot_total,
+                                                              :_fleamarketViewModel.selectedCategory_sub_ski,
+                                                          spot: _fleamarketViewModel.selectedCategory_spot_ski,
                                                         );
                                                       },
                                                       shape: RoundedRectangleBorder(
@@ -993,13 +962,14 @@ class FleaMarketListView_total extends StatelessWidget {
                                                       //selected: _isSelected[index]!,
                                                       onTap: () async {
                                                         Navigator.pop(context);
-                                                        _fleamarketViewModel.changeCategory_spot_total('${FleamarketCategory_spot.phoenix.korean}');
-                                                        await _fleamarketViewModel.fetchFleamarketData_total(
+                                                        _fleamarketViewModel.changeCategory_spot_ski('${FleamarketCategory_spot.phoenix.korean}');
+                                                        await _fleamarketViewModel.fetchFleamarketData_ski(
                                                             userId: _userViewModel.user.user_id,
-                                                          categorySub: (_fleamarketViewModel.selectedCategory_sub_total == '전체 카테고리')
+                                                          categoryMain: '스키',
+                                                          categorySub: (_fleamarketViewModel.selectedCategory_sub_ski == '전체 카테고리')
                                                               ? null
-                                                              :_fleamarketViewModel.selectedCategory_sub_total,
-                                                          spot: _fleamarketViewModel.selectedCategory_spot_total,
+                                                              :_fleamarketViewModel.selectedCategory_sub_ski,
+                                                          spot: _fleamarketViewModel.selectedCategory_spot_ski,
                                                         );
                                                       },
                                                       shape: RoundedRectangleBorder(
@@ -1020,13 +990,14 @@ class FleaMarketListView_total extends StatelessWidget {
                                                       //selected: _isSelected[index]!,
                                                       onTap: () async {
                                                         Navigator.pop(context);
-                                                        _fleamarketViewModel.changeCategory_spot_total('${FleamarketCategory_spot.etc.korean}');
-                                                        await _fleamarketViewModel.fetchFleamarketData_total(
+                                                        _fleamarketViewModel.changeCategory_spot_ski('${FleamarketCategory_spot.etc.korean}');
+                                                        await _fleamarketViewModel.fetchFleamarketData_ski(
                                                             userId: _userViewModel.user.user_id,
-                                                          categorySub: (_fleamarketViewModel.selectedCategory_sub_total == '전체 카테고리')
+                                                          categoryMain: '스키',
+                                                          categorySub: (_fleamarketViewModel.selectedCategory_sub_ski == '전체 카테고리')
                                                               ? null
-                                                              :_fleamarketViewModel.selectedCategory_sub_total,
-                                                          spot: _fleamarketViewModel.selectedCategory_spot_total,
+                                                              :_fleamarketViewModel.selectedCategory_sub_ski,
+                                                          spot: _fleamarketViewModel.selectedCategory_spot_ski,
                                                         );
                                                       },
                                                       shape: RoundedRectangleBorder(
@@ -1053,7 +1024,7 @@ class FleaMarketListView_total extends StatelessWidget {
                                     shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(8))),
                                 child:
-                                Text('${_fleamarketViewModel.selectedCategory_spot_total}',
+                                Text('${_fleamarketViewModel.selectedCategory_spot_ski}',
                                     style: TextStyle(
                                         fontSize: 14,
                                         fontWeight: FontWeight.bold,
@@ -1102,12 +1073,13 @@ class FleaMarketListView_total extends StatelessWidget {
                                                       //selected: _isSelected[index]!,
                                                       onTap: () async {
                                                         Navigator.pop(context);
-                                                        _fleamarketViewModel.changeCategory_spot_total('${FleamarketCategory_spot.total.korean}');
-                                                        await _fleamarketViewModel.fetchFleamarketData_total(
+                                                        _fleamarketViewModel.changeCategory_spot_ski('${FleamarketCategory_spot.total.korean}');
+                                                        await _fleamarketViewModel.fetchFleamarketData_ski(
                                                           userId: _userViewModel.user.user_id,
-                                                          categorySub: (_fleamarketViewModel.selectedCategory_sub_total == '전체 카테고리')
+                                                          categoryMain: '스키',
+                                                          categorySub: (_fleamarketViewModel.selectedCategory_sub_ski == '전체 카테고리')
                                                               ? null
-                                                              :_fleamarketViewModel.selectedCategory_sub_total,
+                                                              :_fleamarketViewModel.selectedCategory_sub_ski,
                                                         );
                                                       },
                                                       shape: RoundedRectangleBorder(
@@ -1128,13 +1100,14 @@ class FleaMarketListView_total extends StatelessWidget {
                                                       //selected: _isSelected[index]!,
                                                       onTap: () async {
                                                         Navigator.pop(context);
-                                                        _fleamarketViewModel.changeCategory_spot_total('${FleamarketCategory_spot.konjiam.korean}');
-                                                        await _fleamarketViewModel.fetchFleamarketData_total(
+                                                        _fleamarketViewModel.changeCategory_spot_ski('${FleamarketCategory_spot.konjiam.korean}');
+                                                        await _fleamarketViewModel.fetchFleamarketData_ski(
                                                             userId: _userViewModel.user.user_id,
-                                                          categorySub: (_fleamarketViewModel.selectedCategory_sub_total == '전체 카테고리')
+                                                          categoryMain: '스키',
+                                                          categorySub: (_fleamarketViewModel.selectedCategory_sub_ski == '전체 카테고리')
                                                               ? null
-                                                              :_fleamarketViewModel.selectedCategory_sub_total,
-                                                          spot: _fleamarketViewModel.selectedCategory_spot_total,
+                                                              :_fleamarketViewModel.selectedCategory_sub_ski,
+                                                          spot: _fleamarketViewModel.selectedCategory_spot_ski,
                                                         );
                                                       },
                                                       shape: RoundedRectangleBorder(
@@ -1155,13 +1128,14 @@ class FleaMarketListView_total extends StatelessWidget {
                                                       //selected: _isSelected[index]!,
                                                       onTap: () async {
                                                         Navigator.pop(context);
-                                                        _fleamarketViewModel.changeCategory_spot_total('${FleamarketCategory_spot.muju.korean}');
-                                                        await _fleamarketViewModel.fetchFleamarketData_total(
+                                                        _fleamarketViewModel.changeCategory_spot_ski('${FleamarketCategory_spot.muju.korean}');
+                                                        await _fleamarketViewModel.fetchFleamarketData_ski(
                                                             userId: _userViewModel.user.user_id,
-                                                          categorySub: (_fleamarketViewModel.selectedCategory_sub_total == '전체 카테고리')
+                                                          categoryMain: '스키',
+                                                          categorySub: (_fleamarketViewModel.selectedCategory_sub_ski == '전체 카테고리')
                                                               ? null
-                                                              :_fleamarketViewModel.selectedCategory_sub_total,
-                                                          spot: _fleamarketViewModel.selectedCategory_spot_total,
+                                                              :_fleamarketViewModel.selectedCategory_sub_ski,
+                                                          spot: _fleamarketViewModel.selectedCategory_spot_ski,
                                                         );
                                                       },
                                                       shape: RoundedRectangleBorder(
@@ -1182,13 +1156,14 @@ class FleaMarketListView_total extends StatelessWidget {
                                                       //selected: _isSelected[index]!,
                                                       onTap: () async {
                                                         Navigator.pop(context);
-                                                        _fleamarketViewModel.changeCategory_spot_total('${FleamarketCategory_spot.vivaldi.korean}');
-                                                        await _fleamarketViewModel.fetchFleamarketData_total(
+                                                        _fleamarketViewModel.changeCategory_spot_ski('${FleamarketCategory_spot.vivaldi.korean}');
+                                                        await _fleamarketViewModel.fetchFleamarketData_ski(
                                                             userId: _userViewModel.user.user_id,
-                                                          categorySub: (_fleamarketViewModel.selectedCategory_sub_total == '전체 카테고리')
+                                                          categoryMain: '스키',
+                                                          categorySub: (_fleamarketViewModel.selectedCategory_sub_ski == '전체 카테고리')
                                                               ? null
-                                                              :_fleamarketViewModel.selectedCategory_sub_total,
-                                                          spot: _fleamarketViewModel.selectedCategory_spot_total,
+                                                              :_fleamarketViewModel.selectedCategory_sub_ski,
+                                                          spot: _fleamarketViewModel.selectedCategory_spot_ski,
                                                         );
                                                       },
                                                       shape: RoundedRectangleBorder(
@@ -1209,13 +1184,14 @@ class FleaMarketListView_total extends StatelessWidget {
                                                       //selected: _isSelected[index]!,
                                                       onTap: () async {
                                                         Navigator.pop(context);
-                                                        _fleamarketViewModel.changeCategory_spot_total('${FleamarketCategory_spot.alphen.korean}');
-                                                        await _fleamarketViewModel.fetchFleamarketData_total(
+                                                        _fleamarketViewModel.changeCategory_spot_ski('${FleamarketCategory_spot.alphen.korean}');
+                                                        await _fleamarketViewModel.fetchFleamarketData_ski(
                                                             userId: _userViewModel.user.user_id,
-                                                          categorySub: (_fleamarketViewModel.selectedCategory_sub_total == '전체 카테고리')
+                                                          categoryMain: '스키',
+                                                          categorySub: (_fleamarketViewModel.selectedCategory_sub_ski == '전체 카테고리')
                                                               ? null
-                                                              :_fleamarketViewModel.selectedCategory_sub_total,
-                                                          spot: _fleamarketViewModel.selectedCategory_spot_total,
+                                                              :_fleamarketViewModel.selectedCategory_sub_ski,
+                                                          spot: _fleamarketViewModel.selectedCategory_spot_ski,
                                                         );
                                                       },
                                                       shape: RoundedRectangleBorder(
@@ -1236,13 +1212,14 @@ class FleaMarketListView_total extends StatelessWidget {
                                                       //selected: _isSelected[index]!,
                                                       onTap: () async {
                                                         Navigator.pop(context);
-                                                        _fleamarketViewModel.changeCategory_spot_total('${FleamarketCategory_spot.gangchon.korean}');
-                                                        await _fleamarketViewModel.fetchFleamarketData_total(
+                                                        _fleamarketViewModel.changeCategory_spot_ski('${FleamarketCategory_spot.gangchon.korean}');
+                                                        await _fleamarketViewModel.fetchFleamarketData_ski(
                                                             userId: _userViewModel.user.user_id,
-                                                          categorySub: (_fleamarketViewModel.selectedCategory_sub_total == '전체 카테고리')
+                                                          categoryMain: '스키',
+                                                          categorySub: (_fleamarketViewModel.selectedCategory_sub_ski == '전체 카테고리')
                                                               ? null
-                                                              :_fleamarketViewModel.selectedCategory_sub_total,
-                                                          spot: _fleamarketViewModel.selectedCategory_spot_total,
+                                                              :_fleamarketViewModel.selectedCategory_sub_ski,
+                                                          spot: _fleamarketViewModel.selectedCategory_spot_ski,
                                                         );
                                                       },
                                                       shape: RoundedRectangleBorder(
@@ -1263,13 +1240,14 @@ class FleaMarketListView_total extends StatelessWidget {
                                                       //selected: _isSelected[index]!,
                                                       onTap: () async {
                                                         Navigator.pop(context);
-                                                        _fleamarketViewModel.changeCategory_spot_total('${FleamarketCategory_spot.oak.korean}');
-                                                        await _fleamarketViewModel.fetchFleamarketData_total(
+                                                        _fleamarketViewModel.changeCategory_spot_ski('${FleamarketCategory_spot.oak.korean}');
+                                                        await _fleamarketViewModel.fetchFleamarketData_ski(
                                                             userId: _userViewModel.user.user_id,
-                                                          categorySub: (_fleamarketViewModel.selectedCategory_sub_total == '전체 카테고리')
+                                                          categoryMain: '스키',
+                                                          categorySub: (_fleamarketViewModel.selectedCategory_sub_ski == '전체 카테고리')
                                                               ? null
-                                                              :_fleamarketViewModel.selectedCategory_sub_total,
-                                                          spot: _fleamarketViewModel.selectedCategory_spot_total,
+                                                              :_fleamarketViewModel.selectedCategory_sub_ski,
+                                                          spot: _fleamarketViewModel.selectedCategory_spot_ski,
                                                         );
                                                       },
                                                       shape: RoundedRectangleBorder(
@@ -1290,13 +1268,14 @@ class FleaMarketListView_total extends StatelessWidget {
                                                       //selected: _isSelected[index]!,
                                                       onTap: () async {
                                                         Navigator.pop(context);
-                                                        _fleamarketViewModel.changeCategory_spot_total('${FleamarketCategory_spot.o2.korean}');
-                                                        await _fleamarketViewModel.fetchFleamarketData_total(
+                                                        _fleamarketViewModel.changeCategory_spot_ski('${FleamarketCategory_spot.o2.korean}');
+                                                        await _fleamarketViewModel.fetchFleamarketData_ski(
                                                             userId: _userViewModel.user.user_id,
-                                                          categorySub: (_fleamarketViewModel.selectedCategory_sub_total == '전체 카테고리')
+                                                          categoryMain: '스키',
+                                                          categorySub: (_fleamarketViewModel.selectedCategory_sub_ski == '전체 카테고리')
                                                               ? null
-                                                              :_fleamarketViewModel.selectedCategory_sub_total,
-                                                          spot: _fleamarketViewModel.selectedCategory_spot_total,
+                                                              :_fleamarketViewModel.selectedCategory_sub_ski,
+                                                          spot: _fleamarketViewModel.selectedCategory_spot_ski,
                                                         );
                                                       },
                                                       shape: RoundedRectangleBorder(
@@ -1317,13 +1296,14 @@ class FleaMarketListView_total extends StatelessWidget {
                                                       //selected: _isSelected[index]!,
                                                       onTap: () async {
                                                         Navigator.pop(context);
-                                                        _fleamarketViewModel.changeCategory_spot_total('${FleamarketCategory_spot.yongpyong.korean}');
-                                                        await _fleamarketViewModel.fetchFleamarketData_total(
+                                                        _fleamarketViewModel.changeCategory_spot_ski('${FleamarketCategory_spot.yongpyong.korean}');
+                                                        await _fleamarketViewModel.fetchFleamarketData_ski(
                                                             userId: _userViewModel.user.user_id,
-                                                          categorySub: (_fleamarketViewModel.selectedCategory_sub_total == '전체 카테고리')
+                                                          categoryMain: '스키',
+                                                          categorySub: (_fleamarketViewModel.selectedCategory_sub_ski == '전체 카테고리')
                                                               ? null
-                                                              :_fleamarketViewModel.selectedCategory_sub_total,
-                                                          spot: _fleamarketViewModel.selectedCategory_spot_total,
+                                                              :_fleamarketViewModel.selectedCategory_sub_ski,
+                                                          spot: _fleamarketViewModel.selectedCategory_spot_ski,
                                                         );
                                                       },
                                                       shape: RoundedRectangleBorder(
@@ -1344,13 +1324,14 @@ class FleaMarketListView_total extends StatelessWidget {
                                                       //selected: _isSelected[index]!,
                                                       onTap: () async {
                                                         Navigator.pop(context);
-                                                        _fleamarketViewModel.changeCategory_spot_total('${FleamarketCategory_spot.welli.korean}');
-                                                        await _fleamarketViewModel.fetchFleamarketData_total(
+                                                        _fleamarketViewModel.changeCategory_spot_ski('${FleamarketCategory_spot.welli.korean}');
+                                                        await _fleamarketViewModel.fetchFleamarketData_ski(
                                                             userId: _userViewModel.user.user_id,
-                                                          categorySub: (_fleamarketViewModel.selectedCategory_sub_total == '전체 카테고리')
+                                                          categoryMain: '스키',
+                                                          categorySub: (_fleamarketViewModel.selectedCategory_sub_ski == '전체 카테고리')
                                                               ? null
-                                                              :_fleamarketViewModel.selectedCategory_sub_total,
-                                                          spot: _fleamarketViewModel.selectedCategory_spot_total,
+                                                              :_fleamarketViewModel.selectedCategory_sub_ski,
+                                                          spot: _fleamarketViewModel.selectedCategory_spot_ski,
                                                         );
                                                       },
                                                       shape: RoundedRectangleBorder(
@@ -1371,13 +1352,14 @@ class FleaMarketListView_total extends StatelessWidget {
                                                       //selected: _isSelected[index]!,
                                                       onTap: () async {
                                                         Navigator.pop(context);
-                                                        _fleamarketViewModel.changeCategory_spot_total('${FleamarketCategory_spot.jisan.korean}');
-                                                        await _fleamarketViewModel.fetchFleamarketData_total(
+                                                        _fleamarketViewModel.changeCategory_spot_ski('${FleamarketCategory_spot.jisan.korean}');
+                                                        await _fleamarketViewModel.fetchFleamarketData_ski(
                                                             userId: _userViewModel.user.user_id,
-                                                          categorySub: (_fleamarketViewModel.selectedCategory_sub_total == '전체 카테고리')
+                                                          categoryMain: '스키',
+                                                          categorySub: (_fleamarketViewModel.selectedCategory_sub_ski == '전체 카테고리')
                                                               ? null
-                                                              :_fleamarketViewModel.selectedCategory_sub_total,
-                                                          spot: _fleamarketViewModel.selectedCategory_spot_total,
+                                                              :_fleamarketViewModel.selectedCategory_sub_ski,
+                                                          spot: _fleamarketViewModel.selectedCategory_spot_ski,
                                                         );
                                                       },
                                                       shape: RoundedRectangleBorder(
@@ -1398,13 +1380,14 @@ class FleaMarketListView_total extends StatelessWidget {
                                                       //selected: _isSelected[index]!,
                                                       onTap: () async {
                                                         Navigator.pop(context);
-                                                        _fleamarketViewModel.changeCategory_spot_total('${FleamarketCategory_spot.high1.korean}');
-                                                        await _fleamarketViewModel.fetchFleamarketData_total(
+                                                        _fleamarketViewModel.changeCategory_spot_ski('${FleamarketCategory_spot.high1.korean}');
+                                                        await _fleamarketViewModel.fetchFleamarketData_ski(
                                                             userId: _userViewModel.user.user_id,
-                                                          categorySub: (_fleamarketViewModel.selectedCategory_sub_total == '전체 카테고리')
+                                                          categoryMain: '스키',
+                                                          categorySub: (_fleamarketViewModel.selectedCategory_sub_ski == '전체 카테고리')
                                                               ? null
-                                                              :_fleamarketViewModel.selectedCategory_sub_total,
-                                                          spot: _fleamarketViewModel.selectedCategory_spot_total,
+                                                              :_fleamarketViewModel.selectedCategory_sub_ski,
+                                                          spot: _fleamarketViewModel.selectedCategory_spot_ski,
                                                         );
                                                       },
                                                       shape: RoundedRectangleBorder(
@@ -1425,13 +1408,14 @@ class FleaMarketListView_total extends StatelessWidget {
                                                       //selected: _isSelected[index]!,
                                                       onTap: () async {
                                                         Navigator.pop(context);
-                                                        _fleamarketViewModel.changeCategory_spot_total('${FleamarketCategory_spot.phoenix.korean}');
-                                                        await _fleamarketViewModel.fetchFleamarketData_total(
+                                                        _fleamarketViewModel.changeCategory_spot_ski('${FleamarketCategory_spot.phoenix.korean}');
+                                                        await _fleamarketViewModel.fetchFleamarketData_ski(
                                                             userId: _userViewModel.user.user_id,
-                                                          categorySub: (_fleamarketViewModel.selectedCategory_sub_total == '전체 카테고리')
+                                                          categoryMain: '스키',
+                                                          categorySub: (_fleamarketViewModel.selectedCategory_sub_ski == '전체 카테고리')
                                                               ? null
-                                                              :_fleamarketViewModel.selectedCategory_sub_total,
-                                                          spot: _fleamarketViewModel.selectedCategory_spot_total,
+                                                              :_fleamarketViewModel.selectedCategory_sub_ski,
+                                                          spot: _fleamarketViewModel.selectedCategory_spot_ski,
                                                         );
                                                       },
                                                       shape: RoundedRectangleBorder(
@@ -1452,13 +1436,14 @@ class FleaMarketListView_total extends StatelessWidget {
                                                       //selected: _isSelected[index]!,
                                                       onTap: () async {
                                                         Navigator.pop(context);
-                                                        _fleamarketViewModel.changeCategory_spot_total('${FleamarketCategory_spot.etc.korean}');
-                                                        await _fleamarketViewModel.fetchFleamarketData_total(
+                                                        _fleamarketViewModel.changeCategory_spot_ski('${FleamarketCategory_spot.etc.korean}');
+                                                        await _fleamarketViewModel.fetchFleamarketData_ski(
                                                             userId: _userViewModel.user.user_id,
-                                                          categorySub: (_fleamarketViewModel.selectedCategory_sub_total == '전체 카테고리')
+                                                          categoryMain: '스키',
+                                                          categorySub: (_fleamarketViewModel.selectedCategory_sub_ski == '전체 카테고리')
                                                               ? null
-                                                              :_fleamarketViewModel.selectedCategory_sub_total,
-                                                          spot: _fleamarketViewModel.selectedCategory_spot_total,
+                                                              :_fleamarketViewModel.selectedCategory_sub_ski,
+                                                          spot: _fleamarketViewModel.selectedCategory_spot_ski,
                                                         );
                                                       },
                                                       shape: RoundedRectangleBorder(
@@ -1488,7 +1473,7 @@ class FleaMarketListView_total extends StatelessWidget {
                 ),
                 //TODO: 리스트
                 Expanded(
-                  child: (_fleamarketViewModel.fleamarketListTotal.length == 0)
+                  child: (_fleamarketViewModel.fleamarketListSki.length == 0)
                           ? Transform.translate(
                         offset: Offset(0, -40),
                         child: Column(
@@ -1517,9 +1502,9 @@ class FleaMarketListView_total extends StatelessWidget {
                         controller: _fleamarketViewModel.scrollController,
                         child: ListView.builder(
                           controller: _fleamarketViewModel.scrollController, // ScrollController 연결
-                          itemCount: _fleamarketViewModel.fleamarketListTotal.length,
+                          itemCount: _fleamarketViewModel.fleamarketListSki.length,
                           itemBuilder: (context, index) {
-                            Fleamarket data = _fleamarketViewModel.fleamarketListTotal[index] ;
+                            Fleamarket data = _fleamarketViewModel.fleamarketListSki[index] ;
                             String _time = GetDatetime().getAgoString(data.uploadTime!);
 
                             return GestureDetector(
@@ -1768,7 +1753,7 @@ class FleaMarketListView_total extends StatelessWidget {
                                         ],
                                       ),
                                     ),
-                                    if (_fleamarketViewModel.fleamarketListTotal.length != index + 1)
+                                    if (_fleamarketViewModel.fleamarketListSki.length != index + 1)
                                     Divider(
                                       color: Color(0xFFDEDEDE),
                                       height: 16,

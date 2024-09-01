@@ -603,7 +603,7 @@ class SetProfileView extends StatelessWidget {
                         await FlutterSecureStorage().write(key: 'device_id', value: _notificationController.deviceID);
                         await FlutterSecureStorage().write(key: 'device_token', value: _notificationController.deviceToken);
                         await FlutterSecureStorage().write(key: 'user_id', value: _userViewModel.user.user_id.toString());
-                        Get.toNamed(AppRoutes.mainHome);
+                        Get.offAllNamed(AppRoutes.mainHome);
                         },
                           style: TextButton.styleFrom(
                             shape: const RoundedRectangleBorder(

@@ -42,6 +42,7 @@ class FriendDetailViewModel extends GetxController {
     _mainTabName = mainTabNameList[0].obs;
     _ridingStatisticsTabName = ridingStatisticsTabNameList[0].obs;
     await getCurrentSeason();
+    print('프디페 끝');
   }
 
   late RxList<String> mainTabNameList;

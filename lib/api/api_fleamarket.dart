@@ -90,26 +90,38 @@ class FleamarketAPI {
     bool? myflea,
     String? url,
   }) async {
-    final Uri uri = Uri.parse(url ?? baseUrl).replace(
-      queryParameters: {
-        'user_id': userId.toString(),
-        if (categoryMain != null) 'category_main': categoryMain,
-        if (categorySub != null) 'category_sub': categorySub,
-        if (spot != null) 'spot': spot,
-        if (favorite_list != null) 'favorite_list': favorite_list.toString(),
-        if (search_query != null) 'search_query': search_query,
-        if (myflea != null) 'myflea': myflea,
-      },
-    );
+    print('api   :    $url');
 
-    final response = await http.get(uri);
-
-    if (response.statusCode == 200) {
-      final data = json.decode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
-      return ApiResponse.success(data);
+    if(url != null) {
+      final Uri uri = Uri.parse(url);
+      final response = await http.get(uri);
+      if (response.statusCode == 200) {
+        final data = json.decode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
+        return ApiResponse.success(data);
+      } else {
+        final data = json.decode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
+        return ApiResponse.error(data);
+      }
     } else {
-      final data = json.decode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
-      return ApiResponse.error(data);
+      final Uri uri = Uri.parse(baseUrl).replace(
+        queryParameters: {
+          'user_id': userId.toString(),
+          if (categoryMain != null) 'category_main': categoryMain,
+          if (categorySub != null) 'category_sub': categorySub,
+          if (spot != null) 'spot': spot,
+          if (favorite_list != null) 'favorite_list': favorite_list.toString(),
+          if (search_query != null) 'search_query': search_query,
+          if (myflea != null) 'myflea': myflea.toString(),
+        },
+      );
+      final response = await http.get(uri);
+      if (response.statusCode == 200) {
+        final data = json.decode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
+        return ApiResponse.success(data);
+      } else {
+        final data = json.decode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
+        return ApiResponse.error(data);
+      }
     }
   }
 

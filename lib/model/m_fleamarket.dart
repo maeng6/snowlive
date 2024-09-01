@@ -36,9 +36,11 @@ class Fleamarket {
   String? spot;
   String? snsUrl;
   String? title;
+  bool? block;
   String? description;
   String? updateTime;
   String? uploadTime;
+  String? status;
   List<Photo>? photos;
   int? favoriteCount;
   int? viewsCount;
@@ -57,9 +59,11 @@ class Fleamarket {
     this.spot,
     this.snsUrl,
     this.title,
+    this.block,
     this.description,
     this.updateTime,
     this.uploadTime,
+    this.status,
     this.photos,
     this.favoriteCount,
     this.viewsCount,
@@ -79,9 +83,11 @@ class Fleamarket {
     spot = json['spot'];
     snsUrl = json['sns_url'];
     title = json['title'];
+    block = json['block'];
     description = json['description'];
     updateTime = json['update_time'];
     uploadTime = json['upload_time'];
+    status = json['status'];
     if (json['photos'] != null) {
       photos = [];
       json['photos'].forEach((v) {

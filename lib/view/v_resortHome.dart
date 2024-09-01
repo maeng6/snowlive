@@ -317,7 +317,6 @@ print(_userViewModel.user.user_id);
                   child: IconButton(
                     padding: EdgeInsets.zero,
                     onPressed: () async{
-                      await _resortHomeViewModel.fetchBestFriendList(user_id: _userViewModel.user.user_id);
                       showModalBottomSheet(
                         context: context,
                         shape: RoundedRectangleBorder(
@@ -557,7 +556,7 @@ print(_userViewModel.user.user_id);
                           ));
                         },
                       );
-
+                      await _resortHomeViewModel.fetchBestFriendList(user_id: _userViewModel.user.user_id);
                     },
                     icon: Image.asset(
                       'assets/imgs/icons/icon_friend_resortHome.png',

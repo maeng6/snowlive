@@ -1,4 +1,5 @@
 import 'package:com.snowlive/controller/login/vm_notificationController.dart';
+import 'package:com.snowlive/viewmodel/vm_fleamarketSearch.dart';
 import 'package:com.snowlive/viewmodel/vm_friendDetail.dart';
 import 'package:com.snowlive/viewmodel/vm_login.dart';
 import 'package:com.snowlive/viewmodel/vm_mainHome.dart';
@@ -8,7 +9,7 @@ import 'package:com.snowlive/viewmodel/vm_tos.dart';
 import 'package:com.snowlive/viewmodel/vm_user.dart';
 import 'package:get/get.dart';
 
-import '../viewmodel/vm_fleamarket.dart';
+import '../viewmodel/vm_fleamarketList.dart';
 
 
 class MainHomeBinding extends Bindings {
@@ -17,7 +18,7 @@ class MainHomeBinding extends Bindings {
     Get.put(MainHomeViewModel(),permanent: true);
     Get.put(ResortHomeViewModel(),permanent: true);
     Get.put(FriendDetailViewModel(),permanent: true);
-    Get.put(FleamarketViewModel(),permanent: true);
+    Get.put(FleamarketListViewModel(),permanent: true);
   }
 }
 
@@ -67,5 +68,12 @@ class FriendDetailBinding extends Bindings {
 class FleamarketListBinding extends Bindings {
   @override
   void dependencies() {
+  }
+}
+
+  class FleamarketSearchBinding extends Bindings {
+  @override
+  void dependencies() {
+    Get.put(FleamarketSearchViewModel());
   }
 }
