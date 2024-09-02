@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-
 import 'ApiResponse.dart';
 
 class UserAPI {
@@ -56,7 +55,21 @@ class UserAPI {
     }
   }
 
+  // 사용자 차단 해제
+  Future<ApiResponse<Map<String, dynamic>>> unblockUser(String userId,
+      String blockUserId) async {
+    final response = await http.delete(
+      Uri.parse('https://snowlive-api-0eab29705c9f.herokuapp.com/api/community/block-user/'),
+      body: json.encode({'user_id': userId, 'block_user_id': blockUserId}),
+      headers: {'Content-Type': 'application/json'},
+    );
 
+    if (response.statusCode == 200) {
+      return ApiResponse.success(json.decode(response.body));
+    } else {
+      return ApiResponse.error(json.decode(response.body));
+    }
+  }
 
 }
 

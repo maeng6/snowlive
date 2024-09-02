@@ -1,12 +1,10 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-
 import 'ApiResponse.dart';
 
 class FleamarketAPI {
   static const String baseUrl = 'https://snowlive-api-0eab29705c9f.herokuapp.com/api/fleamarket';
 
-  // Fleamarket CRUD operations
   Future<ApiResponse> uploadFleamarket(Map<String, dynamic> body, List<Map<String, dynamic>> photos) async {
     body['photos'] = photos;
     final response = await http.post(
@@ -53,8 +51,6 @@ class FleamarketAPI {
       return ApiResponse.error(data);
     }
   }
-
-
 
   Future<ApiResponse> deleteFleamarket({required int fleamarketId, required int userId}) async {
     final response = await http.delete(
@@ -149,7 +145,6 @@ class FleamarketAPI {
     }
   }
 
-  // Comment operations
   Future<ApiResponse> fetchComments({
     required int userId,
     required int fleaId,
@@ -213,7 +208,6 @@ class FleamarketAPI {
     }
   }
 
-  // Reply operations
   Future<ApiResponse> fetchReplies({
     required int userId,
     required int commentId,
@@ -277,7 +271,6 @@ class FleamarketAPI {
     }
   }
 
-  // Report operations
   Future<ApiResponse> reportComment(Map<String, dynamic> body) async {
     final response = await http.post(
       Uri.parse('$baseUrl/comments/report/'),

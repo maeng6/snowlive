@@ -1,12 +1,10 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import '../model/m_bestFriendListModel.dart';
 import 'ApiResponse.dart';
 
 class FriendAPI {
   static const String baseUrl = 'https://snowlive-api-0eab29705c9f.herokuapp.com/api/friend';
 
-  // Add a friend request
   Future<ApiResponse> addFriend(body) async {
     final response = await http.post(
       Uri.parse('$baseUrl/add-friend/'),
@@ -23,7 +21,6 @@ class FriendAPI {
     }
   }
 
-  // Delete a friend
   Future<ApiResponse> deleteFriend(body) async {
 
     final response = await http.post(
@@ -41,7 +38,6 @@ class FriendAPI {
     }
   }
 
-  // Accept a friend request
   Future<ApiResponse> acceptFriend(body) async {
 
     final response = await http.post(
@@ -76,7 +72,6 @@ class FriendAPI {
     }
   }
 
-  // Toggle best friend status
   Future<ApiResponse> toggleBestFriend(body) async {
 
     final response = await http.post(
@@ -94,7 +89,6 @@ class FriendAPI {
     }
   }
 
-  // Fetch friend requests
   Future<ApiResponse> fetchFriendRequests({int? sendUserId, int? receiveUserId}) async {
     final Uri uri = Uri.parse('$baseUrl/request-list/').replace(
       queryParameters: {
@@ -113,7 +107,6 @@ class FriendAPI {
       return ApiResponse.error(data);
     }
   }
-
 
   Future<ApiResponse> fetchFriendList(int userId, bool bestFriend) async {
     final Uri uri = Uri.parse('$baseUrl/friend-list/').replace(
