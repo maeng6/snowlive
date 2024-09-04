@@ -23,8 +23,8 @@ class FriendDetailModel {
 class FriendUserInfo {
   late int userId;
   late String displayName;
-  late String profileImageUrlUser;
-  late String crewName;
+  late String? profileImageUrlUser;
+  late String? crewName;
   late String? stateMsg;
   late String favoriteResort;
   late bool withinBoundary;

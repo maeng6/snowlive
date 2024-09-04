@@ -9,6 +9,7 @@ import '../util/util_1.dart';
 
 class FleamarketDetailViewModel extends GetxController {
   var isLoading = true.obs;
+  var isLoading_indicator = true.obs;
   var _fleamarketDetail = FleamarketDetailModel().obs;
   var _commentsList = <CommentModel_flea>[].obs;
   var _nextPageUrl_comments = ''.obs;
@@ -17,6 +18,8 @@ class FleamarketDetailViewModel extends GetxController {
   var fleaId = 0;
   RxString _fleamarketCommentsInputText=''.obs;
   RxBool isCommentButtonEnabled = false.obs;
+  RxBool _isSecret = false.obs;
+  RxString _time = ''.obs;
 
   FleamarketDetailModel get fleamarketDetail => _fleamarketDetail.value;
   List<CommentModel_flea> get commentsList => _commentsList;
@@ -24,7 +27,11 @@ class FleamarketDetailViewModel extends GetxController {
   String get previousPageUrl_comments => _previousPageUrl_comments.value;
   int get currentIndex => _currentIndex.value;
   String get fleamarketCommentsInputText => _fleamarketCommentsInputText.value;
+  String get time => _time.value;
+  bool get isSecret => _isSecret.value;
+  ScrollController get scrollController => _scrollController;
 
+  ScrollController _scrollController = ScrollController();
 
   UserViewModel _userViewModel = Get.find<UserViewModel>();
 
@@ -39,7 +46,7 @@ class FleamarketDetailViewModel extends GetxController {
   @override
   void onInit() async {
     await fetchFleamarketDetail(userId: _userViewModel.user.user_id ,fleamarketId: fleaId);
-    await fetchFleamarketComments(fleaId: fleaId,userId: _userViewModel.user.user_id);
+    await fetchFleamarketComments(fleaId: fleaId,userId: _userViewModel.user.user_id, isLoading_indi: false);
 
     textEditingController.addListener(() {
       if (textEditingController.text.trim().isNotEmpty) {
@@ -48,8 +55,22 @@ class FleamarketDetailViewModel extends GetxController {
         isCommentButtonEnabled(false);
       }
     });
+    _scrollController = ScrollController()
+      ..addListener(_scrollListener);
 
     super.onInit();
+  }
+
+  Future<void> _scrollListener() async {
+    // 스크롤이 리스트의 끝에 도달했을 때
+    if (_scrollController.position.pixels == _scrollController.position.maxScrollExtent) {
+      //await fetchNextPage_total();
+    }
+
+
+
+
+
   }
 
   @override
@@ -69,7 +90,7 @@ class FleamarketDetailViewModel extends GetxController {
       final response = await FleamarketAPI().detailFleamarket(fleamarketId: fleamarketId, userId: userId);
       if (response.success) {
         _fleamarketDetail.value = FleamarketDetailModel.fromJson(response.data!);
-        print('user_id   :     ${_fleamarketDetail.value.userInfo}');
+        _time.value = GetDatetime().getAgoString(_fleamarketDetail.value.uploadTime!);
       } else {
         print('Failed to load data: ${response.error}');
       }
@@ -80,29 +101,14 @@ class FleamarketDetailViewModel extends GetxController {
     }
   }
 
-  Future<void> fetchFleamarketDetailForUpdateStatus({
-    required int fleamarketId,
-    required int userId,
-  }) async {
-    try {
-      final response = await FleamarketAPI().detailFleamarket(fleamarketId: fleamarketId, userId: userId);
-      if (response.success) {
-        _fleamarketDetail.value = FleamarketDetailModel.fromJson(response.data!);
-        print('user_id   :     ${_fleamarketDetail.value.userInfo}');
-      } else {
-        print('Failed to load data: ${response.error}');
-      }
-    } catch (e) {
-      print('Error fetching data: $e');
-    }
-  }
 
   Future<void> fetchFleamarketComments({
     required int fleaId,
     required int userId,
+    required bool? isLoading_indi,
     String? url,
   }) async {
-    isLoading(true);
+    //isLoading(true);
     try {
       final response = await FleamarketAPI().fetchComments(
         fleaId: fleaId,
@@ -125,37 +131,7 @@ class FleamarketDetailViewModel extends GetxController {
     } catch (e) {
       print('Error fetching comments: $e');
     }finally{
-      isLoading(false);
-    }
-  }
-
-  Future<void> fetchFleamarketCommentsInDetailView({
-    required int fleaId,
-    required int userId,
-    String? url,
-  }) async {
-    try {
-      final response = await FleamarketAPI().fetchComments(
-        fleaId: fleaId,
-        userId: userId,
-        url: url,
-      );
-      if (response.success) {
-        final commentResponse = CommentResponse.fromJson(response.data!);
-
-        if (url == null) {
-          _commentsList.value = commentResponse.results ?? [];
-        } else {
-          _commentsList.addAll(commentResponse.results ?? []);
-        }
-        _nextPageUrl_comments.value = commentResponse.next ?? '';
-        _previousPageUrl_comments.value = commentResponse.previous ?? '';
-      } else {
-        print('Failed to load comments: ${response.error}');
-      }
-    } catch (e) {
-      print('Error fetching comments: $e');
-    }finally{
+        //isLoading(false);
     }
   }
 
@@ -243,59 +219,21 @@ class FleamarketDetailViewModel extends GetxController {
 
   Future<void> updateStatus({
     required int fleamarketId,
-    required String newStatus, // 새 상태를 파라미터로 받음
+    required Map<String, dynamic> body,
   }) async {
+    // 로딩 상태를 true로 설정
+    isLoading(true);
 
     try {
-      // ViewModel에 저장된 기존의 플리마켓 상세 정보를 사용하여 body 생성
-      FleamarketDetailModel existingDetail = fleamarketDetail;
-
-      // 기존 데이터를 모두 포함한 body 생성, 새로운 상태값만 변경
-      Map<String, dynamic> body = {
-        "user_id": existingDetail.userInfo!.userId,
-        "product_name": existingDetail.productName,
-        "category_main": existingDetail.categoryMain,
-        "category_sub": existingDetail.categorySub,
-        "price": existingDetail.price,
-        "negotiable": existingDetail.negotiable,
-        "method": existingDetail.method,
-        "spot": existingDetail.spot,
-        "sns_url": existingDetail.snsUrl,
-        "title": existingDetail.title,
-        "description": existingDetail.description,
-        "status": newStatus, // 새로운 상태값 설정
-        "photos": existingDetail.photos!.map((photo) => {
-          "display_order": photo.displayOrder,
-          "url_flea_photo": photo.urlFleaPhoto,
-        }).toList(), // 기존 사진 정보 포함
-      };
-
       // updateFleamarket API 호출
       ApiResponse response = await FleamarketAPI().updateStatus(
-        fleamarketId,
-        body,
+          fleamarketId,
+          body
       );
 
       // 요청이 성공했는지 확인
       if (response.success) {
         print('상태 업데이트 완료');
-        // 상태가 업데이트되면 ViewModel의 상태도 업데이트
-        _fleamarketDetail.value = FleamarketDetailModel(
-          fleaId: existingDetail.fleaId,
-          productName: existingDetail.productName,
-          categoryMain: existingDetail.categoryMain,
-          categorySub: existingDetail.categorySub,
-          price: existingDetail.price,
-          negotiable: existingDetail.negotiable,
-          method: existingDetail.method,
-          spot: existingDetail.spot,
-          snsUrl: existingDetail.snsUrl,
-          title: existingDetail.title,
-          description: existingDetail.description,
-          status: newStatus, // 상태만 업데이트
-          photos: existingDetail.photos,
-          userInfo: existingDetail.userInfo,
-        );
       } else {
         Get.snackbar('Error', '상태 업데이트 실패');
       }
@@ -304,6 +242,8 @@ class FleamarketDetailViewModel extends GetxController {
       print('Error updating fleamarketStatus: $e');
       Get.snackbar('Error', '상태 업데이트 중 오류 발생');
     } finally {
+      // 로딩 상태를 false로 설정
+      isLoading(false);
     }
   }
 
@@ -312,9 +252,14 @@ class FleamarketDetailViewModel extends GetxController {
     _currentIndex.value = index;
   }
 
+  void changeSecret() {
+    _isSecret.value = !_isSecret.value;
+  }
+
   Future<void> uploadFleamarketComments(body) async {
     ApiResponse response = await FleamarketAPI().createComment(body);
     if(response.success)
+      // _scrollController.jumpTo(0);
       print('글 업로드 완료');
     if(!response.success)
       Get.snackbar('Error', '업로드 실패');
@@ -323,7 +268,8 @@ class FleamarketDetailViewModel extends GetxController {
   void changeFleamarketCommentsInputText(value) {
     _fleamarketCommentsInputText.value = value;
   }
-
-
-
 }
+
+
+
+

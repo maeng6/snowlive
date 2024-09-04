@@ -1,4 +1,5 @@
 import 'package:com.snowlive/controller/login/vm_notificationController.dart';
+import 'package:com.snowlive/viewmodel/vm_fleamarketCommentDetail.dart';
 import 'package:com.snowlive/viewmodel/vm_fleamarketSearch.dart';
 import 'package:com.snowlive/viewmodel/vm_friendDetail.dart';
 import 'package:com.snowlive/viewmodel/vm_login.dart';
@@ -87,3 +88,10 @@ class FleamarketDetailBinding extends Bindings {
 
   }
 }
+//
+// class FleamarketCommentDetailBinding extends Bindings {
+//   @override
+//   void dependencies() {
+//     Get.put(FleamarketCommentDetailViewModel());
+//   }
+// }

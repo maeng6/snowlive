@@ -1541,7 +1541,8 @@ class FleaMarketListView_total extends StatelessWidget {
                                       userId: _userViewModel.user.user_id);
                                   await _fleamarketDetailViewModel.fetchFleamarketComments(
                                       fleaId: _fleamarketViewModel.fleamarketListTotal[index].fleaId!,
-                                      userId: _fleamarketViewModel.fleamarketListTotal[index].userId!);
+                                      userId: _fleamarketViewModel.fleamarketListTotal[index].userId!,
+                                      isLoading_indi: false);
                                 },
                                 child: Column(
                                   children: [
