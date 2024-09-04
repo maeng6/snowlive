@@ -1,4 +1,5 @@
 import 'package:com.snowlive/viewmodel/vm_fleamarketList.dart';
+import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -7,6 +8,8 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import '../model/m_fleamarket.dart';
+import '../routes/routes.dart';
+import '../screens/snowliveDesignStyle.dart';
 import '../util/util_1.dart';
 import '../viewmodel/vm_fleamarketDetail.dart';
 import '../viewmodel/vm_user.dart';
@@ -15,7 +18,7 @@ class FleaMarketListView_my extends StatelessWidget {
 
   final f = NumberFormat('###,###,###,###');
 
-  final FleamarketListViewModel _fleamarketViewModel = Get.find<FleamarketListViewModel>();
+  final FleamarketListViewModel _fleamarketListViewModel = Get.find<FleamarketListViewModel>();
   final UserViewModel _userViewModel = Get.find<UserViewModel>();
   final FleamarketDetailViewModel _fleamarketDetailViewModel = Get.find<FleamarketDetailViewModel>();
 
@@ -33,9 +36,9 @@ class FleaMarketListView_my extends StatelessWidget {
             children: [
               Center(
                 child: Padding(
-                  padding: EdgeInsets.only(top: _size.height - 308),
+                  padding: EdgeInsets.only(top: _size.height - 360),
                   child: Visibility(
-                    visible: _fleamarketViewModel.isVisible,
+                    visible: _fleamarketListViewModel.isVisible,
                     child: Padding(
                       padding: const EdgeInsets.only(left: 32),
                       child: Container(
@@ -50,7 +53,7 @@ class FleaMarketListView_my extends StatelessWidget {
                           backgroundColor: Color(0xFF000000).withOpacity(0.8),
                           foregroundColor: Colors.white,
                           onPressed: () {
-                            _fleamarketViewModel.scrollController.jumpTo(0);
+                            _fleamarketListViewModel.scrollController.jumpTo(0);
                           },
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
@@ -83,19 +86,20 @@ class FleaMarketListView_my extends StatelessWidget {
                   child: Align(
                     alignment: Alignment.bottomRight,
                     child: AnimatedContainer(
-                      width: _fleamarketViewModel.showAddButton ? 104 : 52,
+                      width: _fleamarketListViewModel.showAddButton ? 104 : 52,
                       height: 52,
                       duration: Duration(milliseconds: 200),
                       child: FloatingActionButton.extended(
                         elevation: 4,
                         heroTag: 'fleaListScreen',
                         onPressed: () async {
-
                         },
                         icon: Transform.translate(
                             offset: Offset(6,0),
-                            child: Center(child: Icon(Icons.add))),
-                        label: _fleamarketViewModel.showAddButton
+                            child: Center(child: Icon(Icons.add,
+                              color: SDSColor.snowliveWhite,
+                            ))),
+                        label: _fleamarketListViewModel.showAddButton
                             ? Padding(
                           padding: const EdgeInsets.only(right: 6),
                           child: Text('글쓰기',
@@ -121,14 +125,14 @@ class FleaMarketListView_my extends StatelessWidget {
           body: Obx(()=>RefreshIndicator(
             strokeWidth: 2,
             edgeOffset: 20,
-            onRefresh: _fleamarketViewModel.onRefresh_flea_my,
+            onRefresh: _fleamarketListViewModel.onRefresh_flea_my,
             child: Padding(
               padding: const EdgeInsets.only(top: 4, bottom: 6),
               child: Column(
                 children: [
                   //TODO: 리스트
                   Expanded(
-                      child: (_fleamarketViewModel.fleamarketListMy.length == 0)
+                      child: (_fleamarketListViewModel.fleamarketListMy.length == 0)
                           ? Transform.translate(
                         offset: Offset(0, -40),
                         child: Column(
@@ -154,17 +158,23 @@ class FleaMarketListView_my extends StatelessWidget {
                         ),
                       )
                           : Scrollbar(
-                        controller: _fleamarketViewModel.scrollController,
+                        controller: _fleamarketListViewModel.scrollController,
                         child: ListView.builder(
-                          controller: _fleamarketViewModel.scrollController, // ScrollController 연결
-                          itemCount: _fleamarketViewModel.fleamarketListMy.length,
+                          controller: _fleamarketListViewModel.scrollController, // ScrollController 연결
+                          itemCount: _fleamarketListViewModel.fleamarketListMy.length,
                           itemBuilder: (context, index) {
-                            Fleamarket data = _fleamarketViewModel.fleamarketListMy[index] ;
+                            Fleamarket data = _fleamarketListViewModel.fleamarketListMy[index] ;
                             String _time = GetDatetime().getAgoString(data.uploadTime!);
 
                             return GestureDetector(
                                 onTap: () async {
-
+                                  Get.toNamed(AppRoutes.fleamarketDetail);
+                                  await _fleamarketDetailViewModel.fetchFleamarketDetail(
+                                      fleamarketId: _fleamarketListViewModel.fleamarketListMy[index].fleaId!,
+                                      userId: _userViewModel.user.user_id);
+                                  await _fleamarketDetailViewModel.fetchFleamarketComments(
+                                      fleaId: _fleamarketListViewModel.fleamarketListTotal[index].fleaId!,
+                                      userId: _fleamarketListViewModel.fleamarketListTotal[index].userId!);
                                 },
                                 child: Column(
                                   children: [
@@ -208,51 +218,58 @@ class FleaMarketListView_my extends StatelessWidget {
                                                     ),
                                                   if (data.status == FleamarketStatus.soldOut.korean)
                                                     Positioned(
-                                                      top: 8,
-                                                      child: Stack(
-                                                        children: [
-                                                          Container(
-                                                            decoration: BoxDecoration(
-                                                              borderRadius: BorderRadius.circular(8),
-                                                              color: Color(0xFF000000).withOpacity(0.6),
-                                                            ),
-                                                            width: 100,
-                                                            height: 100,
-                                                          ),
-                                                          Positioned(
-                                                            top: 40,
-                                                            left: 20,
-                                                            child: Text('${FleamarketStatus.soldOut.korean}',
-                                                              style: TextStyle(
-                                                                  color: Color(0xFFFFFFFF),
-                                                                  fontWeight: FontWeight.bold,
-                                                                  fontSize: 16
-                                                              ),),
-                                                          ),
-                                                        ],
+                                                      top: 8, // 이미지와 동일한 패딩
+                                                      bottom: 8,
+                                                      left: 0,
+                                                      right: 0,
+                                                      child: Container(
+                                                        width: 100, // 이미지와 동일한 너비
+                                                        height: 100, // 이미지와 동일한 높이
+                                                        decoration: BoxDecoration(
+                                                          color: Colors.black.withOpacity(0.6),  // 반투명한 검정색 오버레이
+                                                          borderRadius: BorderRadius.circular(8),  // 이미지와 동일한 둥근 모서리
+                                                        ),
                                                       ),
                                                     ),
-                                                  if (data.status == FleamarketStatus.forSale.korean)
+                                                  if (data.status == FleamarketStatus.soldOut.korean)
                                                     Positioned(
-                                                      top: 20,
-                                                      left: 20,
-                                                      child: Text('${FleamarketStatus.forSale.korean}',
-                                                        style: TextStyle(
-                                                            color: Color(0xFFFFFFFF),
+                                                      top: 14,
+                                                      left: 8,  // 좌측 상단에 위치하도록 설정
+                                                      child: Container(
+                                                        padding: EdgeInsets.symmetric(horizontal: 6, vertical: 2),  // 패딩을 추가하여 뱃지 모양을 만듦
+                                                        decoration: BoxDecoration(
+                                                          borderRadius: BorderRadius.circular(4),  // 모서리를 둥글게 처리
+                                                          color: SDSColor.snowliveWhite,  // 배경색과 투명도 설정
+                                                        ),
+                                                        child: Text(
+                                                          '${FleamarketStatus.soldOut.korean}',
+                                                          style: TextStyle(
+                                                            color: SDSColor.snowliveBlack,
                                                             fontWeight: FontWeight.bold,
-                                                            fontSize: 16
-                                                        ),),
+                                                            fontSize: 10,
+                                                          ),
+                                                        ),
+                                                      ),
                                                     ),
                                                   if (data.status == FleamarketStatus.onBooking.korean)
                                                     Positioned(
-                                                      top: 20,
-                                                      left: 20,
-                                                      child: Text('${FleamarketStatus.onBooking.korean}',
-                                                        style: TextStyle(
-                                                            color: Color(0xFFFFFFFF),
+                                                      top: 14,
+                                                      left: 8,  // 좌측 상단에 위치하도록 설정
+                                                      child: Container(
+                                                        padding: EdgeInsets.symmetric(horizontal: 6, vertical: 2),  // 패딩을 추가하여 뱃지 모양을 만듦
+                                                        decoration: BoxDecoration(
+                                                          borderRadius: BorderRadius.circular(4),  // 모서리를 둥글게 처리
+                                                          color: SDSColor.snowliveBlue,  // 배경색과 투명도 설정
+                                                        ),
+                                                        child: Text(
+                                                          '${FleamarketStatus.onBooking.korean}',
+                                                          style: TextStyle(
+                                                            color: SDSColor.snowliveWhite,
                                                             fontWeight: FontWeight.bold,
-                                                            fontSize: 16
-                                                        ),),
+                                                            fontSize: 10,
+                                                          ),
+                                                        ),
+                                                      ),
                                                     ),
                                                 ],
                                               ),
@@ -282,22 +299,24 @@ class FleaMarketListView_my extends StatelessWidget {
                                                         ),
                                                       ],
                                                     ),
-                                                    //TODO: 시간
+                                                    //TODO: 장소, 시간
                                                     Row(
                                                       mainAxisAlignment: MainAxisAlignment.center,
                                                       children: [
                                                         Text(
+                                                          ' ${data.spot!} · ',
+                                                          style: TextStyle(
+                                                              fontSize: 14,
+                                                              color: Color(0xFF949494),
+                                                              fontWeight: FontWeight.normal),
+                                                        ),
+                                                        Text(
                                                           '$_time',
                                                           style: TextStyle(
-                                                              fontSize:
-                                                              14,
-                                                              color: Color(
-                                                                  0xFF949494),
-                                                              fontWeight:
-                                                              FontWeight
-                                                                  .normal),
+                                                              fontSize: 14,
+                                                              color: Color(0xFF949494),
+                                                              fontWeight: FontWeight.normal),
                                                         ),
-                                                        SizedBox(width: 10,),
                                                       ],
                                                     ),
                                                     SizedBox(
@@ -325,21 +344,6 @@ class FleaMarketListView_my extends StatelessWidget {
                                                     SizedBox(
                                                       height: 10,
                                                     ),
-                                                    //TODO: 거래장소
-                                                    Container(
-                                                      decoration: BoxDecoration(
-                                                        borderRadius: BorderRadius.circular(3),
-                                                        color: Color(0xFFD5F7E0),
-                                                      ),
-                                                      padding: EdgeInsets.only(right: 6, left: 6, top: 2, bottom: 3),
-                                                      child: Text(
-                                                        data.spot!,
-                                                        style: TextStyle(
-                                                            fontWeight: FontWeight.bold,
-                                                            fontSize: 12,
-                                                            color: Color(0xFF17AD4A)),
-                                                      ),
-                                                    ),
                                                     //TODO: 조회수, 찜수, 댓글수
                                                     Row(
                                                       children: [
@@ -355,7 +359,7 @@ class FleaMarketListView_my extends StatelessWidget {
                                                                   color: Color(0xFFc8c8c8),
                                                                   size: 15,
                                                                 ),
-                                                                SizedBox(width: 4,),
+                                                                SizedBox(width: 2,),
                                                                 Text(
                                                                     '${data.viewsCount}',
                                                                     style: TextStyle(
@@ -368,47 +372,61 @@ class FleaMarketListView_my extends StatelessWidget {
                                                           ),
                                                         //TODO: 찜수
                                                         if(data.favoriteCount!.toInt() != 0)
-                                                          Container(
-                                                            decoration: BoxDecoration(
-                                                              borderRadius: BorderRadius.circular(3),
-                                                              color: Color(0xFFD5F7E0),
-                                                            ),
-                                                            padding: EdgeInsets.only(right: 6, left: 6, top: 2, bottom: 3),
-                                                            child: Text(
-                                                              data.favoriteCount.toString()!,
-                                                              style: TextStyle(
-                                                                  fontWeight: FontWeight.bold,
-                                                                  fontSize: 12,
-                                                                  color: Color(0xFF17AD4A)),
+                                                          Padding(
+                                                            padding: const EdgeInsets.only(bottom: 2, left: 6),
+                                                            child: Row(
+                                                              mainAxisAlignment: MainAxisAlignment.center,
+                                                              children: [
+                                                                Icon(
+                                                                  Icons.bookmark_border,
+                                                                  color: Color(0xFFc8c8c8),
+                                                                  size: 15,
+                                                                ),
+                                                                SizedBox(width: 2,),
+                                                                Text(
+                                                                    '${data.favoriteCount.toString()}',
+                                                                    style: TextStyle(
+                                                                        fontSize: 13,
+                                                                        color: Color(0xFF949494),
+                                                                        fontWeight: FontWeight.normal)
+                                                                )
+                                                              ],
                                                             ),
                                                           ),
                                                         //TODO: 댓글수
                                                         if(data.commentCount!.toInt() != 0)
-                                                          Container(
-                                                            decoration: BoxDecoration(
-                                                              borderRadius: BorderRadius.circular(3),
-                                                              color: Color(0xFFD5F7E0),
-                                                            ),
-                                                            padding: EdgeInsets.only(right: 6, left: 6, top: 2, bottom: 3),
-                                                            child: Text(
-                                                              data.commentCount.toString(),
-                                                              style: TextStyle(
-                                                                  fontWeight: FontWeight.bold,
-                                                                  fontSize: 12,
-                                                                  color: Color(0xFF17AD4A)),
+                                                          Padding(
+                                                            padding: const EdgeInsets.only(bottom: 2, left: 6),
+                                                            child: Row(
+                                                              mainAxisAlignment: MainAxisAlignment.center,
+                                                              children: [
+                                                                Icon(
+                                                                  Icons.comment,
+                                                                  color: Color(0xFFc8c8c8),
+                                                                  size: 15,
+                                                                ),
+                                                                SizedBox(width: 2,),
+                                                                Text(
+                                                                    '${data.commentCount.toString()}',
+                                                                    style: TextStyle(
+                                                                        fontSize: 13,
+                                                                        color: Color(0xFF949494),
+                                                                        fontWeight: FontWeight.normal)
+                                                                )
+                                                              ],
                                                             ),
                                                           ),
                                                       ],
                                                     ),
                                                   ],
                                                 ),
-                                              )
+                                              ),
                                             ],
                                           ),
                                         ],
                                       ),
                                     ),
-                                    if (_fleamarketViewModel.fleamarketListMy.length != index + 1)
+                                    if (_fleamarketListViewModel.fleamarketListMy.length != index + 1)
                                       Divider(
                                         color: Color(0xFFDEDEDE),
                                         height: 16,

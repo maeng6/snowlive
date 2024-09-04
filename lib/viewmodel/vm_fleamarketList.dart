@@ -82,11 +82,27 @@ class FleamarketListViewModel extends GetxController {
   Future<void> _scrollListener() async {
     // 스크롤이 리스트의 끝에 도달했을 때
     if (_scrollController.position.pixels == _scrollController.position.maxScrollExtent) {
-      if (_nextPageUrl_total.value.isNotEmpty) {
-        await fetchFleamarketData_total(
-            userId: _userViewModel.user.user_id,
-            url: _nextPageUrl_total.value
-        ); // 추가 데이터 로딩
+      switch (_tapName.value) {
+        case '전체':
+          if (_nextPageUrl_total.value.isNotEmpty) {
+            await fetchNextPage_total();
+          }
+          break;
+        case '스키':
+          if (_nextPageUrl_ski.value.isNotEmpty) {
+            await fetchNextPage_ski();
+          }
+          break;
+        case '스노보드':
+          if (_nextPageUrl_board.value.isNotEmpty) {
+            await fetchNextPage_board();
+          }
+          break;
+        case '내 게시글':
+          if (_nextPageUrl_my.value.isNotEmpty) {
+            await fetchNextPage_my();
+          }
+          break;
       }
     }
 
@@ -155,7 +171,7 @@ class FleamarketListViewModel extends GetxController {
 
   Future<void> fetchFleamarketData_ski({
     required int userId,
-    String? categoryMain,
+    String? categoryMain = '스키',
     String? categorySub,
     String? spot,
     int? favorite_list,
@@ -204,7 +220,7 @@ class FleamarketListViewModel extends GetxController {
 
   Future<void> fetchFleamarketData_board({
     required int userId,
-    String? categoryMain,
+    String? categoryMain = '스노보드',
     String? categorySub,
     String? spot,
     int? favorite_list,
@@ -258,7 +274,7 @@ class FleamarketListViewModel extends GetxController {
     String? spot,
     int? favorite_list,
     String? search_query,
-    bool? myflea,
+    bool? myflea = true,
     String? url,
   }) async {
     isLoading(true);
