@@ -162,6 +162,7 @@ class FleaMarketListView_my extends StatelessWidget {
                         child: ListView.builder(
                           controller: _fleamarketListViewModel.scrollController, // ScrollController 연결
                           itemCount: _fleamarketListViewModel.fleamarketListMy.length,
+                          physics: AlwaysScrollableScrollPhysics(),
                           itemBuilder: (context, index) {
                             Fleamarket data = _fleamarketListViewModel.fleamarketListMy[index] ;
                             String _time = GetDatetime().getAgoString(data.uploadTime!);
