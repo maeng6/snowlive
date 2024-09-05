@@ -89,7 +89,7 @@ class FleamarketAPI {
     String? categoryMain,
     String? categorySub,
     String? spot,
-    int? favorite_list,
+    bool? favorite_list,
     String? search_query,
     bool? myflea,
     String? url,
@@ -115,7 +115,8 @@ class FleamarketAPI {
     }
   }
 
-  Future<ApiResponse> addFavoriteFleamarket(int fleamarketId, Map<String, dynamic> body) async {
+  Future<ApiResponse> addFavoriteFleamarket(
+      {required int fleamarketId, required Map<String, dynamic> body}) async {
     final response = await http.post(
       Uri.parse('$baseUrl/$fleamarketId/favorite/'),
       headers: {'Content-Type': 'application/json'},
@@ -130,7 +131,8 @@ class FleamarketAPI {
     }
   }
 
-  Future<ApiResponse> deleteFavoriteFleamarket(int fleamarketId, Map<String, dynamic> body) async {
+  Future<ApiResponse> deleteFavoriteFleamarket(
+      {required int fleamarketId, required Map<String, dynamic> body}) async {
     final response = await http.post(
       Uri.parse('$baseUrl/$fleamarketId/unfavorite/'),
       headers: {'Content-Type': 'application/json'},
@@ -180,7 +182,8 @@ class FleamarketAPI {
     }
   }
 
-  Future<ApiResponse> updateComment(int commentId, Map<String, dynamic> body) async {
+  Future<ApiResponse> updateComment(
+      {required int commentId,required Map<String, dynamic> body}) async {
     final response = await http.put(
       Uri.parse('$baseUrl/comments/$commentId/'),
       headers: {'Content-Type': 'application/json'},
@@ -195,7 +198,7 @@ class FleamarketAPI {
     }
   }
 
-  Future<ApiResponse> deleteComment(int commentId, int userId) async {
+  Future<ApiResponse> deleteComment({required int commentId, required int userId}) async {
     final response = await http.delete(
       Uri.parse('$baseUrl/comments/$commentId/').replace(queryParameters: {'user_id': userId.toString()}),
     );

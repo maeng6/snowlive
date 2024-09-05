@@ -81,7 +81,7 @@ class FleamarketSearchViewModel extends GetxController {
     String? categoryMain,
     String? categorySub,
     String? spot,
-    int? favorite_list,
+    bool? favorite_list,
     String? search_query,
     bool? myflea,
     String? url,

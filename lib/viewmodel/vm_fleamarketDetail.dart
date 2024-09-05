@@ -19,6 +19,7 @@ class FleamarketDetailViewModel extends GetxController {
   RxString _fleamarketCommentsInputText=''.obs;
   RxBool isCommentButtonEnabled = false.obs;
   RxBool _isSecret = false.obs;
+  RxBool _isFavorite = false.obs;
   RxString _time = ''.obs;
 
   FleamarketDetailModel get fleamarketDetail => _fleamarketDetail.value;
@@ -29,6 +30,7 @@ class FleamarketDetailViewModel extends GetxController {
   String get fleamarketCommentsInputText => _fleamarketCommentsInputText.value;
   String get time => _time.value;
   bool get isSecret => _isSecret.value;
+  bool get isFavorite => _isFavorite.value;
   ScrollController get scrollController => _scrollController;
 
   ScrollController _scrollController = ScrollController();
@@ -256,6 +258,32 @@ class FleamarketDetailViewModel extends GetxController {
     _isSecret.value = !_isSecret.value;
   }
 
+  void addFavorite() {
+    _isFavorite.value = true;
+  }
+
+  void deleteFavorite() {
+    _isFavorite.value = false;
+  }
+
+  Future<void> addFavoriteFleamarket({required fleamarketID,required body}) async {
+    ApiResponse response = await FleamarketAPI().addFavoriteFleamarket(fleamarketId: fleamarketID, body: body);
+    if(response.success)
+      addFavorite();
+      print('찜 추가 완료');
+    if(!response.success)
+      Get.snackbar('Error', '찜 추가 실패');
+  }
+
+  Future<void> deleteFavoriteFleamarket({required fleamarketID,required body}) async {
+    ApiResponse response = await FleamarketAPI().deleteFavoriteFleamarket(fleamarketId: fleamarketID, body: body);
+    if(response.success)
+      deleteFavorite();
+      print('찜 삭제 완료');
+    if(!response.success)
+      Get.snackbar('Error', '찜 삭제 실패');
+  }
+
   Future<void> uploadFleamarketComments(body) async {
     ApiResponse response = await FleamarketAPI().createComment(body);
     if(response.success)
@@ -263,6 +291,24 @@ class FleamarketDetailViewModel extends GetxController {
       print('글 업로드 완료');
     if(!response.success)
       Get.snackbar('Error', '업로드 실패');
+  }
+
+  Future<void> updateFleamarketComments({required commentID, required body}) async {
+    ApiResponse response = await FleamarketAPI().updateComment(commentId: commentID, body:  body);
+    if(response.success)
+      // _scrollController.jumpTo(0);
+      print('글 수정 완료');
+    if(!response.success)
+      Get.snackbar('Error', '수정 실패');
+  }
+
+  Future<void> deleteFleamarketComments({required user_id, required comment_id}) async {
+    ApiResponse response = await FleamarketAPI().deleteComment(commentId: comment_id, userId: user_id);
+    if(response.success)
+      // _scrollController.jumpTo(0);
+      print('글 삭제 완료');
+    if(!response.success)
+      Get.snackbar('Error', '삭제 실패');
   }
 
   void changeFleamarketCommentsInputText(value) {

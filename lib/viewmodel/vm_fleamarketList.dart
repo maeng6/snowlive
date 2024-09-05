@@ -13,14 +13,17 @@ class FleamarketListViewModel extends GetxController {
   var _fleamarketList_ski = <Fleamarket>[].obs;
   var _fleamarketList_board = <Fleamarket>[].obs;
   var _fleamarketList_my = <Fleamarket>[].obs;
+  var _fleamarketList_favorite = <Fleamarket>[].obs;
   var _nextPageUrl_total = ''.obs;
   var _nextPageUrl_ski = ''.obs;
   var _nextPageUrl_board = ''.obs;
   var _nextPageUrl_my = ''.obs;
+  var _nextPageUrl_favorite = ''.obs;
   var _previousPageUrl_total = ''.obs;
   var _previousPageUrl_ski = ''.obs;
   var _previousPageUrl_board = ''.obs;
   var _previousPageUrl_my = ''.obs;
+  var _previousPageUrl_favorite = ''.obs;
   RxBool _showAddButton = true.obs;
   RxBool _isVisible = false.obs;
   RxString _tapName = '전체'.obs;
@@ -36,16 +39,19 @@ class FleamarketListViewModel extends GetxController {
   List<Fleamarket> get fleamarketListSki => _fleamarketList_ski;
   List<Fleamarket> get fleamarketListBoard => _fleamarketList_board;
   List<Fleamarket> get fleamarketListMy => _fleamarketList_my;
+  List<Fleamarket> get fleamarketListFavorite => _fleamarketList_favorite;
 
   String get nextPageUrlTotal => _nextPageUrl_total.value;
   String get nextPageUrlSki => _nextPageUrl_ski.value;
   String get nextPageUrlBoard => _nextPageUrl_board.value;
   String get nextPageUrlMy => _nextPageUrl_my.value;
+  String get nextPageUrlFavorite => _nextPageUrl_favorite.value;
 
   String get previousPageUrlTotal => _previousPageUrl_total.value;
   String get previousPageUrlSki => _previousPageUrl_ski.value;
   String get previousPageUrlBoard => _previousPageUrl_board.value;
   String get previousPageUrlMy => _previousPageUrl_my.value;
+  String get previousPageUrlFavorite => _previousPageUrl_favorite.value;
   bool get showAddButton => _showAddButton.value;
   bool get isVisible => _isVisible.value;
   String get tapName => _tapName.value;
@@ -73,6 +79,7 @@ class FleamarketListViewModel extends GetxController {
     await fetchFleamarketData_ski(userId: _userViewModel.user.user_id, categoryMain:'스키');
     await fetchFleamarketData_board(userId: _userViewModel.user.user_id, categoryMain:'스노보드');
     await fetchFleamarketData_my(userId: _userViewModel.user.user_id, myflea: true);
+    await fetchFleamarketData_favorite(userId: _userViewModel.user.user_id, favorite_list: true);
 
     _scrollController = ScrollController()
       ..addListener(_scrollListener);
@@ -123,7 +130,7 @@ class FleamarketListViewModel extends GetxController {
     String? categoryMain,
     String? categorySub,
     String? spot,
-    int? favorite_list,
+    bool? favorite_list,
     String? search_query,
     bool? myflea,
     String? url,
@@ -174,7 +181,7 @@ class FleamarketListViewModel extends GetxController {
     String? categoryMain = '스키',
     String? categorySub,
     String? spot,
-    int? favorite_list,
+    bool? favorite_list,
     String? search_query,
     bool? myflea,
     String? url,
@@ -223,7 +230,7 @@ class FleamarketListViewModel extends GetxController {
     String? categoryMain = '스노보드',
     String? categorySub,
     String? spot,
-    int? favorite_list,
+    bool? favorite_list,
     String? search_query,
     bool? myflea,
     String? url,
@@ -267,12 +274,61 @@ class FleamarketListViewModel extends GetxController {
     //_scrollController.jumpTo(0);
   }
 
+  Future<void> fetchFleamarketData_favorite({
+    required int userId,
+    String? categoryMain = '스노보드',
+    String? categorySub,
+    String? spot,
+    bool? favorite_list,
+    String? search_query,
+    bool? myflea,
+    String? url,
+  }) async {
+    isLoading(true);
+
+    try {
+      final response = await _fleamarketAPI.fetchFleamarketList(
+          userId: userId,
+          categoryMain: categoryMain,
+          categorySub: categorySub,
+          spot: spot,
+          favorite_list: favorite_list,
+          search_query: search_query,
+          myflea: myflea,
+          url: url
+      );
+
+      if (response.success) {
+        final fleamarketResponse = FleamarketResponse.fromJson(response.data!);
+
+        if (url == null) {
+          // For initial fetch
+          _fleamarketList_favorite.value = fleamarketResponse.results ?? [];
+        } else {
+          // For pagination
+          _fleamarketList_favorite.addAll(fleamarketResponse.results ?? []);
+        }
+
+        _nextPageUrl_favorite.value = fleamarketResponse.next ?? '';
+        _previousPageUrl_favorite.value = fleamarketResponse.previous ?? '';
+      } else {
+        // Handle error response
+        print('Failed to load data: ${response.error}');
+      }
+    } catch (e) {
+      print('Error fetching data: $e');
+    } finally {
+      isLoading(false);
+    }
+    //_scrollController.jumpTo(0);
+  }
+
   Future<void> fetchFleamarketData_my({
     required int userId,
     String? categoryMain,
     String? categorySub,
     String? spot,
-    int? favorite_list,
+    bool? favorite_list,
     String? search_query,
     bool? myflea = true,
     String? url,
@@ -419,13 +475,16 @@ class FleamarketListViewModel extends GetxController {
     await fetchFleamarketData_total(userId:  _userViewModel.user.user_id);
   }
   Future<void> onRefresh_flea_ski() async {
-    await fetchFleamarketData_ski(userId:  _userViewModel.user.user_id);
+    await fetchFleamarketData_ski(userId:  _userViewModel.user.user_id, categoryMain: "스키");
   }
   Future<void> onRefresh_flea_board() async {
-    await fetchFleamarketData_board(userId:  _userViewModel.user.user_id);
+    await fetchFleamarketData_board(userId:  _userViewModel.user.user_id, categoryMain: "스노보드");
+  }
+  Future<void> onRefresh_flea_favorite() async {
+    await fetchFleamarketData_favorite(userId:  _userViewModel.user.user_id, favorite_list: true);
   }
   Future<void> onRefresh_flea_my() async {
-    await fetchFleamarketData_my(userId:  _userViewModel.user.user_id);
+    await fetchFleamarketData_my(userId:  _userViewModel.user.user_id, myflea: true);
   }
 }
 
