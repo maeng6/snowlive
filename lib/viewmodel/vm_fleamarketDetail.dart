@@ -286,7 +286,7 @@ class FleamarketDetailViewModel extends GetxController {
   Future<void> updateFleamarketComments({required commentID, required body}) async {
     ApiResponse response = await FleamarketAPI().updateComment(commentId: commentID, body:  body);
     if(response.success)
-      // _scrollController.jumpTo(0);
+
       print('글 수정 완료');
     if(!response.success)
       Get.snackbar('Error', '수정 실패');
