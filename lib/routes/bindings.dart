@@ -9,7 +9,6 @@ import 'package:com.snowlive/viewmodel/vm_setProfile.dart';
 import 'package:com.snowlive/viewmodel/vm_tos.dart';
 import 'package:com.snowlive/viewmodel/vm_user.dart';
 import 'package:get/get.dart';
-
 import '../viewmodel/vm_fleamarketDetail.dart';
 import '../viewmodel/vm_fleamarketList.dart';
 
@@ -85,13 +84,6 @@ class FleamarketListBinding extends Bindings {
 class FleamarketDetailBinding extends Bindings {
   @override
   void dependencies() {
-
+    Get.put(FleamarketCommentDetailViewModel(), permanent: true);
   }
 }
-//
-// class FleamarketCommentDetailBinding extends Bindings {
-//   @override
-//   void dependencies() {
-//     Get.put(FleamarketCommentDetailViewModel());
-//   }
-// }

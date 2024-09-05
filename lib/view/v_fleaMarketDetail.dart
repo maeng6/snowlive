@@ -1,5 +1,6 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:com.snowlive/screens/snowliveDesignStyle.dart';
+import 'package:com.snowlive/viewmodel/vm_fleamarketCommentDetail.dart';
 import 'package:com.snowlive/viewmodel/vm_fleamarketDetail.dart';
 import 'package:com.snowlive/viewmodel/vm_fleamarketList.dart';
 import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
@@ -16,20 +17,22 @@ import '../viewmodel/vm_friendDetail.dart';
 import '../viewmodel/vm_user.dart';
 
 class FleaMarketDetailView extends StatefulWidget {
-  FleaMarketDetailView({Key? key}) : super(key: key);
-
 
   @override
   State<FleaMarketDetailView> createState() => _FleaMarketDetailViewState();
 }
 
 class _FleaMarketDetailViewState extends State<FleaMarketDetailView> {
+  final f = NumberFormat('###,###,###,###');
 
-  var f = NumberFormat('###,###,###,###');
+  final UserViewModel _userViewModel = Get.find<UserViewModel>();
 
-  UserViewModel _userViewModel = Get.find<UserViewModel>();
-  FriendDetailViewModel _friendDetailViewModel = Get.find<FriendDetailViewModel>();
-  FleamarketDetailViewModel _fleamarketDetailViewModel = Get.find<FleamarketDetailViewModel>();
+  final FriendDetailViewModel _friendDetailViewModel = Get.find<FriendDetailViewModel>();
+
+  final FleamarketDetailViewModel _fleamarketDetailViewModel = Get.find<FleamarketDetailViewModel>();
+
+  final FleamarketCommentDetailViewModel _fleamarketCommentDetailViewModel = Get.find<FleamarketCommentDetailViewModel>();
+
   final FleamarketListViewModel _fleamarketListViewModel = Get.find<FleamarketListViewModel>();
 
   @override
@@ -60,11 +63,34 @@ class _FleaMarketDetailViewState extends State<FleaMarketDetailView> {
                 },
               ),
               actions: [
-                (_fleamarketDetailViewModel.fleamarketDetail.userId != _userViewModel.user.user_id)
-                ? Icon(Icons.bookmark_border,
-                size: 22,
+                ((_fleamarketDetailViewModel.fleamarketDetail.userId != _userViewModel.user.user_id )
+                    && _fleamarketDetailViewModel.fleamarketDetail.isFavorite == false)
+                ? GestureDetector(
+                  onTap: () async{
+                    await _fleamarketDetailViewModel.addFavoriteFleamarket(
+                        fleamarketID: _fleamarketDetailViewModel.fleamarketDetail.fleaId,
+                        body: {
+                          "user_id": _userViewModel.user.user_id
+                        }
+                    );
+                  },
+                  child: Icon(Icons.bookmark_border,
+                  size: 22,
+                  ),
                 )
-                : SizedBox.shrink(),
+                : GestureDetector(
+                  onTap: () async{
+                    await _fleamarketDetailViewModel.deleteFavoriteFleamarket(
+                        fleamarketID: _fleamarketDetailViewModel.fleamarketDetail.fleaId,
+                        body: {
+                          "user_id": _userViewModel.user.user_id
+                        }
+                    );
+                  },
+                  child: Icon(Icons.bookmark,
+                    size: 22,
+                  ),
+                ),
                 Padding(
                   padding: const EdgeInsets.only(left: 10),
                   child: Icon(Icons.ios_share,
@@ -387,7 +413,6 @@ class _FleaMarketDetailViewState extends State<FleaMarketDetailView> {
                                                             ElevatedButton(
                                                               onPressed: () async {
                                                                 Navigator.pop(context);
-                                                                CustomFullScreenDialog.showDialog();
                                                                 await _fleamarketDetailViewModel.deleteFleamarket(
                                                                     fleamarketId: _fleamarketDetailViewModel.fleamarketDetail.fleaId!,
                                                                     userId: _userViewModel.user.user_id
@@ -396,7 +421,6 @@ class _FleaMarketDetailViewState extends State<FleaMarketDetailView> {
                                                                 await _fleamarketListViewModel.fetchFleamarketData_ski(userId: _userViewModel.user.user_id);
                                                                 await _fleamarketListViewModel.fetchFleamarketData_board(userId: _userViewModel.user.user_id);
                                                                 await _fleamarketListViewModel.fetchFleamarketData_my(userId: _userViewModel.user.user_id);
-                                                                CustomFullScreenDialog.cancelDialog();
                                                                 Get.back();
                                                               },
                                                               child: Text('확인',
@@ -1099,14 +1123,6 @@ class _FleaMarketDetailViewState extends State<FleaMarketDetailView> {
                                                                 color: Color(0xFF111111)
                                                             ),),
                                                         ),
-                                                        GestureDetector(
-                                                          onTap: (){},
-                                                          child: Icon(
-                                                            Icons.more_horiz,
-                                                            color: Color(0xFFdedede),
-                                                            size: 20,
-                                                          ),
-                                                        )
                                                       ],
                                                     ),
                                                   ),
@@ -1386,8 +1402,15 @@ class _FleaMarketDetailViewState extends State<FleaMarketDetailView> {
                                                                   ],
                                                                 ),
                                                                 GestureDetector(
-                                                                  onTap: () {
-                                                                    Get.toNamed(AppRoutes.fleamarketCommentDetail);
+                                                                  onTap: () async{
+                                                                    if(document.secret! &&
+                                                                        (document.userId != _userViewModel.user.user_id
+                                                                            && _fleamarketDetailViewModel.fleamarketDetail.userId != _userViewModel.user.user_id)){
+
+                                                                    }else {
+                                                                      await _fleamarketCommentDetailViewModel.fetchFleamarketCommentDetail(commentId: document.commentId!);
+                                                                      Get.toNamed(AppRoutes.fleamarketCommentDetail);
+                                                                    }
                                                                   },
                                                                   child: Padding(
                                                                     padding: const EdgeInsets.only(top: 10),

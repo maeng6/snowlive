@@ -1,4 +1,5 @@
 import 'package:com.snowlive/model/m_fleamarketDetail.dart';
+import 'package:com.snowlive/viewmodel/vm_fleamarketList.dart';
 import 'package:com.snowlive/viewmodel/vm_user.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -34,6 +35,7 @@ class FleamarketDetailViewModel extends GetxController {
   ScrollController _scrollController = ScrollController();
 
   UserViewModel _userViewModel = Get.find<UserViewModel>();
+  final FleamarketListViewModel _fleamarketListViewModel = Get.find<FleamarketListViewModel>();
 
   final TextEditingController textEditingController = TextEditingController();
   final formKey = GlobalKey<FormState>();
@@ -260,6 +262,7 @@ class FleamarketDetailViewModel extends GetxController {
     ApiResponse response = await FleamarketAPI().addFavoriteFleamarket(fleamarketId: fleamarketID, body: body);
     if(response.success)
       await fetchFleamarketDetail(fleamarketId: fleamarketID, userId: _userViewModel.user.user_id);
+      await _fleamarketListViewModel.fetchFleamarketData_favorite(userId: _userViewModel.user.user_id);
       print('찜 추가 완료');
     if(!response.success)
       Get.snackbar('Error', '찜 추가 실패');
@@ -269,6 +272,7 @@ class FleamarketDetailViewModel extends GetxController {
     ApiResponse response = await FleamarketAPI().deleteFavoriteFleamarket(fleamarketId: fleamarketID, body: body);
     if(response.success)
       await fetchFleamarketDetail(fleamarketId: fleamarketID, userId: _userViewModel.user.user_id);
+      await _fleamarketListViewModel.fetchFleamarketData_favorite(userId: _userViewModel.user.user_id);
       print('찜 삭제 완료');
     if(!response.success)
       Get.snackbar('Error', '찜 삭제 실패');

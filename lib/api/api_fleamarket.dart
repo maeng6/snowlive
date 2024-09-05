@@ -211,6 +211,19 @@ class FleamarketAPI {
     }
   }
 
+  Future<ApiResponse> fetchComment({required int commentId}) async {
+    final response = await http.get(
+      Uri.parse('$baseUrl/comments/$commentId/'),
+    );
+    if(response.statusCode==200){
+      final data = json.decode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
+      return ApiResponse.success(data);
+    } else{
+      final data = json.decode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
+      return ApiResponse.error(data);
+    }
+  }
+
   Future<ApiResponse> fetchReplies({
     required int userId,
     required int commentId,
@@ -261,12 +274,12 @@ class FleamarketAPI {
     }
   }
 
-  Future<ApiResponse> deleteReply(int replyId, int userId) async {
+  Future<ApiResponse> deleteReply(int replyId, String userId) async {
     final response = await http.delete(
       Uri.parse('$baseUrl/replies/$replyId/').replace(queryParameters: {'user_id': userId.toString()}),
     );
     if(response.statusCode==204){
-      final data = json.decode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
+      final data = '';
       return ApiResponse.success(data);
     } else{
       final data = json.decode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;

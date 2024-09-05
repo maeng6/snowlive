@@ -87,10 +87,10 @@ class AppRoutes {
       page: () => FleaMarketDetailView(),
       binding: FleamarketDetailBinding(),
     ),
-    // GetPage(
-    //   name: fleamarketCommentDetail,
-    //   page: () => FleamarketCommentDetailView(),
-    //   binding: FleamarketCommentDetailBinding(),
-    // ),
+
+    GetPage(
+      name: fleamarketCommentDetail,
+      page: () => FleamarketCommentDetailView()
+    ),
   ];
 }

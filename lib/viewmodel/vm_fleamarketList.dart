@@ -276,10 +276,10 @@ class FleamarketListViewModel extends GetxController {
 
   Future<void> fetchFleamarketData_favorite({
     required int userId,
-    String? categoryMain = '스노보드',
+    String? categoryMain,
     String? categorySub,
     String? spot,
-    bool? favorite_list,
+    bool? favorite_list = true,
     String? search_query,
     bool? myflea,
     String? url,
@@ -475,16 +475,16 @@ class FleamarketListViewModel extends GetxController {
     await fetchFleamarketData_total(userId:  _userViewModel.user.user_id);
   }
   Future<void> onRefresh_flea_ski() async {
-    await fetchFleamarketData_ski(userId:  _userViewModel.user.user_id, categoryMain: "스키");
+    await fetchFleamarketData_ski(userId:  _userViewModel.user.user_id);
   }
   Future<void> onRefresh_flea_board() async {
-    await fetchFleamarketData_board(userId:  _userViewModel.user.user_id, categoryMain: "스노보드");
+    await fetchFleamarketData_board(userId:  _userViewModel.user.user_id);
   }
   Future<void> onRefresh_flea_favorite() async {
-    await fetchFleamarketData_favorite(userId:  _userViewModel.user.user_id, favorite_list: true);
+    await fetchFleamarketData_favorite(userId:  _userViewModel.user.user_id);
   }
   Future<void> onRefresh_flea_my() async {
-    await fetchFleamarketData_my(userId:  _userViewModel.user.user_id, myflea: true);
+    await fetchFleamarketData_my(userId:  _userViewModel.user.user_id);
   }
 }
 
