@@ -278,7 +278,7 @@ class _FleaMarketDetailViewState extends State<FleaMarketDetailView> {
                         context: context,
                         builder: (context) {
                           return Container(
-                            height: 130,
+                            height: 180,
                             child: Padding(
                               padding: const EdgeInsets.symmetric(
                                   horizontal: 20.0, vertical: 14),
