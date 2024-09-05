@@ -43,9 +43,10 @@ class _FleaMarketDetailViewState extends State<FleaMarketDetailView> {
         top: false,
         bottom: true,
         child: Scaffold(
+          extendBodyBehindAppBar: true,
           backgroundColor: Colors.white,
           appBar: PreferredSize(
-            preferredSize: Size.fromHeight(58),
+            preferredSize: Size.fromHeight(88),
             child: AppBar(
               leading: GestureDetector(
                 child: Image.asset(
@@ -60,373 +61,390 @@ class _FleaMarketDetailViewState extends State<FleaMarketDetailView> {
               ),
               actions: [
                 (_fleamarketDetailViewModel.fleamarketDetail.userId != _userViewModel.user.user_id)
-                    ? GestureDetector(
-                  onTap: () => showModalBottomSheet(
-                      enableDrag: false,
-                      context: context,
-                      builder: (context) {
-                        return Container(
-                          height: 180,
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 20.0, vertical: 14),
-                            child: Column(
-                              children: [
-                                //TODO: 신고하기
-                                GestureDetector(
-                                  child: ListTile(
-                                    contentPadding: EdgeInsets.zero,
-                                    title: Center(
-                                      child: Text(
-                                        '신고하기',
-                                        style: TextStyle(
-                                          fontSize: 15,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                    ),
-                                    //selected: _isSelected[index]!,
-                                    onTap: () async {
-                                      Get.dialog(AlertDialog(
-                                        contentPadding: EdgeInsets.only(
-                                            bottom: 0,
-                                            left: 20,
-                                            right: 20,
-                                            top: 30),
-                                        elevation: 0,
-                                        shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                            BorderRadius.circular(
-                                                10.0)),
-                                        buttonPadding:
-                                        EdgeInsets.symmetric(
-                                            horizontal: 20,
-                                            vertical: 0),
-                                        content: Text(
-                                          '이 회원을 신고하시겠습니까?',
+                ? Icon(Icons.bookmark_border,
+                size: 22,
+                )
+                : SizedBox.shrink(),
+                Padding(
+                  padding: const EdgeInsets.only(left: 10),
+                  child: Icon(Icons.ios_share,
+                  size: 22,
+                  ),
+                ),
+                (_fleamarketDetailViewModel.fleamarketDetail.userId != _userViewModel.user.user_id)
+                    ? Padding(
+                      padding: const EdgeInsets.only(left: 10),
+                      child: GestureDetector(
+                                        onTap: () => showModalBottomSheet(
+                        enableDrag: false,
+                        context: context,
+                        builder: (context) {
+                          return Container(
+                            height: 180,
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 20.0, vertical: 14),
+                              child: Column(
+                                children: [
+                                  //TODO: 신고하기
+                                  GestureDetector(
+                                    child: ListTile(
+                                      contentPadding: EdgeInsets.zero,
+                                      title: Center(
+                                        child: Text(
+                                          '신고하기',
                                           style: TextStyle(
-                                              fontWeight: FontWeight.w600,
-                                              fontSize: 15),
-                                        ),
-                                        actions: [
-                                          Row(
-                                            children: [
-                                              TextButton(
-                                                  onPressed: () {
-                                                    Navigator.pop(context);
-                                                  },
-                                                  child: Text('취소',
-                                                    style: TextStyle(
-                                                      fontSize: 15,
-                                                      color: Color(0xFF949494),
-                                                      fontWeight: FontWeight.bold,
-                                                    ),
-                                                  )),
-                                              TextButton(
-                                                  onPressed: () async {
-                                                    await _fleamarketDetailViewModel.reportFleamarket(
-                                                        {
-                                                          "user_id": _userViewModel.user.user_id,
-                                                          "flea_id": _fleamarketDetailViewModel.fleamarketDetail.fleaId
-                                                        }
-                                                    );
-                                                    Navigator.pop(context);
-                                                    Navigator.pop(context);
-                                                  },
-                                                  child: Text('신고',
-                                                    style: TextStyle(
-                                                      fontSize: 15,
-                                                      color: Color(0xFF3D83ED),
-                                                      fontWeight: FontWeight.bold,
-                                                    ),
-                                                  ))
-                                            ],
-                                            mainAxisAlignment: MainAxisAlignment.end,
-                                          )
-                                        ],
-                                      ));
-                                    },
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                        BorderRadius.circular(10)),
-                                  ),
-                                ),
-                                //TODO: 숨기기
-                                GestureDetector(
-                                  child: ListTile(
-                                    contentPadding: EdgeInsets.zero,
-                                    title: Center(
-                                      child: Text(
-                                        '이 회원의 모든 글 숨기기',
-                                        style: TextStyle(
-                                          fontSize: 15,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                    ),
-                                    //selected: _isSelected[index]!,
-                                    onTap: () async {
-                                      Get.dialog(AlertDialog(
-                                        contentPadding: EdgeInsets.only(bottom: 0, left: 20, right: 20, top: 30),
-                                        elevation: 0,
-                                        shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(10.0)),
-                                        buttonPadding:
-                                        EdgeInsets.symmetric(
-                                            horizontal: 20,
-                                            vertical: 0),
-                                        content:  Container(
-                                          height: _size.width*0.17,
-                                          child: Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                '이 회원의 모든 글을 숨기시겠습니까?',
-                                                style: TextStyle(
-                                                    fontWeight: FontWeight.w600,
-                                                    fontSize: 15),
-                                              ),
-                                              SizedBox(
-                                                height: 10,
-                                              ),
-                                              Text(
-                                                '차단해제는 [더보기 - 친구 - 설정 - 차단목록]에서\n하실 수 있습니다.',
-                                                style: TextStyle(
-                                                    fontWeight: FontWeight.w600,
-                                                    fontSize: 12,
-                                                    color: Color(0xFF555555)),
-                                              ),
-                                            ],
+                                            fontSize: 15,
+                                            fontWeight: FontWeight.bold,
                                           ),
                                         ),
-                                        actions: [
-                                          Row(
-                                            children: [
-                                              TextButton(
-                                                  onPressed: () {
-                                                    Navigator.pop(context);
-                                                  },
-                                                  child: Text(
-                                                    '취소',
-                                                    style: TextStyle(
-                                                      fontSize: 15,
-                                                      color: Color(0xFF949494),
-                                                      fontWeight: FontWeight.bold,
-                                                    ),
-                                                  )),
-                                              TextButton(
-                                                  onPressed: () async{
-                                                    await _userViewModel.block_user({
-                                                      "user_id": _userViewModel.user.user_id,
-                                                      "block_user_id": _fleamarketDetailViewModel.fleamarketDetail.userId
-                                                    });
-                                                    Navigator.pop(context);
-                                                    Navigator.pop(context);
-                                                    Navigator.pop(context);
-                                                  },
-                                                  child: Text('확인',
-                                                    style: TextStyle(
-                                                      fontSize: 15,
-                                                      color: Color(0xFF3D83ED),
-                                                      fontWeight: FontWeight.bold,
-                                                    ),
-                                                  ))
-                                            ],
-                                            mainAxisAlignment: MainAxisAlignment.end,
-                                          )
-                                        ],
-                                      ));
-                                    },
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(10)),
-                                  ),
-                                )
-                              ],
-                            ),
-                          ),
-                        );
-                      }),
-                  child: Padding(
-                    padding: const EdgeInsets.only(bottom: 1, right: 16),
-                    child: Icon(
-                      Icons.more_horiz_rounded,
-                      size: 28,
-                      color: Color(0xFF111111),
-                    ),
-                  ),
-                )
-                    : GestureDetector(
-                  onTap: () => showModalBottomSheet(
-                      enableDrag: false,
-                      context: context,
-                      builder: (context) {
-                        return Container(
-                          height: 130,
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 20.0, vertical: 14),
-                            child: Column(
-                              children: [
-                                //TODO: 수정하기
-                                GestureDetector(
-                                  child: ListTile(
-                                    contentPadding: EdgeInsets.zero,
-                                    title: Center(
-                                      child: Text(
-                                        '수정',
-                                        style: TextStyle(
-                                            fontSize: 15,
-                                            fontWeight: FontWeight.bold,
-                                            color: Color(0xFFD63636)
-                                        ),
                                       ),
-                                    ),
-                                    //selected: _isSelected[index]!,
-                                    onTap: () async {
-                                      Navigator.pop(context);
-                                      // Get.toNamed(page);
-                                    },
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                        BorderRadius.circular(10)),
-                                  ),
-                                ),
-                                //TODO: 삭제하기
-                                GestureDetector(
-                                  child: ListTile(
-                                    contentPadding: EdgeInsets.zero,
-                                    title: Center(
-                                      child: Text(
-                                        '삭제',
-                                        style: TextStyle(
-                                            fontSize: 15,
-                                            fontWeight: FontWeight.bold,
-                                            color: Color(0xFFD63636)
-                                        ),
-                                      ),
-                                    ),
-                                    //selected: _isSelected[index]!,
-                                    onTap: () async {
-                                      Navigator.pop(context);
-                                      showModalBottomSheet(
-                                          context: context,
-                                          builder: (context) {
-                                            return Container(
-                                              color: Colors.white,
-                                              height: 180,
-                                              child: Padding(
-                                                padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                                                child: Column(
-                                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                                  mainAxisAlignment: MainAxisAlignment.start,
-                                                  children: [
-                                                    SizedBox(
-                                                      height: 30,
-                                                    ),
-                                                    Text(
-                                                      '삭제하시겠습니까?',
+                                      //selected: _isSelected[index]!,
+                                      onTap: () async {
+                                        Get.dialog(AlertDialog(
+                                          contentPadding: EdgeInsets.only(
+                                              bottom: 0,
+                                              left: 20,
+                                              right: 20,
+                                              top: 30),
+                                          elevation: 0,
+                                          shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                              BorderRadius.circular(
+                                                  10.0)),
+                                          buttonPadding:
+                                          EdgeInsets.symmetric(
+                                              horizontal: 20,
+                                              vertical: 0),
+                                          content: Text(
+                                            '이 회원을 신고하시겠습니까?',
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.w600,
+                                                fontSize: 15),
+                                          ),
+                                          actions: [
+                                            Row(
+                                              children: [
+                                                TextButton(
+                                                    onPressed: () {
+                                                      Navigator.pop(context);
+                                                    },
+                                                    child: Text('취소',
                                                       style: TextStyle(
-                                                          fontSize: 20,
-                                                          fontWeight: FontWeight.bold,
-                                                          color: Color(0xFF111111)),
-                                                    ),
-                                                    SizedBox(
-                                                      height: 30,
-                                                    ),
-                                                    Row(
-                                                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                                      children: [
-                                                        Expanded(
-                                                          child:
-                                                          ElevatedButton(
-                                                            onPressed:
-                                                                () {
-                                                              Navigator.pop(context);
-                                                            },
-                                                            child: Text(
-                                                              '취소',
-                                                              style: TextStyle(
-                                                                  color: Colors
-                                                                      .white,
-                                                                  fontSize: 15,
-                                                                  fontWeight: FontWeight.bold),
-                                                            ),
-                                                            style: TextButton.styleFrom(
-                                                                splashFactory:
-                                                                InkRipple.splashFactory,
-                                                                elevation: 0,
-                                                                minimumSize:
-                                                                Size(100, 56),
-                                                                backgroundColor:
-                                                                Color(0xff555555),
-                                                                padding: EdgeInsets.symmetric(horizontal: 0)),
-                                                          ),
-                                                        ),
-                                                        SizedBox(
-                                                          width: 10,
-                                                        ),
-                                                        Expanded(
-                                                          child:
-                                                          ElevatedButton(
-                                                            onPressed: () async {
-                                                              Navigator.pop(context);
-                                                              CustomFullScreenDialog.showDialog();
-                                                              await _fleamarketDetailViewModel.deleteFleamarket(
-                                                                  fleamarketId: _fleamarketDetailViewModel.fleamarketDetail.fleaId!,
-                                                                  userId: _userViewModel.user.user_id
-                                                              );
-                                                              await _fleamarketListViewModel.fetchFleamarketData_total(userId: _userViewModel.user.user_id);
-                                                              await _fleamarketListViewModel.fetchFleamarketData_ski(userId: _userViewModel.user.user_id);
-                                                              await _fleamarketListViewModel.fetchFleamarketData_board(userId: _userViewModel.user.user_id);
-                                                              await _fleamarketListViewModel.fetchFleamarketData_my(userId: _userViewModel.user.user_id);
-                                                              CustomFullScreenDialog.cancelDialog();
-                                                              Get.back();
-                                                            },
-                                                            child: Text('확인',
-                                                              style: TextStyle(
-                                                                  color: Colors.white,
-                                                                  fontSize: 15,
-                                                                  fontWeight: FontWeight.bold),
-                                                            ),
-                                                            style: TextButton.styleFrom(
-                                                                splashFactory: InkRipple.splashFactory,
-                                                                elevation: 0,
-                                                                minimumSize:
-                                                                Size(100, 56),
-                                                                backgroundColor:
-                                                                Color(0xff2C97FB),
-                                                                padding: EdgeInsets.symmetric(horizontal: 0)),
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    )
-                                                  ],
-                                                ),
-                                              ),
-                                            );
-                                          });
-                                    },
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                        BorderRadius.circular(10)),
+                                                        fontSize: 15,
+                                                        color: Color(0xFF949494),
+                                                        fontWeight: FontWeight.bold,
+                                                      ),
+                                                    )),
+                                                TextButton(
+                                                    onPressed: () async {
+                                                      await _fleamarketDetailViewModel.reportFleamarket(
+                                                          {
+                                                            "user_id": _userViewModel.user.user_id,
+                                                            "flea_id": _fleamarketDetailViewModel.fleamarketDetail.fleaId
+                                                          }
+                                                      );
+                                                      Navigator.pop(context);
+                                                      Navigator.pop(context);
+                                                    },
+                                                    child: Text('신고',
+                                                      style: TextStyle(
+                                                        fontSize: 15,
+                                                        color: Color(0xFF3D83ED),
+                                                        fontWeight: FontWeight.bold,
+                                                      ),
+                                                    ))
+                                              ],
+                                              mainAxisAlignment: MainAxisAlignment.end,
+                                            )
+                                          ],
+                                        ));
+                                      },
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                          BorderRadius.circular(10)),
+                                    ),
                                   ),
-                                ),
-                              ],
+                                  //TODO: 숨기기
+                                  GestureDetector(
+                                    child: ListTile(
+                                      contentPadding: EdgeInsets.zero,
+                                      title: Center(
+                                        child: Text(
+                                          '이 회원의 모든 글 숨기기',
+                                          style: TextStyle(
+                                            fontSize: 15,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ),
+                                      //selected: _isSelected[index]!,
+                                      onTap: () async {
+                                        Get.dialog(AlertDialog(
+                                          contentPadding: EdgeInsets.only(bottom: 0, left: 20, right: 20, top: 30),
+                                          elevation: 0,
+                                          shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.circular(10.0)),
+                                          buttonPadding:
+                                          EdgeInsets.symmetric(
+                                              horizontal: 20,
+                                              vertical: 0),
+                                          content:  Container(
+                                            height: _size.width*0.17,
+                                            child: Column(
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  '이 회원의 모든 글을 숨기시겠습니까?',
+                                                  style: TextStyle(
+                                                      fontWeight: FontWeight.w600,
+                                                      fontSize: 15),
+                                                ),
+                                                SizedBox(
+                                                  height: 10,
+                                                ),
+                                                Text(
+                                                  '차단해제는 [더보기 - 친구 - 설정 - 차단목록]에서\n하실 수 있습니다.',
+                                                  style: TextStyle(
+                                                      fontWeight: FontWeight.w600,
+                                                      fontSize: 12,
+                                                      color: Color(0xFF555555)),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                          actions: [
+                                            Row(
+                                              children: [
+                                                TextButton(
+                                                    onPressed: () {
+                                                      Navigator.pop(context);
+                                                    },
+                                                    child: Text(
+                                                      '취소',
+                                                      style: TextStyle(
+                                                        fontSize: 15,
+                                                        color: Color(0xFF949494),
+                                                        fontWeight: FontWeight.bold,
+                                                      ),
+                                                    )),
+                                                TextButton(
+                                                    onPressed: () async{
+                                                      await _userViewModel.block_user({
+                                                        "user_id": _userViewModel.user.user_id,
+                                                        "block_user_id": _fleamarketDetailViewModel.fleamarketDetail.userId
+                                                      });
+                                                      Navigator.pop(context);
+                                                      Navigator.pop(context);
+                                                      Navigator.pop(context);
+                                                    },
+                                                    child: Text('확인',
+                                                      style: TextStyle(
+                                                        fontSize: 15,
+                                                        color: Color(0xFF3D83ED),
+                                                        fontWeight: FontWeight.bold,
+                                                      ),
+                                                    ))
+                                              ],
+                                              mainAxisAlignment: MainAxisAlignment.end,
+                                            )
+                                          ],
+                                        ));
+                                      },
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(10)),
+                                    ),
+                                  )
+                                ],
+                              ),
                             ),
-                          ),
-                        );
-                      }),
-                  child: Padding(
-                    padding: const EdgeInsets.only(bottom: 1, right: 16),
-                    child: Icon(
-                      Icons.more_horiz_rounded,
-                      size: 28,
-                      color: Color(0xFF111111),
-                    ),
-                  ),
-                )
+                          );
+                        }),
+                                        child: Padding(
+                      padding: const EdgeInsets.only(bottom: 1, right: 16),
+                      child: Icon(
+                        Icons.more_vert,
+                        size: 22,
+                        color: Color(0xFF111111),
+                      ),
+                                        ),
+                                      ),
+                    )
+                    : Padding(
+                      padding: const EdgeInsets.only(left: 10),
+                      child: GestureDetector(
+                                        onTap: () => showModalBottomSheet(
+                        enableDrag: false,
+                        context: context,
+                        builder: (context) {
+                          return Container(
+                            height: 130,
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 20.0, vertical: 14),
+                              child: Column(
+                                children: [
+                                  //TODO: 수정하기
+                                  GestureDetector(
+                                    child: ListTile(
+                                      contentPadding: EdgeInsets.zero,
+                                      title: Center(
+                                        child: Text(
+                                          '수정',
+                                          style: TextStyle(
+                                              fontSize: 15,
+                                              fontWeight: FontWeight.bold,
+                                              color: Color(0xFFD63636)
+                                          ),
+                                        ),
+                                      ),
+                                      //selected: _isSelected[index]!,
+                                      onTap: () async {
+                                        Navigator.pop(context);
+                                        // Get.toNamed(page);
+                                      },
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                          BorderRadius.circular(10)),
+                                    ),
+                                  ),
+                                  //TODO: 삭제하기
+                                  GestureDetector(
+                                    child: ListTile(
+                                      contentPadding: EdgeInsets.zero,
+                                      title: Center(
+                                        child: Text(
+                                          '삭제',
+                                          style: TextStyle(
+                                              fontSize: 15,
+                                              fontWeight: FontWeight.bold,
+                                              color: Color(0xFFD63636)
+                                          ),
+                                        ),
+                                      ),
+                                      //selected: _isSelected[index]!,
+                                      onTap: () async {
+                                        Navigator.pop(context);
+                                        showModalBottomSheet(
+                                            context: context,
+                                            builder: (context) {
+                                              return Container(
+                                                color: Colors.white,
+                                                height: 180,
+                                                child: Padding(
+                                                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                                                  child: Column(
+                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                    mainAxisAlignment: MainAxisAlignment.start,
+                                                    children: [
+                                                      SizedBox(
+                                                        height: 30,
+                                                      ),
+                                                      Text(
+                                                        '삭제하시겠습니까?',
+                                                        style: TextStyle(
+                                                            fontSize: 20,
+                                                            fontWeight: FontWeight.bold,
+                                                            color: Color(0xFF111111)),
+                                                      ),
+                                                      SizedBox(
+                                                        height: 30,
+                                                      ),
+                                                      Row(
+                                                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                                        children: [
+                                                          Expanded(
+                                                            child:
+                                                            ElevatedButton(
+                                                              onPressed:
+                                                                  () {
+                                                                Navigator.pop(context);
+                                                              },
+                                                              child: Text(
+                                                                '취소',
+                                                                style: TextStyle(
+                                                                    color: Colors
+                                                                        .white,
+                                                                    fontSize: 15,
+                                                                    fontWeight: FontWeight.bold),
+                                                              ),
+                                                              style: TextButton.styleFrom(
+                                                                  splashFactory:
+                                                                  InkRipple.splashFactory,
+                                                                  elevation: 0,
+                                                                  minimumSize:
+                                                                  Size(100, 56),
+                                                                  backgroundColor:
+                                                                  Color(0xff555555),
+                                                                  padding: EdgeInsets.symmetric(horizontal: 0)),
+                                                            ),
+                                                          ),
+                                                          SizedBox(
+                                                            width: 10,
+                                                          ),
+                                                          Expanded(
+                                                            child:
+                                                            ElevatedButton(
+                                                              onPressed: () async {
+                                                                Navigator.pop(context);
+                                                                CustomFullScreenDialog.showDialog();
+                                                                await _fleamarketDetailViewModel.deleteFleamarket(
+                                                                    fleamarketId: _fleamarketDetailViewModel.fleamarketDetail.fleaId!,
+                                                                    userId: _userViewModel.user.user_id
+                                                                );
+                                                                await _fleamarketListViewModel.fetchFleamarketData_total(userId: _userViewModel.user.user_id);
+                                                                await _fleamarketListViewModel.fetchFleamarketData_ski(userId: _userViewModel.user.user_id);
+                                                                await _fleamarketListViewModel.fetchFleamarketData_board(userId: _userViewModel.user.user_id);
+                                                                await _fleamarketListViewModel.fetchFleamarketData_my(userId: _userViewModel.user.user_id);
+                                                                CustomFullScreenDialog.cancelDialog();
+                                                                Get.back();
+                                                              },
+                                                              child: Text('확인',
+                                                                style: TextStyle(
+                                                                    color: Colors.white,
+                                                                    fontSize: 15,
+                                                                    fontWeight: FontWeight.bold),
+                                                              ),
+                                                              style: TextButton.styleFrom(
+                                                                  splashFactory: InkRipple.splashFactory,
+                                                                  elevation: 0,
+                                                                  minimumSize:
+                                                                  Size(100, 56),
+                                                                  backgroundColor:
+                                                                  Color(0xff2C97FB),
+                                                                  padding: EdgeInsets.symmetric(horizontal: 0)),
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      )
+                                                    ],
+                                                  ),
+                                                ),
+                                              );
+                                            });
+                                      },
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                          BorderRadius.circular(10)),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                        }),
+                                        child: Padding(
+                      padding: const EdgeInsets.only(bottom: 1, right: 16),
+                      child: Icon(
+                        Icons.more_vert,
+                        size: 22,
+                        color: Color(0xFF111111),
+                      ),
+                                        ),
+                                      ),
+                    )
               ],
-              backgroundColor: Colors.white,
+              backgroundColor: Colors.transparent,
               elevation: 0.0,
             ),
           ),
@@ -585,6 +603,8 @@ class _FleaMarketDetailViewState extends State<FleaMarketDetailView> {
                                   ),
                                 ],
                               ),
+                            if (_fleamarketDetailViewModel.fleamarketDetail.photos!.isEmpty)
+                              SizedBox(height: 100,),
                             SizedBox(
                               height: 16,
                             ),
@@ -593,7 +613,7 @@ class _FleaMarketDetailViewState extends State<FleaMarketDetailView> {
                               child: Container(
                                   child: Column(
                                     children: [
-                                      //TODO: 프사, 닉네임 (SNS연결버튼은 옮겨야함)
+                                      //TODO: 프사, 닉네임
                                       Row(
                                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                         children: [
@@ -709,146 +729,7 @@ class _FleaMarketDetailViewState extends State<FleaMarketDetailView> {
                                     SizedBox(
                                       height: 4,
                                     ),
-                                    if(_fleamarketDetailViewModel.fleamarketDetail.userId == _userViewModel.user.user_id)
-                                      Row(
-                                      mainAxisAlignment: MainAxisAlignment.start, // 좌측 정렬
-                                      children: [
-                                        GestureDetector(
-                                          onTap: () async {
-                                            showModalBottomSheet(
-                                              enableDrag: false,
-                                              context: context,
-                                              builder: (context) {
-                                                return Container(
-                                                  height: 230,
-                                                  child: Padding(
-                                                    padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 14),
-                                                    child: Column(
-                                                      children: [
-                                                        GestureDetector(
-                                                          child: ListTile(
-                                                            contentPadding: EdgeInsets.zero,
-                                                            title: Center(
-                                                              child: Text(
-                                                                '${FleamarketStatus.soldOut.korean}',
-                                                                style: TextStyle(
-                                                                  fontSize: 15,
-                                                                  fontWeight: FontWeight.bold,
-                                                                ),
-                                                              ),
-                                                            ),
-                                                            onTap: () async {
-                                                              Navigator.pop(context);
-                                                              await _fleamarketDetailViewModel.updateStatus(
-                                                                fleamarketId: _fleamarketDetailViewModel.fleamarketDetail.fleaId!,
-                                                                body:{
-                                                                  "user_id" : _userViewModel.user.user_id,
-                                                                  "status" :  '${FleamarketStatus.soldOut.korean}',
-                                                                },
-                                                              );
-                                                              await _fleamarketDetailViewModel.fetchFleamarketDetail(
-                                                                fleamarketId: _fleamarketDetailViewModel.fleamarketDetail.fleaId!,
-                                                                userId: _userViewModel.user.user_id,
-                                                              );
-                                                            },
-                                                            shape: RoundedRectangleBorder(
-                                                              borderRadius: BorderRadius.circular(10),
-                                                            ),
-                                                          ),
-                                                        ),
-                                                        GestureDetector(
-                                                          child: ListTile(
-                                                            contentPadding: EdgeInsets.zero,
-                                                            title: Center(
-                                                              child: Text(
-                                                                '${FleamarketStatus.onBooking.korean}',
-                                                                style: TextStyle(
-                                                                  fontSize: 15,
-                                                                  fontWeight: FontWeight.bold,
-                                                                ),
-                                                              ),
-                                                            ),
-                                                            onTap: () async {
-                                                              Navigator.pop(context);
-                                                              await _fleamarketDetailViewModel.updateStatus(
-                                                                fleamarketId: _fleamarketDetailViewModel.fleamarketDetail.fleaId!,
-                                                                body:{
-                                                                  "user_id" : _userViewModel.user.user_id,
-                                                                  "status" :  '${FleamarketStatus.onBooking.korean}',
-                                                                },
-                                                              );
-                                                              await _fleamarketDetailViewModel.fetchFleamarketDetail(
-                                                                fleamarketId: _fleamarketDetailViewModel.fleamarketDetail.fleaId!,
-                                                                userId: _userViewModel.user.user_id,
-                                                              );
-                                                            },
-                                                            shape: RoundedRectangleBorder(
-                                                              borderRadius: BorderRadius.circular(10),
-                                                            ),
-                                                          ),
-                                                        ),
-                                                        GestureDetector(
-                                                          child: ListTile(
-                                                            contentPadding: EdgeInsets.zero,
-                                                            title: Center(
-                                                              child: Text(
-                                                                '${FleamarketStatus.forSale.korean}',
-                                                                style: TextStyle(
-                                                                  fontSize: 15,
-                                                                  fontWeight: FontWeight.bold,
-                                                                ),
-                                                              ),
-                                                            ),
-                                                            onTap: () async {
-                                                              Navigator.pop(context);
-                                                              await _fleamarketDetailViewModel.updateStatus(
-                                                                fleamarketId: _fleamarketDetailViewModel.fleamarketDetail.fleaId!,
-                                                                body:{
-                                                                  "user_id" : _userViewModel.user.user_id,
-                                                                  "status" :  '${FleamarketStatus.forSale.korean}',
-                                                                },
-                                                              );
-                                                              await _fleamarketDetailViewModel.fetchFleamarketDetail(
-                                                                fleamarketId: _fleamarketDetailViewModel.fleamarketDetail.fleaId!,
-                                                                userId: _userViewModel.user.user_id,
-                                                              );
-                                                            },
-                                                            shape: RoundedRectangleBorder(
-                                                              borderRadius: BorderRadius.circular(10),
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                );
-                                              },
-                                            );
-                                          },
-                                          child: Container(
-                                            decoration: BoxDecoration(
-                                              borderRadius: BorderRadius.circular(4),
-                                              color:
-                                              (_fleamarketDetailViewModel.fleamarketDetail.status == '거래완료')
-                                              ? Color(0xFF949494)
-                                              : SDSColor.snowliveBlue,
-                                            ),
-                                            padding: EdgeInsets.symmetric(horizontal: 5, vertical: 3),
-                                            child:
-                                            Text(
-                                              _fleamarketDetailViewModel.fleamarketDetail.status!,
-                                              style: TextStyle(
-                                                color: SDSColor.snowliveWhite,
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 12,
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    if(_fleamarketDetailViewModel.fleamarketDetail.userId != _userViewModel.user.user_id)
-                                      Row(
+                                    Row(
                                       mainAxisAlignment: MainAxisAlignment.start, // 좌측 정렬
                                       children: [
                                         Container(
@@ -1020,12 +901,165 @@ class _FleaMarketDetailViewState extends State<FleaMarketDetailView> {
                                     SizedBox(
                                       height: 16,
                                     ),
+                                    if(_fleamarketDetailViewModel.fleamarketDetail.userId == _userViewModel.user.user_id)
+                                      GestureDetector(
+                                        onTap: () async {
+                                          showModalBottomSheet(
+                                            enableDrag: false,
+                                            context: context,
+                                            builder: (context) {
+                                              return Container(
+                                                height: 230,
+                                                child: Padding(
+                                                  padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 14),
+                                                  child: Column(
+                                                    children: [
+                                                      GestureDetector(
+                                                        child: ListTile(
+                                                          contentPadding: EdgeInsets.zero,
+                                                          title: Center(
+                                                            child: Text(
+                                                              '${FleamarketStatus.soldOut.korean}',
+                                                              style: TextStyle(
+                                                                fontSize: 15,
+                                                                fontWeight: FontWeight.bold,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                          onTap: () async {
+                                                            Navigator.pop(context);
+                                                            await _fleamarketDetailViewModel.updateStatus(
+                                                              fleamarketId: _fleamarketDetailViewModel.fleamarketDetail.fleaId!,
+                                                              body: {
+                                                                "user_id": _userViewModel.user.user_id,
+                                                                "status": '${FleamarketStatus.soldOut.korean}',
+                                                              },
+                                                            );
+                                                            await _fleamarketDetailViewModel.fetchFleamarketDetail(
+                                                              fleamarketId: _fleamarketDetailViewModel.fleamarketDetail.fleaId!,
+                                                              userId: _userViewModel.user.user_id,
+                                                            );
+                                                          },
+                                                          shape: RoundedRectangleBorder(
+                                                            borderRadius: BorderRadius.circular(10),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      GestureDetector(
+                                                        child: ListTile(
+                                                          contentPadding: EdgeInsets.zero,
+                                                          title: Center(
+                                                            child: Text(
+                                                              '${FleamarketStatus.onBooking.korean}',
+                                                              style: TextStyle(
+                                                                fontSize: 15,
+                                                                fontWeight: FontWeight.bold,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                          onTap: () async {
+                                                            Navigator.pop(context);
+                                                            await _fleamarketDetailViewModel.updateStatus(
+                                                              fleamarketId: _fleamarketDetailViewModel.fleamarketDetail.fleaId!,
+                                                              body: {
+                                                                "user_id": _userViewModel.user.user_id,
+                                                                "status": '${FleamarketStatus.onBooking.korean}',
+                                                              },
+                                                            );
+                                                            await _fleamarketDetailViewModel.fetchFleamarketDetail(
+                                                              fleamarketId: _fleamarketDetailViewModel.fleamarketDetail.fleaId!,
+                                                              userId: _userViewModel.user.user_id,
+                                                            );
+                                                          },
+                                                          shape: RoundedRectangleBorder(
+                                                            borderRadius: BorderRadius.circular(10),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      GestureDetector(
+                                                        child: ListTile(
+                                                          contentPadding: EdgeInsets.zero,
+                                                          title: Center(
+                                                            child: Text(
+                                                              '${FleamarketStatus.forSale.korean}',
+                                                              style: TextStyle(
+                                                                fontSize: 15,
+                                                                fontWeight: FontWeight.bold,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                          onTap: () async {
+                                                            Navigator.pop(context);
+                                                            await _fleamarketDetailViewModel.updateStatus(
+                                                              fleamarketId: _fleamarketDetailViewModel.fleamarketDetail.fleaId!,
+                                                              body: {
+                                                                "user_id": _userViewModel.user.user_id,
+                                                                "status": '${FleamarketStatus.forSale.korean}',
+                                                              },
+                                                            );
+                                                            await _fleamarketDetailViewModel.fetchFleamarketDetail(
+                                                              fleamarketId: _fleamarketDetailViewModel.fleamarketDetail.fleaId!,
+                                                              userId: _userViewModel.user.user_id,
+                                                            );
+                                                          },
+                                                          shape: RoundedRectangleBorder(
+                                                            borderRadius: BorderRadius.circular(10),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              );
+                                            },
+                                          );
+                                        },
+                                        child: Container(
+                                          width: double.infinity,
+                                          decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.circular(4),
+                                            color: SDSColor.snowliveWhite,
+                                            border: Border.all(
+                                              color: Color(0xFF949494),
+                                              width: 1.0,
+                                            ),
+                                          ),
+                                          padding: EdgeInsets.symmetric(horizontal: 5, vertical: 10),
+                                          child: Center( // 텍스트 중앙 정렬
+                                            child: Text(
+                                              '거래 상태 설정하기기',
+                                              style: TextStyle(
+                                                color: Color(0xFF444444), // 텍스트 색상 회색
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 15,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+
                                   ]),
                             ),
-                            SizedBox(
-                              height: 40,
-                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(top: 30, bottom: 15),
+                              child: Container(
+                                width: double.infinity,
+                                height: 10.0,
+                                color: Color(0xFFF5F5F5),
+                              ),
+                            )
                           ],
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 16, right: 16, top: 10, bottom: 10),
+                          child: Row(
+                            children: [
+                            Text('댓글',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold
+                            ),
+                            )
+                          ],),
                         ),
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -1079,394 +1113,320 @@ class _FleaMarketDetailViewState extends State<FleaMarketDetailView> {
                                                 if(!document.secret! ||
                                                     (document.secret! && (document.userId == _userViewModel.user.user_id
                                                     || _fleamarketDetailViewModel.fleamarketDetail.userId == _userViewModel.user.user_id)))
-                                                Column(
-                                                  children: [
-                                                    Row(
-                                                      crossAxisAlignment: CrossAxisAlignment.center,
-                                                      mainAxisAlignment: MainAxisAlignment.start,
-                                                      children: [
-                                                        if (document.userInfo!.profileImageUrlUser != "")
-                                                          GestureDetector(
-                                                            onTap: () async{
-                                                              await _friendDetailViewModel.fetchFriendDetailInfo(userId: _userViewModel.user.user_id, friendUserId: document.userInfo!.userId!, season: _friendDetailViewModel.seasonDate);
-                                                              Get.toNamed(AppRoutes.friendDetail);
-                                                            },
-                                                            child: Container(
-                                                              width: 40,
-                                                              height: 40,
-                                                              decoration: BoxDecoration(
+                                                  Column(
+                                                    children: [
+                                                      Row(
+                                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                                        mainAxisAlignment: MainAxisAlignment.start,
+                                                        children: [
+                                                          if (document.userInfo!.profileImageUrlUser != "")
+                                                            GestureDetector(
+                                                              onTap: () async {
+                                                                await _friendDetailViewModel.fetchFriendDetailInfo(
+                                                                    userId: _userViewModel.user.user_id,
+                                                                    friendUserId: document.userInfo!.userId!,
+                                                                    season: _friendDetailViewModel.seasonDate);
+                                                                Get.toNamed(AppRoutes.friendDetail);
+                                                              },
+                                                              child: Container(
+                                                                width: 40,
+                                                                height: 40,
+                                                                decoration: BoxDecoration(
                                                                   color: Color(0xFFDFECFF),
-                                                                  borderRadius: BorderRadius.circular(50)
+                                                                  borderRadius: BorderRadius.circular(50),
+                                                                ),
+                                                                child: ExtendedImage.network(
+                                                                  document.userInfo!.profileImageUrlUser!,
+                                                                  cache: true,
+                                                                  shape: BoxShape.circle,
+                                                                  borderRadius: BorderRadius.circular(20),
+                                                                  width: 40,
+                                                                  height: 40,
+                                                                  fit: BoxFit.cover,
+                                                                ),
                                                               ),
+                                                            ),
+                                                          if (document.userInfo!.profileImageUrlUser == "")
+                                                            GestureDetector(
+                                                              onTap: () async {
+                                                                await _friendDetailViewModel.fetchFriendDetailInfo(
+                                                                    userId: _userViewModel.user.user_id,
+                                                                    friendUserId: document.userInfo!.userId!,
+                                                                    season: _friendDetailViewModel.seasonDate);
+                                                                Get.toNamed(AppRoutes.friendDetail);
+                                                              },
                                                               child: ExtendedImage.network(
-                                                                document.userInfo!.profileImageUrlUser!,
-                                                                cache: true,
+                                                                '${profileImgUrlList[0].default_round}',
                                                                 shape: BoxShape.circle,
-                                                                borderRadius:
-                                                                BorderRadius.circular(20),
+                                                                borderRadius: BorderRadius.circular(20),
                                                                 width: 40,
                                                                 height: 40,
                                                                 fit: BoxFit.cover,
-                                                                loadStateChanged: (ExtendedImageState state) {
-                                                                  switch (state.extendedImageLoadState) {
-                                                                    case LoadState.loading:
-                                                                      return SizedBox.shrink();
-                                                                    case LoadState.completed:
-                                                                      return state.completedWidget;
-                                                                    case LoadState.failed:
-                                                                      return ExtendedImage.network(
-                                                                        '${profileImgUrlList[0].default_round}',
-                                                                        shape: BoxShape.circle,
-                                                                        borderRadius: BorderRadius.circular(20),
-                                                                        width: 40,
-                                                                        height: 40,
-                                                                        fit: BoxFit.cover,
-                                                                      ); // 예시로 에러 아이콘을 반환하고 있습니다.
-                                                                    default:
-                                                                      return null;
-                                                                  }
-                                                                },
                                                               ),
                                                             ),
-                                                          ),
-                                                        if (document.userInfo!.profileImageUrlUser == "")
-                                                          GestureDetector(
-                                                            onTap: () async{
-                                                              await _friendDetailViewModel.fetchFriendDetailInfo(userId: _userViewModel.user.user_id, friendUserId: document.userInfo!.userId!, season: _friendDetailViewModel.seasonDate);
-                                                              Get.toNamed(AppRoutes.friendDetail);
-                                                            },
-                                                            child: ExtendedImage.network(
-                                                              '${profileImgUrlList[0].default_round}',
-                                                              shape: BoxShape.circle,
-                                                              borderRadius:
-                                                              BorderRadius.circular(20),
-                                                              width: 40,
-                                                              height: 40,
-                                                              fit: BoxFit.cover,
-                                                            ),
-                                                          ),
-                                                        SizedBox(width: 12),
-                                                        Row(
-                                                          children: [
-                                                            Text(
-                                                              document.userInfo!.displayName!,
-                                                              style: TextStyle(
-                                                                  fontSize: 13,
-                                                                  color: Color(0xFF949494)
-                                                              ),),
-                                                            SizedBox(width: 6,),
-                                                            Text(time,
-                                                              style: TextStyle(
-                                                                  fontSize: 13,
-                                                                  color: Color(0xFF949494)
-                                                              ),
-                                                            ),
-                                                            if(document.secret!)
-                                                            Icon(Icons.lock),
-                                                            GestureDetector(
-                                                              onTap: () =>
-                                                                  showModalBottomSheet(
-                                                                      enableDrag: false,
-                                                                      context: context,
-                                                                      builder: (context) {
-                                                                        return SafeArea(
-                                                                          child: Container(
-                                                                            height: (_friendDetailViewModel.friendDetailModel.friendUserInfo.userId == _userViewModel.user.user_id
-                                                                                || document.userInfo!.userId == _userViewModel.user.user_id)
-                                                                                ? 200 : 150,
-                                                                            child: Padding(
-                                                                              padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 14),
-                                                                              child: Column(
-                                                                                children: [
-                                                                                  if(_friendDetailViewModel.friendDetailModel.friendUserInfo.userId == _userViewModel.user.user_id
-                                                                                      || document.userInfo!.userId == _userViewModel.user.user_id)
+                                                          SizedBox(width: 12),
+                                                          Expanded(
+                                                            child: Column(
+                                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                                              children: [
+                                                                Row(
+                                                                  children: [
+                                                                    Text(
+                                                                      document.userInfo!.displayName!,
+                                                                      style: TextStyle(
+                                                                        fontSize: 13,
+                                                                        color: SDSColor.snowliveBlack,
+                                                                        fontWeight: FontWeight.bold,
+                                                                      ),
+                                                                    ),
+                                                                    SizedBox(width: 6),
+                                                                    Text(
+                                                                      time,
+                                                                      style: TextStyle(
+                                                                        fontSize: 13,
+                                                                        color: Color(0xFF949494),
+                                                                      ),
+                                                                    ),
+                                                                    if (document.secret!)
+                                                                      Padding(
+                                                                        padding: const EdgeInsets.only(left: 7),
+                                                                        child: Icon(Icons.lock,
+                                                                        size: 15,
+                                                                        color: Color(0xFF949494),
+                                                                        ),
+                                                                      ),
+                                                                    Spacer(), // Adds space between the text and the icons
+                                                                    GestureDetector(
+                                                                      onTap: () => showModalBottomSheet(
+                                                                        enableDrag: false,
+                                                                        context: context,
+                                                                        builder: (context) {
+                                                                          return SafeArea(
+                                                                            child: Container(
+                                                                              height: (_friendDetailViewModel.friendDetailModel.friendUserInfo.userId ==
+                                                                                  _userViewModel.user.user_id ||
+                                                                                  document.userInfo!.userId == _userViewModel.user.user_id)
+                                                                                  ? 200
+                                                                                  : 150,
+                                                                              child: Padding(
+                                                                                padding: const EdgeInsets.symmetric(
+                                                                                    horizontal: 20.0, vertical: 14),
+                                                                                child: Column(
+                                                                                  children: [
+                                                                                    if (_friendDetailViewModel.friendDetailModel
+                                                                                        .friendUserInfo.userId ==
+                                                                                        _userViewModel.user.user_id ||
+                                                                                        document.userInfo!.userId ==
+                                                                                            _userViewModel.user.user_id)
+                                                                                      GestureDetector(
+                                                                                        child: ListTile(
+                                                                                          contentPadding: EdgeInsets.zero,
+                                                                                          title: Center(
+                                                                                            child: Text(
+                                                                                              '삭제',
+                                                                                              style: TextStyle(
+                                                                                                fontSize: 15,
+                                                                                                fontWeight: FontWeight.bold,
+                                                                                                color: Color(0xFFD63636),
+                                                                                              ),
+                                                                                            ),
+                                                                                          ),
+                                                                                          onTap: () async {
+                                                                                            Navigator.pop(context);
+                                                                                            showModalBottomSheet(
+                                                                                                context: context,
+                                                                                                builder: (context) {
+                                                                                                  return Container(
+                                                                                                    color: Colors.white,
+                                                                                                    height: 180,
+                                                                                                    child: Padding(
+                                                                                                      padding:
+                                                                                                      const EdgeInsets.symmetric(
+                                                                                                          horizontal: 20.0),
+                                                                                                      child: Column(
+                                                                                                        crossAxisAlignment:
+                                                                                                        CrossAxisAlignment.start,
+                                                                                                        mainAxisAlignment:
+                                                                                                        MainAxisAlignment.start,
+                                                                                                        children: [
+                                                                                                          SizedBox(height: 30),
+                                                                                                          Text(
+                                                                                                            '삭제하시겠습니까?',
+                                                                                                            style: TextStyle(
+                                                                                                                fontSize: 20,
+                                                                                                                fontWeight:
+                                                                                                                FontWeight.bold,
+                                                                                                                color:
+                                                                                                                Color(0xFF111111)),
+                                                                                                          ),
+                                                                                                          SizedBox(height: 30),
+                                                                                                          Row(
+                                                                                                            mainAxisAlignment:
+                                                                                                            MainAxisAlignment
+                                                                                                                .spaceEvenly,
+                                                                                                            children: [
+                                                                                                              Expanded(
+                                                                                                                child:
+                                                                                                                ElevatedButton(
+                                                                                                                  onPressed: () {
+                                                                                                                    Navigator.pop(
+                                                                                                                        context);
+                                                                                                                  },
+                                                                                                                  child: Text(
+                                                                                                                    '취소',
+                                                                                                                    style: TextStyle(
+                                                                                                                        color: Colors
+                                                                                                                            .white,
+                                                                                                                        fontSize: 15,
+                                                                                                                        fontWeight:
+                                                                                                                        FontWeight
+                                                                                                                            .bold),
+                                                                                                                  ),
+                                                                                                                  style: TextButton.styleFrom(
+                                                                                                                      splashFactory:
+                                                                                                                      InkRipple
+                                                                                                                          .splashFactory,
+                                                                                                                      elevation: 0,
+                                                                                                                      minimumSize:
+                                                                                                                      Size(100,
+                                                                                                                          56),
+                                                                                                                      backgroundColor:
+                                                                                                                      Color(
+                                                                                                                          0xff555555),
+                                                                                                                      padding: EdgeInsets
+                                                                                                                          .symmetric(
+                                                                                                                          horizontal:
+                                                                                                                          0)),
+                                                                                                                ),
+                                                                                                              ),
+                                                                                                              SizedBox(width: 10),
+                                                                                                              Expanded(
+                                                                                                                child:
+                                                                                                                ElevatedButton(
+                                                                                                                  onPressed:
+                                                                                                                      () async {
+                                                                                                                    await _friendDetailViewModel
+                                                                                                                        .deleteFriendsTalk(
+                                                                                                                        userId: _userViewModel
+                                                                                                                            .user
+                                                                                                                            .user_id,
+                                                                                                                        friendsTalkId:
+                                                                                                                        document
+                                                                                                                            .commentId!);
+                                                                                                                    Navigator.pop(
+                                                                                                                        context);
+                                                                                                                  },
+                                                                                                                  child: Text(
+                                                                                                                    '확인',
+                                                                                                                    style: TextStyle(
+                                                                                                                        color: Colors
+                                                                                                                            .white,
+                                                                                                                        fontSize: 15,
+                                                                                                                        fontWeight:
+                                                                                                                        FontWeight
+                                                                                                                            .bold),
+                                                                                                                  ),
+                                                                                                                  style: TextButton.styleFrom(
+                                                                                                                      splashFactory:
+                                                                                                                      InkRipple
+                                                                                                                          .splashFactory,
+                                                                                                                      elevation: 0,
+                                                                                                                      minimumSize:
+                                                                                                                      Size(100,
+                                                                                                                          56),
+                                                                                                                      backgroundColor:
+                                                                                                                      Color(
+                                                                                                                          0xff2C97FB),
+                                                                                                                      padding: EdgeInsets
+                                                                                                                          .symmetric(
+                                                                                                                          horizontal:
+                                                                                                                          0)),
+                                                                                                                ),
+                                                                                                              ),
+                                                                                                            ],
+                                                                                                          )
+                                                                                                        ],
+                                                                                                      ),
+                                                                                                    ),
+                                                                                                  );
+                                                                                                });
+                                                                                          },
+                                                                                        ),
+                                                                                      ),
                                                                                     GestureDetector(
                                                                                       child: ListTile(
                                                                                         contentPadding: EdgeInsets.zero,
                                                                                         title: Center(
                                                                                           child: Text(
-                                                                                            '삭제',
+                                                                                            '신고하기',
                                                                                             style: TextStyle(
-                                                                                                fontSize: 15,
-                                                                                                fontWeight: FontWeight.bold,
-                                                                                                color: Color(
-                                                                                                    0xFFD63636)
+                                                                                              fontSize: 15,
+                                                                                              fontWeight: FontWeight.bold,
                                                                                             ),
                                                                                           ),
                                                                                         ),
-                                                                                        //selected: _isSelected[index]!,
                                                                                         onTap: () async {
-                                                                                          Navigator.pop(context);
-                                                                                          showModalBottomSheet(
-                                                                                              context: context,
-                                                                                              builder: (context) {
-                                                                                                return Container(
-                                                                                                  color: Colors.white,
-                                                                                                  height: 180,
-                                                                                                  child: Padding(
-                                                                                                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                                                                                                    child: Column(
-                                                                                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                                                                                      mainAxisAlignment: MainAxisAlignment.start,
-                                                                                                      children: [
-                                                                                                        SizedBox(
-                                                                                                          height: 30,
-                                                                                                        ),
-                                                                                                        Text(
-                                                                                                          '삭제하시겠습니까?',
-                                                                                                          style: TextStyle(
-                                                                                                              fontSize: 20,
-                                                                                                              fontWeight: FontWeight.bold,
-                                                                                                              color: Color(0xFF111111)),
-                                                                                                        ),
-                                                                                                        SizedBox(
-                                                                                                          height: 30,
-                                                                                                        ),
-                                                                                                        Row(
-                                                                                                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                                                                                          children: [
-                                                                                                            Expanded(
-                                                                                                              child: ElevatedButton(
-                                                                                                                onPressed: () {
-                                                                                                                  Navigator.pop(context);
-                                                                                                                },
-                                                                                                                child: Text('취소',
-                                                                                                                  style: TextStyle(
-                                                                                                                      color: Colors.white,
-                                                                                                                      fontSize: 15,
-                                                                                                                      fontWeight: FontWeight.bold),
-                                                                                                                ),
-                                                                                                                style: TextButton.styleFrom(
-                                                                                                                    splashFactory: InkRipple.splashFactory,
-                                                                                                                    elevation: 0,
-                                                                                                                    minimumSize: Size(100, 56),
-                                                                                                                    backgroundColor: Color(0xff555555),
-                                                                                                                    padding: EdgeInsets.symmetric(horizontal: 0)),
-                                                                                                              ),
-                                                                                                            ),
-                                                                                                            SizedBox(
-                                                                                                              width: 10,
-                                                                                                            ),
-                                                                                                            Expanded(
-                                                                                                              child: ElevatedButton(
-                                                                                                                onPressed: () async {
-                                                                                                                  await _friendDetailViewModel.deleteFriendsTalk(userId: _userViewModel.user.user_id, friendsTalkId: document.commentId!);
-                                                                                                                  print('삭제 완료');
-                                                                                                                  Navigator.pop(context);
-                                                                                                                },
-                                                                                                                child: Text('확인',
-                                                                                                                  style: TextStyle(
-                                                                                                                      color: Colors.white,
-                                                                                                                      fontSize: 15,
-                                                                                                                      fontWeight: FontWeight.bold),
-                                                                                                                ),
-                                                                                                                style: TextButton.styleFrom(
-                                                                                                                    splashFactory: InkRipple.splashFactory,
-                                                                                                                    elevation: 0,
-                                                                                                                    minimumSize: Size(100, 56),
-                                                                                                                    backgroundColor: Color(0xff2C97FB),
-                                                                                                                    padding: EdgeInsets.symmetric(horizontal: 0)),
-                                                                                                              ),
-                                                                                                            ),
-                                                                                                          ],
-                                                                                                        )
-                                                                                                      ],
-                                                                                                    ),
-                                                                                                  ),
-                                                                                                );
-                                                                                              });
+                                                                                          // 신고 기능 처리
                                                                                         },
-                                                                                        shape: RoundedRectangleBorder(
-                                                                                            borderRadius: BorderRadius.circular(10)),
                                                                                       ),
                                                                                     ),
-                                                                                  GestureDetector(
-                                                                                    child: ListTile(
-                                                                                      contentPadding: EdgeInsets.zero,
-                                                                                      title: Center(
-                                                                                        child: Text('신고하기',
-                                                                                          style: TextStyle(
-                                                                                            fontSize: 15,
-                                                                                            fontWeight: FontWeight.bold,
-                                                                                          ),
-                                                                                        ),
-                                                                                      ),
-                                                                                      //selected: _isSelected[index]!,
-                                                                                      onTap: () async {
-                                                                                        Get.dialog(
-                                                                                            AlertDialog(
-                                                                                              contentPadding: EdgeInsets.only(bottom: 0, left: 20, right: 20, top: 30),
-                                                                                              elevation: 0,
-                                                                                              shape: RoundedRectangleBorder(
-                                                                                                  borderRadius: BorderRadius.circular(10.0)),
-                                                                                              buttonPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
-                                                                                              content: Text(
-                                                                                                '이 회원을 신고하시겠습니까?',
-                                                                                                style: TextStyle(
-                                                                                                    fontWeight: FontWeight.w600,
-                                                                                                    fontSize: 15),
-                                                                                              ),
-                                                                                              actions: [
-                                                                                                Row(
-                                                                                                  children: [
-                                                                                                    TextButton(
-                                                                                                        onPressed: () {
-                                                                                                          Navigator.pop(context);
-                                                                                                        },
-                                                                                                        child: Text('취소',
-                                                                                                          style: TextStyle(
-                                                                                                            fontSize: 15,
-                                                                                                            color: Color(0xFF949494),
-                                                                                                            fontWeight: FontWeight.bold,
-                                                                                                          ),
-                                                                                                        )),
-                                                                                                    TextButton(
-                                                                                                        onPressed: () async {
-
-                                                                                                        },
-                                                                                                        child: Text(
-                                                                                                          '신고',
-                                                                                                          style: TextStyle(
-                                                                                                            fontSize: 15,
-                                                                                                            color: Color(0xFF3D83ED),
-                                                                                                            fontWeight: FontWeight.bold,
-                                                                                                          ),
-                                                                                                        ))
-                                                                                                  ],
-                                                                                                  mainAxisAlignment: MainAxisAlignment.end,
-                                                                                                )
-                                                                                              ],
-                                                                                            ));
-                                                                                      },
-                                                                                      shape: RoundedRectangleBorder(
-                                                                                          borderRadius: BorderRadius.circular(10)),
-                                                                                    ),
-                                                                                  ),
-                                                                                  GestureDetector(
-                                                                                    child: ListTile(
-                                                                                      contentPadding: EdgeInsets.zero,
-                                                                                      title: Center(
-                                                                                        child: Text(
-                                                                                          '이 회원의 글 모두 숨기기',
-                                                                                          style: TextStyle(
-                                                                                            fontSize: 15,
-                                                                                            fontWeight: FontWeight.bold,
-                                                                                          ),
-                                                                                        ),
-                                                                                      ),
-                                                                                      //selected: _isSelected[index]!,
-                                                                                      onTap: () async {
-                                                                                        Get.dialog(
-                                                                                            AlertDialog(
-                                                                                              contentPadding: EdgeInsets.only(bottom: 0, left: 20, right: 20, top: 30),
-                                                                                              elevation: 0,
-                                                                                              shape: RoundedRectangleBorder(
-                                                                                                  borderRadius: BorderRadius.circular(10.0)),
-                                                                                              buttonPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
-                                                                                              content:  Container(
-                                                                                                height: _size.width*0.17,
-                                                                                                child: Column(
-                                                                                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                                                                                  children: [
-                                                                                                    Text(
-                                                                                                      '이 회원의 게시물을 모두 숨길까요?',
-                                                                                                      style: TextStyle(
-                                                                                                          fontWeight: FontWeight.w600,
-                                                                                                          fontSize: 15),
-                                                                                                    ),
-                                                                                                    SizedBox(
-                                                                                                      height: 10,
-                                                                                                    ),
-                                                                                                    Text(
-                                                                                                      '차단해제는 [친구목록 - 설정 - 차단목록]에서\n하실 수 있습니다.',
-                                                                                                      style: TextStyle(
-                                                                                                          fontWeight: FontWeight.w600,
-                                                                                                          fontSize: 12,
-                                                                                                          color: Color(0xFF555555)),
-                                                                                                    ),
-                                                                                                  ],
-                                                                                                ),
-                                                                                              ),
-                                                                                              actions: [
-                                                                                                Row(
-                                                                                                  children: [
-                                                                                                    TextButton(
-                                                                                                        onPressed: () {Navigator.pop(context);},
-                                                                                                        child: Text('취소',
-                                                                                                          style: TextStyle(
-                                                                                                            fontSize: 15,
-                                                                                                            color: Color(0xFF949494),
-                                                                                                            fontWeight: FontWeight.bold,
-                                                                                                          ),
-                                                                                                        )),
-                                                                                                    TextButton(
-                                                                                                        onPressed: () async{
-
-                                                                                                        },
-                                                                                                        child: Text('확인',
-                                                                                                          style: TextStyle(
-                                                                                                            fontSize: 15,
-                                                                                                            color: Color(0xFF3D83ED),
-                                                                                                            fontWeight: FontWeight.bold,
-                                                                                                          ),
-                                                                                                        ))
-                                                                                                  ],
-                                                                                                  mainAxisAlignment: MainAxisAlignment.end,
-                                                                                                )
-                                                                                              ],
-                                                                                            ));
-                                                                                      },
-                                                                                      shape: RoundedRectangleBorder(
-                                                                                          borderRadius: BorderRadius.circular(10)),
-                                                                                    ),
-                                                                                  )
-                                                                                ],
+                                                                                  ],
+                                                                                ),
                                                                               ),
                                                                             ),
+                                                                          );
+                                                                        },
+                                                                      ),
+                                                                      child: Icon(
+                                                                        Icons.more_horiz,
+                                                                        color: Color(0xFFdedede),
+                                                                        size: 20,
+                                                                      ),
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                                GestureDetector(
+                                                                  onTap: () {
+                                                                    Get.toNamed(AppRoutes.fleamarketCommentDetail);
+                                                                  },
+                                                                  child: Padding(
+                                                                    padding: const EdgeInsets.only(top: 10),
+                                                                    child: Column(
+                                                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                                                      children: [
+                                                                        Container(
+                                                                          width: _size.width - 112,
+                                                                          child: Text(
+                                                                            document.content!,
+                                                                            style: TextStyle(
+                                                                              fontSize: 14,
+                                                                              color: SDSColor.snowliveBlack,
+                                                                            ),
                                                                           ),
-                                                                        );
-                                                                      }),
-                                                              child: Icon(
-                                                                Icons.more_horiz,
-                                                                color: Color(0xFFdedede),
-                                                                size: 20,
-                                                              ),
-                                                            )
-                                                          ],
-                                                        ),
-                                                      ],
-                                                    ),
-                                                    GestureDetector(
-                                                      onTap:(){
-                                                        Get.toNamed(AppRoutes.fleamarketCommentDetail);
-                                                      },
-                                                      child: Padding(
-                                                        padding: const EdgeInsets.only(top: 10),
-                                                        child: Column(
-                                                          children: [
-                                                            Container(
-                                                              width: _size.width - 112,
-                                                              child: Text(document.content!,
-                                                                style: TextStyle(
-                                                                    fontSize: 14,
-                                                                    color: Color(0xFF111111)
-                                                                ),),
+                                                                        ),
+                                                                        SizedBox(height: 10),
+                                                                        Text(
+                                                                          (document.replies!.length == 0)
+                                                                              ? '답글 달기'
+                                                                              : '답글 ${document.replies!.length}개 보기',
+                                                                          style: TextStyle(
+                                                                            fontSize: 14,
+                                                                            color: SDSColor.snowliveBlack,
+                                                                            fontWeight: FontWeight.bold,
+                                                                          ),
+                                                                        ),
+                                                                      ],
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                                SizedBox(height: 25),
+                                                              ],
                                                             ),
-                                                            Text(
-                                                              (document.replies!.length == 0)
-                                                              ?'답글 달기'
-                                                                  :'답글 ${document.replies!.length}개 보기',
-                                                              style: TextStyle(
-                                                                  fontSize: 14,
-                                                                  color: Color(0xFF111111)
-                                                              ),),
-                                                          ],
-                                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                                        ),
+                                                          ),
+                                                        ],
                                                       ),
-                                                    ),
-                                                  ],
-                                                ),
+                                                    ],
+                                                  ),
                                               ],
                                             );
                                           },
