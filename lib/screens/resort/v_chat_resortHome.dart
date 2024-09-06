@@ -62,156 +62,135 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
     }
   }
 
-  void _showNewMessageNotification() {
-    if (_overlayEntry != null) {
-      _overlayEntry!.remove();
-      _overlayEntry = null;
-    }
-    _overlayEntry = _createOverlayEntry();
-    Overlay.of(context)?.insert(_overlayEntry!);
-    _animationController.forward().then((value) {
-      _animationController.reverse().then((value) {
-        _overlayEntry?.remove();
-        _overlayEntry = null;
-      });
-    });
-  }
 
-  OverlayEntry _createOverlayEntry() {
-    return OverlayEntry(
-      builder: (context) => Positioned(
-        top: 50.0,
-        left: MediaQuery.of(context).size.width / 2 - 75,
-        child: Material(
-          color: Colors.transparent,
-          child: FadeTransition(
-            opacity: _animationController,
-            child: Container(
-              width: 150,
-              height: 150,
-              child: Image.asset('assets/imgs/icons/icon_alarm.png'), // Add your GIF file here
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: (){
+        FocusScope.of(context).unfocus();
+      },
+      child: Scaffold(
+        resizeToAvoidBottomInset: true,
+        body: Stack(
+          children: [
+            Column(
+              children: [
+                Expanded(
+                  child: StreamBuilder(
+                    stream: _streamController_ResortHome.setupStreams_resortHome_chat(),
+                    builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return Center(child: CircularProgressIndicator());
+                      }
+                      final chatDocs = snapshot.data!.docs;
+                      WidgetsBinding.instance.addPostFrameCallback((_) => _scrollToBottom());
+                      return ListView.builder(
+                        controller: _scrollController,
+                        shrinkWrap: true,
+                        reverse: true,
+                        itemCount: chatDocs.length,
+                        itemBuilder: (context, index) {
+                          final chatDoc = chatDocs[index];
+                          final timestamp = chatDoc['createdAt'] as Timestamp;
+                          final dateTime = timestamp.toDate();
+                          final timeString = DateFormat('yyyy-MM-dd h:mm a').format(dateTime);
+
+                          return ListTile(
+                            title: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Bubble(
+                                  margin: BubbleEdges.only(top: 10),
+                                  color: Colors.grey[300],
+                                  nip: BubbleNip.leftTop,
+                                  child: Text(chatDoc['text'], style: TextStyle(fontSize: 16)),
+                                ),
+                                SizedBox(height: 4),
+                                Text(
+                                  timeString,
+                                  style: TextStyle(fontSize: 12, color: Colors.grey),
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                      );
+                    },
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: TextFormField(
+                    controller: _controller,
+                    decoration: InputDecoration(
+                      hintText: '메시지를 입력해주세요.',
+                      filled: true,
+                      fillColor: Color(0xFFEFEFEF),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(6),
+                        borderSide: BorderSide.none,
+                      ),
+                      suffixIcon: ValueListenableBuilder<bool>(
+                        valueListenable: _isButtonEnabled,
+                        builder: (context, isEnabled, child) {
+                          return IconButton(
+                            icon: (_controller.text.trim().isEmpty)
+                                ? Image.asset(
+                              'assets/imgs/icons/icon_livetalk_send_g.png',
+                              width: 24,
+                              height: 24,
+                            )
+                                : Image.asset(
+                              'assets/imgs/icons/icon_livetalk_send.png',
+                              width: 24,
+                              height: 24,
+                            ),
+                            color: isEnabled ? Colors.blue : Colors.grey,
+                            onPressed: isEnabled
+                                ? () {
+                              _streamController_ResortHome.sendMessage(_controller.text, _userModelController.uid!);
+                              _controller.clear();
+                              _isButtonEnabled.value = false;
+                              _scrollToBottom();
+                            }
+                                : null,
+                          );
+                        },
+                      ),
+                    ),
+                    onFieldSubmitted: (value) {
+                      _streamController_ResortHome.sendMessage(_controller.text, _userModelController.uid!);
+                      _controller.clear();
+                      _isButtonEnabled.value = false;
+                      _scrollToBottom();
+                    },
+                  ),
+                ),
+              ],
             ),
-          ),
+            // 플로팅 액션 버튼을 우하단에 배치
+            Positioned(
+              bottom: 100, // 화면 하단에서의 간격
+              right: 20,  // 화면 오른쪽에서의 간격
+              child: FloatingActionButton(
+                onPressed: _scrollToBottom,
+                splashColor: Colors.transparent,
+                backgroundColor: Colors.transparent,
+                elevation: 0,
+                highlightElevation: 0,
+                hoverElevation: 0,
+                hoverColor: Colors.transparent,
+                child: Icon(
+                  Icons.arrow_circle_down_rounded,
+                  size: 30,
+                  color: SDSColor.snowliveBlack,
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );
   }
 
-
-
-  @override
-  Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        Column(
-          children: [
-            Container(
-              height: 300, // Fixed height for the chat list view
-              child: StreamBuilder(
-                stream: _streamController_ResortHome.setupStreams_resortHome_chat(),
-                builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return Center(child: CircularProgressIndicator());
-                  }
-                  final chatDocs = snapshot.data!.docs;
-                  WidgetsBinding.instance.addPostFrameCallback((_) => _scrollToBottom());
-                  return ListView.builder(
-                    controller: _scrollController,
-                    shrinkWrap: true,
-                    reverse: true,
-                    itemCount: chatDocs.length,
-                    itemBuilder: (context, index) {
-                      final chatDoc = chatDocs[index];
-                      final timestamp = chatDoc['createdAt'] as Timestamp;
-                      final dateTime = timestamp.toDate();
-                      final timeString = DateFormat('yyyy-MM-dd h:mm a').format(dateTime);
-
-                      return ListTile(
-                        title: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Bubble(
-                              margin: BubbleEdges.only(top: 10),
-                              color: Colors.grey[300],
-                              nip: BubbleNip.leftTop,
-                              child: Text(chatDoc['text'], style: TextStyle(fontSize: 16)),
-                            ),
-                            SizedBox(height: 4),
-                            Text(
-                              timeString,
-                              style: TextStyle(fontSize: 12, color: Colors.grey),
-                            ),
-                          ],
-                        ),
-                      );
-                    },
-                  );
-                },
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: TextFormField(
-                controller: _controller,
-                decoration: InputDecoration(
-                  hintText: '메시지를 입력해주세요.',
-                  filled: true,
-                  fillColor: Color(0xFFEFEFEF),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(6),
-                    borderSide: BorderSide.none,
-                  ),
-                  suffixIcon: ValueListenableBuilder<bool>(
-                    valueListenable: _isButtonEnabled,
-                    builder: (context, isEnabled, child) {
-                      return IconButton(
-                        icon: (_controller.text.trim().isEmpty)
-                            ? Image.asset(
-                          'assets/imgs/icons/icon_livetalk_send_g.png',
-                          width: 24,
-                          height: 24,
-                        )
-                            : Image.asset(
-                          'assets/imgs/icons/icon_livetalk_send.png',
-                          width: 24,
-                          height: 24,
-                        ),
-                        color: isEnabled ? Colors.blue : Colors.grey,
-                        onPressed: isEnabled
-                            ? () {
-                          _streamController_ResortHome.sendMessage(_controller.text, _userModelController.uid!);
-                          _controller.clear();
-                          _isButtonEnabled.value = false;
-                          _scrollToBottom();
-                          _showNewMessageNotification();
-                        }
-                            : null,
-                      );
-                    },
-                  ),
-                ),
-                onFieldSubmitted: (value) {
-                  _streamController_ResortHome.sendMessage(_controller.text, _userModelController.uid!);
-                  _controller.clear();
-                  _isButtonEnabled.value = false;
-                  _scrollToBottom();
-                  _showNewMessageNotification();
-                },
-              ),
-            ),
-          ],
-        ),
-        Positioned(
-          bottom: 100, // Positioning the button above the input field
-          right: 20,
-          child: IconButton(
-            onPressed: _scrollToBottom,
-            icon: Icon(Icons.arrow_circle_down_rounded),
-            color: SDSColor.snowliveBlack,
-            iconSize: 30, // Reduce the size of the icon
-          ),
-        ),
-      ],
-    );
-  }
 }
