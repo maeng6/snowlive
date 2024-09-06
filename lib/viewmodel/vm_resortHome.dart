@@ -37,7 +37,7 @@ class ResortHomeViewModel extends GetxController {
   RxList<Map<String, dynamic>> _slope_info = <Map<String, dynamic>>[].obs;
   RxList<Map<String, dynamic>> _reset_point = <Map<String, dynamic>>[].obs;
   RxList<Map<String, dynamic>> _respawn_point = <Map<String, dynamic>>[].obs;
-  RxList<BestFriendListModel> _bestFriendList = <BestFriendListModel>[].obs;
+  RxList<FriendListModel> _bestFriendList = <FriendListModel>[].obs;
   RxBool _isSnackbarShown = false.obs;
   RxBool _isWeatherInfoExpanded = false.obs;
 
@@ -59,7 +59,7 @@ class ResortHomeViewModel extends GetxController {
   List<Map<String, dynamic>> get slope_info => _slope_info;
   List<Map<String, dynamic>> get reset_point => _reset_point;
   List<Map<String, dynamic>> get respawn_point => _respawn_point;
-  List<BestFriendListModel> get bestFriendList => _bestFriendList;
+  List<FriendListModel> get bestFriendList => _bestFriendList;
 
   UserViewModel _userViewModel = Get.find<UserViewModel>();
 
@@ -108,8 +108,8 @@ class ResortHomeViewModel extends GetxController {
         List<dynamic> dataList = response.data as List<dynamic>;
 
         // List<Map<String, dynamic>>를 List<BestFriendListModel>로 변환
-        List<BestFriendListModel> friendList = dataList
-            .map((e) => BestFriendListModel.fromJson(e as Map<String, dynamic>))
+        List<FriendListModel> friendList = dataList
+            .map((e) => FriendListModel.fromJson(e as Map<String, dynamic>))
             .toList();
 
         // _bestFriendList를 업데이트

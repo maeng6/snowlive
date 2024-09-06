@@ -1,4 +1,4 @@
-class BestFriendListModel {
+class FriendListModel {
   late int friendId;
   late int myUserId;
   late int friendUserId;
@@ -9,7 +9,7 @@ class BestFriendListModel {
   late String? lastPassTime; // Nullability를 고려하여 String? 사용
   late String? lastPassSlope; // Nullability를 고려하여 String? 사용
 
-  BestFriendListModel({
+  FriendListModel({
     required this.friendId,
     required this.myUserId,
     required this.friendUserId,
@@ -21,7 +21,7 @@ class BestFriendListModel {
     this.lastPassSlope,
   });
 
-  BestFriendListModel.fromJson(Map<String, dynamic> json) {
+  FriendListModel.fromJson(Map<String, dynamic> json) {
     friendId = json['friend_id'];
     myUserId = json['my_user_id'];
     friendUserId = json['friend_user_id'];
