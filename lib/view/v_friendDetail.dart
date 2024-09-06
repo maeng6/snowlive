@@ -1,7 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:com.snowlive/routes/routes.dart';
-import 'package:com.snowlive/screens/more/friend/v_caledar_profilePage.dart';
+import 'package:com.snowlive/view/v_profilePageCalendar.dart';
 import 'package:com.snowlive/viewmodel/vm_friendDetail.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/cupertino.dart';

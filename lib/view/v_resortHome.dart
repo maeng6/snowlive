@@ -311,8 +311,63 @@ print(_userViewModel.user.user_id);
             preferredSize: Size.fromHeight(44),
             child: AppBar(
               actions: [
+                Padding(
+                  padding: const EdgeInsets.only(left: 14),
+                  child: IconButton(
+                    onPressed: () async{
+                      showModalBottomSheet(
+                        context: context,
+                        isScrollControlled: true,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+                        ),
+                        builder: (context) => DraggableScrollableSheet(
+                          expand: false,
+                          initialChildSize: 0.8,
+                          minChildSize: 0.4,
+                          maxChildSize: 0.9,
+                          builder: (BuildContext context, ScrollController scrollController) {
+                            return Container(
+                              padding: EdgeInsets.all(16),
+                              child: Column(
+                                children: [
+                                  Center(
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(bottom: 20),
+                                      child: Container(
+                                        height: 4,
+                                        width: 36,
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(10),
+                                          color: SDSColor.gray200,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  Center(
+                                    child: Text(
+                                      '스키장 오픈채팅',
+                                      style: SDSTextStyle.bold.copyWith(fontSize: 16, color: SDSColor.gray900),
+                                    ),
+                                  ),
+                                  SizedBox(height: 20,),
+                                  Expanded(child: ChatScreen()),
+                                ],
+                              ), // ChatScreen을 모달 시트로 띄움
+                            );
+                          },
+                        ),
+                      );
+                    },
+                    icon: Image.asset(
+                      'assets/imgs/icons/icon_talk_resortHome.png',
+                      width: 22,
+                      height: 22,
+                    ),
+                  ),
+                ),
                 SizedBox(
-                  width: 36,
+                  width: 22,
                   child: IconButton(
                     padding: EdgeInsets.zero,
                     onPressed: () async{
@@ -340,22 +395,26 @@ print(_userViewModel.user.user_id);
                                 ),
                                 padding: EdgeInsets.only(right: 20, left: 20, top: 12),
                                 child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Padding(
-                                      padding: const EdgeInsets.only(bottom: 20),
-                                      child: Container(
-                                        height: 4,
-                                        width: 36,
-                                        decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(10),
-                                          color: SDSColor.gray200,
+                                    Center(
+                                      child: Padding(
+                                        padding: const EdgeInsets.only(bottom: 20),
+                                        child: Container(
+                                          height: 4,
+                                          width: 36,
+                                          decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.circular(10),
+                                            color: SDSColor.gray200,
+                                          ),
                                         ),
                                       ),
                                     ),
-                                    Text(
-                                      '라이브중인 친구',
-                                      style: SDSTextStyle.bold.copyWith(fontSize: 16, color: SDSColor.gray900),
+                                    Center(
+                                      child: Text(
+                                        '라이브중인 친구',
+                                        style: SDSTextStyle.bold.copyWith(fontSize: 16, color: SDSColor.gray900),
+                                      ),
                                     ),
                                     SizedBox(height: 24),
                                     Expanded(
@@ -373,163 +432,163 @@ print(_userViewModel.user.user_id);
                                           : SingleChildScrollView(
                                         child: Padding(
                                           padding: const EdgeInsets.symmetric(horizontal: 10),
-                                          child: GridView.builder(
-                                            controller: scrollController,
-                                            shrinkWrap: true,
-                                            physics: NeverScrollableScrollPhysics(), // 내부 스크롤 비활성화
-                                            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                                              crossAxisCount: 4,
-                                              crossAxisSpacing: 14,
-                                              mainAxisSpacing: 28,
-                                              childAspectRatio: 3 / 4,
-                                            ),
-                                            itemCount: _resortHomeViewModel.bestFriendList.length,
-                                            itemBuilder: (context, index) {
+                                          child: Wrap(
+                                            alignment: WrapAlignment.start,
+                                            spacing: 14, // 아이템 간의 가로 간격
+                                            runSpacing: 28, // 아이템 간의 세로 간격
+                                            children: List.generate(_resortHomeViewModel.bestFriendList.length, (index) {
                                               var BFdoc = _resortHomeViewModel.bestFriendList[index];
                                               return GestureDetector(
                                                 onTap: () async {
                                                   await _friendDetailViewModel.fetchFriendDetailInfo(
-                                                      userId: _userViewModel.user.user_id,
-                                                      friendUserId: BFdoc.friendInfo.userId,
-                                                      season: _friendDetailViewModel.seasonDate);
+                                                    userId: _userViewModel.user.user_id,
+                                                    friendUserId: BFdoc.friendInfo.userId,
+                                                    season: _friendDetailViewModel.seasonDate,
+                                                  );
                                                   Get.toNamed(AppRoutes.friendDetail);
                                                 },
-                                                child: Column(
-                                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                  children: [
-                                                    Stack(
-                                                      children: [
-                                                        Container(
-                                                          width: 68,
-                                                          height: 68,
-                                                          decoration: BoxDecoration(
-                                                            borderRadius: BorderRadius.circular(100),
-                                                            border: (BFdoc.friendInfo.withinBoundary == true && BFdoc.friendInfo.revealWb == true)
-                                                                ? Border.all(
-                                                              color: SDSColor.snowliveBlue,
-                                                              width: 2,
+                                                child: Container(
+                                                  width: (MediaQuery.of(context).size.width - 14 * 5) / 4, // 화면 너비를 4등분
+                                                  margin: const EdgeInsets.only(bottom: 28), // 각 아이템의 아래 여백
+                                                  child: Column(
+                                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                    children: [
+                                                      Stack(
+                                                        children: [
+                                                          Container(
+                                                            width: 68,
+                                                            height: 68,
+                                                            decoration: BoxDecoration(
+                                                              borderRadius: BorderRadius.circular(100),
+                                                              border: (BFdoc.friendInfo.withinBoundary == true &&
+                                                                  BFdoc.friendInfo.revealWb == true)
+                                                                  ? Border.all(
+                                                                color: SDSColor.snowliveBlue,
+                                                                width: 2,
+                                                              )
+                                                                  : Border.all(
+                                                                color: SDSColor.gray100,
+                                                                width: 1,
+                                                              ),
+                                                            ),
+                                                            alignment: Alignment.center,
+                                                            child: BFdoc.friendInfo.profileImageUrlUser.isNotEmpty
+                                                                ? ExtendedImage.network(
+                                                              BFdoc.friendInfo.profileImageUrlUser,
+                                                              enableMemoryCache: true,
+                                                              shape: BoxShape.circle,
+                                                              borderRadius: BorderRadius.circular(100),
+                                                              width: 68,
+                                                              height: 68,
+                                                              fit: BoxFit.cover,
+                                                              loadStateChanged: (ExtendedImageState state) {
+                                                                switch (state.extendedImageLoadState) {
+                                                                  case LoadState.loading:
+                                                                    return SizedBox.shrink();
+                                                                  case LoadState.completed:
+                                                                    return state.completedWidget;
+                                                                  case LoadState.failed:
+                                                                    return ExtendedImage.asset(
+                                                                      'assets/imgs/profile/img_profile_default_circle.png',
+                                                                      shape: BoxShape.circle,
+                                                                      borderRadius: BorderRadius.circular(100),
+                                                                      width: 68,
+                                                                      height: 68,
+                                                                      fit: BoxFit.cover,
+                                                                    );
+                                                                  default:
+                                                                    return null;
+                                                                }
+                                                              },
                                                             )
-                                                                : Border.all(
-                                                              color: SDSColor.gray100,
-                                                              width: 1,
+                                                                : ExtendedImage.asset(
+                                                              'assets/imgs/profile/img_profile_default_circle.png',
+                                                              enableMemoryCache: true,
+                                                              shape: BoxShape.circle,
+                                                              borderRadius: BorderRadius.circular(100),
+                                                              width: 68,
+                                                              height: 68,
+                                                              fit: BoxFit.cover,
                                                             ),
                                                           ),
-                                                          alignment: Alignment.center,
-                                                          child: BFdoc.friendInfo.profileImageUrlUser.isNotEmpty
-                                                              ? ExtendedImage.network(
-                                                            BFdoc.friendInfo.profileImageUrlUser,
-                                                            enableMemoryCache: true,
-                                                            shape: BoxShape.circle,
-                                                            borderRadius: BorderRadius.circular(100),
-                                                            width: 68,
-                                                            height: 68,
-                                                            fit: BoxFit.cover,
-                                                            loadStateChanged: (ExtendedImageState state) {
-                                                              switch (state.extendedImageLoadState) {
-                                                                case LoadState.loading:
-                                                                  return SizedBox.shrink();
-                                                                case LoadState.completed:
-                                                                  return state.completedWidget;
-                                                                case LoadState.failed:
-                                                                  return ExtendedImage.asset(
-                                                                    'assets/imgs/profile/img_profile_default_circle.png',
-                                                                    shape: BoxShape.circle,
-                                                                    borderRadius: BorderRadius.circular(100),
-                                                                    width: 68,
-                                                                    height: 68,
-                                                                    fit: BoxFit.cover,
-                                                                  );
-                                                                default:
-                                                                  return null;
-                                                              }
-                                                            },
-                                                          )
-                                                              : ExtendedImage.asset(
-                                                            'assets/imgs/profile/img_profile_default_circle.png',
-                                                            enableMemoryCache: true,
-                                                            shape: BoxShape.circle,
-                                                            borderRadius: BorderRadius.circular(100),
-                                                            width: 68,
-                                                            height: 68,
-                                                            fit: BoxFit.cover,
-                                                          ),
-                                                        ),
-                                                        if (BFdoc.friendInfo.withinBoundary == true && BFdoc.friendInfo.revealWb == true)
-                                                          Positioned(
-                                                            right: 0,
-                                                            bottom: 0,
-                                                            child: Image.asset(
-                                                              'assets/imgs/icons/icon_badge_live.png',
-                                                              width: 32,
+                                                          if (BFdoc.friendInfo.withinBoundary == true &&
+                                                              BFdoc.friendInfo.revealWb == true)
+                                                            Positioned(
+                                                              right: 0,
+                                                              bottom: 0,
+                                                              child: Image.asset(
+                                                                'assets/imgs/icons/icon_badge_live.png',
+                                                                width: 32,
+                                                              ),
                                                             ),
+                                                        ],
+                                                      ),
+                                                      SizedBox(height: 6),
+                                                      Container(
+                                                        width: 72,
+                                                        child: Text(
+                                                          BFdoc.friendInfo.displayName,
+                                                          overflow: TextOverflow.ellipsis,
+                                                          textAlign: TextAlign.center,
+                                                          style: TextStyle(
+                                                            fontSize: 12,
+                                                            fontWeight: FontWeight.normal,
+                                                            color: Color(0xFF111111),
                                                           ),
-                                                      ],
-                                                    ),
-                                                    SizedBox(height: 6),
-                                                    Container(
-                                                      width: 72,
-                                                      child: Text(
-                                                        BFdoc.friendInfo.displayName,
-                                                        overflow: TextOverflow.ellipsis,
-                                                        textAlign: TextAlign.center,
-                                                        style: TextStyle(
-                                                          fontSize: 12,
-                                                          fontWeight: FontWeight.normal,
-                                                          color: Color(0xFF111111),
                                                         ),
                                                       ),
-                                                    ),
-                                                    SizedBox(height: 6),
-                                                    Row(
-                                                      children: [
-                                                        Container(
-                                                          width: 72,
-                                                          child: Text(
-                                                            (BFdoc.friendInfo.lastPassSlope == null)
-                                                                ? ''
-                                                                :'${BFdoc.friendInfo.lastPassSlope}',
-                                                            overflow: TextOverflow.ellipsis,
-                                                            textAlign: TextAlign.center,
-                                                            style: TextStyle(
-                                                              fontSize: 12,
-                                                              fontWeight: FontWeight.normal,
-                                                              color: Color(0xFF111111),
+                                                      SizedBox(height: 6),
+                                                      Row(
+                                                        mainAxisAlignment: MainAxisAlignment.center,
+                                                        children: [
+                                                          Flexible(
+                                                            child: Text(
+                                                              (BFdoc.friendInfo.lastPassSlope == null)
+                                                                  ? ''
+                                                                  : '${BFdoc.friendInfo.lastPassSlope}',
+                                                              overflow: TextOverflow.ellipsis,
+                                                              textAlign: TextAlign.center,
+                                                              style: TextStyle(
+                                                                fontSize: 12,
+                                                                fontWeight: FontWeight.normal,
+                                                                color: Color(0xFF111111),
+                                                              ),
                                                             ),
                                                           ),
-                                                        ),
-                                                        SizedBox(height: 2),
-                                                        Container(
-                                                          width: 72,
-                                                          child: Text(
-                                                            (BFdoc.friendInfo.lastPassTime == null)
-                                                                ? ''
-                                                                : GetDatetime().getAgoString(BFdoc.friendInfo.lastPassTime!),
-                                                            overflow: TextOverflow.ellipsis,
-                                                            textAlign: TextAlign.center,
-                                                            style: TextStyle(
-                                                              fontSize: 12,
-                                                              fontWeight: FontWeight.normal,
-                                                              color: Color(0xFF111111),
+                                                          SizedBox(width: 2),
+                                                          Flexible(
+                                                            child: Text(
+                                                              (BFdoc.friendInfo.lastPassTime == null)
+                                                                  ? ''
+                                                                  : GetDatetime().getAgoString(BFdoc.friendInfo.lastPassTime!),
+                                                              overflow: TextOverflow.ellipsis,
+                                                              textAlign: TextAlign.center,
+                                                              style: TextStyle(
+                                                                fontSize: 12,
+                                                                fontWeight: FontWeight.normal,
+                                                                color: Color(0xFF111111),
+                                                              ),
                                                             ),
                                                           ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ],
+                                                        ],
+                                                      ),
+                                                    ],
+                                                  ),
                                                 ),
                                               );
-                                            },
+                                            }),
                                           ),
                                         ),
                                       ),
+
                                     ),
                                     SafeArea(
                                       child: Container(
                                         width: MediaQuery.of(context).size.width,
                                         padding: EdgeInsets.only(top: 16, bottom: 20),
                                         child: ElevatedButton(
-                                          onPressed: () {
+                                          onPressed: () async {
                                             Get.toNamed(AppRoutes.friendList);
                                           },
                                           child: Text(
@@ -572,8 +631,8 @@ print(_userViewModel.user.user_id);
                     },
                     icon: Image.asset(
                       'assets/imgs/icons/icon_alarm_resortHome.png',
-                      width: 28,
-                      height: 28,
+                      width: 22,
+                      height: 22,
                     ),
                   ),
                 ),
@@ -1452,26 +1511,6 @@ print(_userViewModel.user.user_id);
                                 ],
                               )
                             ),
-                            Padding(
-                              padding: const EdgeInsets.only(top: 40, bottom: 30),
-                              child: Container(
-                                width: _size.width,
-                                height: 10,
-                                color: SDSColor.gray50,
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(left: 16, right: 16),
-                              child: Text('스키장 오픈채팅',
-                                style: TextStyle(
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.bold
-                                ),
-                              ),
-                            ),
-                            SizedBox(height: 10,),
-                            ChatScreen(),
-
                           ],
                         ),
                         SizedBox(
