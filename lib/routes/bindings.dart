@@ -11,6 +11,7 @@ import 'package:com.snowlive/viewmodel/vm_user.dart';
 import 'package:get/get.dart';
 import '../viewmodel/vm_fleamarketDetail.dart';
 import '../viewmodel/vm_fleamarketList.dart';
+import '../viewmodel/vm_fleamarketUpload.dart';
 
 
 class MainHomeBinding extends Bindings {
@@ -85,5 +86,11 @@ class FleamarketDetailBinding extends Bindings {
   @override
   void dependencies() {
     Get.put(FleamarketCommentDetailViewModel(), permanent: true);
+  }
+}
+class FleamarketUploadBinding extends Bindings {
+  @override
+  void dependencies() {
+    Get.put(FleamarketUploadViewModel());
   }
 }

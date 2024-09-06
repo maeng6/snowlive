@@ -1,6 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:com.snowlive/controller/public/vm_imageController.dart';
+import 'package:com.snowlive/viewmodel/vm_imageController.dart';
 import 'package:com.snowlive/controller/public/vm_urlLauncherController.dart';
 import 'package:com.snowlive/screens/LiveCrew/v_crewDetailPage_gallery_viewer.dart';
 import 'package:com.snowlive/screens/LiveCrew/v_crewNoticePage.dart';

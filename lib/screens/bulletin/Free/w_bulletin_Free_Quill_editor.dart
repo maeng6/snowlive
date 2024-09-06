@@ -11,7 +11,7 @@ import 'package:flutter_quill_extensions/models/config/video/editor/youtube_vide
 import 'package:path/path.dart' as path;
 import '../../../controller/public/vm_timeStampController.dart';
 import '../../../controller/public/vm_settingController.dart';
-import '../../../controller/public/vm_imageController.dart';
+import '../../../viewmodel/vm_imageController.dart';
 import '../Free/w_TimeStampEmbedBuilder.dart';
 
 

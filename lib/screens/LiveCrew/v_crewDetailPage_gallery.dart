@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:extended_image/extended_image.dart';
-import 'package:com.snowlive/controller/public/vm_imageController.dart';
+import 'package:com.snowlive/viewmodel/vm_imageController.dart';
 import 'package:com.snowlive/controller/liveCrew/vm_liveCrewModelController.dart';
 import 'package:com.snowlive/controller/user/vm_userModelController.dart';
 import 'package:com.snowlive/screens/LiveCrew/v_crewDetailPage_gallery_viewer.dart';

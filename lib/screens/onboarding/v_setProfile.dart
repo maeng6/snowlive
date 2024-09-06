@@ -7,7 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:com.snowlive/controller/public/vm_imageController.dart';
+import 'package:com.snowlive/viewmodel/vm_imageController.dart';
 import 'package:com.snowlive/screens/onboarding/v_favoriteResort.dart';
 import '../../controller/login/vm_loginController.dart';
 import '../../controller/login/vm_notificationController.dart';

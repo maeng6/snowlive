@@ -11,7 +11,7 @@ import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:com.snowlive/controller/liveCrew/vm_liveCrewModelController.dart';
 import 'package:com.snowlive/controller/user/vm_userModelController.dart';
-import '../../widget/w_fullScreenDialog.dart';
+import '../widget/w_fullScreenDialog.dart';
 import 'package:flutter_quill/flutter_quill.dart' as quill;
 
 
@@ -25,6 +25,38 @@ class ImageController extends GetxController {
   UserModelController _userModelController = Get.find<UserModelController>();
   LiveCrewModelController _liveCrewModelController = Get.find<LiveCrewModelController>();
   //TODO : ****************************************************************
+
+  Future<List<String>> setNewMultiImage(
+      {required List<XFile> newImages, required user_id}) async {
+    DateTime dateTime = DateTime.now();
+    int i =0;
+    var downloadUrlsingle;
+    var metaData = SettableMetadata(contentType: 'image/jpeg');
+    List<String> downloadUrlList = [];
+    while(i<newImages.length) {
+      Reference ref = FirebaseStorage.instance.ref('fleamarket/#$user_id/#$dateTime/$i.jpg');
+      await ref.putFile(File(newImages[i].path), metaData);
+      downloadUrlsingle = await ref.getDownloadURL();
+      downloadUrlList.add(downloadUrlsingle);
+      i++;
+    }
+    return downloadUrlList;
+  }
+
+  Future<String> setNewImage_Crew({required XFile newImage,required crewID}) async {
+    String? uid = await FlutterSecureStorage().read(key: 'uid');
+    var metaData = SettableMetadata(contentType: 'image/jpeg');
+    String downloadUrl = '';
+    if (newImage != null) {
+      Reference ref = FirebaseStorage.instance.ref('images/crewLogo/$crewID.jpg');
+      await ref.putFile(File(newImage.path), metaData);
+      downloadUrl = await ref.getDownloadURL();
+    } else {
+      CustomFullScreenDialog.cancelDialog();
+    }
+    return downloadUrl;
+  }
+
 
   Future<XFile?> getSingleImage(ImageSource) async {
     final ImagePicker _picker = ImagePicker();
@@ -100,41 +132,6 @@ class ImageController extends GetxController {
   }
 
 
-  Future<String> setNewImage_Crew({required XFile newImage,required crewID}) async {
-    String? uid = await FlutterSecureStorage().read(key: 'uid');
-    var metaData = SettableMetadata(contentType: 'image/jpeg');
-    String downloadUrl = '';
-    if (newImage != null) {
-      Reference ref = FirebaseStorage.instance.ref('images/crewLogo/$crewID.jpg');
-      await ref.putFile(File(newImage.path), metaData);
-      downloadUrl = await ref.getDownloadURL();
-    } else {
-      CustomFullScreenDialog.cancelDialog();
-    }
-    return downloadUrl;
-  }
-
-  Future<List<String>> setNewMultiImage(List<XFile> newImages,fleaCount) async {
-    int i =0;
-    var downloadUrlsingle;
-    String? uid = await FlutterSecureStorage().read(key: 'uid');
-    var metaData = SettableMetadata(contentType: 'image/jpeg');
-    List<String> downloadUrl = [];
-    if (newImages != null) {
-
-      while(i<newImages.length) {
-        Reference ref = FirebaseStorage.instance.ref('images/fleamarket/$uid#$fleaCount/#$i.jpg');
-        await ref.putFile(File(newImages[i].path), metaData);
-        downloadUrlsingle = await ref.getDownloadURL();
-        downloadUrl.add(downloadUrlsingle);
-        i++;
-      }
-    } else {
-      CustomFullScreenDialog.cancelDialog();
-    }
-    imagesUrlList.addAll(downloadUrl);
-    return downloadUrl;
-  }
 
   Future<List<String>> setNewMultiImage_bulletinRoom(List<XFile> newImages,bulletinRoomCount) async {
     int i =0;
@@ -217,8 +214,6 @@ class ImageController extends GetxController {
     return downloadUrl;
   }
 
-
-
   Future<List<String>> setNewMultiImage_bulletinFree(List<XFile> newImages,bulletinFreeCount) async {
     int i =0;
     var downloadUrlsingle;
@@ -262,8 +257,6 @@ class ImageController extends GetxController {
     imagesUrlList.addAll(downloadUrl);
     return downloadUrl;
   }
-
-
 
   Future<void> deleteProfileImage() async{
     String? uid = _userModelController.uid;
@@ -372,8 +365,6 @@ class ImageController extends GetxController {
 
     return downloadUrls;
   }
-
-
 
   Future<void> deleteCrewGalleryImage(String imageUrl, String crewID) async {
     final docRef = FirebaseFirestore.instance.collection('liveCrew').doc(crewID);

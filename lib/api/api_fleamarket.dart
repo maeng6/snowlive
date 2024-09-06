@@ -7,6 +7,7 @@ class FleamarketAPI {
 
   Future<ApiResponse> uploadFleamarket(Map<String, dynamic> body, List<Map<String, dynamic>> photos) async {
     body['photos'] = photos;
+    print(body);
     final response = await http.post(
       Uri.parse('$baseUrl'),
       headers: {'Content-Type': 'application/json'},

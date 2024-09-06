@@ -5,7 +5,7 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:com.snowlive/controller/fleaMarket/vm_fleaMarketController.dart';
 import 'package:com.snowlive/model_2/m_fleaMarketModel.dart';
-import '../../controller/public/vm_imageController.dart';
+import '../../viewmodel/vm_imageController.dart';
 import '../../controller/user/vm_userModelController.dart';
 import '../../widget/w_fullScreenDialog.dart';
 
@@ -137,7 +137,7 @@ class _FleaMarket_ModifyPageState extends State<FleaMarket_ModifyPage> {
                       final isValid = _formKey.currentState!.validate();
                       if(isValid){
                         CustomFullScreenDialog.showDialog();
-                        await _imageController.setNewMultiImage(_imageFiles, _userModelController.fleaCount);
+                        //await _imageController.setNewMultiImage(_imageFiles, _userModelController.fleaCount);
                         (isModifiedImageSelected==true)
                             ? await _fleaModelController.updateFleaItem(
                             displayName: _userModelController.displayName,

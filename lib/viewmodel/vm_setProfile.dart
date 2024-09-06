@@ -5,7 +5,7 @@ import 'package:get/get.dart';
 import 'package:get/get_rx/get_rx.dart';
 import 'package:get/get_rx/src/rx_types/rx_types.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:com.snowlive/controller/public/vm_imageController.dart';
+import 'package:com.snowlive/viewmodel/vm_imageController.dart';
 import '../api/ApiResponse.dart';
 import '../api/api_login.dart';
 import '../api/api_user.dart';

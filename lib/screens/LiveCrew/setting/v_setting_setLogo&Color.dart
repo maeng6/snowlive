@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:com.snowlive/controller/public/vm_imageController.dart';
+import 'package:com.snowlive/viewmodel/vm_imageController.dart';
 import '../../../controller/liveCrew/vm_liveCrewModelController.dart';
 import '../../../model_2/m_liveCrewModel.dart';
 import '../../../widget/w_fullScreenDialog.dart';

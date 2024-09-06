@@ -10,7 +10,7 @@ import 'package:get/get_rx/get_rx.dart';
 import 'package:get/get_rx/src/rx_types/rx_types.dart';
 import '../api/ApiResponse.dart';
 import '../api/api_friend.dart';
-import '../controller/public/vm_imageController.dart';
+import 'vm_imageController.dart';
 
 class FriendDetailViewModel extends GetxController {
 

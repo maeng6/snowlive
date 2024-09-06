@@ -92,7 +92,8 @@ class FleaMarketListView_total extends StatelessWidget {
                       child: FloatingActionButton.extended(
                         elevation: 4,
                         heroTag: 'fleaListScreen',
-                        onPressed: () async {
+                        onPressed: () {
+                          Get.toNamed(AppRoutes.fleamarketUpload);
                         },
                         icon: Transform.translate(
                             offset: Offset(6,0),

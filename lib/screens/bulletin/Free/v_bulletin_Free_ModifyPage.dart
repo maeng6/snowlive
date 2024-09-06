@@ -7,7 +7,7 @@ import 'package:flutter_quill/flutter_quill.dart' as quill;
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../../controller/bulletin/vm_bulletinFreeController.dart';
-import '../../../controller/public/vm_imageController.dart';
+import '../../../viewmodel/vm_imageController.dart';
 import '../../../controller/user/vm_userModelController.dart';
 import '../../../model_2/m_bulletinFreeModel.dart';
 import '../../../widget/w_fullScreenDialog.dart';

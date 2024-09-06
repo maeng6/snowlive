@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:com.snowlive/controller/public/vm_imageController.dart';
+import 'package:com.snowlive/viewmodel/vm_imageController.dart';
 import 'package:com.snowlive/screens/more/friend/v_repoList.dart';
 import '../../../controller/user/vm_userModelController.dart';
 
