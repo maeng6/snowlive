@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:intl/intl.dart';
 
-import '../../../viewmodel/vm_friendDetail.dart';  // 날짜 형식 변환을 위해 추가
+import '../viewmodel/vm_friendDetail.dart';  // 날짜 형식 변환을 위해 추가
 
 class ProfilePageCalendar extends StatefulWidget {
   @override
@@ -86,7 +86,9 @@ class _ProfilePageCalendarState extends State<ProfilePageCalendar> {
   }
 
   List<int> _getEventsFromDay(DateTime date) {
-    return [ridingHistory[date] ?? 0];
+    DateTime dateTime = DateTime(date.year, date.month, date.day);
+
+    return [ridingHistory[dateTime] ?? 0];
   }
 
 
@@ -110,6 +112,7 @@ class _ProfilePageCalendarState extends State<ProfilePageCalendar> {
         if (index != -1) {
           _friendDetailViewModel.updateSelectedDailyIndex(index);
         } else {
+          _friendDetailViewModel.updateSelectedDailyIndex(-1);
           print('선택된 날짜가 ridingHistory에 없습니다.');
         }
       }
@@ -135,67 +138,61 @@ class _ProfilePageCalendarState extends State<ProfilePageCalendar> {
         isTodayHighlighted: true,
         selectedDecoration: BoxDecoration(
           color: Colors.blue,
-          shape: BoxShape.circle,
+          borderRadius: BorderRadius.circular(8.0),
         ),
         selectedTextStyle: TextStyle(color: Colors.white),
         todayDecoration: BoxDecoration(
-          color: Colors.orange,
-          shape: BoxShape.circle,
+          color: Colors.blue,
+          borderRadius: BorderRadius.circular(8.0),
         ),
       ),
       headerStyle: HeaderStyle(
-        formatButtonVisible: true,
+        formatButtonVisible: false,
         titleCentered: true,
+        titleTextFormatter: (date, locale) => DateFormat('yyyy년 M월', 'ko').format(date),
         formatButtonShowsNext: false,
       ),
       calendarBuilders: CalendarBuilders<int>(
         defaultBuilder: (context, date, focusedDay) {
-          if (ridingHistory[date] != null) {
-            return Container(
-              margin: const EdgeInsets.all(6.0),
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                color: Colors.grey.withOpacity(0.3),
-                borderRadius: BorderRadius.circular(8.0),
-              ),
-              child: Column(
-                children: [
+          DateTime dateTime = DateTime(date.year, date.month, date.day);
+
+          // 데이터가 있는 날짜의 배경색을 변경
+          bool hasData = ridingHistory[dateTime] != null;
+
+          return Container(
+            margin: const EdgeInsets.all(6.0),
+            alignment: Alignment.center, // 날짜를 중앙에 고정
+            decoration: BoxDecoration(
+              color: hasData ? Color(0xFFF0F6FF) : Colors.transparent, // 데이터가 있으면 배경색 변경
+              borderRadius: BorderRadius.circular(8.0),
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  '${date.day}', // 날짜 표시
+                  style: TextStyle(color: Colors.black),
+                ),
+                if (hasData)
                   Text(
-                    '${date.day}',
-                    style: TextStyle(color: Colors.black),
-                  ),
-                ],
-              ),
-            );
-          } else {
-            return Container(
-              margin: const EdgeInsets.all(6.0),
-              alignment: Alignment.center,
-              child: Text(
-                '${date.day}',
-                style: TextStyle(color: Colors.black),
-              ),
-            );
-          }
+                    '${ridingHistory[dateTime]}', // 라이딩 횟수 표시
+                    style: TextStyle(fontSize: 12, color: Colors.black),
+                  )
+                else
+                  SizedBox(height: 15), // 데이터가 없는 날에도 동일한 공간을 확보
+              ],
+            ),
+          );
         },
         markerBuilder: (context, date, _) {
-          if (ridingHistory[date] != null) {
-            return Positioned(
-              bottom: 1,
-              child: Container(
-                width: 60,
-                child: Text(
-                  '${ridingHistory[date]}',
-                  style: TextStyle(fontSize: 10, color: Colors.black),
-                ),
-              ),
-            );
-          }
+          // markerBuilder를 사용하지 않고 defaultBuilder에서 이벤트 표시 처리
           return SizedBox.shrink();
         },
       ),
     );
   }
+
+
 }
 
 
