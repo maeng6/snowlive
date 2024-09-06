@@ -15,7 +15,7 @@ class FleamarketSearchViewModel extends GetxController {
 
 
 
-  var _fleamarketList_total = <Fleamarket>[].obs;
+  var _fleamarketList_search = <Fleamarket>[].obs;
   var _nextPageUrl_total = ''.obs;
   var _previousPageUrl_total = ''.obs;
   RxBool _showAddButton = true.obs;
@@ -25,7 +25,7 @@ class FleamarketSearchViewModel extends GetxController {
   RxString _selectedCategory_sub_total = '전체 카테고리'.obs;
   RxString _selectedCategory_spot_total = '전체 거래장소'.obs;
 
-  List<Fleamarket> get fleamarketListTotal => _fleamarketList_total;
+  List<Fleamarket> get fleamarketListSearch => _fleamarketList_search;
 
   String get nextPageUrlTotal => _nextPageUrl_total.value;
 
@@ -106,10 +106,10 @@ class FleamarketSearchViewModel extends GetxController {
 
         if (url == null) {
           // For initial fetch
-          _fleamarketList_total.value = fleamarketResponse.results ?? [];
+          _fleamarketList_search.value = fleamarketResponse.results ?? [];
         } else {
           // For pagination
-          _fleamarketList_total.addAll(fleamarketResponse.results ?? []);
+          _fleamarketList_search.addAll(fleamarketResponse.results ?? []);
         }
 
         _nextPageUrl_total.value = fleamarketResponse.next ?? '';

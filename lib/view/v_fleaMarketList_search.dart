@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import '../model/m_fleamarket.dart';
+import '../routes/routes.dart';
 import '../util/util_1.dart';
+import '../viewmodel/vm_fleamarketDetail.dart';
 import '../viewmodel/vm_fleamarketList.dart';
 import '../viewmodel/vm_fleamarketSearch.dart';
 import '../viewmodel/vm_user.dart';
@@ -15,6 +17,7 @@ class FleaMarketListView_search extends StatelessWidget {
   final UserViewModel _userViewModel = Get.find<UserViewModel>();
 
   final FleamarketSearchViewModel _fleamarketSearchViewModel = Get.find<FleamarketSearchViewModel>();
+  final FleamarketDetailViewModel _fleamarketDetailViewModel = Get.find<FleamarketDetailViewModel>();
 
   @override
   Widget build(BuildContext context) {
@@ -137,19 +140,24 @@ class FleaMarketListView_search extends StatelessWidget {
                 SizedBox(height: 20),
                 Expanded(
                   child: Obx(
-                        () => (_fleamarketSearchViewModel.fleamarketListTotal.isNotEmpty)
+                        () => (_fleamarketSearchViewModel.fleamarketListSearch.isNotEmpty)
                         ? Scrollbar(
                       controller: _fleamarketSearchViewModel.scrollController,
                       child: ListView.builder(
                         controller: _fleamarketSearchViewModel.scrollController, // ScrollController 연결
-                        itemCount: _fleamarketSearchViewModel.fleamarketListTotal.length,
+                        itemCount: _fleamarketSearchViewModel.fleamarketListSearch.length,
                         itemBuilder: (context, index) {
-                          Fleamarket data = _fleamarketSearchViewModel.fleamarketListTotal[index];
+                          Fleamarket data = _fleamarketSearchViewModel.fleamarketListSearch[index];
                           String _time = GetDatetime().getAgoString(data.uploadTime!);
 
                           return GestureDetector(
                               onTap: () async {
-                                // Handle tap
+                                Get.toNamed(AppRoutes.fleamarketDetail);
+                                await _fleamarketDetailViewModel.fetchFleamarketDetailandComment(
+                                  fleamarketId: _fleamarketSearchViewModel.fleamarketListSearch[index].fleaId!,
+                                  fleaId: _fleamarketSearchViewModel.fleamarketListSearch[index].fleaId!,
+                                  userId: _fleamarketSearchViewModel.fleamarketListSearch[index].userId!,
+                                );
                               },
                               child: Column(
                                 children: [
@@ -375,7 +383,7 @@ class FleaMarketListView_search extends StatelessWidget {
                                       ],
                                     ),
                                   ),
-                                  if (_fleamarketSearchViewModel.fleamarketListTotal.length != index + 1)
+                                  if (_fleamarketSearchViewModel.fleamarketListSearch.length != index + 1)
                                     Divider(
                                       color: Color(0xFFDEDEDE),
                                       height: 16,

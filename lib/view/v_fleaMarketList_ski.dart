@@ -37,8 +37,8 @@ class FleaMarketListView_ski extends StatelessWidget {
               Center(
                 child: Padding(
                   padding: EdgeInsets.only(top: _size.height - 360),
-                  child: Visibility(
-                    visible: _fleamarketListViewModel.isVisible,
+                  child: Obx(()=>Visibility(
+                    visible: _fleamarketListViewModel.isVisible_ski,
                     child: Padding(
                       padding: const EdgeInsets.only(left: 32),
                       child: Container(
@@ -53,7 +53,7 @@ class FleaMarketListView_ski extends StatelessWidget {
                           backgroundColor: Color(0xFF000000).withOpacity(0.8),
                           foregroundColor: Colors.white,
                           onPressed: () {
-                            _fleamarketListViewModel.scrollController.jumpTo(0);
+                            _fleamarketListViewModel.scrollController_ski.jumpTo(0);
                           },
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
@@ -77,7 +77,7 @@ class FleaMarketListView_ski extends StatelessWidget {
                         ),
                       ),
                     ),
-                  ),
+                  )),
                 ),
               ),
               Positioned(
@@ -86,7 +86,7 @@ class FleaMarketListView_ski extends StatelessWidget {
                   child: Align(
                     alignment: Alignment.bottomRight,
                     child: AnimatedContainer(
-                      width: _fleamarketListViewModel.showAddButton ? 104 : 52,
+                      width: _fleamarketListViewModel.showAddButton_ski ? 104 : 52,
                       height: 52,
                       duration: Duration(milliseconds: 200),
                       child: FloatingActionButton.extended(
@@ -99,7 +99,7 @@ class FleaMarketListView_ski extends StatelessWidget {
                             child: Center(child: Icon(Icons.add,
                               color: SDSColor.snowliveWhite,
                             ))),
-                        label: _fleamarketListViewModel.showAddButton
+                        label: _fleamarketListViewModel.showAddButton_ski
                             ? Padding(
                           padding: const EdgeInsets.only(right: 6),
                           child: Text('글쓰기',
@@ -1508,9 +1508,9 @@ class FleaMarketListView_ski extends StatelessWidget {
                           ),
                         )
                             : Scrollbar(
-                          controller: _fleamarketListViewModel.scrollController,
+                          controller: _fleamarketListViewModel.scrollController_ski,
                           child: ListView.builder(
-                            controller: _fleamarketListViewModel.scrollController, // ScrollController 연결
+                            controller: _fleamarketListViewModel.scrollController_ski, // ScrollController 연결
                             itemCount: _fleamarketListViewModel.fleamarketListSki.length,
                             physics: AlwaysScrollableScrollPhysics(),
                             itemBuilder: (context, index) {
@@ -1519,13 +1519,11 @@ class FleaMarketListView_ski extends StatelessWidget {
                               return GestureDetector(
                                   onTap: () async {
                                     Get.toNamed(AppRoutes.fleamarketDetail);
-                                    await _fleamarketDetailViewModel.fetchFleamarketDetail(
-                                        fleamarketId: _fleamarketListViewModel.fleamarketListSki[index].fleaId!,
-                                        userId: _userViewModel.user.user_id);
-                                    await _fleamarketDetailViewModel.fetchFleamarketComments(
-                                        fleaId: _fleamarketListViewModel.fleamarketListSki[index].fleaId!,
-                                        userId: _fleamarketListViewModel.fleamarketListSki[index].userId!,
-                                        isLoading_indi: false);
+                                    await _fleamarketDetailViewModel.fetchFleamarketDetailandComment(
+                                      fleamarketId: _fleamarketListViewModel.fleamarketListSki[index].fleaId!,
+                                      fleaId: _fleamarketListViewModel.fleamarketListSki[index].fleaId!,
+                                      userId: _fleamarketListViewModel.fleamarketListSki[index].userId!,
+                                    );
                                   },
                                   child: Column(
                                     children: [

@@ -63,9 +63,9 @@ class _FleaMarketDetailViewState extends State<FleaMarketDetailView> {
                 },
               ),
               actions: [
-                ((_fleamarketDetailViewModel.fleamarketDetail.userId != _userViewModel.user.user_id )
+                if((_fleamarketDetailViewModel.fleamarketDetail.userId != _userViewModel.user.user_id )
                     && _fleamarketDetailViewModel.fleamarketDetail.isFavorite == false)
-                ? GestureDetector(
+                  GestureDetector(
                   onTap: () async{
                     await _fleamarketDetailViewModel.addFavoriteFleamarket(
                         fleamarketID: _fleamarketDetailViewModel.fleamarketDetail.fleaId,
@@ -77,8 +77,10 @@ class _FleaMarketDetailViewState extends State<FleaMarketDetailView> {
                   child: Icon(Icons.bookmark_border,
                   size: 22,
                   ),
-                )
-                : GestureDetector(
+                ),
+                if((_fleamarketDetailViewModel.fleamarketDetail.userId != _userViewModel.user.user_id )
+                    && _fleamarketDetailViewModel.fleamarketDetail.isFavorite == true)
+                 GestureDetector(
                   onTap: () async{
                     await _fleamarketDetailViewModel.deleteFavoriteFleamarket(
                         fleamarketID: _fleamarketDetailViewModel.fleamarketDetail.fleaId,

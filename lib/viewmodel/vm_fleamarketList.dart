@@ -24,8 +24,16 @@ class FleamarketListViewModel extends GetxController {
   var _previousPageUrl_board = ''.obs;
   var _previousPageUrl_my = ''.obs;
   var _previousPageUrl_favorite = ''.obs;
-  RxBool _showAddButton = true.obs;
-  RxBool _isVisible = false.obs;
+  RxBool _showAddButton_total = true.obs;
+  RxBool _showAddButton_ski = true.obs;
+  RxBool _showAddButton_board = true.obs;
+  RxBool _showAddButton_favorite = true.obs;
+  RxBool _showAddButton_my = true.obs;
+  RxBool _isVisible_total = false.obs;
+  RxBool _isVisible_ski = false.obs;
+  RxBool _isVisible_board = false.obs;
+  RxBool _isVisible_favorite = false.obs;
+  RxBool _isVisible_my = false.obs;
   RxString _tapName = '전체'.obs;
 
   RxString _selectedCategory_sub_total = '전체 카테고리'.obs;
@@ -52,8 +60,16 @@ class FleamarketListViewModel extends GetxController {
   String get previousPageUrlBoard => _previousPageUrl_board.value;
   String get previousPageUrlMy => _previousPageUrl_my.value;
   String get previousPageUrlFavorite => _previousPageUrl_favorite.value;
-  bool get showAddButton => _showAddButton.value;
-  bool get isVisible => _isVisible.value;
+  bool get showAddButton_total => _showAddButton_total.value;
+  bool get showAddButton_ski => _showAddButton_ski.value;
+  bool get showAddButton_board => _showAddButton_board.value;
+  bool get showAddButton_favorite => _showAddButton_favorite.value;
+  bool get showAddButton_my => _showAddButton_my.value;
+  bool get isVisible_total  => _isVisible_total .value;
+  bool get isVisible_ski  => _isVisible_ski .value;
+  bool get isVisible_board  => _isVisible_board .value;
+  bool get isVisible_favorite  => _isVisible_favorite .value;
+  bool get isVisible_my  => _isVisible_my .value;
   String get tapName => _tapName.value;
 
   String get selectedCategory_sub_total => _selectedCategory_sub_total.value;
@@ -63,9 +79,11 @@ class FleamarketListViewModel extends GetxController {
   String get selectedCategory_sub_board => _selectedCategory_sub_board.value;
   String get selectedCategory_spot_board => _selectedCategory_spot_board.value;
 
-  ScrollController get scrollController => _scrollController;
-
-  ScrollController _scrollController = ScrollController();
+  ScrollController scrollController_total = ScrollController();
+  ScrollController scrollController_ski = ScrollController();
+  ScrollController scrollController_board = ScrollController();
+  ScrollController scrollController_favorite = ScrollController();
+  ScrollController scrollController_my = ScrollController();
 
   final FleamarketAPI _fleamarketAPI = FleamarketAPI();
 
@@ -81,47 +99,112 @@ class FleamarketListViewModel extends GetxController {
     await fetchFleamarketData_my(userId: _userViewModel.user.user_id, myflea: true);
     await fetchFleamarketData_favorite(userId: _userViewModel.user.user_id, favorite_list: true);
 
-    _scrollController = ScrollController()
-      ..addListener(_scrollListener);
+    scrollController_total = ScrollController()
+      ..addListener(_scrollListener_total);
+    scrollController_ski = ScrollController()
+      ..addListener(_scrollListener_ski);
+    scrollController_board = ScrollController()
+      ..addListener(_scrollListener_board);
+    scrollController_favorite = ScrollController()
+      ..addListener(_scrollListener_favorite);
+    scrollController_my = ScrollController()
+      ..addListener(_scrollListener_my);
 
   }
 
-  Future<void> _scrollListener() async {
+  Future<void> _scrollListener_total() async {
     // 스크롤이 리스트의 끝에 도달했을 때
-    if (_scrollController.position.pixels == _scrollController.position.maxScrollExtent) {
-      switch (_tapName.value) {
-        case '전체':
+    if (scrollController_total.position.pixels == scrollController_total.position.maxScrollExtent) {
           if (_nextPageUrl_total.value.isNotEmpty) {
             await fetchNextPage_total();
-          }
-          break;
-        case '스키':
-          if (_nextPageUrl_ski.value.isNotEmpty) {
-            await fetchNextPage_ski();
-          }
-          break;
-        case '스노보드':
-          if (_nextPageUrl_board.value.isNotEmpty) {
-            await fetchNextPage_board();
-          }
-          break;
-        case '내 게시글':
-          if (_nextPageUrl_my.value.isNotEmpty) {
-            await fetchNextPage_my();
-          }
-          break;
       }
     }
 
     // 버튼 표시 여부 결정
-    _showAddButton.value = _scrollController.offset <= 0;
+    _showAddButton_total.value = scrollController_total.offset <= 0;
 
     // 숨김/표시 여부 결정
-    if (_scrollController.position.userScrollDirection == ScrollDirection.reverse) {
-      _isVisible.value = true;
-    } else if (_scrollController.position.userScrollDirection == ScrollDirection.forward ||
-        _scrollController.position.pixels <= _scrollController.position.maxScrollExtent) {
-      _isVisible.value = false;
+    if (scrollController_total.position.userScrollDirection == ScrollDirection.reverse) {
+      _isVisible_total.value = true;
+    } else if (scrollController_total.position.userScrollDirection == ScrollDirection.forward ||
+        scrollController_total.position.pixels <= scrollController_total.position.maxScrollExtent) {
+      _isVisible_total.value = false;
+    }
+  }
+  Future<void> _scrollListener_ski() async {
+    // 스크롤이 리스트의 끝에 도달했을 때
+    if (scrollController_ski.position.pixels == scrollController_ski.position.maxScrollExtent) {
+      if (_nextPageUrl_ski.value.isNotEmpty) {
+        await fetchNextPage_ski();
+      }
+    }
+
+    // 버튼 표시 여부 결정
+    _showAddButton_ski.value = scrollController_ski.offset <= 0;
+
+    // 숨김/표시 여부 결정
+    if (scrollController_ski.position.userScrollDirection == ScrollDirection.reverse) {
+      _isVisible_ski.value = true;
+    } else if (scrollController_ski.position.userScrollDirection == ScrollDirection.forward ||
+        scrollController_ski.position.pixels <= scrollController_ski.position.maxScrollExtent) {
+      _isVisible_ski.value = false;
+    }
+  }
+  Future<void> _scrollListener_board() async {
+    // 스크롤이 리스트의 끝에 도달했을 때
+    if (scrollController_board.position.pixels == scrollController_board.position.maxScrollExtent) {
+      if (_nextPageUrl_board.value.isNotEmpty) {
+        await fetchNextPage_board();
+      }
+    }
+
+    // 버튼 표시 여부 결정
+    _showAddButton_board.value = scrollController_board.offset <= 0;
+
+    // 숨김/표시 여부 결정
+    if (scrollController_board.position.userScrollDirection == ScrollDirection.reverse) {
+      _isVisible_board.value = true;
+    } else if (scrollController_board.position.userScrollDirection == ScrollDirection.forward ||
+        scrollController_board.position.pixels <= scrollController_board.position.maxScrollExtent) {
+      _isVisible_board.value = false;
+    }
+  }
+  Future<void> _scrollListener_favorite() async {
+    // 스크롤이 리스트의 끝에 도달했을 때
+    if (scrollController_favorite.position.pixels == scrollController_favorite.position.maxScrollExtent) {
+      if (_nextPageUrl_favorite.value.isNotEmpty) {
+        await fetchNextPage_favorite();
+      }
+    }
+
+    // 버튼 표시 여부 결정
+    _showAddButton_favorite.value = scrollController_favorite.offset <= 0;
+
+    // 숨김/표시 여부 결정
+    if (scrollController_favorite.position.userScrollDirection == ScrollDirection.reverse) {
+      _isVisible_favorite.value = true;
+    } else if (scrollController_favorite.position.userScrollDirection == ScrollDirection.forward ||
+        scrollController_favorite.position.pixels <= scrollController_favorite.position.maxScrollExtent) {
+      _isVisible_favorite.value = false;
+    }
+  }
+  Future<void> _scrollListener_my() async {
+    // 스크롤이 리스트의 끝에 도달했을 때
+    if (scrollController_my.position.pixels == scrollController_my.position.maxScrollExtent) {
+      if (_nextPageUrl_my.value.isNotEmpty) {
+        await fetchNextPage_my();
+      }
+    }
+
+    // 버튼 표시 여부 결정
+    _showAddButton_my.value = scrollController_my.offset <= 0;
+
+    // 숨김/표시 여부 결정
+    if (scrollController_my.position.userScrollDirection == ScrollDirection.reverse) {
+      _isVisible_my.value = true;
+    } else if (scrollController_my.position.userScrollDirection == ScrollDirection.forward ||
+        scrollController_my.position.pixels <= scrollController_my.position.maxScrollExtent) {
+      _isVisible_my.value = false;
     }
   }
 
@@ -398,6 +481,15 @@ class FleamarketListViewModel extends GetxController {
     }
   }
 
+  Future<void> fetchNextPage_favorite() async{
+    if (_nextPageUrl_my.value.isNotEmpty) {
+      await fetchFleamarketData_favorite(
+          userId: _userViewModel.user.user_id,
+          url: _nextPageUrl_my.value
+      );
+    }
+  }
+
   Future<void> fetchNextPage_my() async{
     if (_nextPageUrl_my.value.isNotEmpty) {
       await fetchFleamarketData_my(
@@ -430,6 +522,15 @@ class FleamarketListViewModel extends GetxController {
       await fetchFleamarketData_board(
           userId: _userViewModel.user.user_id,
           url: _previousPageUrl_board.value
+      );
+    }
+  }
+
+  Future<void> fetchPreviousPage_favorite() async{
+    if (_previousPageUrl_my.value.isNotEmpty) {
+      await fetchFleamarketData_favorite(
+          userId: _userViewModel.user.user_id,
+          url: _previousPageUrl_my.value
       );
     }
   }

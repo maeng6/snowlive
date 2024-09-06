@@ -1,5 +1,4 @@
 import 'package:com.snowlive/viewmodel/vm_fleamarketList.dart';
-import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -12,14 +11,12 @@ import '../routes/routes.dart';
 import '../screens/snowliveDesignStyle.dart';
 import '../util/util_1.dart';
 import '../viewmodel/vm_fleamarketDetail.dart';
-import '../viewmodel/vm_user.dart';
 
 class FleaMarketListView_my extends StatelessWidget {
 
   final f = NumberFormat('###,###,###,###');
 
   final FleamarketListViewModel _fleamarketListViewModel = Get.find<FleamarketListViewModel>();
-  final UserViewModel _userViewModel = Get.find<UserViewModel>();
   final FleamarketDetailViewModel _fleamarketDetailViewModel = Get.find<FleamarketDetailViewModel>();
 
   @override
@@ -37,8 +34,8 @@ class FleaMarketListView_my extends StatelessWidget {
               Center(
                 child: Padding(
                   padding: EdgeInsets.only(top: _size.height - 360),
-                  child: Visibility(
-                    visible: _fleamarketListViewModel.isVisible,
+                  child: Obx(()=>Visibility(
+                    visible: _fleamarketListViewModel.isVisible_my,
                     child: Padding(
                       padding: const EdgeInsets.only(left: 32),
                       child: Container(
@@ -53,7 +50,7 @@ class FleaMarketListView_my extends StatelessWidget {
                           backgroundColor: Color(0xFF000000).withOpacity(0.8),
                           foregroundColor: Colors.white,
                           onPressed: () {
-                            _fleamarketListViewModel.scrollController.jumpTo(0);
+                            _fleamarketListViewModel.scrollController_my.jumpTo(0);
                           },
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
@@ -77,7 +74,7 @@ class FleaMarketListView_my extends StatelessWidget {
                         ),
                       ),
                     ),
-                  ),
+                  )),
                 ),
               ),
               Positioned(
@@ -86,7 +83,7 @@ class FleaMarketListView_my extends StatelessWidget {
                   child: Align(
                     alignment: Alignment.bottomRight,
                     child: AnimatedContainer(
-                      width: _fleamarketListViewModel.showAddButton ? 104 : 52,
+                      width: _fleamarketListViewModel.showAddButton_my ? 104 : 52,
                       height: 52,
                       duration: Duration(milliseconds: 200),
                       child: FloatingActionButton.extended(
@@ -99,7 +96,7 @@ class FleaMarketListView_my extends StatelessWidget {
                             child: Center(child: Icon(Icons.add,
                               color: SDSColor.snowliveWhite,
                             ))),
-                        label: _fleamarketListViewModel.showAddButton
+                        label: _fleamarketListViewModel.showAddButton_my
                             ? Padding(
                           padding: const EdgeInsets.only(right: 6),
                           child: Text('글쓰기',
@@ -158,9 +155,9 @@ class FleaMarketListView_my extends StatelessWidget {
                         ),
                       )
                           : Scrollbar(
-                        controller: _fleamarketListViewModel.scrollController,
+                        controller: _fleamarketListViewModel.scrollController_my,
                         child: ListView.builder(
-                          controller: _fleamarketListViewModel.scrollController, // ScrollController 연결
+                          controller: _fleamarketListViewModel.scrollController_my, // ScrollController 연결
                           itemCount: _fleamarketListViewModel.fleamarketListMy.length,
                           physics: AlwaysScrollableScrollPhysics(),
                           itemBuilder: (context, index) {
@@ -170,13 +167,11 @@ class FleaMarketListView_my extends StatelessWidget {
                             return GestureDetector(
                                 onTap: () async {
                                   Get.toNamed(AppRoutes.fleamarketDetail);
-                                  await _fleamarketDetailViewModel.fetchFleamarketDetail(
-                                      fleamarketId: _fleamarketListViewModel.fleamarketListMy[index].fleaId!,
-                                      userId: _userViewModel.user.user_id);
-                                  await _fleamarketDetailViewModel.fetchFleamarketComments(
-                                      fleaId: _fleamarketListViewModel.fleamarketListTotal[index].fleaId!,
-                                      userId: _fleamarketListViewModel.fleamarketListTotal[index].userId!,
-                                      isLoading_indi: false);
+                                  await _fleamarketDetailViewModel.fetchFleamarketDetailandComment(
+                                    fleamarketId: _fleamarketListViewModel.fleamarketListMy[index].fleaId!,
+                                    fleaId: _fleamarketListViewModel.fleamarketListMy[index].fleaId!,
+                                    userId: _fleamarketListViewModel.fleamarketListMy[index].userId!,
+                                  );
                                 },
                                 child: Column(
                                   children: [

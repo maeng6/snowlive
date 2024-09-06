@@ -82,12 +82,29 @@ class FleamarketDetailViewModel extends GetxController {
   }
 
 
-  // Fleamarket detail 관련
+  Future<void> fetchFleamarketDetailandComment({
+    required int fleamarketId,
+    required int fleaId,
+    required int userId,
+     String? url,
+  }) async {
+    isLoading(true);
+    await fetchFleamarketDetail(
+        fleamarketId: fleamarketId,
+        userId: userId);
+    await fetchFleamarketComments(
+        fleaId: fleaId,
+        userId: userId,
+        isLoading_indi: false);
+    isLoading(false);
+
+  }
+
   Future<void> fetchFleamarketDetail({
     required int fleamarketId,
     required int userId,
   }) async {
-    isLoading(true);
+    // isLoading(true);
     try {
       final response = await FleamarketAPI().detailFleamarket(fleamarketId: fleamarketId, userId: userId);
       if (response.success) {
@@ -99,7 +116,7 @@ class FleamarketDetailViewModel extends GetxController {
     } catch (e) {
       print('Error fetching data: $e');
     } finally {
-      isLoading(false);
+      // isLoading(false);
     }
   }
 
