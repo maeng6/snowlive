@@ -93,6 +93,7 @@ class FleaMarketListView_ski extends StatelessWidget {
                         elevation: 4,
                         heroTag: 'fleaListScreen',
                         onPressed: () async {
+                          Get.toNamed(AppRoutes.fleamarketUpload);
                         },
                         icon: Transform.translate(
                             offset: Offset(6,0),
@@ -1518,12 +1519,12 @@ class FleaMarketListView_ski extends StatelessWidget {
                               String _time = GetDatetime().getAgoString(data.uploadTime!);
                               return GestureDetector(
                                   onTap: () async {
+                                    _fleamarketDetailViewModel.fetchFleamarketDetailFromList(fleamarketResponse: _fleamarketListViewModel.fleamarketListSki[index]);
                                     Get.toNamed(AppRoutes.fleamarketDetail);
-                                    await _fleamarketDetailViewModel.fetchFleamarketDetailandComment(
-                                      fleamarketId: _fleamarketListViewModel.fleamarketListSki[index].fleaId!,
-                                      fleaId: _fleamarketListViewModel.fleamarketListSki[index].fleaId!,
-                                      userId: _fleamarketListViewModel.fleamarketListSki[index].userId!,
-                                    );
+                                    await _fleamarketDetailViewModel.fetchFleamarketComments(
+                                        fleaId: _fleamarketListViewModel.fleamarketListSki[index].fleaId!,
+                                        userId: _userViewModel.user.user_id,
+                                        isLoading_indi: true);
                                   },
                                   child: Column(
                                     children: [

@@ -16,7 +16,7 @@ class FleamarketDetailViewModel extends GetxController {
   var _nextPageUrl_comments = ''.obs;
   var _previousPageUrl_comments = ''.obs;
   RxInt _currentIndex = 0.obs;
-  var fleaId = 0;
+  var fleamarketResponse;
   RxString _fleamarketCommentsInputText=''.obs;
   RxBool isCommentButtonEnabled = false.obs;
   RxBool _isSecret = false.obs;
@@ -41,14 +41,12 @@ class FleamarketDetailViewModel extends GetxController {
   final formKey = GlobalKey<FormState>();
 
   // Fleamarket ID 설정
-  void setFleaId(int id) {
-    fleaId = id;
+  void SetfleamarketResponse(var fleamarketResponse) {
+    this.fleamarketResponse = fleamarketResponse;
   }
 
   @override
   void onInit() async {
-    await fetchFleamarketDetail(userId: _userViewModel.user.user_id ,fleamarketId: fleaId);
-    await fetchFleamarketComments(fleaId: fleaId,userId: _userViewModel.user.user_id, isLoading_indi: false);
 
     textEditingController.addListener(() {
       if (textEditingController.text.trim().isNotEmpty) {
@@ -83,24 +81,30 @@ class FleamarketDetailViewModel extends GetxController {
 
 
   Future<void> fetchFleamarketDetailandComment({
-    required int fleamarketId,
+    required var fleamarketResponse,
     required int fleaId,
     required int userId,
      String? url,
   }) async {
     isLoading(true);
-    await fetchFleamarketDetail(
-        fleamarketId: fleamarketId,
-        userId: userId);
+    fetchFleamarketDetailFromList(fleamarketResponse: fleamarketResponse,);
+    isLoading(false);
     await fetchFleamarketComments(
         fleaId: fleaId,
         userId: userId,
-        isLoading_indi: false);
-    isLoading(false);
+        isLoading_indi: true);
+
 
   }
 
-  Future<void> fetchFleamarketDetail({
+  void fetchFleamarketDetailFromList({
+    required var fleamarketResponse
+  }) {
+        _fleamarketDetail.value = FleamarketDetailModel.fromFleamarketModel(fleamarketResponse);
+        _time.value = GetDatetime().getAgoString(_fleamarketDetail.value.uploadTime!);
+  }
+
+  Future<void> fetchFleamarketDetailFromAPI({
     required int fleamarketId,
     required int userId,
   }) async {
@@ -127,7 +131,7 @@ class FleamarketDetailViewModel extends GetxController {
     required bool? isLoading_indi,
     String? url,
   }) async {
-    //isLoading(true);
+    isLoading_indicator(isLoading_indi);
     try {
       final response = await FleamarketAPI().fetchComments(
         fleaId: fleaId,
@@ -150,7 +154,7 @@ class FleamarketDetailViewModel extends GetxController {
     } catch (e) {
       print('Error fetching comments: $e');
     }finally{
-        //isLoading(false);
+      isLoading_indicator(false);
     }
   }
 
@@ -278,7 +282,7 @@ class FleamarketDetailViewModel extends GetxController {
   Future<void> addFavoriteFleamarket({required fleamarketID,required body}) async {
     ApiResponse response = await FleamarketAPI().addFavoriteFleamarket(fleamarketId: fleamarketID, body: body);
     if(response.success)
-      await fetchFleamarketDetail(fleamarketId: fleamarketID, userId: _userViewModel.user.user_id);
+      await fetchFleamarketDetailFromAPI(fleamarketId: fleamarketID, userId: _userViewModel.user.user_id);
       await _fleamarketListViewModel.fetchFleamarketData_favorite(userId: _userViewModel.user.user_id);
       print('찜 추가 완료');
     if(!response.success)
@@ -288,7 +292,7 @@ class FleamarketDetailViewModel extends GetxController {
   Future<void> deleteFavoriteFleamarket({required fleamarketID,required body}) async {
     ApiResponse response = await FleamarketAPI().deleteFavoriteFleamarket(fleamarketId: fleamarketID, body: body);
     if(response.success)
-      await fetchFleamarketDetail(fleamarketId: fleamarketID, userId: _userViewModel.user.user_id);
+      await fetchFleamarketDetailFromAPI(fleamarketId: fleamarketID, userId: _userViewModel.user.user_id);
       await _fleamarketListViewModel.fetchFleamarketData_favorite(userId: _userViewModel.user.user_id);
       print('찜 삭제 완료');
     if(!response.success)

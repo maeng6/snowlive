@@ -961,7 +961,7 @@ class _FleaMarketDetailViewState extends State<FleaMarketDetailView> {
                                                                 "status": '${FleamarketStatus.soldOut.korean}',
                                                               },
                                                             );
-                                                            await _fleamarketDetailViewModel.fetchFleamarketDetail(
+                                                            await _fleamarketDetailViewModel.fetchFleamarketDetailFromAPI(
                                                               fleamarketId: _fleamarketDetailViewModel.fleamarketDetail.fleaId!,
                                                               userId: _userViewModel.user.user_id,
                                                             );
@@ -992,7 +992,7 @@ class _FleaMarketDetailViewState extends State<FleaMarketDetailView> {
                                                                 "status": '${FleamarketStatus.onBooking.korean}',
                                                               },
                                                             );
-                                                            await _fleamarketDetailViewModel.fetchFleamarketDetail(
+                                                            await _fleamarketDetailViewModel.fetchFleamarketDetailFromAPI(
                                                               fleamarketId: _fleamarketDetailViewModel.fleamarketDetail.fleaId!,
                                                               userId: _userViewModel.user.user_id,
                                                             );
@@ -1023,7 +1023,7 @@ class _FleaMarketDetailViewState extends State<FleaMarketDetailView> {
                                                                 "status": '${FleamarketStatus.forSale.korean}',
                                                               },
                                                             );
-                                                            await _fleamarketDetailViewModel.fetchFleamarketDetail(
+                                                            await _fleamarketDetailViewModel.fetchFleamarketDetailFromAPI(
                                                               fleamarketId: _fleamarketDetailViewModel.fleamarketDetail.fleaId!,
                                                               userId: _userViewModel.user.user_id,
                                                             );
@@ -1092,7 +1092,32 @@ class _FleaMarketDetailViewState extends State<FleaMarketDetailView> {
                           children: [
                             Padding(
                                 padding: EdgeInsets.symmetric(horizontal: 20),
-                                child: Column(
+                                child:
+                                (_fleamarketDetailViewModel.isLoading_indicator==true)
+                                    ? Center(
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(20),
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,  // Column을 가운데로 정렬
+                                      children: [
+                                        CircularProgressIndicator(
+                                          strokeWidth: 4.0, // 인디케이터의 두께를 조절
+                                        ),
+                                        SizedBox(
+                                          height: 20, // 인디케이터와 텍스트 사이의 간격
+                                        ),
+                                        Text(
+                                          '로딩 중...', // 텍스트 내용 변경
+                                          style: TextStyle(
+                                            fontSize: 13,
+                                            color: Color(0xFF666666),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                )
+                                    :  Column(
                                   children: [
                                     (_fleamarketDetailViewModel.commentsList.length >0)
                                         ? Column(

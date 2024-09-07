@@ -91,6 +91,7 @@ class FleaMarketListView_favorite extends StatelessWidget {
                         elevation: 4,
                         heroTag: 'fleaListScreen',
                         onPressed: () async {
+                          Get.toNamed(AppRoutes.fleamarketUpload);
                         },
                         icon: Transform.translate(
                             offset: Offset(6,0),
@@ -167,12 +168,12 @@ class FleaMarketListView_favorite extends StatelessWidget {
 
                             return GestureDetector(
                                 onTap: () async {
+                                  _fleamarketDetailViewModel.fetchFleamarketDetailFromList(fleamarketResponse: _fleamarketListViewModel.fleamarketListFavorite[index]);
                                   Get.toNamed(AppRoutes.fleamarketDetail);
-                                  await _fleamarketDetailViewModel.fetchFleamarketDetailandComment(
-                                    fleamarketId: _fleamarketListViewModel.fleamarketListFavorite[index].fleaId!,
-                                    fleaId: _fleamarketListViewModel.fleamarketListFavorite[index].fleaId!,
-                                    userId: _fleamarketListViewModel.fleamarketListFavorite[index].userId!,
-                                  );
+                                  await _fleamarketDetailViewModel.fetchFleamarketComments(
+                                      fleaId: _fleamarketListViewModel.fleamarketListFavorite[index].fleaId!,
+                                      userId: _userViewModel.user.user_id,
+                                      isLoading_indi: true);
                                 },
                                 child: Column(
                                   children: [

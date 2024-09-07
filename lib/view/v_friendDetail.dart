@@ -755,7 +755,8 @@ class FriendDetailView extends StatelessWidget {
                                                             ),
                                                           ],
                                                         ),
-                                                        Container(
+                                                        (_friendDetailViewModel.friendDetailModel.seasonRankingInfo.overallTotalCount != 0) 
+                                                            ? Container(
                                                           child: Row(
                                                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                             crossAxisAlignment: CrossAxisAlignment.end,
@@ -789,7 +790,8 @@ class FriendDetailView extends StatelessWidget {
                                                                     ),
                                                                     Padding(
                                                                       padding: EdgeInsets.only(top: passCount == maxCount ? 6 : 0),
-                                                                      child: Container(
+                                                                      child:
+                                                                      Container(
                                                                         width: 16,
                                                                         height: 140 * barHeightRatio,
                                                                         decoration: BoxDecoration(
@@ -818,7 +820,8 @@ class FriendDetailView extends StatelessWidget {
                                                               );
                                                             }).toList(),
                                                           ),
-                                                        ),
+                                                        ) 
+                                                            :Container(),
                                                       ],
                                                     ),
                                                   ),

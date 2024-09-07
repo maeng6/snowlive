@@ -1,3 +1,5 @@
+import 'package:com.snowlive/model/m_fleamarket.dart';
+
 class FleamarketDetailResponse {
   FleamarketDetailModel? fleamarketDetail;
 
@@ -92,30 +94,34 @@ class FleamarketDetailModel {
         ? UserInfo.fromJson(json['user_info'])
         : null;
   }
-}
 
-class Photo {
-  int? displayOrder;
-  String? urlFleaPhoto;
-
-  Photo({this.displayOrder, this.urlFleaPhoto});
-
-  Photo.fromJson(Map<String, dynamic> json) {
-    displayOrder = json['display_order'];
-    urlFleaPhoto = json['url_flea_photo'];
+  FleamarketDetailModel.fromFleamarketModel(Fleamarket fleamarket) {
+    fleaId = fleamarket.fleaId;
+    userId = fleamarket.userId;
+    productName = fleamarket.productName;
+    categoryMain = fleamarket.categoryMain;
+    categorySub = fleamarket.categorySub;
+    price = fleamarket.price;
+    negotiable = fleamarket.negotiable;
+    method = fleamarket.method;
+    spot = fleamarket.spot;
+    snsUrl = fleamarket.snsUrl;
+    title = fleamarket.title;
+    description = fleamarket.description;
+    updateTime = fleamarket.updateTime;
+    uploadTime = fleamarket.uploadTime;
+    favoriteCount = fleamarket.favoriteCount;
+    viewsCount = fleamarket.viewsCount;
+    commentCount = fleamarket.commentCount;
+    block = fleamarket.block;
+    status = fleamarket.status;
+    isFavorite = fleamarket.isFavorite;
+    photos = fleamarket.photos;
+    userInfo = fleamarket.userInfo;
   }
+
 }
 
-class UserInfo {
-  int? userId;
-  String? displayName;
-  String? profileImageUrlUser;
 
-  UserInfo({this.userId, this.displayName, this.profileImageUrlUser});
 
-  UserInfo.fromJson(Map<String, dynamic> json) {
-    userId = json['user_id'];
-    displayName = json['display_name'];
-    profileImageUrlUser = json['profile_image_url_user'];
-  }
-}
+

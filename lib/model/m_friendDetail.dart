@@ -111,7 +111,7 @@ class SeasonRankingInfo {
     overallTotalCount = json['overall_total_count'];
     overallRank = json['overall_rank'];
     overallRankPercentage = json['overall_rank_percentage'];
-    overallTierIconUrl = json['overall_tier_icon_url'];
+    overallTierIconUrl = json['overall_tier_icon_url']??'';
   }
 }
 

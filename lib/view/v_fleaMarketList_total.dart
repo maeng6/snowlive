@@ -1535,12 +1535,12 @@ class FleaMarketListView_total extends StatelessWidget {
 
                             return GestureDetector(
                                 onTap: () async {
+                                  _fleamarketDetailViewModel.fetchFleamarketDetailFromList(fleamarketResponse: _fleamarketListViewModel.fleamarketListTotal[index]);
                                   Get.toNamed(AppRoutes.fleamarketDetail);
-                                  await _fleamarketDetailViewModel.fetchFleamarketDetailandComment(
-                                      fleamarketId: _fleamarketListViewModel.fleamarketListTotal[index].fleaId!,
+                                  await _fleamarketDetailViewModel.fetchFleamarketComments(
                                       fleaId: _fleamarketListViewModel.fleamarketListTotal[index].fleaId!,
-                                      userId: _fleamarketListViewModel.fleamarketListTotal[index].userId!,
-                                      );
+                                      userId: _userViewModel.user.user_id,
+                                      isLoading_indi: true);
                                 },
                                 child: Column(
                                   children: [

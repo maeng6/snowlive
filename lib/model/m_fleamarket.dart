@@ -46,6 +46,7 @@ class Fleamarket {
   int? viewsCount;
   UserInfo? userInfo;
   int? commentCount;
+  bool? isFavorite;
 
   Fleamarket({
     this.fleaId,
@@ -69,6 +70,7 @@ class Fleamarket {
     this.viewsCount,
     this.userInfo,
     this.commentCount,
+    this.isFavorite,
   });
 
   Fleamarket.fromJson(Map<String, dynamic> json) {
@@ -100,6 +102,7 @@ class Fleamarket {
         ? UserInfo.fromJson(json['user_info'])
         : null;
     commentCount = json['comment_count'];
+    isFavorite = json['isFavorite'];
   }
 }
 

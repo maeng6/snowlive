@@ -11,6 +11,7 @@ import '../routes/routes.dart';
 import '../screens/snowliveDesignStyle.dart';
 import '../util/util_1.dart';
 import '../viewmodel/vm_fleamarketDetail.dart';
+import '../viewmodel/vm_user.dart';
 
 class FleaMarketListView_my extends StatelessWidget {
 
@@ -18,6 +19,7 @@ class FleaMarketListView_my extends StatelessWidget {
 
   final FleamarketListViewModel _fleamarketListViewModel = Get.find<FleamarketListViewModel>();
   final FleamarketDetailViewModel _fleamarketDetailViewModel = Get.find<FleamarketDetailViewModel>();
+  final UserViewModel _userViewModel = Get.find<UserViewModel>();
 
   @override
   Widget build(BuildContext context) {
@@ -90,6 +92,7 @@ class FleaMarketListView_my extends StatelessWidget {
                         elevation: 4,
                         heroTag: 'fleaListScreen',
                         onPressed: () async {
+                          Get.toNamed(AppRoutes.fleamarketUpload);
                         },
                         icon: Transform.translate(
                             offset: Offset(6,0),
@@ -166,12 +169,12 @@ class FleaMarketListView_my extends StatelessWidget {
 
                             return GestureDetector(
                                 onTap: () async {
+                                  _fleamarketDetailViewModel.fetchFleamarketDetailFromList(fleamarketResponse: _fleamarketListViewModel.fleamarketListMy[index]);
                                   Get.toNamed(AppRoutes.fleamarketDetail);
-                                  await _fleamarketDetailViewModel.fetchFleamarketDetailandComment(
-                                    fleamarketId: _fleamarketListViewModel.fleamarketListMy[index].fleaId!,
-                                    fleaId: _fleamarketListViewModel.fleamarketListMy[index].fleaId!,
-                                    userId: _fleamarketListViewModel.fleamarketListMy[index].userId!,
-                                  );
+                                  await _fleamarketDetailViewModel.fetchFleamarketComments(
+                                      fleaId: _fleamarketListViewModel.fleamarketListMy[index].fleaId!,
+                                      userId: _userViewModel.user.user_id,
+                                      isLoading_indi: true);
                                 },
                                 child: Column(
                                   children: [

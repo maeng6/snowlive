@@ -311,7 +311,7 @@ class FleamarketUploadView extends StatelessWidget {
                                     SizedBox(height: 8),
                                     GestureDetector(
                                       onTap: () async {
-                                        if(_fleamarketUploadViewModel.isCategorySelected==false && _fleamarketUploadViewModel.selectedCategoryMain == '스키'){
+                                        if( _fleamarketUploadViewModel.selectedCategoryMain == '스키'){
                                         selectedCategory_sub = await showModalBottomSheet<String>(
                                           constraints: BoxConstraints(
                                             maxHeight: _size.height - _statusBarSize - 44,
@@ -328,7 +328,7 @@ class FleamarketUploadView extends StatelessWidget {
                                           _fleamarketUploadViewModel.setIsSelectedCategoryTrue();
                                         }
 
-                                        }else if(_fleamarketUploadViewModel.isCategorySelected==false && _fleamarketUploadViewModel.selectedCategoryMain == '스노보드'){
+                                        }else if(_fleamarketUploadViewModel.selectedCategoryMain == '스노보드'){
                                           selectedCategory_sub = await showModalBottomSheet<String>(
                                             constraints: BoxConstraints(
                                               maxHeight: _size.height - _statusBarSize - 44,

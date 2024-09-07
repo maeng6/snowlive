@@ -152,12 +152,12 @@ class FleaMarketListView_search extends StatelessWidget {
 
                           return GestureDetector(
                               onTap: () async {
+                                _fleamarketDetailViewModel.fetchFleamarketDetailFromList(fleamarketResponse: _fleamarketSearchViewModel.fleamarketListSearch[index]);
                                 Get.toNamed(AppRoutes.fleamarketDetail);
-                                await _fleamarketDetailViewModel.fetchFleamarketDetailandComment(
-                                  fleamarketId: _fleamarketSearchViewModel.fleamarketListSearch[index].fleaId!,
-                                  fleaId: _fleamarketSearchViewModel.fleamarketListSearch[index].fleaId!,
-                                  userId: _fleamarketSearchViewModel.fleamarketListSearch[index].userId!,
-                                );
+                                await _fleamarketDetailViewModel.fetchFleamarketComments(
+                                    fleaId: _fleamarketSearchViewModel.fleamarketListSearch[index].fleaId!,
+                                    userId: _userViewModel.user.user_id,
+                                    isLoading_indi: true);
                               },
                               child: Column(
                                 children: [
