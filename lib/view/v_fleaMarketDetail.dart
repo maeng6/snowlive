@@ -475,94 +475,6 @@ class _FleaMarketDetailViewState extends State<FleaMarketDetailView> {
             ),
           ),
           body: Obx((){
-            if(_fleamarketDetailViewModel.isLoading.value == true){
-              return Shimmer.fromColors(
-                baseColor: Colors.grey[300]!,
-                highlightColor: Colors.grey[100]!,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: Column(
-                    children: [
-                      Container(
-                        margin: EdgeInsets.only(bottom: 16),
-                        height: 200,
-                        color: SDSColor.snowliveWhite,
-                      ),
-                      Row(
-                        children: [
-                          Container(
-                            margin: EdgeInsets.only(right: 16),
-                            width: 50,
-                            height: 50,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: SDSColor.snowliveWhite,
-                            ),
-                          ),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Container(
-                                  width: 150,
-                                  height: 20,
-                                  color: SDSColor.snowliveWhite,
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: 16),
-                      Row(
-                        children: [
-                          Container(
-                            height: 40,
-                            color: SDSColor.snowliveWhite,
-                          ),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Container(
-                                  width: 150,
-                                  height: 60,
-                                  color: SDSColor.snowliveWhite,
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: 16),
-                      Container(
-                        height: 100,
-                        color: SDSColor.snowliveWhite,
-                      ),
-                      SizedBox(height: 16),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: Container(
-                              height: 40,
-                              color: SDSColor.snowliveWhite,
-                            ),
-                          ),
-                          SizedBox(width: 16),
-                          Expanded(
-                            child: Container(
-                              height: 40,
-                              color: SDSColor.snowliveWhite,
-                            ),
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: 16),
-                    ],
-                  ),
-                )
-              );
-            }else {
               return Stack(
                 children: [
                   SingleChildScrollView(
@@ -1671,7 +1583,6 @@ class _FleaMarketDetailViewState extends State<FleaMarketDetailView> {
                   ),
                 ],
               );
-            }
           })
         ),
       ),
