@@ -281,7 +281,7 @@ class FleamarketUploadView extends StatelessWidget {
                                       ),
                                     ),
                                   ],
-                                ),
+                                ),//g
                                 SizedBox(width: 6,),
                                 Column(
                                   children: [
