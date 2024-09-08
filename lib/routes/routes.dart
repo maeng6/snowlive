@@ -25,7 +25,6 @@ class AppRoutes {
   static const String setProfile = '/setProfile';
   static const String friendList = '/friendList';
   static const String friendDetail = '/friendDetail';
-  static const String friendDetailUpdate = '/friendDetailUpdate';
   static const String userProfileIamge = '/userProfileIamge';
   static const String fleamarket = '/fleamarket';
   static const String fleamarketSearch = '/fleamarketSearch';
@@ -33,6 +32,7 @@ class AppRoutes {
   static const String fleamarketCommentDetail = '/fleamarketCommentDetail';
   static const String fleamarketUpload = '/fleamarketUpload';
   static const String fleamarketUpdate = '/fleamarketUpdate';
+  static const String friendDetailUpdate = '/friendDetailUpdate';
 
   static final List<GetPage> pages = [
     GetPage(

@@ -1,18 +1,15 @@
 import 'dart:io';
-import 'package:com.snowlive/controller/login/vm_notificationController.dart';
-import 'package:com.snowlive/routes/routes.dart';
 import 'package:com.snowlive/viewmodel/vm_friendDetailUpdate.dart';
 import 'package:com.snowlive/widget/w_favoriteResort.dart';
 import 'package:com.snowlive/widget/w_sex.dart';
 import 'package:com.snowlive/widget/w_skiorboard.dart';
 import 'package:extended_image/extended_image.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import '../screens/snowliveDesignStyle.dart';
+import '../viewmodel/vm_friendDetail.dart';
 import '../viewmodel/vm_user.dart';
 
 class FriendDetailUpdateView extends StatelessWidget {
@@ -21,8 +18,8 @@ class FriendDetailUpdateView extends StatelessWidget {
   Widget build(BuildContext context) {
 
     final FriendDetailUpdateViewModel _friendDetailUpdateViewModel = Get.find<FriendDetailUpdateViewModel>();
+    final FriendDetailViewModel _friendDetailViewModel = Get.find<FriendDetailViewModel>();
     final UserViewModel _userViewModel = Get.find<UserViewModel>();
-    final NotificationController _notificationController = Get.find<NotificationController>();
 
     final double _statusBarSize = MediaQuery.of(context).padding.top;
     int? selectedIndex;
@@ -244,7 +241,7 @@ class FriendDetailUpdateView extends StatelessWidget {
                                       cursorHeight: 16,
                                       cursorWidth: 2,
                                       autovalidateMode: AutovalidateMode.onUserInteraction,
-                                      controller: _friendDetailUpdateViewModel.textEditingController..text,
+                                      controller: _friendDetailUpdateViewModel.textEditingController_displayName..text,
                                       style: SDSTextStyle.regular.copyWith(fontSize: 15),
                                       strutStyle: StrutStyle(fontSize: 14, leading: 0),
                                       inputFormatters: [
@@ -280,10 +277,14 @@ class FriendDetailUpdateView extends StatelessWidget {
                                       ),
                                       validator: (val) {
                                         WidgetsBinding.instance.addPostFrameCallback((_) {
-                                          if (val!.length <= 10 && val.length >= 1) {
+                                          if ((val!.length <= 10 && val.length >= 1)
+                                              &&  _friendDetailUpdateViewModel.textEditingController_displayName.text != _friendDetailUpdateViewModel.displayName) {
                                             _friendDetailUpdateViewModel.toggleCheckDisplayname(true);
+                                            _friendDetailUpdateViewModel.toggleIsCheckedDisplayName(false);
                                           } else {
                                             _friendDetailUpdateViewModel.toggleCheckDisplayname(false);
+                                            _friendDetailUpdateViewModel.toggleIsCheckedDisplayName(true);
+
                                           }
                                         });
                                         if (val!.length <= 10 && val.length >= 1) {
@@ -302,9 +303,9 @@ class FriendDetailUpdateView extends StatelessWidget {
                                       child: TextButton(
                                         onPressed: (_friendDetailUpdateViewModel.activeCheckDisplaynameButton == true && !_friendDetailUpdateViewModel.isCheckedDisplayName)
                                             ? () async {
-                                          print(_friendDetailUpdateViewModel.textEditingController.text);
+                                          print(_friendDetailUpdateViewModel.textEditingController_displayName.text);
                                           await _friendDetailUpdateViewModel.checkDisplayName({
-                                            "display_name": _friendDetailUpdateViewModel.textEditingController.text,
+                                            "display_name": _friendDetailUpdateViewModel.textEditingController_displayName.text,
                                           });
                                           FocusScope.of(context).unfocus();
                                           if (!_friendDetailUpdateViewModel.isCheckedDisplayName)
@@ -378,21 +379,73 @@ class FriendDetailUpdateView extends StatelessWidget {
                                   child: Row(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
+                                      Text('상태메세지', style: SDSTextStyle.regular.copyWith(
+                                          fontSize: 12,
+                                          color: SDSColor.gray900
+                                      ),),
+                                    ],
+                                  ),
+                                ),
+                                SizedBox(height: 8),
+                                Stack(
+                                  children: [
+                                    TextFormField(
+                                      textAlignVertical: TextAlignVertical.center,
+                                      cursorColor: SDSColor.snowliveBlue,
+                                      cursorHeight: 16,
+                                      cursorWidth: 2,
+                                      autovalidateMode: AutovalidateMode.onUserInteraction,
+                                      controller: _friendDetailUpdateViewModel.textEditingController_stateMsg..text,
+                                      style: SDSTextStyle.regular.copyWith(fontSize: 15),
+                                      strutStyle: StrutStyle(fontSize: 14, leading: 0),
+                                      decoration: InputDecoration(
+                                        floatingLabelBehavior: FloatingLabelBehavior.never,
+                                        errorMaxLines: 2,
+                                        errorStyle: SDSTextStyle.regular.copyWith(fontSize: 12, color: SDSColor.red),
+                                        labelStyle: SDSTextStyle.regular.copyWith(color: SDSColor.gray400, fontSize: 14),
+                                        hintStyle: SDSTextStyle.regular.copyWith(color: SDSColor.gray400, fontSize: 14),
+                                        hintText: '상태메세지를 입력해 주세요.(최대 20자)',
+                                        labelText: '상태메세지를 입력해 주세요.(최대 20자)',
+                                        contentPadding: EdgeInsets.only(top: 10, bottom: 10, left: 12, right: 50),
+                                        fillColor: SDSColor.gray50,
+                                        hoverColor: SDSColor.snowliveBlue,
+                                        filled: true,
+                                        focusColor: SDSColor.snowliveBlue,
+                                        border: OutlineInputBorder(
+                                          borderSide: BorderSide(color: SDSColor.gray50),
+                                          borderRadius: BorderRadius.circular(6),
+                                        ),
+                                        errorBorder: OutlineInputBorder(
+                                          borderSide: BorderSide(color: SDSColor.red, strokeAlign: BorderSide.strokeAlignInside, width: 1.5),
+                                        ),
+                                        focusedBorder: OutlineInputBorder(
+                                          borderSide: BorderSide(color: SDSColor.snowliveBlue, strokeAlign: BorderSide.strokeAlignInside, width: 1.5),
+                                        ),
+                                        enabledBorder: OutlineInputBorder(
+                                          borderSide: BorderSide(color: Colors.transparent),
+                                          borderRadius: BorderRadius.circular(6),
+                                        ),
+                                      ),
+                                      validator: (val) {
+                                        if (val!.length <= 20 && val.length >= 0) {
+                                          return null;
+                                        } else {
+                                          return '최대 입력 가능한 글자 수를 초과했습니다.';
+                                        }
+                                      },
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(height: 24),
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 4),
+                                  child: Row(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
                                       Text('자주가는 스키장', style: SDSTextStyle.regular.copyWith(
                                           fontSize: 12,
                                           color: SDSColor.gray900
                                       ),),
-                                      Padding(
-                                        padding: const EdgeInsets.only(left: 2, top: 2),
-                                        child: Container(
-                                          width: 4,
-                                          height: 4,
-                                          decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.circular(10),
-                                            color: SDSColor.red,
-                                          ),
-                                        ),
-                                      )
                                     ],
                                   ),
                                 ),
@@ -571,11 +624,6 @@ class FriendDetailUpdateView extends StatelessWidget {
             SafeArea(
               child: Column(
                 children: [
-                  Text('입력해주신 정보는 이후에도 변경이 가능합니다.',
-                    style: SDSTextStyle.regular.copyWith(
-                        fontSize: 13,
-                        color: SDSColor.gray400
-                    ),),
                   Obx(() =>
                   (_friendDetailUpdateViewModel.selectedResortIndex != 99 && _friendDetailUpdateViewModel.displayName != '')
                       ? Padding(
@@ -583,25 +631,25 @@ class FriendDetailUpdateView extends StatelessWidget {
                     child: ElevatedButton(
                       onPressed: () async {
                         await _friendDetailUpdateViewModel.getImageUrl();
-                        await _friendDetailUpdateViewModel.startSnowlive(
+                        await _friendDetailUpdateViewModel.updateFriendDetail(
                             {
-                              "uid": FirebaseAuth.instance.currentUser!.uid,
-                              "email": "${FirebaseAuth.instance.currentUser!.uid}@1.com",
-                              "favorite_resort": _friendDetailUpdateViewModel.selectedResortIndex + 1,
-                              "device_id": _notificationController.deviceID,
+                              "user_id": _userViewModel.user.user_id,    //필수 - 수정할 유저id
+                              "display_name": _friendDetailUpdateViewModel.textEditingController_displayName.text,
+                              "state_msg": _friendDetailUpdateViewModel.textEditingController_stateMsg.text,    //선택
                               "profile_image_url_user": _friendDetailUpdateViewModel.profileImageUrl,
-                              "device_token": _notificationController.deviceToken,
-                              "display_name": _friendDetailUpdateViewModel.displayName,
-                              "skiorboard": _friendDetailUpdateViewModel.selectedSkiOrBoard,
-                              "sex": _friendDetailUpdateViewModel.selectedSex
+                              "hide_profile": _userViewModel.user.hide_profile,    //선택 - 프로필 비공개 설정에서만 씀
+                              "instant_resort":_userViewModel.user.instant_resort,
+                              "favorite_resort":_friendDetailUpdateViewModel.selectedResortIndex+1,
+                              "sex": _friendDetailUpdateViewModel.selectedSex,
+                              "skiorboard": _friendDetailUpdateViewModel.selectedSkiOrBoard
                             }
                         );
-                        _userViewModel.updateUserModel_data(_friendDetailUpdateViewModel.startSnowliveReturn);
-                        await FlutterSecureStorage().write(key: 'localUid', value: FirebaseAuth.instance.currentUser!.uid);
-                        await FlutterSecureStorage().write(key: 'device_id', value: _notificationController.deviceID);
-                        await FlutterSecureStorage().write(key: 'device_token', value: _notificationController.deviceToken);
-                        await FlutterSecureStorage().write(key: 'user_id', value: _userViewModel.user.user_id.toString());
-                        Get.offAllNamed(AppRoutes.mainHome);
+                        await _friendDetailViewModel.fetchFriendDetailInfo(
+                          userId: _userViewModel.user.user_id,
+                          friendUserId: _userViewModel.user.user_id,
+                          season: _friendDetailViewModel.seasonDate,
+                        );
+                        Get.back();
                       },
                       style: TextButton.styleFrom(
                         shape: const RoundedRectangleBorder(
@@ -612,7 +660,7 @@ class FriendDetailUpdateView extends StatelessWidget {
                         minimumSize: Size(double.infinity, 48),
                         backgroundColor: SDSColor.snowliveBlue,
                       ),
-                      child: Text('시작하기',
+                      child: Text('수정하기',
                         style: SDSTextStyle.bold
                             .copyWith(color: SDSColor.snowliveWhite, fontSize: 16),
                       ),
@@ -622,7 +670,7 @@ class FriendDetailUpdateView extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
                     child: ElevatedButton(
                       onPressed: () {},
-                      child: Text('시작하기',
+                      child: Text('수정하기',
                         style: SDSTextStyle.bold
                             .copyWith(color: SDSColor.snowliveWhite, fontSize: 16),
                       ),

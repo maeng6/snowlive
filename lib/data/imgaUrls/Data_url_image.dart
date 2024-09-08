@@ -68,6 +68,7 @@ List<RankingTierUrl> rankingTierUrlList = [
   ),
 ];
 
+
 List<KusbfAssetUrl> KusbfAssetUrlList = [
   KusbfAssetUrl(
     mainLogo: 'https://i.esdrop.com/d/f/yytYSNBROy/aYg5y9C2Wa.png',

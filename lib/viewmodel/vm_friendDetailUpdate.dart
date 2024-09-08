@@ -1,4 +1,5 @@
 
+import 'package:com.snowlive/api/api_user.dart';
 import 'package:com.snowlive/model_2/m_resortModel.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -10,7 +11,8 @@ import '../api/ApiResponse.dart';
 import '../api/api_login.dart';
 
 class FriendDetailUpdateViewModel extends GetxController {
-  final TextEditingController textEditingController = TextEditingController();
+  final TextEditingController textEditingController_displayName = TextEditingController();
+  final TextEditingController textEditingController_stateMsg = TextEditingController();
   final TextEditingController textEditingControllerYYYY = TextEditingController();
   final TextEditingController textEditingControllerMM = TextEditingController();
   final TextEditingController textEditingControllerDD = TextEditingController();
@@ -41,8 +43,11 @@ class FriendDetailUpdateViewModel extends GetxController {
   int get selectedResortIndex => _selectedResortIndex.value;
   dynamic get startSnowliveReturn => _startSnowliveReturn;
 
+  ImageController imageController = Get.find<ImageController>();
+
   Future<void> fetchFriendDetailUpdateData({
     required displayName,
+    required state_msg,
     required profileImageUrl,
     required selectedResortName,
     required selectedResortIndex,
@@ -51,24 +56,22 @@ class FriendDetailUpdateViewModel extends GetxController {
 
   }) async {
     // Update text controllers and selected values
-    this.textEditingController.text =displayName;
-    this._profileImageUrl.value =profileImageUrl;
-    this._selectedResortName.value =selectedResortName;
-    this._selectedResortIndex.value =selectedResortIndex;
-    this._selectedSkiOrBoard.value =selectedSkiOrBoard;
-    this._selectedSex.value =selectedSex;
+    this.textEditingController_displayName.text = displayName;
+    this.textEditingController_stateMsg.text = state_msg;
+    this._displayName.value = displayName;
+    this._profileImageUrl.value = profileImageUrl;
+    this._selectedResortName.value = selectedResortName;
+    this._selectedResortIndex.value = selectedResortIndex;
+    this._selectedSkiOrBoard.value = selectedSkiOrBoard;
+    this._selectedSex.value = selectedSex;
     this._isCheckedDisplayName.value = true;
 
   }
 
 
-
-  // Dependency Injection
-  final ImageController imageController = Get.put(ImageController());
-
   FriendDetailUpdateViewModel() {
-    textEditingController.addListener(() {
-      _isCheckedDisplayName.value = false;
+    textEditingController_displayName.addListener(() {
+        _isCheckedDisplayName.value = false;
     });
   }
 
@@ -96,13 +99,6 @@ class FriendDetailUpdateViewModel extends GetxController {
     }
   }
 
-  Future<void> startSnowlive(Map<String, dynamic> body) async {
-    if (formKey.currentState!.validate()){
-    ApiResponse response = await LoginAPI().registerUser(body);
-    _startSnowliveReturn = response.data;
-    }
-  }
-
   void cancelSelectedImage(){
     _profileImage.value = false;
     _croppedFile.value = null;
@@ -110,6 +106,10 @@ class FriendDetailUpdateViewModel extends GetxController {
 
   void toggleCheckDisplayname(bool active){
     _activeCheckDisplaynameButton.value = active;
+  }
+
+  void toggleIsCheckedDisplayName(bool active){
+    _isCheckedDisplayName.value = active;
   }
 
   void selectResortInfo(int selectedIndex){
@@ -131,12 +131,22 @@ class FriendDetailUpdateViewModel extends GetxController {
     if(response.success){
       print(response.data['message']);
       _isCheckedDisplayName.value = true;
-      _displayName.value = textEditingController.text;
+      _displayName.value = textEditingController_displayName.text;
     } else{
         _isCheckedDisplayName.value = false;
 
     }
   }
+
+  Future<void> updateFriendDetail(body) async{
+    ApiResponse response = await UserAPI().updateUserInfo(body);
+    if(response.success){
+      print('유저 정보 수정완료');
+    } else{
+      print('유저 정보 수정실패');
+    }
+  }
+
 
 
 

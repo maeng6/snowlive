@@ -63,6 +63,7 @@ class FriendDetailView extends StatelessWidget {
                 //TODO: 수정페이지로 이동
                 _friendDetailUpdateViewModel.fetchFriendDetailUpdateData(
                     displayName: _friendDetailViewModel.friendDetailModel.friendUserInfo.displayName,
+                    state_msg: _friendDetailViewModel.friendDetailModel.friendUserInfo.stateMsg,
                     profileImageUrl: _friendDetailViewModel.friendDetailModel.friendUserInfo.profileImageUrlUser,
                     selectedResortName: _friendDetailViewModel.friendDetailModel.friendUserInfo.favoriteResort,
                     selectedResortIndex: _friendDetailViewModel.friendDetailModel.friendUserInfo.favoriteResortId-1,

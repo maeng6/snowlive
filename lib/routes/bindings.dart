@@ -25,6 +25,7 @@ class MainHomeBinding extends Bindings {
     Get.put(FriendDetailViewModel(),permanent: true);
     Get.put(FleamarketListViewModel(),permanent: true);
     Get.put(FleamarketDetailViewModel(),permanent: true);
+    Get.put(ImageController(),permanent: true);
   }
 }
 
