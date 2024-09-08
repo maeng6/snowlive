@@ -18,7 +18,7 @@ import '../viewmodel/vm_friendDetail.dart';
 import '../viewmodel/vm_resortHome.dart';
 import '../viewmodel/vm_user.dart';
 import '../widget/w_selectResort.dart';
-
+// 1234
 class ResortHomeView extends StatefulWidget {
   @override
   State<ResortHomeView> createState() => _ResortHomeViewState();

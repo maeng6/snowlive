@@ -914,7 +914,7 @@ class FleamarketUploadView extends StatelessWidget {
                                 && _fleamarketUploadViewModel.itemPriceTextEditingController.text != ''
                                 && _fleamarketUploadViewModel.selectedTradeMethod != '거래방법 선택'
                                 && _fleamarketUploadViewModel.selectedTradeSpot != '거래장소 선택'
-                                && _fleamarketUploadViewModel.textEditingController_desc.text != '')
+                                && _fleamarketUploadViewModel.textEditingController_desc.text != ''){
                             await _fleamarketUploadViewModel.getImageUrlList(
                                 newImages: _fleamarketUploadViewModel.imageFiles,
                                 user_id: _userViewModel.user.user_id);
@@ -934,13 +934,16 @@ class FleamarketUploadView extends StatelessWidget {
                                 },
                                 _fleamarketUploadViewModel.photos
                             );
-                          await _fleamarketListViewModel.fetchFleamarketData_total(userId: _userViewModel.user.user_id);
-                          if(_fleamarketUploadViewModel.selectedCategoryMain == '스키')
-                          await _fleamarketListViewModel.fetchFleamarketData_ski(userId: _userViewModel.user.user_id, categoryMain:'스키');
-                          if(_fleamarketUploadViewModel.selectedCategoryMain == '스노보드')
-                          await _fleamarketListViewModel.fetchFleamarketData_board(userId: _userViewModel.user.user_id, categoryMain:'스노보드');
-                          await _fleamarketListViewModel.fetchFleamarketData_my(userId: _userViewModel.user.user_id, myflea: true);
-                          Get.back();
+                            await _fleamarketListViewModel.fetchFleamarketData_total(userId: _userViewModel.user.user_id);
+                            if(_fleamarketUploadViewModel.selectedCategoryMain == '스키')
+                              await _fleamarketListViewModel.fetchFleamarketData_ski(userId: _userViewModel.user.user_id, categoryMain:'스키');
+                            if(_fleamarketUploadViewModel.selectedCategoryMain == '스노보드')
+                              await _fleamarketListViewModel.fetchFleamarketData_board(userId: _userViewModel.user.user_id, categoryMain:'스노보드');
+                            await _fleamarketListViewModel.fetchFleamarketData_my(userId: _userViewModel.user.user_id, myflea: true);
+                            Get.back();
+                          }
+
+
                         },
                         style: TextButton.styleFrom(
                           shape: const RoundedRectangleBorder(
@@ -964,7 +967,7 @@ class FleamarketUploadView extends StatelessWidget {
                           SDSColor.snowliveBlue
                           : SDSColor.gray200,
                         ),
-                        child: Text('시작하기',
+                        child: Text('작성 완료',
                           style: SDSTextStyle.bold
                               .copyWith(color:
                           (
