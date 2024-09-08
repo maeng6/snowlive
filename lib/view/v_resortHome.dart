@@ -349,9 +349,22 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                                   ),
                                 ),
                                 Center(
-                                  child: Text(
-                                    '스키장 오픈채팅',
-                                    style: SDSTextStyle.bold.copyWith(fontSize: 16, color: SDSColor.gray900),
+                                  child: Column(
+                                    children: [
+                                      Text(
+                                        '스키장 오픈채팅',
+                                        style: SDSTextStyle.bold.copyWith(fontSize: 16, color: SDSColor.gray900),
+                                      ),
+                                      SizedBox(height: 10,),
+                                      Text(
+                                        '전국 스키장의 스노우라이브 유저들과',
+                                        style: SDSTextStyle.bold.copyWith(fontSize: 12, color: SDSColor.gray500),
+                                      ),
+                                      Text(
+                                        '실시간으로 정보를 공유해 보세요',
+                                        style: SDSTextStyle.bold.copyWith(fontSize: 12, color: SDSColor.gray500),
+                                      ),
+                                    ],
                                   ),
                                 ),
                                 SizedBox(height: 20,),
