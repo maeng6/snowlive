@@ -44,7 +44,7 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
   @override
   void initState() {
     super.initState();
-print(_userViewModel.user.user_id);
+    print(_userViewModel.user.user_id);
     _controller = AnimationController(
       vsync: this,
       duration: Duration(milliseconds: 1500),
@@ -142,10 +142,9 @@ print(_userViewModel.user.user_id);
                   ),
                 ),
                 Container(
-                  padding: EdgeInsets.only(top: 3, bottom: 2, right: 2, left: 2),
+                  padding: EdgeInsets.only(top: 3, bottom: 5, right: 2, left: 2),
                   width: _size.width - 32,
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(40),
                     boxShadow: [
                       (_userViewModel.user.within_boundary == true)
                           ? BoxShadow(
@@ -162,14 +161,17 @@ print(_userViewModel.user.user_id);
                       )
                     ],
                   ),
-                  child: Obx(()=>FloatingActionButton.extended(
-                      onPressed: () async {
-                        if (_userViewModel.user.within_boundary == true) {
+                  child: Obx(()=>ClipRRect(
+                    borderRadius: BorderRadius.circular(50),
+                    child: FloatingActionButton.extended(
+                        onPressed: () async {
+                          if (_userViewModel.user.within_boundary == true) {
                             HapticFeedback.lightImpact();
                             Get.dialog(
                               WillPopScope(
                                 onWillPop: () async => false,
                                 child: AlertDialog(
+                                  backgroundColor: SDSColor.snowliveWhite,
                                   contentPadding: EdgeInsets.only(bottom: 0, left: 28, right: 28, top: 30),
                                   elevation: 0,
                                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
@@ -182,7 +184,7 @@ print(_userViewModel.user.user_id);
                                       crossAxisAlignment: CrossAxisAlignment.center,
                                       children: [
                                         Padding(
-                                          padding: const EdgeInsets.only(bottom: 8),
+                                          padding: const EdgeInsets.only(bottom: 6),
                                           child: Row(
                                             mainAxisAlignment: MainAxisAlignment.center,
                                             children: [
@@ -210,96 +212,100 @@ print(_userViewModel.user.user_id);
                                     ),
                                   ),
                                   actions: [
-                                    Column(
-                                      children: [
-                                        Container(
-                                          width: _size.width,
-                                          height: 48,
-                                          decoration: BoxDecoration(
-                                              borderRadius: BorderRadius.circular(5),
-                                              color: SDSColor.snowliveBlue
-                                          ),
-                                          child: TextButton(
-                                            onPressed: () {
-                                              Get.back();
-                                            },
-                                            child: Text(
-                                              '계속 타기',
-                                              style: SDSTextStyle.bold.copyWith(
-                                                fontSize: 16,
-                                                color: SDSColor.snowliveWhite,
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                        Padding(
-                                          padding: const EdgeInsets.only(top: 8.0),
-                                          child: Container(
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: 16),
+                                      child: Column(
+                                        children: [
+                                          Container(
                                             width: _size.width,
                                             height: 48,
                                             decoration: BoxDecoration(
                                                 borderRadius: BorderRadius.circular(5),
-                                                color: SDSColor.snowliveWhite
+                                                color: SDSColor.snowliveBlue
                                             ),
                                             child: TextButton(
-                                              onPressed: () async {
-                                                await _resortHomeViewModel.liveOff({
-                                                  "user_id":_userViewModel.user.user_id
-                                                }, _userViewModel.user.user_id);
-                                                await _userViewModel.updateUserModel_api(_userViewModel.user.user_id);
-                                                await _resortHomeViewModel.stopForegroundLocationService();
-                                                await _resortHomeViewModel.stopBackgroundLocationService();
+                                              onPressed: () {
                                                 Get.back();
-                                                print('라이브 OFF');
                                               },
                                               child: Text(
-                                                '라이브온 종료',
+                                                '계속 타기',
                                                 style: SDSTextStyle.bold.copyWith(
                                                   fontSize: 16,
-                                                  color: SDSColor.gray900,
+                                                  color: SDSColor.snowliveWhite,
                                                 ),
                                               ),
                                             ),
                                           ),
-                                        ),
-                                      ],
-                                      mainAxisAlignment: MainAxisAlignment.center,
+                                          Padding(
+                                            padding: const EdgeInsets.only(top: 8.0),
+                                            child: Container(
+                                              width: _size.width,
+                                              height: 48,
+                                              decoration: BoxDecoration(
+                                                  borderRadius: BorderRadius.circular(5),
+                                                  color: SDSColor.snowliveWhite
+                                              ),
+                                              child: TextButton(
+                                                onPressed: () async {
+                                                  await _resortHomeViewModel.liveOff({
+                                                    "user_id":_userViewModel.user.user_id
+                                                  }, _userViewModel.user.user_id);
+                                                  await _userViewModel.updateUserModel_api(_userViewModel.user.user_id);
+                                                  await _resortHomeViewModel.stopForegroundLocationService();
+                                                  await _resortHomeViewModel.stopBackgroundLocationService();
+                                                  Get.back();
+                                                  print('라이브 OFF');
+                                                },
+                                                child: Text(
+                                                  '라이브온 종료',
+                                                  style: SDSTextStyle.bold.copyWith(
+                                                    fontSize: 16,
+                                                    color: SDSColor.gray900,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                      ),
                                     ),
                                   ],
                                 ),
                               ),
                               barrierDismissible: false,
                             );
-                        }
-                        else if(_userViewModel.user.within_boundary == false) {
+                          }
+                          else if(_userViewModel.user.within_boundary == false) {
                             HapticFeedback.lightImpact();
                             await _resortHomeViewModel.startForegroundLocationService(user_id: _userViewModel.user.user_id);
                             await _resortHomeViewModel.startBackgroundLocationService(user_id: _userViewModel.user.user_id);
                             await _userViewModel.updateUserModel_api(_userViewModel.user.user_id);
-                        }
-                      },
-                      elevation: 0,
-                      icon:   (_userViewModel.user.within_boundary == true)
-                          ? Image.asset('assets/imgs/icons/icon_live_on.png', width: 40)
-                          : Image.asset('assets/imgs/icons/icon_live_off.png', width: 40),
-                      label: (_userViewModel.user.within_boundary == true)
-                          ? Text(
-                        '${_resortHomeViewModel.resortHomeModel.todayTotalScore.toInt()}점 획득',
-                        style: SDSTextStyle.extraBold.copyWith(
-                          fontSize: 16,
-                          letterSpacing: -0.1,
-                          color: SDSColor.snowliveWhite,
+                          }
+                        },
+                        elevation: 0,
+                        icon:   (_userViewModel.user.within_boundary == true)
+                            ? Image.asset('assets/imgs/icons/icon_live_on.png', width: 40)
+                            : Image.asset('assets/imgs/icons/icon_live_off.png', width: 40),
+                        label: (_userViewModel.user.within_boundary == true)
+                            ? Text(
+                          '${_resortHomeViewModel.resortHomeModel.todayTotalScore.toInt()}점 획득',
+                          style: SDSTextStyle.extraBold.copyWith(
+                            fontSize: 16,
+                            letterSpacing: -0.1,
+                            color: SDSColor.snowliveWhite,
+                          ),
+                        )
+                            : Text(
+                          '라이브온하기',
+                          style: SDSTextStyle.extraBold.copyWith(
+                            fontSize: 16,
+                            letterSpacing: -0.1,
+                            color: SDSColor.snowliveWhite,
+                          ),
                         ),
-                      )
-                          : Text(
-                        '라이브온하기',
-                        style: SDSTextStyle.extraBold.copyWith(
-                          fontSize: 16,
-                          letterSpacing: -0.1,
-                          color: SDSColor.snowliveWhite,
-                        ),
-                      ),
-                      backgroundColor:  (_userViewModel.user.within_boundary == true) ? SDSColor.gray800  : SDSColor.gray800)),
+                        backgroundColor:  (_userViewModel.user.within_boundary == true) ? SDSColor.gray800  : SDSColor.gray800),
+                  )),
                 ),
               ],
             ),
@@ -311,25 +317,85 @@ print(_userViewModel.user.user_id);
             preferredSize: Size.fromHeight(44),
             child: AppBar(
               actions: [
-                Padding(
-                  padding: const EdgeInsets.only(left: 14),
-                  child: IconButton(
-                    onPressed: () async{
-                      showModalBottomSheet(
-                        context: context,
-                        isScrollControlled: true,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+                IconButton(
+                  onPressed: () async{
+                    showModalBottomSheet(
+                      context: context,
+                      isScrollControlled: true,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+                      ),
+                      builder: (context) => DraggableScrollableSheet(
+                        expand: false,
+                        initialChildSize: 0.8,
+                        minChildSize: 0.4,
+                        maxChildSize: 0.9,
+                        builder: (BuildContext context, ScrollController scrollController) {
+                          return Container(
+                            padding: EdgeInsets.all(16),
+                            child: Column(
+                              children: [
+                                Center(
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(bottom: 20),
+                                    child: Container(
+                                      height: 4,
+                                      width: 36,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(10),
+                                        color: SDSColor.gray200,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                Center(
+                                  child: Text(
+                                    '스키장 오픈채팅',
+                                    style: SDSTextStyle.bold.copyWith(fontSize: 16, color: SDSColor.gray900),
+                                  ),
+                                ),
+                                SizedBox(height: 20,),
+                                Expanded(child: ChatScreen()),
+                              ],
+                            ), // ChatScreen을 모달 시트로 띄움
+                          );
+                        },
+                      ),
+                    );
+                  },
+                  icon: Image.asset(
+                    'assets/imgs/icons/icon_talk_resortHome.png',
+                    width: 26,
+                    height: 26,
+                  ),
+                ),
+                IconButton(
+                  onPressed: () async{
+                    showModalBottomSheet(
+                      context: context,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.vertical(
+                          top: Radius.circular(20),
                         ),
-                        builder: (context) => DraggableScrollableSheet(
-                          expand: false,
-                          initialChildSize: 0.8,
+                      ),
+                      isScrollControlled: true,
+                      builder: (context) {
+                        return Obx(() => DraggableScrollableSheet(
+                          initialChildSize: _resortHomeViewModel.initialHeightFriend > 0.4
+                              ? _resortHomeViewModel.initialHeightFriend
+                              : 0.4, // Ensure this value is at least equal to minChildSize
                           minChildSize: 0.4,
-                          maxChildSize: 0.9,
-                          builder: (BuildContext context, ScrollController scrollController) {
+                          maxChildSize: 0.88,
+                          expand: false,
+                          builder: (context, scrollController) {
                             return Container(
-                              padding: EdgeInsets.all(16),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.only(topLeft: Radius.circular(16), topRight: Radius.circular(16)),
+                                color: SDSColor.snowliveWhite,
+                              ),
+                              padding: EdgeInsets.only(right: 20, left: 20, top: 12),
                               child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Center(
                                     child: Padding(
@@ -346,293 +412,226 @@ print(_userViewModel.user.user_id);
                                   ),
                                   Center(
                                     child: Text(
-                                      '스키장 오픈채팅',
+                                      '라이브중인 친구',
                                       style: SDSTextStyle.bold.copyWith(fontSize: 16, color: SDSColor.gray900),
                                     ),
                                   ),
-                                  SizedBox(height: 20,),
-                                  Expanded(child: ChatScreen()),
-                                ],
-                              ), // ChatScreen을 모달 시트로 띄움
-                            );
-                          },
-                        ),
-                      );
-                    },
-                    icon: Image.asset(
-                      'assets/imgs/icons/icon_talk_resortHome.png',
-                      width: 22,
-                      height: 22,
-                    ),
-                  ),
-                ),
-                SizedBox(
-                  width: 22,
-                  child: IconButton(
-                    padding: EdgeInsets.zero,
-                    onPressed: () async{
-                      showModalBottomSheet(
-                        context: context,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.vertical(
-                            top: Radius.circular(20),
-                          ),
-                        ),
-                        isScrollControlled: true,
-                        builder: (context) {
-                          return Obx(() => DraggableScrollableSheet(
-                            initialChildSize: _resortHomeViewModel.initialHeightFriend > 0.4
-                                ? _resortHomeViewModel.initialHeightFriend
-                                : 0.4, // Ensure this value is at least equal to minChildSize
-                            minChildSize: 0.4,
-                            maxChildSize: 0.88,
-                            expand: false,
-                            builder: (context, scrollController) {
-                              return Container(
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.only(topLeft: Radius.circular(16), topRight: Radius.circular(16)),
-                                  color: SDSColor.snowliveWhite,
-                                ),
-                                padding: EdgeInsets.only(right: 20, left: 20, top: 12),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Center(
+                                  SizedBox(height: 24),
+                                  Expanded(
+                                    child: _resortHomeViewModel.bestFriendList.isEmpty
+                                        ? Center(
                                       child: Padding(
-                                        padding: const EdgeInsets.only(bottom: 20),
-                                        child: Container(
-                                          height: 4,
-                                          width: 36,
-                                          decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.circular(10),
-                                            color: SDSColor.gray200,
-                                          ),
+                                        padding: const EdgeInsets.only(bottom: 24),
+                                        child: Text(
+                                          '친구 관리로 이동해 즐겨찾는 친구를 등록해 주세요.\n라이브중인 친구를 바로 확인하실 수 있어요.',
+                                          style: SDSTextStyle.regular.copyWith(fontSize: 14, color: SDSColor.gray500, height: 1.4),
+                                          textAlign: TextAlign.center,
                                         ),
                                       ),
-                                    ),
-                                    Center(
-                                      child: Text(
-                                        '라이브중인 친구',
-                                        style: SDSTextStyle.bold.copyWith(fontSize: 16, color: SDSColor.gray900),
-                                      ),
-                                    ),
-                                    SizedBox(height: 24),
-                                    Expanded(
-                                      child: _resortHomeViewModel.bestFriendList.isEmpty
-                                          ? Center(
-                                        child: Padding(
-                                          padding: const EdgeInsets.only(bottom: 24),
-                                          child: Text(
-                                            '친구 관리로 이동해 즐겨찾는 친구를 등록해 주세요.\n라이브중인 친구를 바로 확인하실 수 있어요.',
-                                            style: SDSTextStyle.regular.copyWith(fontSize: 14, color: SDSColor.gray500, height: 1.4),
-                                            textAlign: TextAlign.center,
-                                          ),
-                                        ),
-                                      )
-                                          : SingleChildScrollView(
-                                        child: Padding(
-                                          padding: const EdgeInsets.symmetric(horizontal: 10),
-                                          child: Wrap(
-                                            alignment: WrapAlignment.start,
-                                            spacing: 14, // 아이템 간의 가로 간격
-                                            runSpacing: 28, // 아이템 간의 세로 간격
-                                            children: List.generate(_resortHomeViewModel.bestFriendList.length, (index) {
-                                              var BFdoc = _resortHomeViewModel.bestFriendList[index];
-                                              return GestureDetector(
-                                                onTap: () async {
-                                                  await _friendDetailViewModel.fetchFriendDetailInfo(
-                                                    userId: _userViewModel.user.user_id,
-                                                    friendUserId: BFdoc.friendInfo.userId,
-                                                    season: _friendDetailViewModel.seasonDate,
-                                                  );
-                                                  Get.toNamed(AppRoutes.friendDetail);
-                                                },
-                                                child: Container(
-                                                  width: (MediaQuery.of(context).size.width - 14 * 5) / 4, // 화면 너비를 4등분
-                                                  margin: const EdgeInsets.only(bottom: 28), // 각 아이템의 아래 여백
-                                                  child: Column(
-                                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                    children: [
-                                                      Stack(
-                                                        children: [
-                                                          Container(
+                                    )
+                                        : SingleChildScrollView(
+                                      child: Padding(
+                                        padding: const EdgeInsets.symmetric(horizontal: 10),
+                                        child: Wrap(
+                                          alignment: WrapAlignment.start,
+                                          spacing: 14, // 아이템 간의 가로 간격
+                                          runSpacing: 28, // 아이템 간의 세로 간격
+                                          children: List.generate(_resortHomeViewModel.bestFriendList.length, (index) {
+                                            var BFdoc = _resortHomeViewModel.bestFriendList[index];
+                                            return GestureDetector(
+                                              onTap: () async {
+                                                await _friendDetailViewModel.fetchFriendDetailInfo(
+                                                  userId: _userViewModel.user.user_id,
+                                                  friendUserId: BFdoc.friendInfo.userId,
+                                                  season: _friendDetailViewModel.seasonDate,
+                                                );
+                                                Get.toNamed(AppRoutes.friendDetail);
+                                              },
+                                              child: Container(
+                                                width: (MediaQuery.of(context).size.width - 14 * 5) / 4, // 화면 너비를 4등분
+                                                margin: const EdgeInsets.only(bottom: 28), // 각 아이템의 아래 여백
+                                                child: Column(
+                                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                  children: [
+                                                    Stack(
+                                                      children: [
+                                                        Container(
+                                                          width: 68,
+                                                          height: 68,
+                                                          decoration: BoxDecoration(
+                                                            borderRadius: BorderRadius.circular(100),
+                                                            border: (BFdoc.friendInfo.withinBoundary == true &&
+                                                                BFdoc.friendInfo.revealWb == true)
+                                                                ? Border.all(
+                                                              color: SDSColor.snowliveBlue,
+                                                              width: 2,
+                                                            )
+                                                                : Border.all(
+                                                              color: SDSColor.gray100,
+                                                              width: 1,
+                                                            ),
+                                                          ),
+                                                          alignment: Alignment.center,
+                                                          child: BFdoc.friendInfo.profileImageUrlUser.isNotEmpty
+                                                              ? ExtendedImage.network(
+                                                            BFdoc.friendInfo.profileImageUrlUser,
+                                                            enableMemoryCache: true,
+                                                            shape: BoxShape.circle,
+                                                            borderRadius: BorderRadius.circular(100),
                                                             width: 68,
                                                             height: 68,
-                                                            decoration: BoxDecoration(
-                                                              borderRadius: BorderRadius.circular(100),
-                                                              border: (BFdoc.friendInfo.withinBoundary == true &&
-                                                                  BFdoc.friendInfo.revealWb == true)
-                                                                  ? Border.all(
-                                                                color: SDSColor.snowliveBlue,
-                                                                width: 2,
-                                                              )
-                                                                  : Border.all(
-                                                                color: SDSColor.gray100,
-                                                                width: 1,
-                                                              ),
-                                                            ),
-                                                            alignment: Alignment.center,
-                                                            child: BFdoc.friendInfo.profileImageUrlUser.isNotEmpty
-                                                                ? ExtendedImage.network(
-                                                              BFdoc.friendInfo.profileImageUrlUser,
-                                                              enableMemoryCache: true,
-                                                              shape: BoxShape.circle,
-                                                              borderRadius: BorderRadius.circular(100),
-                                                              width: 68,
-                                                              height: 68,
-                                                              fit: BoxFit.cover,
-                                                              loadStateChanged: (ExtendedImageState state) {
-                                                                switch (state.extendedImageLoadState) {
-                                                                  case LoadState.loading:
-                                                                    return SizedBox.shrink();
-                                                                  case LoadState.completed:
-                                                                    return state.completedWidget;
-                                                                  case LoadState.failed:
-                                                                    return ExtendedImage.asset(
-                                                                      'assets/imgs/profile/img_profile_default_circle.png',
-                                                                      shape: BoxShape.circle,
-                                                                      borderRadius: BorderRadius.circular(100),
-                                                                      width: 68,
-                                                                      height: 68,
-                                                                      fit: BoxFit.cover,
-                                                                    );
-                                                                  default:
-                                                                    return null;
-                                                                }
-                                                              },
-                                                            )
-                                                                : ExtendedImage.asset(
-                                                              'assets/imgs/profile/img_profile_default_circle.png',
-                                                              enableMemoryCache: true,
-                                                              shape: BoxShape.circle,
-                                                              borderRadius: BorderRadius.circular(100),
-                                                              width: 68,
-                                                              height: 68,
-                                                              fit: BoxFit.cover,
-                                                            ),
-                                                          ),
-                                                          if (BFdoc.friendInfo.withinBoundary == true &&
-                                                              BFdoc.friendInfo.revealWb == true)
-                                                            Positioned(
-                                                              right: 0,
-                                                              bottom: 0,
-                                                              child: Image.asset(
-                                                                'assets/imgs/icons/icon_badge_live.png',
-                                                                width: 32,
-                                                              ),
-                                                            ),
-                                                        ],
-                                                      ),
-                                                      SizedBox(height: 6),
-                                                      Container(
-                                                        width: 72,
-                                                        child: Text(
-                                                          BFdoc.friendInfo.displayName,
-                                                          overflow: TextOverflow.ellipsis,
-                                                          textAlign: TextAlign.center,
-                                                          style: TextStyle(
-                                                            fontSize: 12,
-                                                            fontWeight: FontWeight.normal,
-                                                            color: Color(0xFF111111),
+                                                            fit: BoxFit.cover,
+                                                            loadStateChanged: (ExtendedImageState state) {
+                                                              switch (state.extendedImageLoadState) {
+                                                                case LoadState.loading:
+                                                                  return SizedBox.shrink();
+                                                                case LoadState.completed:
+                                                                  return state.completedWidget;
+                                                                case LoadState.failed:
+                                                                  return ExtendedImage.asset(
+                                                                    'assets/imgs/profile/img_profile_default_circle.png',
+                                                                    shape: BoxShape.circle,
+                                                                    borderRadius: BorderRadius.circular(100),
+                                                                    width: 68,
+                                                                    height: 68,
+                                                                    fit: BoxFit.cover,
+                                                                  );
+                                                                default:
+                                                                  return null;
+                                                              }
+                                                            },
+                                                          )
+                                                              : ExtendedImage.asset(
+                                                            'assets/imgs/profile/img_profile_default_circle.png',
+                                                            enableMemoryCache: true,
+                                                            shape: BoxShape.circle,
+                                                            borderRadius: BorderRadius.circular(100),
+                                                            width: 68,
+                                                            height: 68,
+                                                            fit: BoxFit.cover,
                                                           ),
                                                         ),
-                                                      ),
-                                                      SizedBox(height: 6),
-                                                      Row(
-                                                        mainAxisAlignment: MainAxisAlignment.center,
-                                                        children: [
-                                                          Flexible(
-                                                            child: Text(
-                                                              (BFdoc.friendInfo.lastPassSlope == null)
-                                                                  ? ''
-                                                                  : '${BFdoc.friendInfo.lastPassSlope}',
-                                                              overflow: TextOverflow.ellipsis,
-                                                              textAlign: TextAlign.center,
-                                                              style: TextStyle(
-                                                                fontSize: 12,
-                                                                fontWeight: FontWeight.normal,
-                                                                color: Color(0xFF111111),
-                                                              ),
+                                                        if (BFdoc.friendInfo.withinBoundary == true &&
+                                                            BFdoc.friendInfo.revealWb == true)
+                                                          Positioned(
+                                                            right: 0,
+                                                            bottom: 0,
+                                                            child: Image.asset(
+                                                              'assets/imgs/icons/icon_badge_live.png',
+                                                              width: 32,
                                                             ),
                                                           ),
-                                                          SizedBox(width: 2),
-                                                          Flexible(
-                                                            child: Text(
-                                                              (BFdoc.friendInfo.lastPassTime == null)
-                                                                  ? ''
-                                                                  : GetDatetime().getAgoString(BFdoc.friendInfo.lastPassTime!),
-                                                              overflow: TextOverflow.ellipsis,
-                                                              textAlign: TextAlign.center,
-                                                              style: TextStyle(
-                                                                fontSize: 12,
-                                                                fontWeight: FontWeight.normal,
-                                                                color: Color(0xFF111111),
-                                                              ),
+                                                      ],
+                                                    ),
+                                                    SizedBox(height: 6),
+                                                    Container(
+                                                      width: 72,
+                                                      child: Text(
+                                                        BFdoc.friendInfo.displayName,
+                                                        overflow: TextOverflow.ellipsis,
+                                                        textAlign: TextAlign.center,
+                                                        style: TextStyle(
+                                                          fontSize: 12,
+                                                          fontWeight: FontWeight.normal,
+                                                          color: Color(0xFF111111),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    SizedBox(height: 6),
+                                                    Row(
+                                                      mainAxisAlignment: MainAxisAlignment.center,
+                                                      children: [
+                                                        Flexible(
+                                                          child: Text(
+                                                            (BFdoc.friendInfo.lastPassSlope == null)
+                                                                ? ''
+                                                                : '${BFdoc.friendInfo.lastPassSlope}',
+                                                            overflow: TextOverflow.ellipsis,
+                                                            textAlign: TextAlign.center,
+                                                            style: TextStyle(
+                                                              fontSize: 12,
+                                                              fontWeight: FontWeight.normal,
+                                                              color: Color(0xFF111111),
                                                             ),
                                                           ),
-                                                        ],
-                                                      ),
-                                                    ],
-                                                  ),
+                                                        ),
+                                                        SizedBox(width: 2),
+                                                        Flexible(
+                                                          child: Text(
+                                                            (BFdoc.friendInfo.lastPassTime == null)
+                                                                ? ''
+                                                                : GetDatetime().getAgoString(BFdoc.friendInfo.lastPassTime!),
+                                                            overflow: TextOverflow.ellipsis,
+                                                            textAlign: TextAlign.center,
+                                                            style: TextStyle(
+                                                              fontSize: 12,
+                                                              fontWeight: FontWeight.normal,
+                                                              color: Color(0xFF111111),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ],
                                                 ),
-                                              );
-                                            }),
-                                          ),
+                                              ),
+                                            );
+                                          }),
                                         ),
                                       ),
+                                    ),
 
-                                    ),
-                                    SafeArea(
-                                      child: Container(
-                                        width: MediaQuery.of(context).size.width,
-                                        padding: EdgeInsets.only(top: 16, bottom: 20),
-                                        child: ElevatedButton(
-                                          onPressed: () async {
-                                            Get.toNamed(AppRoutes.friendList);
-                                          },
-                                          child: Text(
-                                            '친구 관리 바로가기',
-                                            style: SDSTextStyle.bold.copyWith(color: SDSColor.gray700, fontSize: 16),
+                                  ),
+                                  SafeArea(
+                                    child: Container(
+                                      width: MediaQuery.of(context).size.width,
+                                      padding: EdgeInsets.only(top: 16, bottom: 20),
+                                      child: ElevatedButton(
+                                        onPressed: () async {
+                                          Get.toNamed(AppRoutes.friendList);
+                                        },
+                                        child: Text(
+                                          '친구 관리 바로가기',
+                                          style: SDSTextStyle.bold.copyWith(color: SDSColor.gray700, fontSize: 16),
+                                        ),
+                                        style: TextButton.styleFrom(
+                                          shape: const RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.all(Radius.circular(6)),
                                           ),
-                                          style: TextButton.styleFrom(
-                                            shape: const RoundedRectangleBorder(
-                                              borderRadius: BorderRadius.all(Radius.circular(6)),
-                                            ),
-                                            elevation: 0,
-                                            splashFactory: InkRipple.splashFactory,
-                                            minimumSize: Size(double.infinity, 48),
-                                            backgroundColor: SDSColor.gray100,
-                                          ),
+                                          elevation: 0,
+                                          splashFactory: InkRipple.splashFactory,
+                                          minimumSize: Size(double.infinity, 48),
+                                          backgroundColor: SDSColor.gray100,
                                         ),
                                       ),
                                     ),
-                                  ],
-                                ),
-                              );
-                            },
-                          ));
-                        },
-                      );
-                      await _resortHomeViewModel.fetchBestFriendList(user_id: _userViewModel.user.user_id);
-                    },
-                    icon: Image.asset(
-                      'assets/imgs/icons/icon_friend_resortHome.png',
-                      width: 28,
-                      height: 28,
-                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
+                        ));
+                      },
+                    );
+                    await _resortHomeViewModel.fetchBestFriendList(user_id: _userViewModel.user.user_id);
+                  },
+                  icon: Image.asset(
+                    'assets/imgs/icons/icon_friend_resortHome.png',
+                    width: 28,
+                    height: 28,
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(left: 2, right: 12),
+                  padding: const EdgeInsets.only(right: 10),
                   child: IconButton(
                     onPressed: () async{
 
                     },
                     icon: Image.asset(
                       'assets/imgs/icons/icon_alarm_resortHome.png',
-                      width: 22,
-                      height: 22,
+                      width: 26,
+                      height: 26,
                     ),
                   ),
                 ),
@@ -652,7 +651,8 @@ print(_userViewModel.user.user_id);
                   height: 38,
                 ),
               ),
-              backgroundColor: Colors.white,
+              backgroundColor: SDSColor.snowliveWhite,
+              foregroundColor: SDSColor.snowliveWhite,
               elevation: 0.0,
             ),
           ),
@@ -686,7 +686,7 @@ print(_userViewModel.user.user_id);
                             child: Column(
                               children: [
                                 Padding(
-                                  padding: const EdgeInsets.only(top: 18),
+                                  padding: const EdgeInsets.only(top: 14),
                                   child: Row(
                                     crossAxisAlignment: CrossAxisAlignment.center,
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -705,7 +705,7 @@ print(_userViewModel.user.user_id);
                                                     '${_resortHomeViewModel.resortHomeModel.instantResortName}',
                                                     style: SDSTextStyle.bold.copyWith(
                                                         color: SDSColor.snowliveWhite,
-                                                        fontSize: 17),
+                                                        fontSize: 16),
                                                   ),
                                                 ),
                                                 SizedBox(
@@ -733,12 +733,12 @@ print(_userViewModel.user.user_id);
                                                 builder: (context) => SelectResortWidget(),
                                               );
                                               if(selectedIndex != null)
-                                               await _resortHomeViewModel.changeInstantResort(
-                                                   {
-                                                     "user_id": _userViewModel.user.user_id,    //필수 - 수정할 유저id
-                                                     "instant_resort": selectedIndex!    //선택 - 프로필 비공개 설정에서만 씀
-                                                   }, _userViewModel.user.user_id
-                                               );
+                                                await _resortHomeViewModel.changeInstantResort(
+                                                    {
+                                                      "user_id": _userViewModel.user.user_id,    //필수 - 수정할 유저id
+                                                      "instant_resort": selectedIndex!    //선택 - 프로필 비공개 설정에서만 씀
+                                                    }, _userViewModel.user.user_id
+                                                );
 
                                             },
                                           ),
@@ -746,7 +746,6 @@ print(_userViewModel.user.user_id);
                                             height: 2,
                                           ),
                                           SizedBox(
-                                            height: 26,
                                             child: Padding(
                                               padding: const EdgeInsets.only(left: 24),
                                               child: Row(
@@ -755,7 +754,7 @@ print(_userViewModel.user.user_id);
                                                   Text('${GetDatetime().getDateTime()}',
                                                     style: SDSTextStyle.regular.copyWith(
                                                         color: SDSColor.snowliveWhite.withOpacity(0.6),
-                                                        fontSize: 14),
+                                                        fontSize: 13),
                                                   ),
                                                 ],
                                               ),
@@ -784,11 +783,17 @@ print(_userViewModel.user.user_id);
                                                 width: 50,
                                                 child: Lottie.asset('assets/json/loadings_wht_final.json')),
                                           )
-                                              : Text('${_resortHomeViewModel.weatherInfo['temp']}',
-                                            //u00B0
-                                            style: GoogleFonts.bebasNeue(
-                                                fontSize: 48,
-                                                color: Colors.white),
+                                              : Container(
+                                            height: 54,
+                                            child: Center(
+                                              child: Text('${_resortHomeViewModel.weatherInfo['temp']}', //u00B0
+                                                style: GoogleFonts.bebasNeue(
+                                                    fontSize: 44,
+                                                    color: Colors.white,
+                                                    height: 1.3
+                                                ),
+                                              ),
+                                            ),
                                           ),
                                           ),
                                           Padding(
@@ -797,7 +802,7 @@ print(_userViewModel.user.user_id);
                                                   () => (_resortHomeViewModel.isLoading_weather == true)
                                                   ? Text(' ',
                                                 style: GoogleFonts.bebasNeue(
-                                                    fontSize: 48,
+                                                    fontSize: 44,
                                                     color: Colors.white),
                                               )
                                                   : Padding(
@@ -832,7 +837,7 @@ print(_userViewModel.user.user_id);
                                 ),
                                 if(_resortHomeViewModel.isWeatherInfoExpanded == true)
                                   SizedBox(
-                                    height: 16,
+                                    height: 14,
                                   ),
                                 if(_resortHomeViewModel.isWeatherInfoExpanded == true)
                                   (_resortHomeViewModel.isLoading_weather == true)
@@ -853,7 +858,7 @@ print(_userViewModel.user.user_id);
                                     ),
                                   ),
                                 SizedBox(
-                                  height: 16,
+                                  height: 14,
                                 ),
                                 if(_resortHomeViewModel.isWeatherInfoExpanded == true)
                                   Row(
@@ -865,9 +870,6 @@ print(_userViewModel.user.user_id);
                                             style: SDSTextStyle.regular.copyWith(
                                                 color: SDSColor.snowliveWhite.withOpacity(0.6),
                                                 fontSize: 12),
-                                          ),
-                                          SizedBox(
-                                            height: 2,
                                           ),
                                           Row(
                                             crossAxisAlignment: CrossAxisAlignment.end,
@@ -904,9 +906,7 @@ print(_userViewModel.user.user_id);
                                                 color: SDSColor.snowliveWhite.withOpacity(0.6),
                                                 fontSize: 12),
                                           ),
-                                          SizedBox(
-                                            height: 2,
-                                          ),
+
                                           Row(
                                             crossAxisAlignment: CrossAxisAlignment.end,
                                             children: [
@@ -943,9 +943,7 @@ print(_userViewModel.user.user_id);
                                                 color: SDSColor.snowliveWhite.withOpacity(0.6),
                                                 fontSize: 12),
                                           ),
-                                          SizedBox(
-                                            height: 2,
-                                          ),
+
                                           Row(
                                             crossAxisAlignment: CrossAxisAlignment.end,
                                             children: [
@@ -980,9 +978,7 @@ print(_userViewModel.user.user_id);
                                                 color: SDSColor.snowliveWhite.withOpacity(0.6),
                                                 fontSize: 12),
                                           ),
-                                          SizedBox(
-                                            height: 2,
-                                          ),
+
                                           Obx(
                                                 () => Row(
                                               crossAxisAlignment: CrossAxisAlignment.end,
@@ -1019,7 +1015,7 @@ print(_userViewModel.user.user_id);
                                   ),
                                 if(_resortHomeViewModel.isWeatherInfoExpanded == true)
                                   SizedBox(
-                                    height: 16,
+                                    height: 14,
                                   )
                               ],
                             ),
@@ -1034,7 +1030,7 @@ print(_userViewModel.user.user_id);
                               decoration: BoxDecoration(
                                 color: Colors.white,),
                               child: Padding(
-                                padding: const EdgeInsets.only(right: 28, left: 28, top: 24, bottom: 30),
+                                padding: const EdgeInsets.only(right: 28, left: 28, top: 24),
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
@@ -1191,34 +1187,59 @@ print(_userViewModel.user.user_id);
                               ),
                             ),
                             Padding(
-                              padding: EdgeInsets.only(left: 16, right: 16),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  //TODO: 오늘의 기록
-                                  Padding(
-                                    padding: const EdgeInsets.only(right: 4, left: 4),
-                                    child: Row(
-                                      children: [
-                                        Text('오늘의 기록',
-                                          style: SDSTextStyle.extraBold.copyWith(
-                                              fontSize: 15,
-                                              color: SDSColor.gray900
+                                padding: EdgeInsets.only(left: 16, right: 16),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    //TODO: 오늘의 기록
+                                    Padding(
+                                      padding: const EdgeInsets.only(right: 4, left: 4),
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text('오늘의 기록',
+                                            style: SDSTextStyle.extraBold.copyWith(
+                                                fontSize: 15,
+                                                color: SDSColor.gray900
+                                            ),
                                           ),
-                                        ),
-                                        if(_userViewModel.user.within_boundary == true)
-                                        Text('지금 ${_resortHomeViewModel.resort_info['fullname']}에서 라이브온 중이에요',
-                                          style: SDSTextStyle.extraBold.copyWith(
-                                              fontSize: 15,
-                                              color: SDSColor.gray900
-                                          ),
-                                        ),
-                                      ],
+                                          if(_userViewModel.user.within_boundary == true)
+                                            Row(
+                                              children: [
+                                                Padding(
+                                                  padding: const EdgeInsets.only(right: 2),
+                                                  child: Image.asset(
+                                                    'assets/imgs/icons/icon_pin.png',
+                                                    width: 18,
+                                                    height: 18,
+                                                  ),
+                                                ),
+                                                Text('지금 ',
+                                                  style: SDSTextStyle.regular.copyWith(
+                                                      fontSize: 13,
+                                                      color: SDSColor.gray500
+                                                  ),
+                                                ),
+                                                Text('${_resortHomeViewModel.resort_info['fullname']}',
+                                                  style: SDSTextStyle.regular.copyWith(
+                                                      fontSize: 13,
+                                                      color: SDSColor.snowliveBlue
+                                                  ),
+                                                ),
+                                                Text('에서 라이브온 중이에요',
+                                                  style: SDSTextStyle.regular.copyWith(
+                                                      fontSize: 13,
+                                                      color: SDSColor.gray500
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                        ],
+                                      ),
                                     ),
-                                  ),
-                                  if(_resortHomeViewModel.resortHomeModel.dailyTotalCount != 0)
-                                    Column(
-                                      children: [
+                                    if(_resortHomeViewModel.resortHomeModel.dailyTotalCount != 0)
+                                      Column(
+                                        children: [
                                           Column(
                                             children: [
                                               Padding(
@@ -1277,8 +1298,8 @@ print(_userViewModel.user.user_id);
                                                                       decoration: BoxDecoration(
                                                                           color:
                                                                           (data == _resortHomeViewModel.resortHomeModel.slopeCountInfoToday.first)
-                                                                          ? SDSColor.snowliveBlue
-                                                                          : SDSColor.blue200,
+                                                                              ? SDSColor.snowliveBlue
+                                                                              : SDSColor.blue200,
                                                                           borderRadius: BorderRadius.only(
                                                                               topRight: Radius.circular(4),
                                                                               bottomRight: Radius.circular(4)
@@ -1422,94 +1443,94 @@ print(_userViewModel.user.user_id);
                                               ),
                                             ],
                                           ),
-                                      ],
-                                    ),
-                                  if(_resortHomeViewModel.resortHomeModel.dailyTotalCount == 0)
-                                  Container(
-                                    height: 185, // Set fixed height for the data container
-                                    decoration: BoxDecoration(
-                                      color: Color(0xFFF5F2F7),
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
-                                    child: Row(
-                                      children: [
-                                        Padding(
-                                          padding: const EdgeInsets.only(left: 20, top: 25),
-                                          child: Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            mainAxisAlignment: MainAxisAlignment.start,
-                                            children: [
-                                              SizedBox(height: 5,),
-                                              Text(
-                                                '지금 바로 랭킹에 참여해보세요!',
-                                                style: SDSTextStyle.bold.copyWith(
-                                                  fontSize: 18,
-                                                  color: SDSColor.gray900,
-                                                ),
-                                              ),
-                                              Padding(
-                                                padding: const EdgeInsets.only(top: 10),
-                                                child: Text(
-                                                  '친구들의 라이브 상태도 확인하고',
-                                                  style: SDSTextStyle.regular.copyWith(
-                                                    fontSize: 14,
-                                                    color: SDSColor.gray600,
-                                                  ),
-                                                ),
-                                              ),
-                                              Padding(
-                                                padding: const EdgeInsets.only(top: 4),
-                                                child: Text(
-                                                  '다른 유저들과 경쟁해보세요!',
-                                                  style: SDSTextStyle.regular.copyWith(
-                                                    fontSize: 14,
-                                                    color: SDSColor.gray600,
-                                                  ),
-                                                ),
-                                              ),
-                                              Padding(
-                                                padding: const EdgeInsets.only(top: 20),
-                                                child: GestureDetector(
-                                                  onTap: () {
-                                                    // Add your share functionality here
-                                                  },
-                                                  child: Container(
-                                                    padding: EdgeInsets.symmetric(horizontal: 12, vertical: 9),
-                                                    decoration: BoxDecoration(
-                                                      color: SDSColor.snowliveWhite,
-                                                      borderRadius: BorderRadius.circular(20),
-                                                    ),
-                                                    child: Row(
-                                                      children: [
-                                                        Padding(
-                                                          padding: const EdgeInsets.only(right: 6),
-                                                          child: Text(
-                                                            '더 알아보기',
-                                                            style: SDSTextStyle.extraBold.copyWith(
-                                                                color: Colors.black,
-                                                                fontSize: 13
-                                                            ),
-                                                          ),
-                                                        ),
-                                                        ExtendedImage.asset(
-                                                          'assets/imgs/icons/icon_arrow_round_black.png',
-                                                          fit: BoxFit.cover,
-                                                          width: 18,
-                                                          height: 18,
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
+                                        ],
+                                      ),
+                                    if(_resortHomeViewModel.resortHomeModel.dailyTotalCount == 0)
+                                      Container(
+                                        height: 185, // Set fixed height for the data container
+                                        decoration: BoxDecoration(
+                                          color: Color(0xFFF5F2F7),
+                                          borderRadius: BorderRadius.circular(10),
                                         ),
-                                      ],
-                                    ),
-                                  )
-                                ],
-                              )
+                                        child: Row(
+                                          children: [
+                                            Padding(
+                                              padding: const EdgeInsets.only(left: 20, top: 25),
+                                              child: Column(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                mainAxisAlignment: MainAxisAlignment.start,
+                                                children: [
+                                                  SizedBox(height: 5,),
+                                                  Text(
+                                                    '지금 바로 랭킹에 참여해보세요!',
+                                                    style: SDSTextStyle.bold.copyWith(
+                                                      fontSize: 18,
+                                                      color: SDSColor.gray900,
+                                                    ),
+                                                  ),
+                                                  Padding(
+                                                    padding: const EdgeInsets.only(top: 10),
+                                                    child: Text(
+                                                      '친구들의 라이브 상태도 확인하고',
+                                                      style: SDSTextStyle.regular.copyWith(
+                                                        fontSize: 14,
+                                                        color: SDSColor.gray600,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  Padding(
+                                                    padding: const EdgeInsets.only(top: 4),
+                                                    child: Text(
+                                                      '다른 유저들과 경쟁해보세요!',
+                                                      style: SDSTextStyle.regular.copyWith(
+                                                        fontSize: 14,
+                                                        color: SDSColor.gray600,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  Padding(
+                                                    padding: const EdgeInsets.only(top: 20),
+                                                    child: GestureDetector(
+                                                      onTap: () {
+                                                        // Add your share functionality here
+                                                      },
+                                                      child: Container(
+                                                        padding: EdgeInsets.symmetric(horizontal: 12, vertical: 9),
+                                                        decoration: BoxDecoration(
+                                                          color: SDSColor.snowliveWhite,
+                                                          borderRadius: BorderRadius.circular(20),
+                                                        ),
+                                                        child: Row(
+                                                          children: [
+                                                            Padding(
+                                                              padding: const EdgeInsets.only(right: 6),
+                                                              child: Text(
+                                                                '더 알아보기',
+                                                                style: SDSTextStyle.extraBold.copyWith(
+                                                                    color: Colors.black,
+                                                                    fontSize: 13
+                                                                ),
+                                                              ),
+                                                            ),
+                                                            ExtendedImage.asset(
+                                                              'assets/imgs/icons/icon_arrow_round_black.png',
+                                                              fit: BoxFit.cover,
+                                                              width: 18,
+                                                              height: 18,
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      )
+                                  ],
+                                )
                             ),
                           ],
                         ),
