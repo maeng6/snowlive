@@ -198,6 +198,7 @@ class FleamarketDetailViewModel extends GetxController {
       // 요청이 성공했는지 확인
       if (response.success) {
         print('Fleamarket 삭제 완료');
+        Get.back();
       } else {
         // 실패 시 오류 메시지 표시
         Get.snackbar('Error', '게시물 삭제 실패');

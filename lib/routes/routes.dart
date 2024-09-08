@@ -11,6 +11,7 @@ import 'package:com.snowlive/view/v_tos.dart';
 import 'package:get/get.dart';
 import '../view/v_fleaMarketCommentDetail.dart';
 import '../view/v_fleaMarketList_search.dart';
+import '../view/v_fleamarketUpdate.dart';
 import '../view/v_fleamarketUpload.dart';
 import 'bindings.dart';
 
@@ -29,6 +30,7 @@ class AppRoutes {
   static const String fleamarketDetail = '/fleamarketDetail';
   static const String fleamarketCommentDetail = '/fleamarketCommentDetail';
   static const String fleamarketUpload = '/fleamarketUpload';
+  static const String fleamarketUpdate = '/fleamarketUpdate';
 
   static final List<GetPage> pages = [
     GetPage(
@@ -97,6 +99,10 @@ class AppRoutes {
         name: fleamarketUpload,
         page: () => FleamarketUploadView(),
         binding: FleamarketUploadBinding(),
+    ),
+    GetPage(
+      name: fleamarketUpdate,
+      page: () => FleamarketUpdateView(),
     ),
   ];
 }

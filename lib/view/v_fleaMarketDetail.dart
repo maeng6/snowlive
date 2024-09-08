@@ -3,6 +3,7 @@ import 'package:com.snowlive/screens/snowliveDesignStyle.dart';
 import 'package:com.snowlive/viewmodel/vm_fleamarketCommentDetail.dart';
 import 'package:com.snowlive/viewmodel/vm_fleamarketDetail.dart';
 import 'package:com.snowlive/viewmodel/vm_fleamarketList.dart';
+import 'package:com.snowlive/viewmodel/vm_fleamarketUpdate.dart';
 import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
@@ -34,6 +35,7 @@ class _FleaMarketDetailViewState extends State<FleaMarketDetailView> {
   final FleamarketCommentDetailViewModel _fleamarketCommentDetailViewModel = Get.find<FleamarketCommentDetailViewModel>();
 
   final FleamarketListViewModel _fleamarketListViewModel = Get.find<FleamarketListViewModel>();
+  final FleamarketUpdateViewModel _fleamarketUpdateViewModel = Get.find<FleamarketUpdateViewModel>();
 
   @override
   Widget build(BuildContext context) {
@@ -329,7 +331,18 @@ class _FleaMarketDetailViewState extends State<FleaMarketDetailView> {
                                       //selected: _isSelected[index]!,
                                       onTap: () async {
                                         Navigator.pop(context);
-                                        // Get.toNamed(page);
+                                        await _fleamarketUpdateViewModel.fetchFleamarketUpdateData(
+                                            textEditingController_title: _fleamarketDetailViewModel.fleamarketDetail.title,
+                                            selectedCategorySub: _fleamarketDetailViewModel.fleamarketDetail.categorySub,
+                                            selectedCategoryMain: _fleamarketDetailViewModel.fleamarketDetail.categoryMain,
+                                            textEditingController_productName: _fleamarketDetailViewModel.fleamarketDetail.productName,
+                                            itemPriceTextEditingController: _fleamarketDetailViewModel.fleamarketDetail.price,
+                                            selectedTradeMethod: _fleamarketDetailViewModel.fleamarketDetail.method,
+                                            selectedTradeSpot: _fleamarketDetailViewModel.fleamarketDetail.spot,
+                                            textEditingController_desc: _fleamarketDetailViewModel.fleamarketDetail.description,
+                                            photos: _fleamarketDetailViewModel.fleamarketDetail.photos
+                                        );
+                                        Get.toNamed(AppRoutes.fleamarketUpdate);
                                       },
                                       shape: RoundedRectangleBorder(
                                           borderRadius:
@@ -1260,16 +1273,9 @@ class _FleaMarketDetailViewState extends State<FleaMarketDetailView> {
                                                                                                                 ElevatedButton(
                                                                                                                   onPressed:
                                                                                                                       () async {
-                                                                                                                    await _friendDetailViewModel
-                                                                                                                        .deleteFriendsTalk(
-                                                                                                                        userId: _userViewModel
-                                                                                                                            .user
-                                                                                                                            .user_id,
-                                                                                                                        friendsTalkId:
-                                                                                                                        document
-                                                                                                                            .commentId!);
-                                                                                                                    Navigator.pop(
-                                                                                                                        context);
+                                                                                                                    await _fleamarketDetailViewModel.deleteFleamarket(
+                                                                                                                        fleamarketId: _fleamarketDetailViewModel.fleamarketDetail.fleaId!,
+                                                                                                                        userId: _userViewModel.user.user_id);
                                                                                                                   },
                                                                                                                   child: Text(
                                                                                                                     '확인',

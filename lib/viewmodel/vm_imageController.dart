@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:typed_data';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:com.snowlive/viewmodel/vm_fleamarketUpload.dart';
 import 'package:dart_quill_delta/dart_quill_delta.dart' as quill;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -12,7 +13,9 @@ import 'package:image_picker/image_picker.dart';
 import 'package:com.snowlive/controller/liveCrew/vm_liveCrewModelController.dart';
 import 'package:com.snowlive/controller/user/vm_userModelController.dart';
 import '../widget/w_fullScreenDialog.dart';
-import 'package:flutter_quill/flutter_quill.dart' as quill;
+import 'package:image/image.dart' as img;
+import 'package:path/path.dart' as p;
+import 'package:path_provider/path_provider.dart';
 
 
 class ImageController extends GetxController {
@@ -97,19 +100,61 @@ class ImageController extends GetxController {
   }
 
 
-
-  Future<List<XFile>> getMultiImage(ImageSource) async {
-    List<XFile> selectedImages = [];
+  Future<List<XFile>> getMultiImage(ImageSource source) async {
     final ImagePicker _picker = ImagePicker();
-    selectedImages =
-    await _picker.pickMultiImage(imageQuality: 70);
-    if (selectedImages != null) {
-      return selectedImages;
-    }else {
-      CustomFullScreenDialog.cancelDialog();
-    }
-    return selectedImages;
+    List<XFile> resizedImages = [];
+    List<XFile> selectedImages = await _picker.pickMultiImage(imageQuality: 70);
 
+    if(selectedImages.length <= 5) {
+      if (selectedImages == null || selectedImages.isEmpty) {
+        CustomFullScreenDialog.cancelDialog();
+        return [];
+      }
+      for (XFile image in selectedImages) {
+        File file = File(image.path);
+        img.Image? originalImage = img.decodeImage(file.readAsBytesSync());
+
+        if (originalImage != null) {
+          Uint8List? compressedBytes;
+          int quality = 100;
+
+          do {
+            img.Image resizedImage = img.copyResize(
+                originalImage, width: originalImage.width ~/ 2);
+            compressedBytes = img.encodeJpg(resizedImage, quality: quality);
+
+            // Create a temporary file to check size
+            Directory tempDir = await getTemporaryDirectory();
+            File tempFile = File(p.join(tempDir.path, 'temp_${DateTime
+                .now()
+                .millisecondsSinceEpoch}.jpg'));
+            await tempFile.writeAsBytes(compressedBytes);
+
+            // Check file size
+            int fileSizeMb = (await tempFile.length()) ~/ (1024 * 1024);
+
+            if (fileSizeMb <= 1) {
+              resizedImages.add(XFile(tempFile.path));
+              break;
+            } else {
+              tempFile.deleteSync();
+            }
+
+            // Decrease quality to reduce file size
+            quality -= 10;
+          } while (quality > 0);
+        }
+      }
+      return resizedImages;
+    } else {
+      resizedImages =[];
+      Get.dialog(
+        AlertDialog(
+          title: Text('사진 개수 초과'),
+        ),
+      );
+      return resizedImages;
+    }
   }
 
   Future<String> setNewImage(XFile newImage) async {

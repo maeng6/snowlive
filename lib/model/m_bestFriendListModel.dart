@@ -22,15 +22,15 @@ class FriendListModel {
   });
 
   FriendListModel.fromJson(Map<String, dynamic> json) {
-    friendId = json['friend_id'];
-    myUserId = json['my_user_id'];
-    friendUserId = json['friend_user_id'];
-    areWeFriend = json['are_we_friend'];
-    bestFriend = json['best_friend'];
-    updateTime = json['update_time'];
-    friendInfo = FriendInfo.fromJson(json['friend_info']);
-    lastPassTime = json['last_pass_time'];
-    lastPassSlope = json['last_pass_slope'];
+    friendId = json['friend_id'] ?? 0;
+    myUserId = json['my_user_id'] ?? 0;
+    friendUserId = json['friend_user_id'] ?? 0;
+    areWeFriend = json['are_we_friend'] ?? false;
+    bestFriend = json['best_friend'] ?? false;
+    updateTime = json['update_time'] ?? '';
+    friendInfo = FriendInfo.fromJson(json['friend_info'] ?? {});
+    lastPassTime = json['last_pass_time'] != null ? json['last_pass_time'] as String : null;
+    lastPassSlope = json['last_pass_slope'] != null ? json['last_pass_slope'] as String : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -47,6 +47,7 @@ class FriendListModel {
     };
   }
 }
+
 
 class FriendInfo {
   late int userId;
@@ -70,14 +71,14 @@ class FriendInfo {
   });
 
   FriendInfo.fromJson(Map<String, dynamic> json) {
-    userId = json['user_id'];
-    displayName = json['display_name'];
-    profileImageUrlUser = json['profile_image_url_user'];
-    stateMsg = json['state_msg'];
-    withinBoundary = json['within_boundary'];
-    revealWb = json['reveal_wb'];
-    lastPassTime = json['last_pass_time'];
-    lastPassSlope = json['last_pass_slope'];
+    userId = json['user_id'] ?? 0;
+    displayName = json['display_name'] ?? 'Unknown';  // Null 처리, 기본값 'Unknown'
+    profileImageUrlUser = json['profile_image_url_user'] ?? '';  // Null 처리, 기본값 빈 문자열
+    stateMsg = json['state_msg'] ?? '';  // Null 처리, 기본값 빈 문자열
+    withinBoundary = json['within_boundary'] ?? false;
+    revealWb = json['reveal_wb'] ?? false;
+    lastPassTime = json['last_pass_time'] != null ? json['last_pass_time'] as String : null;
+    lastPassSlope = json['last_pass_slope'] != null ? json['last_pass_slope'] as String : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -93,3 +94,4 @@ class FriendInfo {
     };
   }
 }
+
