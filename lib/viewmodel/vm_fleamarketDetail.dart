@@ -283,7 +283,11 @@ class FleamarketDetailViewModel extends GetxController {
     ApiResponse response = await FleamarketAPI().addFavoriteFleamarket(fleamarketId: fleamarketID, body: body);
     if(response.success)
       await fetchFleamarketDetailFromAPI(fleamarketId: fleamarketID, userId: _userViewModel.user.user_id);
-      await _fleamarketListViewModel.fetchFleamarketData_favorite(userId: _userViewModel.user.user_id);
+      await _fleamarketListViewModel.fetchFleamarketData_total(userId: _userViewModel.user.user_id);
+      await _fleamarketListViewModel.fetchFleamarketData_ski(userId: _userViewModel.user.user_id, categoryMain:'스키');
+      await _fleamarketListViewModel.fetchFleamarketData_board(userId: _userViewModel.user.user_id, categoryMain:'스노보드');
+      await _fleamarketListViewModel.fetchFleamarketData_my(userId: _userViewModel.user.user_id, myflea: true);
+      await _fleamarketListViewModel.fetchFleamarketData_favorite(userId: _userViewModel.user.user_id, favorite_list: true);
       print('찜 추가 완료');
     if(!response.success)
       Get.snackbar('Error', '찜 추가 실패');
@@ -293,7 +297,11 @@ class FleamarketDetailViewModel extends GetxController {
     ApiResponse response = await FleamarketAPI().deleteFavoriteFleamarket(fleamarketId: fleamarketID, body: body);
     if(response.success)
       await fetchFleamarketDetailFromAPI(fleamarketId: fleamarketID, userId: _userViewModel.user.user_id);
-      await _fleamarketListViewModel.fetchFleamarketData_favorite(userId: _userViewModel.user.user_id);
+      await _fleamarketListViewModel.fetchFleamarketData_total(userId: _userViewModel.user.user_id);
+      await _fleamarketListViewModel.fetchFleamarketData_ski(userId: _userViewModel.user.user_id, categoryMain:'스키');
+      await _fleamarketListViewModel.fetchFleamarketData_board(userId: _userViewModel.user.user_id, categoryMain:'스노보드');
+      await _fleamarketListViewModel.fetchFleamarketData_my(userId: _userViewModel.user.user_id, myflea: true);
+      await _fleamarketListViewModel.fetchFleamarketData_favorite(userId: _userViewModel.user.user_id, favorite_list: true);
       print('찜 삭제 완료');
     if(!response.success)
       Get.snackbar('Error', '찜 삭제 실패');
