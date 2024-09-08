@@ -72,11 +72,13 @@ class FleaMarketListView_search extends StatelessWidget {
                           ),
                           child: TextFormField(
                             onFieldSubmitted: (val) async {
+                              _fleamarketSearchViewModel.changeShowRecentSearch();
                               await _fleamarketSearchViewModel.fetchFleamarketData_total(
                                   userId: _userViewModel.user.user_id,
                                   search_query: _fleamarketSearchViewModel.textEditingController.text
                               );
-                            },
+                              await _fleamarketSearchViewModel.saveRecentSearch(_fleamarketSearchViewModel.textEditingController.text);
+                              },
                             autofocus: true,
                             textAlignVertical: TextAlignVertical.center,
                             cursorColor: Color(0xff949494),
@@ -138,6 +140,42 @@ class FleaMarketListView_search extends StatelessWidget {
                   ),
                 ),
                 SizedBox(height: 20),
+                GestureDetector(
+                  onTap: () async{
+                    await _fleamarketSearchViewModel.deleteAllRecentSearches();
+                  },
+                    child: Text('전체삭제')),
+                Obx(
+                      () => !_fleamarketSearchViewModel.isSearching && _fleamarketSearchViewModel.recentSearches.isNotEmpty
+                      && _fleamarketSearchViewModel.showRecentSearch
+                      ? Expanded(
+                    child: ListView.builder(
+                      itemCount: _fleamarketSearchViewModel.recentSearches.length,
+                      itemBuilder: (context, index) {
+                        String recentSearch = _fleamarketSearchViewModel.recentSearches[index];
+                        return ListTile(
+                          title: Text(recentSearch),
+                          trailing: IconButton(
+                            icon: Icon(Icons.delete),
+                            onPressed: () {
+                              _fleamarketSearchViewModel.deleteRecentSearch(recentSearch); // 검색어 삭제
+                            },
+                          ),
+                          onTap: () {
+                            _fleamarketSearchViewModel.textEditingController.text = recentSearch;
+                            _fleamarketSearchViewModel.search(recentSearch);
+                            _fleamarketSearchViewModel.fetchFleamarketData_total(
+                              userId: _userViewModel.user.user_id,
+                              search_query: recentSearch,
+                            );
+                          },
+                        );
+                      },
+                    ),
+                  )
+                      : Container(),
+                ),
+
                 Expanded(
                   child: Obx(
                         () => (_fleamarketSearchViewModel.fleamarketListSearch.isNotEmpty)
