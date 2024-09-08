@@ -11,6 +11,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import '../../../data/imgaUrls/Data_url_image.dart';
 import '../screens/snowliveDesignStyle.dart';
+import '../viewmodel/vm_friendDetailUpdate.dart';
 import '../viewmodel/vm_user.dart';
 
 class FriendDetailView extends StatelessWidget {
@@ -21,6 +22,7 @@ class FriendDetailView extends StatelessWidget {
     final Size _size = MediaQuery.of(context).size;
     FriendDetailViewModel _friendDetailViewModel = Get.find<FriendDetailViewModel>();
     UserViewModel _userViewModel = Get.find<UserViewModel>();
+    FriendDetailUpdateViewModel _friendDetailUpdateViewModel = Get.find<FriendDetailUpdateViewModel>();
 
     return Scaffold(
         backgroundColor: Colors.white,
@@ -44,6 +46,7 @@ class FriendDetailView extends StatelessWidget {
             },
           ),
           actions: [
+            if(_friendDetailViewModel.friendDetailModel.friendUserInfo.userId == _userViewModel.user.user_id)
             GestureDetector(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -58,6 +61,15 @@ class FriendDetailView extends StatelessWidget {
               ),
               onTap: () {
                 //TODO: 수정페이지로 이동
+                _friendDetailUpdateViewModel.fetchFriendDetailUpdateData(
+                    displayName: _friendDetailViewModel.friendDetailModel.friendUserInfo.displayName,
+                    profileImageUrl: _friendDetailViewModel.friendDetailModel.friendUserInfo.profileImageUrlUser,
+                    selectedResortName: _friendDetailViewModel.friendDetailModel.friendUserInfo.favoriteResort,
+                    selectedResortIndex: _friendDetailViewModel.friendDetailModel.friendUserInfo.favoriteResortId-1,
+                    selectedSkiOrBoard: _friendDetailViewModel.friendDetailModel.friendUserInfo.skiorboard,
+                    selectedSex: _friendDetailViewModel.friendDetailModel.friendUserInfo.sex
+                );
+                Get.toNamed(AppRoutes.friendDetailUpdate);
               },
             ),
           ],
