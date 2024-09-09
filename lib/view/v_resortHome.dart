@@ -1274,11 +1274,11 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                                                         ),
                                                       ),
                                                       Padding(
-                                                        padding: const EdgeInsets.only(top: 4, bottom: 20),
+                                                        padding: const EdgeInsets.only(top: 4, bottom: 10),
                                                         child: Text('${_resortHomeViewModel.resortHomeModel.slopeCountInfoToday.length}',
                                                           style: SDSTextStyle.extraBold.copyWith(
                                                               color: SDSColor.gray900,
-                                                              fontSize: 24
+                                                              fontSize: 30
                                                           ),
                                                         ),
                                                       ),
@@ -1296,10 +1296,10 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                                                                 child: Row(
                                                                   children: [
                                                                     Container(
-                                                                      width: 40,
+                                                                      width: 44,
                                                                       child: Text(
                                                                         slopeName,
-                                                                        style: SDSTextStyle.bold.copyWith(
+                                                                        style: SDSTextStyle.regular.copyWith(
                                                                           fontSize: 11,
                                                                           color: SDSColor.gray900,
                                                                         ),
@@ -1307,7 +1307,7 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                                                                     ),
                                                                     Container(
                                                                       height: 16,
-                                                                      width: (_size.width - 148) * barWidthRatio,
+                                                                      width: (_size.width - 152) * barWidthRatio,
                                                                       decoration: BoxDecoration(
                                                                           color:
                                                                           (data == _resortHomeViewModel.resortHomeModel.slopeCountInfoToday.first)
@@ -1336,10 +1336,10 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                                                                                     ? SDSColor.gray900
                                                                                     : Colors.transparent,
                                                                               ),
-                                                                              padding: EdgeInsets.symmetric(horizontal: 6, vertical: 3),
+                                                                              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 2),
                                                                               child: Text('$passCount',
                                                                                 style: SDSTextStyle.extraBold.copyWith(
-                                                                                  fontSize: 12,
+                                                                                  fontSize: 11,
                                                                                   fontWeight: (data == _resortHomeViewModel.resortHomeModel.slopeCountInfoToday.first)
                                                                                       ? FontWeight.w900 : FontWeight.w300,
                                                                                   color: (data == _resortHomeViewModel.resortHomeModel.slopeCountInfoToday.first)
@@ -1383,11 +1383,11 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                                                             ),
                                                           ),
                                                           Padding(
-                                                            padding: const EdgeInsets.only(top: 4, bottom: 20),
+                                                            padding: const EdgeInsets.only(top: 4, bottom: 10),
                                                             child: Text('${_resortHomeViewModel.resortHomeModel.dailyTotalCount}회',
                                                               style: SDSTextStyle.extraBold.copyWith(
                                                                   color: SDSColor.gray900,
-                                                                  fontSize: 24
+                                                                  fontSize: 30
                                                               ),
                                                             ),
                                                           ),
@@ -1410,7 +1410,7 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                                                                   AutoSizeText(
                                                                     passCount != 0 ? '$passCount' : '',
                                                                     style: SDSTextStyle.bold.copyWith(
-                                                                      fontSize: 12,
+                                                                      fontSize: 11,
                                                                       color: SDSColor.gray900.withOpacity(0.4),
                                                                       fontWeight: FontWeight.w300,
                                                                     ),
@@ -1440,6 +1440,7 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                                                                         style: SDSTextStyle.regular.copyWith(
                                                                           fontSize: 11,
                                                                           color: SDSColor.gray900,
+                                                                          height: 1.2
                                                                         ),
                                                                       ),
                                                                     ),
