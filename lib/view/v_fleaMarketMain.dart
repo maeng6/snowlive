@@ -70,7 +70,7 @@ class FleaMarketMainView extends StatelessWidget {
                         Padding(
                           padding: const EdgeInsets.only(bottom: 1),
                           child: Text(
-                            '물품 검색',
+                            '스노우마켓 상품 검색',
                             style:
                             TextStyle(fontSize: 15, color: Color(0xFF666666)),
                           ),
