@@ -110,5 +110,9 @@ class AppRoutes {
       name: friendDetailUpdate,
       page: () => FriendDetailUpdateView(),
     ),
+    GetPage(
+      name: friendList,
+      page: () => FriendListView(),
+    ),
   ];
 }
