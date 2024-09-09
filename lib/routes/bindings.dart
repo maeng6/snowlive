@@ -4,6 +4,7 @@ import 'package:com.snowlive/viewmodel/vm_fleamarketSearch.dart';
 import 'package:com.snowlive/viewmodel/vm_fleamarketUpdate.dart';
 import 'package:com.snowlive/viewmodel/vm_friendDetail.dart';
 import 'package:com.snowlive/viewmodel/vm_friendDetailUpdate.dart';
+import 'package:com.snowlive/viewmodel/vm_friendList.dart';
 import 'package:com.snowlive/viewmodel/vm_imageController.dart';
 import 'package:com.snowlive/viewmodel/vm_login.dart';
 import 'package:com.snowlive/viewmodel/vm_mainHome.dart';
@@ -26,6 +27,7 @@ class MainHomeBinding extends Bindings {
     Get.put(FleamarketListViewModel(),permanent: true);
     Get.put(FleamarketDetailViewModel(),permanent: true);
     Get.put(ImageController(),permanent: true);
+    Get.put(FriendListViewModel(),permanent: true);
   }
 }
 

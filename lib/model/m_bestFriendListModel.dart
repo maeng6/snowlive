@@ -48,6 +48,21 @@ class FriendListModel {
   }
 }
 
+class FriendListResponse {
+  List<FriendListModel>? friends;
+
+  FriendListResponse({this.friends});
+
+  FriendListResponse.fromJson(List<dynamic> json) {
+    if (json != null) {
+      friends = json.map((e) => FriendListModel.fromJson(e)).toList();
+    }
+  }
+
+  List<dynamic> toJson() {
+    return friends?.map((e) => e.toJson()).toList() ?? [];
+  }
+}
 
 class FriendInfo {
   late int userId;

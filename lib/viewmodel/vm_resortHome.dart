@@ -12,6 +12,7 @@ import 'package:get/get_rx/get_rx.dart';
 import 'package:get/get_rx/src/rx_types/rx_types.dart';
 import 'package:get/state_manager.dart';
 import 'package:intl/intl.dart';
+import 'package:synchronized/synchronized.dart';
 
 import '../api/ApiResponse.dart';
 import '../api/api_friend.dart';
@@ -27,6 +28,7 @@ class ResortHomeViewModel extends GetxController {
   var _resortHomeModel = ResortHomeModel().obs;
   var isLoading = true.obs;
   var isLoading_weather = true.obs;
+  final Lock _lock = Lock();
   RxString _rankingGuideUrl_ios = ''.obs;
   RxString _rankingGuideUrl_aos = ''.obs;
   RxDouble _latitude = 0.0.obs;
@@ -100,7 +102,7 @@ class ResortHomeViewModel extends GetxController {
 
   Future<void> fetchBestFriendList({required int user_id}) async {
     isLoading(true);
-    ApiResponse response = await FriendAPI().fetchFriendList(user_id, true);
+    ApiResponse response = await FriendAPI().fetchFriendList(userId: user_id, bestFriend: true);
 
     if (response.success) {
       try {
@@ -232,70 +234,75 @@ class ResortHomeViewModel extends GetxController {
         return Future.error('Location permissions are denied');
       }
     }
+
     // 일회성으로 현재 위치 정보를 가져옴
-      Position currentPosition = await Geolocator.getCurrentPosition();
-      _latitude.value = currentPosition.latitude;
-      _longitude.value = currentPosition.longitude;
-      ApiResponse response = await liveOn({
-               "user_id": user_id,
-               "coordinates": "POINT (${_longitude.value} ${_latitude.value})"
-             });
+    Position currentPosition = await Geolocator.getCurrentPosition();
+    _latitude.value = currentPosition.latitude;
+    _longitude.value = currentPosition.longitude;
+    ApiResponse response = await liveOn({
+      "user_id": user_id,
+      "coordinates": "POINT (${_longitude.value} ${_latitude.value})"
+    });
 
-      if (response.success){
-        _positionStreamSubscription = Geolocator.getPositionStream().listen((Position position) async {
-          try {
-            bool withinBoundary = _checkPositionWithinBoundary(
-                position.latitude,
-                position.longitude,
-                _resort_info['coordinates']['latitude'],
-                _resort_info['coordinates']['longitude'],
-                _resort_info['radius']
-            );
-            if (withinBoundary) {
-              Map<String, dynamic>? passPointInfo = checkPositionInAreas(position, slope_info, reset_point, respawn_point );
-
-              if(passPointInfo != null && passPointInfo['type']=='slope_info')
-                await RankingAPI().addCheckPoint(
-                    {
-                      "user_id": user_id,
-                      "slope_id": passPointInfo['id'],
-                      "coordinates": "${position.latitude}, ${position.longitude}"
-                    }
-                );
-
-              if(passPointInfo != null && passPointInfo['type']=='reset_point')
-                await RankingAPI().reset({"user_id": user_id});
-              if(passPointInfo != null && passPointInfo['type']=='respawn_point')
-                await RankingAPI().respawn({"user_id": user_id});
-
-            } else{
-              await stopForegroundLocationService();
-              await stopBackgroundLocationService();
-              await liveOff({"user_id":user_id},user_id );
-            }
-          } catch (e, stackTrace) {
-            print('위치 서비스 오류: $e');
-            print('Stack trace: $stackTrace');
-          }
-        });
-      } else{
-        await stopForegroundLocationService();
-        await stopBackgroundLocationService();
-          _isSnackbarShown.value = true;
-          Get.snackbar(
-            '라이브 불가 지역입니다',
-            '스키장 내에서만 라이브가 활성화됩니다.',
-            margin: EdgeInsets.only(right: 20, left: 20, bottom: 12),
-            snackPosition: SnackPosition.BOTTOM,
-            backgroundColor: Colors.black87,
-            colorText: Colors.white,
-            duration: Duration(milliseconds: 3000),
+    if (response.success) {
+      _positionStreamSubscription = Geolocator.getPositionStream().listen((Position position) async {
+        try {
+          bool withinBoundary = _checkPositionWithinBoundary(
+              position.latitude,
+              position.longitude,
+              _resort_info['coordinates']['latitude'],
+              _resort_info['coordinates']['longitude'],
+              _resort_info['radius']
           );
-          Future.delayed(Duration(milliseconds: 4500), () {
-            _isSnackbarShown.value = false;
-          });
-          print('라이브 불가 지역');
-      }
+          if (withinBoundary) {
+            Map<String, dynamic>? passPointInfo = checkPositionInAreas(position, slope_info, reset_point, respawn_point);
+
+            // 동시성 제어를 위해 lock 사용
+            await _lock.synchronized(() async {
+              if (passPointInfo != null && passPointInfo['type'] == 'slope_info') {
+                await RankingAPI().addCheckPoint({
+                  "user_id": user_id,
+                  "slope_id": passPointInfo['id'],
+                  "coordinates": "${position.latitude}, ${position.longitude}"
+                });
+              }
+
+              if (passPointInfo != null && passPointInfo['type'] == 'reset_point') {
+                await RankingAPI().reset({"user_id": user_id});
+              }
+
+              if (passPointInfo != null && passPointInfo['type'] == 'respawn_point') {
+                await RankingAPI().respawn({"user_id": user_id});
+              }
+            });
+          } else {
+            await stopForegroundLocationService();
+            await stopBackgroundLocationService();
+            await liveOff({"user_id": user_id}, user_id);
+          }
+        } catch (e, stackTrace) {
+          print('위치 서비스 오류: $e');
+          print('Stack trace: $stackTrace');
+        }
+      });
+    } else {
+      await stopForegroundLocationService();
+      await stopBackgroundLocationService();
+      _isSnackbarShown.value = true;
+      Get.snackbar(
+        '라이브 불가 지역입니다',
+        '스키장 내에서만 라이브가 활성화됩니다.',
+        margin: EdgeInsets.only(right: 20, left: 20, bottom: 12),
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.black87,
+        colorText: Colors.white,
+        duration: Duration(milliseconds: 3000),
+      );
+      Future.delayed(Duration(milliseconds: 4500), () {
+        _isSnackbarShown.value = false;
+      });
+      print('라이브 불가 지역');
+    }
   }
 
   Future<void> startBackgroundLocationService({required user_id}) async {
@@ -351,32 +358,35 @@ class ResortHomeViewModel extends GetxController {
               _resort_info['radius']
           );
           if (withinBoundary) {
-            Map<String, dynamic>? passPointInfo = checkPositionInAreas(position, slope_info, reset_point, respawn_point );
+            Map<String, dynamic>? passPointInfo = checkPositionInAreas(position, slope_info, reset_point, respawn_point);
 
-            if(passPointInfo != null && passPointInfo['type']=='slope_info')
-              await RankingAPI().addCheckPoint(
-                  {
-                    "user_id": user_id,
-                    "slope_id": passPointInfo['id'],
-                    "coordinates": "${position.latitude}, ${position.longitude}"
-                  }
-              );
+            // 동시성 제어를 위해 lock 사용
+            await _lock.synchronized(() async {
+              if (passPointInfo != null && passPointInfo['type'] == 'slope_info') {
+                await RankingAPI().addCheckPoint({
+                  "user_id": user_id,
+                  "slope_id": passPointInfo['id'],
+                  "coordinates": "${position.latitude}, ${position.longitude}"
+                });
+              }
 
-            if(passPointInfo != null && passPointInfo['type']=='reset_point')
-              await RankingAPI().reset({"user_id": user_id});
-            if(passPointInfo != null && passPointInfo['type']=='respawn_point')
-              await RankingAPI().respawn({"user_id": user_id});
+              if (passPointInfo != null && passPointInfo['type'] == 'reset_point') {
+                await RankingAPI().reset({"user_id": user_id});
+              }
 
-          } else{
+              if (passPointInfo != null && passPointInfo['type'] == 'respawn_point') {
+                await RankingAPI().respawn({"user_id": user_id});
+              }
+            });
+          } else {
             await stopForegroundLocationService();
             await stopBackgroundLocationService();
-            await liveOff({"user_id":user_id},user_id);
+            await liveOff({"user_id": user_id}, user_id);
           }
         } catch (e, stackTrace) {
           print('위치 서비스 오류: $e');
           print('Stack trace: $stackTrace');
         }
-
       } catch (e, stackTrace) {
         print('백그라운드 위치 업데이트 오류: $e');
         print('Stack trace: $stackTrace');

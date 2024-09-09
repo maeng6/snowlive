@@ -108,7 +108,7 @@ class FriendAPI {
     }
   }
 
-  Future<ApiResponse> fetchFriendList(int userId, bool bestFriend) async {
+  Future<ApiResponse> fetchFriendList({required int userId,required bool bestFriend}) async {
     final Uri uri = Uri.parse('$baseUrl/friend-list/').replace(
       queryParameters: {
         'my_user_id': userId.toString(),

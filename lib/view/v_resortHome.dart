@@ -4,6 +4,7 @@ import 'package:com.snowlive/controller/public/vm_refreshController.dart';
 import 'package:com.snowlive/routes/routes.dart';
 import 'package:com.snowlive/screens/resort/v_chat_resortHome.dart';
 import 'package:com.snowlive/screens/snowliveDesignStyle.dart';
+import 'package:com.snowlive/viewmodel/vm_friendList.dart';
 import 'package:com.snowlive/widget/w_liveOn_animatedGradient.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
@@ -39,6 +40,7 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
   ResortHomeViewModel _resortHomeViewModel = Get.find<ResortHomeViewModel>();
   UserViewModel _userViewModel = Get.find<UserViewModel>();
   FriendDetailViewModel _friendDetailViewModel = Get.find<FriendDetailViewModel>();
+  FriendListViewModel _friendListViewModel = Get.find<FriendListViewModel>();
   //TODO: Dependency Injection**************************************************
 
   @override
@@ -602,6 +604,8 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                                       padding: EdgeInsets.only(top: 16, bottom: 20),
                                       child: ElevatedButton(
                                         onPressed: () async {
+                                          await _friendListViewModel.fetchFriendList();
+                                          await _friendListViewModel.fetchFriendRequestList();
                                           Get.toNamed(AppRoutes.friendList);
                                         },
                                         child: Text(
