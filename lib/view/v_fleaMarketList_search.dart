@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import '../model/m_fleamarket.dart';
 import '../routes/routes.dart';
+import '../screens/snowliveDesignStyle.dart';
 import '../util/util_1.dart';
 import '../viewmodel/vm_fleamarketDetail.dart';
 import '../viewmodel/vm_fleamarketList.dart';
@@ -51,7 +52,7 @@ class FleaMarketListView_search extends StatelessWidget {
               elevation: 0.0,
               titleSpacing: 0,
               centerTitle: true,
-              title: Text('물품 검색',
+              title: Text('상품 검색',
                 style: TextStyle(
                     color: Color(0xFF111111),
                     fontWeight: FontWeight.bold,
@@ -60,9 +61,10 @@ class FleaMarketListView_search extends StatelessWidget {
             ),
             body: Column(
               children: [
-                Padding(
+                Obx(()=>Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: Stack(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Form(
                         key: _fleamarketSearchViewModel.formKey,
@@ -72,30 +74,31 @@ class FleaMarketListView_search extends StatelessWidget {
                           ),
                           child: TextFormField(
                             onFieldSubmitted: (val) async {
+                              _fleamarketSearchViewModel.changeShowRecentSearch();
                               await _fleamarketSearchViewModel.fetchFleamarketData_total(
                                   userId: _userViewModel.user.user_id,
                                   search_query: _fleamarketSearchViewModel.textEditingController.text
                               );
+                              await _fleamarketSearchViewModel.saveRecentSearch(_fleamarketSearchViewModel.textEditingController.text);
                             },
                             autofocus: true,
                             textAlignVertical: TextAlignVertical.center,
                             cursorColor: Color(0xff949494),
-                            cursorHeight: 16,
+                            cursorHeight: 18,
                             cursorWidth: 2,
                             autovalidateMode: AutovalidateMode.onUserInteraction,
                             controller: _fleamarketSearchViewModel.textEditingController,
-                            strutStyle: StrutStyle(leading: 0.3),
                             decoration: InputDecoration(
                                 floatingLabelBehavior: FloatingLabelBehavior.never,
+                                prefixIcon: Icon(Icons.search, color: Color(0xFF666666)),
                                 errorStyle: TextStyle(
                                   fontSize: 12,
                                 ),
                                 labelStyle: TextStyle(color: Color(0xff666666), fontSize: 15),
                                 hintStyle: TextStyle(color: Color(0xffb7b7b7), fontSize: 15),
-                                hintText: '검색어 입력',
-                                labelText: '검색어 입력',
-                                contentPadding: EdgeInsets.only(
-                                    top: 14, bottom: 8, left: 16, right: 16),
+                                hintText: '스노우마켓 상품 검색',
+                                labelText: '스노우마켓 상품 검색',
+                                contentPadding: EdgeInsets.symmetric(vertical: 6),
                                 fillColor: Color(0xFFEFEFEF),
                                 hoverColor: Colors.transparent,
                                 filled: true,
@@ -126,18 +129,73 @@ class FleaMarketListView_search extends StatelessWidget {
                           ),
                         ),
                       ),
-                      Positioned(
-                        left: 4,
-                        top: 15,
-                        child: Padding(
-                          padding: const EdgeInsets.only(right: 20),
-                          child: Icon(Icons.search, color: Color(0xFF666666)),
+                      SizedBox(height: 25,),
+                      if(_fleamarketSearchViewModel.showRecentSearch)
+                        Row(
+                          children: [
+                            Text('최근 검색',
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold
+                            ),
+                            ),
+                            Expanded(child: SizedBox()),
+                            GestureDetector(
+                                onTap: () async{
+                                  await _fleamarketSearchViewModel.deleteAllRecentSearches();
+                                  _fleamarketSearchViewModel.changeShowRecentSearch();
+                                },
+                                child: Text('전체삭제',
+                                  style: TextStyle(
+                                    color: SDSColor.gray500
+                                  ),
+                                )),
+                          ],
                         ),
-                      )
+                      if(!_fleamarketSearchViewModel.showRecentSearch)
+                        Text('검색 결과',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold
+                        ),
+                        )
                     ],
                   ),
-                ),
+                ),),
+
                 SizedBox(height: 20),
+                Obx(
+                      () => !_fleamarketSearchViewModel.isSearching && _fleamarketSearchViewModel.recentSearches.isNotEmpty
+                      && _fleamarketSearchViewModel.showRecentSearch
+                      ? Expanded(
+                    child: ListView.builder(
+                      itemCount: _fleamarketSearchViewModel.recentSearches.length,
+                      itemBuilder: (context, index) {
+                        String recentSearch = _fleamarketSearchViewModel.recentSearches[index];
+                        return ListTile(
+                          title: Text(recentSearch),
+                          trailing: IconButton(
+                            icon: Icon(Icons.clear),
+                            onPressed: () {
+                              _fleamarketSearchViewModel.deleteRecentSearch(recentSearch);
+                              _fleamarketSearchViewModel.changeShowRecentSearch();
+                            },
+                          ),
+                          onTap: () {
+                            _fleamarketSearchViewModel.textEditingController.text = recentSearch;
+                            _fleamarketSearchViewModel.search(recentSearch);
+                            _fleamarketSearchViewModel.fetchFleamarketData_total(
+                              userId: _userViewModel.user.user_id,
+                              search_query: recentSearch,
+                            );
+                            _fleamarketSearchViewModel.changeShowRecentSearch();
+
+                          },
+                        );
+                      },
+                    ),
+                  )
+                      : Container(),
+                ),
+
                 Expanded(
                   child: Obx(
                         () => (_fleamarketSearchViewModel.fleamarketListSearch.isNotEmpty)
@@ -396,16 +454,7 @@ class FleaMarketListView_search extends StatelessWidget {
                         padding: EdgeInsets.only(bottom: 80),
                       ),
                     )
-                        : Container(
-                      height: _size.height - 360,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Center(child: Image.asset('assets/imgs/icons/icon_friend_search_illust.png', scale: 4, width: 180, height: 100,))
-                        ],
-                      ),
-                    ),
+                        : Container(),
                   ),
                 ),
               ],

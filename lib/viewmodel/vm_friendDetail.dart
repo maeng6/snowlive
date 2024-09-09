@@ -79,6 +79,7 @@ class FriendDetailViewModel extends GetxController {
   final Rx<TextEditingController> _displayNameController = TextEditingController().obs;
 
   ApiResponse? response;
+
   final ImageController imageController = Get.put(ImageController());
 
   dynamic get friendDetailModel => _friendDetailModel.value;

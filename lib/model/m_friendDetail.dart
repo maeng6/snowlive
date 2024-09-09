@@ -27,11 +27,14 @@ class FriendUserInfo {
   late String? crewName;
   late String? stateMsg;
   late String favoriteResort;
+  late int? favoriteResortId;
   late bool withinBoundary;
   late bool revealWb;
   late bool hideProfile;
   late bool areWeFriend;
   late bool bestFriend;
+  late String? skiorboard;
+  late String? sex;
 
   // 기본 생성자
   FriendUserInfo() {
@@ -41,11 +44,14 @@ class FriendUserInfo {
     crewName = '';
     stateMsg = null;
     favoriteResort = '';
+    favoriteResortId = null;
     withinBoundary = false;
     revealWb = false;
     hideProfile = false;
     areWeFriend = false;
     bestFriend = false;
+    skiorboard = '';
+    sex = '';
   }
 
   // fromJson 생성자
@@ -56,11 +62,14 @@ class FriendUserInfo {
     crewName = json['crew_name'];
     stateMsg = json['state_msg'];
     favoriteResort = json['favorite_resort'];
+    favoriteResortId = json['favorite_resort_id'];
     withinBoundary = json['within_boundary'];
     revealWb = json['reveal_wb'];
     hideProfile = json['hide_profile'];
     areWeFriend = json['are_we_friend'];
     bestFriend = json['best_friend'];
+    skiorboard = json['skiorboard'];
+    sex = json['sex'];
   }
 
   void setBestFriend(bool value) {
