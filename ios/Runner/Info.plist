@@ -71,9 +71,11 @@
 	<key>NSCameraUsageDescription</key>
 	<string>프로필 사진 설정 및 변경을 위해 카메라에 접근하도록 허용합니다.</string>
 	<key>NSMicrophoneUsageDescription</key>
-	<string>Used to capture audio for image picker plugin</string>
+	<string>프로필 및 녹음 기능을 사용하기 위해 마이크 접근 권한이 필요합니다.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>프로필 사진 설정 및 변경을 위해 사진 라이브러리에 접근하도록 허용합니다.</string>
+	<key>NSUserTrackingUsageDescription</key>
+	<string>앱에서 맞춤형 알림을 제공하기 위해 알림 권한이 필요합니다.</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>UIBackgroundModes</key>

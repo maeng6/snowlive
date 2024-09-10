@@ -18,12 +18,6 @@ class FriendListView extends StatefulWidget {
 
 class _FriendListViewState extends State<FriendListView> {
 
-
-  //TODO: Dependency Injection**************************************************
-  UserModelController _userModelController = Get.find<UserModelController>();
-  StreamController_Friend _streamController_Friend = Get.find<StreamController_Friend>();
-  //TODO: Dependency Injection**************************************************
-
   FriendListViewModel _friendListViewModel = Get.find<FriendListViewModel>();
   FriendDetailViewModel _friendDetailViewModel = Get.find<FriendDetailViewModel>();
   UserViewModel _userViewModel = Get.find<UserViewModel>();
@@ -38,14 +32,14 @@ class _FriendListViewState extends State<FriendListView> {
       appBar: AppBar(
         backgroundColor: Colors.white,
         actions: [
-          if(_friendListViewModel.requestFriendList.length == 0)
+          if(_friendListViewModel.friendsRequestList.length == 0)
             Padding(
               padding: const EdgeInsets.only(top: 4),
               child: Stack(
                 children: [
                   IconButton(
-                    onPressed: () async{
-                      // Get.to(()=>InvitationScreen_friend());
+                    onPressed: () {
+                      Get.toNamed(AppRoutes.invitaionFriend);
                     },
                     icon: Image.asset(
                       'assets/imgs/icons/icon_noti_off.png',
@@ -57,14 +51,14 @@ class _FriendListViewState extends State<FriendListView> {
                 ],
               ),
             ),
-          if(_friendListViewModel.requestFriendList.length > 0)
+          if(_friendListViewModel.friendsRequestList.length > 0)
             Padding(
               padding: const EdgeInsets.only(top: 4),
               child: Stack(
                 children: [
                   IconButton(
                     onPressed: () async{
-                      // Get.to(()=>InvitationScreen_friend());
+                      Get.toNamed(AppRoutes.invitaionFriend);
                     },
                     icon: Image.asset(
                       'assets/imgs/icons/icon_noti_off.png',
@@ -108,7 +102,7 @@ class _FriendListViewState extends State<FriendListView> {
             padding: EdgeInsets.only(right: 5),
             child: IconButton(
               onPressed: (){
-                // Get.to(()=>Setting_friendList());
+                Get.toNamed(AppRoutes.settingFriend);
               },
               icon: Image.asset(
                 'assets/imgs/icons/icon_settings.png',

@@ -16,6 +16,7 @@ import 'package:com.snowlive/viewmodel/vm_user.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -59,6 +60,14 @@ void main() async {
     DeviceOrientation.portraitDown
   ]);
   await Firebase.initializeApp();
+
+  await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
+    alert: true,  // 알림 메시지 표시
+    badge: true,  // 앱 아이콘에 뱃지 표시
+    sound: true,  // 알림 사운드
+  );
+
+
   HttpOverrides.global = MyHttpOverrides();
 
   // Dependency Injection

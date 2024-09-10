@@ -1,209 +1,109 @@
 import 'dart:convert';
-import 'dart:io';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:platform_device_id/platform_device_id.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart'; // 추가
 import 'package:http/http.dart' as http;
 
-
-
-
 class NotificationController extends GetxController {
-  // 메시징 서비스 기본 객체 생성
   FirebaseMessaging messaging = FirebaseMessaging.instance;
-  RxString? _deviceToken=''.obs;
-  RxString? _deviceID=''.obs;
-  RxBool? _isAndroidEmailLogIn = false.obs;
+  RxString? _deviceToken = ''.obs;
+  RxString? _deviceID = ''.obs;
+  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin(); // 추가
 
   String? get deviceToken => _deviceToken!.value;
   String? get deviceID => _deviceID!.value;
-  bool? get isAndroidEmailLogIn => _isAndroidEmailLogIn!.value;
-
-  final ref = FirebaseFirestore.instance;
 
   @override
-  void onInit() async{
-    // TODO: implement onInit
-    /// 첫 빌드시, 권한 확인하기
-    /// 아이폰은 무조건 받아야 하고, 안드로이드는 상관 없음. 따로 유저가 설정하지 않는 한,
-    /// 자동 권한 확보 상태
+  void onInit() async {
+    super.onInit();
+
+    // 권한 요청 및 초기 설정
     NotificationSettings settings = await messaging.requestPermission(
       alert: true,
-      announcement: false,
       badge: true,
-      carPlay: false,
-      criticalAlert: false,
-      provisional: false,
       sound: true,
     );
-    // 한번 이걸 프린트해서 콘솔에서 확인해봐도 된다.
     print(settings.authorizationStatus);
+
+    // 알림 채널 생성
+    await _initializeNotificationChannel(); // 추가
+
+    // 토큰 가져오기 및 알림 수신 설정
     await _getToken();
     await _onMessage();
-    super.onInit();
   }
-  /// 디바이스 고유 토큰을 얻기 위한 메소드, 처음 한번만 사용해서 토큰을 확보하자.
-  /// 이는 파이어베이스 콘솔에서 손쉽게 디바이스에 테스팅을 할 때 쓰인다.
 
-  Future<void> _getToken() async{
-    String? deviceToken= await messaging.getToken();
+  /// 디바이스 고유 토큰과 ID를 가져오는 함수
+  Future<void> _getToken() async {
+    String? deviceToken = await messaging.getToken();
     String? deviceId = await PlatformDeviceId.getDeviceId;
     this._deviceToken!.value = deviceToken!;
     this._deviceID!.value = deviceId!;
 
-    try{
+    try {
       print('deviceToken : $_deviceToken');
       print('deviceID : $_deviceID');
-    } catch(e) {}
-  }
-
-
-  /// ----------------------------------------------------------------------------
-
-  /// * 안드로이드에서 foreground 알림 위한 flutter_local_notification 라이브러리 *
-  ///
-  /// 1. channel 생성 (우리의 알림을 따로 전달해줄 채널을 직접 만든다)
-  /// 2. 그 채널을 우리 메인 채널로 정해줄 플러그인을 만들어준다.
-  /// - 준비 끝!!
-  // 1.
-  final AndroidNotificationChannel channel = const AndroidNotificationChannel(
-    'high_importance_channel', // id
-    'High Importance Notifications', // title
-    description: 'This channel is used for important notifications.', // description
-    importance: Importance.max,
-  );
-  // 2.
-  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-  FlutterLocalNotificationsPlugin();
-
-  Future<String?> postMessage({required fcmToken}) async {
-    try {
-      String _accessToken = 'ya29.a0AfB_byC_VaasuGr9pwkd8lHCo9NzlbDrk3tV95GvSGaJXmnVvrbC1KlorDBJ5zL4kQvzw5-Lqdf7o8AqgHvGASv2ETCi8LBypWydOOQYcpy5XyXy-vSC4PHnKNPqOkdx11hX2ZekxopGMV0Re9l72kspZ8t7ee0P3F_yaCgYKAWASARESFQGOcNnCiZkfwlDzNsnKxy2tu5yhNQ0171';
-      http.Response _response = await http.post(
-          Uri.parse(
-            "https://fcm.googleapis.com/v1/projects/{your_project_id}/messages:send",
-          ),
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer $_accessToken',
-          },
-          body: json.encode({
-            "message": {
-              "token": fcmToken,
-              // "topic": "user_uid",
-
-              "notification": {
-                "title": "FCM Test Title",
-                "body": "FCM Test Body",
-              },
-              "data": {
-                "click_action": "FCM Test Click Action",
-              },
-              "android": {
-                "notification": {
-                  "click_action": "Android Click Action",
-                }
-              },
-              "apns": {
-                "payload": {
-                  "aps": {
-                    "category": "Message Category",
-                    "content-available": 1
-                  }
-                }
-              }
-            }
-          }));
-      if (_response.statusCode == 200) {
-        return null;
-      } else {
-        return "Faliure";
-      }
-    } on HttpException catch (error) {
-      return error.message;
+    } catch (e) {
+      print(e);
     }
   }
 
-  Future<void> _onMessage() async{
-    /// * local_notification 관련한 플러그인 활용 *
-    ///
-    /// 1. 위에서 생성한 channel 을 플러그인 통해 메인 채널로 설정한다.
-    /// 2. 플러그인을 초기화하여 추가 설정을 해준다.
+  /// Django 서버로 푸시 알림 요청을 보내는 함수
+  Future<String?> postMessage({required fcmToken, required String title, required String body}) async {
+    try {
+      String url = 'https://snowlive-api-0eab29705c9f.herokuapp.com/api/fcm/send-push/';
+      http.Response response = await http.post(
+        Uri.parse(url),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: json.encode({
+          "token": fcmToken,
+          "title": title,
+          "body": body,
+        }),
+      );
 
-    // 1.
+      if (response.statusCode == 200) {
+        return null;
+      } else {
+        print("Failed to send push notification: ${response.statusCode}");
+        return "Failed to send push notification";
+      }
+    } catch (e) {
+      print("Error occurred: $e");
+      return "Error: $e";
+    }
+  }
+
+  /// 알림 채널 초기화 함수
+  Future<void> _initializeNotificationChannel() async {
+    const AndroidNotificationChannel channel = AndroidNotificationChannel(
+      'high_importance_channel', // ID
+      'High Importance Notifications', // 이름
+      description: 'This channel is used for important notifications.', // 설명
+      importance: Importance.max,
+    );
+
+    // 채널을 플러그인에 추가
     await flutterLocalNotificationsPlugin
         .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
         ?.createNotificationChannel(channel);
-    // 2.
-    await flutterLocalNotificationsPlugin.initialize(
-        const InitializationSettings(
-            android: AndroidInitializationSettings('@mipmap/ic_launcher'), iOS: DarwinInitializationSettings()),
-        );
+  }
 
-    /// * onMessage 설정 - 이것만 설정해줘도 알림을 받아낼 수 있다. *
-
-    // 1. 콘솔에서 발송하는 메시지를 message 파라미터로 받아온다.
-    /// 메시지가 올 때마다 listen 내부 콜백이 실행된다.
+  /// 포그라운드, 백그라운드 및 종료된 상태에서 알림 수신 처리
+  Future<void> _onMessage() async {
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      RemoteNotification? notification = message.notification;
-      AndroidNotification? android = message.notification?.android;
-
-      // android 일 때만 flutterLocalNotification 을 대신 보여주는 거임. 그래서 아래와 같은 조건문 설정.
-      if (notification != null && android != null) {
-        flutterLocalNotificationsPlugin.show(
-          notification.hashCode,
-          notification.title,
-          notification.body,
-          NotificationDetails(
-            android: AndroidNotificationDetails(
-                channel.id,
-                channel.name,
-                channelDescription: channel.description
-            ),
-          ),
-
-          // 넘겨줄 데이터가 있으면 아래 코드를 써주면 됨.
-          // payload: message.data['argument']
-        );
-      }
-      // 개발 확인 용으로 print 구문 추가
-      print('foreground 상황에서 메시지를 받았다.');
-      // 데이터 유무 확인
-      print('Message data: ${message.data}');
-      // notification 유무 확인
-      if (message.notification != null) {
-        print('Message also contained a notification: ${message.notification!.body}');
-      }
+      print('Foreground에서 알림 수신: ${message.notification?.title}');
     });
-
-
 
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage? message) {
-      if (message != null) {
-        if (message.notification != null) {
-
-        }
-      }
+      print('알림 클릭 후 앱이 열림: ${message?.notification?.title}');
     });
-
 
     FirebaseMessaging.instance.getInitialMessage().then((RemoteMessage? message) {
-      if (message != null) {
-        if (message.notification != null) {
-
-        }
-      }
+      print('앱이 종료된 상태에서 알림을 클릭해 앱이 열림: ${message?.notification?.title}');
     });
   }
-  Future<void> getIsAndroidEmailLogIn() async {
-    DocumentReference<Map<String, dynamic>> documentReference =
-    ref.collection('emailLogIn').doc('1');
-    final DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
-    await documentReference.get();
-    bool isAndroidEmailLogIn = documentSnapshot.get('visible');
-    this._isAndroidEmailLogIn!.value = isAndroidEmailLogIn;
-  }
-
 }

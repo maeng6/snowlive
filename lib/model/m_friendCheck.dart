@@ -1,20 +1,4 @@
-class RequestFriendListResponse {
-  late List<RequestFriendList> requests;
-
-  RequestFriendListResponse({
-    required this.requests,
-  });
-
-  RequestFriendListResponse.fromJson(List<dynamic> json) {
-    requests = json.map((item) => RequestFriendList.fromJson(item)).toList();
-  }
-
-  List<dynamic> toJson() {
-    return requests.map((request) => request.toJson()).toList();
-  }
-}
-
-class RequestFriendList {
+class CheckFriendModel {
   late int friendId;
   late int myUserId;
   late int friendUserId;
@@ -24,18 +8,18 @@ class RequestFriendList {
   late MyUserInfo myUserInfo;
   late FriendUserInfo friendUserInfo;
 
-  RequestFriendList({
-    required this.friendId,
-    required this.myUserId,
-    required this.friendUserId,
-    required this.areWeFriend,
-    required this.bestFriend,
-    required this.updateTime,
-    required this.myUserInfo,
-    required this.friendUserInfo,
+  CheckFriendModel({
+    friendId,
+    myUserId,
+    friendUserId,
+    areWeFriend,
+    bestFriend,
+    updateTime,
+    myUserInfo,
+    friendUserInfo,
   });
 
-  RequestFriendList.fromJson(Map<String, dynamic> json) {
+  CheckFriendModel.fromJson(Map<String, dynamic> json) {
     friendId = json['friend_id'] ?? 0;
     myUserId = json['my_user_id'] ?? 0;
     friendUserId = json['friend_user_id'] ?? 0;
@@ -79,7 +63,7 @@ class MyUserInfo {
 
   MyUserInfo.fromJson(Map<String, dynamic> json) {
     userId = json['user_id'] ?? 0;
-    displayName = json['display_name'] ?? 'Unknown'; // 기본값 처리
+    displayName = json['display_name'] ?? 'Unknown';
     profileImageUrlUser = json['profile_image_url_user'] ?? '';
     stateMsg = json['state_msg'] ?? '';
     withinBoundary = json['within_boundary'] ?? false;
@@ -102,7 +86,7 @@ class FriendUserInfo {
   late int userId;
   late String displayName;
   late String profileImageUrlUser;
-  late String? stateMsg; // Null 처리 고려
+  late String stateMsg;
   late bool withinBoundary;
   late bool revealWb;
 
@@ -110,16 +94,16 @@ class FriendUserInfo {
     required this.userId,
     required this.displayName,
     required this.profileImageUrlUser,
-    this.stateMsg,
+    required this.stateMsg,
     required this.withinBoundary,
     required this.revealWb,
   });
 
   FriendUserInfo.fromJson(Map<String, dynamic> json) {
     userId = json['user_id'] ?? 0;
-    displayName = json['display_name'] ?? 'Unknown'; // 기본값 처리
+    displayName = json['display_name'] ?? 'Unknown';
     profileImageUrlUser = json['profile_image_url_user'] ?? '';
-    stateMsg = json['state_msg'];
+    stateMsg = json['state_msg'] ?? '';
     withinBoundary = json['within_boundary'] ?? false;
     revealWb = json['reveal_wb'] ?? false;
   }

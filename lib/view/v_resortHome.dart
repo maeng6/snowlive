@@ -604,8 +604,10 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                                       padding: EdgeInsets.only(top: 16, bottom: 20),
                                       child: ElevatedButton(
                                         onPressed: () async {
+                                          Navigator.pop(context);
                                           await _friendListViewModel.fetchFriendList();
-                                          await _friendListViewModel.fetchFriendRequestList();
+                                          await _friendListViewModel.fetchFriendRequestList(_userViewModel.user.user_id);
+                                          await _friendListViewModel.fetchBlockUserList();
                                           Get.toNamed(AppRoutes.friendList);
                                         },
                                         child: Text(

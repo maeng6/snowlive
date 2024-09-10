@@ -134,28 +134,27 @@ class FleaMarketListView_search extends StatelessWidget {
                         Row(
                           children: [
                             Text('최근 검색',
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold
-                            ),
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold
+                              ),
                             ),
                             Expanded(child: SizedBox()),
                             GestureDetector(
                                 onTap: () async{
                                   await _fleamarketSearchViewModel.deleteAllRecentSearches();
-                                  _fleamarketSearchViewModel.changeShowRecentSearch();
                                 },
                                 child: Text('전체삭제',
                                   style: TextStyle(
-                                    color: SDSColor.gray500
+                                      color: SDSColor.gray500
                                   ),
                                 )),
                           ],
                         ),
                       if(!_fleamarketSearchViewModel.showRecentSearch)
                         Text('검색 결과',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold
-                        ),
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold
+                          ),
                         )
                     ],
                   ),
@@ -176,7 +175,6 @@ class FleaMarketListView_search extends StatelessWidget {
                             icon: Icon(Icons.clear),
                             onPressed: () {
                               _fleamarketSearchViewModel.deleteRecentSearch(recentSearch);
-                              _fleamarketSearchViewModel.changeShowRecentSearch();
                             },
                           ),
                           onTap: () {

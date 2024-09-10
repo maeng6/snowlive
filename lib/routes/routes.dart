@@ -6,6 +6,7 @@ import 'package:com.snowlive/view/v_fleaMarketMain.dart';
 import 'package:com.snowlive/view/v_friendDetail.dart';
 import 'package:com.snowlive/view/v_friendDetailUpdate.dart';
 import 'package:com.snowlive/view/v_friendList.dart';
+import 'package:com.snowlive/view/v_friend_setting.dart';
 import 'package:com.snowlive/view/v_login.dart';
 import 'package:com.snowlive/view/v_searchFriend.dart';
 import 'package:com.snowlive/view/v_setProfile.dart';
@@ -15,6 +16,8 @@ import '../view/v_fleaMarketCommentDetail.dart';
 import '../view/v_fleaMarketList_search.dart';
 import '../view/v_fleamarketUpdate.dart';
 import '../view/v_fleamarketUpload.dart';
+import '../view/v_friendBlockList.dart';
+import '../view/v_invitation_friend.dart';
 import 'bindings.dart';
 
 class AppRoutes {
@@ -35,6 +38,9 @@ class AppRoutes {
   static const String fleamarketUpdate = '/fleamarketUpdate';
   static const String friendDetailUpdate = '/friendDetailUpdate';
   static const String searchFriend = '/searchFriend';
+  static const String invitaionFriend = '/invitaionFriend';
+  static const String settingFriend = '/settingFriend';
+  static const String friendBlockList = '/friendBlockList';
 
   static final List<GetPage> pages = [
     GetPage(
@@ -119,6 +125,19 @@ class AppRoutes {
     GetPage(
       name: searchFriend,
       page: () => SearchFriendView(),
+      binding: SearchFriendViewBinding(),
+    ),
+    GetPage(
+      name: invitaionFriend,
+      page: () => InvitationFriendView(),
+    ),
+    GetPage(
+      name: settingFriend,
+      page: () => FriendSettingView(),
+    ),
+    GetPage(
+      name: friendBlockList,
+      page: () => FriendBlockListView(),
     ),
   ];
 }

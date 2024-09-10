@@ -89,11 +89,11 @@ class FriendAPI {
     }
   }
 
-  Future<ApiResponse> fetchFriendRequests({int? sendUserId, int? receiveUserId}) async {
+  Future<ApiResponse> fetchFriendRequests({int? my_user_id, int? friend_user_id}) async {
     final Uri uri = Uri.parse('$baseUrl/request-list/').replace(
       queryParameters: {
-        if (sendUserId != null) 'send_user_id': sendUserId.toString(),
-        if (receiveUserId != null) 'receive_user_id': receiveUserId.toString(),
+        if (my_user_id != null) 'my_user_id': my_user_id.toString(),
+        if (friend_user_id != null) 'friend_user_id': friend_user_id.toString(),
       },
     );
 
@@ -107,6 +107,25 @@ class FriendAPI {
       return ApiResponse.error(data);
     }
   }
+
+  Future<ApiResponse> fetchBlcokListRequests({required user_id}) async {
+    final Uri uri = Uri.parse('https://snowlive-api-0eab29705c9f.herokuapp.com/api/community/block-list/').replace(
+      queryParameters: {
+        if (user_id != null) 'user_id': user_id.toString(),
+      },
+    );
+
+    final response = await http.get(uri);
+
+    if (response.statusCode == 200) {
+      final data = json.decode(utf8.decode(response.bodyBytes));
+      return ApiResponse.success(data);
+    } else {
+      final data = json.decode(utf8.decode(response.bodyBytes));
+      return ApiResponse.error(data);
+    }
+  }
+
 
   Future<ApiResponse> fetchFriendList({required int userId,required bool bestFriend}) async {
     final Uri uri = Uri.parse('$baseUrl/friend-list/').replace(

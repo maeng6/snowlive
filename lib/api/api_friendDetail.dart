@@ -77,6 +77,23 @@ class FriendDetailAPI {
     }
   }
 
+  Future<ApiResponse> unblockUser(body) async {
+
+    final response = await http.delete(
+      Uri.parse('https://snowlive-api-0eab29705c9f.herokuapp.com/api/community/block/'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode(body),
+    );
+
+    if (response.statusCode == 200) {
+      final data = json.decode(utf8.decode(response.bodyBytes));
+      return ApiResponse.success(data);
+    } else {
+      final data = json.decode(utf8.decode(response.bodyBytes));
+      return ApiResponse.error(data);
+    }
+  }
+
   Future<ApiResponse> fetchFriendsTalkList(int userId, int friendUserId) async {
     print(userId);
     print(friendUserId);

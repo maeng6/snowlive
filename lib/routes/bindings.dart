@@ -5,6 +5,7 @@ import 'package:com.snowlive/viewmodel/vm_fleamarketUpdate.dart';
 import 'package:com.snowlive/viewmodel/vm_friendDetail.dart';
 import 'package:com.snowlive/viewmodel/vm_friendDetailUpdate.dart';
 import 'package:com.snowlive/viewmodel/vm_friendList.dart';
+import 'package:com.snowlive/viewmodel/vm_friendSearch.dart';
 import 'package:com.snowlive/viewmodel/vm_imageController.dart';
 import 'package:com.snowlive/viewmodel/vm_login.dart';
 import 'package:com.snowlive/viewmodel/vm_mainHome.dart';
@@ -101,5 +102,11 @@ class FleamarketUploadBinding extends Bindings {
   @override
   void dependencies() {
     Get.put(FleamarketUploadViewModel());
+  }
+}
+class SearchFriendViewBinding extends Bindings {
+  @override
+  void dependencies() {
+    Get.put(FriendSearchViewModel());
   }
 }
