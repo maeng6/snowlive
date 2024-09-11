@@ -90,8 +90,11 @@ class RankingAPI {
     int? resortId,
     bool? daily,
     String? season,
+    String? url,
   }) async {
-    final Uri uri = Uri.parse('$baseUrl/list-indiv/').replace(
+    final uri = url != null
+        ? Uri.parse(url)
+        : Uri.parse('$baseUrl/list-indiv/').replace(
       queryParameters: {
         'user_id': userId.toString(),
         if (resortId != null) 'resort_id': resortId.toString(),
@@ -116,8 +119,11 @@ class RankingAPI {
     int? resortId,
     bool? daily,
     String? season,
+    String? url,
   }) async {
-    final Uri uri = Uri.parse('$baseUrl/list-indiv-refresh/').replace(
+    final uri = url != null
+        ? Uri.parse(url)
+        : Uri.parse('$baseUrl/list-indiv-refresh/').replace(
       queryParameters: {
         'user_id': userId.toString(),
         if (resortId != null) 'resort_id': resortId.toString(),
@@ -142,8 +148,11 @@ class RankingAPI {
     int? resortId,
     bool? daily,
     String? season,
+    String? url,
   }) async {
-    final Uri uri = Uri.parse('$baseUrl/list-crew/').replace(
+    final uri = url != null
+        ? Uri.parse(url)
+        : Uri.parse('$baseUrl/list-crew/').replace(
       queryParameters: {
         'user_id': userId.toString(),
         if (resortId != null) 'resort_id': resortId.toString(),
@@ -168,8 +177,11 @@ class RankingAPI {
     int? resortId,
     bool? daily,
     String? season,
+    String? url,
   }) async {
-    final Uri uri = Uri.parse('$baseUrl/list-crew-refresh/').replace(
+    final uri = url != null
+        ? Uri.parse(url)
+        : Uri.parse('$baseUrl/list-crew-refresh/').replace(
       queryParameters: {
         'user_id': userId.toString(),
         if (resortId != null) 'resort_id': resortId.toString(),
@@ -188,6 +200,10 @@ class RankingAPI {
       return ApiResponse.error(data);
     }
   }
+
+
+
+
 
 
 
