@@ -23,7 +23,7 @@ class AlarmCenterModel {
     communityReplyKey_room: '시즌방 게시글',
     communityReplyKey_crew: '단톡방·동호회 글',
     communityReplyKey_free: '자유게시판 글',
-    communityReplyKey_event: '클리닉·행사 글',
+    communityReplyKey_event: '클리닉사행사 글',
     communityReplyKey_lost: '분실물 글',
   };
 

@@ -13,12 +13,7 @@ class FriendListViewModel extends GetxController {
   var _friendsRequestList = <RequestFriendList>[].obs;
   var _myRequestList = <RequestFriendList>[].obs;
   var _blockUserList = <UserBlockList>[].obs;
-  var _searchFriend = SearchFriend(
-      userId: 0,
-      crewName: '',
-      displayName: '',
-      profileImageUrlUser: '',
-      areWeFriend: false).obs;
+  var _searchFriend = SearchFriend().obs;
 
   final TextEditingController textEditingController = TextEditingController();
   final formKey = GlobalKey<FormState>();

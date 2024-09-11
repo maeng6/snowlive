@@ -1,5 +1,6 @@
-import 'package:com.snowlive/view/v_fleaMarketMain.dart';
-import 'package:com.snowlive/view/v_ranking_Home.dart';
+import 'package:com.snowlive/view/bulletin/v_community_main.dart';
+import 'package:com.snowlive/view/fleamarket/v_fleaMarketMain.dart';
+import 'package:com.snowlive/view/ranking/v_ranking_Home.dart';
 import 'package:com.snowlive/view/v_resortHome.dart';
 import 'package:com.snowlive/viewmodel/vm_mainHome.dart';
 import 'package:flutter/material.dart';
@@ -134,7 +135,7 @@ class MainHomeView extends StatelessWidget {
             ResortHomeView(),
             FleaMarketMainView(),
             RankingHomeView(),
-            //BulletinScreen(tap_1: _MainHomeViewModel.tap_4, tap_2: _MainHomeViewModel.tap_5),
+            CommunityMainView()
             // MoreTab(),
           ],
         )

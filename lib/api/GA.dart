@@ -63,3 +63,18 @@
 // print('GA 업데이트 오류: $e');
 // print('Stack trace: $stackTrace');
 // }
+
+
+// try{
+// FirebaseAnalytics.instance.logEvent(
+// name: 'visit_bulletinFree',
+// parameters: <String, Object>{
+// 'user_id': _userModelController.uid!,
+// 'user_name': _userModelController.displayName!,
+// 'user_resort': _userModelController.favoriteResort!
+// },
+// );
+// }catch(e, stackTrace){
+// print('GA 업데이트 오류: $e');
+// print('Stack trace: $stackTrace');
+// }

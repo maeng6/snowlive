@@ -1,23 +1,24 @@
 import 'package:com.snowlive/screens/common/v_profileImageScreen.dart';
 import 'package:com.snowlive/screens/resort/v_resortHome.dart';
 import 'package:com.snowlive/view/v_MainHome.dart';
-import 'package:com.snowlive/view/v_fleaMarketDetail.dart';
-import 'package:com.snowlive/view/v_fleaMarketMain.dart';
-import 'package:com.snowlive/view/v_friendDetail.dart';
-import 'package:com.snowlive/view/v_friendDetailUpdate.dart';
-import 'package:com.snowlive/view/v_friendList.dart';
-import 'package:com.snowlive/view/v_friend_setting.dart';
+import 'package:com.snowlive/view/fleamarket/v_fleaMarketDetail.dart';
+import 'package:com.snowlive/view/fleamarket/v_fleaMarketMain.dart';
+import 'package:com.snowlive/view/friend/v_friendDetail.dart';
+import 'package:com.snowlive/view/friend/v_friendDetailUpdate.dart';
+import 'package:com.snowlive/view/friend/v_friendList.dart';
+import 'package:com.snowlive/view/friend/v_friend_setting.dart';
 import 'package:com.snowlive/view/v_login.dart';
-import 'package:com.snowlive/view/v_searchFriend.dart';
-import 'package:com.snowlive/view/v_setProfile.dart';
-import 'package:com.snowlive/view/v_tos.dart';
+import 'package:com.snowlive/view/friend/v_searchFriend.dart';
+import 'package:com.snowlive/view/onboarding/v_setProfile.dart';
+import 'package:com.snowlive/view/onboarding/v_tos.dart';
 import 'package:get/get.dart';
-import '../view/v_fleaMarketCommentDetail.dart';
-import '../view/v_fleaMarketList_search.dart';
-import '../view/v_fleamarketUpdate.dart';
-import '../view/v_fleamarketUpload.dart';
-import '../view/v_friendBlockList.dart';
-import '../view/v_invitation_friend.dart';
+import '../view/bulletin/v_community_main.dart';
+import '../view/fleamarket/v_fleaMarketCommentDetail.dart';
+import '../view/fleamarket/v_fleaMarketList_search.dart';
+import '../view/fleamarket/v_fleamarketUpdate.dart';
+import '../view/fleamarket/v_fleamarketUpload.dart';
+import '../view/friend/v_friendBlockList.dart';
+import '../view/friend/v_invitation_friend.dart';
 import 'bindings.dart';
 
 class AppRoutes {
@@ -41,6 +42,7 @@ class AppRoutes {
   static const String invitaionFriend = '/invitaionFriend';
   static const String settingFriend = '/settingFriend';
   static const String friendBlockList = '/friendBlockList';
+  static const String bulletinMain = '/bulletinMain';
 
   static final List<GetPage> pages = [
     GetPage(
@@ -138,6 +140,10 @@ class AppRoutes {
     GetPage(
       name: friendBlockList,
       page: () => FriendBlockListView(),
+    ),
+    GetPage(
+      name: bulletinMain,
+      page: () => CommunityMainView(),
     ),
   ];
 }

@@ -29,25 +29,32 @@ class CommunityAPI {
     String? findUserId,
     String? searchQuery,
     String? userId,
+    String? url,  // URL을 추가
   }) async {
-    final uri = Uri.parse('$baseUrl/community-list/')
-        .replace(queryParameters: {
-      if (categoryMain != null) 'category_main': categoryMain,
-      if (categorySub != null) 'category_sub': categorySub,
-      if (categorySub2 != null) 'category_sub2': categorySub2,
-      if (findUserId != null) 'find_user_id': findUserId,
-      if (searchQuery != null) 'search_query': searchQuery,
-      if (userId != null) 'user_id': userId,
-    });
+    final uri = url != null
+        ? Uri.parse(url)
+        : Uri.parse('$baseUrl/').replace(
+      queryParameters: {
+        if (categoryMain != null) 'category_main': categoryMain,
+        if (categorySub != null) 'category_sub': categorySub,
+        if (categorySub2 != null) 'category_sub2': categorySub2,
+        if (findUserId != null) 'find_user_id': findUserId,
+        if (searchQuery != null) 'search_query': searchQuery,
+        if (userId != null) 'user_id': userId.toString(),
+      },
+    );
 
     final response = await http.get(uri);
 
     if (response.statusCode == 200) {
-      return ApiResponse.success(json.decode(response.body));
+      final data = json.decode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
+      return ApiResponse.success(data);
     } else {
-      return ApiResponse.error(json.decode(response.body));
+      final data = json.decode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
+      return ApiResponse.error(data);
     }
   }
+
 
   // 커뮤니티 세부사항 조회
   Future<ApiResponse> fetchCommunityDetails(int communityId, {String? userId}) async {
