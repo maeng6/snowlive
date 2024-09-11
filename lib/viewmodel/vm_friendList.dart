@@ -4,6 +4,7 @@ import '../api/api_friend.dart';
 import '../model/m_bestFriendListModel.dart';
 import '../model/m_blockUserList.dart';
 import '../model/m_requestFriendList.dart';
+import '../model/m_searchFriend.dart';
 
 class FriendListViewModel extends GetxController {
   var isLoading = true.obs;
@@ -11,11 +12,13 @@ class FriendListViewModel extends GetxController {
   var _friendsRequestList = <RequestFriendList>[].obs;
   var _myRequestList = <RequestFriendList>[].obs;
   var _blockUserList = <UserBlockList>[].obs;
+  var _searchFirend = SeachFriend().obs;
 
   List<FriendListModel> get friendList => _friendList;
   List<RequestFriendList> get friendsRequestList => _friendsRequestList;
   List<RequestFriendList> get myRequestList => _myRequestList;
   List<UserBlockList> get blockUserList => _blockUserList;
+  SeachFriend get searchFirend => _searchFirend.value;
 
   UserViewModel _userViewModel = Get.find<UserViewModel>();
 
@@ -79,6 +82,31 @@ class FriendListViewModel extends GetxController {
         _blockUserList.value = userBlockListResponse.blocks; // blocks를 직접 사용
       } else {
         print('Failed to load data: ${response_request.error}');
+      }
+    } catch (e) {
+      print('Error fetching data: $e');
+    }
+  }
+
+  Future<void> searchUser(String displayName) async {
+    try {
+      // API 요청
+      final response = await FriendAPI().searchUser({
+        "display_name": displayName,
+        "requesting_user_id": _userViewModel.user.user_id.toString()
+      });
+
+      if (response.success) {
+        // 응답 데이터가 단일 객체라고 가정하고 처리
+        final Map<String, dynamic> responseData = response.data as Map<String, dynamic>;
+
+        // SeachFriend 모델에 데이터를 매핑
+        final searchFriend = SeachFriend.fromJson(responseData);
+
+        // 여기서 _blockUserList 대신 적절한 상태 변수에 searchFriend 할당
+        _searchFirend.value = searchFriend;
+      } else {
+        print('Failed to load data: ${response.error}');
       }
     } catch (e) {
       print('Error fetching data: $e');

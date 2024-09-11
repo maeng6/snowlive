@@ -89,6 +89,23 @@ class FriendAPI {
     }
   }
 
+  Future<ApiResponse> searchUser(body) async {
+
+    final response = await http.post(
+      Uri.parse('https://snowlive-api-0eab29705c9f.herokuapp.com/api/accounts/find-user-by-display-name/'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode(body),
+    );
+
+    if (response.statusCode == 200) {
+      final data = json.decode(utf8.decode(response.bodyBytes));
+      return ApiResponse.success(data);
+    } else {
+      final data = json.decode(utf8.decode(response.bodyBytes));
+      return ApiResponse.error(data);
+    }
+  }
+
   Future<ApiResponse> fetchFriendRequests({int? my_user_id, int? friend_user_id}) async {
     final Uri uri = Uri.parse('$baseUrl/request-list/').replace(
       queryParameters: {
