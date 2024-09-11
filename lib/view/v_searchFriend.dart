@@ -1,25 +1,22 @@
+import 'package:com.snowlive/viewmodel/vm_user.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import '../routes/routes.dart';
 import '../screens/snowliveDesignStyle.dart';
-import '../util/util_1.dart';
-import '../viewmodel/vm_friendSearch.dart';
-import '../viewmodel/vm_user.dart';
+import '../viewmodel/vm_friendDetail.dart';
+import '../viewmodel/vm_friendList.dart';
 
 class SearchFriendView extends StatelessWidget {
-
   final f = NumberFormat('###,###,###,###');
-
+  final FriendListViewModel _friendListViewModel = Get.find<FriendListViewModel>();
+  final FriendDetailViewModel _friendDetailViewModel = Get.find<FriendDetailViewModel>();
   final UserViewModel _userViewModel = Get.find<UserViewModel>();
-  final FriendSearchViewModel _friendSearchViewModel = Get.find<FriendSearchViewModel>();
 
   @override
   Widget build(BuildContext context) {
-
     Size _size = MediaQuery.of(context).size;
-    var friendUserInfo = _friendSearchViewModel.friendDetailModel.friendUserInfo;
 
     return GestureDetector(
       onTap: () {
@@ -48,26 +45,29 @@ class SearchFriendView extends StatelessWidget {
               elevation: 0.0,
               titleSpacing: 0,
               centerTitle: true,
-              title: Text('친구 검색',
+              title: Text(
+                '친구 검색',
                 style: TextStyle(
                     color: Color(0xFF111111),
                     fontWeight: FontWeight.bold,
                     fontSize: 20),
               ),
             ),
-            body: Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: Form(
-                    key: _friendSearchViewModel.formKey,
+            body: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Column(
+                children: [
+                  Form(
+                    key: _friendListViewModel.formKey,
                     child: Container(
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(6),
                       ),
                       child: TextFormField(
                         onFieldSubmitted: (val) async {
-
+                          await _friendListViewModel.searchUser(
+                              _friendListViewModel.textEditingController.text);
+                          _friendListViewModel.textEditingController.clear();
                         },
                         autofocus: true,
                         textAlignVertical: TextAlignVertical.center,
@@ -75,15 +75,17 @@ class SearchFriendView extends StatelessWidget {
                         cursorHeight: 18,
                         cursorWidth: 2,
                         autovalidateMode: AutovalidateMode.onUserInteraction,
-                        controller: _friendSearchViewModel.textEditingController,
+                        controller: _friendListViewModel.textEditingController,
                         decoration: InputDecoration(
                             floatingLabelBehavior: FloatingLabelBehavior.never,
                             prefixIcon: Icon(Icons.search, color: Color(0xFF666666)),
                             errorStyle: TextStyle(
                               fontSize: 12,
                             ),
-                            labelStyle: TextStyle(color: Color(0xff666666), fontSize: 15),
-                            hintStyle: TextStyle(color: Color(0xffb7b7b7), fontSize: 15),
+                            labelStyle: TextStyle(
+                                color: Color(0xff666666), fontSize: 15),
+                            hintStyle: TextStyle(
+                                color: Color(0xffb7b7b7), fontSize: 15),
                             hintText: '친구 검색',
                             labelText: '친구 검색',
                             contentPadding: EdgeInsets.symmetric(vertical: 6),
@@ -117,176 +119,194 @@ class SearchFriendView extends StatelessWidget {
                       ),
                     ),
                   ),
-                ),
-                SizedBox(height: 20),
-                Column(
-            children: [
-              Container(
-                width: 300,
-                height: 500,
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: AssetImage('assets/imgs/profile/img_friend_profileCard.png'), // 이미지 경로
-                    fit: BoxFit.fill,
-                  ),
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: Column(
-                  children: [
-                    SizedBox(height: 40),
-                    Center(
-                      child: (friendUserInfo.profileImageUrlUser != null)
-                          ? Container(
-                            width: 80,
-                            height: 80,
-                            decoration: BoxDecoration(
-                              color: Color(0xFFDFECFF),
-                              borderRadius: BorderRadius.circular(50),
-                            ),
-                            child: ExtendedImage.network(
-                              friendUserInfo.profileImageUrlUser,
-                              enableMemoryCache: true,
-                              shape: BoxShape.circle,
-                              cacheHeight: 150,
-                              borderRadius: BorderRadius.circular(8),
-                              width: 80,
-                              height: 80,
-                              fit: BoxFit.cover,
-                              loadStateChanged: (ExtendedImageState state) {
-                                switch (state.extendedImageLoadState) {
-                                  case LoadState.loading:
-                                    return SizedBox.shrink();
-                                  case LoadState.completed:
-                                    return state.completedWidget;
-                                  case LoadState.failed:
-                                    return ExtendedImage.asset(
-                                      'assets/imgs/profile/img_profile_default_circle.png',
-                                      shape: BoxShape.circle,
-                                      borderRadius: BorderRadius.circular(8),
-                                      width: 80,
-                                      height: 80,
-                                      fit: BoxFit.cover,
-                                    ); // 예시로 에러 아이콘을 반환하고 있습니다.
-                                  default:
-                                    return null;
-                                }
-                              },
-                            ),
-                          )
-                          : Container(
-                            width: 80,
-                            height: 80,
-                            child: ExtendedImage.asset(
-                              'assets/imgs/profile/img_profile_default_circle.png',
-                              enableMemoryCache: true,
-                              shape: BoxShape.circle,
-                              borderRadius: BorderRadius.circular(8),
-                              width: 80,
-                              height: 80,
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                    ),
-                    SizedBox(height: 10),
-                    Container(
-                      width: MediaQuery.of(context).size.width - 260,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Text(
-                            friendUserInfo.displayName,
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 20,
-                              color: SDSColor.snowliveWhite,
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
-                        ],
-                      ),
-                    ),
-                    SizedBox(height: 5),
-                    Container(
-                      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                      decoration: BoxDecoration(
-                        color: SDSColor.snowliveWhite,
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Text(
-                        'ALLDOMAN',
-                        style: TextStyle(
-                          color: SDSColor.snowliveBlack,
-                          fontSize: 12,
+                  SizedBox(height: 80),
+                  Obx(() {
+                    // 검색된 친구 데이터가 없을 때 빈 컨테이너를 표시
+                    if (_friendListViewModel.searchFriend.userId == 0) {
+                      return Center(
+                        child: Text(
+                          '검색 결과가 없습니다.',
+                          style: TextStyle(color: Colors.grey, fontSize: 16),
                         ),
-                      ),
-                    ),
-                    SizedBox(height: 20),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      );
+                    }
+
+                    // 검색된 친구 데이터가 있을 때 프로필 카드 및 버튼 표시
+                    return Column(
                       children: [
-                        Column(
-                          children: [
-                            Text(
-                              '주종목',
-                              style: TextStyle(color: Colors.white),
+                        Container(
+                          width: 280,
+                          height: 375,
+                          decoration: BoxDecoration(
+                            image: DecorationImage(
+                              image: AssetImage(
+                                  'assets/imgs/profile/img_friend_profileCard.png'), // 이미지 경로
+                              fit: BoxFit.fill,
                             ),
-                            SizedBox(height: 5),
-                            Text(
-                              '해머라이딩',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: Column(
+                            children: [
+                              SizedBox(height: 40),
+                              Center(
+                                child: (_friendListViewModel.searchFriend
+                                    .profileImageUrlUser.isNotEmpty)
+                                    ? Container(
+                                  width: 80,
+                                  height: 80,
+                                  decoration: BoxDecoration(
+                                    color: Color(0xFFDFECFF),
+                                    borderRadius: BorderRadius.circular(50),
+                                  ),
+                                  child: ExtendedImage.network(
+                                    _friendListViewModel.searchFriend
+                                        .profileImageUrlUser,
+                                    enableMemoryCache: true,
+                                    shape: BoxShape.circle,
+                                    cacheHeight: 150,
+                                    borderRadius: BorderRadius.circular(8),
+                                    width: 80,
+                                    height: 80,
+                                    fit: BoxFit.cover,
+                                    loadStateChanged:
+                                        (ExtendedImageState state) {
+                                      switch (state
+                                          .extendedImageLoadState) {
+                                        case LoadState.loading:
+                                          return SizedBox.shrink();
+                                        case LoadState.completed:
+                                          return state.completedWidget;
+                                        case LoadState.failed:
+                                          return ExtendedImage.asset(
+                                            'assets/imgs/profile/img_profile_default_circle.png',
+                                            shape: BoxShape.circle,
+                                            borderRadius:
+                                            BorderRadius.circular(8),
+                                            width: 80,
+                                            height: 80,
+                                            fit: BoxFit.cover,
+                                          );
+                                        default:
+                                          return null;
+                                      }
+                                    },
+                                  ),
+                                )
+                                    : Container(
+                                  width: 80,
+                                  height: 80,
+                                  child: ExtendedImage.asset(
+                                    'assets/imgs/profile/img_profile_default_circle.png',
+                                    enableMemoryCache: true,
+                                    shape: BoxShape.circle,
+                                    borderRadius: BorderRadius.circular(8),
+                                    width: 80,
+                                    height: 80,
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
                               ),
-                            ),
-                          ],
+                              SizedBox(height: 10),
+                              Text(_friendListViewModel.searchFriend.displayName),
+                              SizedBox(height: 10),
+                              Container(
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: 8, vertical: 4),
+                                decoration: BoxDecoration(
+                                  color: SDSColor.snowliveWhite,
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                child: Text(
+                                  _friendListViewModel.searchFriend.crewName,
+                                  style: TextStyle(
+                                      color: SDSColor.snowliveBlack,
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                              ),
+                              SizedBox(height: 40),
+                              Column(
+                                children: [
+                                  Text(
+                                    '주종목',
+                                    style: TextStyle(
+                                        color: SDSColor.snowliveBlack,
+                                        fontSize: 11),
+                                  ),
+                                  SizedBox(height: 5),
+                                  Text(
+                                    _friendListViewModel.searchFriend.skiorboard ??
+                                        '',
+                                    style: TextStyle(
+                                      color: SDSColor.snowliveBlack,
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Spacer(),
+                              Container(
+                                width: MediaQuery.of(context).size.width,
+                                padding:
+                                EdgeInsets.only(right: 16, left: 16),
+                                child: ElevatedButton(
+                                  onPressed: () async {
+                                    Navigator.pop(context);
+                                  },
+                                  child: Text(
+                                    '프로필 보기',
+                                    style: SDSTextStyle.bold.copyWith(
+                                        color: SDSColor.snowliveBlack,
+                                        fontSize: 16),
+                                  ),
+                                  style: TextButton.styleFrom(
+                                    shape: const RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(6)),
+                                    ),
+                                    elevation: 0,
+                                    splashFactory: InkRipple.splashFactory,
+                                    minimumSize: Size(double.infinity, 48),
+                                    backgroundColor: SDSColor.snowliveWhite,
+                                  ),
+                                ),
+                              ),
+                              SizedBox(height: 20),
+                            ],
+                          ),
                         ),
-                        Column(
-                          children: [
-                            Text(
-                              '가입일',
-                              style: TextStyle(color: Colors.white),
-                            ),
-                            SizedBox(height: 5),
-                            Text(
-                              '24.12.02',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
+                        SizedBox(height: 80),
+                        SafeArea(
+                          child: Container(
+                            width: MediaQuery.of(context).size.width,
+                            child: ElevatedButton(
+                              onPressed: () async {
+                              },
+                              child: Text(
+                                '친구 요청하기',
+                                style: SDSTextStyle.bold.copyWith(
+                                    color: SDSColor.snowliveWhite,
+                                    fontSize: 16),
+                              ),
+                              style: TextButton.styleFrom(
+                                shape: const RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.all(
+                                      Radius.circular(6)),
+                                ),
+                                elevation: 0,
+                                splashFactory: InkRipple.splashFactory,
+                                minimumSize: Size(double.infinity, 48),
+                                backgroundColor: SDSColor.snowliveBlue,
                               ),
                             ),
-                          ],
+                          ),
                         ),
                       ],
-                    ),
-                    Spacer(),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 16, right: 16),
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: SDSColor.snowliveWhite,
-                          textStyle: SDSTextStyle.bold.copyWith(
-                              fontSize: 15,
-                              color: SDSColor.gray900
-                          ),
-                          minimumSize: Size(double.infinity, 50),
-                        ),
-                        onPressed: () {
-                        },
-                        child: Text(
-                          '프로필 보기',
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: 20),
-                  ],
-                ),
+                    );
+                  }),
+                ],
               ),
-            ],
-          ),
-              ],
             ),
           ),
         ),

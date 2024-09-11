@@ -1,4 +1,5 @@
 import 'package:com.snowlive/viewmodel/vm_user.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import '../api/api_friend.dart';
 import '../model/m_bestFriendListModel.dart';
@@ -12,13 +13,21 @@ class FriendListViewModel extends GetxController {
   var _friendsRequestList = <RequestFriendList>[].obs;
   var _myRequestList = <RequestFriendList>[].obs;
   var _blockUserList = <UserBlockList>[].obs;
-  var _searchFirend = SeachFriend().obs;
+  var _searchFriend = SearchFriend(
+      userId: 0,
+      crewName: '',
+      displayName: '',
+      profileImageUrlUser: '',
+      areWeFriend: false).obs;
+
+  final TextEditingController textEditingController = TextEditingController();
+  final formKey = GlobalKey<FormState>();
 
   List<FriendListModel> get friendList => _friendList;
   List<RequestFriendList> get friendsRequestList => _friendsRequestList;
   List<RequestFriendList> get myRequestList => _myRequestList;
   List<UserBlockList> get blockUserList => _blockUserList;
-  SeachFriend get searchFirend => _searchFirend.value;
+  SearchFriend get searchFriend => _searchFriend.value;
 
   UserViewModel _userViewModel = Get.find<UserViewModel>();
 
@@ -100,11 +109,12 @@ class FriendListViewModel extends GetxController {
         // 응답 데이터가 단일 객체라고 가정하고 처리
         final Map<String, dynamic> responseData = response.data as Map<String, dynamic>;
 
+        print(responseData);
         // SeachFriend 모델에 데이터를 매핑
-        final searchFriend = SeachFriend.fromJson(responseData);
 
         // 여기서 _blockUserList 대신 적절한 상태 변수에 searchFriend 할당
-        _searchFirend.value = searchFriend;
+        _searchFriend.value = SearchFriend.fromJson(responseData);
+        print(_searchFriend.value.displayName);
       } else {
         print('Failed to load data: ${response.error}');
       }

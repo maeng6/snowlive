@@ -1,23 +1,23 @@
-class SeachFriend {
-  late int userId;
-  late String crewName;
-  late String displayName;
-  late String profileImageUrlUser;
+class SearchFriend {
+  int userId;
+  String crewName;
+  String displayName;
+  String profileImageUrlUser;
   String? skiorboard; // nullable 필드
-  late bool areWeFriend;
+  bool areWeFriend;
 
-  SeachFriend({
-    userId,
-    crewName,
-    displayName,
-    profileImageUrlUser,
-    skiorboard, // nullable 필드
-    areWeFriend,
+  SearchFriend({
+    required this.userId,
+    required this.crewName,
+    required this.displayName,
+    required this.profileImageUrlUser,
+    this.skiorboard, // nullable 필드
+    required this.areWeFriend,
   });
 
   // JSON 데이터를 모델로 변환하는 팩토리 함수
-  factory SeachFriend.fromJson(Map<String, dynamic> json) {
-    return SeachFriend(
+  factory SearchFriend.fromJson(Map<String, dynamic> json) {
+    return SearchFriend(
       userId: json['user_id'] ?? 0,
       crewName: json['crew_name'] ?? '',
       displayName: json['display_name'] ?? 'Unknown',
