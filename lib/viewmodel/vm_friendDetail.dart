@@ -223,6 +223,7 @@ class FriendDetailViewModel extends GetxController {
 
   Future<void> toggleBestFriend(body) async {
     isLoading(true);
+    print(body);
     ApiResponse response = await FriendAPI().toggleBestFriend(body);
 
     if(response.success) {

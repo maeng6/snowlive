@@ -11,7 +11,6 @@ class ProfilePageCalendar extends StatefulWidget {
 }
 
 class _ProfilePageCalendarState extends State<ProfilePageCalendar> {
-
   FriendDetailViewModel _friendDetailViewModel = Get.find<FriendDetailViewModel>();
 
   late Map<DateTime, int> ridingHistory;
@@ -22,24 +21,33 @@ class _ProfilePageCalendarState extends State<ProfilePageCalendar> {
 
   @override
   void initState() {
+    super.initState();
 
-    ridingHistory = {
-      for (var info in _friendDetailViewModel.friendDetailModel.calendarInfo)
-        DateTime(DateTime.parse(info.date).year, DateTime.parse(info.date).month, DateTime.parse(info.date).day): info.daily_total_count,
-    };
+    // ridingHistory 초기화 및 예외 처리
+    if (_friendDetailViewModel.friendDetailModel.calendarInfo.isNotEmpty) {
+      ridingHistory = {
+        for (var info in _friendDetailViewModel.friendDetailModel.calendarInfo)
+          DateTime(DateTime.parse(info.date).year, DateTime.parse(info.date).month, DateTime.parse(info.date).day): info.daily_total_count,
+      };
+    } else {
+      ridingHistory = {}; // 비어 있는 경우 빈 맵으로 초기화
+    }
 
     print(ridingHistory);
 
-    // 가장 최근 날짜로 초기 포커스를 설정
-    focusedDay = ridingHistory.keys.first;
+    // ridingHistory가 비어 있지 않은 경우, 가장 최근 날짜로 초기 포커스를 설정
+    if (ridingHistory.isNotEmpty) {
+      focusedDay = ridingHistory.keys.first;
+    } else {
+      focusedDay = DateTime.now(); // 기본값으로 현재 날짜를 설정
+    }
+
     selectedDay = focusedDay;
 
     // 처음 로딩 시 허용된 월로 자동 이동
     if (!_isMonthAllowed(focusedDay)) {
       focusedDay = _getClosestAllowedMonth(focusedDay);
     }
-
-    super.initState();
   }
 
   bool _isMonthAllowed(DateTime date) {
@@ -68,18 +76,15 @@ class _ProfilePageCalendarState extends State<ProfilePageCalendar> {
         if (newFocusedDay.month > 3 && newFocusedDay.month < 11) {
           // 4월에서 10월로 이동한 경우, 이전 또는 다음 허용 월로 이동
           if (newFocusedDay.isBefore(focusedDay)) {
-            // 이전 페이지로 이동한 경우, 이전 해의 3월로 이동
             focusedDay = DateTime(newFocusedDay.year, 3, 1);
           } else {
-            // 다음 페이지로 이동한 경우, 다음 해의 11월로 이동
             focusedDay = DateTime(newFocusedDay.year, 11, 1);
           }
         } else {
-          // 허용된 월(11, 12, 1, 2, 3)로 이동
+          // 허용된 월로 이동
           focusedDay = _getClosestAllowedMonth(newFocusedDay);
         }
       } else {
-        // 허용된 월인 경우 그냥 업데이트
         focusedDay = newFocusedDay;
       }
     });
@@ -88,9 +93,8 @@ class _ProfilePageCalendarState extends State<ProfilePageCalendar> {
   List<int> _getEventsFromDay(DateTime date) {
     DateTime dateTime = DateTime(date.year, date.month, date.day);
 
-    return [ridingHistory[dateTime] ?? 0];
+    return [ridingHistory[dateTime] ?? 0]; // 이벤트가 없는 날은 0을 반환
   }
-
 
   void _onDaySelected(DateTime selectDay, DateTime focusDay) {
     print(selectDay);
@@ -102,10 +106,8 @@ class _ProfilePageCalendarState extends State<ProfilePageCalendar> {
         selectedDateFormatted = DateFormat('yyyy-MM-dd').format(selectDay);
         print('Selected date: $selectedDateFormatted');
 
-        // selectDay의 시간 부분을 00:00:00으로 설정
         DateTime selectDayWithoutTime = DateTime(selectDay.year, selectDay.month, selectDay.day);
 
-        // 인덱스를 계산해서 뷰모델의 메서드를 호출
         int index = ridingHistory.keys.toList().indexOf(selectDayWithoutTime);
         print(ridingHistory);
         print(index);
@@ -123,13 +125,13 @@ class _ProfilePageCalendarState extends State<ProfilePageCalendar> {
   Widget build(BuildContext context) {
     return TableCalendar<int>(
       focusedDay: focusedDay,
-      firstDay: DateTime(1900, 11, 1), // 범위를 매우 넓게 설정
-      lastDay: DateTime(2100, 3, 31), // 범위를 매우 넓게 설정
+      firstDay: DateTime(1900, 11, 1),
+      lastDay: DateTime(2100, 3, 31),
       calendarFormat: format,
       onPageChanged: _handlePageChanged,
       startingDayOfWeek: StartingDayOfWeek.sunday,
       daysOfWeekVisible: true,
-      onDaySelected: _onDaySelected, // 날짜 선택 시 호출되는 함수
+      onDaySelected: _onDaySelected,
       selectedDayPredicate: (DateTime date) {
         return isSameDay(selectedDay, date);
       },
@@ -156,43 +158,37 @@ class _ProfilePageCalendarState extends State<ProfilePageCalendar> {
         defaultBuilder: (context, date, focusedDay) {
           DateTime dateTime = DateTime(date.year, date.month, date.day);
 
-          // 데이터가 있는 날짜의 배경색을 변경
           bool hasData = ridingHistory[dateTime] != null;
 
           return Container(
             margin: const EdgeInsets.all(6.0),
-            alignment: Alignment.center, // 날짜를 중앙에 고정
+            alignment: Alignment.center,
             decoration: BoxDecoration(
-              color: hasData ? Color(0xFFF0F6FF) : Colors.transparent, // 데이터가 있으면 배경색 변경
+              color: hasData ? Color(0xFFF0F6FF) : Colors.transparent,
               borderRadius: BorderRadius.circular(8.0),
             ),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  '${date.day}', // 날짜 표시
+                  '${date.day}',
                   style: TextStyle(color: Colors.black),
                 ),
                 if (hasData)
                   Text(
-                    '${ridingHistory[dateTime]}', // 라이딩 횟수 표시
+                    '${ridingHistory[dateTime]}',
                     style: TextStyle(fontSize: 12, color: Colors.black),
                   )
                 else
-                  SizedBox(height: 15), // 데이터가 없는 날에도 동일한 공간을 확보
+                  SizedBox(height: 15),
               ],
             ),
           );
         },
         markerBuilder: (context, date, _) {
-          // markerBuilder를 사용하지 않고 defaultBuilder에서 이벤트 표시 처리
           return SizedBox.shrink();
         },
       ),
     );
   }
-
-
 }
-
-

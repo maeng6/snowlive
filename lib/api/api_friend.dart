@@ -58,7 +58,7 @@ class FriendAPI {
   Future<ApiResponse> checkFriendRelationship(body) async {
 
     final response = await http.post(
-      Uri.parse('$baseUrl/check-friend-relationship/'),
+      Uri.parse('$baseUrl/check-friend/'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode(body),
     );
