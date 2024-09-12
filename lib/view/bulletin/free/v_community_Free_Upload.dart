@@ -1,7 +1,10 @@
 import 'dart:convert';
 import 'package:com.snowlive/screens/bulletin/Free/v_bulletin_Free_List_Detail.dart';
 import 'package:com.snowlive/screens/snowliveDesignStyle.dart';
+import 'package:com.snowlive/widget/w_category_main_commu_bulletin.dart';
+import 'package:com.snowlive/widget/w_category_sub_commu_bulletin_room.dart';
 import 'package:dart_quill_delta/dart_quill_delta.dart' as quill;
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_quill/flutter_quill.dart';
@@ -11,131 +14,104 @@ import 'package:flutter_quill/flutter_quill.dart' as quill;
 import '../../../controller/bulletin/vm_bulletinFreeController.dart';
 import '../../../screens/bulletin/Free/w_bulletin_Free_Quill_editor.dart';
 import '../../../screens/bulletin/Free/w_bulletin_Free_Quill_toolbar.dart';
+import '../../../viewmodel/vm_communityBulletinList.dart';
+import '../../../viewmodel/vm_communityUpload.dart';
 import '../../../viewmodel/vm_imageController.dart';
 import '../../../controller/user/vm_userModelController.dart';
 import '../../../model_2/m_bulletinFreeModel.dart';
+import '../../../viewmodel/vm_user.dart';
 import '../../../widget/w_fullScreenDialog.dart';
 
 class CommunityFreeUpload extends StatefulWidget {
   const CommunityFreeUpload({Key? key}) : super(key: key);
+
+
 
   @override
   State<CommunityFreeUpload> createState() => _CommunityFreeUploadState();
 }
 
 class _CommunityFreeUploadState extends State<CommunityFreeUpload> {
+
+
   List<XFile> _imageFiles = [];
   Map<String, String?> _tileSelected = {
     "구분": '',
   };
-  bool? bulletinFreeImageSelected = false;
-  int i = 0;
-  int imageLength = 0;
-  TextEditingController _titleTextEditingController = TextEditingController();
-  bool? isCategorySelected = false;
-  String? SelectedCategory = '';
-  String? SelectedLocation = '';
-  String? title = '';
-  final _formKey = GlobalKey<FormState>();
-  late quill.QuillController _quillController = quill.QuillController.basic();
-  final FocusNode _focusNode = FocusNode();
-  ScrollController _scrollController = ScrollController();
-  var _isReadOnly = false;
-
-  @override
-  void initState() {
-    super.initState();
-    _quillController = quill.QuillController.basic();
-  }
-
-  ListTile buildCategoryListTile(int index) {
-    return ListTile(
-      contentPadding: EdgeInsets.zero,
-      title: Text('${bulletinFreeCategoryList[index]}',
-        style: SDSTextStyle.regular.copyWith(fontSize: 15, color: SDSColor.gray900),
-      ),
-      onTap: () async {
-        isCategorySelected = true;
-        SelectedCategory = bulletinFreeCategoryList[index];
-        _tileSelected['구분'] = SelectedCategory;
-        print(_tileSelected);
-        Navigator.pop(context);
-        setState(() {});
-      },
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-    );
-  }
 
 
-  Future<void> _uploadBulletin() async {
-    final isValid = _formKey.currentState!.validate();
+  final UserViewModel _userViewModel = Get.find<UserViewModel>();
+  final CommunityUploadViewModel _communityUploadViewModel = Get.find<CommunityUploadViewModel>();
+  final CommunityBulletinListViewModel _communityBulletinListViewModel = Get.find<CommunityBulletinListViewModel>();
 
-    if (_tileSelected["구분"]!.isEmpty) {
-      Get.snackbar('선택되지않은 항목', '구분을 선택해주세요.',
-          margin: EdgeInsets.only(right: 20, left: 20, bottom: 12),
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Colors.black87,
-          colorText: Colors.white,
-          duration: Duration(milliseconds: 3000));
-    } else {
-      if (isValid) {
-        CustomFullScreenDialog.showDialog();
-        UserModelController _userModelController = Get.find<UserModelController>();
-        BulletinFreeModelController _bulletinFreeModelController = Get.find<BulletinFreeModelController>();
-        ImageController _imageController = Get.find<ImageController>();
+  String? selectedCategory_main;
+  String? selectedCategory_sub;
 
-        await _userModelController.bulletinFreeCountUpdate(_userModelController.uid);
 
-        // bulletinFreeCount가 null인지 확인하고 초기화
-        int bulletinFreeCount = _userModelController.bulletinFreeCount ?? 0;
-
-        await _imageController.setNewMultiImage_bulletinFree(_imageFiles, bulletinFreeCount);
-
-        // Delta 문서의 이미지를 Firebase Storage에 업로드
-        List<quill.Operation> ops = _quillController.document.toDelta().toList();
-        await _imageController.uploadDeltaImages(ops, bulletinFreeCount);
-
-        final deltaJson = jsonEncode(ops);
-
-        await _bulletinFreeModelController.uploadBulletinFree(
-            displayName: _userModelController.displayName,
-            uid: _userModelController.uid,
-            profileImageUrl: _userModelController.profileImageUrl,
-            itemImagesUrls: _imageController.imagesUrlList,
-            title: _titleTextEditingController.text,
-            category: SelectedCategory,
-            description: deltaJson, // Quill 문서를 Delta 형식으로 저장
-            bulletinFreeCount: bulletinFreeCount,
-            resortNickname: _userModelController.resortNickname
-        );
-
-        await _bulletinFreeModelController.getCurrentBulletinFree(
-            uid: _userModelController.uid,
-            bulletinFreeCount: bulletinFreeCount
-        );
-
-        CustomFullScreenDialog.cancelDialog();
-        Get.off(() => Bulletin_Free_List_Detail());
-        _imageController.imagesUrlList.clear();
-      }
-    }
-  }
-
-  @override
-  void dispose() {
-    _quillController.dispose();
-    _focusNode.dispose();
-    _scrollController.dispose();
-    super.dispose();
-  }
+  // Future<void> _uploadBulletin() async {
+  //   final isValid = _formKey.currentState!.validate();
+  //
+  //   if (_tileSelected["구분"]!.isEmpty) {
+  //     Get.snackbar('선택되지않은 항목', '구분을 선택해주세요.',
+  //         margin: EdgeInsets.only(right: 20, left: 20, bottom: 12),
+  //         snackPosition: SnackPosition.BOTTOM,
+  //         backgroundColor: Colors.black87,
+  //         colorText: Colors.white,
+  //         duration: Duration(milliseconds: 3000));
+  //   } else {
+  //     if (isValid) {
+  //       CustomFullScreenDialog.showDialog();
+  //       UserModelController _userModelController = Get.find<UserModelController>();
+  //       BulletinFreeModelController _bulletinFreeModelController = Get.find<BulletinFreeModelController>();
+  //       ImageController _imageController = Get.find<ImageController>();
+  //
+  //       await _userModelController.bulletinFreeCountUpdate(_userModelController.uid);
+  //
+  //       // bulletinFreeCount가 null인지 확인하고 초기화
+  //       int bulletinFreeCount = _userModelController.bulletinFreeCount ?? 0;
+  //
+  //       await _imageController.setNewMultiImage_bulletinFree(_imageFiles, bulletinFreeCount);
+  //
+  //       // Delta 문서의 이미지를 Firebase Storage에 업로드
+  //       List<quill.Operation> ops = _quillController.document.toDelta().toList();
+  //       await _imageController.uploadDeltaImages(ops, bulletinFreeCount);
+  //
+  //       final deltaJson = jsonEncode(ops);
+  //
+  //       await _bulletinFreeModelController.uploadBulletinFree(
+  //           displayName: _userModelController.displayName,
+  //           uid: _userModelController.uid,
+  //           profileImageUrl: _userModelController.profileImageUrl,
+  //           itemImagesUrls: _imageController.imagesUrlList,
+  //           title: _titleTextEditingController.text,
+  //           category: SelectedCategory,
+  //           description: deltaJson, // Quill 문서를 Delta 형식으로 저장
+  //           bulletinFreeCount: bulletinFreeCount,
+  //           resortNickname: _userModelController.resortNickname
+  //       );
+  //
+  //       await _bulletinFreeModelController.getCurrentBulletinFree(
+  //           uid: _userModelController.uid,
+  //           bulletinFreeCount: bulletinFreeCount
+  //       );
+  //
+  //       CustomFullScreenDialog.cancelDialog();
+  //       Get.off(() => Bulletin_Free_List_Detail());
+  //       _imageController.imagesUrlList.clear();
+  //     }
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
+
+    Size _size = MediaQuery.of(context).size;
+    final double _statusBarSize = MediaQuery.of(context).padding.top;
+
     Get.put(ImageController(), permanent: true);
     Get.put(UserModelController(), permanent: true);
     Get.put(BulletinFreeModelController(), permanent: true);
 
-    Size _size = MediaQuery.of(context).size;
     return Container(
       color: Colors.white,
       child: SafeArea(
@@ -146,7 +122,7 @@ class _CommunityFreeUploadState extends State<CommunityFreeUpload> {
           appBar: PreferredSize(
             preferredSize: Size.fromHeight(44),
             child: AppBar(
-              title: Text('자유 게시글 작성',
+              title: Text('게시글 작성',
                 style: SDSTextStyle.extraBold.copyWith(
                     fontSize: 18,
                     color: SDSColor.gray900
@@ -164,7 +140,41 @@ class _CommunityFreeUploadState extends State<CommunityFreeUpload> {
               ),
               actions: [
                 TextButton(
-                    onPressed: _uploadBulletin,
+                    onPressed: () async{
+                      if(_communityUploadViewModel.textEditingController_title.text != ''
+                          && _communityUploadViewModel.selectedCategoryMain != '상위 카테고리'
+                          && (_communityUploadViewModel.selectedCategoryMain != '시즌방' || (_communityUploadViewModel.selectedCategoryMain == '시즌방'&&_communityUploadViewModel.selectedCategorySub != '하위 카테고리'))
+                          && _communityUploadViewModel.quillController.document != ''){
+
+                        await _communityUploadViewModel.createCommunityPost({
+                          "user_id": _userViewModel.user.user_id.toString(),                 // 필수 - 유저 ID
+                          "category_main": "게시판",    // 필수 - 메인 카테고리
+                          "category_sub": "${_communityUploadViewModel.selectedCategoryMain}",     // 필수 - 서브 카테고리
+                          "category_sub2": "${_communityUploadViewModel.selectedCategorySub}",     // 선택 - 시즌방서브카테고리
+                          "title": "${_communityUploadViewModel.textEditingController_title.text}",     // 필수 - 제목
+                          "thumb_img_url": "",
+                          "description": {
+                            "string": "임시내용"
+                          } // 필수 - 설명
+                        });
+                        await _communityUploadViewModel.uploadAndReplaceImageInDelta(_communityUploadViewModel.quillController.document.toDelta().toList(), _communityUploadViewModel.pk);
+
+                        final deltaList = _communityUploadViewModel.quillController.document.toDelta().toList();
+                        final jsonString = jsonEncode(deltaList);
+                        print(jsonString);
+                        final resultString = jsonString.substring(1, jsonString.length - 1);
+                        print(resultString);
+                        await _communityUploadViewModel.updateCommunityPost(_communityUploadViewModel.pk,
+                            {
+                              "user_id": _userViewModel.user.user_id.toString(),
+                              "thumb_img_url": _communityUploadViewModel.findFirstInsertedImage(_communityUploadViewModel.quillController.document.toDelta().toList()),
+                              "description" : resultString
+                            });
+                      }
+                      Navigator.pop(context);
+                      await _communityBulletinListViewModel.fetchCommunityList_total(userId: _userViewModel.user.user_id,categoryMain: '게시판');
+
+                    },
                     child: Padding(
                       padding: EdgeInsets.only(right: 10),
                       child: Text('올리기', style: TextStyle(
@@ -190,7 +200,7 @@ class _CommunityFreeUploadState extends State<CommunityFreeUpload> {
                     height: 16,
                   ),
                   Form(
-                    key: _formKey,
+                    key: _communityUploadViewModel.formKey,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -214,7 +224,7 @@ class _CommunityFreeUploadState extends State<CommunityFreeUpload> {
                                 cursorHeight: 16,
                                 cursorWidth: 2,
                                 autovalidateMode: AutovalidateMode.onUserInteraction,
-                                controller: _titleTextEditingController,
+                                controller: _communityUploadViewModel.textEditingController_title,
                                 style: SDSTextStyle.regular.copyWith(
                                     fontSize: 15
                                 ),
@@ -276,97 +286,155 @@ class _CommunityFreeUploadState extends State<CommunityFreeUpload> {
                                 ),),
                               ),
                               SizedBox(height: 8),
-                              GestureDetector(
-                                onTap: (){
-                                  showModalBottomSheet(
-                                      backgroundColor: Colors.transparent,
-                                      enableDrag: false,
-                                      context: context,
-                                      builder: (context) {
-                                        return Container(
-                                          height: 350,
-                                          decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.only(topLeft: Radius.circular(16), topRight: Radius.circular(16)),
-                                            color: SDSColor.snowliveWhite,
-                                          ),
-                                          padding: EdgeInsets.only(bottom: 20, right: 20, left: 20, top: 12),
-                                          child: Column(
-                                            crossAxisAlignment: CrossAxisAlignment.center,
-                                            children: [
-                                              Column(
-                                                mainAxisAlignment: MainAxisAlignment.start,
-                                                crossAxisAlignment: CrossAxisAlignment.center,
-                                                children: [
-                                                  Padding(
-                                                    padding: const EdgeInsets.only(bottom: 20),
-                                                    child: Container(
-                                                      height: 4,
-                                                      width: 36,
-                                                      decoration: BoxDecoration(
-                                                        borderRadius: BorderRadius.circular(10),
-                                                        color: SDSColor.gray200,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  Text(
-                                                    '구분을 선택해주세요.',
-                                                    style: SDSTextStyle.bold.copyWith(fontSize: 16, color: SDSColor.gray900),
-                                                    textAlign: TextAlign.center,
-                                                  ),
-                                                  SizedBox(height: 24),
-                                                ],
+                              Row(
+                                children: [
+                                  Column(
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.only(left: 4),
+                                        child: Row(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Text('상위 카테고리', style: SDSTextStyle.regular.copyWith(
+                                                fontSize: 12,
+                                                color: SDSColor.gray900
+                                            ),),
+                                            Padding(
+                                              padding: const EdgeInsets.only(left: 2, top: 2),
+                                              child: Container(
+                                                width: 4,
+                                                height: 4,
+                                                decoration: BoxDecoration(
+                                                  borderRadius: BorderRadius.circular(10),
+                                                  color: SDSColor.red,
+                                                ),
                                               ),
-                                              Expanded(
-                                                child: ListView.builder(
-                                                    padding: EdgeInsets.zero,
-                                                    itemCount: 4,
-                                                    itemBuilder: (context, index) {
-                                                      return Builder(builder: (context) {
-                                                        return Column(
-                                                          children: [
-                                                            buildCategoryListTile(index),
-                                                          ],
-                                                        );
-                                                      });
-                                                    }),
+                                            )
+                                          ],
+                                        ),
+                                      ),
+                                      SizedBox(height: 8),
+                                      GestureDetector(
+                                        onTap: () async {
+                                          selectedCategory_main = await showModalBottomSheet<String>(
+                                            constraints: BoxConstraints(
+                                              maxHeight: _size.height - _statusBarSize - 44,
+                                            ),
+                                            backgroundColor: Colors.transparent,
+                                            context: context,
+                                            isScrollControlled: true,
+                                            enableDrag: false,
+                                            isDismissible: false,
+                                            builder: (context) => CategoryMainCommuBulletinWidget(),
+                                          );
+                                          if(_communityUploadViewModel.isCategorySelected==true)
+                                            _communityUploadViewModel.resetCategorySub();
+                                          if(selectedCategory_main != null)
+                                            _communityUploadViewModel.selectCategoryMain(selectedCategory_main!);
+                                          _communityUploadViewModel.setIsSelectedCategoryFalse();
+                                        },
+                                        child: Container(
+                                          height: 48,
+                                          decoration: BoxDecoration(
+                                            color: SDSColor.gray50,
+                                            borderRadius: BorderRadius.circular(6),
+                                          ),
+                                          padding: EdgeInsets.symmetric(horizontal: 12),
+                                          child: Obx(()=>Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Text(_communityUploadViewModel.selectedCategoryMain,
+                                                style: SDSTextStyle.regular.copyWith(
+                                                  color: _communityUploadViewModel.selectedCategoryMain == '상위 카테고리' ? SDSColor.gray400 : SDSColor.gray900,
+                                                  fontSize: 14,
+                                                ),
+                                              ),
+                                              ExtendedImage.asset(
+                                                'assets/imgs/icons/icon_dropdown.png',
+                                                fit: BoxFit.cover,
+                                                width: 20,
                                               ),
                                             ],
-                                          ),
-                                        );
-                                      });
-                                },
-                                child: Container(
-                                  height: 48,
-                                  width: _size.width - 32,
-                                  padding: EdgeInsets.symmetric(vertical: 14, horizontal: 12),
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(6),
-                                    border: Border.all(
-                                        color: SDSColor.gray50
-                                    ),
-                                    color: SDSColor.gray50,
-                                  ),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      (isCategorySelected!)
-                                          ? Text('$SelectedCategory',
-                                        style: SDSTextStyle.regular.copyWith(color: SDSColor.gray900, fontSize: 14),
-                                      )
-                                          : Text('구분',
-                                        style: SDSTextStyle.regular.copyWith(color: SDSColor.gray400, fontSize: 14),
+                                          )),
+                                        ),
                                       ),
-                                      Image.asset(
-                                        'assets/imgs/icons/icon_textform_dropdown.png',
-                                        fit: BoxFit.cover,
-                                        width: 22,
-                                        height: 22,
-                                        color: SDSColor.gray700,
-                                      )
+                                    ],
+                                  ),//g
+                                  SizedBox(width: 6,),
+                                  Column(
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.only(left: 4),
+                                        child: Row(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Text('하위 카테고리', style: SDSTextStyle.regular.copyWith(
+                                                fontSize: 12,
+                                                color: SDSColor.gray900
+                                            ),),
+                                            Padding(
+                                              padding: const EdgeInsets.only(left: 2, top: 2),
+                                              child: Container(
+                                                width: 4,
+                                                height: 4,
+                                                decoration: BoxDecoration(
+                                                  borderRadius: BorderRadius.circular(10),
+                                                  color: SDSColor.red,
+                                                ),
+                                              ),
+                                            )
+                                          ],
+                                        ),
+                                      ),
+                                      SizedBox(height: 8),
+                                      GestureDetector(
+                                        onTap: () async {
+                                          if( _communityUploadViewModel.selectedCategoryMain == '시즌방')
+                                            selectedCategory_sub = await showModalBottomSheet<String>(
+                                              constraints: BoxConstraints(
+                                                maxHeight: _size.height - _statusBarSize - 44,
+                                              ),
+                                              backgroundColor: Colors.transparent,
+                                              context: context,
+                                              isScrollControlled: true,
+                                              enableDrag: false,
+                                              isDismissible: false,
+                                              builder: (context) => CategorySubCommuBulletinRoomWidget(),
+                                            );
+                                            if(selectedCategory_sub != null) {
+                                              _communityUploadViewModel.selectCategorySub(selectedCategory_sub!);
+                                              _communityUploadViewModel.setIsSelectedCategoryTrue();
+                                            }
+                                        },
+                                        child: Container(
+                                          height: 48,
+                                          decoration: BoxDecoration(
+                                            color: SDSColor.gray50,
+                                            borderRadius: BorderRadius.circular(6),
+                                          ),
+                                          padding: EdgeInsets.symmetric(horizontal: 12),
+                                          child: Obx(()=>Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Text(_communityUploadViewModel.selectedCategorySub,
+                                                style: SDSTextStyle.regular.copyWith(
+                                                  color: _communityUploadViewModel.selectedCategorySub == '하위 카테고리' ? SDSColor.gray400 : SDSColor.gray900,
+                                                  fontSize: 14,
+                                                ),
+                                              ),
+                                              ExtendedImage.asset(
+                                                'assets/imgs/icons/icon_dropdown.png',
+                                                fit: BoxFit.cover,
+                                                width: 20,
+                                              ),
+                                            ],
+                                          )),
+                                        ),
+                                      ),
                                     ],
                                   ),
-                                ),
+
+                                ],
                               ),
                             ],
                           ),
@@ -386,19 +454,19 @@ class _CommunityFreeUploadState extends State<CommunityFreeUpload> {
                                 ),),
                               ),
                               SizedBox(height: 8),
-                              if (!_isReadOnly)
+                              if (!_communityUploadViewModel.isReadOnly)
                                 BulletinQuillToolbar(
-                                  controller: _quillController,
-                                  focusNode: _focusNode,
+                                  controller: _communityUploadViewModel.quillController,
+                                  focusNode: _communityUploadViewModel.focusNode,
                                 ),
                               Builder(
                                 builder: (context) {
                                   return MyQuillEditor(
                                     configurations: QuillEditorConfigurations(
-                                      controller: _quillController,
+                                      controller: _communityUploadViewModel.quillController,
                                     ),
-                                    scrollController: _scrollController,
-                                    focusNode: _focusNode,
+                                    scrollController: _communityUploadViewModel.scrollController,
+                                    focusNode: _communityUploadViewModel.focusNode,
                                   );
                                 },
                               ),

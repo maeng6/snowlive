@@ -9,7 +9,7 @@ class CommunityAPI {
   // 커뮤니티 게시글 생성
   Future<ApiResponse> createCommunityPost(Map<String, dynamic> body) async {
     final response = await http.post(
-      Uri.parse('$baseUrl/community-create/'),
+      Uri.parse('$baseUrl/'),
       body: json.encode(body),
       headers: {'Content-Type': 'application/json'},
     );
@@ -71,10 +71,10 @@ class CommunityAPI {
   }
 
   // 커뮤니티 업데이트
-  Future<ApiResponse> updateCommunity(int communityId, Map<String, dynamic> updateData) async {
+  Future<ApiResponse> updateCommunity(int communityId, Map<String, dynamic> body) async {
     final response = await http.put(
-      Uri.parse('$baseUrl/community-details/$communityId/'),
-      body: json.encode(updateData),
+      Uri.parse('$baseUrl/$communityId/'),
+      body: json.encode(body),
       headers: {'Content-Type': 'application/json'},
     );
 

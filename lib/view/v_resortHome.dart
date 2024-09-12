@@ -409,7 +409,7 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                                 color: SDSColor.snowliveWhite,
                               ),
                               padding: EdgeInsets.only(right: 20, left: 20, top: 12),
-                              child: Column(
+                              child: Obx(()=>Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Center(
@@ -627,7 +627,7 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                                     ),
                                   ),
                                 ],
-                              ),
+                              ),)
                             );
                           },
                         ));

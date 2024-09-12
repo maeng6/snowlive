@@ -1,4 +1,5 @@
 
+import 'package:com.snowlive/routes/routes.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -91,7 +92,7 @@ class CommunityBulletinTotalListView extends StatelessWidget {
                     heroTag: 'bulletin_total',
                     elevation: 0,
                     onPressed: () async {
-                      // Get.to(() => Bulletin_Free_Upload());
+                      Get.toNamed(AppRoutes.bulletinUpload);
                     },
                     icon: Transform.translate(
                       offset: Offset(6, 0),

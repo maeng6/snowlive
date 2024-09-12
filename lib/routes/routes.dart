@@ -12,6 +12,7 @@ import 'package:com.snowlive/view/friend/v_searchFriend.dart';
 import 'package:com.snowlive/view/onboarding/v_setProfile.dart';
 import 'package:com.snowlive/view/onboarding/v_tos.dart';
 import 'package:get/get.dart';
+import '../view/bulletin/free/v_community_Free_Upload.dart';
 import '../view/bulletin/v_community_main.dart';
 import '../view/fleamarket/v_fleaMarketCommentDetail.dart';
 import '../view/fleamarket/v_fleaMarketList_search.dart';
@@ -43,6 +44,7 @@ class AppRoutes {
   static const String settingFriend = '/settingFriend';
   static const String friendBlockList = '/friendBlockList';
   static const String bulletinMain = '/bulletinMain';
+  static const String bulletinUpload = '/bulletinUpload';
 
   static final List<GetPage> pages = [
     GetPage(
@@ -144,6 +146,11 @@ class AppRoutes {
     GetPage(
       name: bulletinMain,
       page: () => CommunityMainView(),
+    ),
+    GetPage(
+      name: bulletinUpload,
+      page: () => CommunityFreeUpload(),
+      binding: BulletinUploadBinding(),
     ),
   ];
 }

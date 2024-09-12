@@ -209,7 +209,7 @@ class FriendDetailView extends StatelessWidget {
                                     )
                                         : SizedBox.shrink(),
                                     SizedBox(
-                                      height: 6,
+                                      height: 15,
                                     ),
                                     //TODO: 친구추가 버튼
                                     if(_userViewModel.user.user_id == _friendDetailViewModel.friendDetailModel.friendUserInfo.userId)
@@ -247,6 +247,7 @@ class FriendDetailView extends StatelessWidget {
                                                           )),
                                                       TextButton(
                                                           onPressed: () async {
+                                                            Navigator.pop(context);
                                                             await _friendDetailViewModel.sendFriendRequest({
                                                               "user_id": _userViewModel.user.user_id,    //필수 - 신청자 (나)
                                                               "friend_user_id": _friendDetailViewModel.friendDetailModel.friendUserInfo.userId    //필수 - 신청받는사람
@@ -285,25 +286,54 @@ class FriendDetailView extends StatelessWidget {
                                     if(_userViewModel.user.user_id != _friendDetailViewModel.friendDetailModel.friendUserInfo.userId &&
                                         _friendDetailViewModel.friendDetailModel.friendUserInfo.areWeFriend)
                                       Row(
+                                        mainAxisAlignment: MainAxisAlignment.center,
                                         children: [
                                           Container(
-                                            child: Text('내 친구'),
+                                            child: Container(
+                                              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                                              decoration: BoxDecoration(
+                                                color: Color(0xFFF0F6FF),
+                                                borderRadius: BorderRadius.circular(20),
+                                              ),
+                                              child: Text(
+                                                '내 친구',
+                                                style: TextStyle(
+                                                  fontSize: 13,
+                                                  color: SDSColor.snowliveBlue,
+                                                  fontWeight: FontWeight.bold
+                                                ),
+                                              ),
+                                            ),
                                           ),
+                                          SizedBox(width: 5,),
                                           GestureDetector(
                                             onTap:() async{
-                                              await _friendDetailViewModel.checkFriendRelationship({
-                                                "my_user_id": _userViewModel.user.user_id,
-                                                "friend_user_id": _friendDetailViewModel.friendDetailModel.friendUserInfo.userId
-                                              });
-                                              if(_friendDetailViewModel.friend_id !=0)
-                                                await _friendDetailViewModel.toggleBestFriend({
-                                                  "friend_id": _friendDetailViewModel.friend_id
-                                                });
+                                              await _friendDetailViewModel.checkFriendRelationship(
+                                                  {
+                                                    "my_user_id": _userViewModel.user.user_id.toString(),
+                                                    "friend_user_id": _friendDetailViewModel.friendDetailModel.friendUserInfo.userId.toString()
+                                                  }
+                                              );
+                                              await _friendDetailViewModel.toggleBestFriend(
+                                                  {
+                                                    "friend_id": _friendDetailViewModel.friend_id
+                                                  }
+                                              );
                                             },
                                             child: Obx(()=>Container(
                                               child: (!_friendDetailViewModel.friendDetailModel.friendUserInfo.bestFriend)
-                                                  ? Text('색깔 별 ')
-                                                  : Text('색깔 없는 별'),
+                                                  ? Image.asset(
+                                                'assets/imgs/icons/icon_profile_bestfriend_off.png',  // 에셋 이미지 경로
+                                                width: 24,
+                                                height: 24,
+                                                fit: BoxFit.cover,
+                                              )
+                                                  : Image.asset(
+                                                'assets/imgs/icons/icon_profile_bestfriend_on.png',  // 에셋 이미지 경로
+                                                width: 24,
+                                                height: 24,
+                                                fit: BoxFit.cover,
+                                              ),
                                             )),
                                           ),
                                         ],
@@ -841,284 +871,285 @@ class FriendDetailView extends StatelessWidget {
                                                 ),
                                               ],
                                             ),
-                                          if(_friendDetailViewModel.ridingStatisticsTabName == FriendDetailViewModel.ridingStatisticsTabNameListConst[1])
-                                          Column(
-                                            children: [
-                                              ProfilePageCalendar(),
-                                              Column(
-                                                  children: [
-                                                    Padding(
-                                                      padding: const EdgeInsets.only(top: 16),
-                                                      child: Container(
-                                                        padding: EdgeInsets.only(top: 24, right: 20, left: 20, bottom: 30),
-                                                        width: _size.width,
-                                                        decoration: BoxDecoration(
-                                                          color: SDSColor.blue50,
-                                                          borderRadius: BorderRadius.circular(16),
-                                                        ),
-                                                        child: Column(
-                                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                                          children: [
-                                                            Text('라이딩 슬로프 종류',
-                                                              style: SDSTextStyle.regular.copyWith(
-                                                                  color: SDSColor.gray900.withOpacity(0.5),
-                                                                  fontSize: 14
-                                                              ),
-                                                            ),
-                                                            Padding(
-                                                              padding: const EdgeInsets.only(top: 4, bottom: 20),
-                                                              child: Text(
-                                                                (_friendDetailViewModel.selectedDailyIndex != -1)
-                                                                    ? '${_friendDetailViewModel.friendDetailModel.calendarInfo[_friendDetailViewModel.selectedDailyIndex].dailyInfo.length}'
-                                                                    : '0',
-                                                                style: SDSTextStyle.extraBold.copyWith(
-                                                                    color: SDSColor.gray900,
-                                                                    fontSize: 24
-                                                                ),
-                                                              ),
-                                                            ),
-                                                            (_friendDetailViewModel.selectedDailyIndex != -1)
-                                                            ? Container(
-                                                                child: Column(
-                                                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                                                  children: _friendDetailViewModel.friendDetailModel.calendarInfo[_friendDetailViewModel.selectedDailyIndex].dailyInfo.map<Widget>((data) {
-                                                                    String slopeName = data.slope;
-                                                                    int passCount = data.count;
-                                                                    double barWidthRatio = data.ratio;
-                                                                    return Padding(
-                                                                      padding: (data != _friendDetailViewModel.friendDetailModel.calendarInfo[_friendDetailViewModel.selectedDailyIndex].dailyInfo.last)
-                                                                          ? EdgeInsets.only(bottom: 8)
-                                                                          : EdgeInsets.only(bottom: 0),
-                                                                      child: Row(
-                                                                        children: [
-                                                                          Container(
-                                                                            width: 40,
-                                                                            child: Text(
-                                                                              slopeName,
-                                                                              style: SDSTextStyle.bold.copyWith(
-                                                                                fontSize: 11,
-                                                                                color: SDSColor.gray900,
-                                                                              ),
-                                                                            ),
-                                                                          ),
-                                                                          Container(
-                                                                            height: 16,
-                                                                            width: (_size.width - 148) * barWidthRatio,
-                                                                            decoration: BoxDecoration(
-                                                                                color: SDSColor.blue200,
-                                                                                borderRadius: BorderRadius.only(
-                                                                                    topRight: Radius.circular(4),
-                                                                                    bottomRight: Radius.circular(4)
-                                                                                )
-                                                                            ),
-                                                                          ),
-                                                                          Padding(
-                                                                            padding: (data == _friendDetailViewModel.friendDetailModel.calendarInfo[_friendDetailViewModel.selectedDailyIndex].dailyInfo.first)
-                                                                                ? EdgeInsets.only(left: 6)
-                                                                                : EdgeInsets.only(left: 2),
-                                                                            child: Container(
-                                                                              width: 30,
-                                                                              child: Column(
-                                                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                                                mainAxisAlignment: MainAxisAlignment.center,
-                                                                                children: [
-                                                                                  Container(
-                                                                                    decoration: BoxDecoration(
-                                                                                      borderRadius: BorderRadius.circular(20),
-                                                                                      color: (data == _friendDetailViewModel.friendDetailModel.calendarInfo[_friendDetailViewModel.selectedDailyIndex].dailyInfo.first)
-                                                                                          ? SDSColor.gray900
-                                                                                          : Colors.transparent,
-                                                                                    ),
-                                                                                    padding: EdgeInsets.symmetric(horizontal: 6, vertical: 3),
-                                                                                    child: Text('$passCount',
-                                                                                      style: SDSTextStyle.extraBold.copyWith(
-                                                                                        fontSize: 12,
-                                                                                        fontWeight: (data == _friendDetailViewModel.friendDetailModel.calendarInfo[_friendDetailViewModel.selectedDailyIndex].dailyInfo.first)
-                                                                                            ? FontWeight.w900 : FontWeight.w300,
-                                                                                        color: (data == _friendDetailViewModel.friendDetailModel.calendarInfo[_friendDetailViewModel.selectedDailyIndex].dailyInfo.first)
-                                                                                            ? SDSColor.snowliveWhite : SDSColor.gray900.withOpacity(0.4),
-                                                                                      ),
-                                                                                    ),
-                                                                                  ),
-                                                                                ],
-                                                                              ),
-                                                                            ),
-                                                                          ),
-                                                                        ],
-                                                                      ),
-                                                                    );
-                                                                  }).toList(),
-                                                                )
-                                                            )
-                                                                : Column(
-                                                              crossAxisAlignment: CrossAxisAlignment.center,
-                                                              mainAxisAlignment: MainAxisAlignment.center,
-                                                              children: [
-                                                                SizedBox(
-                                                                  height: _size.height / 5,
-                                                                ),
-                                                                Container(
-                                                                  width: 48,
-                                                                  child: ExtendedImage.asset(
-                                                                    'assets/imgs/ranking/icon_ranking_nodata_2.png',
-                                                                    enableMemoryCache: true,
-                                                                    scale: 4,
-                                                                  ),
-                                                                ),
-                                                                SizedBox(
-                                                                  height: 16,
-                                                                ),
-                                                                Center(
-                                                                  child: Text('라이딩 기록이 없어요',
-                                                                    style: TextStyle(
-                                                                        color: Color(0xFF666666),
-                                                                        fontSize: 15,
-                                                                        fontWeight: FontWeight.normal
-                                                                    ),),
-                                                                ),
-                                                              ],
-                                                            )
-                                                          ],
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    Padding(
-                                                      padding: const EdgeInsets.only(top: 16),
-                                                      child: Container(
-                                                        padding: EdgeInsets.only(top: 24, right: 20, left: 20, bottom: 30),
-                                                        width: _size.width,
-                                                        decoration: BoxDecoration(
-                                                          color: SDSColor.blue50,
-                                                          borderRadius: BorderRadius.circular(16),
-                                                        ),
-                                                        child: Column(
-                                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                                          children: [
-                                                            Column(
-                                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                                              children: [
-                                                                Text('라이딩 횟수',
-                                                                  style: SDSTextStyle.regular.copyWith(
-                                                                      color: SDSColor.gray900.withOpacity(0.5),
-                                                                      fontSize: 14
-                                                                  ),
-                                                                ),
-                                                                Padding(
-                                                                  padding: const EdgeInsets.only(top: 4, bottom: 20),
-                                                                  child: Text(
-                                                                    (_friendDetailViewModel.selectedDailyIndex != -1)
-                                                                    ? '${_friendDetailViewModel.friendDetailModel.calendarInfo[_friendDetailViewModel.selectedDailyIndex].daily_total_count}회'
-                                                                        :'0회',
-                                                                    style: SDSTextStyle.extraBold.copyWith(
-                                                                        color: SDSColor.gray900,
-                                                                        fontSize: 24
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                              ],
-                                                            ),
-                                                            (_friendDetailViewModel.selectedDailyIndex != -1)
-                                                            ? Container(
-                                                              child: Row(
-                                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                                crossAxisAlignment: CrossAxisAlignment.end,
-                                                                children: _friendDetailViewModel.friendDetailModel.calendarInfo[_friendDetailViewModel.selectedDailyIndex].timeInfo.entries.map<Widget>((entry) {
-                                                                  String slotName = entry.key;
-                                                                  int passCount = entry.value;
-                                                                  int maxCount = _friendDetailViewModel.friendDetailModel.calendarInfo[_friendDetailViewModel.selectedDailyIndex].timeInfo_maxCount;
-                                                                  double barHeightRatio =  passCount/maxCount;
-                                                                  return Container(
-                                                                    width: 30,
-                                                                    child: Column(
-                                                                      mainAxisAlignment: MainAxisAlignment.end,
-                                                                      children: [
-                                                                        Container(
-                                                                          decoration: BoxDecoration(
-                                                                            borderRadius: BorderRadius.circular(20),
-                                                                            color: passCount == maxCount ? SDSColor.gray900 : Colors.transparent,
-                                                                          ),
-                                                                          padding: EdgeInsets.symmetric(horizontal: 6, vertical: 3),
-                                                                          child: AutoSizeText(
-                                                                            passCount != 0 ? '$passCount' : '',
-                                                                            style: SDSTextStyle.bold.copyWith(
-                                                                              fontSize: 12,
-                                                                              color: passCount == maxCount ? SDSColor.snowliveWhite : SDSColor.gray900.withOpacity(0.4),
-                                                                              fontWeight: passCount == maxCount ? FontWeight.w900 : FontWeight.w300,
-                                                                            ),
-                                                                            minFontSize: 6,
-                                                                            maxLines: 1,
-                                                                            overflow: TextOverflow.visible,
-                                                                          ),
-                                                                        ),
-                                                                        Padding(
-                                                                          padding: EdgeInsets.only(top: passCount == maxCount ? 6 : 0),
-                                                                          child: Container(
-                                                                            width: 16,
-                                                                            height: 140 * barHeightRatio,
-                                                                            decoration: BoxDecoration(
-                                                                                color: SDSColor.snowliveBlue,
-                                                                                borderRadius: BorderRadius.only(
-                                                                                    topRight: Radius.circular(4), topLeft: Radius.circular(4)
-                                                                                )
-                                                                            ),
-                                                                          ),
-                                                                        ),
-                                                                        Padding(
-                                                                          padding: const EdgeInsets.only(top: 8),
-                                                                          child: Container(
-                                                                            width: 20,
-                                                                            child: Text(
-                                                                              slotName,
-                                                                              style: SDSTextStyle.regular.copyWith(
-                                                                                fontSize: 11,
-                                                                                color: SDSColor.gray900,
-                                                                              ),
-                                                                            ),
-                                                                          ),
-                                                                        ),
-                                                                      ],
-                                                                    ),
-                                                                  );
-                                                                }).toList(),
-                                                              ),
-                                                            )
-                                                                : Column(
-                                                              crossAxisAlignment: CrossAxisAlignment.center,
-                                                              mainAxisAlignment: MainAxisAlignment.center,
-                                                              children: [
-                                                                SizedBox(
-                                                                  height: _size.height / 5,
-                                                                ),
-                                                                Container(
-                                                                  width: 48,
-                                                                  child: ExtendedImage.asset(
-                                                                    'assets/imgs/ranking/icon_ranking_nodata_2.png',
-                                                                    enableMemoryCache: true,
-                                                                    scale: 4,
-                                                                  ),
-                                                                ),
-                                                                SizedBox(
-                                                                  height: 16,
-                                                                ),
-                                                                Center(
-                                                                  child: Text('라이딩 기록이 없어요',
-                                                                    style: TextStyle(
-                                                                        color: Color(0xFF666666),
-                                                                        fontSize: 15,
-                                                                        fontWeight: FontWeight.normal
-                                                                    ),),
-                                                                ),
-                                                              ],
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                            ],
+        if(_friendDetailViewModel.ridingStatisticsTabName == FriendDetailViewModel.ridingStatisticsTabNameListConst[1])
+    Column(
+      children: [
+        ProfilePageCalendar(),
+        Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(top: 16),
+              child: Container(
+                padding: EdgeInsets.only(top: 24, right: 20, left: 20, bottom: 30),
+                width: _size.width,
+                decoration: BoxDecoration(
+                  color: SDSColor.blue50,
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('라이딩 슬로프 종류',
+                      style: SDSTextStyle.regular.copyWith(
+                          color: SDSColor.gray900.withOpacity(0.5),
+                          fontSize: 14
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 4, bottom: 20),
+                      child: Text(
+                        (_friendDetailViewModel.selectedDailyIndex != -1 &&
+                            _friendDetailViewModel.friendDetailModel.calendarInfo.length > _friendDetailViewModel.selectedDailyIndex)
+                            ? '${_friendDetailViewModel.friendDetailModel.calendarInfo[_friendDetailViewModel.selectedDailyIndex].dailyInfo.length}'
+                            : '0',
+                        style: SDSTextStyle.extraBold.copyWith(
+                            color: SDSColor.gray900,
+                            fontSize: 24
+                        ),
+                      ),
+                    ),
+                    (_friendDetailViewModel.selectedDailyIndex != -1 &&
+                        _friendDetailViewModel.friendDetailModel.calendarInfo.length > _friendDetailViewModel.selectedDailyIndex)
+                        ? Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: _friendDetailViewModel.friendDetailModel.calendarInfo[_friendDetailViewModel.selectedDailyIndex].dailyInfo.map<Widget>((data) {
+                        String slopeName = data.slope;
+                        int passCount = data.count;
+                        double barWidthRatio = data.ratio;
+                        return Padding(
+                          padding: (data != _friendDetailViewModel.friendDetailModel.calendarInfo[_friendDetailViewModel.selectedDailyIndex].dailyInfo.last)
+                              ? EdgeInsets.only(bottom: 8)
+                              : EdgeInsets.only(bottom: 0),
+                          child: Row(
+                            children: [
+                              Container(
+                                width: 40,
+                                child: Text(
+                                  slopeName,
+                                  style: SDSTextStyle.bold.copyWith(
+                                    fontSize: 11,
+                                    color: SDSColor.gray900,
+                                  ),
+                                ),
+                              ),
+                              Container(
+                                height: 16,
+                                width: (_size.width - 148) * barWidthRatio,
+                                decoration: BoxDecoration(
+                                    color: SDSColor.blue200,
+                                    borderRadius: BorderRadius.only(
+                                        topRight: Radius.circular(4),
+                                        bottomRight: Radius.circular(4)
+                                    )
+                                ),
+                              ),
+                              Padding(
+                                padding: (data == _friendDetailViewModel.friendDetailModel.calendarInfo[_friendDetailViewModel.selectedDailyIndex].dailyInfo.first)
+                                    ? EdgeInsets.only(left: 6)
+                                    : EdgeInsets.only(left: 2),
+                                child: Container(
+                                  width: 30,
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Container(
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(20),
+                                          color: (data == _friendDetailViewModel.friendDetailModel.calendarInfo[_friendDetailViewModel.selectedDailyIndex].dailyInfo.first)
+                                              ? SDSColor.gray900
+                                              : Colors.transparent,
+                                        ),
+                                        padding: EdgeInsets.symmetric(horizontal: 6, vertical: 3),
+                                        child: Text('$passCount',
+                                          style: SDSTextStyle.extraBold.copyWith(
+                                            fontSize: 12,
+                                            fontWeight: (data == _friendDetailViewModel.friendDetailModel.calendarInfo[_friendDetailViewModel.selectedDailyIndex].dailyInfo.first)
+                                                ? FontWeight.w900 : FontWeight.w300,
+                                            color: (data == _friendDetailViewModel.friendDetailModel.calendarInfo[_friendDetailViewModel.selectedDailyIndex].dailyInfo.first)
+                                                ? SDSColor.snowliveWhite : SDSColor.gray900.withOpacity(0.4),
                                           ),
-                                        ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      }).toList(),
+                    )
+                        : Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SizedBox(
+                          height: _size.height / 5,
+                        ),
+                        Container(
+                          width: 48,
+                          child: ExtendedImage.asset(
+                            'assets/imgs/ranking/icon_ranking_nodata_2.png',
+                            enableMemoryCache: true,
+                            scale: 4,
+                          ),
+                        ),
+                        SizedBox(
+                          height: 16,
+                        ),
+                        Center(
+                          child: Text('라이딩 기록이 없어요',
+                            style: TextStyle(
+                                color: Color(0xFF666666),
+                                fontSize: 15,
+                                fontWeight: FontWeight.normal
+                            ),),
+                        ),
+                      ],
+                    )
+                  ],
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(top: 16),
+              child: Container(
+                padding: EdgeInsets.only(top: 24, right: 20, left: 20, bottom: 30),
+                width: _size.width,
+                decoration: BoxDecoration(
+                  color: SDSColor.blue50,
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('라이딩 횟수',
+                          style: SDSTextStyle.regular.copyWith(
+                              color: SDSColor.gray900.withOpacity(0.5),
+                              fontSize: 14
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 4, bottom: 20),
+                          child: Text(
+                            (_friendDetailViewModel.selectedDailyIndex != -1 &&
+                                _friendDetailViewModel.friendDetailModel.calendarInfo.length > _friendDetailViewModel.selectedDailyIndex)
+                                ? '${_friendDetailViewModel.friendDetailModel.calendarInfo[_friendDetailViewModel.selectedDailyIndex].daily_total_count}회'
+                                : '0회',
+                            style: SDSTextStyle.extraBold.copyWith(
+                                color: SDSColor.gray900,
+                                fontSize: 24
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    (_friendDetailViewModel.selectedDailyIndex != -1 &&
+                        _friendDetailViewModel.friendDetailModel.calendarInfo.length > _friendDetailViewModel.selectedDailyIndex)
+                        ? Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: _friendDetailViewModel.friendDetailModel.calendarInfo[_friendDetailViewModel.selectedDailyIndex].timeInfo.entries.map<Widget>((entry) {
+                        String slotName = entry.key;
+                        int passCount = entry.value;
+                        int maxCount = _friendDetailViewModel.friendDetailModel.calendarInfo[_friendDetailViewModel.selectedDailyIndex].timeInfo_maxCount;
+                        double barHeightRatio = passCount / maxCount;
+                        return Container(
+                          width: 30,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(20),
+                                  color: passCount == maxCount ? SDSColor.gray900 : Colors.transparent,
+                                ),
+                                padding: EdgeInsets.symmetric(horizontal: 6, vertical: 3),
+                                child: AutoSizeText(
+                                  passCount != 0 ? '$passCount' : '',
+                                  style: SDSTextStyle.bold.copyWith(
+                                    fontSize: 12,
+                                    color: passCount == maxCount ? SDSColor.snowliveWhite : SDSColor.gray900.withOpacity(0.4),
+                                    fontWeight: passCount == maxCount ? FontWeight.w900 : FontWeight.w300,
+                                  ),
+                                  minFontSize: 6,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.visible,
+                                ),
+                              ),
+                              Padding(
+                                padding: EdgeInsets.only(top: passCount == maxCount ? 6 : 0),
+                                child: Container(
+                                  width: 16,
+                                  height: 140 * barHeightRatio,
+                                  decoration: BoxDecoration(
+                                      color: SDSColor.snowliveBlue,
+                                      borderRadius: BorderRadius.only(
+                                          topRight: Radius.circular(4), topLeft: Radius.circular(4)
+                                      )
+                                  ),
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(top: 8),
+                                child: Container(
+                                  width: 20,
+                                  child: Text(
+                                    slotName,
+                                    style: SDSTextStyle.regular.copyWith(
+                                      fontSize: 11,
+                                      color: SDSColor.gray900,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      }).toList(),
+                    )
+                        : Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SizedBox(
+                          height: _size.height / 5,
+                        ),
+                        Container(
+                          width: 48,
+                          child: ExtendedImage.asset(
+                            'assets/imgs/ranking/icon_ranking_nodata_2.png',
+                            enableMemoryCache: true,
+                            scale: 4,
+                          ),
+                        ),
+                        SizedBox(
+                          height: 16,
+                        ),
+                        Center(
+                          child: Text('라이딩 기록이 없어요',
+                            style: TextStyle(
+                                color: Color(0xFF666666),
+                                fontSize: 15,
+                                fontWeight: FontWeight.normal
+                            ),),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ],
+    ),
+
+    ],
                                       ),
                                     if(_friendDetailViewModel.mainTabName == FriendDetailViewModel.mainTabNameListConst[1])
                                       Stack(

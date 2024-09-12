@@ -40,6 +40,7 @@ class SearchFriendView extends StatelessWidget {
                 ),
                 onTap: () {
                   Get.back();
+
                 },
               ),
               elevation: 0.0,
@@ -121,8 +122,8 @@ class SearchFriendView extends StatelessWidget {
                   ),
                   SizedBox(height: 80),
                   Obx(() {
-                    // 검색된 친구 데이터가 없을 때 빈 컨테이너를 표시
-                    if (_friendListViewModel.searchFriend.userId == 0) {
+                    // 검색된 친구 데이터가 없을 때 처리
+                    if (_friendListViewModel.searchFriend.userId == null) {
                       return Center(
                         child: Text(
                           '검색 결과가 없습니다.',
@@ -130,6 +131,7 @@ class SearchFriendView extends StatelessWidget {
                         ),
                       );
                     }
+
                     // 검색된 친구 데이터가 있을 때 프로필 카드 및 버튼 표시
                     return Column(
                       children: [
@@ -148,8 +150,8 @@ class SearchFriendView extends StatelessWidget {
                             children: [
                               SizedBox(height: 40),
                               Center(
-                                child: (_friendListViewModel.searchFriend
-                                    .profileImageUrlUser!.isNotEmpty)
+                                child: (_friendListViewModel.searchFriend.profileImageUrlUser != null &&
+                                    _friendListViewModel.searchFriend.profileImageUrlUser!.isNotEmpty)
                                     ? Container(
                                   width: 80,
                                   height: 80,
@@ -158,8 +160,7 @@ class SearchFriendView extends StatelessWidget {
                                     borderRadius: BorderRadius.circular(50),
                                   ),
                                   child: ExtendedImage.network(
-                                    _friendListViewModel.searchFriend
-                                        .profileImageUrlUser!,
+                                    _friendListViewModel.searchFriend.profileImageUrlUser!,
                                     enableMemoryCache: true,
                                     shape: BoxShape.circle,
                                     cacheHeight: 150,
@@ -167,10 +168,8 @@ class SearchFriendView extends StatelessWidget {
                                     width: 80,
                                     height: 80,
                                     fit: BoxFit.cover,
-                                    loadStateChanged:
-                                        (ExtendedImageState state) {
-                                      switch (state
-                                          .extendedImageLoadState) {
+                                    loadStateChanged: (ExtendedImageState state) {
+                                      switch (state.extendedImageLoadState) {
                                         case LoadState.loading:
                                           return SizedBox.shrink();
                                         case LoadState.completed:
@@ -179,8 +178,7 @@ class SearchFriendView extends StatelessWidget {
                                           return ExtendedImage.asset(
                                             'assets/imgs/profile/img_profile_default_circle.png',
                                             shape: BoxShape.circle,
-                                            borderRadius:
-                                            BorderRadius.circular(8),
+                                            borderRadius: BorderRadius.circular(8),
                                             width: 80,
                                             height: 80,
                                             fit: BoxFit.cover,
@@ -206,17 +204,16 @@ class SearchFriendView extends StatelessWidget {
                                 ),
                               ),
                               SizedBox(height: 10),
-                              Text(_friendListViewModel.searchFriend.displayName!),
+                              Text(_friendListViewModel.searchFriend.displayName ?? ''),
                               SizedBox(height: 10),
                               Container(
-                                padding: EdgeInsets.symmetric(
-                                    horizontal: 8, vertical: 4),
+                                padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                                 decoration: BoxDecoration(
                                   color: SDSColor.snowliveWhite,
                                   borderRadius: BorderRadius.circular(12),
                                 ),
                                 child: Text(
-                                  _friendListViewModel.searchFriend.crewName!,
+                                  _friendListViewModel.searchFriend.crewName ?? '',
                                   style: TextStyle(
                                       color: SDSColor.snowliveBlack,
                                       fontSize: 12,
@@ -234,8 +231,7 @@ class SearchFriendView extends StatelessWidget {
                                   ),
                                   SizedBox(height: 5),
                                   Text(
-                                    _friendListViewModel.searchFriend.skiorboard ??
-                                        '',
+                                    _friendListViewModel.searchFriend.skiorboard ?? '',
                                     style: TextStyle(
                                       color: SDSColor.snowliveBlack,
                                       fontSize: 14,
@@ -247,22 +243,24 @@ class SearchFriendView extends StatelessWidget {
                               Spacer(),
                               Container(
                                 width: MediaQuery.of(context).size.width,
-                                padding:
-                                EdgeInsets.only(right: 16, left: 16),
+                                padding: EdgeInsets.only(right: 16, left: 16),
                                 child: ElevatedButton(
                                   onPressed: () async {
-                                    Navigator.pop(context);
+                                    Get.toNamed(AppRoutes.friendDetail);
+                                    await _friendDetailViewModel.fetchFriendDetailInfo(
+                                      userId: _userViewModel.user.user_id,
+                                      friendUserId: _friendListViewModel.searchFriend.userId!,
+                                      season: _friendDetailViewModel.seasonDate,
+                                    );
                                   },
                                   child: Text(
                                     '프로필 보기',
                                     style: SDSTextStyle.bold.copyWith(
-                                        color: SDSColor.snowliveBlack,
-                                        fontSize: 16),
+                                        color: SDSColor.snowliveBlack, fontSize: 16),
                                   ),
                                   style: TextButton.styleFrom(
                                     shape: const RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(6)),
+                                      borderRadius: BorderRadius.all(Radius.circular(6)),
                                     ),
                                     elevation: 0,
                                     splashFactory: InkRipple.splashFactory,
@@ -281,17 +279,19 @@ class SearchFriendView extends StatelessWidget {
                             width: MediaQuery.of(context).size.width,
                             child: ElevatedButton(
                               onPressed: () async {
+                                await _friendDetailViewModel.sendFriendRequest({
+                                  "user_id": _userViewModel.user.user_id,    //필수 - 신청자 (나)
+                                  "friend_user_id": _friendListViewModel.searchFriend.userId!   //필수 - 신청받는사람
+                                });
                               },
                               child: Text(
                                 '친구 요청하기',
                                 style: SDSTextStyle.bold.copyWith(
-                                    color: SDSColor.snowliveWhite,
-                                    fontSize: 16),
+                                    color: SDSColor.snowliveWhite, fontSize: 16),
                               ),
                               style: TextButton.styleFrom(
                                 shape: const RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.all(
-                                      Radius.circular(6)),
+                                  borderRadius: BorderRadius.all(Radius.circular(6)),
                                 ),
                                 elevation: 0,
                                 splashFactory: InkRipple.splashFactory,

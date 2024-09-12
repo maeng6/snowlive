@@ -78,12 +78,9 @@ class CommunityQuillToolbar extends StatelessWidget {
     final appDocDir = await getApplicationDocumentsDirectory();
     final fileExt = path.extension(file.path);
     final newFileName = '${DateTime.now().toIso8601String()}$fileExt';
-    final newPath = path.join(
-      appDocDir.path,
-      newFileName,
-    );
+    final newPath = path.join(appDocDir.path, newFileName);
     final copiedFile = await file.copy(newPath);
-    return copiedFile.path;
+    return copiedFile.path;  // 로컬에 저장된 파일 경로 반환
   }
 
 

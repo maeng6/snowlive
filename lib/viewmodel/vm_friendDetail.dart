@@ -223,13 +223,17 @@ class FriendDetailViewModel extends GetxController {
 
   Future<void> toggleBestFriend(body) async {
     isLoading(true);
+    print(body);
     ApiResponse response = await FriendAPI().toggleBestFriend(body);
 
     if(response.success) {
       _friendDetailModel.update((model) {
         model?.friendUserInfo.bestFriend = response.data['best_friend'];
       });
-      Get.snackbar('등록 성공','친한친구로 등록되었습니다.');
+      if(response.data['best_friend'] == true)
+      Get.snackbar('등록 완료','친한친구로 등록되었습니다.');
+      if(response.data['best_friend'] == false)
+        Get.snackbar('해제 완료','친한친구에서 해제되었습니다.');
     } else {
       Get.snackbar('등록 실패', '등록에 실패했습니다.');
     }

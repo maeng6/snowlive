@@ -38,8 +38,11 @@ class _FriendListViewState extends State<FriendListView> {
               child: Stack(
                 children: [
                   IconButton(
-                    onPressed: () {
+                    onPressed: () async{
                       Get.toNamed(AppRoutes.invitaionFriend);
+                      await _friendListViewModel.fetchFriendRequestList(
+                          _userViewModel.user.user_id
+                      );
                     },
                     icon: Image.asset(
                       'assets/imgs/icons/icon_noti_off.png',
@@ -136,14 +139,14 @@ class _FriendListViewState extends State<FriendListView> {
         ),
       ),
       body: SingleChildScrollView(
-        child: Column(
+        child: Obx(()=>Column(
           children: [
             SizedBox(
               height: _statusBarSize + 58,
             ),
             //TODO:친구 검색
             GestureDetector(
-              onTap: () {
+              onTap: () async{
                 Get.toNamed(AppRoutes.searchFriend);
               },
               child: Padding(
@@ -372,7 +375,7 @@ class _FriendListViewState extends State<FriendListView> {
                                                     : MainAxisAlignment.start,
                                                 crossAxisAlignment: CrossAxisAlignment.start,
                                                 children: [
-                                                  Text('${friend.friendInfo.stateMsg}',
+                                                  Text('${friend.friendInfo.displayName}',
                                                     style: TextStyle(
                                                         color: Color(0xFF111111),
                                                         fontWeight: FontWeight.normal,
@@ -404,6 +407,12 @@ class _FriendListViewState extends State<FriendListView> {
                                             //TODO:친친버튼 메서드처리하기
                                             GestureDetector(
                                                 onTap: () async {
+                                                  await _friendDetailViewModel.toggleBestFriend(
+                                                      {
+                                                        "friend_id": friend.friendId
+                                                      }
+                                                  );
+                                                  await _friendListViewModel.fetchFriendList();
                                                 },
                                                 child: Icon(
                                                   Icons.star_rounded,
@@ -460,6 +469,15 @@ class _FriendListViewState extends State<FriendListView> {
                                                                                       )),
                                                                                   TextButton(
                                                                                       onPressed: () async {
+                                                                                        Navigator.pop(context);
+                                                                                        _friendDetailViewModel.deleteFriend(
+                                                                                            {
+                                                                                              "friend_id": friend.friendId
+                                                                                            }
+                                                                                        );
+                                                                                        _friendListViewModel.fetchFriendList();
+                                                                                        Navigator.pop(context);
+
                                                                                       },
                                                                                       child: Text(
                                                                                         '확인',
@@ -520,6 +538,12 @@ class _FriendListViewState extends State<FriendListView> {
                                             //TODO:친친버튼 메서드처리하기
                                             GestureDetector(
                                                 onTap: () async {
+                                                  await _friendDetailViewModel.toggleBestFriend(
+                                                      {
+                                                        "friend_id": friend.friendId
+                                                      }
+                                                  );
+                                                  await _friendListViewModel.fetchFriendList();
                                                 },
                                                 child: Icon(
                                                   Icons.star_rounded,
@@ -643,7 +667,7 @@ class _FriendListViewState extends State<FriendListView> {
                   ],
                 )
           ],
-        ),
+        ),)
       ),
     );
   }
