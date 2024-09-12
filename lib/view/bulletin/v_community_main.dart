@@ -4,7 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
 import '../../screens/snowliveDesignStyle.dart';
-import '../../viewmodel/vm_communityFreeList.dart';
+import '../../viewmodel/vm_communityBulletinList.dart';
 
 class CommunityMainView extends StatelessWidget {
 

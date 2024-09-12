@@ -1,67 +1,28 @@
-import 'package:com.snowlive/controller/public/vm_limitController.dart';
-import 'package:com.snowlive/controller/bulletin/vm_streamController_bulletin.dart';
-import 'package:com.snowlive/screens/bulletin/Free/v_bulletin_Free_List_Detail.dart';
-import 'package:com.snowlive/screens/bulletin/Free/v_bulletin_Free_Upload.dart';
+
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
-import '../../../controller/user/vm_allUserDocsController.dart';
-import '../../../controller/bulletin/vm_bulletinFreeController.dart';
-import '../../../controller/public/vm_timeStampController.dart';
-import '../../../controller/user/vm_userModelController.dart';
-import '../../../data/imgaUrls/Data_url_image.dart';
 import '../../../model/m_communityList.dart';
-import '../../../model_2/m_bulletinFreeModel.dart';
 import '../../../screens/snowliveDesignStyle.dart';
 import '../../../util/util_1.dart';
-import '../../../viewmodel/vm_communityFreeList.dart';
-import '../../../widget/w_fullScreenDialog.dart';
+import '../../../viewmodel/vm_communityBulletinList.dart';
 
-class CommunityBulletinTotalListView extends StatefulWidget {
-  const CommunityBulletinTotalListView({Key? key}) : super(key: key);
-
-  @override
-  State<CommunityBulletinTotalListView> createState() => _CommunityBulletinTotalListViewState();
-
-}
-
-class _CommunityBulletinTotalListViewState extends State<CommunityBulletinTotalListView> {
-
-  //TODO: Dependency Injection**************************************************
-  UserModelController _userModelController = Get.find<UserModelController>();
-  BulletinFreeModelController _bulletinFreeModelController = Get.find<BulletinFreeModelController>();
-  TimeStampController _timeStampController = Get.find<TimeStampController>();
-  limitController _seasonController = Get.find<limitController>();
-  AllUserDocsController _allUserDocsController = Get.find<AllUserDocsController>();
-  StreamController_Bulletin _streamController_Bulletin = Get.find<StreamController_Bulletin>();
-  //TODO: Dependency Injection**************************************************
+class CommunityBulletinTotalListView extends StatelessWidget {
 
   final CommunityBulletinListViewModel _communityBulletinListViewModel = Get.find<CommunityBulletinListViewModel>();
-
-  bool _isVisible = false;
-  bool _orderbyLike = false;
-  bool _orderbyView = false;
-
-  Stream<QuerySnapshot<Map<String, dynamic>>>? _bulletinFreeStream;
-
-  var f = NumberFormat('###,###,###,###');
 
   @override
   Widget build(BuildContext context) {
     Size _size = MediaQuery.of(context).size;
 
-    _seasonController.getBulletinFreeLimit();
-
     return GestureDetector(
       onTap: () {
         FocusScope.of(context).unfocus();
       },
-      child: Container(
+      child: Obx(()=>Container(
         color: Colors.white,
         child: Scaffold(
           floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
@@ -158,7 +119,7 @@ class _CommunityBulletinTotalListViewState extends State<CommunityBulletinTotalL
           ),
           backgroundColor: Colors.white,
           body: RefreshIndicator(
-            onRefresh: _communityBulletinListViewModel.onRefresh_flea_total,
+            onRefresh: _communityBulletinListViewModel.onRefresh_bulletin_total,
             child: SingleChildScrollView(
               physics: AlwaysScrollableScrollPhysics(),
               controller: _communityBulletinListViewModel.scrollController_total,
@@ -353,12 +314,19 @@ class _CommunityBulletinTotalListViewState extends State<CommunityBulletinTotalL
                                                     ),
                                                   ),
                                                 ),
-                                                (index == 5 || index == 2 || index == 6)
+                                                (communityData.thumbImg != '')
                                                     ? Padding(
                                                   padding: const EdgeInsets.only(left: 16),
-                                                  child: Image.asset('assets/imgs/imgs/img_bulletin_thumbnail.png',
+                                                  child: ExtendedImage.network(communityData.thumbImg!,
+                                                    cache: true,
+                                                    shape: BoxShape.rectangle,
+                                                    borderRadius: BorderRadius.circular(8),
+                                                    border: Border.all(width: 0.5, color: Color(0xFFdedede)),
                                                     width: 50,
-                                                    height: 50,),
+                                                    height: 50,
+                                                    cacheHeight: 250,
+                                                    fit: BoxFit.cover,
+                                                  ),
                                                 )
                                                     : Container()
                                               ],
@@ -388,7 +356,7 @@ class _CommunityBulletinTotalListViewState extends State<CommunityBulletinTotalL
             ),
           ),
         ),
-      ),
+      )),
     );
   }
 }

@@ -13,7 +13,7 @@ import 'package:com.snowlive/viewmodel/vm_setProfile.dart';
 import 'package:com.snowlive/viewmodel/vm_tos.dart';
 import 'package:com.snowlive/viewmodel/vm_user.dart';
 import 'package:get/get.dart';
-import '../viewmodel/vm_communityFreeList.dart';
+import '../viewmodel/vm_communityBulletinList.dart';
 import '../viewmodel/vm_fleamarketDetail.dart';
 import '../viewmodel/vm_fleamarketList.dart';
 import '../viewmodel/vm_fleamarketUpload.dart';

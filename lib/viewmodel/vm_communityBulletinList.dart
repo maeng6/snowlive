@@ -392,16 +392,16 @@ class CommunityBulletinListViewModel extends GetxController {
     print('칩네임 $_chipName로 변경');
   }
 
-  Future<void> onRefresh_flea_total() async {
+  Future<void> onRefresh_bulletin_total() async {
     await fetchCommunityList_total(userId:  _userViewModel.user.user_id);
   }
-  Future<void> onRefresh_flea_free() async {
+  Future<void> onRefresh_bulletin_free() async {
     await fetchCommunityList_free(userId:  _userViewModel.user.user_id);
   }
-  Future<void> onRefresh_flea_room() async {
+  Future<void> onRefresh_bulletin_room() async {
     await fetchCommunityList_room(userId:  _userViewModel.user.user_id);
   }
-  Future<void> onRefresh_flea_crew() async {
+  Future<void> onRefresh_bulletin_crew() async {
     await fetchCommunityList_crew(userId:  _userViewModel.user.user_id);
   }
 }

@@ -29,6 +29,7 @@ class Community {
   String? categorySub2;
   String? snsUrl;
   String? title;
+  String? thumbImg;
   Description? description;
   DateTime? updateTime;
   DateTime? uploadTime;
@@ -44,6 +45,7 @@ class Community {
     this.categorySub2,
     this.snsUrl,
     this.title,
+    this.thumbImg,
     this.description,
     this.updateTime,
     this.uploadTime,
@@ -60,6 +62,7 @@ class Community {
     categorySub2 = json['category_sub2'];
     snsUrl = json['sns_url'];
     title = json['title'];
+    thumbImg = json['thumb_img_url'];
     description = json['description'] != null
         ? Description.fromJson(json['description'])
         : null;
