@@ -24,15 +24,15 @@ class FriendsTalk {
 
   // fromJson 생성자
   FriendsTalk.fromJson(Map<String, dynamic> json) {
-    friendsTalkId = json['friends_talk_id'];
-    authorUserId = json['author_user_id'];
-    friendUserId = json['friend_user_id'];
-    content = json['content'];
-    count = json['count'];
-    report = json['report'];
-    updateTime = DateTime.parse(json['update_time']);
-    uploadTime = DateTime.parse(json['upload_time']);
-    authorInfo = AuthorInfo.fromJson(json['author_info']);
+    friendsTalkId = json['friends_talk_id'] ?? 0; // null 처리
+    authorUserId = json['author_user_id'] ?? 0; // null 처리
+    friendUserId = json['friend_user_id'] ?? 0; // null 처리
+    content = json['content'] ?? ''; // null 처리
+    count = json['count'] ?? 0; // null 처리
+    report = json['report'] ?? 0; // null 처리
+    updateTime = json['update_time'] != null ? DateTime.parse(json['update_time']) : DateTime.now(); // null 처리
+    uploadTime = json['upload_time'] != null ? DateTime.parse(json['upload_time']) : DateTime.now(); // null 처리
+    authorInfo = json['author_info'] != null ? AuthorInfo.fromJson(json['author_info']) : AuthorInfo(); // null 처리
   }
 }
 
@@ -54,10 +54,10 @@ class AuthorInfo {
 
   // fromJson 생성자
   AuthorInfo.fromJson(Map<String, dynamic> json) {
-    userId = json['user_id'];
-    displayName = json['display_name'];
-    profileImageUrlUser = json['profile_image_url_user'];
-    crewName = json['crew_name'];
-    favoriteResortNickname = json['favorite_resort_nickname'];
+    userId = json['user_id'] ?? 0; // null 처리
+    displayName = json['display_name'] ?? ''; // null 처리
+    profileImageUrlUser = json['profile_image_url_user'] ?? ''; // null 처리
+    crewName = json['crew_name'] ?? ''; // null 처리
+    favoriteResortNickname = json['favorite_resort_nickname'] ?? ''; // null 처리
   }
 }
