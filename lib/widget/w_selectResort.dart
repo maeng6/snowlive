@@ -84,30 +84,31 @@ class _SelectResortWidgetState extends State<SelectResortWidget> {
                       },
                     ),
                     if (index != 12) Divider(height: 4, thickness: 0.5, color: SDSColor.snowliveWhite),
-                    if (index == 12) Container(height: 12),
                   ],
                 );
               },
             ),
           ),
-          Container(
-            width: _size.width,
-            padding: EdgeInsets.only(top: 16),
-            child: ElevatedButton(
-              onPressed: () {
-                Navigator.pop(context, selectResort!+1);
-                FocusScope.of(context).unfocus();
-              },
-              child: Text(
-                '선택 완료',
-                style: SDSTextStyle.bold.copyWith(color: Colors.white, fontSize: 16),
-              ),
-              style: TextButton.styleFrom(
-                shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(6))),
-                elevation: 0,
-                splashFactory: InkRipple.splashFactory,
-                minimumSize: Size(double.infinity, 48),
-                backgroundColor: SDSColor.snowliveBlue,
+          SafeArea(
+            child: Container(
+              width: _size.width,
+              padding: EdgeInsets.only(top: 16),
+              child: ElevatedButton(
+                onPressed: () {
+                  Navigator.pop(context, selectResort!+1);
+                  FocusScope.of(context).unfocus();
+                },
+                child: Text(
+                  '선택 완료',
+                  style: SDSTextStyle.bold.copyWith(color: Colors.white, fontSize: 16),
+                ),
+                style: TextButton.styleFrom(
+                  shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(6))),
+                  elevation: 0,
+                  splashFactory: InkRipple.splashFactory,
+                  minimumSize: Size(double.infinity, 48),
+                  backgroundColor: SDSColor.snowliveBlue,
+                ),
               ),
             ),
           ),
