@@ -118,6 +118,10 @@ class FriendListViewModel extends GetxController {
     }
   }
 
+  Future<void> resetSearchFriend() async{
+    _searchFriend.value = SearchFriend(); // 새로운 객체로 초기화
+  }
+
 
 
 

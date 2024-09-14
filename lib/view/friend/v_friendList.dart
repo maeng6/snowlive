@@ -147,6 +147,7 @@ class _FriendListViewState extends State<FriendListView> {
             //TODO:친구 검색
             GestureDetector(
               onTap: () async{
+                await _friendListViewModel.resetSearchFriend();
                 Get.toNamed(AppRoutes.searchFriend);
               },
               child: Padding(
