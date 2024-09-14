@@ -607,6 +607,14 @@ class _FriendListViewState extends State<FriendListView> {
                                                                                       )),
                                                                                   TextButton(
                                                                                       onPressed: () async {
+                                                                                        Navigator.pop(context);
+                                                                                        _friendDetailViewModel.deleteFriend(
+                                                                                            {
+                                                                                              "friend_id": friend.friendId
+                                                                                            }
+                                                                                        );
+                                                                                        _friendListViewModel.fetchFriendList();
+                                                                                        Navigator.pop(context);
                                                                                       },
                                                                                       child: Text(
                                                                                         '확인',

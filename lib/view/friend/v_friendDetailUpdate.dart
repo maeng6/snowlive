@@ -42,6 +42,7 @@ class FriendDetailUpdateView extends StatelessWidget {
                 height: 26,
               ),
               onTap: () {
+                _friendDetailUpdateViewModel.cancelSelectedImage();
                 Navigator.pop(context);
               },
             ),
@@ -158,19 +159,27 @@ class FriendDetailUpdateView extends StatelessWidget {
                             ),
                           );
                         },
-                        child: Obx(()=>Stack(
+                        child: Obx(() => Stack(
                           children: [
-                            if (_friendDetailUpdateViewModel.profileImage && _friendDetailUpdateViewModel.croppedFile != null)
+                            if (_friendDetailUpdateViewModel.croppedFile != null)
                               Container(
                                 width: 120,
                                 height: 120,
                                 child: CircleAvatar(
                                   backgroundColor: SDSColor.gray50,
-                                  backgroundImage:
-                                  FileImage(File(_friendDetailUpdateViewModel.croppedFile!.path)),
+                                  backgroundImage: FileImage(File(_friendDetailUpdateViewModel.croppedFile!.path)),
                                 ),
-                              ),
-                            if (!_friendDetailUpdateViewModel.profileImage )
+                              )
+                            else if (_friendDetailUpdateViewModel.profileImageUrl.isNotEmpty)
+                              Container(
+                                width: 120,
+                                height: 120,
+                                child: CircleAvatar(
+                                  backgroundColor: SDSColor.gray50,
+                                  backgroundImage: NetworkImage(_friendDetailUpdateViewModel.profileImageUrl),
+                                ),
+                              )
+                            else
                               Container(
                                 width: 120,
                                 height: 120,
@@ -183,23 +192,31 @@ class FriendDetailUpdateView extends StatelessWidget {
                                   height: 120,
                                 ),
                               ),
+
+                            // 삭제 버튼 또는 추가 버튼 위치
                             Positioned(
-                                bottom: 4,
-                                right: 4,
-                                child: GestureDetector(
-                                  child: ExtendedImage.asset(
-                                      _friendDetailUpdateViewModel.profileImage
-                                          ? 'assets/imgs/icons/icon_profile_delete.png'
-                                          : 'assets/imgs/icons/icon_profile_add.png',
-                                      scale: 4),
-                                  onTap: () {
-                                    if (_friendDetailUpdateViewModel.profileImage) {
-                                      _friendDetailUpdateViewModel.cancelSelectedImage();
-                                    }
-                                  },
-                                )),
+                              bottom: 4,
+                              right: 4,
+                              child: GestureDetector(
+                                child: ExtendedImage.asset(
+                                  _friendDetailUpdateViewModel.croppedFile != null || _friendDetailUpdateViewModel.profileImageUrl.isNotEmpty
+                                      ? 'assets/imgs/icons/icon_profile_delete.png'
+                                      : 'assets/imgs/icons/icon_profile_add.png',
+                                  scale: 4,
+                                ),
+                                onTap: () {
+                                  // 이미지가 선택되어 있거나 기존 네트워크 이미지가 있으면 삭제
+                                  if (_friendDetailUpdateViewModel.croppedFile != null || _friendDetailUpdateViewModel.profileImageUrl.isNotEmpty) {
+                                    _friendDetailUpdateViewModel.setCroppedFile(null);
+                                    _friendDetailUpdateViewModel.setProfileImageUrl('');
+                                  }
+                                },
+                              ),
+                            ),
                           ],
-                        ) ),
+                        )),
+
+
                       ),
                       SizedBox(height: 30,),
                       Padding(
