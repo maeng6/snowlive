@@ -205,7 +205,7 @@ class FriendDetailViewModel extends GetxController {
     if(response.success)
       Get.snackbar('친구신청 성공', '상대방이 수락하면 친구로 등록됩니다.');
     if(!response.success)
-      Get.snackbar('앗!', '${response.error['error']}');
+      Get.snackbar('잠시만요!','이미 친구이거나 친구 신청 중입니다');
     isLoading(false);
   }
 
