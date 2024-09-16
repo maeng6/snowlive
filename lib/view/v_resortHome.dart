@@ -150,7 +150,7 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                     boxShadow: [
                       (_userViewModel.user.within_boundary == true)
                           ? BoxShadow(
-                        color: SDSColor.snowliveBlue.withOpacity(0.5),
+                        color: SDSColor.snowliveBlue.withOpacity(0.2),
                         spreadRadius: 4,
                         blurRadius: 12,
                         offset: Offset(0, 4),
@@ -320,6 +320,7 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
             child: AppBar(
               actions: [
                 IconButton(
+                highlightColor: Colors.transparent,
                   onPressed: () async{
                     showModalBottomSheet(
                       context: context,
@@ -329,12 +330,16 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                       ),
                       builder: (context) => DraggableScrollableSheet(
                         expand: false,
-                        initialChildSize: 0.8,
+                        initialChildSize: 0.88,
                         minChildSize: 0.4,
-                        maxChildSize: 0.9,
+                        maxChildSize: 0.88,
                         builder: (BuildContext context, ScrollController scrollController) {
                           return Container(
-                            padding: EdgeInsets.all(16),
+                            decoration: BoxDecoration(
+                              color: SDSColor.snowliveWhite,
+                              borderRadius: BorderRadius.only(topRight: Radius.circular(20), topLeft: Radius.circular(20))
+                            ),
+                            padding: EdgeInsets.only(top: 16),
                             child: Column(
                               children: [
                                 Center(
@@ -360,11 +365,11 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                                       SizedBox(height: 10,),
                                       Text(
                                         '전국 스키장의 스노우라이브 유저들과',
-                                        style: SDSTextStyle.bold.copyWith(fontSize: 12, color: SDSColor.gray500),
+                                        style: SDSTextStyle.regular.copyWith(fontSize: 14, color: SDSColor.gray500),
                                       ),
                                       Text(
                                         '실시간으로 정보를 공유해 보세요',
-                                        style: SDSTextStyle.bold.copyWith(fontSize: 12, color: SDSColor.gray500),
+                                        style: SDSTextStyle.regular.copyWith(fontSize: 14, color: SDSColor.gray500),
                                       ),
                                     ],
                                   ),
@@ -385,6 +390,7 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                   ),
                 ),
                 IconButton(
+                  highlightColor: Colors.transparent,
                   onPressed: () async{
                     showModalBottomSheet(
                       context: context,
@@ -449,7 +455,6 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                                         padding: const EdgeInsets.symmetric(horizontal: 10),
                                         child: Wrap(
                                           alignment: WrapAlignment.start,
-                                          spacing: 14, // 아이템 간의 가로 간격
                                           runSpacing: 28, // 아이템 간의 세로 간격
                                           children: List.generate(_resortHomeViewModel.bestFriendList.length, (index) {
                                             var BFdoc = _resortHomeViewModel.bestFriendList[index];
@@ -532,9 +537,12 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                                                           Positioned(
                                                             right: 0,
                                                             bottom: 0,
-                                                            child: Image.asset(
-                                                              'assets/imgs/icons/icon_badge_live.png',
-                                                              width: 32,
+                                                            left: 0,
+                                                            child: Center(
+                                                              child: Image.asset(
+                                                                'assets/imgs/icons/icon_badge_live.png',
+                                                                width: 34,
+                                                              ),
                                                             ),
                                                           ),
                                                       ],
@@ -549,7 +557,7 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                                                         style: TextStyle(
                                                           fontSize: 12,
                                                           fontWeight: FontWeight.normal,
-                                                          color: Color(0xFF111111),
+                                                          color: SDSColor.gray900
                                                         ),
                                                       ),
                                                     ),
@@ -565,24 +573,23 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                                                             overflow: TextOverflow.ellipsis,
                                                             textAlign: TextAlign.center,
                                                             style: TextStyle(
-                                                              fontSize: 12,
-                                                              fontWeight: FontWeight.normal,
-                                                              color: Color(0xFF111111),
+                                                                fontSize: 12,
+                                                                fontWeight: FontWeight.normal,
+                                                                color: SDSColor.gray500
                                                             ),
                                                           ),
                                                         ),
-                                                        SizedBox(width: 2),
                                                         Flexible(
                                                           child: Text(
                                                             (BFdoc.friendInfo.lastPassTime == null)
                                                                 ? ''
-                                                                : GetDatetime().getAgoString(BFdoc.friendInfo.lastPassTime!),
+                                                                : ' · ${GetDatetime().getAgoString(BFdoc.friendInfo.lastPassTime!)}',
                                                             overflow: TextOverflow.ellipsis,
                                                             textAlign: TextAlign.center,
                                                             style: TextStyle(
-                                                              fontSize: 12,
-                                                              fontWeight: FontWeight.normal,
-                                                              color: Color(0xFF111111),
+                                                                fontSize: 12,
+                                                                fontWeight: FontWeight.normal,
+                                                                color: SDSColor.gray500
                                                             ),
                                                           ),
                                                         ),
@@ -596,7 +603,6 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                                         ),
                                       ),
                                     ),
-
                                   ),
                                   SafeArea(
                                     child: Container(
@@ -644,6 +650,7 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                 Padding(
                   padding: const EdgeInsets.only(right: 10),
                   child: IconButton(
+                    highlightColor: Colors.transparent,
                     onPressed: () async{
 
                     },
@@ -672,6 +679,7 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
               ),
               backgroundColor: SDSColor.snowliveWhite,
               foregroundColor: SDSColor.snowliveWhite,
+              surfaceTintColor: SDSColor.snowliveWhite,
               elevation: 0.0,
             ),
           ),
@@ -747,8 +755,6 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                                                 backgroundColor: Colors.transparent,
                                                 context: context,
                                                 isScrollControlled: true,
-                                                enableDrag: false,
-                                                isDismissible: false,
                                                 builder: (context) => SelectResortWidget(),
                                               );
                                               if(selectedIndex != null)
@@ -1197,6 +1203,7 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                               child: Banner_resortHome(),
                             ),
                             //TODO: 구분선
+                            if((_resortHomeViewModel.resortHomeModel.dailyTotalCount != 0 || _userViewModel.user.within_boundary == true))
                             Padding(
                               padding: const EdgeInsets.only(bottom: 30),
                               child: Container(
@@ -1211,19 +1218,20 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     //TODO: 오늘의 기록
-                                    Padding(
+                                      Padding(
                                       padding: const EdgeInsets.only(right: 4, left: 4),
                                       child: Row(
                                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                         children: [
+                                          if((_resortHomeViewModel.resortHomeModel.dailyTotalCount != 0 || _userViewModel.user.within_boundary == true))
                                           Text('오늘의 기록',
                                             style: SDSTextStyle.extraBold.copyWith(
                                                 fontSize: 15,
                                                 color: SDSColor.gray900
                                             ),
                                           ),
-                                          if(_userViewModel.user.within_boundary == true)
-                                            Row(
+                                          if((_resortHomeViewModel.resortHomeModel.dailyTotalCount != 0 && _userViewModel.user.within_boundary == true))
+                                          Row(
                                               children: [
                                                 Padding(
                                                   padding: const EdgeInsets.only(right: 2),
@@ -1256,7 +1264,7 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                                         ],
                                       ),
                                     ),
-                                    if(_resortHomeViewModel.resortHomeModel.dailyTotalCount != 0)
+                                    if((_resortHomeViewModel.resortHomeModel.dailyTotalCount != 0 || _userViewModel.user.within_boundary == true))
                                       Column(
                                         children: [
                                           Column(
@@ -1273,14 +1281,14 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                                                   child: Column(
                                                     crossAxisAlignment: CrossAxisAlignment.start,
                                                     children: [
-                                                      Text('오늘 라이딩 슬로프 종류',
+                                                      Text('오늘 탄 슬로프',
                                                         style: SDSTextStyle.regular.copyWith(
                                                             color: SDSColor.gray900.withOpacity(0.5),
                                                             fontSize: 14
                                                         ),
                                                       ),
                                                       Padding(
-                                                        padding: const EdgeInsets.only(top: 4, bottom: 10),
+                                                        padding: const EdgeInsets.only(top: 4),
                                                         child: Text('${_resortHomeViewModel.resortHomeModel.slopeCountInfoToday.length}',
                                                           style: SDSTextStyle.extraBold.copyWith(
                                                               color: SDSColor.gray900,
@@ -1288,7 +1296,8 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                                                           ),
                                                         ),
                                                       ),
-                                                      Container(
+                                                      if(_resortHomeViewModel.resortHomeModel.slopeCountInfoToday.length != 0)
+                                                        Container(
                                                           child: Column(
                                                             crossAxisAlignment: CrossAxisAlignment.start,
                                                             children: _resortHomeViewModel.resortHomeModel.slopeCountInfoToday.map<Widget>((data)  {
@@ -1297,8 +1306,8 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                                                               double barWidthRatio = data.ratio;
                                                               return Padding(
                                                                 padding: (data != _resortHomeViewModel.resortHomeModel.slopeCountInfoToday.last)
-                                                                    ? EdgeInsets.only(bottom: 8)
-                                                                    : EdgeInsets.only(bottom: 0),
+                                                                    ? EdgeInsets.only(bottom: 8, top: 10)
+                                                                    : EdgeInsets.only(bottom: 0, top: 10),
                                                                 child: Row(
                                                                   children: [
                                                                     Container(
@@ -1363,6 +1372,28 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                                                             }).toList(),
                                                           )
                                                       ),
+                                                      if(_resortHomeViewModel.resortHomeModel.slopeCountInfoToday.length == 0)
+                                                        Center(
+                                                          child: Padding(
+                                                            padding: const EdgeInsets.only(bottom: 30),
+                                                            child: Column(
+                                                              children: [
+                                                                ExtendedImage.asset(
+                                                                  'assets/imgs/imgs/img_resoreHome_nodata.png',
+                                                                  fit: BoxFit.cover,
+                                                                  width: 72,
+                                                                  height: 72,
+                                                                ),
+                                                                Text('라이딩 기록이 없어요',
+                                                                  style: SDSTextStyle.regular.copyWith(
+                                                                    fontSize: 14,
+                                                                    color: SDSColor.gray600
+                                                                  ),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          ),
+                                                        )
                                                     ],
                                                   ),
                                                 ),
@@ -1390,7 +1421,7 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                                                           ),
                                                           Padding(
                                                             padding: const EdgeInsets.only(top: 4, bottom: 10),
-                                                            child: Text('${_resortHomeViewModel.resortHomeModel.dailyTotalCount}회',
+                                                            child: Text('${_resortHomeViewModel.resortHomeModel.dailyTotalCount}',
                                                               style: SDSTextStyle.extraBold.copyWith(
                                                                   color: SDSColor.gray900,
                                                                   fontSize: 30
@@ -1399,6 +1430,7 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                                                           ),
                                                         ],
                                                       ),
+                                                      if(_resortHomeViewModel.resortHomeModel.dailyTotalCount != 0)
                                                       Container(
                                                         child: Row(
                                                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -1457,6 +1489,28 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                                                           }).toList(),
                                                         ),
                                                       ),
+                                                      if(_resortHomeViewModel.resortHomeModel.dailyTotalCount == 0)
+                                                      Center(
+                                                        child: Padding(
+                                                          padding: const EdgeInsets.only(bottom: 30),
+                                                          child: Column(
+                                                            children: [
+                                                              ExtendedImage.asset(
+                                                                'assets/imgs/imgs/img_resoreHome_nodata.png',
+                                                                fit: BoxFit.cover,
+                                                                width: 72,
+                                                                height: 72,
+                                                              ),
+                                                              Text('라이딩 기록이 없어요',
+                                                                style: SDSTextStyle.regular.copyWith(
+                                                                    fontSize: 14,
+                                                                    color: SDSColor.gray600
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      )
                                                     ],
                                                   ),
                                                 ),
@@ -1465,9 +1519,9 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                                           ),
                                         ],
                                       ),
-                                    if(_resortHomeViewModel.resortHomeModel.dailyTotalCount == 0)
+                                    if(_resortHomeViewModel.resortHomeModel.dailyTotalCount == 0 && _userViewModel.user.within_boundary == false)
                                       Container(
-                                        height: 185, // Set fixed height for the data container
+                                        height: _size.height - 510,
                                         decoration: BoxDecoration(
                                           color: Color(0xFFF5F2F7),
                                           borderRadius: BorderRadius.circular(10),
@@ -1475,74 +1529,79 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                                         child: Row(
                                           children: [
                                             Padding(
-                                              padding: const EdgeInsets.only(left: 20, top: 25),
+                                              padding: const EdgeInsets.only(left: 24, top: 30, right: 24),
                                               child: Column(
-                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                mainAxisAlignment: MainAxisAlignment.start,
                                                 children: [
-                                                  SizedBox(height: 5,),
-                                                  Text(
-                                                    '지금 바로 랭킹에 참여해보세요!',
-                                                    style: SDSTextStyle.bold.copyWith(
-                                                      fontSize: 18,
-                                                      color: SDSColor.gray900,
-                                                    ),
-                                                  ),
-                                                  Padding(
-                                                    padding: const EdgeInsets.only(top: 10),
-                                                    child: Text(
-                                                      '친구들의 라이브 상태도 확인하고',
-                                                      style: SDSTextStyle.regular.copyWith(
-                                                        fontSize: 14,
-                                                        color: SDSColor.gray600,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  Padding(
-                                                    padding: const EdgeInsets.only(top: 4),
-                                                    child: Text(
-                                                      '다른 유저들과 경쟁해보세요!',
-                                                      style: SDSTextStyle.regular.copyWith(
-                                                        fontSize: 14,
-                                                        color: SDSColor.gray600,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  Padding(
-                                                    padding: const EdgeInsets.only(top: 20),
-                                                    child: GestureDetector(
-                                                      onTap: () {
-                                                        // Add your share functionality here
-                                                      },
-                                                      child: Container(
-                                                        padding: EdgeInsets.symmetric(horizontal: 12, vertical: 9),
-                                                        decoration: BoxDecoration(
-                                                          color: SDSColor.snowliveWhite,
-                                                          borderRadius: BorderRadius.circular(20),
+                                                  Column(
+                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                    mainAxisAlignment: MainAxisAlignment.start,
+                                                    children: [
+                                                      Text(
+                                                        '지금 바로 랭킹에 참여해보세요!',
+                                                        style: SDSTextStyle.bold.copyWith(
+                                                          fontSize: 18,
+                                                          color: SDSColor.gray900,
                                                         ),
-                                                        child: Row(
-                                                          children: [
-                                                            Padding(
-                                                              padding: const EdgeInsets.only(right: 6),
-                                                              child: Text(
-                                                                '더 알아보기',
-                                                                style: SDSTextStyle.extraBold.copyWith(
-                                                                    color: Colors.black,
-                                                                    fontSize: 13
+                                                      ),
+                                                      Padding(
+                                                        padding: const EdgeInsets.only(top: 6),
+                                                        child: Text(
+                                                          '친구들의 라이브 상태도 확인하고',
+                                                          style: SDSTextStyle.regular.copyWith(
+                                                            fontSize: 14,
+                                                            color: SDSColor.gray600,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      Padding(
+                                                        padding: const EdgeInsets.only(top: 2),
+                                                        child: Text(
+                                                          '다른 유저들과 경쟁해보세요!',
+                                                          style: SDSTextStyle.regular.copyWith(
+                                                            fontSize: 14,
+                                                            color: SDSColor.gray600,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      Padding(
+                                                        padding: const EdgeInsets.only(top: 20),
+                                                        child: GestureDetector(
+                                                          onTap: () {
+                                                            // Add your share functionality here
+                                                          },
+                                                          child: Container(
+                                                            padding: EdgeInsets.symmetric(horizontal: 12, vertical: 9),
+                                                            decoration: BoxDecoration(
+                                                              color: SDSColor.snowliveWhite,
+                                                              borderRadius: BorderRadius.circular(20),
+                                                            ),
+                                                            child: Row(
+                                                              children: [
+                                                                Padding(
+                                                                  padding: const EdgeInsets.only(right: 6),
+                                                                  child: Text(
+                                                                    '더 알아보기',
+                                                                    style: SDSTextStyle.extraBold.copyWith(
+                                                                        color: Colors.black,
+                                                                        fontSize: 13
+                                                                    ),
+                                                                  ),
                                                                 ),
-                                                              ),
+                                                                ExtendedImage.asset(
+                                                                  'assets/imgs/icons/icon_arrow_round_black.png',
+                                                                  fit: BoxFit.cover,
+                                                                  width: 18,
+                                                                  height: 18,
+                                                                ),
+                                                              ],
                                                             ),
-                                                            ExtendedImage.asset(
-                                                              'assets/imgs/icons/icon_arrow_round_black.png',
-                                                              fit: BoxFit.cover,
-                                                              width: 18,
-                                                              height: 18,
-                                                            ),
-                                                          ],
+                                                          ),
                                                         ),
                                                       ),
-                                                    ),
+                                                    ],
                                                   ),
+                                                  Container(
+                                                  )
                                                 ],
                                               ),
                                             ),

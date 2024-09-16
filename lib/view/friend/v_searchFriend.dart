@@ -274,6 +274,7 @@ class SearchFriendView extends StatelessWidget {
                           ),
                         ),
                         SizedBox(height: 80),
+                        if(_friendListViewModel.searchFriend.userId != _userViewModel.user.user_id)
                         SafeArea(
                           child: Container(
                             width: MediaQuery.of(context).size.width,

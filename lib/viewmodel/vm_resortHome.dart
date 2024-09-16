@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:com.snowlive/model/m_weatherModel.dart';
 import 'package:com.snowlive/viewmodel/vm_user.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_background_geolocation/flutter_background_geolocation.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
@@ -42,6 +43,8 @@ class ResortHomeViewModel extends GetxController {
   RxList<FriendListModel> _bestFriendList = <FriendListModel>[].obs;
   RxBool _isSnackbarShown = false.obs;
   RxBool _isWeatherInfoExpanded = false.obs;
+  RxBool _isVisible_resortHome_openchat = false.obs;
+  RxBool _showRecentButton_resortHome_openchat = true.obs;
 
   dynamic weatherColors;
   dynamic weatherIcons;
@@ -62,8 +65,11 @@ class ResortHomeViewModel extends GetxController {
   List<Map<String, dynamic>> get reset_point => _reset_point;
   List<Map<String, dynamic>> get respawn_point => _respawn_point;
   List<FriendListModel> get bestFriendList => _bestFriendList;
+  bool get isVisible_resortHome_openchat  => _isVisible_resortHome_openchat .value;
+  bool get showRecentButton_resortHome_openchat => _showRecentButton_resortHome_openchat.value;
 
   UserViewModel _userViewModel = Get.find<UserViewModel>();
+  ScrollController scrollController_resortHome_openchat = ScrollController();
 
   @override
   void onInit() async{
@@ -72,6 +78,8 @@ class ResortHomeViewModel extends GetxController {
     await getRankingGuideUrl();
     await fetchResortHome(_userViewModel.user.user_id!);
     await fetchWeatherModel();
+    scrollController_resortHome_openchat = ScrollController()
+      ..addListener(_scrollListener_resortHome_openchat);
   }
 
   Future<void> fetchResortHome(int userId) async {
@@ -395,6 +403,26 @@ class ResortHomeViewModel extends GetxController {
       print('[onLocation] ERROR: $error 리조트 구역 벗어남');
     });
   }
+
+
+  Future<void> _scrollListener_resortHome_openchat() async {
+
+    print('User scroll direction: ${scrollController_resortHome_openchat.position.userScrollDirection}');
+    print('Current offset: ${scrollController_resortHome_openchat.offset}');
+    // 버튼 표시 여부 결정
+    _showRecentButton_resortHome_openchat.value = scrollController_resortHome_openchat.offset <= 0;
+
+    // 숨김/표시 여부 결정
+    if (scrollController_resortHome_openchat.position.userScrollDirection == ScrollDirection.reverse) {
+      _isVisible_resortHome_openchat.value = true; // 스크롤이 올라갈 때 보이게
+    } else if (scrollController_resortHome_openchat.position.userScrollDirection == ScrollDirection.forward ||
+        scrollController_resortHome_openchat.position.pixels <= scrollController_resortHome_openchat.position.maxScrollExtent) {
+      _isVisible_resortHome_openchat.value = false;
+    }
+
+    print('Button visibility: ${_isVisible_resortHome_openchat.value}');
+  }
+
 
   bool _checkPositionWithinBoundary(lat, lon, lat_resort_info, lon_resort_info, radius) {
     double distanceInMeters = Geolocator.distanceBetween(lat, lon, lat_resort_info, lon_resort_info);

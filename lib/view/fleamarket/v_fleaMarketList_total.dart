@@ -36,21 +36,34 @@ class FleaMarketListView_total extends StatelessWidget {
             children: [
               Center(
                 child: Padding(
-                  padding: EdgeInsets.only(top: _size.height - 360),
+                  padding: EdgeInsets.only(top: _size.height - 350),
                   child: Obx(()=> Visibility(
                     visible: _fleamarketListViewModel.isVisible_total,
                     child: Padding(
                       padding: const EdgeInsets.only(left: 32),
                       child: Container(
                         width: 106,
+                        decoration: BoxDecoration(
+                          color: Colors.transparent,
+                          borderRadius: BorderRadius.circular(50),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.04),
+                              spreadRadius: 2,
+                              blurRadius: 8,
+                              offset: Offset(0, 6),
+                            ),
+                          ],
+                        ),
                         child: FloatingActionButton(
                           heroTag: 'fleamarketList',
                           mini: true,
                           elevation: 0,
                           shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(40)
+                              borderRadius: BorderRadius.circular(40),
+                              side: BorderSide(color: SDSColor.gray200),
                           ),
-                          backgroundColor: Color(0xFF000000).withOpacity(0.8),
+                          backgroundColor: SDSColor.snowliveWhite,
                           foregroundColor: Colors.white,
                           onPressed: () {
                             _fleamarketListViewModel.scrollController_total.jumpTo(0);
@@ -60,7 +73,7 @@ class FleaMarketListView_total extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               Icon(Icons.arrow_upward_rounded,
-                                  color: Color(0xFFffffff),
+                                  color: SDSColor.gray900,
                                   size: 16),
                               Padding(
                                 padding: const EdgeInsets.only(left: 2, right: 3),
@@ -68,7 +81,7 @@ class FleaMarketListView_total extends StatelessWidget {
                                   style: TextStyle(
                                       fontSize: 13,
                                       fontWeight: FontWeight.bold,
-                                      color: Color(0xFFffffff).withOpacity(0.8),
+                                      color: SDSColor.gray900,
                                       letterSpacing: 0
                                   ),),
                               )
@@ -114,6 +127,9 @@ class FleaMarketListView_total extends StatelessWidget {
                         )
                             : SizedBox.shrink(), // Hide the text when _showAddButton is false
                         backgroundColor: Color(0xFF3D6FED),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(50)
+                        ),
                       ),
                     ),
                   ),
@@ -126,18 +142,20 @@ class FleaMarketListView_total extends StatelessWidget {
           body: Obx(()=>RefreshIndicator(
               strokeWidth: 2,
               edgeOffset: 20,
+              backgroundColor: SDSColor.snowliveWhite,
+              color: SDSColor.snowliveBlue,
               onRefresh: _fleamarketListViewModel.onRefresh_flea_total,
               child: Padding(
-            padding: const EdgeInsets.only(top: 4, bottom: 6),
+            padding: const EdgeInsets.only(top: 12),
             child: Column(
               children: [
                 //TODO: 필터
-                Row(
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.only(right: 8),
-                      child: Container(
-                        height: 56,
+                Padding(
+                  padding: EdgeInsets.only(bottom: 16),
+                  child: Row(
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.only(right: 8),
                         child: Stack(
                           children: [
                             ElevatedButton(
@@ -150,14 +168,13 @@ class FleaMarketListView_total extends StatelessWidget {
                                       builder: (context) {
                                         return SafeArea(
                                           child: Padding(
-                                            padding: const EdgeInsets.symmetric(vertical: 20),
+                                            padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 4),
                                             child: Container(
                                               margin: EdgeInsets.only(
                                                 left: 16,
                                                 right: 16,
                                                 top: 16,
                                               ),
-                                              height: MediaQuery.of(context).size.height * 0.4,
                                               padding: EdgeInsets.all(16),
                                               decoration: BoxDecoration(
                                                 color: Colors.white,
@@ -370,25 +387,23 @@ class FleaMarketListView_total extends StatelessWidget {
                                 },
                                 style: ElevatedButton.styleFrom(
                                     padding: EdgeInsets.only(
-                                        right: 30, left: 14, top: 8, bottom: 8),
-                                    side: const BorderSide(
+                                        right: 32, left: 12, top: 3, bottom: 2),
+                                    side: BorderSide(
                                       width: 1,
-                                      color: Color(0xFFF5F5F5),
+                                      color: (_fleamarketListViewModel.selectedCategory_sub_total != '전체 카테고리') ? SDSColor.gray900 : SDSColor.gray100,
                                     ),
-                                    backgroundColor: SDSColor.gray50,
+                                    backgroundColor: (_fleamarketListViewModel.selectedCategory_sub_total != '전체 카테고리') ? SDSColor.gray900 : SDSColor.snowliveWhite,
                                     elevation: 0,
                                     shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(8))),
-                                child:
-                                     Text('${_fleamarketListViewModel.selectedCategory_sub_total}',
-                                    style: TextStyle(
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.bold,
-                                        color: Color(0xFF555555)))
+                                        borderRadius: BorderRadius.circular(50))),
+                                child: Text('${_fleamarketListViewModel.selectedCategory_sub_total}',
+                                    style: SDSTextStyle.bold.copyWith(
+                                        fontSize: 13,
+                                        color: (_fleamarketListViewModel.selectedCategory_sub_total != '전체 카테고리') ? Color(0xFFFFFFFF) : Color(0xFF111111) ))
                                   ),
                             Positioned(
-                              top: 12,
-                              right: 6,
+                              top: 16,
+                              right: 10,
                               child: GestureDetector(
                                 onTap: () async {
                                   showModalBottomSheet(
@@ -406,7 +421,6 @@ class FleaMarketListView_total extends StatelessWidget {
                                                 right: 16,
                                                 top: 16,
                                               ),
-                                              height: MediaQuery.of(context).size.height * 0.4,
                                               padding: EdgeInsets.all(16),
                                               decoration: BoxDecoration(
                                                 color: Colors.white,
@@ -624,21 +638,24 @@ class FleaMarketListView_total extends StatelessWidget {
                                         );
                                       });
                                 },
-                                child: Icon(
-                                  Icons.arrow_drop_down_sharp,
-                                  size: 24,
-                                  color: Color(0xFF666666),
+                                child: (_fleamarketListViewModel.selectedCategory_sub_total != '전체 카테고리') ? ExtendedImage.asset(
+                                  'assets/imgs/icons/icon_check_round.png',
+                                  fit: BoxFit.cover,
+                                  width: 16,
+                                  height: 16,
+                                ) : ExtendedImage.asset(
+                                  'assets/imgs/icons/icon_check_round_black.png',
+                                  fit: BoxFit.cover,
+                                  width: 16,
+                                  height: 16,
                                 ),
                               ),
                             ),
                           ],
                         ),
                       ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.only(right: 8),
-                      child: Container(
-                        height: 56,
+                      Padding(
+                        padding: EdgeInsets.only(right: 8),
                         child: Stack(
                           children: [
                             ElevatedButton(
@@ -658,393 +675,395 @@ class FleaMarketListView_total extends StatelessWidget {
                                                 right: 16,
                                                 top: 16,
                                               ),
-                                              height: MediaQuery.of(context).size.height * 0.5,
+                                              height: MediaQuery.of(context).size.height * 0.6,
                                               padding: EdgeInsets.all(16),
                                               decoration: BoxDecoration(
                                                 color: Colors.white,
                                                 borderRadius: BorderRadius.circular(16),
                                               ),
-                                              child: SingleChildScrollView(
-                                                child: Wrap(
-                                                  children: [
-                                                    ListTile(
-                                                      contentPadding: EdgeInsets.zero,
-                                                      title: Center(
-                                                        child: Text(
-                                                          '${FleamarketCategory_spot.total.korean}',
-                                                          style: SDSTextStyle.bold.copyWith(
-                                                              fontSize: 15,
-                                                              color: SDSColor.gray900
+                                              child: Scrollbar(
+                                                child: SingleChildScrollView(
+                                                  child: Wrap(
+                                                    children: [
+                                                      ListTile(
+                                                        contentPadding: EdgeInsets.zero,
+                                                        title: Center(
+                                                          child: Text(
+                                                            '${FleamarketCategory_spot.total.korean}',
+                                                            style: SDSTextStyle.bold.copyWith(
+                                                                fontSize: 15,
+                                                                color: SDSColor.gray900
+                                                            ),
                                                           ),
                                                         ),
+                                                        //selected: _isSelected[index]!,
+                                                        onTap: () async {
+                                                          Navigator.pop(context);
+                                                          _fleamarketListViewModel.changeCategory_spot_total('${FleamarketCategory_spot.total.korean}');
+                                                          await _fleamarketListViewModel.fetchFleamarketData_total(
+                                                              userId: _userViewModel.user.user_id,
+                                                              categorySub: (_fleamarketListViewModel.selectedCategory_sub_total == '전체 카테고리')
+                                                                ? null
+                                                                :_fleamarketListViewModel.selectedCategory_sub_total,
+                                                          );
+                                                        },
+                                                        shape: RoundedRectangleBorder(
+                                                            borderRadius:
+                                                            BorderRadius.circular(16)),
                                                       ),
-                                                      //selected: _isSelected[index]!,
-                                                      onTap: () async {
-                                                        Navigator.pop(context);
-                                                        _fleamarketListViewModel.changeCategory_spot_total('${FleamarketCategory_spot.total.korean}');
-                                                        await _fleamarketListViewModel.fetchFleamarketData_total(
-                                                            userId: _userViewModel.user.user_id,
+                                                      ListTile(
+                                                        contentPadding: EdgeInsets.zero,
+                                                        title: Center(
+                                                          child: Text(
+                                                            '${FleamarketCategory_spot.konjiam.korean}',
+                                                            style: SDSTextStyle.bold.copyWith(
+                                                                fontSize: 15,
+                                                                color: SDSColor.gray900
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        //selected: _isSelected[index]!,
+                                                        onTap: () async {
+                                                          Navigator.pop(context);
+                                                          _fleamarketListViewModel.changeCategory_spot_total('${FleamarketCategory_spot.konjiam.korean}');
+                                                          await _fleamarketListViewModel.fetchFleamarketData_total(
+                                                              userId: _userViewModel.user.user_id,
                                                             categorySub: (_fleamarketListViewModel.selectedCategory_sub_total == '전체 카테고리')
-                                                              ? null
-                                                              :_fleamarketListViewModel.selectedCategory_sub_total,
-                                                        );
-                                                      },
-                                                      shape: RoundedRectangleBorder(
-                                                          borderRadius:
-                                                          BorderRadius.circular(16)),
-                                                    ),
-                                                    ListTile(
-                                                      contentPadding: EdgeInsets.zero,
-                                                      title: Center(
-                                                        child: Text(
-                                                          '${FleamarketCategory_spot.konjiam.korean}',
-                                                          style: SDSTextStyle.bold.copyWith(
-                                                              fontSize: 15,
-                                                              color: SDSColor.gray900
+                                                                ? null
+                                                                :_fleamarketListViewModel.selectedCategory_sub_total,
+                                                            spot: _fleamarketListViewModel.selectedCategory_spot_total,
+                                                          );
+                                                        },
+                                                        shape: RoundedRectangleBorder(
+                                                            borderRadius:
+                                                            BorderRadius.circular(16)),
+                                                      ),
+                                                      ListTile(
+                                                        contentPadding: EdgeInsets.zero,
+                                                        title: Center(
+                                                          child: Text(
+                                                            '${FleamarketCategory_spot.muju.korean}',
+                                                            style: SDSTextStyle.bold.copyWith(
+                                                                fontSize: 15,
+                                                                color: SDSColor.gray900
+                                                            ),
                                                           ),
                                                         ),
+                                                        //selected: _isSelected[index]!,
+                                                        onTap: () async {
+                                                          Navigator.pop(context);
+                                                          _fleamarketListViewModel.changeCategory_spot_total('${FleamarketCategory_spot.muju.korean}');
+                                                          await _fleamarketListViewModel.fetchFleamarketData_total(
+                                                              userId: _userViewModel.user.user_id,
+                                                            categorySub: (_fleamarketListViewModel.selectedCategory_sub_total == '전체 카테고리')
+                                                                ? null
+                                                                :_fleamarketListViewModel.selectedCategory_sub_total,
+                                                            spot: _fleamarketListViewModel.selectedCategory_spot_total,
+                                                          );
+                                                        },
+                                                        shape: RoundedRectangleBorder(
+                                                            borderRadius:
+                                                            BorderRadius.circular(16)),
                                                       ),
-                                                      //selected: _isSelected[index]!,
-                                                      onTap: () async {
-                                                        Navigator.pop(context);
-                                                        _fleamarketListViewModel.changeCategory_spot_total('${FleamarketCategory_spot.konjiam.korean}');
-                                                        await _fleamarketListViewModel.fetchFleamarketData_total(
-                                                            userId: _userViewModel.user.user_id,
-                                                          categorySub: (_fleamarketListViewModel.selectedCategory_sub_total == '전체 카테고리')
-                                                              ? null
-                                                              :_fleamarketListViewModel.selectedCategory_sub_total,
-                                                          spot: _fleamarketListViewModel.selectedCategory_spot_total,
-                                                        );
-                                                      },
-                                                      shape: RoundedRectangleBorder(
-                                                          borderRadius:
-                                                          BorderRadius.circular(16)),
-                                                    ),
-                                                    ListTile(
-                                                      contentPadding: EdgeInsets.zero,
-                                                      title: Center(
-                                                        child: Text(
-                                                          '${FleamarketCategory_spot.muju.korean}',
-                                                          style: SDSTextStyle.bold.copyWith(
-                                                              fontSize: 15,
-                                                              color: SDSColor.gray900
+                                                      ListTile(
+                                                        contentPadding: EdgeInsets.zero,
+                                                        title: Center(
+                                                          child: Text(
+                                                            '${FleamarketCategory_spot.vivaldi.korean}',
+                                                            style: SDSTextStyle.bold.copyWith(
+                                                                fontSize: 15,
+                                                                color: SDSColor.gray900
+                                                            ),
                                                           ),
                                                         ),
+                                                        //selected: _isSelected[index]!,
+                                                        onTap: () async {
+                                                          Navigator.pop(context);
+                                                          _fleamarketListViewModel.changeCategory_spot_total('${FleamarketCategory_spot.vivaldi.korean}');
+                                                          await _fleamarketListViewModel.fetchFleamarketData_total(
+                                                              userId: _userViewModel.user.user_id,
+                                                            categorySub: (_fleamarketListViewModel.selectedCategory_sub_total == '전체 카테고리')
+                                                                ? null
+                                                                :_fleamarketListViewModel.selectedCategory_sub_total,
+                                                            spot: _fleamarketListViewModel.selectedCategory_spot_total,
+                                                          );
+                                                        },
+                                                        shape: RoundedRectangleBorder(
+                                                            borderRadius:
+                                                            BorderRadius.circular(16)),
                                                       ),
-                                                      //selected: _isSelected[index]!,
-                                                      onTap: () async {
-                                                        Navigator.pop(context);
-                                                        _fleamarketListViewModel.changeCategory_spot_total('${FleamarketCategory_spot.muju.korean}');
-                                                        await _fleamarketListViewModel.fetchFleamarketData_total(
-                                                            userId: _userViewModel.user.user_id,
-                                                          categorySub: (_fleamarketListViewModel.selectedCategory_sub_total == '전체 카테고리')
-                                                              ? null
-                                                              :_fleamarketListViewModel.selectedCategory_sub_total,
-                                                          spot: _fleamarketListViewModel.selectedCategory_spot_total,
-                                                        );
-                                                      },
-                                                      shape: RoundedRectangleBorder(
-                                                          borderRadius:
-                                                          BorderRadius.circular(16)),
-                                                    ),
-                                                    ListTile(
-                                                      contentPadding: EdgeInsets.zero,
-                                                      title: Center(
-                                                        child: Text(
-                                                          '${FleamarketCategory_spot.vivaldi.korean}',
-                                                          style: SDSTextStyle.bold.copyWith(
-                                                              fontSize: 15,
-                                                              color: SDSColor.gray900
+                                                      ListTile(
+                                                        contentPadding: EdgeInsets.zero,
+                                                        title: Center(
+                                                          child: Text(
+                                                            '${FleamarketCategory_spot.alphen.korean}',
+                                                            style: SDSTextStyle.bold.copyWith(
+                                                                fontSize: 15,
+                                                                color: SDSColor.gray900
+                                                            ),
                                                           ),
                                                         ),
+                                                        //selected: _isSelected[index]!,
+                                                        onTap: () async {
+                                                          Navigator.pop(context);
+                                                          _fleamarketListViewModel.changeCategory_spot_total('${FleamarketCategory_spot.alphen.korean}');
+                                                          await _fleamarketListViewModel.fetchFleamarketData_total(
+                                                              userId: _userViewModel.user.user_id,
+                                                            categorySub: (_fleamarketListViewModel.selectedCategory_sub_total == '전체 카테고리')
+                                                                ? null
+                                                                :_fleamarketListViewModel.selectedCategory_sub_total,
+                                                            spot: _fleamarketListViewModel.selectedCategory_spot_total,
+                                                          );
+                                                        },
+                                                        shape: RoundedRectangleBorder(
+                                                            borderRadius:
+                                                            BorderRadius.circular(16)),
                                                       ),
-                                                      //selected: _isSelected[index]!,
-                                                      onTap: () async {
-                                                        Navigator.pop(context);
-                                                        _fleamarketListViewModel.changeCategory_spot_total('${FleamarketCategory_spot.vivaldi.korean}');
-                                                        await _fleamarketListViewModel.fetchFleamarketData_total(
-                                                            userId: _userViewModel.user.user_id,
-                                                          categorySub: (_fleamarketListViewModel.selectedCategory_sub_total == '전체 카테고리')
-                                                              ? null
-                                                              :_fleamarketListViewModel.selectedCategory_sub_total,
-                                                          spot: _fleamarketListViewModel.selectedCategory_spot_total,
-                                                        );
-                                                      },
-                                                      shape: RoundedRectangleBorder(
-                                                          borderRadius:
-                                                          BorderRadius.circular(16)),
-                                                    ),
-                                                    ListTile(
-                                                      contentPadding: EdgeInsets.zero,
-                                                      title: Center(
-                                                        child: Text(
-                                                          '${FleamarketCategory_spot.alphen.korean}',
-                                                          style: SDSTextStyle.bold.copyWith(
-                                                              fontSize: 15,
-                                                              color: SDSColor.gray900
+                                                      ListTile(
+                                                        contentPadding: EdgeInsets.zero,
+                                                        title: Center(
+                                                          child: Text(
+                                                            '${FleamarketCategory_spot.gangchon.korean}',
+                                                            style: SDSTextStyle.bold.copyWith(
+                                                                fontSize: 15,
+                                                                color: SDSColor.gray900
+                                                            ),
                                                           ),
                                                         ),
+                                                        //selected: _isSelected[index]!,
+                                                        onTap: () async {
+                                                          Navigator.pop(context);
+                                                          _fleamarketListViewModel.changeCategory_spot_total('${FleamarketCategory_spot.gangchon.korean}');
+                                                          await _fleamarketListViewModel.fetchFleamarketData_total(
+                                                              userId: _userViewModel.user.user_id,
+                                                            categorySub: (_fleamarketListViewModel.selectedCategory_sub_total == '전체 카테고리')
+                                                                ? null
+                                                                :_fleamarketListViewModel.selectedCategory_sub_total,
+                                                            spot: _fleamarketListViewModel.selectedCategory_spot_total,
+                                                          );
+                                                        },
+                                                        shape: RoundedRectangleBorder(
+                                                            borderRadius:
+                                                            BorderRadius.circular(16)),
                                                       ),
-                                                      //selected: _isSelected[index]!,
-                                                      onTap: () async {
-                                                        Navigator.pop(context);
-                                                        _fleamarketListViewModel.changeCategory_spot_total('${FleamarketCategory_spot.alphen.korean}');
-                                                        await _fleamarketListViewModel.fetchFleamarketData_total(
-                                                            userId: _userViewModel.user.user_id,
-                                                          categorySub: (_fleamarketListViewModel.selectedCategory_sub_total == '전체 카테고리')
-                                                              ? null
-                                                              :_fleamarketListViewModel.selectedCategory_sub_total,
-                                                          spot: _fleamarketListViewModel.selectedCategory_spot_total,
-                                                        );
-                                                      },
-                                                      shape: RoundedRectangleBorder(
-                                                          borderRadius:
-                                                          BorderRadius.circular(16)),
-                                                    ),
-                                                    ListTile(
-                                                      contentPadding: EdgeInsets.zero,
-                                                      title: Center(
-                                                        child: Text(
-                                                          '${FleamarketCategory_spot.gangchon.korean}',
-                                                          style: SDSTextStyle.bold.copyWith(
-                                                              fontSize: 15,
-                                                              color: SDSColor.gray900
+                                                      ListTile(
+                                                        contentPadding: EdgeInsets.zero,
+                                                        title: Center(
+                                                          child: Text(
+                                                            '${FleamarketCategory_spot.oak.korean}',
+                                                            style: SDSTextStyle.bold.copyWith(
+                                                                fontSize: 15,
+                                                                color: SDSColor.gray900
+                                                            ),
                                                           ),
                                                         ),
+                                                        //selected: _isSelected[index]!,
+                                                        onTap: () async {
+                                                          Navigator.pop(context);
+                                                          _fleamarketListViewModel.changeCategory_spot_total('${FleamarketCategory_spot.oak.korean}');
+                                                          await _fleamarketListViewModel.fetchFleamarketData_total(
+                                                              userId: _userViewModel.user.user_id,
+                                                            categorySub: (_fleamarketListViewModel.selectedCategory_sub_total == '전체 카테고리')
+                                                                ? null
+                                                                :_fleamarketListViewModel.selectedCategory_sub_total,
+                                                            spot: _fleamarketListViewModel.selectedCategory_spot_total,
+                                                          );
+                                                        },
+                                                        shape: RoundedRectangleBorder(
+                                                            borderRadius:
+                                                            BorderRadius.circular(16)),
                                                       ),
-                                                      //selected: _isSelected[index]!,
-                                                      onTap: () async {
-                                                        Navigator.pop(context);
-                                                        _fleamarketListViewModel.changeCategory_spot_total('${FleamarketCategory_spot.gangchon.korean}');
-                                                        await _fleamarketListViewModel.fetchFleamarketData_total(
-                                                            userId: _userViewModel.user.user_id,
-                                                          categorySub: (_fleamarketListViewModel.selectedCategory_sub_total == '전체 카테고리')
-                                                              ? null
-                                                              :_fleamarketListViewModel.selectedCategory_sub_total,
-                                                          spot: _fleamarketListViewModel.selectedCategory_spot_total,
-                                                        );
-                                                      },
-                                                      shape: RoundedRectangleBorder(
-                                                          borderRadius:
-                                                          BorderRadius.circular(16)),
-                                                    ),
-                                                    ListTile(
-                                                      contentPadding: EdgeInsets.zero,
-                                                      title: Center(
-                                                        child: Text(
-                                                          '${FleamarketCategory_spot.oak.korean}',
-                                                          style: SDSTextStyle.bold.copyWith(
-                                                              fontSize: 15,
-                                                              color: SDSColor.gray900
+                                                      ListTile(
+                                                        contentPadding: EdgeInsets.zero,
+                                                        title: Center(
+                                                          child: Text(
+                                                            '${FleamarketCategory_spot.o2.korean}',
+                                                            style: SDSTextStyle.bold.copyWith(
+                                                                fontSize: 15,
+                                                                color: SDSColor.gray900
+                                                            ),
                                                           ),
                                                         ),
+                                                        //selected: _isSelected[index]!,
+                                                        onTap: () async {
+                                                          Navigator.pop(context);
+                                                          _fleamarketListViewModel.changeCategory_spot_total('${FleamarketCategory_spot.o2.korean}');
+                                                          await _fleamarketListViewModel.fetchFleamarketData_total(
+                                                              userId: _userViewModel.user.user_id,
+                                                            categorySub: (_fleamarketListViewModel.selectedCategory_sub_total == '전체 카테고리')
+                                                                ? null
+                                                                :_fleamarketListViewModel.selectedCategory_sub_total,
+                                                            spot: _fleamarketListViewModel.selectedCategory_spot_total,
+                                                          );
+                                                        },
+                                                        shape: RoundedRectangleBorder(
+                                                            borderRadius:
+                                                            BorderRadius.circular(16)),
                                                       ),
-                                                      //selected: _isSelected[index]!,
-                                                      onTap: () async {
-                                                        Navigator.pop(context);
-                                                        _fleamarketListViewModel.changeCategory_spot_total('${FleamarketCategory_spot.oak.korean}');
-                                                        await _fleamarketListViewModel.fetchFleamarketData_total(
-                                                            userId: _userViewModel.user.user_id,
-                                                          categorySub: (_fleamarketListViewModel.selectedCategory_sub_total == '전체 카테고리')
-                                                              ? null
-                                                              :_fleamarketListViewModel.selectedCategory_sub_total,
-                                                          spot: _fleamarketListViewModel.selectedCategory_spot_total,
-                                                        );
-                                                      },
-                                                      shape: RoundedRectangleBorder(
-                                                          borderRadius:
-                                                          BorderRadius.circular(16)),
-                                                    ),
-                                                    ListTile(
-                                                      contentPadding: EdgeInsets.zero,
-                                                      title: Center(
-                                                        child: Text(
-                                                          '${FleamarketCategory_spot.o2.korean}',
-                                                          style: SDSTextStyle.bold.copyWith(
-                                                              fontSize: 15,
-                                                              color: SDSColor.gray900
+                                                      ListTile(
+                                                        contentPadding: EdgeInsets.zero,
+                                                        title: Center(
+                                                          child: Text(
+                                                            '${FleamarketCategory_spot.yongpyong.korean}',
+                                                            style: SDSTextStyle.bold.copyWith(
+                                                                fontSize: 15,
+                                                                color: SDSColor.gray900
+                                                            ),
                                                           ),
                                                         ),
+                                                        //selected: _isSelected[index]!,
+                                                        onTap: () async {
+                                                          Navigator.pop(context);
+                                                          _fleamarketListViewModel.changeCategory_spot_total('${FleamarketCategory_spot.yongpyong.korean}');
+                                                          await _fleamarketListViewModel.fetchFleamarketData_total(
+                                                              userId: _userViewModel.user.user_id,
+                                                            categorySub: (_fleamarketListViewModel.selectedCategory_sub_total == '전체 카테고리')
+                                                                ? null
+                                                                :_fleamarketListViewModel.selectedCategory_sub_total,
+                                                            spot: _fleamarketListViewModel.selectedCategory_spot_total,
+                                                          );
+                                                        },
+                                                        shape: RoundedRectangleBorder(
+                                                            borderRadius:
+                                                            BorderRadius.circular(16)),
                                                       ),
-                                                      //selected: _isSelected[index]!,
-                                                      onTap: () async {
-                                                        Navigator.pop(context);
-                                                        _fleamarketListViewModel.changeCategory_spot_total('${FleamarketCategory_spot.o2.korean}');
-                                                        await _fleamarketListViewModel.fetchFleamarketData_total(
-                                                            userId: _userViewModel.user.user_id,
-                                                          categorySub: (_fleamarketListViewModel.selectedCategory_sub_total == '전체 카테고리')
-                                                              ? null
-                                                              :_fleamarketListViewModel.selectedCategory_sub_total,
-                                                          spot: _fleamarketListViewModel.selectedCategory_spot_total,
-                                                        );
-                                                      },
-                                                      shape: RoundedRectangleBorder(
-                                                          borderRadius:
-                                                          BorderRadius.circular(16)),
-                                                    ),
-                                                    ListTile(
-                                                      contentPadding: EdgeInsets.zero,
-                                                      title: Center(
-                                                        child: Text(
-                                                          '${FleamarketCategory_spot.yongpyong.korean}',
-                                                          style: SDSTextStyle.bold.copyWith(
-                                                              fontSize: 15,
-                                                              color: SDSColor.gray900
+                                                      ListTile(
+                                                        contentPadding: EdgeInsets.zero,
+                                                        title: Center(
+                                                          child: Text(
+                                                            '${FleamarketCategory_spot.welli.korean}',
+                                                            style: SDSTextStyle.bold.copyWith(
+                                                                fontSize: 15,
+                                                                color: SDSColor.gray900
+                                                            ),
                                                           ),
                                                         ),
+                                                        //selected: _isSelected[index]!,
+                                                        onTap: () async {
+                                                          Navigator.pop(context);
+                                                          _fleamarketListViewModel.changeCategory_spot_total('${FleamarketCategory_spot.welli.korean}');
+                                                          await _fleamarketListViewModel.fetchFleamarketData_total(
+                                                              userId: _userViewModel.user.user_id,
+                                                            categorySub: (_fleamarketListViewModel.selectedCategory_sub_total == '전체 카테고리')
+                                                                ? null
+                                                                :_fleamarketListViewModel.selectedCategory_sub_total,
+                                                            spot: _fleamarketListViewModel.selectedCategory_spot_total,
+                                                          );
+                                                        },
+                                                        shape: RoundedRectangleBorder(
+                                                            borderRadius:
+                                                            BorderRadius.circular(16)),
                                                       ),
-                                                      //selected: _isSelected[index]!,
-                                                      onTap: () async {
-                                                        Navigator.pop(context);
-                                                        _fleamarketListViewModel.changeCategory_spot_total('${FleamarketCategory_spot.yongpyong.korean}');
-                                                        await _fleamarketListViewModel.fetchFleamarketData_total(
-                                                            userId: _userViewModel.user.user_id,
-                                                          categorySub: (_fleamarketListViewModel.selectedCategory_sub_total == '전체 카테고리')
-                                                              ? null
-                                                              :_fleamarketListViewModel.selectedCategory_sub_total,
-                                                          spot: _fleamarketListViewModel.selectedCategory_spot_total,
-                                                        );
-                                                      },
-                                                      shape: RoundedRectangleBorder(
-                                                          borderRadius:
-                                                          BorderRadius.circular(16)),
-                                                    ),
-                                                    ListTile(
-                                                      contentPadding: EdgeInsets.zero,
-                                                      title: Center(
-                                                        child: Text(
-                                                          '${FleamarketCategory_spot.welli.korean}',
-                                                          style: SDSTextStyle.bold.copyWith(
-                                                              fontSize: 15,
-                                                              color: SDSColor.gray900
+                                                      ListTile(
+                                                        contentPadding: EdgeInsets.zero,
+                                                        title: Center(
+                                                          child: Text(
+                                                            '${FleamarketCategory_spot.jisan.korean}',
+                                                            style: SDSTextStyle.bold.copyWith(
+                                                                fontSize: 15,
+                                                                color: SDSColor.gray900
+                                                            ),
                                                           ),
                                                         ),
+                                                        //selected: _isSelected[index]!,
+                                                        onTap: () async {
+                                                          Navigator.pop(context);
+                                                          _fleamarketListViewModel.changeCategory_spot_total('${FleamarketCategory_spot.jisan.korean}');
+                                                          await _fleamarketListViewModel.fetchFleamarketData_total(
+                                                              userId: _userViewModel.user.user_id,
+                                                            categorySub: (_fleamarketListViewModel.selectedCategory_sub_total == '전체 카테고리')
+                                                                ? null
+                                                                :_fleamarketListViewModel.selectedCategory_sub_total,
+                                                            spot: _fleamarketListViewModel.selectedCategory_spot_total,
+                                                          );
+                                                        },
+                                                        shape: RoundedRectangleBorder(
+                                                            borderRadius:
+                                                            BorderRadius.circular(16)),
                                                       ),
-                                                      //selected: _isSelected[index]!,
-                                                      onTap: () async {
-                                                        Navigator.pop(context);
-                                                        _fleamarketListViewModel.changeCategory_spot_total('${FleamarketCategory_spot.welli.korean}');
-                                                        await _fleamarketListViewModel.fetchFleamarketData_total(
-                                                            userId: _userViewModel.user.user_id,
-                                                          categorySub: (_fleamarketListViewModel.selectedCategory_sub_total == '전체 카테고리')
-                                                              ? null
-                                                              :_fleamarketListViewModel.selectedCategory_sub_total,
-                                                          spot: _fleamarketListViewModel.selectedCategory_spot_total,
-                                                        );
-                                                      },
-                                                      shape: RoundedRectangleBorder(
-                                                          borderRadius:
-                                                          BorderRadius.circular(16)),
-                                                    ),
-                                                    ListTile(
-                                                      contentPadding: EdgeInsets.zero,
-                                                      title: Center(
-                                                        child: Text(
-                                                          '${FleamarketCategory_spot.jisan.korean}',
-                                                          style: SDSTextStyle.bold.copyWith(
-                                                              fontSize: 15,
-                                                              color: SDSColor.gray900
+                                                      ListTile(
+                                                        contentPadding: EdgeInsets.zero,
+                                                        title: Center(
+                                                          child: Text(
+                                                            '${FleamarketCategory_spot.high1.korean}',
+                                                            style: SDSTextStyle.bold.copyWith(
+                                                                fontSize: 15,
+                                                                color: SDSColor.gray900
+                                                            ),
                                                           ),
                                                         ),
+                                                        //selected: _isSelected[index]!,
+                                                        onTap: () async {
+                                                          Navigator.pop(context);
+                                                          _fleamarketListViewModel.changeCategory_spot_total('${FleamarketCategory_spot.high1.korean}');
+                                                          await _fleamarketListViewModel.fetchFleamarketData_total(
+                                                              userId: _userViewModel.user.user_id,
+                                                            categorySub: (_fleamarketListViewModel.selectedCategory_sub_total == '전체 카테고리')
+                                                                ? null
+                                                                :_fleamarketListViewModel.selectedCategory_sub_total,
+                                                            spot: _fleamarketListViewModel.selectedCategory_spot_total,
+                                                          );
+                                                        },
+                                                        shape: RoundedRectangleBorder(
+                                                            borderRadius:
+                                                            BorderRadius.circular(16)),
                                                       ),
-                                                      //selected: _isSelected[index]!,
-                                                      onTap: () async {
-                                                        Navigator.pop(context);
-                                                        _fleamarketListViewModel.changeCategory_spot_total('${FleamarketCategory_spot.jisan.korean}');
-                                                        await _fleamarketListViewModel.fetchFleamarketData_total(
-                                                            userId: _userViewModel.user.user_id,
-                                                          categorySub: (_fleamarketListViewModel.selectedCategory_sub_total == '전체 카테고리')
-                                                              ? null
-                                                              :_fleamarketListViewModel.selectedCategory_sub_total,
-                                                          spot: _fleamarketListViewModel.selectedCategory_spot_total,
-                                                        );
-                                                      },
-                                                      shape: RoundedRectangleBorder(
-                                                          borderRadius:
-                                                          BorderRadius.circular(16)),
-                                                    ),
-                                                    ListTile(
-                                                      contentPadding: EdgeInsets.zero,
-                                                      title: Center(
-                                                        child: Text(
-                                                          '${FleamarketCategory_spot.high1.korean}',
-                                                          style: SDSTextStyle.bold.copyWith(
-                                                              fontSize: 15,
-                                                              color: SDSColor.gray900
+                                                      ListTile(
+                                                        contentPadding: EdgeInsets.zero,
+                                                        title: Center(
+                                                          child: Text(
+                                                            '${FleamarketCategory_spot.phoenix.korean}',
+                                                            style: SDSTextStyle.bold.copyWith(
+                                                                fontSize: 15,
+                                                                color: SDSColor.gray900
+                                                            ),
                                                           ),
                                                         ),
+                                                        //selected: _isSelected[index]!,
+                                                        onTap: () async {
+                                                          Navigator.pop(context);
+                                                          _fleamarketListViewModel.changeCategory_spot_total('${FleamarketCategory_spot.phoenix.korean}');
+                                                          await _fleamarketListViewModel.fetchFleamarketData_total(
+                                                              userId: _userViewModel.user.user_id,
+                                                            categorySub: (_fleamarketListViewModel.selectedCategory_sub_total == '전체 카테고리')
+                                                                ? null
+                                                                :_fleamarketListViewModel.selectedCategory_sub_total,
+                                                            spot: _fleamarketListViewModel.selectedCategory_spot_total,
+                                                          );
+                                                        },
+                                                        shape: RoundedRectangleBorder(
+                                                            borderRadius:
+                                                            BorderRadius.circular(16)),
                                                       ),
-                                                      //selected: _isSelected[index]!,
-                                                      onTap: () async {
-                                                        Navigator.pop(context);
-                                                        _fleamarketListViewModel.changeCategory_spot_total('${FleamarketCategory_spot.high1.korean}');
-                                                        await _fleamarketListViewModel.fetchFleamarketData_total(
-                                                            userId: _userViewModel.user.user_id,
-                                                          categorySub: (_fleamarketListViewModel.selectedCategory_sub_total == '전체 카테고리')
-                                                              ? null
-                                                              :_fleamarketListViewModel.selectedCategory_sub_total,
-                                                          spot: _fleamarketListViewModel.selectedCategory_spot_total,
-                                                        );
-                                                      },
-                                                      shape: RoundedRectangleBorder(
-                                                          borderRadius:
-                                                          BorderRadius.circular(16)),
-                                                    ),
-                                                    ListTile(
-                                                      contentPadding: EdgeInsets.zero,
-                                                      title: Center(
-                                                        child: Text(
-                                                          '${FleamarketCategory_spot.phoenix.korean}',
-                                                          style: SDSTextStyle.bold.copyWith(
-                                                              fontSize: 15,
-                                                              color: SDSColor.gray900
+                                                      ListTile(
+                                                        contentPadding: EdgeInsets.zero,
+                                                        title: Center(
+                                                          child: Text(
+                                                            '${FleamarketCategory_spot.etc.korean}',
+                                                            style: SDSTextStyle.bold.copyWith(
+                                                                fontSize: 15,
+                                                                color: SDSColor.gray900
+                                                            ),
                                                           ),
                                                         ),
+                                                        //selected: _isSelected[index]!,
+                                                        onTap: () async {
+                                                          Navigator.pop(context);
+                                                          _fleamarketListViewModel.changeCategory_spot_total('${FleamarketCategory_spot.etc.korean}');
+                                                          await _fleamarketListViewModel.fetchFleamarketData_total(
+                                                              userId: _userViewModel.user.user_id,
+                                                            categorySub: (_fleamarketListViewModel.selectedCategory_sub_total == '전체 카테고리')
+                                                                ? null
+                                                                :_fleamarketListViewModel.selectedCategory_sub_total,
+                                                            spot: _fleamarketListViewModel.selectedCategory_spot_total,
+                                                          );
+                                                        },
+                                                        shape: RoundedRectangleBorder(
+                                                            borderRadius:
+                                                            BorderRadius.circular(16)),
                                                       ),
-                                                      //selected: _isSelected[index]!,
-                                                      onTap: () async {
-                                                        Navigator.pop(context);
-                                                        _fleamarketListViewModel.changeCategory_spot_total('${FleamarketCategory_spot.phoenix.korean}');
-                                                        await _fleamarketListViewModel.fetchFleamarketData_total(
-                                                            userId: _userViewModel.user.user_id,
-                                                          categorySub: (_fleamarketListViewModel.selectedCategory_sub_total == '전체 카테고리')
-                                                              ? null
-                                                              :_fleamarketListViewModel.selectedCategory_sub_total,
-                                                          spot: _fleamarketListViewModel.selectedCategory_spot_total,
-                                                        );
-                                                      },
-                                                      shape: RoundedRectangleBorder(
-                                                          borderRadius:
-                                                          BorderRadius.circular(16)),
-                                                    ),
-                                                    ListTile(
-                                                      contentPadding: EdgeInsets.zero,
-                                                      title: Center(
-                                                        child: Text(
-                                                          '${FleamarketCategory_spot.etc.korean}',
-                                                          style: SDSTextStyle.bold.copyWith(
-                                                              fontSize: 15,
-                                                              color: SDSColor.gray900
-                                                          ),
-                                                        ),
-                                                      ),
-                                                      //selected: _isSelected[index]!,
-                                                      onTap: () async {
-                                                        Navigator.pop(context);
-                                                        _fleamarketListViewModel.changeCategory_spot_total('${FleamarketCategory_spot.etc.korean}');
-                                                        await _fleamarketListViewModel.fetchFleamarketData_total(
-                                                            userId: _userViewModel.user.user_id,
-                                                          categorySub: (_fleamarketListViewModel.selectedCategory_sub_total == '전체 카테고리')
-                                                              ? null
-                                                              :_fleamarketListViewModel.selectedCategory_sub_total,
-                                                          spot: _fleamarketListViewModel.selectedCategory_spot_total,
-                                                        );
-                                                      },
-                                                      shape: RoundedRectangleBorder(
-                                                          borderRadius:
-                                                          BorderRadius.circular(16)),
-                                                    ),
-                                                  ],
+                                                    ],
+                                                  ),
                                                 ),
                                               ),
                                             ),
@@ -1054,25 +1073,24 @@ class FleaMarketListView_total extends StatelessWidget {
                                 },
                                 style: ElevatedButton.styleFrom(
                                     padding: EdgeInsets.only(
-                                        right: 30, left: 14, top: 8, bottom: 8),
-                                    side: const BorderSide(
+                                        right: 32, left: 12, top: 3, bottom: 2),
+                                    side: BorderSide(
                                       width: 1,
-                                      color: Color(0xFFF5F5F5),
+                                      color: (_fleamarketListViewModel.selectedCategory_spot_total != '전체 거래장소') ? SDSColor.gray900 : SDSColor.gray100,
                                     ),
-                                    backgroundColor: SDSColor.gray50,
+                                    backgroundColor: (_fleamarketListViewModel.selectedCategory_spot_total != '전체 거래장소') ? SDSColor.gray900 : SDSColor.snowliveWhite,
                                     elevation: 0,
                                     shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(8))),
+                                        borderRadius: BorderRadius.circular(50))),
                                 child:
                                 Text('${_fleamarketListViewModel.selectedCategory_spot_total}',
-                                    style: TextStyle(
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.bold,
-                                        color: Color(0xFF555555)))
+                                    style: SDSTextStyle.bold.copyWith(
+                                        fontSize: 13,
+                                        color: (_fleamarketListViewModel.selectedCategory_spot_total != '전체 거래장소') ? Color(0xFFFFFFFF) : Color(0xFF111111)))
                             ),
                             Positioned(
-                              top: 12,
-                              right: 6,
+                              top: 16,
+                              right: 10,
                               child: GestureDetector(
                                 onTap: () async {
                                   showModalBottomSheet(
@@ -1484,18 +1502,24 @@ class FleaMarketListView_total extends StatelessWidget {
                                         );
                                       });
                                 },
-                                child: Icon(
-                                  Icons.arrow_drop_down_sharp,
-                                  size: 24,
-                                  color: Color(0xFF666666),
+                                child: (_fleamarketListViewModel.selectedCategory_spot_total != '전체 거래장소') ? ExtendedImage.asset(
+                                  'assets/imgs/icons/icon_check_round.png',
+                                  fit: BoxFit.cover,
+                                  width: 16,
+                                  height: 16,
+                                ) : ExtendedImage.asset(
+                                  'assets/imgs/icons/icon_check_round_black.png',
+                                  fit: BoxFit.cover,
+                                  width: 16,
+                                  height: 16,
                                 ),
                               ),
                             ),
                           ],
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
                 //TODO: 리스트
                 Expanded(
@@ -1504,6 +1528,7 @@ class FleaMarketListView_total extends StatelessWidget {
                         offset: Offset(0, -40),
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             Image.asset(
                               'assets/imgs/icons/icon_nodata.png',
@@ -1515,10 +1540,9 @@ class FleaMarketListView_total extends StatelessWidget {
                               height: 6,
                             ),
                             Text('게시판에 글이 없습니다.',
-                              style: TextStyle(
+                              style: SDSTextStyle.regular.copyWith(
                                   fontSize: 14,
-                                  fontWeight: FontWeight.normal,
-                                  color: Color(0xFF949494)
+                                  color: SDSColor.gray600
                               ),
                             ),
                           ],

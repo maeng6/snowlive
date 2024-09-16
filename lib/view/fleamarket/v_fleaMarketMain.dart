@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
+import '../../screens/snowliveDesignStyle.dart';
 import '../../viewmodel/vm_fleamarketList.dart';
 
 class FleaMarketMainView extends StatelessWidget {
@@ -22,89 +23,80 @@ class FleaMarketMainView extends StatelessWidget {
       backgroundColor: Colors.white,
       extendBodyBehindAppBar: true,
       appBar: PreferredSize(
-        preferredSize: Size.fromHeight(106),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            AppBar(
-              automaticallyImplyLeading: false,
-              iconTheme: IconThemeData(size: 26, color: Colors.black87),
-              centerTitle: false,
-              titleSpacing: 0,
-              title: Padding(
-                padding: const EdgeInsets.only(left: 16),
-                child: Text(
-                  '스노우마켓',
-                  style: TextStyle(
-                      color: Color(0xFF111111),
-                      fontWeight: FontWeight.bold,
-                      fontSize: 20),
-                ),
-              ),
-              backgroundColor: Colors.white,
-              elevation: 0.0,
+        preferredSize: Size.fromHeight(44),
+        child: AppBar(
+          automaticallyImplyLeading: false,
+          centerTitle: false,
+          titleSpacing: 0,
+          title: Padding(
+            padding: const EdgeInsets.only(left: 16),
+            child: Text(
+              '스노우마켓',
+              style: SDSTextStyle.extraBold.copyWith(
+                  color: SDSColor.gray900,
+                  fontSize: 18),
             ),
-            GestureDetector(
-              onTap: () {
-                Get.toNamed(AppRoutes.fleamarketSearch);
-              },
-              child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16),
-                child: Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(6),
-                    color: Color(0xFFEFEFEF),
-                  ),
-                  height: 50,
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 16),
-                    child: Row(
-                      children: [
-                        Icon(
-                          Icons.search,
-                          color: Color(0xFF666666),
-                        ),
-                        SizedBox(
-                          width: 5,
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 1),
-                          child: Text(
-                            '상품 검색',
-                            style:
-                            TextStyle(fontSize: 15, color: Color(0xFF666666)),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ],
+          ),
+          backgroundColor: SDSColor.snowliveWhite,
+          surfaceTintColor: SDSColor.snowliveWhite,
+          elevation: 0.0,
         ),
       ),
       body: SafeArea(
         child: Stack(
           children: [
             Positioned(
-              top: 44,
+              top: 98,
               child: Container(
                 width: _size.width,
                 height: 1,
-                color: Color(0xFFECECEC),
+                color: SDSColor.gray100,
               ),
             ),
             Obx(()=>Padding(
               padding: EdgeInsets.symmetric(horizontal: 16),
               child: Column(
                 children: [
+                  GestureDetector(
+                    onTap: () {
+                      Get.toNamed(AppRoutes.fleamarketSearch);
+                    },
+                    child: Padding(
+                      padding: EdgeInsets.only(top: 4, bottom: 10),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(6),
+                          color: SDSColor.gray50,
+                        ),
+                        height: 40,
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 16),
+                          child: Row(
+                            children: [
+                              Image.asset('assets/imgs/icons/icon_search.png',
+                              width: 16,),
+                              SizedBox(
+                                width: 6,
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(bottom: 1),
+                                child: Text(
+                                  '상품 검색',
+                                  style: SDSTextStyle.regular.copyWith(fontSize: 15, color: SDSColor.gray400),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
                   SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
                     child: Row(
                       children: [
                         Padding(
-                          padding: EdgeInsets.only(right: 12),
+                          padding: EdgeInsets.only(right: 6),
                           child: Column(
                             children: [
                               Padding(
@@ -116,8 +108,8 @@ class FleaMarketMainView extends StatelessWidget {
                                       '전체',
                                       style: TextStyle(
                                           color: (_fleamarketViewModel.tapName == '전체')
-                                              ? Color(0xFF111111)
-                                              : Color(0xFFC8C8C8),
+                                              ? SDSColor.gray900
+                                              : SDSColor.gray300,
                                           fontWeight: (_fleamarketViewModel.tapName == '전체')
                                               ? FontWeight.bold
                                               : FontWeight.normal,
@@ -131,7 +123,8 @@ class FleaMarketMainView extends StatelessWidget {
                                     style: ElevatedButton.styleFrom(
                                       padding: EdgeInsets.only(top: 0),
                                       minimumSize: Size(40, 10),
-                                      backgroundColor: Color(0xFFFFFFFF),
+                                      backgroundColor: SDSColor.snowliveWhite,
+                                      overlayColor: Colors.transparent,
                                       shape: RoundedRectangleBorder(
                                           borderRadius:
                                           BorderRadius.circular(8)),
@@ -141,17 +134,17 @@ class FleaMarketMainView extends StatelessWidget {
                                 ),
                               ),
                               Container(
-                                width: 68,
+                                width: 60,
                                 height: 3,
                                 color: (_fleamarketViewModel.tapName == '전체')
-                                    ? Color(0xFF111111)
+                                    ? SDSColor.gray900
                                     : Colors.transparent,
                               )
                             ],
                           ),
                         ),
                         Padding(
-                          padding: EdgeInsets.only(right: 12),
+                          padding: EdgeInsets.only(right: 6),
                           child: Column(
                             children: [
                               Padding(
@@ -163,8 +156,8 @@ class FleaMarketMainView extends StatelessWidget {
                                       '스키',
                                       style: TextStyle(
                                           color: (_fleamarketViewModel.tapName == '스키')
-                                              ? Color(0xFF111111)
-                                              : Color(0xFFC8C8C8),
+                                              ? SDSColor.gray900
+                                              : SDSColor.gray300,
                                           fontWeight: (_fleamarketViewModel.tapName == '스키')
                                               ? FontWeight.bold
                                               : FontWeight.normal,
@@ -178,7 +171,8 @@ class FleaMarketMainView extends StatelessWidget {
                                     style: ElevatedButton.styleFrom(
                                       padding: EdgeInsets.only(top: 0),
                                       minimumSize: Size(40, 10),
-                                      backgroundColor: Color(0xFFFFFFFF),
+                                      backgroundColor: SDSColor.snowliveWhite,
+                                      overlayColor: Colors.transparent,
                                       shape: RoundedRectangleBorder(
                                           borderRadius:
                                           BorderRadius.circular(8)),
@@ -188,17 +182,17 @@ class FleaMarketMainView extends StatelessWidget {
                                 ),
                               ),
                               Container(
-                                width: 68,
+                                width: 60,
                                 height: 3,
                                 color: (_fleamarketViewModel.tapName == '스키')
-                                    ? Color(0xFF111111)
+                                    ? SDSColor.gray900
                                     : Colors.transparent,
                               )
                             ],
                           ),
                         ),
                         Padding(
-                          padding: EdgeInsets.only(right: 12),
+                          padding: EdgeInsets.only(right: 6),
                           child: Column(
                             children: [
                               Padding(
@@ -210,8 +204,8 @@ class FleaMarketMainView extends StatelessWidget {
                                       '스노보드',
                                       style: TextStyle(
                                           color: (_fleamarketViewModel.tapName == '스노보드')
-                                              ? Color(0xFF111111)
-                                              : Color(0xFFC8C8C8),
+                                              ? SDSColor.gray900
+                                              : SDSColor.gray300,
                                           fontWeight: (_fleamarketViewModel.tapName == '스노보드')
                                               ? FontWeight.bold
                                               : FontWeight.normal,
@@ -225,7 +219,8 @@ class FleaMarketMainView extends StatelessWidget {
                                     style: ElevatedButton.styleFrom(
                                       padding: EdgeInsets.only(top: 0),
                                       minimumSize: Size(40, 10),
-                                      backgroundColor: Color(0xFFFFFFFF),
+                                      backgroundColor: SDSColor.snowliveWhite,
+                                      overlayColor: Colors.transparent,
                                       shape: RoundedRectangleBorder(
                                           borderRadius:
                                           BorderRadius.circular(8)),
@@ -235,17 +230,17 @@ class FleaMarketMainView extends StatelessWidget {
                                 ),
                               ),
                               Container(
-                                width: 68,
+                                width: 76,
                                 height: 3,
                                 color: (_fleamarketViewModel.tapName == '스노보드')
-                                    ? Color(0xFF111111)
+                                    ? SDSColor.gray900
                                     : Colors.transparent,
                               )
                             ],
                           ),
                         ),
                         Padding(
-                          padding: EdgeInsets.only(right: 12),
+                          padding: EdgeInsets.only(right: 6),
                           child: Column(
                             children: [
                               Padding(
@@ -257,8 +252,8 @@ class FleaMarketMainView extends StatelessWidget {
                                       '찜 목록',
                                       style: TextStyle(
                                           color: (_fleamarketViewModel.tapName == '찜 목록')
-                                              ? Color(0xFF111111)
-                                              : Color(0xFFC8C8C8),
+                                              ? SDSColor.gray900
+                                              : SDSColor.gray300,
                                           fontWeight: (_fleamarketViewModel.tapName == '찜 목록')
                                               ? FontWeight.bold
                                               : FontWeight.normal,
@@ -272,7 +267,8 @@ class FleaMarketMainView extends StatelessWidget {
                                     style: ElevatedButton.styleFrom(
                                       padding: EdgeInsets.only(top: 0),
                                       minimumSize: Size(40, 10),
-                                      backgroundColor: Color(0xFFFFFFFF),
+                                      backgroundColor: SDSColor.snowliveWhite,
+                                      overlayColor: Colors.transparent,
                                       shape: RoundedRectangleBorder(
                                           borderRadius:
                                           BorderRadius.circular(8)),
@@ -285,14 +281,14 @@ class FleaMarketMainView extends StatelessWidget {
                                 width: 68,
                                 height: 3,
                                 color: (_fleamarketViewModel.tapName == '찜 목록')
-                                    ? Color(0xFF111111)
+                                    ? SDSColor.gray900
                                     : Colors.transparent,
                               )
                             ],
                           ),
                         ),
                         Padding(
-                          padding: EdgeInsets.only(right: 12),
+                          padding: EdgeInsets.only(right: 6),
                           child: Column(
                             children: [
                               Padding(
@@ -304,8 +300,8 @@ class FleaMarketMainView extends StatelessWidget {
                                       '내 게시글',
                                       style: TextStyle(
                                           color: (_fleamarketViewModel.tapName == '내 게시글')
-                                              ? Color(0xFF111111)
-                                              : Color(0xFFC8C8C8),
+                                              ? SDSColor.gray900
+                                              : SDSColor.gray300,
                                           fontWeight: (_fleamarketViewModel.tapName == '내 게시글')
                                               ? FontWeight.bold
                                               : FontWeight.normal,
@@ -319,7 +315,8 @@ class FleaMarketMainView extends StatelessWidget {
                                     style: ElevatedButton.styleFrom(
                                       padding: EdgeInsets.only(top: 0),
                                       minimumSize: Size(40, 10),
-                                      backgroundColor: Color(0xFFFFFFFF),
+                                      backgroundColor: SDSColor.snowliveWhite,
+                                      overlayColor: Colors.transparent,
                                       shape: RoundedRectangleBorder(
                                           borderRadius:
                                           BorderRadius.circular(8)),
@@ -329,10 +326,10 @@ class FleaMarketMainView extends StatelessWidget {
                                 ),
                               ),
                               Container(
-                                width: 68,
+                                width: 78,
                                 height: 3,
                                 color: (_fleamarketViewModel.tapName == '내 게시글')
-                                    ? Color(0xFF111111)
+                                    ? SDSColor.gray900
                                     : Colors.transparent,
                               )
                             ],

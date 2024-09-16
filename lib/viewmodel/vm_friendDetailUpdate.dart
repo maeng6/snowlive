@@ -17,17 +17,17 @@ class FriendDetailUpdateViewModel extends GetxController {
   final TextEditingController textEditingControllerMM = TextEditingController();
   final TextEditingController textEditingControllerDD = TextEditingController();
   final formKey = GlobalKey<FormState>();
-  RxString _displayName=''.obs;
-  RxBool _isCheckedDisplayName= false.obs;
+  RxString _displayName = ''.obs;
+  RxBool _isCheckedDisplayName = false.obs;
   RxBool _profileImage = false.obs;
   RxBool _activeCheckDisplaynameButton = false.obs;
   Rx<XFile?> _imageFile = Rx<XFile?>(null);
   Rx<XFile?> _croppedFile = Rx<XFile?>(null);
-  RxString _profileImageUrl=''.obs;
-  RxString _selectedResortName=''.obs;
-  RxInt _selectedResortIndex=99.obs;
-  RxString _selectedSkiOrBoard=''.obs;
-  RxString _selectedSex=''.obs;
+  RxString _profileImageUrl = ''.obs;
+  RxString _selectedResortName = ''.obs;
+  RxInt _selectedResortIndex = 99.obs;
+  RxString _selectedSkiOrBoard = ''.obs;
+  RxString _selectedSex = ''.obs;
   var _startSnowliveReturn;
 
   String get displayName => _displayName.value;
@@ -45,6 +45,24 @@ class FriendDetailUpdateViewModel extends GetxController {
 
   ImageController imageController = Get.find<ImageController>();
 
+  // Setter for croppedFile
+  void setCroppedFile(XFile? file) {
+    _croppedFile.value = file;
+    _profileImage.value = file != null; // Update profileImage based on croppedFile existence
+  }
+
+  // Setter for profileImageUrl
+  void setProfileImageUrl(String url) {
+    _profileImageUrl.value = url;
+  }
+
+  // Method to reset the image selection (cancel selected image)
+  void cancelSelectedImage() {
+    _profileImage.value = false;
+    _croppedFile.value = null;
+    _profileImageUrl.value = ''; // Also reset the profile image URL
+  }
+
   Future<void> fetchFriendDetailUpdateData({
     required displayName,
     required state_msg,
@@ -53,7 +71,6 @@ class FriendDetailUpdateViewModel extends GetxController {
     required selectedResortIndex,
     required selectedSkiOrBoard,
     required selectedSex,
-
   }) async {
     // Update text controllers and selected values
     this.textEditingController_displayName.text = displayName;
@@ -65,24 +82,19 @@ class FriendDetailUpdateViewModel extends GetxController {
     this._selectedSkiOrBoard.value = selectedSkiOrBoard;
     this._selectedSex.value = selectedSex;
     this._isCheckedDisplayName.value = true;
-
   }
-
 
   FriendDetailUpdateViewModel() {
     textEditingController_displayName.addListener(() {
-        _isCheckedDisplayName.value = false;
+      _isCheckedDisplayName.value = false;
     });
   }
 
   Future<void> uploadImage(ImageSource source) async {
     try {
       _imageFile.value = await imageController.getSingleImage(source);
-      if(_imageFile.value != null)
-        _croppedFile.value = await imageController.cropImage(_imageFile.value);
-       if(_croppedFile.value != null)
-        _profileImage.value = true;
-
+      if (_imageFile.value != null) _croppedFile.value = await imageController.cropImage(_imageFile.value);
+      if (_croppedFile.value != null) _profileImage.value = true;
     } catch (e) {
       // 에러 처리
       print('Image upload error: $e');
@@ -99,56 +111,45 @@ class FriendDetailUpdateViewModel extends GetxController {
     }
   }
 
-  void cancelSelectedImage(){
-    _profileImage.value = false;
-    _croppedFile.value = null;
-  }
-
-  void toggleCheckDisplayname(bool active){
+  void toggleCheckDisplayname(bool active) {
     _activeCheckDisplaynameButton.value = active;
   }
 
-  void toggleIsCheckedDisplayName(bool active){
+  void toggleIsCheckedDisplayName(bool active) {
     _isCheckedDisplayName.value = active;
   }
 
-  void selectResortInfo(int selectedIndex){
+  void selectResortInfo(int selectedIndex) {
     _selectedResortIndex.value = selectedIndex;
     _selectedResortName.value = resortNameList[selectedIndex]!;
   }
 
-  void selectSkiOrBoard(String selected){
-      _selectedSkiOrBoard.value = selected;
+  void selectSkiOrBoard(String selected) {
+    _selectedSkiOrBoard.value = selected;
   }
 
-  void selectSex(String selected){
+  void selectSex(String selected) {
     _selectedSex.value = selected;
   }
 
-
-  Future<void> checkDisplayName(body) async{
+  Future<void> checkDisplayName(body) async {
     ApiResponse response = await LoginAPI().checkDisplayName(body);
-    if(response.success){
+    if (response.success) {
       print(response.data['message']);
       _isCheckedDisplayName.value = true;
       _displayName.value = textEditingController_displayName.text;
-    } else{
-        _isCheckedDisplayName.value = false;
-
+    } else {
+      _isCheckedDisplayName.value = false;
     }
   }
 
-  Future<void> updateFriendDetail(body) async{
+  Future<void> updateFriendDetail(body) async {
     ApiResponse response = await UserAPI().updateUserInfo(body);
-    if(response.success){
+    if (response.success) {
       print('유저 정보 수정완료');
-    } else{
+    } else {
       print('유저 정보 수정실패');
     }
   }
-
-
-
-
 }
 

@@ -24,11 +24,23 @@ class FriendDetailViewModel extends GetxController {
     '일간 통계'
   ];
 
+  RxBool isSendButtonEnabled = false.obs;
+
 
 
   @override
   void onInit() async {
     super.onInit();
+
+    textEditingController.addListener(() {
+      if (textEditingController.text.trim().isNotEmpty) {
+        isSendButtonEnabled(true);
+      } else {
+        isSendButtonEnabled(false);
+      }
+    });
+
+
     mainTabNameList = <String>[
       '라이딩 통계',
       '방명록'
@@ -115,9 +127,14 @@ class FriendDetailViewModel extends GetxController {
   Future<void> fetchFriendDetailInfo({required int userId, required int friendUserId, required String season}) async {
     isLoading(true);
     ApiResponse response = await FriendDetailAPI().fetchFriendDetail(userId,friendUserId,season);
-    await FriendDetailAPI().fetchFriendsTalkList(userId,friendUserId);
+    ApiResponse response_talk = await FriendDetailAPI().fetchFriendsTalkList(userId,friendUserId);
     if(response.success)
       _friendDetailModel.value = response.data as FriendDetailModel;
+    // 리스트 형식으로 변환
+    List<FriendsTalk> talkList = (response_talk.data as List)
+        .map((item) => FriendsTalk.fromJson(item))
+        .toList();
+    _friendsTalk.value = talkList;
     if(!response.success)
       Get.snackbar('Error', '데이터 로딩 실패');
     isLoading(false);
@@ -132,6 +149,7 @@ class FriendDetailViewModel extends GetxController {
           .map((item) => FriendsTalk.fromJson(item))
           .toList();
       _friendsTalk.value = talkList;
+      print(talkList);
     } else {
       Get.snackbar('Error', '데이터 로딩 실패');
     }
@@ -187,7 +205,7 @@ class FriendDetailViewModel extends GetxController {
     if(response.success)
       Get.snackbar('친구신청 성공', '상대방이 수락하면 친구로 등록됩니다.');
     if(!response.success)
-      Get.snackbar('앗!', '${response.error['error']}');
+      Get.snackbar('잠시만요!','이미 친구이거나 친구 신청 중입니다');
     isLoading(false);
   }
 
