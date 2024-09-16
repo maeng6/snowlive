@@ -389,7 +389,7 @@ class FriendListView extends StatelessWidget {
                                                                       TextButton(
                                                                         onPressed: () async {
                                                                           Navigator.pop(context);
-                                                                          await _friendDetailViewModel.deleteFriend(
+                                                                          await _friendListViewModel.deleteFriend(
                                                                             {"friend_id": friend.friendId},
                                                                           );
                                                                           Navigator.pop(context);
@@ -516,7 +516,7 @@ class FriendListView extends StatelessWidget {
                                                                       TextButton(
                                                                         onPressed: () async {
                                                                           Navigator.pop(context);
-                                                                          await _friendDetailViewModel.deleteFriend(
+                                                                          await _friendListViewModel.deleteFriend(
                                                                             {"friend_id": friend.friendId},
                                                                           );
                                                                           Navigator.pop(context);

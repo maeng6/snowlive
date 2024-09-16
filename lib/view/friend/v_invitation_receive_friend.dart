@@ -328,7 +328,7 @@ class _ReceiveFriendRequestViewState extends State<ReceiveFriendRequestView> {
                                                     child: ElevatedButton(
                                                       onPressed: () async {
                                                         Navigator.pop(context);
-                                                        await _friendDetailViewModel.deleteFriend(
+                                                        await _friendListViewModel.deleteFriend(
                                                             {
                                                               "friend_id": friend.friendId    //필수 - 수락할 친구요청id(user_id 아님에 주의)
                                                             }

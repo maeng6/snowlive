@@ -1,6 +1,7 @@
 import 'package:com.snowlive/viewmodel/vm_user.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
+import '../api/ApiResponse.dart';
 import '../api/api_friend.dart';
 import '../model/m_bestFriendListModel.dart';
 import '../model/m_blockUserList.dart';
@@ -32,22 +33,22 @@ class FriendListViewModel extends GetxController {
   }
 
   Future<void> fetchFriendList() async {
-
     try {
       final response = await FriendAPI().fetchFriendList(userId: _userViewModel.user.user_id, bestFriend: false);
 
-      if (response.success) {
+      if (response.success && response.data != null) {
+        print('친구리스트 불러오기 성공 & 친구 1명 이상');
         final friendListResponse = FriendListResponse.fromJson(response.data!);
-        _friendList.value = friendListResponse.friends ?? [];
+        _friendList.value = friendListResponse.friends!;
       } else {
-        print('Failed to load data: ${response.error}');
+        print('친구리스트 없을 경우');
+        _friendList.value = []; // 빈 리스트로 처리
       }
     } catch (e) {
       print('Error fetching data: $e');
-    } finally {
     }
-
   }
+
 
   Future<void> fetchFriendRequestList(user_id) async {
 
@@ -91,6 +92,19 @@ class FriendListViewModel extends GetxController {
       print('Error fetching data: $e');
     }
   }
+
+  Future<void> deleteFriend(body) async {
+    isLoading(true);
+    ApiResponse response = await FriendAPI().deleteFriend(body);
+    if (response.success) {
+      Get.snackbar('친구삭제 성공', '상대방에게도 내가 친구목록에서 제외됩니다.');
+      await fetchFriendList();
+    } else {
+      Get.snackbar('앗!', '${response.error['error']}');
+    }
+    isLoading(false);
+  }
+
 
   Future<void> searchUser(String displayName) async {
     try {
