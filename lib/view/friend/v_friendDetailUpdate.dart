@@ -476,8 +476,8 @@ class FriendDetailUpdateView extends StatelessWidget {
                                       backgroundColor: Colors.transparent,
                                       context: context,
                                       isScrollControlled: true,
-                                      enableDrag: false,
-                                      isDismissible: false,
+                                      enableDrag: true,
+                                      isDismissible: true,
                                       builder: (context) => FavoriteResortWidget(),
                                     );
                                     if(selectedIndex != null)
@@ -538,8 +538,8 @@ class FriendDetailUpdateView extends StatelessWidget {
                                       ),
                                       backgroundColor: Colors.transparent,
                                       context: context,
-                                      isDismissible: false,
-                                      enableDrag: false,
+                                      isDismissible: true,
+                                      enableDrag: true,
                                       isScrollControlled: true,
                                       builder: (context) => SkiorboardWidget(),
                                     );
@@ -591,8 +591,8 @@ class FriendDetailUpdateView extends StatelessWidget {
                                       ),
                                       backgroundColor: Colors.transparent,
                                       context: context,
-                                      isDismissible: false,
-                                      enableDrag: false,
+                                      isDismissible: true,
+                                      enableDrag: true,
                                       isScrollControlled: true,
                                       builder: (context) => SexWidget(),
                                     );
@@ -627,6 +627,23 @@ class FriendDetailUpdateView extends StatelessWidget {
                                     )),
                                   ),
                                 ),
+                                SizedBox(height: 8),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      "프로필 공개 여부",  // 토글 스위치 라벨
+                                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                                    ),
+                                    Obx(() => Switch(
+                                      value: _friendDetailUpdateViewModel.hideProfile,
+                                      onChanged: (value) {
+                                        _friendDetailUpdateViewModel.toggleHideProfile(value);
+                                      },
+                                    )),
+                                  ],
+                                ),
+
                               ],
                             ),
                           ),
@@ -654,7 +671,7 @@ class FriendDetailUpdateView extends StatelessWidget {
                               "display_name": _friendDetailUpdateViewModel.textEditingController_displayName.text,
                               "state_msg": _friendDetailUpdateViewModel.textEditingController_stateMsg.text,    //선택
                               "profile_image_url_user": _friendDetailUpdateViewModel.profileImageUrl,
-                              "hide_profile": _userViewModel.user.hide_profile,    //선택 - 프로필 비공개 설정에서만 씀
+                              "hide_profile": _friendDetailUpdateViewModel.hideProfile,    //선택 - 프로필 비공개 설정에서만 씀
                               "instant_resort":_userViewModel.user.instant_resort,
                               "favorite_resort":_friendDetailUpdateViewModel.selectedResortIndex+1,
                               "sex": _friendDetailUpdateViewModel.selectedSex,

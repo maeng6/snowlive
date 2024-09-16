@@ -21,6 +21,7 @@ class FriendDetailUpdateViewModel extends GetxController {
   RxBool _isCheckedDisplayName = false.obs;
   RxBool _profileImage = false.obs;
   RxBool _activeCheckDisplaynameButton = false.obs;
+  RxBool _hideProfile = false.obs;
   Rx<XFile?> _imageFile = Rx<XFile?>(null);
   Rx<XFile?> _croppedFile = Rx<XFile?>(null);
   RxString _profileImageUrl = ''.obs;
@@ -34,6 +35,7 @@ class FriendDetailUpdateViewModel extends GetxController {
   bool get isCheckedDisplayName => _isCheckedDisplayName.value;
   bool get profileImage => _profileImage.value;
   bool get activeCheckDisplaynameButton => _activeCheckDisplaynameButton.value;
+  bool get hideProfile => _hideProfile.value;
   XFile? get imageFile => _imageFile.value;
   XFile? get croppedFile => _croppedFile.value;
   String get profileImageUrl => _profileImageUrl.value;
@@ -71,6 +73,7 @@ class FriendDetailUpdateViewModel extends GetxController {
     required selectedResortIndex,
     required selectedSkiOrBoard,
     required selectedSex,
+    required bool hideProfile
   }) async {
     // Update text controllers and selected values
     this.textEditingController_displayName.text = displayName;
@@ -81,6 +84,7 @@ class FriendDetailUpdateViewModel extends GetxController {
     this._selectedResortIndex.value = selectedResortIndex;
     this._selectedSkiOrBoard.value = selectedSkiOrBoard;
     this._selectedSex.value = selectedSex;
+    this._hideProfile.value = hideProfile;
     this._isCheckedDisplayName.value = true;
   }
 
@@ -131,6 +135,11 @@ class FriendDetailUpdateViewModel extends GetxController {
   void selectSex(String selected) {
     _selectedSex.value = selected;
   }
+
+  void toggleHideProfile(bool value) {
+    _hideProfile.value = value;
+  }
+
 
   Future<void> checkDisplayName(body) async {
     ApiResponse response = await LoginAPI().checkDisplayName(body);
