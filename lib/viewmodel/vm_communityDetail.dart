@@ -2,17 +2,30 @@ import 'package:get/get.dart';
 import '../api/api_community.dart';
 import '../model/m_comment_community.dart';
 import '../model/m_communityDetail.dart';
+import '../util/util_1.dart';
 
 class CommunityDetailViewModel extends GetxController {
   var isLoading = true.obs;
-  var communityDetail = CommunityDetail().obs;
+  var _communityDetail = CommunityDetail().obs;
   var commentsList = <CommentModelCommunity>[].obs; // 댓글 목록
   var repliesList = <Reply>[].obs; // 답글 목록
+  RxString _time = ''.obs;
+
+  CommunityDetail get communityDetail => _communityDetail.value;
+  String get time => _time.value;
 
   @override
   void onInit() {
     super.onInit();
   }
+
+  void fetchCommunityDetailFromList({
+    required var communityDetail
+  }) {
+    _communityDetail.value = CommunityDetail.fromCommunityModel(communityDetail);
+    _time.value = GetDatetime().getAgoString(_communityDetail.value.uploadTime!);
+  }
+
 
   // 커뮤니티 세부 사항 불러오기
   Future<void> fetchCommunityDetail(int communityId, {String? userId}) async {
@@ -21,7 +34,7 @@ class CommunityDetailViewModel extends GetxController {
       final response = await CommunityAPI().fetchCommunityDetails(communityId, userId: userId);
 
       if (response.success) {
-        communityDetail.value = CommunityDetail.fromJson(response.data!);
+        _communityDetail.value = CommunityDetail.fromJson(response.data!);
       } else {
         print('Failed to load community detail: ${response.error}');
       }

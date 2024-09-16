@@ -153,22 +153,20 @@ class _CommunityFreeUploadState extends State<CommunityFreeUpload> {
                           "category_sub2": "${_communityUploadViewModel.selectedCategorySub}",     // 선택 - 시즌방서브카테고리
                           "title": "${_communityUploadViewModel.textEditingController_title.text}",     // 필수 - 제목
                           "thumb_img_url": "",
-                          "description": {
+                          "description": jsonEncode({
                             "string": "임시내용"
-                          } // 필수 - 설명
+                          })
                         });
                         await _communityUploadViewModel.uploadAndReplaceImageInDelta(_communityUploadViewModel.quillController.document.toDelta().toList(), _communityUploadViewModel.pk);
 
                         final deltaList = _communityUploadViewModel.quillController.document.toDelta().toList();
                         final jsonString = jsonEncode(deltaList);
                         print(jsonString);
-                        final resultString = jsonString.substring(1, jsonString.length - 1);
-                        print(resultString);
                         await _communityUploadViewModel.updateCommunityPost(_communityUploadViewModel.pk,
                             {
                               "user_id": _userViewModel.user.user_id.toString(),
                               "thumb_img_url": _communityUploadViewModel.findFirstInsertedImage(_communityUploadViewModel.quillController.document.toDelta().toList()),
-                              "description" : resultString
+                              "description" : jsonString
                             });
                       }
                       Navigator.pop(context);

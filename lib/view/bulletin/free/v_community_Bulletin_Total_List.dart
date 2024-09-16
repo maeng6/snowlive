@@ -29,6 +29,7 @@ class CommunityBulletinTotalListView extends StatelessWidget {
           floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
           floatingActionButton: Stack(
             children: [
+              //최신글보기
               Center(
                 child: Padding(
                   padding: EdgeInsets.only(top: _size.height - 292),
@@ -71,6 +72,7 @@ class CommunityBulletinTotalListView extends StatelessWidget {
                   ),
                 ),
               ),
+              //글쓰기 버튼
               Positioned(
                 bottom: 0, // Adjust the position as needed
                 right: 16, // Adjust the position as needed
@@ -168,6 +170,7 @@ class CommunityBulletinTotalListView extends StatelessWidget {
                             String? displayName = communityData.userInfo!.displayName;
                             return GestureDetector(
                               onTap: () async {
+
 
                               },
                               child: Obx(() => Column(

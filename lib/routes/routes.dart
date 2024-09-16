@@ -1,5 +1,6 @@
 import 'package:com.snowlive/screens/common/v_profileImageScreen.dart';
 import 'package:com.snowlive/screens/resort/v_resortHome.dart';
+import 'package:com.snowlive/view/bulletin/free/v_community_Bulletin_Detail.dart';
 import 'package:com.snowlive/view/v_MainHome.dart';
 import 'package:com.snowlive/view/fleamarket/v_fleaMarketDetail.dart';
 import 'package:com.snowlive/view/fleamarket/v_fleaMarketMain.dart';
@@ -45,6 +46,7 @@ class AppRoutes {
   static const String friendBlockList = '/friendBlockList';
   static const String bulletinMain = '/bulletinMain';
   static const String bulletinUpload = '/bulletinUpload';
+  static const String bulletinDetail = '/bulletinDetail';
 
   static final List<GetPage> pages = [
     GetPage(
@@ -151,6 +153,10 @@ class AppRoutes {
       name: bulletinUpload,
       page: () => CommunityFreeUpload(),
       binding: BulletinUploadBinding(),
+    ),
+    GetPage(
+      name: bulletinDetail,
+      page: () => CommunityBulletinDetailView(),
     ),
   ];
 }

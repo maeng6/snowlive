@@ -1,4 +1,5 @@
 import 'package:com.snowlive/controller/login/vm_notificationController.dart';
+import 'package:com.snowlive/view/bulletin/free/v_community_Bulletin_Detail.dart';
 import 'package:com.snowlive/viewmodel/vm_fleamarketCommentDetail.dart';
 import 'package:com.snowlive/viewmodel/vm_fleamarketSearch.dart';
 import 'package:com.snowlive/viewmodel/vm_fleamarketUpdate.dart';
@@ -31,6 +32,7 @@ class MainHomeBinding extends Bindings {
     Get.put(ImageController(),permanent: true);
     Get.put(FriendListViewModel(),permanent: true);
     Get.put(CommunityBulletinListViewModel(),permanent: true);
+    Get.put(CommunityBulletinDetailView(),permanent: true);
   }
 }
 
