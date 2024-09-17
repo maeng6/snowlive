@@ -1,5 +1,6 @@
 
 import 'package:com.snowlive/routes/routes.dart';
+import 'package:com.snowlive/viewmodel/vm_communityDetail.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -10,10 +11,13 @@ import '../../../model/m_communityList.dart';
 import '../../../screens/snowliveDesignStyle.dart';
 import '../../../util/util_1.dart';
 import '../../../viewmodel/vm_communityBulletinList.dart';
+import '../../../viewmodel/vm_user.dart';
 
 class CommunityBulletinTotalListView extends StatelessWidget {
 
   final CommunityBulletinListViewModel _communityBulletinListViewModel = Get.find<CommunityBulletinListViewModel>();
+  final CommunityDetailViewModel _communityDetailViewModel = Get.find<CommunityDetailViewModel>();
+  final UserViewModel _userViewModel = Get.find<UserViewModel>();
 
   @override
   Widget build(BuildContext context) {
@@ -170,8 +174,12 @@ class CommunityBulletinTotalListView extends StatelessWidget {
                             String? displayName = communityData.userInfo!.displayName;
                             return GestureDetector(
                               onTap: () async {
-
-
+                                _communityDetailViewModel.fetchCommunityDetailFromList(communityDetail: _communityBulletinListViewModel.communityList_total[index]);
+                                Get.toNamed(AppRoutes.bulletinDetail);
+                                await _communityDetailViewModel.fetchCommunityComments(
+                                    communityId: _communityBulletinListViewModel.communityList_total[index].communityId!,
+                                    userId: _userViewModel.user.user_id,
+                                    isLoading_indi: true);
                               },
                               child: Obx(() => Column(
                                 children: [

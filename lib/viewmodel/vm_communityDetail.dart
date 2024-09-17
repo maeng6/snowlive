@@ -7,18 +7,25 @@ import '../util/util_1.dart';
 class CommunityDetailViewModel extends GetxController {
   var isLoading = true.obs;
   var _communityDetail = CommunityDetail().obs;
-  var commentsList = <CommentModelCommunity>[].obs; // 댓글 목록
   var repliesList = <Reply>[].obs; // 답글 목록
+  var _commentsList = <CommentModelCommunity>[].obs;// 댓글 목록
+  var _nextPageUrl_comments = ''.obs;
+  var _previousPageUrl_comments = ''.obs;
   RxString _time = ''.obs;
+  var isLoading_indicator = true.obs;
 
   CommunityDetail get communityDetail => _communityDetail.value;
   String get time => _time.value;
+  List<CommentModelCommunity> get commentsList => _commentsList;
+  String get nextPageUrl_comments => _nextPageUrl_comments.value;
+  String get previousPageUrl_comments => _previousPageUrl_comments.value;
 
   @override
   void onInit() {
     super.onInit();
   }
 
+  // 커뮤니티 세부 사항 불러오기(목록에서)
   void fetchCommunityDetailFromList({
     required var communityDetail
   }) {
@@ -27,7 +34,7 @@ class CommunityDetailViewModel extends GetxController {
   }
 
 
-  // 커뮤니티 세부 사항 불러오기
+  // 커뮤니티 세부 사항 불러오기(API로)
   Future<void> fetchCommunityDetail(int communityId, {String? userId}) async {
     isLoading.value = true;
     try {
@@ -99,22 +106,38 @@ class CommunityDetailViewModel extends GetxController {
     }
   }
 
+
   // 댓글 목록 불러오기
-  Future<void> fetchComments(int communityId, {String? userId}) async {
-    isLoading.value = true;
+  Future<void> fetchCommunityComments({
+    required int communityId,
+    required int userId,
+    required bool? isLoading_indi,
+    String? url,
+  }) async {
+    isLoading_indicator(isLoading_indi);
     try {
-      final response = await CommunityAPI().fetchComments(communityId, userId: userId);
+      final response = await CommunityAPI().fetchComments(
+          userId: userId,
+          communityId: communityId,
+          url: url
+      );
 
       if (response.success) {
         final CommentResponseCommunity commentResponse = CommentResponseCommunity.fromJson(response.data!);
-        commentsList.value = commentResponse.results ?? [];
+        if (url == null) {
+          _commentsList.value = commentResponse.results ?? [];
+        } else {
+          _commentsList.addAll(commentResponse.results ?? []);
+        }
+        _nextPageUrl_comments.value = commentResponse.next ?? '';
+        _previousPageUrl_comments.value = commentResponse.previous ?? '';
       } else {
         print('Failed to load comments: ${response.error}');
       }
     } catch (e) {
       print('Error fetching comments: $e');
-    } finally {
-      isLoading.value = false;
+    }finally{
+      isLoading_indicator(false);
     }
   }
 

@@ -93,8 +93,6 @@ class FleamarketDetailViewModel extends GetxController {
         fleaId: fleaId,
         userId: userId,
         isLoading_indi: true);
-
-
   }
 
   void fetchFleamarketDetailFromList({

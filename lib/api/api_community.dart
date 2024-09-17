@@ -128,12 +128,19 @@ class CommunityAPI {
   }
 
   // 댓글 목록 조회
-  Future<ApiResponse> fetchComments(int communityId, {String? userId}) async {
-    final uri = Uri.parse('$baseUrl/comment-list/')
-        .replace(queryParameters: {
-      'community_id': communityId.toString(),
-      if (userId != null) 'user_id': userId,
-    });
+  Future<ApiResponse> fetchComments({
+    required int userId,
+    required int communityId,
+    String? url,
+  }) async {
+    final uri = url != null
+        ? Uri.parse(url)
+        : Uri.parse('$baseUrl/comment-list/').replace(
+      queryParameters: {
+        'community_id': communityId.toString(),
+        'user_id': userId.toString(),
+      },
+    );
 
     final response = await http.get(uri);
 
