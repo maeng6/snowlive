@@ -1,5 +1,6 @@
 import 'package:com.snowlive/screens/more/friend/v_snowliveDetailPage.dart';
 import 'package:com.snowlive/viewmodel/vm_crewDetail.dart';
+import 'package:com.snowlive/viewmodel/vm_crewMemberList.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -18,6 +19,7 @@ class MoreTabMainView extends StatelessWidget {
   final FriendListViewModel _friendListViewModel = Get.find<FriendListViewModel>();
   final FriendDetailViewModel _friendDetailViewModel = Get.find<FriendDetailViewModel>();
   final CrewDetailViewModel _crewDetailViewModel = Get.find<CrewDetailViewModel>();
+  final CrewMemberListViewModel _crewMemberListViewModel = Get.find<CrewMemberListViewModel>();
 
   @override
   Widget build(BuildContext context) {
@@ -182,6 +184,7 @@ class MoreTabMainView extends StatelessWidget {
                             else{
                               Get.toNamed(AppRoutes.crewMain);
                               await _crewDetailViewModel.fetchCrewDetail(_userViewModel.user.crew_id);
+                              await _crewMemberListViewModel.fetchCrewMembers(crewId: _userViewModel.user.crew_id);
                             }
                           },
                           child: Column(

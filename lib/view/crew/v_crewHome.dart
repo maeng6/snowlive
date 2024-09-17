@@ -1,6 +1,7 @@
 import 'package:com.snowlive/screens/snowliveDesignStyle.dart';
 import 'package:com.snowlive/viewmodel/vm_crewDetail.dart';
 import 'package:com.snowlive/screens/LiveCrew/v_crewTodayPage.dart';
+import 'package:com.snowlive/viewmodel/vm_crewMemberList.dart';
 import 'package:com.snowlive/viewmodel/vm_user.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
@@ -15,6 +16,7 @@ class CrewHomeView extends StatelessWidget {
   // 뷰모델 선언
   final CrewDetailViewModel _crewDetailViewModel = Get.find<CrewDetailViewModel>();
   final UserViewModel _userViewModel = Get.find<UserViewModel>();
+  final CrewMemberListViewModel _crewMemberListViewModel = Get.find<CrewMemberListViewModel>();
 
   @override
   Widget build(BuildContext context) {
@@ -29,6 +31,8 @@ class CrewHomeView extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                SizedBox(height: 20,),
+                if(_crewDetailViewModel.notice.isNotEmpty)
                 GestureDetector(
                   onTap: () {},
                   child: Padding(
@@ -45,7 +49,7 @@ class CrewHomeView extends StatelessWidget {
                             ),
                             const SizedBox(width: 5),
                             Text(
-                              '크루공지사항입니다요',
+                              _crewDetailViewModel.notice,
                               style: const TextStyle(
                                   fontSize: 13,
                                   color: Color(0xFF111111)),
@@ -191,7 +195,7 @@ class CrewHomeView extends StatelessWidget {
                                     ),
                                   ],
                                 ),
-                                if (_crewDetailViewModel.description != '')
+                                if (_crewDetailViewModel.description.isNotEmpty)
                                   Column(
                                     children: [
                                       Divider(
@@ -242,15 +246,15 @@ class CrewHomeView extends StatelessWidget {
                   padding: const EdgeInsets.only(left: 16, right: 16),
                   child: Row(
                     children: [
-                      const Text(
-                        '라이브ON 11',
+                      Text(
+                        '라이브ON ${_crewMemberListViewModel.liveMemberCount}명',
                         style: TextStyle(
                           fontSize: 16,
                           color: Color(0xFF111111),
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      const Expanded(child: SizedBox()),
+                      Expanded(child: SizedBox()),
                       OutlinedButton(
                         onPressed: () {
                           Get.to(() => CrewTodayPage());
@@ -264,7 +268,7 @@ class CrewHomeView extends StatelessWidget {
                           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
                           minimumSize: const Size(0, 0),
                         ),
-                        child: const Text(
+                        child: Text(
                           '오늘의 현황',
                           style: TextStyle(
                             color: SDSColor.snowliveBlack, // 텍스트 색상
@@ -275,14 +279,14 @@ class CrewHomeView extends StatelessWidget {
                     ],
                   ),
                 ),
-                const SizedBox(height: 5),
+                SizedBox(height: 5),
                 Container(
                   width: _size.width,
                   height: 10,
                   color: SDSColor.gray50,
                 ),
-                const SizedBox(height: 30),
-                const Padding(
+                SizedBox(height: 30),
+                Padding(
                   padding: EdgeInsets.only(left: 16),
                   child: Text(
                     '크루 라이딩 통계',
@@ -293,9 +297,9 @@ class CrewHomeView extends StatelessWidget {
                     ),
                   ),
                 ),
-                const SizedBox(height: 10),
+                SizedBox(height: 10),
                 Padding(
-                  padding: const EdgeInsets.only(left: 16, right: 16),
+                  padding: EdgeInsets.only(left: 16, right: 16),
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.start,
