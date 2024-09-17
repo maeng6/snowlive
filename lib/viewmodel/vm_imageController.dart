@@ -50,7 +50,7 @@ class ImageController extends GetxController {
     var metaData = SettableMetadata(contentType: 'image/jpeg');
     String downloadUrl = '';
     if (newImage != null) {
-      Reference ref = FirebaseStorage.instance.ref('images/crewLogo/$crewID.jpg');
+      Reference ref = FirebaseStorage.instance.ref('crewLogo/$crewID.jpg');
       await ref.putFile(File(newImage.path), metaData);
       downloadUrl = await ref.getDownloadURL();
     } else {

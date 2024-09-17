@@ -683,6 +683,7 @@ class FriendDetailUpdateView extends StatelessWidget {
                           friendUserId: _userViewModel.user.user_id,
                           season: _friendDetailViewModel.seasonDate,
                         );
+                        await _userViewModel.updateUserModel_api(_userViewModel.user.user_id);
                         Get.back();
                       },
                       style: TextButton.styleFrom(

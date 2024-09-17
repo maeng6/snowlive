@@ -22,7 +22,7 @@ import '../../controller/ranking/vm_rankingTierModelController.dart';
 import '../../controller/liveCrew/vm_streamController_liveCrew.dart';
 import '../../data/imgaUrls/Data_url_image.dart';
 import '../../model_2/m_alarmCenterModel.dart';
-import '../../model_2/m_crewLogoModel.dart';
+import '../../model/m_crewLogoModel.dart';
 import '../../widget/w_verticalDivider.dart';
 import '../more/friend/v_friendDetailPage.dart';
 import '../snowliveDesignStyle.dart';

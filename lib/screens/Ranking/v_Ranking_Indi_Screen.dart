@@ -1,7 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:com.snowlive/controller/resort/vm_resortModelController.dart';
-import 'package:com.snowlive/model_2/m_resortModel.dart';
+import 'package:com.snowlive/model/m_resortModel.dart';
 import 'package:com.snowlive/screens/snowliveDesignStyle.dart';
 import 'package:com.snowlive/widget/w_verticalDivider.dart';
 import 'package:extended_image/extended_image.dart';
