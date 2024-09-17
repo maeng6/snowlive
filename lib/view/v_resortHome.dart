@@ -460,12 +460,12 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                                             var BFdoc = _resortHomeViewModel.bestFriendList[index];
                                             return GestureDetector(
                                               onTap: () async {
+                                                Get.toNamed(AppRoutes.friendDetail);
                                                 await _friendDetailViewModel.fetchFriendDetailInfo(
                                                   userId: _userViewModel.user.user_id,
                                                   friendUserId: BFdoc.friendInfo.userId,
                                                   season: _friendDetailViewModel.seasonDate,
                                                 );
-                                                Get.toNamed(AppRoutes.friendDetail);
                                               },
                                               child: Container(
                                                 width: (MediaQuery.of(context).size.width - 14 * 5) / 4, // 화면 너비를 4등분
@@ -611,10 +611,11 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                                       child: ElevatedButton(
                                         onPressed: () async {
                                           Navigator.pop(context);
+                                          Get.toNamed(AppRoutes.friendList);
                                           await _friendListViewModel.fetchFriendList();
                                           await _friendListViewModel.fetchFriendRequestList(_userViewModel.user.user_id);
                                           await _friendListViewModel.fetchBlockUserList();
-                                          Get.toNamed(AppRoutes.friendList);
+
                                         },
                                         child: Text(
                                           '친구 관리 바로가기',

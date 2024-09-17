@@ -1,5 +1,7 @@
 import 'package:com.snowlive/controller/login/vm_notificationController.dart';
 import 'package:com.snowlive/view/bulletin/free/v_community_Bulletin_Detail.dart';
+import 'package:com.snowlive/viewmodel/vm_crewDetail.dart';
+import 'package:com.snowlive/viewmodel/vm_crewMain.dart';
 import 'package:com.snowlive/viewmodel/vm_fleamarketCommentDetail.dart';
 import 'package:com.snowlive/viewmodel/vm_fleamarketSearch.dart';
 import 'package:com.snowlive/viewmodel/vm_fleamarketUpdate.dart';
@@ -10,6 +12,7 @@ import 'package:com.snowlive/viewmodel/vm_imageController.dart';
 import 'package:com.snowlive/viewmodel/vm_login.dart';
 import 'package:com.snowlive/viewmodel/vm_mainHome.dart';
 import 'package:com.snowlive/viewmodel/vm_resortHome.dart';
+import 'package:com.snowlive/viewmodel/vm_setCrew.dart';
 import 'package:com.snowlive/viewmodel/vm_setProfile.dart';
 import 'package:com.snowlive/viewmodel/vm_tos.dart';
 import 'package:com.snowlive/viewmodel/vm_user.dart';
@@ -33,6 +36,9 @@ class MainHomeBinding extends Bindings {
     Get.put(FriendListViewModel(),permanent: true);
     Get.put(CommunityBulletinListViewModel(),permanent: true);
     Get.put(CommunityBulletinDetailView(),permanent: true);
+    Get.put(CrewMainViewModel(), permanent: true);
+    Get.put(CrewDetailViewModel(), permanent: true);
+
   }
 }
 
@@ -121,3 +127,37 @@ class BulletinUploadBinding extends Bindings {
     Get.put(CommunityUploadViewModel());
   }
 }
+
+class MoreTabMainBinding extends Bindings {
+  @override
+  void dependencies() {
+
+  }
+}
+
+class OnBoardingCrewMainBinding extends Bindings {
+  @override
+  void dependencies() {
+
+  }
+}
+
+class SetCrewNameAndResortBinding extends Bindings {
+  @override
+  void dependencies() {
+    Get.put(SetCrewViewModel());
+  }
+}
+
+class CrewMainBinding extends Bindings {
+  @override
+  void dependencies() {
+  }
+}
+
+class CrewHomeBinding extends Bindings {
+  @override
+  void dependencies() {
+  }
+}
+

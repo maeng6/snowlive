@@ -9,7 +9,7 @@ import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:com.snowlive/model_2/m_userModel.dart';
 import 'package:com.snowlive/screens/login/v_loginpage.dart';
-import '../../model_2/m_resortModel.dart';
+import '../../model/m_resortModel.dart';
 
 class MyRankingController extends GetxController {
 

@@ -1,6 +1,12 @@
 import 'package:com.snowlive/screens/common/v_profileImageScreen.dart';
 import 'package:com.snowlive/screens/resort/v_resortHome.dart';
 import 'package:com.snowlive/view/bulletin/free/v_community_Bulletin_Detail.dart';
+import 'package:com.snowlive/view/crew/v_crewHome.dart';
+import 'package:com.snowlive/view/crew/v_crewMain.dart';
+import 'package:com.snowlive/view/crew/v_onboarding.dart';
+import 'package:com.snowlive/view/crew/v_setCrewImageAndColor.dart';
+import 'package:com.snowlive/view/crew/v_setCrewNameAndResort.dart';
+import 'package:com.snowlive/view/moreTab/v_moreTab_main.dart';
 import 'package:com.snowlive/view/v_MainHome.dart';
 import 'package:com.snowlive/view/fleamarket/v_fleaMarketDetail.dart';
 import 'package:com.snowlive/view/fleamarket/v_fleaMarketMain.dart';
@@ -47,6 +53,16 @@ class AppRoutes {
   static const String bulletinMain = '/bulletinMain';
   static const String bulletinUpload = '/bulletinUpload';
   static const String bulletinDetail = '/bulletinDetail';
+  static const String moreTab = '/moreTab';
+  static const String onBoardingCrewMain = '/onBoardingCrewMain';
+  static const String setCrewNameAndResort = '/setCrewNameAndResort';
+  static const String setCrewImageAndColor = '/setCrewImageAndColor';
+  static const String crewMain = '/crewMain';
+  static const String crewHome = '/crewHome';
+
+
+
+
 
   static final List<GetPage> pages = [
     GetPage(
@@ -157,6 +173,34 @@ class AppRoutes {
     GetPage(
       name: bulletinDetail,
       page: () => CommunityBulletinDetailView(),
+    ),
+    GetPage(
+      name: moreTab,
+      page: () => MoreTabMainView(),
+    ),
+    GetPage(
+      name: onBoardingCrewMain,
+      page: () => OnBoardingCrewMainView(),
+    ),
+    GetPage(
+      name: setCrewNameAndResort,
+      page: () => SetCrewNameAndResortView(),
+      binding: SetCrewNameAndResortBinding()
+    ),
+    GetPage(
+        name: setCrewImageAndColor,
+        page: () => SetCrewImageAndColorView(),
+        binding: SetCrewNameAndResortBinding()
+    ),
+    GetPage(
+        name: crewMain,
+        page: () => CrewMainView(),
+        binding: SetCrewNameAndResortBinding()
+    ),
+    GetPage(
+        name: crewHome,
+        page: () => CrewHomeView(),
+        binding: SetCrewNameAndResortBinding()
     ),
   ];
 }

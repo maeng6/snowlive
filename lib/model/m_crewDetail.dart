@@ -91,9 +91,9 @@ class SeasonRankingInfo {
   });
 
   SeasonRankingInfo.fromJson(Map<String, dynamic> json) {
-    overallTotalScore = json['overall_total_score'];
+    overallTotalScore = (json['overall_total_score'] as num?)?.toDouble(); // int나 double을 모두 처리
     overallRank = json['overall_rank'];
-    overallRankPercentage = json['overall_rank_percentage'];
+    overallRankPercentage = (json['overall_rank_percentage'] as num?)?.toDouble(); // int나 double을 모두 처리
     overallTierIconUrl = json['overall_tier_icon_url'];
     totalSlopeCount = json['total_slope_count'];
     if (json['count_info'] != null) {
@@ -107,6 +107,7 @@ class SeasonRankingInfo {
     }
   }
 }
+
 
 class CountInfo {
   String? slope;

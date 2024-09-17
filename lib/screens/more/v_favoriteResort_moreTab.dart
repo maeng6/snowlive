@@ -10,7 +10,7 @@ import 'package:com.snowlive/controller/resort/vm_resortModelController.dart';
 import 'package:com.snowlive/controller/user/vm_userModelController.dart';
 import '../../controller/public/vm_bottomTabBarController.dart';
 import '../../controller/ranking/vm_myRankingController.dart';
-import '../../model_2/m_resortModel.dart';
+import '../../model/m_resortModel.dart';
 import '../../widget/w_fullScreenDialog.dart';
 
 class FavoriteResort_moreTab extends StatefulWidget {

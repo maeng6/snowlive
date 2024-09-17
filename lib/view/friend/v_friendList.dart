@@ -2,6 +2,7 @@ import 'package:com.snowlive/routes/routes.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import '../../screens/snowliveDesignStyle.dart';
 import '../../viewmodel/vm_friendDetail.dart';
 import '../../viewmodel/vm_friendList.dart';
 import '../../viewmodel/vm_user.dart';
@@ -157,10 +158,86 @@ class FriendListView extends StatelessWidget {
                 ),
               ),
             ),
-            SizedBox(height: 12),
+            SizedBox(height: 25),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                GestureDetector(
+                  onTap: () async{
+                    Get.toNamed(AppRoutes.friendDetail);
+                    await _friendDetailViewModel.fetchFriendDetailInfo(
+                      userId: _userViewModel.user.user_id,
+                      friendUserId: _userViewModel.user.user_id,
+                      season: _friendDetailViewModel.seasonDate,
+                    );
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: Row(
+                      children: [
+                        (_userViewModel.user.profile_image_url_user != '')
+                            ? Container(
+                              width: 56,
+                              child: ExtendedImage.network(
+                            _userViewModel.user.profile_image_url_user,
+                            shape: BoxShape.circle,
+                            width: 56,
+                            height: 56,
+                            fit: BoxFit.cover,
+                              ),
+                            )
+                            : Container(
+                              width: 56,
+                              child: ExtendedImage.asset(
+                            'assets/imgs/profile/img_profile_default_circle.png',
+                            shape: BoxShape.circle,
+                            width: 56,
+                            height: 56,
+                            fit: BoxFit.cover,
+                              ),
+                            ),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 10),
+                          child: Container(
+                            width: _size.width - 160,
+                            child: Column(
+                              mainAxisAlignment:  _userViewModel.user.state_msg != ''
+                                  ? MainAxisAlignment.center
+                                  : MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  _userViewModel.user.display_name,
+                                  style: TextStyle(
+                                    color: Color(0xFF111111),
+                                    fontSize: 15,
+                                  ),
+                                ),
+                                if (_userViewModel.user.state_msg != '')
+                                  Text(
+                                    _userViewModel.user.state_msg,
+                                    style: TextStyle(
+                                      color: Color(0xFF949494),
+                                      fontSize: 13,
+                                    ),
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                  child: Divider(
+                    color: SDSColor.gray50,
+                    height: 32,
+                    thickness: 1,
+                  ),
+                ),
                 (_friendListViewModel.friendList.isEmpty)
                     ? Container(
                   child: Column(
@@ -258,26 +335,88 @@ class FriendListView extends StatelessWidget {
                                   Row(
                                     children: [
                                       (friend.friendInfo.profileImageUrlUser.isNotEmpty)
-                                          ? Container(
-                                        width: 56,
-                                        child: ExtendedImage.network(
-                                          friend.friendInfo.profileImageUrlUser,
-                                          shape: BoxShape.circle,
-                                          width: 48,
-                                          height: 48,
-                                          fit: BoxFit.cover,
-                                        ),
-                                      )
-                                          : Container(
-                                        width: 56,
-                                        child: ExtendedImage.asset(
-                                          'assets/imgs/profile/img_profile_default_circle.png',
-                                          shape: BoxShape.circle,
-                                          width: 48,
-                                          height: 48,
-                                          fit: BoxFit.cover,
-                                        ),
-                                      ),
+                                          ? Stack(
+                                            children: [
+                                              Container(
+                                                width: 48,
+                                                height: 48,
+                                                decoration: BoxDecoration(
+                                                  borderRadius: BorderRadius.circular(100),
+                                                  border: (friend.friendInfo.withinBoundary == true &&
+                                                      friend.friendInfo.revealWb == true)
+                                                      ? Border.all(
+                                                    color: SDSColor.snowliveBlue,
+                                                    width: 2,
+                                                  )
+                                                      : Border.all(
+                                                    color: SDSColor.gray100,
+                                                    width: 1,
+                                                  ),
+                                                ),
+                                                child: ExtendedImage.network(
+                                              friend.friendInfo.profileImageUrlUser,
+                                              shape: BoxShape.circle,
+                                              width: 48,
+                                              height: 48,
+                                              fit: BoxFit.cover,
+                                                ),
+                                              ),
+                                              if (friend.friendInfo.withinBoundary == true &&
+                                                  friend.friendInfo.revealWb == true)
+                                                Positioned(
+                                                  right: 0,
+                                                  bottom: 0,
+                                                  left: 0,
+                                                  child: Center(
+                                                    child: Image.asset(
+                                                      'assets/imgs/icons/icon_badge_live.png',
+                                                      width: 34,
+                                                    ),
+                                                  ),
+                                                ),
+                                            ],
+                                          )
+                                          : Stack(
+                                            children: [
+                                              Container(
+                                                width: 48,
+                                                height: 48,
+                                                decoration: BoxDecoration(
+                                                  borderRadius: BorderRadius.circular(100),
+                                                  border: (friend.friendInfo.withinBoundary == true &&
+                                                      friend.friendInfo.revealWb == true)
+                                                      ? Border.all(
+                                                    color: SDSColor.snowliveBlue,
+                                                    width: 2,
+                                                  )
+                                                      : Border.all(
+                                                    color: SDSColor.gray100,
+                                                    width: 1,
+                                                  ),
+                                                ),
+                                                child: ExtendedImage.asset(
+                                              'assets/imgs/profile/img_profile_default_circle.png',
+                                              shape: BoxShape.circle,
+                                              width: 48,
+                                              height: 48,
+                                              fit: BoxFit.cover,
+                                                ),
+                                              ),
+                                              if (friend.friendInfo.withinBoundary == true &&
+                                                  friend.friendInfo.revealWb == true)
+                                                Positioned(
+                                                  right: 0,
+                                                  bottom: 0,
+                                                  left: 0,
+                                                  child: Center(
+                                                    child: Image.asset(
+                                                      'assets/imgs/icons/icon_badge_live.png',
+                                                      width: 34,
+                                                    ),
+                                                  ),
+                                                ),
+                                            ],
+                                          ),
                                       Padding(
                                         padding: const EdgeInsets.only(left: 10),
                                         child: Container(

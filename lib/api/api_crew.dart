@@ -27,7 +27,7 @@ class CrewAPI {
   Future<ApiResponse<Map<String, dynamic>>> createCrew(
       Map<String, dynamic> crewData) async {
     final response = await http.post(
-      Uri.parse('$baseUrl/create-crew/'),
+      Uri.parse('$baseUrl/create/'),
       body: json.encode(crewData),
       headers: {'Content-Type': 'application/json'},
     );
@@ -41,7 +41,7 @@ class CrewAPI {
 
 // 크루 세부사항 조회
   Future<ApiResponse<Map<String, dynamic>>> getCrewDetails(int crewId, {int? season}) async {
-    final uri = Uri.parse('$baseUrl/crew-details/$crewId/').replace(
+    final uri = Uri.parse('$baseUrl/303/?crew_id=$crewId').replace(
       queryParameters: season != null ? {'season': season.toString()} : null,
     );
     final response = await http.get(uri);

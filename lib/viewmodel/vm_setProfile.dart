@@ -1,5 +1,5 @@
 
-import 'package:com.snowlive/model_2/m_resortModel.dart';
+import 'package:com.snowlive/model/m_resortModel.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_rx/get_rx.dart';
