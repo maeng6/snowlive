@@ -6,6 +6,7 @@ import 'package:flutter/rendering.dart';
 import 'package:get/get.dart';
 
 import '../../data/imgaUrls/Data_url_image.dart';
+import '../../screens/snowliveDesignStyle.dart';
 import '../../viewmodel/vm_fleamarketCommentDetail.dart';
 import '../../viewmodel/vm_user.dart';
 
@@ -29,7 +30,7 @@ class FleamarketCommentDetailView extends StatelessWidget {
           child: Scaffold(
             backgroundColor: Colors.white,
             appBar: PreferredSize(
-              preferredSize: Size.fromHeight(58),
+              preferredSize: Size.fromHeight(44),
               child: AppBar(
                 leading: GestureDetector(
                   child: Image.asset(
@@ -48,10 +49,9 @@ class FleamarketCommentDetailView extends StatelessWidget {
                     children: [
                       Text(
                         '답글',
-                        style: TextStyle(
-                            color: Color(0xFF111111),
-                            fontWeight: FontWeight.bold,
-                            fontSize: 20),
+                        style: SDSTextStyle.extraBold.copyWith(
+                            color: SDSColor.gray900,
+                            fontSize: 18),
                       ),
                     ],
                   ),
