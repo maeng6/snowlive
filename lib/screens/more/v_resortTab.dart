@@ -1,7 +1,7 @@
 import 'package:com.snowlive/controller/public/vm_urlLauncherController.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:com.snowlive/model_2/m_resortModel.dart';
+import 'package:com.snowlive/model/m_resortModel.dart';
 
 class ResortTab extends StatelessWidget {
   ResortTab({Key? key}) : super(key: key);

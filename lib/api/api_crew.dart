@@ -27,7 +27,7 @@ class CrewAPI {
   Future<ApiResponse<Map<String, dynamic>>> createCrew(
       Map<String, dynamic> crewData) async {
     final response = await http.post(
-      Uri.parse('$baseUrl/create-crew/'),
+      Uri.parse('$baseUrl/create/'),
       body: json.encode(crewData),
       headers: {'Content-Type': 'application/json'},
     );
@@ -41,7 +41,7 @@ class CrewAPI {
 
 // 크루 세부사항 조회
   Future<ApiResponse<Map<String, dynamic>>> getCrewDetails(int crewId, {int? season}) async {
-    final uri = Uri.parse('$baseUrl/crew-details/$crewId/').replace(
+    final uri = Uri.parse('$baseUrl/303/?crew_id=$crewId').replace(
       queryParameters: season != null ? {'season': season.toString()} : null,
     );
     final response = await http.get(uri);
@@ -174,9 +174,9 @@ class CrewAPI {
   }
 
 // 크루 멤버 리스트 조회
-  Future<ApiResponse<List<dynamic>>> listCrewMembers(int crewId,
+  Future<ApiResponse<Map<String, dynamic>>> listCrewMembers(int crewId,
       {bool? isLiveOn}) async {
-    final uri = Uri.parse('$baseUrl/crew-members/$crewId/')
+    final uri = Uri.parse('$baseUrl/$crewId/members/')
         .replace(queryParameters: {
       if (isLiveOn != null) 'is_live_on': isLiveOn.toString(),
     });
@@ -189,6 +189,7 @@ class CrewAPI {
       return ApiResponse.error(json.decode(response.body));
     }
   }
+
 
 // 크루 탈퇴
   Future<ApiResponse<Map<String, dynamic>>> leaveCrew(

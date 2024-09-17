@@ -213,7 +213,7 @@ class SearchFriendView extends StatelessWidget {
                                   borderRadius: BorderRadius.circular(12),
                                 ),
                                 child: Text(
-                                  _friendListViewModel.searchFriend.crewName ?? '',
+                                  _friendListViewModel.searchFriend.crewName ?? '개인',
                                   style: TextStyle(
                                       color: SDSColor.snowliveBlack,
                                       fontSize: 12,
@@ -231,7 +231,7 @@ class SearchFriendView extends StatelessWidget {
                                   ),
                                   SizedBox(height: 5),
                                   Text(
-                                    _friendListViewModel.searchFriend.skiorboard ?? '',
+                                    _friendListViewModel.searchFriend.skiorboard ?? '미설정',
                                     style: TextStyle(
                                       color: SDSColor.snowliveBlack,
                                       fontSize: 14,

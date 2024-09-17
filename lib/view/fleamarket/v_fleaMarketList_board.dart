@@ -31,53 +31,64 @@ class FleaMarketListView_board extends StatelessWidget {
       child: Container(
         color: Colors.white,
         child: Scaffold(
-          floatingActionButton: Stack(
+          floatingActionButton: Obx(()=>Stack(
             children: [
-              Center(
-                child: Padding(
-                  padding: EdgeInsets.only(top: _size.height - 360),
-                  child: Obx(()=>Visibility(
-                    visible: _fleamarketListViewModel.isVisible_board,
-                    child: Padding(
-                      padding: const EdgeInsets.only(left: 32),
-                      child: Container(
-                        width: 106,
-                        child: FloatingActionButton(
-                          heroTag: 'fleamarketList',
-                          mini: true,
-                          elevation: 0,
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(40)
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: Obx(()=>Visibility(
+                  visible: _fleamarketListViewModel.isVisible_board,
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 32),
+                    child: Container(
+                      width: 106,
+                      decoration: BoxDecoration(
+                        color: Colors.transparent,
+                        borderRadius: BorderRadius.circular(50),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.04),
+                            spreadRadius: 2,
+                            blurRadius: 8,
+                            offset: Offset(0, 6),
                           ),
-                          backgroundColor: Color(0xFF000000).withOpacity(0.8),
-                          foregroundColor: Colors.white,
-                          onPressed: () {
-                            _fleamarketListViewModel.scrollController_board.jumpTo(0);
-                          },
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Icon(Icons.arrow_upward_rounded,
-                                  color: Color(0xFFffffff),
-                                  size: 16),
-                              Padding(
-                                padding: const EdgeInsets.only(left: 2, right: 3),
-                                child: Text('최신글 보기',
-                                  style: TextStyle(
-                                      fontSize: 13,
-                                      fontWeight: FontWeight.bold,
-                                      color: Color(0xFFffffff).withOpacity(0.8),
-                                      letterSpacing: 0
-                                  ),),
-                              )
-                            ],
-                          ),
+                        ],
+                      ),
+                      child: FloatingActionButton(
+                        heroTag: 'fleamarketList',
+                        mini: true,
+                        elevation: 0,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(40),
+                          side: BorderSide(color: SDSColor.gray200),
+                        ),
+                        backgroundColor: SDSColor.snowliveWhite,
+                        foregroundColor: SDSColor.snowliveWhite,
+                        onPressed: () {
+                          _fleamarketListViewModel.scrollController_board.jumpTo(0);
+                        },
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Icon(Icons.arrow_upward_rounded,
+                                color: SDSColor.gray900,
+                                size: 16),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 2, right: 3),
+                              child: Text('최신글 보기',
+                                style: TextStyle(
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.bold,
+                                    color: SDSColor.gray900,
+                                    letterSpacing: 0
+                                ),),
+                            )
+                          ],
                         ),
                       ),
                     ),
-                  )),
-                ),
+                  ),
+                )),
               ),
               Positioned(
                 child: Transform.translate(
@@ -119,7 +130,7 @@ class FleaMarketListView_board extends StatelessWidget {
                 ),
               ),
             ],
-          ),
+          )),
           floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
           backgroundColor: Colors.white,
           body: Obx(()=>RefreshIndicator(

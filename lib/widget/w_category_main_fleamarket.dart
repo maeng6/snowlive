@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import '../../model_2/m_resortModel.dart';
+import '../model/m_resortModel.dart';
 import '../screens/snowliveDesignStyle.dart';
 
 

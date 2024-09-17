@@ -12,7 +12,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-import '../../model_2/m_resortModel.dart';
+import '../../model/m_resortModel.dart';
 import '../../screens/snowliveDesignStyle.dart';
 import '../../viewmodel/vm_setProfile.dart';
 import '../../viewmodel/vm_user.dart';

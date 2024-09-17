@@ -193,13 +193,26 @@ class FriendDetailView extends StatelessWidget {
                                     ),
                                     Padding(
                                       padding: const EdgeInsets.only(top: 2),
-                                      child: Text(
-                                        '${_friendDetailViewModel.friendDetailModel.friendUserInfo.favoriteResort} · ${_friendDetailViewModel.friendDetailModel.friendUserInfo.crewName}',
-                                        style: TextStyle(
-                                            fontSize: 14,
-                                            color: Color(0xFF949494),
-                                            fontWeight: FontWeight.normal),
-                                      ),
+                                      child: Row(
+                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          Text(
+                                            '${_friendDetailViewModel.friendDetailModel.friendUserInfo.favoriteResort}',
+                                            style: TextStyle(
+                                                fontSize: 14,
+                                                color: Color(0xFF949494),
+                                                fontWeight: FontWeight.normal),
+                                          ),
+                                        if(_friendDetailViewModel.friendDetailModel.friendUserInfo.crewName != null)
+                                        Text(
+                                          ' · ${_friendDetailViewModel.friendDetailModel.friendUserInfo.crewName}',
+                                          style: TextStyle(
+                                              fontSize: 14,
+                                              color: Color(0xFF949494),
+                                              fontWeight: FontWeight.normal),
+                                        ),
+                                        ],),
                                     ),
                                     //TODO: 상태메세지
                                     (_friendDetailViewModel.friendDetailModel.friendUserInfo.stateMsg != null)
