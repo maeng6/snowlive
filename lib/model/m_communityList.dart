@@ -1,3 +1,7 @@
+import 'dart:convert';
+
+import 'package:flutter_quill/flutter_quill.dart' as quill;
+
 class CommunityListResponse {
   int? count;
   String? next;
@@ -30,7 +34,7 @@ class Community {
   String? snsUrl;
   String? title;
   String? thumbImg;
-  Description? description;
+  quill.Document? description;  // quill.Document 형식으로 변경
   DateTime? updateTime;
   DateTime? uploadTime;
   int? viewsCount;
@@ -63,9 +67,20 @@ class Community {
     snsUrl = json['sns_url'];
     title = json['title'];
     thumbImg = json['thumb_img_url'];
-    description = json['description'] != null
-        ? Description.fromJson(json['description'])
-        : null;
+
+    // description을 string에서 quill.Document로 변환
+    if (json['description'] != null && json['description'] is String) {
+      try {
+        final List<dynamic> deltaList = jsonDecode(json['description']);
+        description = quill.Document.fromJson(deltaList);
+      } catch (e) {
+        print('Error parsing description: $e');
+        description = quill.Document();  // 에러 발생 시 빈 Document로 설정
+      }
+    } else {
+      description = quill.Document();
+    }
+
     updateTime = json['update_time'] != null
         ? DateTime.parse(json['update_time'])
         : null;

@@ -24,7 +24,7 @@ class _ReceiveFriendRequestViewState extends State<ReceiveFriendRequestView> {
     final Size _size = MediaQuery.of(context).size;
     return Scaffold(
         backgroundColor: Colors.white,
-        body: ListView.builder(
+        body: Obx(()=>ListView.builder(
           padding: EdgeInsets.symmetric(horizontal: 0),
           itemCount: _friendListViewModel.friendsRequestList.length,
           itemBuilder: (BuildContext context, int index) {
@@ -157,7 +157,7 @@ class _ReceiveFriendRequestViewState extends State<ReceiveFriendRequestView> {
                         ),
                       ),
                       trailing: Container(
-                        width: 134,
+                        width: _size.width * 0.5,
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
@@ -220,11 +220,13 @@ class _ReceiveFriendRequestViewState extends State<ReceiveFriendRequestView> {
                                                   Expanded(
                                                     child: ElevatedButton(
                                                       onPressed: () async {
+                                                        Navigator.pop(context);
                                                         await _friendDetailViewModel.acceptFriend(
                                                             {
                                                               "friend_id": friend.friendId    //필수 - 수락할 친구요청id(user_id 아님에 주의)
                                                             }
                                                         );
+                                                        await _friendListViewModel.fetchFriendRequestList(_userViewModel.user.user_id);
 
                                                       },
                                                       child: Text(
@@ -325,11 +327,14 @@ class _ReceiveFriendRequestViewState extends State<ReceiveFriendRequestView> {
                                                   Expanded(
                                                     child: ElevatedButton(
                                                       onPressed: () async {
-                                                        await _friendDetailViewModel.deleteFriend(
+                                                        Navigator.pop(context);
+                                                        await _friendListViewModel.deleteFriend(
                                                             {
                                                               "friend_id": friend.friendId    //필수 - 수락할 친구요청id(user_id 아님에 주의)
                                                             }
                                                         );
+                                                        await _friendListViewModel.fetchFriendRequestList(_userViewModel.user.user_id);
+
                                                       },
                                                       child: Text(
                                                         '확인',
@@ -385,7 +390,7 @@ class _ReceiveFriendRequestViewState extends State<ReceiveFriendRequestView> {
               ],
             );
           },
-        )
+        ))
     );
   }
 }

@@ -23,15 +23,15 @@ import 'package:flutter_quill/flutter_quill.dart' as quill;
 import 'package:flutter_quill_extensions/flutter_quill_extensions.dart';
 
 
-class CommunityFreeDetailView extends StatefulWidget {
-  CommunityFreeDetailView({Key? key}) : super(key: key);
+class CommunityBulletinDetailView extends StatefulWidget {
+  CommunityBulletinDetailView({Key? key}) : super(key: key);
 
   @override
-  State<CommunityFreeDetailView> createState() =>
-      _CommunityFreeDetailViewState();
+  State<CommunityBulletinDetailView> createState() =>
+      _CommunityBulletinDetailViewState();
 }
 
-class _CommunityFreeDetailViewState extends State<CommunityFreeDetailView> {
+class _CommunityBulletinDetailViewState extends State<CommunityBulletinDetailView> {
   //TODO: Dependency Injection**************************************************
   UserModelController _userModelController = Get.find<UserModelController>();
   BulletinFreeModelController _bulletinFreeModelController = Get.find<BulletinFreeModelController>();

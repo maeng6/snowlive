@@ -5,6 +5,8 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 
+import '../../viewmodel/vm_friendList.dart';
+
 class InvitationFriendView extends StatefulWidget {
   InvitationFriendView({Key? key}) : super(key: key);
 
@@ -18,6 +20,9 @@ class _InvitationFriendViewState extends State<InvitationFriendView> {
     true,
     false,
   ];
+
+  FriendListViewModel _friendListViewModel = Get.find<FriendListViewModel>();
+
 
   @override
   void setState(VoidCallback fn) {
@@ -46,6 +51,7 @@ class _InvitationFriendViewState extends State<InvitationFriendView> {
                   height: 26,
                 ),
                 onTap: () {
+                  _friendListViewModel.fetchFriendList();
                   Get.back();
                 },
               ),

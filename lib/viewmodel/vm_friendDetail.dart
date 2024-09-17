@@ -219,16 +219,6 @@ class FriendDetailViewModel extends GetxController {
     isLoading(false);
   }
 
-  Future<void> deleteFriend(body) async {
-    isLoading(true);
-    ApiResponse response = await FriendAPI().deleteFriend(body);
-    if(response.success)
-      Get.snackbar('친구삭제 성공','상대방에게도 내가 친구목록에서 제외됩니다.');
-    if(!response.success)
-      Get.snackbar('앗!', '${response.error['error']}');
-    isLoading(false);
-  }
-
   Future<void> checkFriendRelationship(body) async {
     isLoading(true);
     ApiResponse response = await FriendAPI().checkFriendRelationship(body);

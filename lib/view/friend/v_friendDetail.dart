@@ -71,7 +71,8 @@ class FriendDetailView extends StatelessWidget {
                     selectedResortName: _friendDetailViewModel.friendDetailModel.friendUserInfo.favoriteResort,
                     selectedResortIndex: _friendDetailViewModel.friendDetailModel.friendUserInfo.favoriteResortId-1,
                     selectedSkiOrBoard: _friendDetailViewModel.friendDetailModel.friendUserInfo.skiorboard,
-                    selectedSex: _friendDetailViewModel.friendDetailModel.friendUserInfo.sex
+                    selectedSex: _friendDetailViewModel.friendDetailModel.friendUserInfo.sex,
+                    hideProfile: _friendDetailViewModel.friendDetailModel.friendUserInfo.hideProfile
                 );
                 Get.toNamed(AppRoutes.friendDetailUpdate);
               },
@@ -192,13 +193,26 @@ class FriendDetailView extends StatelessWidget {
                                     ),
                                     Padding(
                                       padding: const EdgeInsets.only(top: 2),
-                                      child: Text(
-                                        '${_friendDetailViewModel.friendDetailModel.friendUserInfo.favoriteResort} · ${_friendDetailViewModel.friendDetailModel.friendUserInfo.crewName}',
-                                        style: TextStyle(
-                                            fontSize: 14,
-                                            color: Color(0xFF949494),
-                                            fontWeight: FontWeight.normal),
-                                      ),
+                                      child: Row(
+                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          Text(
+                                            '${_friendDetailViewModel.friendDetailModel.friendUserInfo.favoriteResort}',
+                                            style: TextStyle(
+                                                fontSize: 14,
+                                                color: Color(0xFF949494),
+                                                fontWeight: FontWeight.normal),
+                                          ),
+                                        if(_friendDetailViewModel.friendDetailModel.friendUserInfo.crewName != null)
+                                        Text(
+                                          ' · ${_friendDetailViewModel.friendDetailModel.friendUserInfo.crewName}',
+                                          style: TextStyle(
+                                              fontSize: 14,
+                                              color: Color(0xFF949494),
+                                              fontWeight: FontWeight.normal),
+                                        ),
+                                        ],),
                                     ),
                                     //TODO: 상태메세지
                                     (_friendDetailViewModel.friendDetailModel.friendUserInfo.stateMsg != null)
@@ -348,6 +362,8 @@ class FriendDetailView extends StatelessWidget {
                           ),
                         ),
                         SizedBox(height: 20,),
+                        if(_friendDetailViewModel.friendDetailModel.friendUserInfo.hideProfile == false
+                        || _friendDetailViewModel.friendDetailModel.friendUserInfo.userId == _userViewModel.user.user_id)
                         Column(children: [
                           SafeArea(
                             child: Stack(
@@ -799,7 +815,7 @@ class FriendDetailView extends StatelessWidget {
                                                             ),
                                                           ],
                                                         ),
-                                                        (_friendDetailViewModel.friendDetailModel.seasonRankingInfo.overallTotalCount != 0) 
+                                                        (_friendDetailViewModel.friendDetailModel.seasonRankingInfo.overallTotalCount != 0)
                                                             ? Container(
                                                           child: Row(
                                                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -864,7 +880,7 @@ class FriendDetailView extends StatelessWidget {
                                                               );
                                                             }).toList(),
                                                           ),
-                                                        ) 
+                                                        )
                                                             :Container(),
                                                       ],
                                                     ),
@@ -1996,6 +2012,21 @@ class FriendDetailView extends StatelessWidget {
                             ),
                           )
                         ],),
+                        if(_friendDetailViewModel.friendDetailModel.friendUserInfo.hideProfile == true &&
+                        _friendDetailViewModel.friendDetailModel.friendUserInfo.userId != _userViewModel.user.user_id)
+                          Center(
+                            child: Column(
+                              children: [
+                                SizedBox(height: _size.height * 0.15,),
+                                Image.asset(
+                                  'assets/imgs/icons/icon_profile_lock.png',
+                                  width: 74,
+                                  height: 74,
+                                ),
+                                Text('프로필 비공개 유저입니다'),
+                              ],
+                            ),
+                          )
                       ],
                     ))
                   ),
