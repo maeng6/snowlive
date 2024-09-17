@@ -180,10 +180,8 @@ class MoreTabMainView extends StatelessWidget {
                               Get.toNamed(AppRoutes.onBoardingCrewMain);
                             }
                             else{
-                              print(_userViewModel.user.crew_id);
                               Get.toNamed(AppRoutes.crewMain);
                               await _crewDetailViewModel.fetchCrewDetail(_userViewModel.user.crew_id);
-                              print(_crewDetailViewModel.color);
                             }
                           },
                           child: Column(

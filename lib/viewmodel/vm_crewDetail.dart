@@ -21,41 +21,25 @@ class CrewDetailViewModel extends GetxController {
   // 그래프 토글
   RxBool isSlopeGraph = true.obs;
 
-  // 크루 디테일 정보
-  final RxString _crewName = ''.obs;
-  final RxString _crewLogoUrl = ''.obs;
-  final RxString _description = ''.obs;
-  final RxString _createdDate = ''.obs;
-  final RxInt _crewMemberTotal = 0.obs;
-  final RxString _color = 'FFFFFF'.obs; // 기본값: 흰색
+  // 리조트 이름 저장용 변수 (리조트 변환 로직 필요)
   final RxString _resortName = ''.obs;
-  final RxInt _baseResortId = 99.obs;
 
-  // 시즌 랭킹 정보
-  final RxDouble _overallTotalScore = 0.0.obs;
-  final RxInt _overallRank = 0.obs;
-  final RxDouble _overallRankPercentage = 0.0.obs;
-  final RxString _overallTierIconUrl = ''.obs;
-  final RxInt _totalSlopeCount = 0.obs;
-  final RxList<CountInfo> _countInfo = <CountInfo>[].obs;
-  final RxList<int> _timeInfo = <int>[].obs;
-
-  // Getter for View access
-  String get crewName => _crewName.value;
-  String get crewLogoUrl => _crewLogoUrl.value;
-  String get description => _description.value;
-  String get createdDate => _createdDate.value;
-  int get crewMemberTotal => _crewMemberTotal.value;
-  String get color => _color.value;
+  // Getter for View access (모델 데이터를 직접 참조)
+  String get crewName => crewDetailModel.value.crewName ?? '';
+  String get crewLogoUrl => crewDetailModel.value.crewLogoUrl ?? '';
+  String get description => crewDetailModel.value.description ?? '';
+  String get createdDate => crewDetailModel.value.createdDate ?? '';
+  int get crewMemberTotal => crewDetailModel.value.crewMemberTotal ?? 0;
+  String get color => crewDetailModel.value.color ?? 'FFFFFF';
   String get resortName => _resortName.value;
 
-  double get overallTotalScore => _overallTotalScore.value;
-  int get overallRank => _overallRank.value;
-  double get overallRankPercentage => _overallRankPercentage.value;
-  String get overallTierIconUrl => _overallTierIconUrl.value;
-  int get totalSlopeCount => _totalSlopeCount.value;
-  List<CountInfo> get countInfo => _countInfo;
-  List<int> get timeInfo => _timeInfo;
+  double get overallTotalScore => seasonRankingInfo.value.overallTotalScore ?? 0;
+  int get overallRank => seasonRankingInfo.value.overallRank ?? 0;
+  double get overallRankPercentage => seasonRankingInfo.value.overallRankPercentage ?? 0;
+  String get overallTierIconUrl => seasonRankingInfo.value.overallTierIconUrl ?? '';
+  int get totalSlopeCount => seasonRankingInfo.value.totalSlopeCount ?? 0;
+  List<CountInfo> get countInfo => seasonRankingInfo.value.countInfo ?? [];
+  List<int> get timeInfo => seasonRankingInfo.value.timeInfo ?? [];
 
   String get selectedTabName => _selectedTabName.value;
 
@@ -72,32 +56,13 @@ class CrewDetailViewModel extends GetxController {
     try {
       final response = await CrewAPI().getCrewDetails(crewId);
       if (response.success) {
-        print('ddafsdf');
         // API 호출 성공 시 데이터를 모델에 저장
         var crewDetailResponse = CrewDetailResponse.fromJson(response.data!);
         crewDetailModel.value = crewDetailResponse.crewDetailInfo!;
         seasonRankingInfo.value = crewDetailResponse.seasonRankingInfo!;
-        // 크루 디테일 정보 저장
-        _crewName.value = crewDetailModel.value.crewName ?? '';
-        _crewLogoUrl.value = crewDetailModel.value.crewLogoUrl ?? '';
-        _description.value = crewDetailModel.value.description ?? '';
-        _createdDate.value = crewDetailModel.value.createdDate ?? '';
-        _crewMemberTotal.value = crewDetailModel.value.crewMemberTotal ?? 0;
-        _color.value = crewDetailModel.value.color ?? 'FFFFFF';
-        _baseResortId.value = crewDetailModel.value.baseResortId ?? 0;
-
-        // 시즌 랭킹 정보 저장
-        _overallTotalScore.value = seasonRankingInfo.value.overallTotalScore ?? 0;
-        _overallRank.value = seasonRankingInfo.value.overallRank ?? 0;
-        _overallRankPercentage.value = seasonRankingInfo.value.overallRankPercentage ?? 0;
-        _overallTierIconUrl.value = seasonRankingInfo.value.overallTierIconUrl ?? '';
-        _totalSlopeCount.value = seasonRankingInfo.value.totalSlopeCount ?? 0;
-        _countInfo.value = seasonRankingInfo.value.countInfo ?? [];
-        _timeInfo.value = seasonRankingInfo.value.timeInfo ?? [];
 
         // 리조트 이름 변환
-        print(_baseResortId.value);
-        changeResortNumberToName(_baseResortId.value);
+        changeResortNumberToName(crewDetailModel.value.baseResortId);
       } else {
         print('Error fetching crew details: ${response.error}');
       }
@@ -113,6 +78,7 @@ class CrewDetailViewModel extends GetxController {
     _selectedTabName.value = tabName;
   }
 
+  // 리조트 번호를 리조트 이름으로 변환
   void changeResortNumberToName(int? selectedResortId) {
     if (selectedResortId != null && selectedResortId >= 0 && selectedResortId < resortNameList.length) {
       _resortName.value = resortNameList[selectedResortId] ?? "Unknown Resort";  // null 값 처리
@@ -120,7 +86,6 @@ class CrewDetailViewModel extends GetxController {
       _resortName.value = "Unknown Resort";
     }
   }
-
 
   // 그래프 토글 함수
   void toggleGraph() {
