@@ -1,5 +1,8 @@
+import 'package:com.snowlive/routes/routes.dart';
 import 'package:com.snowlive/view/crew/v_crewHome.dart';
+import 'package:com.snowlive/view/crew/v_crewMember.dart';
 import 'package:com.snowlive/viewmodel/vm_crewMain.dart';
+import 'package:com.snowlive/viewmodel/vm_mainHome.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -14,6 +17,7 @@ import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 class CrewMainView extends StatelessWidget {
 
   final CrewMainViewModel _crewMainViewModel = Get.find<CrewMainViewModel>();
+  final MainHomeViewModel _mainHomeViewModel = Get.find<MainHomeViewModel>();
 
   @override
   Widget build(BuildContext context) {
@@ -58,7 +62,8 @@ class CrewMainView extends StatelessWidget {
                   height: 26,
                 ),
                 onTap: () async {
-                  Get.back();
+                  Get.until((route) => Get.currentRoute == AppRoutes.mainHome);
+                  _mainHomeViewModel.changePage(4);
                 },
               ),
               centerTitle: true,
@@ -95,7 +100,7 @@ class CrewMainView extends StatelessWidget {
                   if (_crewMainViewModel.currentTab.value == '홈') {
                     return CrewHomeView();
                   } else if (_crewMainViewModel.currentTab.value == '멤버') {
-                    return CrewHomeView();
+                    return CrewMemberListView();
                   } else {
                     return CrewHomeView();
                   }

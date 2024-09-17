@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:com.snowlive/model_2/m_liveCrewModel.dart';
+import 'package:com.snowlive/routes/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:extended_image/extended_image.dart';
@@ -241,12 +242,12 @@ class SetCrewImageAndColorView extends StatelessWidget {
               padding: EdgeInsets.only(left: 16, right: 16, bottom: 16),
               child: Obx(() => ElevatedButton(
                 onPressed: () async {
-                  CustomFullScreenDialog.showDialog();
-                  await _setCrewViewModel.createCrew(); // 서버에 크루 생성 요청
-                  CustomFullScreenDialog.cancelDialog();
+                  Get.toNamed(AppRoutes.crewMain);
+                  await _setCrewViewModel.createCrew();
+
                 },
                 child: Text(
-                  '다음',
+                  '완료',
                   style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16),
                 ),
                 style: TextButton.styleFrom(

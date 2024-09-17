@@ -1,5 +1,7 @@
 import 'package:com.snowlive/api/api_crew.dart';
 import 'package:com.snowlive/routes/routes.dart';
+import 'package:com.snowlive/viewmodel/vm_crewDetail.dart';
+import 'package:com.snowlive/viewmodel/vm_crewMemberList.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
@@ -10,6 +12,9 @@ import 'package:com.snowlive/model/m_resortModel.dart';
 class SetCrewViewModel extends GetxController {
 
   UserViewModel _userViewModel = Get.find<UserViewModel>();
+  CrewDetailViewModel _crewDetailViewModel = Get.find<CrewDetailViewModel>();
+  CrewMemberListViewModel _crewMemberListViewModel = Get.find<CrewMemberListViewModel>();
+
 
   // 로딩 상태 관리
   RxBool isLoading = false.obs;
@@ -165,6 +170,9 @@ class SetCrewViewModel extends GetxController {
 
       // 서버에 크루 생성 요청
       await CrewAPI().createCrew(crewData);
+      await _userViewModel.updateUserModel_api(_userViewModel.user.user_id);
+      await _crewDetailViewModel.fetchCrewDetail(_userViewModel.user.crew_id);
+      await _crewMemberListViewModel.fetchCrewMembers(crewId: _userViewModel.user.crew_id);
 
       isLoading.value = false; // 로딩 끝
     }

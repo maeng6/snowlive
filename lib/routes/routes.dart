@@ -3,6 +3,7 @@ import 'package:com.snowlive/screens/resort/v_resortHome.dart';
 import 'package:com.snowlive/view/bulletin/free/v_community_Bulletin_Detail.dart';
 import 'package:com.snowlive/view/crew/v_crewHome.dart';
 import 'package:com.snowlive/view/crew/v_crewMain.dart';
+import 'package:com.snowlive/view/crew/v_crewMember.dart';
 import 'package:com.snowlive/view/crew/v_onboarding.dart';
 import 'package:com.snowlive/view/crew/v_setCrewImageAndColor.dart';
 import 'package:com.snowlive/view/crew/v_setCrewNameAndResort.dart';
@@ -59,6 +60,7 @@ class AppRoutes {
   static const String setCrewImageAndColor = '/setCrewImageAndColor';
   static const String crewMain = '/crewMain';
   static const String crewHome = '/crewHome';
+  static const String crewMember = '/crewMember';
 
 
 
@@ -201,6 +203,10 @@ class AppRoutes {
         name: crewHome,
         page: () => CrewHomeView(),
         binding: SetCrewNameAndResortBinding()
+    ),
+    GetPage(
+        name: crewMember,
+        page: () => CrewMemberListView(),
     ),
   ];
 }

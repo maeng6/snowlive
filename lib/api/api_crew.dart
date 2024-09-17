@@ -174,9 +174,9 @@ class CrewAPI {
   }
 
 // 크루 멤버 리스트 조회
-  Future<ApiResponse<List<dynamic>>> listCrewMembers(int crewId,
+  Future<ApiResponse<Map<String, dynamic>>> listCrewMembers(int crewId,
       {bool? isLiveOn}) async {
-    final uri = Uri.parse('$baseUrl/crew-members/$crewId/')
+    final uri = Uri.parse('$baseUrl/$crewId/members/')
         .replace(queryParameters: {
       if (isLiveOn != null) 'is_live_on': isLiveOn.toString(),
     });
@@ -189,6 +189,7 @@ class CrewAPI {
       return ApiResponse.error(json.decode(response.body));
     }
   }
+
 
 // 크루 탈퇴
   Future<ApiResponse<Map<String, dynamic>>> leaveCrew(
