@@ -40,10 +40,14 @@ class CrewAPI {
   }
 
 // 크루 세부사항 조회
-  Future<ApiResponse<Map<String, dynamic>>> getCrewDetails(int crewId, {int? season}) async {
-    final uri = Uri.parse('$baseUrl/303/?crew_id=$crewId').replace(
-      queryParameters: season != null ? {'season': season.toString()} : null,
+  Future<ApiResponse<Map<String, dynamic>>> getCrewDetails(int crewId, {String? season}) async {
+    final uri = Uri.parse('$baseUrl/303/').replace(
+      queryParameters: {
+        'crew_id': crewId.toString(),
+        if (season != null) 'season': season,  // 시즌 정보가 있으면 추가
+      },
     );
+
     final response = await http.get(uri);
 
     if (response.statusCode == 200) {
@@ -52,6 +56,7 @@ class CrewAPI {
       return ApiResponse.error(json.decode(response.body));
     }
   }
+
 
 // 크루 세부사항 업데이트
   Future<ApiResponse<Map<String, dynamic>>> updateCrewDetails(int crewId,

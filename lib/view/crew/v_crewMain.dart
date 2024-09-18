@@ -6,13 +6,9 @@ import 'package:com.snowlive/viewmodel/vm_mainHome.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:com.snowlive/screens/LiveCrew/v_crewDetailPage_home.dart';
-import 'package:com.snowlive/screens/LiveCrew/v_crewDetailPage_member.dart';
-import 'package:com.snowlive/screens/LiveCrew/v_crewDetailPage_gallery.dart';
 import '../../controller/user/vm_userModelController.dart';
 import '../../controller/liveCrew/vm_liveCrewModelController.dart';
 import '../../controller/liveCrew/vm_streamController_liveCrew.dart';
-import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 
 class CrewMainView extends StatelessWidget {
 
@@ -90,7 +86,6 @@ class CrewMainView extends StatelessWidget {
                 children: [
                   _buildTabButton('홈', '홈'),
                   _buildTabButton('멤버', '멤버'),
-                  _buildTabButton('갤러리', '갤러리'),
                 ],
               ),
             ),
@@ -99,10 +94,8 @@ class CrewMainView extends StatelessWidget {
                     () {
                   if (_crewMainViewModel.currentTab.value == '홈') {
                     return CrewHomeView();
-                  } else if (_crewMainViewModel.currentTab.value == '멤버') {
-                    return CrewMemberListView();
                   } else {
-                    return CrewHomeView();
+                    return CrewMemberListView();
                   }
                 },
               ),

@@ -183,7 +183,10 @@ class MoreTabMainView extends StatelessWidget {
                             }
                             else{
                               Get.toNamed(AppRoutes.crewMain);
-                              await _crewDetailViewModel.fetchCrewDetail(_userViewModel.user.crew_id);
+                              await _crewDetailViewModel.fetchCrewDetail(
+                                  _userViewModel.user.crew_id,
+                                _friendDetailViewModel.seasonDate
+                              );
                               await _crewMemberListViewModel.fetchCrewMembers(crewId: _userViewModel.user.crew_id);
                             }
                           },

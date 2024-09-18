@@ -176,25 +176,87 @@ class FriendListView extends StatelessWidget {
                     child: Row(
                       children: [
                         (_userViewModel.user.profile_image_url_user != '')
-                            ? Container(
-                              width: 56,
-                              child: ExtendedImage.network(
-                            _userViewModel.user.profile_image_url_user,
-                            shape: BoxShape.circle,
-                            width: 56,
-                            height: 56,
-                            fit: BoxFit.cover,
-                              ),
+                            ? Stack(
+                              children: [
+                                Container(
+                                  width: 56,
+                                  height: 56,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(100),
+                                    border: (_userViewModel.user.within_boundary == true &&
+                                        _userViewModel.user.reveal_wb == true)
+                                        ? Border.all(
+                                      color: SDSColor.snowliveBlue,
+                                      width: 2,
+                                    )
+                                        : Border.all(
+                                      color: SDSColor.gray100,
+                                      width: 1,
+                                    ),
+                                  ),
+                                  child: ExtendedImage.network(
+                                _userViewModel.user.profile_image_url_user,
+                                shape: BoxShape.circle,
+                                width: 56,
+                                height: 56,
+                                fit: BoxFit.cover,
+                                  ),
+                                ),
+                                if (_userViewModel.user.within_boundary == true &&
+                                    _userViewModel.user.reveal_wb == true)
+                                  Positioned(
+                                    right: 0,
+                                    bottom: 0,
+                                    left: 0,
+                                    child: Center(
+                                      child: Image.asset(
+                                        'assets/imgs/icons/icon_badge_live.png',
+                                        width: 34,
+                                      ),
+                                    ),
+                                  ),
+                              ],
                             )
-                            : Container(
-                              width: 56,
-                              child: ExtendedImage.asset(
-                            'assets/imgs/profile/img_profile_default_circle.png',
-                            shape: BoxShape.circle,
-                            width: 56,
-                            height: 56,
-                            fit: BoxFit.cover,
-                              ),
+                            : Stack(
+                              children: [
+                                Container(
+                                  width: 56,
+                                  height: 56,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(100),
+                                    border: (_userViewModel.user.within_boundary == true &&
+                                        _userViewModel.user.reveal_wb == true)
+                                        ? Border.all(
+                                      color: SDSColor.snowliveBlue,
+                                      width: 2,
+                                    )
+                                        : Border.all(
+                                      color: SDSColor.gray100,
+                                      width: 1,
+                                    ),
+                                  ),
+                                  child: ExtendedImage.asset(
+                                'assets/imgs/profile/img_profile_default_circle.png',
+                                shape: BoxShape.circle,
+                                width: 56,
+                                height: 56,
+                                fit: BoxFit.cover,
+                                  ),
+                                ),
+                                if (_userViewModel.user.within_boundary == true &&
+                                    _userViewModel.user.reveal_wb == true)
+                                  Positioned(
+                                    right: 0,
+                                    bottom: 0,
+                                    left: 0,
+                                    child: Center(
+                                      child: Image.asset(
+                                        'assets/imgs/icons/icon_badge_live.png',
+                                        width: 34,
+                                      ),
+                                    ),
+                                  ),
+                              ],
                             ),
                         Padding(
                           padding: const EdgeInsets.only(left: 10),
