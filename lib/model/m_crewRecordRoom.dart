@@ -1,11 +1,12 @@
-class CrewRidingRecordResponse {
-  List<CrewRidingRecord>? records;
+class CrewRecordRoomResponse {
+  List<CrewRidingRecord> records;
 
-  CrewRidingRecordResponse({this.records});
+  CrewRecordRoomResponse({required this.records});
 
-  CrewRidingRecordResponse.fromJson(List<dynamic> json) {
-    records = json.map((item) => CrewRidingRecord.fromJson(item)).toList();
-  }
+  CrewRecordRoomResponse.fromJson(List<dynamic>? json)
+      : records = json != null
+      ? json.map((item) => CrewRidingRecord.fromJson(item)).toList()
+      : []; // null일 경우 빈 리스트로 처리
 }
 
 class CrewRidingRecord {
@@ -16,6 +17,7 @@ class CrewRidingRecord {
   int? withinBoundaryCount;
   List<int>? timeInfo;
   List<TodayMemberInfo>? todayMemberInfo;
+  Map<String, int>? timeCountInfo; // 추가된 부분
 
   CrewRidingRecord({
     this.date,
@@ -36,9 +38,27 @@ class CrewRidingRecord {
     timeInfo = List<int>.from(json['time_info'] ?? []);
     todayMemberInfo = (json['today_member_info'] as List<dynamic>?)
         ?.map((item) => TodayMemberInfo.fromJson(item))
-        .toList();
+        .toList() ?? [];
+
+    // time_info 배열을 시간대 레이블로 변환
+    if (timeInfo != null) {
+      timeCountInfo = {
+        "00-08": timeInfo![0],
+        "08-10": timeInfo![1],
+        "10-12": timeInfo![2],
+        "12-14": timeInfo![3],
+        "14-16": timeInfo![4],
+        "16-18": timeInfo![5],
+        "18-20": timeInfo![6],
+        "20-22": timeInfo![7],
+        "22-00": timeInfo![8],
+      };
+    } else {
+      timeCountInfo = {};
+    }
   }
 }
+
 
 class TodayMemberInfo {
   int? userId;
