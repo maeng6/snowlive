@@ -1523,26 +1523,28 @@ class FleaMarketListView_total extends StatelessWidget {
                   child: (_fleamarketListViewModel.fleamarketListTotal.length == 0)
                           ? Transform.translate(
                         offset: Offset(0, -40),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Image.asset(
-                              'assets/imgs/icons/icon_nodata.png',
-                              scale: 4,
-                              width: 73,
-                              height: 73,
-                            ),
-                            SizedBox(
-                              height: 6,
-                            ),
-                            Text('게시판에 글이 없습니다.',
-                              style: SDSTextStyle.regular.copyWith(
-                                  fontSize: 14,
-                                  color: SDSColor.gray600
+                        child: Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Image.asset(
+                                'assets/imgs/icons/icon_nodata.png',
+                                scale: 4,
+                                width: 73,
+                                height: 73,
                               ),
-                            ),
-                          ],
+                              SizedBox(
+                                height: 6,
+                              ),
+                              Text('게시판에 글이 없습니다.',
+                                style: SDSTextStyle.regular.copyWith(
+                                    fontSize: 14,
+                                    color: SDSColor.gray600
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       )
                           : Scrollbar(
@@ -1754,8 +1756,17 @@ class FleaMarketListView_total extends StatelessWidget {
                                                           child: Row(
                                                             mainAxisAlignment: MainAxisAlignment.center,
                                                             children: [
-                                                              ExtendedImage.asset(
+                                                              (data.isFavorite == false)
+                                                              ? ExtendedImage.asset(
                                                                 'assets/imgs/icons/icon_list_scrap.png',
+                                                                shape: BoxShape.rectangle,
+                                                                borderRadius: BorderRadius.circular(8),
+                                                                width: 16,
+                                                                height: 16,
+                                                                fit: BoxFit.cover,
+                                                              )
+                                                              : ExtendedImage.asset(
+                                                                'assets/imgs/icons/icon_list_scrap_my.png',
                                                                 shape: BoxShape.rectangle,
                                                                 borderRadius: BorderRadius.circular(8),
                                                                 width: 16,

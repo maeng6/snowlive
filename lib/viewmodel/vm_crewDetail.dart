@@ -41,7 +41,7 @@ class CrewDetailViewModel extends GetxController {
   String get overallTierIconUrl => seasonRankingInfo.overallTierIconUrl ?? '';
   int get totalSlopeCount => seasonRankingInfo.totalSlopeCount ?? 0;
   List<CountInfo> get countInfo => seasonRankingInfo.countInfo ?? [];
-  List<int> get timeInfo => seasonRankingInfo.timeInfo ?? [];
+  Map<String, int> get timeInfo => seasonRankingInfo.timeCountInfo ?? {};
 
   String get selectedTabName => _selectedTabName.value;
 
@@ -53,10 +53,11 @@ class CrewDetailViewModel extends GetxController {
   }
 
   // API 호출해서 데이터를 가져오는 메소드
-  Future<void> fetchCrewDetail(int crewId) async {
+  Future<void> fetchCrewDetail(int crewId, String season) async {
     isLoading.value = true;
     try {
-      final response = await CrewAPI().getCrewDetails(crewId);
+      // 시즌 정보 함께 전달
+      final response = await CrewAPI().getCrewDetails(crewId, season: season);
       if (response.success) {
         crewDetailResponse.value = CrewDetailResponse.fromJson(response.data!);
 

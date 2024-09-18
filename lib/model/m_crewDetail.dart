@@ -78,7 +78,7 @@ class SeasonRankingInfo {
   String? overallTierIconUrl;
   int? totalSlopeCount;
   List<CountInfo>? countInfo;
-  List<int>? timeInfo;
+  Map<String, int>? timeCountInfo;
 
   SeasonRankingInfo({
     this.overallTotalScore,
@@ -87,27 +87,40 @@ class SeasonRankingInfo {
     this.overallTierIconUrl,
     this.totalSlopeCount,
     this.countInfo,
-    this.timeInfo,
+    this.timeCountInfo,
   });
 
   SeasonRankingInfo.fromJson(Map<String, dynamic> json) {
-    overallTotalScore = (json['overall_total_score'] as num?)?.toDouble(); // int나 double을 모두 처리
+    overallTotalScore = (json['overall_total_score'] as num?)?.toDouble();
     overallRank = json['overall_rank'];
-    overallRankPercentage = (json['overall_rank_percentage'] as num?)?.toDouble(); // int나 double을 모두 처리
+    overallRankPercentage = (json['overall_rank_percentage'] as num?)?.toDouble();
     overallTierIconUrl = json['overall_tier_icon_url'];
     totalSlopeCount = json['total_slope_count'];
+
     if (json['count_info'] != null) {
       countInfo = [];
       json['count_info'].forEach((v) {
         countInfo?.add(CountInfo.fromJson(v));
       });
     }
+
     if (json['time_info'] != null) {
-      timeInfo = List<int>.from(json['time_info']);
+      timeCountInfo = {
+        "00-08": json['time_info'][0],
+        "08-10": json['time_info'][1],
+        "10-12": json['time_info'][2],
+        "12-14": json['time_info'][3],
+        "14-16": json['time_info'][4],
+        "16-18": json['time_info'][5],
+        "18-20": json['time_info'][6],
+        "20-22": json['time_info'][7],
+        "22-00": json['time_info'][8],
+      };
+    } else {
+      timeCountInfo = {};
     }
   }
 }
-
 
 class CountInfo {
   String? slope;

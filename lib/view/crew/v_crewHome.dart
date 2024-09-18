@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:com.snowlive/screens/snowliveDesignStyle.dart';
 import 'package:com.snowlive/viewmodel/vm_crewDetail.dart';
 import 'package:com.snowlive/screens/LiveCrew/v_crewTodayPage.dart';
@@ -441,38 +442,148 @@ class CrewHomeView extends StatelessWidget {
                             else
                               Obx(() => _crewDetailViewModel.isSlopeGraph.value
                                     ? Container(
-                                //TODO: 슬로프별 그래프
-                                  child: Column(
-                                    children: _crewDetailViewModel.countInfo.map((slopeData) {
-                                      return Padding(
-                                        padding: const EdgeInsets.only(top: 8.0),
-                                        child: Row(
-                                          children: [
-                                            Text(slopeData.slope ?? '', style: TextStyle(fontSize: 14)),
-                                            SizedBox(width: 8),
-                                            Text('${slopeData.count ?? 0}회', style: TextStyle(fontSize: 14)),
-                                          ],
-                                        ),
-                                      );
-                                    }).toList(),
-                                  ),)
-                                    : Container(
-                                //TODO: 시간대별 그래프
-                              child: Column(
-                                    children: _crewDetailViewModel.timeInfo.map((timeData) {
-                                      return Padding(
-                                        padding: const EdgeInsets.only(top: 8.0),
-                                        child: Row(
-                                          children: [
-                                            Text('시간대 $timeData', style: TextStyle(fontSize: 14)),
-                                            SizedBox(width: 8),
-                                            Text('${timeData}회', style: TextStyle(fontSize: 14)),
-                                          ],
-                                        ),
-                                      );
-                                    }).toList(),
-                                  ),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: _crewDetailViewModel.countInfo.map<Widget>((slopeData) {
+                                    String slopeName = slopeData.slope ?? '';
+                                    int passCount = slopeData.count ?? 0;
+
+                                    // barWidthRatio는 비율에 따라 설정, 여기서는 단순히 예시로 0~1 사이 값 설정
+                                    double barWidthRatio = (passCount / (_crewDetailViewModel.countInfo.map((e) => e.count ?? 0).reduce((a, b) => a > b ? a : b)));
+
+                                    return Padding(
+                                      padding: (slopeData != _crewDetailViewModel.countInfo.last)
+                                          ? EdgeInsets.only(bottom: 8, top: 10)
+                                          : EdgeInsets.only(bottom: 0, top: 10),
+                                      child: Row(
+                                        children: [
+                                          Container(
+                                            width: 44,
+                                            child: Text(
+                                              slopeName,
+                                              style: TextStyle(
+                                                fontSize: 11,
+                                                color: Colors.black, // 텍스트 색상 지정
+                                              ),
+                                            ),
+                                          ),
+                                          Container(
+                                            height: 16,
+                                            width: (_size.width - 152) * barWidthRatio,
+                                            decoration: BoxDecoration(
+                                              color: (slopeData == _crewDetailViewModel.countInfo.first)
+                                                  ? Colors.blue // 첫 번째 막대의 색상
+                                                  : Colors.blueAccent, // 다른 막대들의 색상
+                                              borderRadius: BorderRadius.only(
+                                                topRight: Radius.circular(4),
+                                                bottomRight: Radius.circular(4),
+                                              ),
+                                            ),
+                                          ),
+                                          Padding(
+                                            padding: (slopeData == _crewDetailViewModel.countInfo.first)
+                                                ? EdgeInsets.only(left: 6)
+                                                : EdgeInsets.only(left: 2),
+                                            child: Container(
+                                              width: 30,
+                                              child: Column(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                children: [
+                                                  Container(
+                                                    decoration: BoxDecoration(
+                                                      borderRadius: BorderRadius.circular(20),
+                                                      color: (slopeData == _crewDetailViewModel.countInfo.first)
+                                                          ? Colors.black // 첫 번째 데이터의 배경 색
+                                                          : Colors.transparent,
+                                                    ),
+                                                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 2),
+                                                    child: Text(
+                                                      '$passCount',
+                                                      style: TextStyle(
+                                                        fontSize: 11,
+                                                        fontWeight: (slopeData == _crewDetailViewModel.countInfo.first)
+                                                            ? FontWeight.w900
+                                                            : FontWeight.w300,
+                                                        color: (slopeData == _crewDetailViewModel.countInfo.first)
+                                                            ? Colors.white
+                                                            : Colors.black.withOpacity(0.4),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    );
+                                  }).toList(),
                                 ),
+                              )
+                                    : Container(
+                                child: _crewDetailViewModel.seasonRankingInfo.timeCountInfo != null
+                                    ? Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  children: _crewDetailViewModel.seasonRankingInfo.timeCountInfo!.entries.map<Widget>((entry) {
+                                    String slotName = entry.key; // 시간대 이름 (ex: "00-08", "08-10")
+                                    int passCount = entry.value; // 시간대별 횟수
+                                    int maxCount = _crewDetailViewModel.seasonRankingInfo.timeCountInfo!.values.reduce((a, b) => a > b ? a : b); // 최대 값 계산
+                                    double barHeightRatio = passCount / maxCount; // 비율 계산
+
+                                    return Container(
+                                      width: 30,
+                                      child: Column(
+                                        mainAxisAlignment: MainAxisAlignment.end,
+                                        children: [
+                                          // 횟수가 0이 아닐 때만 표시
+                                          AutoSizeText(
+                                            passCount != 0 ? '$passCount' : '',
+                                            style: TextStyle(
+                                              fontSize: 11,
+                                              color: passCount == maxCount ? SDSColor.snowliveBlack : SDSColor.gray500,
+                                              fontWeight: passCount == maxCount ? FontWeight.bold : FontWeight.w300, // 가장 높은 값은 볼드체
+                                            ),
+                                            minFontSize: 6,
+                                            maxLines: 1,
+                                            overflow: TextOverflow.visible,
+                                          ),
+                                          Padding(
+                                            padding: EdgeInsets.only(top: passCount == maxCount ? 6 : 0),
+                                            child: Container(
+                                              width: 16,
+                                              height: 140 * barHeightRatio, // 막대 높이를 비율에 따라 설정
+                                              decoration: BoxDecoration(
+                                                color: passCount == maxCount ? SDSColor.blue500 : SDSColor.blue200, // 가장 높은 값은 다른 색상
+                                                borderRadius: BorderRadius.only(
+                                                  topRight: Radius.circular(4),
+                                                  topLeft: Radius.circular(4),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.only(top: 8),
+                                            child: Container(
+                                              width: 20,
+                                              child: Text(
+                                                slotName, // 시간대 텍스트
+                                                style: TextStyle(
+                                                  fontSize: 11,
+                                                  color: Colors.black,
+                                                  height: 1.2,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    );
+                                  }).toList(),
+                                )
+                                    : Center(child: Text('No data available')), // null일 때 표시할 기본 값
+                              ),
                               ),
                           ],
                         ),

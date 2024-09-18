@@ -1508,26 +1508,28 @@ class FleaMarketListView_ski extends StatelessWidget {
                     child: (_fleamarketListViewModel.fleamarketListSki.length == 0)
                             ? Transform.translate(
                           offset: Offset(0, -40),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Image.asset(
-                                'assets/imgs/icons/icon_nodata.png',
-                                scale: 4,
-                                width: 73,
-                                height: 73,
-                              ),
-                              SizedBox(
-                                height: 6,
-                              ),
-                              Text('게시판에 글이 없습니다.',
-                                style: SDSTextStyle.regular.copyWith(
-                                    fontSize: 14,
-                                    color: SDSColor.gray600
+                          child: Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Image.asset(
+                                  'assets/imgs/icons/icon_nodata.png',
+                                  scale: 4,
+                                  width: 73,
+                                  height: 73,
                                 ),
-                              ),
-                            ],
+                                SizedBox(
+                                  height: 6,
+                                ),
+                                Text('게시판에 글이 없습니다.',
+                                  style: SDSTextStyle.regular.copyWith(
+                                      fontSize: 14,
+                                      color: SDSColor.gray600
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         )
                             : Scrollbar(
@@ -1574,17 +1576,14 @@ class FleaMarketListView_ski extends StatelessWidget {
                                                         fit: BoxFit.cover,
                                                       ),
                                                     if (data.photos!.length == 0)
-                                                      Padding(
-                                                        padding: EdgeInsets.only(top: 8, bottom: 8),
-                                                        child: ExtendedImage
-                                                            .asset(
-                                                          'assets/imgs/imgs/img_flea_default.png',
-                                                          shape: BoxShape.rectangle,
-                                                          borderRadius: BorderRadius.circular(8),
-                                                          width: 110,
-                                                          height: 110,
-                                                          fit: BoxFit.cover,
-                                                        ),
+                                                      ExtendedImage
+                                                          .asset(
+                                                        'assets/imgs/imgs/img_flea_default.png',
+                                                        shape: BoxShape.rectangle,
+                                                        borderRadius: BorderRadius.circular(8),
+                                                        width: 110,
+                                                        height: 110,
+                                                        fit: BoxFit.cover,
                                                       ),
                                                     if (data.status == FleamarketStatus.soldOut.korean)
                                                       Container(
@@ -1600,7 +1599,7 @@ class FleaMarketListView_ski extends StatelessWidget {
                                                         top: 8,
                                                         left: 8,  // 좌측 상단에 위치하도록 설정
                                                         child: Container(
-                                                          padding: EdgeInsets.symmetric(horizontal: 6, vertical: 2),  // 패딩을 추가하여 뱃지 모양을 만듦
+                                                          padding: EdgeInsets.symmetric(horizontal: 6, vertical: 3),  // 패딩을 추가하여 뱃지 모양을 만듦
                                                           decoration: BoxDecoration(
                                                             borderRadius: BorderRadius.circular(4),  // 모서리를 둥글게 처리
                                                             color: SDSColor.snowliveWhite,  // 배경색과 투명도 설정
