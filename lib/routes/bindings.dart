@@ -1,5 +1,4 @@
 import 'package:com.snowlive/controller/login/vm_notificationController.dart';
-import 'package:com.snowlive/view/bulletin/free/v_community_Bulletin_Detail.dart';
 import 'package:com.snowlive/viewmodel/vm_crewDetail.dart';
 import 'package:com.snowlive/viewmodel/vm_crewMain.dart';
 import 'package:com.snowlive/viewmodel/vm_crewMemberList.dart';
@@ -19,10 +18,14 @@ import 'package:com.snowlive/viewmodel/vm_tos.dart';
 import 'package:com.snowlive/viewmodel/vm_user.dart';
 import 'package:get/get.dart';
 import '../viewmodel/vm_communityBulletinList.dart';
+import '../viewmodel/vm_communityCommentDetail.dart';
+import '../viewmodel/vm_communityDetail.dart';
+import '../viewmodel/vm_communityUpdate.dart';
 import '../viewmodel/vm_communityUpload.dart';
 import '../viewmodel/vm_fleamarketDetail.dart';
 import '../viewmodel/vm_fleamarketList.dart';
 import '../viewmodel/vm_fleamarketUpload.dart';
+import '../viewmodel/vm_rankingList.dart';
 
 
 class MainHomeBinding extends Bindings {
@@ -36,10 +39,11 @@ class MainHomeBinding extends Bindings {
     Get.put(ImageController(),permanent: true);
     Get.put(FriendListViewModel(),permanent: true);
     Get.put(CommunityBulletinListViewModel(),permanent: true);
-    Get.put(CommunityBulletinDetailView(),permanent: true);
+    Get.put(CommunityDetailViewModel(),permanent: true);
     Get.put(CrewMainViewModel(), permanent: true);
     Get.put(CrewDetailViewModel(), permanent: true);
     Get.put(CrewMemberListViewModel(), permanent: true);
+    Get.put(RankingListViewModel(), permanent: true);
 
   }
 }
@@ -127,6 +131,14 @@ class BulletinUploadBinding extends Bindings {
   @override
   void dependencies() {
     Get.put(CommunityUploadViewModel());
+  }
+}
+
+class BulletinDetailBinding extends Bindings {
+  @override
+  void dependencies() {
+    Get.put(CommunityCommentDetailViewModel());
+    Get.put(CommunityUpdateViewModel());
   }
 }
 

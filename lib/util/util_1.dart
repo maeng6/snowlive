@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -46,6 +47,20 @@ class GetDatetime{
     return formattedDateTime;
   }
 
+  String yyyymmddFormatFromString(String dateString) {
+    // 입력된 문자열을 DateTime으로 파싱
+    DateTime? dateTime;
+    try {
+      dateTime = DateTime.parse(dateString);
+    } catch (e) {
+      throw FormatException("Invalid date format. Please use 'YYYY-MM-DD'.");
+    }
+
+    // 원하는 형식으로 변환
+    final DateFormat formatter = DateFormat('yyyy.MM.dd');
+    final formattedDateTime = formatter.format(dateTime);
+    return formattedDateTime;
+  }
 
 
   String getAgo(DateTime dateTime) {
@@ -112,5 +127,25 @@ Future<void> otherShare({required String contents}) async {
 
   if (!await launchUrl(url)) {
     throw "Could not launch $contents";
+  }
+}
+
+Future<void> deleteFolder(String ref, String id) async {
+  final storageRef = FirebaseStorage.instance.ref().child('$ref/$id/');
+
+  // 폴더 내의 모든 파일 가져오기
+  final listResult = await storageRef.listAll();
+
+  // 파일 삭제
+  for (var item in listResult.items) {
+    await item.delete();
+  }
+
+  // 폴더 삭제 (비어있는 경우)
+  try {
+    await storageRef.delete();
+    print('빈 폴더 삭제 완료');
+  }catch (e){
+    print('빈 폴더 없음');
   }
 }

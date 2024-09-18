@@ -29,7 +29,6 @@ class FloatingButtonWithOptions extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           _buildOption(context, '일간'),
-          _buildOption(context, '주간'),
           _buildOption(context, '누적'),
         ],
       ),

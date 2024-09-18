@@ -1,16 +1,23 @@
 class RankingListIndivResponse {
   MyRankingInfo? myRankingInfo;
-  Results? results;
+  List<RankingUser>? rankingUsers; // List로 수정
 
-  RankingListIndivResponse({this.myRankingInfo, this.results});
+  RankingListIndivResponse({this.myRankingInfo, this.rankingUsers});
 
   RankingListIndivResponse.fromJson(Map<String, dynamic> json) {
     myRankingInfo = json['my_ranking_info'] != null
         ? MyRankingInfo.fromJson(json['my_ranking_info'])
         : null;
-    results = json['results'] != null ? Results.fromJson(json['results']) : null;
+    // JSON에서 rankingUsers를 가져와 List로 변환
+    if (json['results'] != null) {
+      rankingUsers = [];
+      json['results'].forEach((v) {
+        rankingUsers?.add(RankingUser.fromJson(v));
+      });
+    }
   }
 }
+
 
 class MyRankingInfo {
   int? userId;

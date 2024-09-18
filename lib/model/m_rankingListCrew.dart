@@ -1,25 +1,30 @@
 class RankingListCrewModel {
   MyCrewRankingInfo? myCrewRankingInfo;
-  RankingResults? results;
+  List<CrewRanking>? rankingCrewList; // List로 수정
 
-  RankingListCrewModel({this.myCrewRankingInfo, this.results});
+  RankingListCrewModel({this.myCrewRankingInfo, this.rankingCrewList});
 
   RankingListCrewModel.fromJson(Map<String, dynamic> json) {
     myCrewRankingInfo = json['my_crew_ranking_info'] != null
         ? MyCrewRankingInfo.fromJson(json['my_crew_ranking_info'])
         : null;
-    results = json['results'] != null
-        ? RankingResults.fromJson(json['results'])
-        : null;
+    // JSON에서 rankingCrewList를 가져와 List로 변환
+    if (json['results'] != null) {
+      rankingCrewList = [];
+      json['results'].forEach((v) {
+        rankingCrewList?.add(CrewRanking.fromJson(v));
+      });
+    }
   }
 
   Map<String, dynamic> toJson() {
     return {
       'my_crew_ranking_info': myCrewRankingInfo?.toJson(),
-      'results': results?.toJson(),
+      'results': rankingCrewList?.map((crew) => crew.toJson()).toList(),
     };
   }
 }
+
 
 class MyCrewRankingInfo {
   MyCrewRankingInfo();

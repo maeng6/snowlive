@@ -1,67 +1,62 @@
+import 'dart:convert';
 import 'dart:io' as io;
-import 'package:com.snowlive/viewmodel/vm_imageController.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:get/get.dart';
-import 'package:get/get_rx/get_rx.dart';
-import '../api/api_community.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_quill/flutter_quill.dart' as quill;
 import 'package:dart_quill_delta/dart_quill_delta.dart' as quill;
+import 'package:get/get.dart';
+import 'package:get/get_rx/get_rx.dart';
+import 'package:get/get_rx/src/rx_types/rx_types.dart';
+import 'package:get/state_manager.dart';
+import 'package:com.snowlive/viewmodel/vm_imageController.dart';
 import 'package:path/path.dart' as path;
 
-class CommunityUploadViewModel extends GetxController {
-  var isLoading = true.obs;
-  final TextEditingController textEditingController_title = TextEditingController();
+import '../api/api_community.dart';
 
+class CommunityUpdateViewModel extends GetxController {
+
+  final ImageController imageController = Get.put(ImageController());
+  final TextEditingController textEditingController_title = TextEditingController();
+  var isLoading = true.obs;
+
+  quill.Document? description;
+  Rx<quill.QuillController> _quillController = quill.QuillController.basic().obs;
+  RxBool _isReadOnly = false.obs;
+  Rx<FocusNode> _focusNode = FocusNode().obs;
   RxString _selectedCategoryMain = '상위 카테고리'.obs;
   RxString _selectedCategorySub = '하위 카테고리'.obs;
-  RxInt _pk = 0.obs;
   RxBool _isCategorySelected = true.obs;
-  RxBool _isReadOnly = false.obs;
-  Rx<quill.QuillController> _quillController = quill.QuillController.basic().obs;
-  Rx<FocusNode> _focusNode = FocusNode().obs;
-  Rx<ScrollController> _scrollController = ScrollController().obs;
   Rx<GlobalKey<FormState>> _formKey = GlobalKey<FormState>().obs;
-  ImageController imageController = Get.put(ImageController());
+  Rx<ScrollController> _scrollController = ScrollController().obs;
 
   String get selectedCategoryMain => _selectedCategoryMain.value;
   String get selectedCategorySub => _selectedCategorySub.value;
-  int get pk => _pk.value;
   bool get isCategorySelected => _isCategorySelected.value;
-  bool get isReadOnly => _isReadOnly.value;
   quill.QuillController get quillController => _quillController.value;
+  GlobalKey<FormState> get formKey => _formKey.value;
+  bool get isReadOnly => _isReadOnly.value;
   FocusNode get focusNode => _focusNode.value;
   ScrollController get scrollController => _scrollController.value;
-  GlobalKey<FormState> get formKey => _formKey.value;
 
-  @override
-  void onInit() {
-    super.onInit();
-    _quillController.value = quill.QuillController.basic();
+  Future<void> fetchCommunityUpdateData({
+    required String textEditingController_title,
+    required String selectedCategorySub,
+    required String selectedCategoryMain,
+    required String description, // JSON 문자열로 변경
+  }) async {
+    this.textEditingController_title.text = textEditingController_title;
+    this._selectedCategorySub.value = selectedCategorySub;
+    this._selectedCategoryMain.value = selectedCategoryMain;
+
+    // JSON 문자열을 Delta로 변환 후 Document 생성
+    final delta = quill.Delta.fromJson(json.decode(description));
+    final document = quill.Document.fromDelta(delta);
+
+    _quillController.value = quill.QuillController(
+      document: document,
+      selection: TextSelection.collapsed(offset: 0),
+    );
   }
-
-
-
-  // 커뮤니티 생성하기
-  Future<void> createCommunityPost(Map<String, dynamic> body) async {
-    isLoading.value = true;
-    try {
-      final response = await CommunityAPI().createCommunityPost(body);
-
-      if (response.success) {
-        _pk.value = response.data['community_id'];
-        print(pk);
-        print('Community post created successfully');
-      } else {
-        print('Failed to create community post: ${response.error}');
-      }
-    } catch (e) {
-      print('Error creating community post: $e');
-    } finally {
-      isLoading.value = false;
-    }
-  }
-
 
 
   void setIsSelectedCategoryFalse() {
@@ -147,7 +142,6 @@ class CommunityUploadViewModel extends GetxController {
     // 이미지가 없으면 null 반환
     return null;
   }
-
 
 
 

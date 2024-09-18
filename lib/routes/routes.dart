@@ -20,7 +20,9 @@ import 'package:com.snowlive/view/friend/v_searchFriend.dart';
 import 'package:com.snowlive/view/onboarding/v_setProfile.dart';
 import 'package:com.snowlive/view/onboarding/v_tos.dart';
 import 'package:get/get.dart';
-import '../view/bulletin/free/v_community_Free_Upload.dart';
+import '../view/bulletin/free/v_community_bulletin_update.dart';
+import '../view/bulletin/free/v_community_comment_detail.dart';
+import '../view/bulletin/free/v_community_bulletin_Upload.dart';
 import '../view/bulletin/v_community_main.dart';
 import '../view/fleamarket/v_fleaMarketCommentDetail.dart';
 import '../view/fleamarket/v_fleaMarketList_search.dart';
@@ -28,6 +30,7 @@ import '../view/fleamarket/v_fleamarketUpdate.dart';
 import '../view/fleamarket/v_fleamarketUpload.dart';
 import '../view/friend/v_friendBlockList.dart';
 import '../view/friend/v_invitation_friend.dart';
+import '../view/ranking/v_ranking_Home.dart';
 import 'bindings.dart';
 
 class AppRoutes {
@@ -54,6 +57,8 @@ class AppRoutes {
   static const String bulletinMain = '/bulletinMain';
   static const String bulletinUpload = '/bulletinUpload';
   static const String bulletinDetail = '/bulletinDetail';
+  static const String bulletinCommentDetail = '/bulletinCommentDetail';
+  static const String bulletinDetailUpdate = '/bulletinDetailUpdate';
   static const String moreTab = '/moreTab';
   static const String onBoardingCrewMain = '/onBoardingCrewMain';
   static const String setCrewNameAndResort = '/setCrewNameAndResort';
@@ -61,6 +66,7 @@ class AppRoutes {
   static const String crewMain = '/crewMain';
   static const String crewHome = '/crewHome';
   static const String crewMember = '/crewMember';
+  static const String rankingHome = '/rankingHome';
 
 
 
@@ -175,6 +181,15 @@ class AppRoutes {
     GetPage(
       name: bulletinDetail,
       page: () => CommunityBulletinDetailView(),
+      binding: BulletinDetailBinding()
+    ),
+    GetPage(
+      name: bulletinDetailUpdate,
+      page: () => CommunityBulletinUpdateView(),
+    ),
+    GetPage(
+        name: bulletinCommentDetail,
+        page: () => CommunityCommentDetailView(),
     ),
     GetPage(
       name: moreTab,

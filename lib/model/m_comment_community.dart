@@ -1,8 +1,10 @@
+import 'm_communityList.dart';
+
 class CommentResponseCommunity {
   int? count;
   String? next;
   String? previous;
-  List<CommentModelCommunity>? results;
+  List<CommentModel_community>? results;
 
   CommentResponseCommunity({this.count, this.next, this.previous, this.results});
 
@@ -12,7 +14,7 @@ class CommentResponseCommunity {
     previous = json['previous'];
     if (json['results'] != null) {
       results = (json['results'] as List)
-          .map((i) => CommentModelCommunity.fromJson(i))
+          .map((i) => CommentModel_community.fromJson(i))
           .toList();
     }
   }
@@ -20,7 +22,7 @@ class CommentResponseCommunity {
 
 }
 
-class CommentModelCommunity {
+class CommentModel_community {
   int? commentId;
   int? communityId;
   String? content;
@@ -30,7 +32,7 @@ class CommentModelCommunity {
   String? uploadTime;
   List<Reply>? replies;
 
-  CommentModelCommunity({
+  CommentModel_community({
     this.commentId,
     this.communityId,
     this.content,
@@ -41,14 +43,13 @@ class CommentModelCommunity {
     this.replies,
   });
 
-  CommentModelCommunity.fromJson(Map<String, dynamic> json) {
+  CommentModel_community.fromJson(Map<String, dynamic> json) {
     commentId = json['comment_id'];
     communityId = json['community_id'];
     content = json['content'];
     userId = json['user_id'];
-    userInfo = json['user_info'] != null
-        ? UserInfo.fromJson(json['user_info'])
-        : null;
+    userInfo = UserInfo.fromJson(json['user_info']);
+
     updateTime = json['update_time'];
     uploadTime = json['upload_time'];
     if (json['replies'] != null) {
@@ -99,7 +100,11 @@ class UserInfo {
   String? displayName;
   String? profileImageUrlUser;
 
-  UserInfo({this.userId, this.displayName, this.profileImageUrlUser});
+  UserInfo({
+    this.userId,
+    this.displayName,
+    this.profileImageUrlUser,
+  });
 
   UserInfo.fromJson(Map<String, dynamic> json) {
     userId = json['user_id'];
@@ -107,3 +112,5 @@ class UserInfo {
     profileImageUrlUser = json['profile_image_url_user'];
   }
 }
+
+

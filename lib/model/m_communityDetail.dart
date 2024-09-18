@@ -1,6 +1,10 @@
+import 'dart:convert';
+
 import 'package:flutter_quill/flutter_quill.dart' as quill;
 
-class CommunityDetail {
+import 'm_communityList.dart';
+
+class CommunityDetailModel {
   int? communityId;
   int? userId;
   String? categoryMain;
@@ -16,7 +20,7 @@ class CommunityDetail {
   UserInfo? userInfo;
   int? commentCount;
 
-  CommunityDetail({
+  CommunityDetailModel({
     this.communityId,
     this.userId,
     this.categoryMain,
@@ -33,24 +37,24 @@ class CommunityDetail {
     this.commentCount,
   });
 
-  CommunityDetail.fromCommunityModel(CommunityDetail communityDetail) {
-    communityId = communityDetail.communityId;
-    userId = communityDetail.userId;
-    categoryMain = communityDetail.categoryMain;
-    categorySub = communityDetail.categorySub;
-    categorySub2 = communityDetail.categorySub2;
-    snsUrl = communityDetail.snsUrl;
-    title = communityDetail.title;
-    thumbImg = communityDetail.thumbImg;
-    description = communityDetail.description;
-    updateTime = communityDetail.updateTime;
-    uploadTime = communityDetail.uploadTime;
-    viewsCount = communityDetail.viewsCount;
-    userInfo = communityDetail.userInfo;
-    commentCount = communityDetail.commentCount;
+  CommunityDetailModel.fromCommunityModel(Community community) {
+    communityId = community.communityId;
+    userId = community.userId;
+    categoryMain = community.categoryMain;
+    categorySub = community.categorySub;
+    categorySub2 = community.categorySub2;
+    snsUrl = community.snsUrl;
+    title = community.title;
+    thumbImg = community.thumbImg;
+    description = community.description;
+    updateTime = community.updateTime;
+    uploadTime = community.uploadTime;
+    viewsCount = community.viewsCount;
+    userInfo = community.userInfo;
+    commentCount = community.commentCount;
   }
 
-  CommunityDetail.fromJson(Map<String, dynamic> json) {
+  CommunityDetailModel.fromJson(Map<String, dynamic> json) {
     communityId = json['community_id'];
     userId = json['user_id'];
     categoryMain = json['category_main'];
@@ -59,7 +63,21 @@ class CommunityDetail {
     snsUrl = json['sns_url'];
     title = json['title'];
     thumbImg = json['thumb_img_url'];
-    description = json['description'];
+
+    // description을 string에서 quill.Document로 변환
+    if (json['description'] != null && json['description'] is String) {
+      try {
+        final List<dynamic> deltaList = jsonDecode(json['description']);
+        description = quill.Document.fromJson(deltaList);
+      } catch (e) {
+        print('Error parsing description: $e');
+        description = quill.Document();  // 에러 발생 시 빈 Document로 설정
+      }
+    } else {
+      description = quill.Document();
+    }
+
+
     updateTime = json['update_time'];
     uploadTime = json['upload_time'];
     viewsCount = json['views_count'];
@@ -69,20 +87,3 @@ class CommunityDetail {
 }
 
 
-class UserInfo {
-  int? userId;
-  String? displayName;
-  String? profileImageUrlUser;
-
-  UserInfo({
-    this.userId,
-    this.displayName,
-    this.profileImageUrlUser,
-  });
-
-  UserInfo.fromJson(Map<String, dynamic> json) {
-    userId = json['user_id'];
-    displayName = json['display_name'];
-    profileImageUrlUser = json['profile_image_url_user'];
-  }
-}

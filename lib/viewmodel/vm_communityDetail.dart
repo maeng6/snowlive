@@ -1,47 +1,106 @@
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
+import '../api/ApiResponse.dart';
 import '../api/api_community.dart';
 import '../model/m_comment_community.dart';
 import '../model/m_communityDetail.dart';
 import '../util/util_1.dart';
+import 'package:flutter_quill/flutter_quill.dart' as quill;
 
 class CommunityDetailViewModel extends GetxController {
   var isLoading = true.obs;
-  var _communityDetail = CommunityDetail().obs;
+  var _communityDetail = CommunityDetailModel().obs;
   var repliesList = <Reply>[].obs; // 답글 목록
-  var _commentsList = <CommentModelCommunity>[].obs;// 댓글 목록
+  var _commentsList = <CommentModel_community>[].obs;// 댓글 목록
   var _nextPageUrl_comments = ''.obs;
   var _previousPageUrl_comments = ''.obs;
   RxString _time = ''.obs;
   var isLoading_indicator = true.obs;
+  ScrollController _scrollController = ScrollController();
+  ScrollController _scrollController_comment = ScrollController();
+  Rx<quill.QuillController>? _quillController;
+  final formKey = GlobalKey<FormState>();
+  final TextEditingController textEditingController = TextEditingController();
+  RxString _communityCommentsInputText=''.obs;
+  RxBool isCommentButtonEnabled = false.obs;
 
-  CommunityDetail get communityDetail => _communityDetail.value;
+
+  CommunityDetailModel get communityDetail => _communityDetail.value;
   String get time => _time.value;
-  List<CommentModelCommunity> get commentsList => _commentsList;
+  List<CommentModel_community> get commentsList => _commentsList;
   String get nextPageUrl_comments => _nextPageUrl_comments.value;
   String get previousPageUrl_comments => _previousPageUrl_comments.value;
+  ScrollController get scrollController => _scrollController;
+  ScrollController get scrollController_comment => _scrollController_comment;
+  quill.QuillController get quillController => _quillController!.value;
+  String get communityCommentsInputText => _communityCommentsInputText.value;
 
   @override
   void onInit() {
     super.onInit();
+
+
+    textEditingController.addListener(() {
+      if (textEditingController.text.trim().isNotEmpty) {
+        isCommentButtonEnabled(true);
+      } else {
+        isCommentButtonEnabled(false);
+      }
+    });
+    _scrollController = ScrollController()
+      ..addListener(_scrollListener);
+
+  }
+
+  Future<void> _scrollListener() async {
+    // 스크롤이 리스트의 끝에 도달했을 때
+    if (_scrollController.position.pixels == _scrollController.position.maxScrollExtent) {
+      //await fetchNextPage_total();
+    }
   }
 
   // 커뮤니티 세부 사항 불러오기(목록에서)
   void fetchCommunityDetailFromList({
-    required var communityDetail
+    required var community,
   }) {
-    _communityDetail.value = CommunityDetail.fromCommunityModel(communityDetail);
+    _communityDetail.value = CommunityDetailModel.fromCommunityModel(community);
+    final document = _communityDetail.value.description;
+
+    // 초기화 여부 확인 후 QuillController 생성
+    if (_quillController == null) {
+      _quillController = Rx<quill.QuillController>(quill.QuillController.basic());
+    }
+
+    _quillController!.value = quill.QuillController(
+      document: document!,
+      selection: TextSelection.collapsed(offset: 0),
+    );
+
     _time.value = GetDatetime().getAgoString(_communityDetail.value.uploadTime!);
   }
 
-
   // 커뮤니티 세부 사항 불러오기(API로)
-  Future<void> fetchCommunityDetail(int communityId, {String? userId}) async {
+  Future<void> fetchCommunityDetail(int communityId, int userId) async {
     isLoading.value = true;
     try {
-      final response = await CommunityAPI().fetchCommunityDetails(communityId, userId: userId);
+      final response = await CommunityAPI().fetchCommunityDetails(communityId, userId.toString());
 
       if (response.success) {
-        _communityDetail.value = CommunityDetail.fromJson(response.data!);
+        _communityDetail.value = CommunityDetailModel.fromJson(response.data!);
+        final document = _communityDetail.value.description;
+
+        // 초기화 여부 확인 후 QuillController 생성
+        if (_quillController == null) {
+          _quillController = Rx<quill.QuillController>(quill.QuillController.basic());
+        }
+
+        _quillController!.value = quill.QuillController(
+          document: document!,
+          selection: TextSelection.collapsed(offset: 0),
+        );
+        _time.value = GetDatetime().getAgoString(_communityDetail.value.uploadTime!);
+
       } else {
         print('Failed to load community detail: ${response.error}');
       }
@@ -71,10 +130,11 @@ class CommunityDetailViewModel extends GetxController {
   }
 
   // 커뮤니티 삭제하기
-  Future<void> deleteCommunityPost(int communityId, String userId) async {
+  Future<void> deleteCommunityPost(int communityId, int userId) async {
     isLoading.value = true;
     try {
-      final response = await CommunityAPI().deleteCommunity(communityId, userId);
+      final response = await CommunityAPI().deleteCommunity(communityId, userId.toString());
+      await deleteFolder('community', communityId.toString());
 
       if (response.success) {
         print('Community post deleted successfully');
@@ -88,11 +148,33 @@ class CommunityDetailViewModel extends GetxController {
     }
   }
 
+  // 커뮤니티 신고하기
+  Future<void> reportCommunity({required userId, required communityId}) async {
+    isLoading(true);
+    try {
+      ApiResponse response = await CommunityAPI().reportCommunity({
+        "user_id" : userId.toString(),    //필수 - 신고자(나)
+        "community_id" : communityId.toString()    //필수 - 신고글id
+      });
+
+      if (response.success) {
+        print('Report 완료');
+      } else {
+        Get.snackbar('Error', '리포트 실패');
+      }
+    } catch (e) {
+      print('Error reporting fleamarket: $e');
+      Get.snackbar('Error', '리포트 중 오류 발생');
+    } finally {
+      isLoading(false);
+    }
+  }
+
   // 댓글 생성하기
-  Future<void> createComment(Map<String, dynamic> commentData) async {
+  Future<void> createComment(Map<String, dynamic> body) async {
     isLoading.value = true;
     try {
-      final response = await CommunityAPI().createComment(commentData);
+      final response = await CommunityAPI().createComment(body);
 
       if (response.success) {
         print('Comment created successfully');
@@ -160,7 +242,7 @@ class CommunityDetailViewModel extends GetxController {
   }
 
   // 댓글 삭제하기
-  Future<void> deleteComment(int commentId, String userId) async {
+  Future<void> deleteComment(int commentId, int userId) async {
     isLoading.value = true;
     try {
       final response = await CommunityAPI().deleteComment(commentId, userId);
@@ -252,5 +334,9 @@ class CommunityDetailViewModel extends GetxController {
     } finally {
       isLoading.value = false;
     }
+  }
+
+  void changeCommunityCommentsInputText(value) {
+    _communityCommentsInputText.value = value;
   }
 }

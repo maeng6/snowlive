@@ -14,10 +14,12 @@ class CommunityAPI {
       headers: {'Content-Type': 'application/json'},
     );
 
+    print(response.statusCode);
+
     if (response.statusCode == 201) {
-      return ApiResponse.success(json.decode(response.body));
+      return ApiResponse.success(json.decode(utf8.decode(response.bodyBytes)));
     } else {
-      return ApiResponse.error(json.decode(response.body));
+      return ApiResponse.error(json.decode(utf8.decode(response.bodyBytes)));
     }
   }
 
@@ -55,18 +57,17 @@ class CommunityAPI {
     }
   }
 
-
   // 커뮤니티 세부사항 조회
-  Future<ApiResponse> fetchCommunityDetails(int communityId, {String? userId}) async {
-    final uri = Uri.parse('$baseUrl/community-details/$communityId/')
-        .replace(queryParameters: userId != null ? {'user_id': userId} : null);
+  Future<ApiResponse> fetchCommunityDetails(int communityId, String userId) async {
+    final uri = Uri.parse('$baseUrl/$communityId/')
+        .replace(queryParameters: {'user_id': userId.toString()} );
 
     final response = await http.get(uri);
 
     if (response.statusCode == 200) {
-      return ApiResponse.success(json.decode(response.body));
+      return ApiResponse.success(json.decode(utf8.decode(response.bodyBytes)));
     } else {
-      return ApiResponse.error(json.decode(response.body));
+      return ApiResponse.error(json.decode(utf8.decode(response.bodyBytes)));
     }
   }
 
@@ -79,51 +80,51 @@ class CommunityAPI {
     );
 
     if (response.statusCode == 200) {
-      return ApiResponse.success(json.decode(response.body));
+      return ApiResponse.success(json.decode(utf8.decode(response.bodyBytes)));
     } else {
-      return ApiResponse.error(json.decode(response.body));
+      return ApiResponse.error(json.decode(utf8.decode(response.bodyBytes)));
     }
   }
 
   // 커뮤니티 삭제
   Future<ApiResponse> deleteCommunity(int communityId, String userId) async {
-    final response = await http.delete(
-      Uri.parse('$baseUrl/community-details/$communityId/'),
-      headers: {'Content-Type': 'application/json', 'user_id': userId},
-    );
+    final uri = Uri.parse('$baseUrl/$communityId/')
+        .replace(queryParameters: {'user_id': userId.toString()});
+
+    final response = await http.delete(uri, headers: {'Content-Type': 'application/json'});
 
     if (response.statusCode == 204) {
       return ApiResponse.success(null);
     } else {
-      return ApiResponse.error(json.decode(response.body));
+      return ApiResponse.error(json.decode(utf8.decode(response.bodyBytes)));
     }
   }
 
   // 댓글 생성
   Future<ApiResponse> createComment(Map<String, dynamic> commentData) async {
     final response = await http.post(
-      Uri.parse('$baseUrl/comment-create/'),
+      Uri.parse('$baseUrl/comments/'),
       body: json.encode(commentData),
       headers: {'Content-Type': 'application/json'},
     );
 
     if (response.statusCode == 201) {
-      return ApiResponse.success(json.decode(response.body));
+      return ApiResponse.success(json.decode(utf8.decode(response.bodyBytes)));
     } else {
-      return ApiResponse.error(json.decode(response.body));
+      return ApiResponse.error(json.decode(utf8.decode(response.bodyBytes)));
     }
   }
 
   // 댓글 상세 조회
   Future<ApiResponse> fetchCommentDetails(int commentId) async {
     final response = await http.get(
-      Uri.parse('$baseUrl/comment-details/$commentId/'),
+      Uri.parse('$baseUrl/comments/${commentId}/'),
     );
 
     if (response.statusCode == 200) {
-      return ApiResponse.success(json.decode(response.body));
+      return ApiResponse.success(json.decode(utf8.decode(response.bodyBytes)));
     } else {
-      return ApiResponse.error(json.decode(response.body));
+      return ApiResponse.error(json.decode(utf8.decode(response.bodyBytes)));
     }
   }
 
@@ -135,7 +136,7 @@ class CommunityAPI {
   }) async {
     final uri = url != null
         ? Uri.parse(url)
-        : Uri.parse('$baseUrl/comment-list/').replace(
+        : Uri.parse('$baseUrl/comments/').replace(
       queryParameters: {
         'community_id': communityId.toString(),
         'user_id': userId.toString(),
@@ -145,53 +146,55 @@ class CommunityAPI {
     final response = await http.get(uri);
 
     if (response.statusCode == 200) {
-      return ApiResponse.success(json.decode(response.body));
+      return ApiResponse.success(json.decode(utf8.decode(response.bodyBytes)));
     } else {
-      return ApiResponse.error(json.decode(response.body));
+      return ApiResponse.error(json.decode(utf8.decode(response.bodyBytes)));
     }
   }
 
   // 댓글 업데이트
-  Future<ApiResponse> updateComment(int commentId, Map<String, dynamic> updateData) async {
+  Future<ApiResponse> updateComment(int commentId, Map<String, dynamic> body) async {
     final response = await http.put(
       Uri.parse('$baseUrl/comment-details/$commentId/'),
-      body: json.encode(updateData),
+      body: json.encode(body),
       headers: {'Content-Type': 'application/json'},
     );
 
     if (response.statusCode == 200) {
-      return ApiResponse.success(json.decode(response.body));
+      return ApiResponse.success(json.decode(utf8.decode(response.bodyBytes)));
     } else {
-      return ApiResponse.error(json.decode(response.body));
+      return ApiResponse.error(json.decode(utf8.decode(response.bodyBytes)));
     }
   }
 
   // 댓글 삭제
-  Future<ApiResponse> deleteComment(int commentId, String userId) async {
+  Future<ApiResponse> deleteComment(int commentId, int userId) async {
     final response = await http.delete(
-      Uri.parse('$baseUrl/comment-details/$commentId/'),
-      headers: {'Content-Type': 'application/json', 'user_id': userId},
+      Uri.parse('$baseUrl/comments/$commentId/').replace(queryParameters: {
+        'user_id': userId.toString(),
+      }),
+      headers: {'Content-Type': 'application/json'},
     );
 
     if (response.statusCode == 204) {
       return ApiResponse.success(null);
     } else {
-      return ApiResponse.error(json.decode(response.body));
+      return ApiResponse.error(json.decode(utf8.decode(response.bodyBytes)));
     }
   }
 
   // 답글 생성
-  Future<ApiResponse> createReply(Map<String, dynamic> replyData) async {
+  Future<ApiResponse> createReply(Map<String, dynamic> body) async {
     final response = await http.post(
-      Uri.parse('$baseUrl/reply-create/'),
-      body: json.encode(replyData),
+      Uri.parse('$baseUrl/replies/'),
+      body: json.encode(body),
       headers: {'Content-Type': 'application/json'},
     );
 
     if (response.statusCode == 201) {
-      return ApiResponse.success(json.decode(response.body));
+      return ApiResponse.success(json.decode(utf8.decode(response.bodyBytes)));
     } else {
-      return ApiResponse.error(json.decode(response.body));
+      return ApiResponse.error(json.decode(utf8.decode(response.bodyBytes)));
     }
   }
 
@@ -202,9 +205,9 @@ class CommunityAPI {
     );
 
     if (response.statusCode == 200) {
-      return ApiResponse.success(json.decode(response.body));
+      return ApiResponse.success(json.decode(utf8.decode(response.bodyBytes)));
     } else {
-      return ApiResponse.error(json.decode(response.body));
+      return ApiResponse.error(json.decode(utf8.decode(response.bodyBytes)));
     }
   }
 
@@ -219,84 +222,83 @@ class CommunityAPI {
     final response = await http.get(uri);
 
     if (response.statusCode == 200) {
-      return ApiResponse.success(json.decode(response.body));
+      return ApiResponse.success(json.decode(utf8.decode(response.bodyBytes)));
     } else {
-      return ApiResponse.error(json.decode(response.body));
+      return ApiResponse.error(json.decode(utf8.decode(response.bodyBytes)));
     }
   }
 
   // 답글 업데이트
-  Future<ApiResponse> updateReply(int replyId, Map<String, dynamic> updateData) async {
+  Future<ApiResponse> updateReply(int replyId, Map<String, dynamic> body) async {
     final response = await http.put(
       Uri.parse('$baseUrl/reply-details/$replyId/'),
-      body: json.encode(updateData),
+      body: json.encode(body),
       headers: {'Content-Type': 'application/json'},
     );
 
     if (response.statusCode == 200) {
-      return ApiResponse.success(json.decode(response.body));
+      return ApiResponse.success(json.decode(utf8.decode(response.bodyBytes)));
     } else {
-      return ApiResponse.error(json.decode(response.body));
+      return ApiResponse.error(json.decode(utf8.decode(response.bodyBytes)));
     }
   }
 
   // 답글 삭제
   Future<ApiResponse> deleteReply(int replyId, String userId) async {
     final response = await http.delete(
-      Uri.parse('$baseUrl/reply-details/$replyId/'),
+      Uri.parse('$baseUrl/replies/$replyId/'),
       headers: {'Content-Type': 'application/json', 'user_id': userId},
     );
 
     if (response.statusCode == 204) {
       return ApiResponse.success(null);
     } else {
-      return ApiResponse.error(json.decode(response.body));
+      return ApiResponse.error(json.decode(utf8.decode(response.bodyBytes)));
     }
   }
 
   // 커뮤니티 신고
-  Future<ApiResponse> reportCommunity(String userId, String communityId) async {
+  Future<ApiResponse> reportCommunity(body) async {
     final response = await http.post(
-      Uri.parse('$baseUrl/report-community/'),
-      body: json.encode({'user_id': userId, 'community_id': communityId}),
+      Uri.parse('$baseUrl/report/'),
+      body: json.encode(body),
       headers: {'Content-Type': 'application/json'},
     );
 
     if (response.statusCode == 201) {
-      return ApiResponse.success(json.decode(response.body));
+      return ApiResponse.success(json.decode(utf8.decode(response.bodyBytes)));
     } else {
-      return ApiResponse.error(json.decode(response.body));
+      return ApiResponse.error(json.decode(utf8.decode(response.bodyBytes)));
     }
   }
 
   // 댓글 신고
-  Future<ApiResponse> reportComment(String userId, String commentId) async {
+  Future<ApiResponse> reportComment(int userId, int commentId) async {
     final response = await http.post(
-      Uri.parse('$baseUrl/report-comment/'),
-      body: json.encode({'user_id': userId, 'comment_id': commentId}),
+      Uri.parse('$baseUrl/report/'),
+      body: json.encode({'user_id': userId.toString(), 'comment_id': commentId.toString()}),
       headers: {'Content-Type': 'application/json'},
     );
 
     if (response.statusCode == 201) {
-      return ApiResponse.success(json.decode(response.body));
+      return ApiResponse.success(json.decode(utf8.decode(response.bodyBytes)));
     } else {
-      return ApiResponse.error(json.decode(response.body));
+      return ApiResponse.error(json.decode(utf8.decode(response.bodyBytes)));
     }
   }
 
-
   // 답글 신고
-  Future<ApiResponse> reportReply(String userId, String replyId) async {
+  Future<ApiResponse> reportReply({required int userId, required int replyId}) async {
     final response = await http.post(
       Uri.parse('$baseUrl/report-reply/'),
-      body: json.encode({'user_id': userId, 'reply_id': replyId}),
+      body: json.encode({'user_id': userId.toString(), 'reply_id': replyId.toString()}),
       headers: {'Content-Type': 'application/json'},
     );
 
     if (response.statusCode == 201) {
-      return ApiResponse.success(json.decode(response.body));
+      return ApiResponse.success(json.decode(utf8.decode(response.bodyBytes)));
     } else {
-      return ApiResponse.error(json.decode(response.body));
+      return ApiResponse.error(json.decode(utf8.decode(response.bodyBytes)));
     }
   }
 }

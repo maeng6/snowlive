@@ -135,7 +135,7 @@ class MainHomeView extends StatelessWidget {
           children: [
             ResortHomeView(),
             FleaMarketMainView(),
-            RankingHomeView(),
+            CommunityMainView(),
             CommunityMainView(),
             MoreTabMainView()
             // MoreTab(),

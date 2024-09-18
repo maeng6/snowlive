@@ -46,9 +46,7 @@ class CommentModel_flea {
     fleaId = json['flea_id'];
     content = json['content'];
     userId = json['user_id'];
-    userInfo = json['user_info'] != null
-        ? UserInfo.fromJson(json['user_info'])
-        : null;
+    userInfo = UserInfo.fromJson(json['user_info']);
     updateTime = json['update_time'];
     uploadTime = json['upload_time'];
     secret = json['secret'];

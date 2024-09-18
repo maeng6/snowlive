@@ -169,12 +169,12 @@ class CommunityBulletinTotalListView extends StatelessWidget {
                           itemBuilder: (context, index) {
                             Community communityData = _communityBulletinListViewModel.communityList_total[index];
                             // 필드가 없을 경우 기본값 설정
-                            String _time = GetDatetime().yyyymmddFormat(communityData.uploadTime!);
+                            String _time = GetDatetime().yyyymmddFormatFromString(communityData.uploadTime!);
                             String? profileUrl = communityData.userInfo!.profileImageUrlUser;
                             String? displayName = communityData.userInfo!.displayName;
                             return GestureDetector(
                               onTap: () async {
-                                _communityDetailViewModel.fetchCommunityDetailFromList(communityDetail: _communityBulletinListViewModel.communityList_total[index]);
+                                _communityDetailViewModel.fetchCommunityDetailFromList(community: _communityBulletinListViewModel.communityList_total[index]);
                                 Get.toNamed(AppRoutes.bulletinDetail);
                                 await _communityDetailViewModel.fetchCommunityComments(
                                     communityId: _communityBulletinListViewModel.communityList_total[index].communityId!,
@@ -326,7 +326,7 @@ class CommunityBulletinTotalListView extends StatelessWidget {
                                                     ),
                                                   ),
                                                 ),
-                                                (communityData.thumbImg != '')
+                                                (communityData.thumbImg != null)
                                                     ? Padding(
                                                   padding: const EdgeInsets.only(left: 16),
                                                   child: ExtendedImage.network(communityData.thumbImg!,

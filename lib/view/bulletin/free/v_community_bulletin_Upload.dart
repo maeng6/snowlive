@@ -3,114 +3,30 @@ import 'package:com.snowlive/screens/bulletin/Free/v_bulletin_Free_List_Detail.d
 import 'package:com.snowlive/screens/snowliveDesignStyle.dart';
 import 'package:com.snowlive/widget/w_category_main_commu_bulletin.dart';
 import 'package:com.snowlive/widget/w_category_sub_commu_bulletin_room.dart';
-import 'package:dart_quill_delta/dart_quill_delta.dart' as quill;
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_quill/flutter_quill.dart';
 import 'package:get/get.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:flutter_quill/flutter_quill.dart' as quill;
-import '../../../controller/bulletin/vm_bulletinFreeController.dart';
 import '../../../screens/bulletin/Free/w_bulletin_Free_Quill_editor.dart';
 import '../../../screens/bulletin/Free/w_bulletin_Free_Quill_toolbar.dart';
 import '../../../viewmodel/vm_communityBulletinList.dart';
 import '../../../viewmodel/vm_communityUpload.dart';
-import '../../../viewmodel/vm_imageController.dart';
-import '../../../controller/user/vm_userModelController.dart';
-import '../../../model_2/m_bulletinFreeModel.dart';
 import '../../../viewmodel/vm_user.dart';
-import '../../../widget/w_fullScreenDialog.dart';
 
-class CommunityFreeUpload extends StatefulWidget {
-  const CommunityFreeUpload({Key? key}) : super(key: key);
-
-
-
-  @override
-  State<CommunityFreeUpload> createState() => _CommunityFreeUploadState();
-}
-
-class _CommunityFreeUploadState extends State<CommunityFreeUpload> {
-
-
-  List<XFile> _imageFiles = [];
-  Map<String, String?> _tileSelected = {
-    "구분": '',
-  };
-
+class CommunityFreeUpload extends StatelessWidget {
 
   final UserViewModel _userViewModel = Get.find<UserViewModel>();
   final CommunityUploadViewModel _communityUploadViewModel = Get.find<CommunityUploadViewModel>();
   final CommunityBulletinListViewModel _communityBulletinListViewModel = Get.find<CommunityBulletinListViewModel>();
-
-  String? selectedCategory_main;
-  String? selectedCategory_sub;
-
-
-  // Future<void> _uploadBulletin() async {
-  //   final isValid = _formKey.currentState!.validate();
-  //
-  //   if (_tileSelected["구분"]!.isEmpty) {
-  //     Get.snackbar('선택되지않은 항목', '구분을 선택해주세요.',
-  //         margin: EdgeInsets.only(right: 20, left: 20, bottom: 12),
-  //         snackPosition: SnackPosition.BOTTOM,
-  //         backgroundColor: Colors.black87,
-  //         colorText: Colors.white,
-  //         duration: Duration(milliseconds: 3000));
-  //   } else {
-  //     if (isValid) {
-  //       CustomFullScreenDialog.showDialog();
-  //       UserModelController _userModelController = Get.find<UserModelController>();
-  //       BulletinFreeModelController _bulletinFreeModelController = Get.find<BulletinFreeModelController>();
-  //       ImageController _imageController = Get.find<ImageController>();
-  //
-  //       await _userModelController.bulletinFreeCountUpdate(_userModelController.uid);
-  //
-  //       // bulletinFreeCount가 null인지 확인하고 초기화
-  //       int bulletinFreeCount = _userModelController.bulletinFreeCount ?? 0;
-  //
-  //       await _imageController.setNewMultiImage_bulletinFree(_imageFiles, bulletinFreeCount);
-  //
-  //       // Delta 문서의 이미지를 Firebase Storage에 업로드
-  //       List<quill.Operation> ops = _quillController.document.toDelta().toList();
-  //       await _imageController.uploadDeltaImages(ops, bulletinFreeCount);
-  //
-  //       final deltaJson = jsonEncode(ops);
-  //
-  //       await _bulletinFreeModelController.uploadBulletinFree(
-  //           displayName: _userModelController.displayName,
-  //           uid: _userModelController.uid,
-  //           profileImageUrl: _userModelController.profileImageUrl,
-  //           itemImagesUrls: _imageController.imagesUrlList,
-  //           title: _titleTextEditingController.text,
-  //           category: SelectedCategory,
-  //           description: deltaJson, // Quill 문서를 Delta 형식으로 저장
-  //           bulletinFreeCount: bulletinFreeCount,
-  //           resortNickname: _userModelController.resortNickname
-  //       );
-  //
-  //       await _bulletinFreeModelController.getCurrentBulletinFree(
-  //           uid: _userModelController.uid,
-  //           bulletinFreeCount: bulletinFreeCount
-  //       );
-  //
-  //       CustomFullScreenDialog.cancelDialog();
-  //       Get.off(() => Bulletin_Free_List_Detail());
-  //       _imageController.imagesUrlList.clear();
-  //     }
-  //   }
-  // }
 
   @override
   Widget build(BuildContext context) {
 
     Size _size = MediaQuery.of(context).size;
     final double _statusBarSize = MediaQuery.of(context).padding.top;
-
-    Get.put(ImageController(), permanent: true);
-    Get.put(UserModelController(), permanent: true);
-    Get.put(BulletinFreeModelController(), permanent: true);
+    String? selectedCategory_main;
+    String? selectedCategory_sub;
 
     return Container(
       color: Colors.white,
@@ -153,15 +69,18 @@ class _CommunityFreeUploadState extends State<CommunityFreeUpload> {
                           "category_sub2": "${_communityUploadViewModel.selectedCategorySub}",     // 선택 - 시즌방서브카테고리
                           "title": "${_communityUploadViewModel.textEditingController_title.text}",     // 필수 - 제목
                           "thumb_img_url": "",
-                          "description": jsonEncode({
+                          "description": jsonEncode([{
                             "string": "임시내용"
-                          })
+                          }])
                         });
-                        await _communityUploadViewModel.uploadAndReplaceImageInDelta(_communityUploadViewModel.quillController.document.toDelta().toList(), _communityUploadViewModel.pk);
 
+                        print('임시글 생성 완료');
+                        await _communityUploadViewModel.uploadAndReplaceImageInDelta(_communityUploadViewModel.quillController.document.toDelta().toList(), _communityUploadViewModel.pk);
+                        print('이미지 링크 생성 완료');
                         final deltaList = _communityUploadViewModel.quillController.document.toDelta().toList();
                         final jsonString = jsonEncode(deltaList);
                         print(jsonString);
+                        print(_communityUploadViewModel.findFirstInsertedImage(_communityUploadViewModel.quillController.document.toDelta().toList()));
                         await _communityUploadViewModel.updateCommunityPost(_communityUploadViewModel.pk,
                             {
                               "user_id": _userViewModel.user.user_id.toString(),

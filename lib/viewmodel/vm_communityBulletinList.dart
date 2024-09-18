@@ -191,7 +191,9 @@ class CommunityBulletinListViewModel extends GetxController {
         url: url,  // URL을 전달
       );
 
+
       if (response.success) {
+
         final communityResponse = CommunityListResponse.fromJson(response.data!);
 
         if (url == null) {

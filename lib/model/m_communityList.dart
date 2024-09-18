@@ -35,8 +35,8 @@ class Community {
   String? title;
   String? thumbImg;
   quill.Document? description;  // quill.Document 형식으로 변경
-  DateTime? updateTime;
-  DateTime? uploadTime;
+  String? updateTime;
+  String? uploadTime;
   int? viewsCount;
   UserInfo? userInfo;
   int? commentCount;
@@ -70,27 +70,15 @@ class Community {
 
     // description을 string에서 quill.Document로 변환
     if (json['description'] != null && json['description'] is String) {
-      try {
         final List<dynamic> deltaList = jsonDecode(json['description']);
         description = quill.Document.fromJson(deltaList);
-      } catch (e) {
-        print('Error parsing description: $e');
-        description = quill.Document();  // 에러 발생 시 빈 Document로 설정
-      }
     } else {
       description = quill.Document();
     }
-
-    updateTime = json['update_time'] != null
-        ? DateTime.parse(json['update_time'])
-        : null;
-    uploadTime = json['upload_time'] != null
-        ? DateTime.parse(json['upload_time'])
-        : null;
+    updateTime = json['update_time'];
+    uploadTime = json['upload_time'];
     viewsCount = json['views_count'];
-    userInfo = json['user_info'] != null
-        ? UserInfo.fromJson(json['user_info'])
-        : null;
+    userInfo = UserInfo.fromJson(json['user_info']);
     commentCount = json['comment_count'];
   }
 }
@@ -109,16 +97,22 @@ class UserInfo {
   int? userId;
   String? displayName;
   String? profileImageUrlUser;
+  String? resortNickname;
+  String? crewName;
 
   UserInfo({
     this.userId,
     this.displayName,
     this.profileImageUrlUser,
+    this.resortNickname,
+    this.crewName,
   });
 
   UserInfo.fromJson(Map<String, dynamic> json) {
     userId = json['user_id'];
     displayName = json['display_name'];
     profileImageUrlUser = json['profile_image_url_user'];
+    resortNickname = json['resort_nickname'];
+    crewName = json['crew_name'];
   }
 }
