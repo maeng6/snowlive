@@ -1756,8 +1756,17 @@ class FleaMarketListView_total extends StatelessWidget {
                                                           child: Row(
                                                             mainAxisAlignment: MainAxisAlignment.center,
                                                             children: [
-                                                              ExtendedImage.asset(
+                                                              (data.isFavorite == false)
+                                                              ? ExtendedImage.asset(
                                                                 'assets/imgs/icons/icon_list_scrap.png',
+                                                                shape: BoxShape.rectangle,
+                                                                borderRadius: BorderRadius.circular(8),
+                                                                width: 16,
+                                                                height: 16,
+                                                                fit: BoxFit.cover,
+                                                              )
+                                                              : ExtendedImage.asset(
+                                                                'assets/imgs/icons/icon_list_scrap_my.png',
                                                                 shape: BoxShape.rectangle,
                                                                 borderRadius: BorderRadius.circular(8),
                                                                 width: 16,

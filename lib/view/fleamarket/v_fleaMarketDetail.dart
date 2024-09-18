@@ -75,9 +75,11 @@ class _FleaMarketDetailViewState extends State<FleaMarketDetailView> {
           appBar: PreferredSize(
             preferredSize: Size.fromHeight(44),
             child:
-            (_fleamarketDetailViewModel.fleamarketDetail.photos!.isNotEmpty)
-                ? AppBar(
-              backgroundColor: isAppBarCollapsed ? SDSColor.snowliveWhite : Colors.transparent,
+            AppBar(
+              backgroundColor:
+              (_fleamarketDetailViewModel.fleamarketDetail.photos!.isNotEmpty)
+                  ? isAppBarCollapsed ? SDSColor.snowliveWhite : Colors.transparent
+                  : SDSColor.snowliveWhite,
               foregroundColor: Colors.transparent,
               surfaceTintColor: Colors.transparent,
               flexibleSpace: Container(
@@ -86,9 +88,9 @@ class _FleaMarketDetailViewState extends State<FleaMarketDetailView> {
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
                     colors:
-                    isAppBarCollapsed ?
-                    [Colors.transparent, Colors.transparent,]
-                    : [Colors.black.withOpacity(0.4), Colors.transparent,],
+                    (_fleamarketDetailViewModel.fleamarketDetail.photos!.isNotEmpty)
+                        ? isAppBarCollapsed ? [Colors.transparent, Colors.transparent,] : [Colors.black.withOpacity(0.4), Colors.transparent,]
+                        : [Colors.transparent, Colors.transparent,],
                   ),
                 ),
               ),
@@ -99,7 +101,10 @@ class _FleaMarketDetailViewState extends State<FleaMarketDetailView> {
                   scale: 4,
                   width: 26,
                   height: 26,
-                  color: isAppBarCollapsed ? SDSColor.gray900 : SDSColor.snowliveWhite,
+                  color:
+                  (_fleamarketDetailViewModel.fleamarketDetail.photos!.isNotEmpty)
+                      ? isAppBarCollapsed ? SDSColor.gray900 : SDSColor.snowliveWhite
+                  : SDSColor.gray900,
                 ),
                 onTap: () {
                   Get.back();
@@ -124,7 +129,9 @@ class _FleaMarketDetailViewState extends State<FleaMarketDetailView> {
                       scale: 4,
                       width: 26,
                       height: 26,
-                      color: isAppBarCollapsed ? SDSColor.gray900 : SDSColor.snowliveWhite,
+                      color: (_fleamarketDetailViewModel.fleamarketDetail.photos!.isNotEmpty)
+                          ? isAppBarCollapsed ? SDSColor.gray900 : SDSColor.snowliveWhite
+                          : SDSColor.gray900,
                     ),
                                     ),
                   ),
@@ -146,7 +153,9 @@ class _FleaMarketDetailViewState extends State<FleaMarketDetailView> {
                       scale: 4,
                       width: 26,
                       height: 26,
-                      color: isAppBarCollapsed ? SDSColor.gray900 : SDSColor.snowliveWhite,
+                      color: (_fleamarketDetailViewModel.fleamarketDetail.photos!.isNotEmpty)
+                          ? isAppBarCollapsed ? SDSColor.gray900 : SDSColor.snowliveWhite
+                          : SDSColor.gray900,
                     ),
                                    ),
                  ),
@@ -157,7 +166,9 @@ class _FleaMarketDetailViewState extends State<FleaMarketDetailView> {
                     scale: 4,
                     width: 26,
                     height: 26,
-                    color: isAppBarCollapsed ? SDSColor.gray900 : SDSColor.snowliveWhite,
+                    color: (_fleamarketDetailViewModel.fleamarketDetail.photos!.isNotEmpty)
+                        ? isAppBarCollapsed ? SDSColor.gray900 : SDSColor.snowliveWhite
+                        : SDSColor.gray900,
                   ),
                 ),
                 (_fleamarketDetailViewModel.fleamarketDetail.userId != _userViewModel.user.user_id)
@@ -166,188 +177,262 @@ class _FleaMarketDetailViewState extends State<FleaMarketDetailView> {
                       child: GestureDetector(
                         onTap: () => showModalBottomSheet(
                             enableDrag: false,
+                            isScrollControlled: true,
+                            backgroundColor: Colors.transparent,
                             context: context,
                             builder: (context) {
-                              return Container(
-                            height: 180,
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 20.0, vertical: 14),
-                              child: Column(
-                                children: [
-                                  //TODO: 신고하기
-                                  GestureDetector(
-                                    child: ListTile(
-                                      contentPadding: EdgeInsets.zero,
-                                      title: Center(
-                                        child: Text(
-                                          '신고하기',
-                                          style: TextStyle(
-                                            fontSize: 15,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                      ),
-                                      //selected: _isSelected[index]!,
-                                      onTap: () async {
-                                        Get.dialog(AlertDialog(
-                                          contentPadding: EdgeInsets.only(
-                                              bottom: 0,
-                                              left: 20,
-                                              right: 20,
-                                              top: 30),
-                                          elevation: 0,
-                                          shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                              BorderRadius.circular(
-                                                  10.0)),
-                                          buttonPadding:
-                                          EdgeInsets.symmetric(
-                                              horizontal: 20,
-                                              vertical: 0),
-                                          content: Text(
-                                            '이 회원을 신고하시겠습니까?',
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.w600,
-                                                fontSize: 15),
-                                          ),
-                                          actions: [
-                                            Row(
-                                              children: [
-                                                TextButton(
-                                                    onPressed: () {
-                                                      Navigator.pop(context);
-                                                    },
-                                                    child: Text('취소',
-                                                      style: TextStyle(
-                                                        fontSize: 15,
-                                                        color: Color(0xFF949494),
-                                                        fontWeight: FontWeight.bold,
-                                                      ),
-                                                    )),
-                                                TextButton(
-                                                    onPressed: () async {
-                                                      await _fleamarketDetailViewModel.reportFleamarket(
-                                                          {
-                                                            "user_id": _userViewModel.user.user_id,
-                                                            "flea_id": _fleamarketDetailViewModel.fleamarketDetail.fleaId
-                                                          }
-                                                      );
-                                                      Navigator.pop(context);
-                                                      Navigator.pop(context);
-                                                    },
-                                                    child: Text('신고',
-                                                      style: TextStyle(
-                                                        fontSize: 15,
-                                                        color: Color(0xFF3D83ED),
-                                                        fontWeight: FontWeight.bold,
-                                                      ),
-                                                    ))
-                                              ],
-                                              mainAxisAlignment: MainAxisAlignment.end,
-                                            )
-                                          ],
-                                        ));
-                                      },
-                                      shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                          BorderRadius.circular(10)),
+                              return SafeArea(
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 4, vertical: 20),
+                                  child: Container(
+                                    margin: EdgeInsets.only(
+                                      left: 16,
+                                      right: 16,
+                                      top: 16,
                                     ),
-                                  ),
-                                  //TODO: 숨기기
-                                  GestureDetector(
-                                    child: ListTile(
-                                      contentPadding: EdgeInsets.zero,
-                                      title: Center(
-                                        child: Text(
-                                          '이 회원의 모든 글 숨기기',
-                                          style: TextStyle(
-                                            fontSize: 15,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                      ),
-                                      //selected: _isSelected[index]!,
-                                      onTap: () async {
-                                        Get.dialog(AlertDialog(
-                                          contentPadding: EdgeInsets.only(bottom: 0, left: 20, right: 20, top: 30),
-                                          elevation: 0,
-                                          shape: RoundedRectangleBorder(
-                                              borderRadius: BorderRadius.circular(10.0)),
-                                          buttonPadding:
-                                          EdgeInsets.symmetric(
-                                              horizontal: 20,
-                                              vertical: 0),
-                                          content:  Container(
-                                            height: _size.width*0.17,
-                                            child: Column(
-                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                              children: [
-                                                Text(
-                                                  '이 회원의 모든 글을 숨기시겠습니까?',
-                                                  style: TextStyle(
-                                                      fontWeight: FontWeight.w600,
-                                                      fontSize: 15),
-                                                ),
-                                                SizedBox(
-                                                  height: 10,
-                                                ),
-                                                Text(
-                                                  '차단해제는 [더보기 - 친구 - 설정 - 차단목록]에서\n하실 수 있습니다.',
-                                                  style: TextStyle(
-                                                      fontWeight: FontWeight.w600,
-                                                      fontSize: 12,
-                                                      color: Color(0xFF555555)),
-                                                ),
-                                              ],
+                                    padding: EdgeInsets.all(16),
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(16),
+                                    ),
+                                    child: SingleChildScrollView(
+                                      child: Column(
+                                        children: [
+                                      //TODO: 신고하기
+                                      GestureDetector(
+                                        child: ListTile(
+                                          contentPadding: EdgeInsets.zero,
+                                          title: Center(
+                                            child: Text(
+                                              '신고하기',
+                                              style: SDSTextStyle.bold.copyWith(
+                                                  fontSize: 15,
+                                                  color: SDSColor.gray900
+                                              ),
                                             ),
                                           ),
-                                          actions: [
-                                            Row(
-                                              children: [
-                                                TextButton(
-                                                    onPressed: () {
-                                                      Navigator.pop(context);
-                                                    },
-                                                    child: Text(
-                                                      '취소',
-                                                      style: TextStyle(
-                                                        fontSize: 15,
-                                                        color: Color(0xFF949494),
-                                                        fontWeight: FontWeight.bold,
+                                          //selected: _isSelected[index]!,
+                                          onTap: () async {
+                                            Get.dialog(
+                                                AlertDialog(
+                                                  backgroundColor: SDSColor.snowliveWhite,
+                                                  contentPadding: EdgeInsets.only(bottom: 0, left: 28, right: 28, top: 36),
+                                                  elevation: 0,
+                                                  shape: RoundedRectangleBorder(
+                                                  borderRadius: BorderRadius.circular(16)),
+                                                  buttonPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+                                                  content: Container(
+                                                    height: 80,
+                                                    child: Column(
+                                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                                      children: [
+                                                        Text(
+                                                          '이 회원을 신고하시겠습니까?',
+                                                          textAlign: TextAlign.center,
+                                                          style: SDSTextStyle.bold.copyWith(
+                                                          color: SDSColor.gray900,
+                                                          fontSize: 16
+                                                          ),
+                                                        ),
+                                                        SizedBox(
+                                                          height: 6,
+                                                        ),
+                                                        Text(
+                                                          '신고가 일정 횟수 이상 누적되면 해당 게시물이 삭제 처리됩니다',
+                                                          textAlign: TextAlign.center,
+                                                          style: SDSTextStyle.regular.copyWith(
+                                                            color: SDSColor.gray500,
+                                                            fontSize: 14,
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                  actions: [
+                                                    Padding(
+                                                      padding: EdgeInsets.only(top: 10, left: 16, right: 16),
+                                                      child: Row(
+                                                        children: [
+                                                          Expanded(
+                                                            child: Container(
+                                                              child: TextButton(
+                                                                  onPressed: () {
+                                                                    Navigator.pop(context);
+                                                                    },
+                                                                  style: TextButton.styleFrom(
+                                                                    backgroundColor: Colors.transparent, // 배경색 투명
+                                                                    splashFactory: NoSplash.splashFactory, // 터치 시 효과 제거
+                                                                  ),
+                                                                  child: Text('취소',
+                                                                    style: SDSTextStyle.bold.copyWith(
+                                                                      fontSize: 17,
+                                                                      color: SDSColor.gray500,
+                                                                    ),
+                                                                  )
+                                                              ),
+                                                            ),
+                                                          ),
+                                                          SizedBox(
+                                                            width: 10,
+                                                          ),
+                                                          Expanded(
+                                                            child: Container(
+                                                              child: TextButton(
+                                                                  onPressed: () async {
+                                                                    await _fleamarketDetailViewModel.reportFleamarket(
+                                                                        {
+                                                                          "user_id": _userViewModel.user.user_id,
+                                                                          "flea_id": _fleamarketDetailViewModel.fleamarketDetail.fleaId
+                                                                        }
+                                                                        );
+                                                                    Navigator.pop(context);
+                                                                    Navigator.pop(context);
+                                                                    },
+                                                                  style: TextButton.styleFrom(
+                                                                    backgroundColor: Colors.transparent, // 배경색 투명
+                                                                    splashFactory: NoSplash.splashFactory, // 터치 시 효과 제거
+                                                                  ),
+                                                                  child: Text('신고하기',
+                                                                    style: SDSTextStyle.bold.copyWith(
+                                                                      fontSize: 17,
+                                                                      color: SDSColor.snowliveBlue,
+                                                                    ),
+                                                              )),
+                                                            ),
+                                                          )
+                                                                                                        ],
+                                                        mainAxisAlignment: MainAxisAlignment.center,
                                                       ),
-                                                    )),
-                                                TextButton(
-                                                    onPressed: () async{
-                                                      await _userViewModel.block_user({
-                                                        "user_id": _userViewModel.user.user_id,
-                                                        "block_user_id": _fleamarketDetailViewModel.fleamarketDetail.userId
-                                                      });
-                                                      Navigator.pop(context);
-                                                      Navigator.pop(context);
-                                                      Navigator.pop(context);
-                                                    },
-                                                    child: Text('확인',
-                                                      style: TextStyle(
-                                                        fontSize: 15,
-                                                        color: Color(0xFF3D83ED),
-                                                        fontWeight: FontWeight.bold,
+                                                    )
+                                                  ],
+                                                )
+                                            );
+                                          },
+                                          shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                              BorderRadius.circular(10)),
+                                        ),
+                                      ),
+                                      //TODO: 숨기기
+                                      GestureDetector(
+                                        child: ListTile(
+                                          contentPadding: EdgeInsets.zero,
+                                          title: Center(
+                                            child: Text(
+                                              '이 회원의 모든 글 숨기기',
+                                              style: SDSTextStyle.bold.copyWith(
+                                                  fontSize: 15,
+                                                  color: SDSColor.gray900
+                                              ),
+                                            ),
+                                          ),
+                                          //selected: _isSelected[index]!,
+                                          onTap: () async {
+                                            Get.dialog(
+                                                AlertDialog(
+                                                  backgroundColor: SDSColor.snowliveWhite,
+                                                  contentPadding: EdgeInsets.only(bottom: 0, left: 28, right: 28, top: 36),
+                                                  elevation: 0,
+                                                  shape: RoundedRectangleBorder(
+                                                      borderRadius: BorderRadius.circular(16)),
+                                                  buttonPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+                                                  content: Container(
+                                                    height: 80,
+                                                    child: Column(
+                                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                                      children: [
+                                                      Text(
+                                                      '이 회원의 모든 글을 숨기시겠습니까?',
+                                                      textAlign: TextAlign.center,
+                                                      style: SDSTextStyle.bold.copyWith(
+                                                          color: SDSColor.gray900,
+                                                          fontSize: 16
                                                       ),
-                                                    ))
-                                              ],
-                                              mainAxisAlignment: MainAxisAlignment.end,
-                                            )
-                                          ],
-                                        ));
-                                      },
-                                      shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(10)),
+                                                    ),
+                                                    SizedBox(
+                                                      height: 6,
+                                                    ),
+                                                    Text(
+                                                      '차단해제는 [더보기 - 친구 - 설정 - 차단목록]에서 하실 수 있습니다.',
+                                                      textAlign: TextAlign.center,
+                                                      style: SDSTextStyle.regular.copyWith(
+                                                        color: SDSColor.gray500,
+                                                        fontSize: 14,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                                  actions: [
+                                                    Padding(
+                                                      padding: EdgeInsets.only(top: 10, left: 16, right: 16),
+                                                      child: Row(
+                                                        children: [
+                                                          Expanded(
+                                                            child: Container(
+                                                              child: TextButton(
+                                                                  onPressed: () {
+                                                                    Navigator.pop(context);
+                                                                  },
+                                                                  style: TextButton.styleFrom(
+                                                                    backgroundColor: Colors.transparent, // 배경색 투명
+                                                                    splashFactory: NoSplash.splashFactory, // 터치 시 효과 제거
+                                                                  ),
+                                                                  child: Text('취소',
+                                                                    style: SDSTextStyle.bold.copyWith(
+                                                                      fontSize: 17,
+                                                                      color: SDSColor.gray500,
+                                                                    ),
+                                                                  )
+                                                              ),
+                                                            ),
+                                                          ),
+                                                          SizedBox(
+                                                            width: 10,
+                                                          ),
+                                                          Expanded(
+                                                            child: Container(
+                                                              child: TextButton(
+                                                                  onPressed: () async {
+                                                                    await _userViewModel.block_user({
+                                                                      "user_id": _userViewModel.user.user_id,
+                                                                      "block_user_id": _fleamarketDetailViewModel.fleamarketDetail.userId
+                                                                    });
+                                                                    Navigator.pop(context);
+                                                                    Navigator.pop(context);
+                                                                    Navigator.pop(context);
+                                                                  },
+                                                                  style: TextButton.styleFrom(
+                                                                    backgroundColor: Colors.transparent, // 배경색 투명
+                                                                    splashFactory: NoSplash.splashFactory, // 터치 시 효과 제거
+                                                                  ),
+                                                                  child: Text('신고하기',
+                                                                    style: SDSTextStyle.bold.copyWith(
+                                                                      fontSize: 17,
+                                                                      color: SDSColor.snowliveBlue,
+                                                                    ),
+                                                                  )),
+                                                            ),
+                                                          )
+                                                        ],
+                                                        mainAxisAlignment: MainAxisAlignment.center,
+                                                      ),
+                                                    )
+                                                  ],
+                                                )
+                                            );
+                                          },
+                                          shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.circular(10)),
+                                        ),
+                                      )
+                                                                      ],
+                                                                    ),
                                     ),
-                                  )
-                                ],
-                              ),
-                            ),
-                          );
+                                  ),
+                                                          ),
+                              );
                             }
                             ),
                         child: Image.asset(
@@ -355,648 +440,197 @@ class _FleaMarketDetailViewState extends State<FleaMarketDetailView> {
                           scale: 4,
                           width: 26,
                           height: 26,
-                          color: isAppBarCollapsed ? SDSColor.gray900 : SDSColor.snowliveWhite,
+                          color: (_fleamarketDetailViewModel.fleamarketDetail.photos!.isNotEmpty)
+                              ? isAppBarCollapsed ? SDSColor.gray900 : SDSColor.snowliveWhite
+                              : SDSColor.gray900,
                         ),
                       ),
                     )
                     : Padding(
                       padding: EdgeInsets.only(right: 16),
                       child: GestureDetector(
-                                        onTap: () => showModalBottomSheet(
-                        enableDrag: false,
-                        context: context,
-                        builder: (context) {
-                          return Container(
-                            height: 180,
+                        onTap: () => showModalBottomSheet(
+                            enableDrag: false,
+                            isScrollControlled: true,
+                            backgroundColor: Colors.transparent,
+                            context: context,
+                            builder: (context) {
+                          return SafeArea(
                             child: Padding(
                               padding: const EdgeInsets.symmetric(
-                                  horizontal: 20.0, vertical: 14),
-                              child: Column(
-                                children: [
-                                  //TODO: 수정하기
-                                  GestureDetector(
-                                    child: ListTile(
-                                      contentPadding: EdgeInsets.zero,
-                                      title: Center(
-                                        child: Text(
-                                          '수정',
-                                          style: TextStyle(
-                                              fontSize: 15,
-                                              fontWeight: FontWeight.bold,
-                                              color: Color(0xFFD63636)
+                                  horizontal: 4, vertical: 20),
+                              child: Container(
+                                margin: EdgeInsets.only(
+                                  left: 16,
+                                  right: 16,
+                                  top: 16,
+                                ),
+                                padding: EdgeInsets.all(16),
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(16),
+                                ),
+                                child: SingleChildScrollView(
+                                  child: Wrap(
+                                    children: [
+                                      //TODO: 수정하기
+                                      GestureDetector(
+                                        child: ListTile(
+                                          contentPadding: EdgeInsets.zero,
+                                          title: Center(
+                                            child: Text(
+                                              '글 수정하기',
+                                              style: SDSTextStyle.bold.copyWith(
+                                                  fontSize: 15,
+                                                  color: SDSColor.gray900
+                                              ),
+                                            ),
                                           ),
+                                          //selected: _isSelected[index]!,
+                                          onTap: () async {
+                                            Navigator.pop(context);
+                                            await _fleamarketUpdateViewModel.fetchFleamarketUpdateData(
+                                                textEditingController_title: _fleamarketDetailViewModel.fleamarketDetail.title,
+                                                selectedCategorySub: _fleamarketDetailViewModel.fleamarketDetail.categorySub,
+                                                selectedCategoryMain: _fleamarketDetailViewModel.fleamarketDetail.categoryMain,
+                                                textEditingController_productName: _fleamarketDetailViewModel.fleamarketDetail.productName,
+                                                itemPriceTextEditingController: _fleamarketDetailViewModel.fleamarketDetail.price,
+                                                selectedTradeMethod: _fleamarketDetailViewModel.fleamarketDetail.method,
+                                                selectedTradeSpot: _fleamarketDetailViewModel.fleamarketDetail.spot,
+                                                textEditingController_desc: _fleamarketDetailViewModel.fleamarketDetail.description,
+                                                photos: _fleamarketDetailViewModel.fleamarketDetail.photos
+                                            );
+                                            Get.toNamed(AppRoutes.fleamarketUpdate);
+                                          },
+                                          shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                              BorderRadius.circular(10)),
                                         ),
                                       ),
-                                      //selected: _isSelected[index]!,
-                                      onTap: () async {
-                                        Navigator.pop(context);
-                                        await _fleamarketUpdateViewModel.fetchFleamarketUpdateData(
-                                            textEditingController_title: _fleamarketDetailViewModel.fleamarketDetail.title,
-                                            selectedCategorySub: _fleamarketDetailViewModel.fleamarketDetail.categorySub,
-                                            selectedCategoryMain: _fleamarketDetailViewModel.fleamarketDetail.categoryMain,
-                                            textEditingController_productName: _fleamarketDetailViewModel.fleamarketDetail.productName,
-                                            itemPriceTextEditingController: _fleamarketDetailViewModel.fleamarketDetail.price,
-                                            selectedTradeMethod: _fleamarketDetailViewModel.fleamarketDetail.method,
-                                            selectedTradeSpot: _fleamarketDetailViewModel.fleamarketDetail.spot,
-                                            textEditingController_desc: _fleamarketDetailViewModel.fleamarketDetail.description,
-                                            photos: _fleamarketDetailViewModel.fleamarketDetail.photos
-                                        );
-                                        Get.toNamed(AppRoutes.fleamarketUpdate);
-                                      },
-                                      shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                          BorderRadius.circular(10)),
-                                    ),
-                                  ),
-                                  //TODO: 삭제하기
-                                  GestureDetector(
-                                    child: ListTile(
-                                      contentPadding: EdgeInsets.zero,
-                                      title: Center(
-                                        child: Text(
-                                          '삭제',
-                                          style: TextStyle(
-                                              fontSize: 15,
-                                              fontWeight: FontWeight.bold,
-                                              color: Color(0xFFD63636)
+                                      //TODO: 삭제하기
+                                      GestureDetector(
+                                        child: ListTile(
+                                          contentPadding: EdgeInsets.zero,
+                                          title: Center(
+                                            child: Text(
+                                              '글 삭제하기',
+                                              style: SDSTextStyle.bold.copyWith(
+                                                  fontSize: 15,
+                                                  color: SDSColor.red
+                                              ),
+                                            ),
                                           ),
-                                        ),
-                                      ),
-                                      //selected: _isSelected[index]!,
-                                      onTap: () async {
-                                        Navigator.pop(context);
-                                        showModalBottomSheet(
-                                            context: context,
-                                            builder: (context) {
-                                              return Container(
-                                                color: Colors.white,
-                                                height: 180,
-                                                child: Padding(
-                                                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                                                  child: Column(
-                                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                                    mainAxisAlignment: MainAxisAlignment.start,
-                                                    children: [
-                                                      SizedBox(
-                                                        height: 30,
-                                                      ),
-                                                      Text(
-                                                        '삭제하시겠습니까?',
-                                                        style: TextStyle(
-                                                            fontSize: 20,
-                                                            fontWeight: FontWeight.bold,
-                                                            color: Color(0xFF111111)),
-                                                      ),
-                                                      SizedBox(
-                                                        height: 30,
-                                                      ),
-                                                      Row(
-                                                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                          //selected: _isSelected[index]!,
+                                          onTap: () async {
+                                            Get.dialog(
+                                                AlertDialog(
+                                                  backgroundColor: SDSColor.snowliveWhite,
+                                                  contentPadding: EdgeInsets.only(bottom: 0, left: 28, right: 28, top: 36),
+                                                  elevation: 0,
+                                                  shape: RoundedRectangleBorder(
+                                                      borderRadius: BorderRadius.circular(16)),
+                                                  buttonPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+                                                  content: Container(
+                                                    height: 40,
+                                                    child: Column(
+                                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                                      children: [
+                                                        Text(
+                                                          '이 글을 삭제하시겠어요?',
+                                                          textAlign: TextAlign.center,
+                                                          style: SDSTextStyle.bold.copyWith(
+                                                              color: SDSColor.gray900,
+                                                              fontSize: 16
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                  actions: [
+                                                    Padding(
+                                                      padding: EdgeInsets.only(top: 10, left: 16, right: 16),
+                                                      child: Row(
                                                         children: [
                                                           Expanded(
-                                                            child:
-                                                            ElevatedButton(
-                                                              onPressed:
-                                                                  () {
-                                                                Navigator.pop(context);
-                                                              },
-                                                              child: Text(
-                                                                '취소',
-                                                                style: TextStyle(
-                                                                    color: Colors
-                                                                        .white,
-                                                                    fontSize: 15,
-                                                                    fontWeight: FontWeight.bold),
+                                                            child: Container(
+                                                              child: TextButton(
+                                                                  onPressed: () {
+                                                                    Navigator.pop(context);
+                                                                  },
+                                                                  style: TextButton.styleFrom(
+                                                                    backgroundColor: Colors.transparent, // 배경색 투명
+                                                                    splashFactory: NoSplash.splashFactory, // 터치 시 효과 제거
+                                                                  ),
+                                                                  child: Text('취소',
+                                                                    style: SDSTextStyle.bold.copyWith(
+                                                                      fontSize: 17,
+                                                                      color: SDSColor.gray500,
+                                                                    ),
+                                                                  )
                                                               ),
-                                                              style: TextButton.styleFrom(
-                                                                  splashFactory:
-                                                                  InkRipple.splashFactory,
-                                                                  elevation: 0,
-                                                                  minimumSize:
-                                                                  Size(100, 56),
-                                                                  backgroundColor:
-                                                                  Color(0xff555555),
-                                                                  padding: EdgeInsets.symmetric(horizontal: 0)),
                                                             ),
                                                           ),
                                                           SizedBox(
                                                             width: 10,
                                                           ),
                                                           Expanded(
-                                                            child:
-                                                            ElevatedButton(
-                                                              onPressed: () async {
-                                                                Navigator.pop(context);
-                                                                await _fleamarketDetailViewModel.deleteFleamarket(
-                                                                    fleamarketId: _fleamarketDetailViewModel.fleamarketDetail.fleaId!,
-                                                                    userId: _userViewModel.user.user_id
-                                                                );
-                                                                await _fleamarketListViewModel.fetchFleamarketData_total(userId: _userViewModel.user.user_id);
-                                                                await _fleamarketListViewModel.fetchFleamarketData_ski(userId: _userViewModel.user.user_id);
-                                                                await _fleamarketListViewModel.fetchFleamarketData_board(userId: _userViewModel.user.user_id);
-                                                                await _fleamarketListViewModel.fetchFleamarketData_my(userId: _userViewModel.user.user_id);
-                                                                Get.back();
-                                                              },
-                                                              child: Text('확인',
-                                                                style: TextStyle(
-                                                                    color: Colors.white,
-                                                                    fontSize: 15,
-                                                                    fontWeight: FontWeight.bold),
-                                                              ),
-                                                              style: TextButton.styleFrom(
-                                                                  splashFactory: InkRipple.splashFactory,
-                                                                  elevation: 0,
-                                                                  minimumSize:
-                                                                  Size(100, 56),
-                                                                  backgroundColor:
-                                                                  Color(0xff2C97FB),
-                                                                  padding: EdgeInsets.symmetric(horizontal: 0)),
+                                                            child: Container(
+                                                              child: TextButton(
+                                                                  onPressed: () async {
+                                                                    Navigator.pop(context);
+                                                                    await _fleamarketDetailViewModel.deleteFleamarket(
+                                                                        fleamarketId: _fleamarketDetailViewModel.fleamarketDetail.fleaId!,
+                                                                        userId: _userViewModel.user.user_id
+                                                                    );
+                                                                    await _fleamarketListViewModel.fetchFleamarketData_total(userId: _userViewModel.user.user_id);
+                                                                    await _fleamarketListViewModel.fetchFleamarketData_ski(userId: _userViewModel.user.user_id);
+                                                                    await _fleamarketListViewModel.fetchFleamarketData_board(userId: _userViewModel.user.user_id);
+                                                                    await _fleamarketListViewModel.fetchFleamarketData_my(userId: _userViewModel.user.user_id);
+                                                                    Get.back();
+                                                                  },
+                                                                  style: TextButton.styleFrom(
+                                                                    backgroundColor: Colors.transparent, // 배경색 투명
+                                                                    splashFactory: NoSplash.splashFactory, // 터치 시 효과 제거
+                                                                  ),
+                                                                  child: Text('삭제하기',
+                                                                    style: SDSTextStyle.bold.copyWith(
+                                                                      fontSize: 17,
+                                                                      color: SDSColor.red,
+                                                                    ),
+                                                                  )),
                                                             ),
-                                                          ),
+                                                          )
                                                         ],
-                                                      )
-                                                    ],
-                                                  ),
-                                                ),
-                                              );
-                                            });
-                                      },
-                                      shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                          BorderRadius.circular(10)),
-                                    ),
+                                                        mainAxisAlignment: MainAxisAlignment.center,
+                                                      ),
+                                                    )
+                                                  ],
+                                                )
+                                            );
+                                          },
+                                          shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                              BorderRadius.circular(10)),
+                                        ),
+                                      ),
+                                    ],
                                   ),
-                                ],
+                                ),
                               ),
                             ),
                           );
                         }),
-                        child: Padding(
-                          padding: const EdgeInsets.only(bottom: 1, right: 16),
-                          child: Image.asset(
-                            'assets/imgs/icons/icon_flea_appbar_more.png',
-                            scale: 4,
-                            width: 26,
-                            height: 26,
-                            color: isAppBarCollapsed ? SDSColor.gray900 : SDSColor.snowliveWhite,
-                          ),
+                        child: Image.asset(
+                          'assets/imgs/icons/icon_flea_appbar_more.png',
+                          scale: 4,
+                          width: 26,
+                          height: 26,
+                          color: (_fleamarketDetailViewModel.fleamarketDetail.photos!.isNotEmpty)
+                              ? isAppBarCollapsed ? SDSColor.gray900 : SDSColor.snowliveWhite
+                              : SDSColor.gray900,
                         ),
                       ),
                     )
-              ],
-            )
-                : AppBar(
-              backgroundColor: SDSColor.snowliveWhite,
-              foregroundColor: Colors.transparent,
-              surfaceTintColor: Colors.transparent,
-              elevation: 0.0,
-              leading: GestureDetector(
-                child: Image.asset(
-                  'assets/imgs/icons/icon_snowLive_back.png',
-                  scale: 4,
-                  width: 26,
-                  height: 26,
-                  color: SDSColor.gray900,
-                ),
-                onTap: () {
-                  Get.back();
-                },
-              ),
-              actions: [
-                if((_fleamarketDetailViewModel.fleamarketDetail.userId != _userViewModel.user.user_id )
-                    && _fleamarketDetailViewModel.fleamarketDetail.isFavorite == false)
-                  Padding(
-                    padding: EdgeInsets.only(right: 20),
-                    child: GestureDetector(
-                      onTap: () async{
-                        await _fleamarketDetailViewModel.addFavoriteFleamarket(
-                            fleamarketID: _fleamarketDetailViewModel.fleamarketDetail.fleaId,
-                            body: {
-                              "user_id": _userViewModel.user.user_id
-                            }
-                        );
-                      },
-                      child:Image.asset(
-                        'assets/imgs/icons/icon_flea_appbar_scrap.png',
-                        scale: 4,
-                        width: 26,
-                        height: 26,
-                        color: SDSColor.gray900,
-                      ),
-                    ),
-                  ),
-                if((_fleamarketDetailViewModel.fleamarketDetail.userId != _userViewModel.user.user_id )
-                    && _fleamarketDetailViewModel.fleamarketDetail.isFavorite == true)
-                  Padding(
-                    padding: EdgeInsets.only(right: 20),
-                    child: GestureDetector(
-                      onTap: () async{
-                        await _fleamarketDetailViewModel.deleteFavoriteFleamarket(
-                            fleamarketID: _fleamarketDetailViewModel.fleamarketDetail.fleaId,
-                            body: {
-                              "user_id": _userViewModel.user.user_id
-                            }
-                        );
-                      },
-                      child: Image.asset(
-                        'assets/imgs/icons/icon_flea_appbar_scrap_on.png',
-                        scale: 4,
-                        width: 26,
-                        height: 26,
-                        color: SDSColor.gray900,
-                      ),
-                    ),
-                  ),
-                Padding(
-                  padding: EdgeInsets.only(right: 20),
-                  child: Image.asset(
-                    'assets/imgs/icons/icon_flea_appbar_share.png',
-                    scale: 4,
-                    width: 26,
-                    height: 26,
-                    color: SDSColor.gray900,
-                  ),
-                ),
-                (_fleamarketDetailViewModel.fleamarketDetail.userId != _userViewModel.user.user_id)
-                    ? Padding(
-                  padding: EdgeInsets.only(right: 16),
-                  child: GestureDetector(
-                    onTap: () => showModalBottomSheet(
-                        enableDrag: false,
-                        context: context,
-                        builder: (context) {
-                          return Container(
-                            height: 180,
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 20.0, vertical: 14),
-                              child: Column(
-                                children: [
-                                  //TODO: 신고하기
-                                  GestureDetector(
-                                    child: ListTile(
-                                      contentPadding: EdgeInsets.zero,
-                                      title: Center(
-                                        child: Text(
-                                          '신고하기',
-                                          style: TextStyle(
-                                            fontSize: 15,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                      ),
-                                      //selected: _isSelected[index]!,
-                                      onTap: () async {
-                                        Get.dialog(AlertDialog(
-                                          contentPadding: EdgeInsets.only(
-                                              bottom: 0,
-                                              left: 20,
-                                              right: 20,
-                                              top: 30),
-                                          elevation: 0,
-                                          shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                              BorderRadius.circular(
-                                                  10.0)),
-                                          buttonPadding:
-                                          EdgeInsets.symmetric(
-                                              horizontal: 20,
-                                              vertical: 0),
-                                          content: Text(
-                                            '이 회원을 신고하시겠습니까?',
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.w600,
-                                                fontSize: 15),
-                                          ),
-                                          actions: [
-                                            Row(
-                                              children: [
-                                                TextButton(
-                                                    onPressed: () {
-                                                      Navigator.pop(context);
-                                                    },
-                                                    child: Text('취소',
-                                                      style: TextStyle(
-                                                        fontSize: 15,
-                                                        color: Color(0xFF949494),
-                                                        fontWeight: FontWeight.bold,
-                                                      ),
-                                                    )),
-                                                TextButton(
-                                                    onPressed: () async {
-                                                      await _fleamarketDetailViewModel.reportFleamarket(
-                                                          {
-                                                            "user_id": _userViewModel.user.user_id,
-                                                            "flea_id": _fleamarketDetailViewModel.fleamarketDetail.fleaId
-                                                          }
-                                                      );
-                                                      Navigator.pop(context);
-                                                      Navigator.pop(context);
-                                                    },
-                                                    child: Text('신고',
-                                                      style: TextStyle(
-                                                        fontSize: 15,
-                                                        color: Color(0xFF3D83ED),
-                                                        fontWeight: FontWeight.bold,
-                                                      ),
-                                                    ))
-                                              ],
-                                              mainAxisAlignment: MainAxisAlignment.end,
-                                            )
-                                          ],
-                                        ));
-                                      },
-                                      shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                          BorderRadius.circular(10)),
-                                    ),
-                                  ),
-                                  //TODO: 숨기기
-                                  GestureDetector(
-                                    child: ListTile(
-                                      contentPadding: EdgeInsets.zero,
-                                      title: Center(
-                                        child: Text(
-                                          '이 회원의 모든 글 숨기기',
-                                          style: TextStyle(
-                                            fontSize: 15,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                      ),
-                                      //selected: _isSelected[index]!,
-                                      onTap: () async {
-                                        Get.dialog(AlertDialog(
-                                          contentPadding: EdgeInsets.only(bottom: 0, left: 20, right: 20, top: 30),
-                                          elevation: 0,
-                                          shape: RoundedRectangleBorder(
-                                              borderRadius: BorderRadius.circular(10.0)),
-                                          buttonPadding:
-                                          EdgeInsets.symmetric(
-                                              horizontal: 20,
-                                              vertical: 0),
-                                          content:  Container(
-                                            height: _size.width*0.17,
-                                            child: Column(
-                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                              children: [
-                                                Text(
-                                                  '이 회원의 모든 글을 숨기시겠습니까?',
-                                                  style: TextStyle(
-                                                      fontWeight: FontWeight.w600,
-                                                      fontSize: 15),
-                                                ),
-                                                SizedBox(
-                                                  height: 10,
-                                                ),
-                                                Text(
-                                                  '차단해제는 [더보기 - 친구 - 설정 - 차단목록]에서\n하실 수 있습니다.',
-                                                  style: TextStyle(
-                                                      fontWeight: FontWeight.w600,
-                                                      fontSize: 12,
-                                                      color: Color(0xFF555555)),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                          actions: [
-                                            Row(
-                                              children: [
-                                                TextButton(
-                                                    onPressed: () {
-                                                      Navigator.pop(context);
-                                                    },
-                                                    child: Text(
-                                                      '취소',
-                                                      style: TextStyle(
-                                                        fontSize: 15,
-                                                        color: Color(0xFF949494),
-                                                        fontWeight: FontWeight.bold,
-                                                      ),
-                                                    )),
-                                                TextButton(
-                                                    onPressed: () async{
-                                                      await _userViewModel.block_user({
-                                                        "user_id": _userViewModel.user.user_id,
-                                                        "block_user_id": _fleamarketDetailViewModel.fleamarketDetail.userId
-                                                      });
-                                                      Navigator.pop(context);
-                                                      Navigator.pop(context);
-                                                      Navigator.pop(context);
-                                                    },
-                                                    child: Text('확인',
-                                                      style: TextStyle(
-                                                        fontSize: 15,
-                                                        color: Color(0xFF3D83ED),
-                                                        fontWeight: FontWeight.bold,
-                                                      ),
-                                                    ))
-                                              ],
-                                              mainAxisAlignment: MainAxisAlignment.end,
-                                            )
-                                          ],
-                                        ));
-                                      },
-                                      shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(10)),
-                                    ),
-                                  )
-                                ],
-                              ),
-                            ),
-                          );
-                        }
-                    ),
-                    child: Image.asset(
-                      'assets/imgs/icons/icon_flea_appbar_more.png',
-                      scale: 4,
-                      width: 26,
-                      height: 26,
-                      color: SDSColor.gray900,
-                    ),
-                  ),
-                )
-                    : Padding(
-                  padding: EdgeInsets.only(right: 16),
-                  child: GestureDetector(
-                    onTap: () => showModalBottomSheet(
-                        enableDrag: false,
-                        context: context,
-                        builder: (context) {
-                          return Container(
-                            height: 180,
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 20.0, vertical: 14),
-                              child: Column(
-                                children: [
-                                  //TODO: 수정하기
-                                  GestureDetector(
-                                    child: ListTile(
-                                      contentPadding: EdgeInsets.zero,
-                                      title: Center(
-                                        child: Text(
-                                          '수정',
-                                          style: TextStyle(
-                                              fontSize: 15,
-                                              fontWeight: FontWeight.bold,
-                                              color: Color(0xFFD63636)
-                                          ),
-                                        ),
-                                      ),
-                                      //selected: _isSelected[index]!,
-                                      onTap: () async {
-                                        Navigator.pop(context);
-                                        await _fleamarketUpdateViewModel.fetchFleamarketUpdateData(
-                                            textEditingController_title: _fleamarketDetailViewModel.fleamarketDetail.title,
-                                            selectedCategorySub: _fleamarketDetailViewModel.fleamarketDetail.categorySub,
-                                            selectedCategoryMain: _fleamarketDetailViewModel.fleamarketDetail.categoryMain,
-                                            textEditingController_productName: _fleamarketDetailViewModel.fleamarketDetail.productName,
-                                            itemPriceTextEditingController: _fleamarketDetailViewModel.fleamarketDetail.price,
-                                            selectedTradeMethod: _fleamarketDetailViewModel.fleamarketDetail.method,
-                                            selectedTradeSpot: _fleamarketDetailViewModel.fleamarketDetail.spot,
-                                            textEditingController_desc: _fleamarketDetailViewModel.fleamarketDetail.description,
-                                            photos: _fleamarketDetailViewModel.fleamarketDetail.photos
-                                        );
-                                        Get.toNamed(AppRoutes.fleamarketUpdate);
-                                      },
-                                      shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                          BorderRadius.circular(10)),
-                                    ),
-                                  ),
-                                  //TODO: 삭제하기
-                                  GestureDetector(
-                                    child: ListTile(
-                                      contentPadding: EdgeInsets.zero,
-                                      title: Center(
-                                        child: Text(
-                                          '삭제',
-                                          style: TextStyle(
-                                              fontSize: 15,
-                                              fontWeight: FontWeight.bold,
-                                              color: Color(0xFFD63636)
-                                          ),
-                                        ),
-                                      ),
-                                      //selected: _isSelected[index]!,
-                                      onTap: () async {
-                                        Navigator.pop(context);
-                                        showModalBottomSheet(
-                                            context: context,
-                                            builder: (context) {
-                                              return Container(
-                                                color: Colors.white,
-                                                height: 180,
-                                                child: Padding(
-                                                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                                                  child: Column(
-                                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                                    mainAxisAlignment: MainAxisAlignment.start,
-                                                    children: [
-                                                      SizedBox(
-                                                        height: 30,
-                                                      ),
-                                                      Text(
-                                                        '삭제하시겠습니까?',
-                                                        style: TextStyle(
-                                                            fontSize: 20,
-                                                            fontWeight: FontWeight.bold,
-                                                            color: Color(0xFF111111)),
-                                                      ),
-                                                      SizedBox(
-                                                        height: 30,
-                                                      ),
-                                                      Row(
-                                                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                                        children: [
-                                                          Expanded(
-                                                            child:
-                                                            ElevatedButton(
-                                                              onPressed:
-                                                                  () {
-                                                                Navigator.pop(context);
-                                                              },
-                                                              child: Text(
-                                                                '취소',
-                                                                style: TextStyle(
-                                                                    color: Colors
-                                                                        .white,
-                                                                    fontSize: 15,
-                                                                    fontWeight: FontWeight.bold),
-                                                              ),
-                                                              style: TextButton.styleFrom(
-                                                                  splashFactory:
-                                                                  InkRipple.splashFactory,
-                                                                  elevation: 0,
-                                                                  minimumSize:
-                                                                  Size(100, 56),
-                                                                  backgroundColor:
-                                                                  Color(0xff555555),
-                                                                  padding: EdgeInsets.symmetric(horizontal: 0)),
-                                                            ),
-                                                          ),
-                                                          SizedBox(
-                                                            width: 10,
-                                                          ),
-                                                          Expanded(
-                                                            child:
-                                                            ElevatedButton(
-                                                              onPressed: () async {
-                                                                Navigator.pop(context);
-                                                                await _fleamarketDetailViewModel.deleteFleamarket(
-                                                                    fleamarketId: _fleamarketDetailViewModel.fleamarketDetail.fleaId!,
-                                                                    userId: _userViewModel.user.user_id
-                                                                );
-                                                                await _fleamarketListViewModel.fetchFleamarketData_total(userId: _userViewModel.user.user_id);
-                                                                await _fleamarketListViewModel.fetchFleamarketData_ski(userId: _userViewModel.user.user_id);
-                                                                await _fleamarketListViewModel.fetchFleamarketData_board(userId: _userViewModel.user.user_id);
-                                                                await _fleamarketListViewModel.fetchFleamarketData_my(userId: _userViewModel.user.user_id);
-                                                                Get.back();
-                                                              },
-                                                              child: Text('확인',
-                                                                style: TextStyle(
-                                                                    color: Colors.white,
-                                                                    fontSize: 15,
-                                                                    fontWeight: FontWeight.bold),
-                                                              ),
-                                                              style: TextButton.styleFrom(
-                                                                  splashFactory: InkRipple.splashFactory,
-                                                                  elevation: 0,
-                                                                  minimumSize:
-                                                                  Size(100, 56),
-                                                                  backgroundColor:
-                                                                  Color(0xff2C97FB),
-                                                                  padding: EdgeInsets.symmetric(horizontal: 0)),
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      )
-                                                    ],
-                                                  ),
-                                                ),
-                                              );
-                                            });
-                                      },
-                                      shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                          BorderRadius.circular(10)),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          );
-                        }),
-                    child: Image.asset(
-                      'assets/imgs/icons/icon_flea_appbar_more.png',
-                      scale: 4,
-                      width: 26,
-                      height: 26,
-                      color: SDSColor.gray900,
-                    ),
-                  ),
-                )
               ],
             )
           ),
@@ -1392,108 +1026,121 @@ class _FleaMarketDetailViewState extends State<FleaMarketDetailView> {
                                           onTap: () async {
                                             showModalBottomSheet(
                                               enableDrag: false,
+                                              isScrollControlled: true,
+                                              backgroundColor: Colors.transparent,
                                               context: context,
                                               builder: (context) {
-                                                return Container(
-                                                  height: 230,
+                                                return SafeArea(
                                                   child: Padding(
-                                                    padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 14),
-                                                    child: Column(
-                                                      children: [
-                                                        GestureDetector(
-                                                          child: ListTile(
-                                                            contentPadding: EdgeInsets.zero,
-                                                            title: Center(
-                                                              child: Text(
-                                                                '${FleamarketStatus.soldOut.korean}',
-                                                                style: TextStyle(
-                                                                  fontSize: 15,
-                                                                  fontWeight: FontWeight.bold,
+                                                    padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 20),
+                                                    child: Container(
+                                                      margin: EdgeInsets.only(
+                                                        left: 16,
+                                                        right: 16,
+                                                        top: 16,
+                                                      ),
+                                                      padding: EdgeInsets.all(16),
+                                                      decoration: BoxDecoration(
+                                                        color: Colors.white,
+                                                        borderRadius: BorderRadius.circular(16),
+                                                      ),
+                                                      child: Wrap(
+                                                        children: [
+                                                          GestureDetector(
+                                                            child: ListTile(
+                                                              contentPadding: EdgeInsets.zero,
+                                                              title: Center(
+                                                                child: Text(
+                                                                  '${FleamarketStatus.soldOut.korean}',
+                                                                  style: TextStyle(
+                                                                    fontSize: 15,
+                                                                    fontWeight: FontWeight.bold,
+                                                                  ),
                                                                 ),
                                                               ),
-                                                            ),
-                                                            onTap: () async {
-                                                              Navigator.pop(context);
-                                                              await _fleamarketDetailViewModel.updateStatus(
-                                                                fleamarketId: _fleamarketDetailViewModel.fleamarketDetail.fleaId!,
-                                                                body: {
-                                                                  "user_id": _userViewModel.user.user_id,
-                                                                  "status": '${FleamarketStatus.soldOut.korean}',
-                                                                },
-                                                              );
-                                                              await _fleamarketDetailViewModel.fetchFleamarketDetailFromAPI(
-                                                                fleamarketId: _fleamarketDetailViewModel.fleamarketDetail.fleaId!,
-                                                                userId: _userViewModel.user.user_id,
-                                                              );
-                                                            },
-                                                            shape: RoundedRectangleBorder(
-                                                              borderRadius: BorderRadius.circular(10),
-                                                            ),
-                                                          ),
-                                                        ),
-                                                        GestureDetector(
-                                                          child: ListTile(
-                                                            contentPadding: EdgeInsets.zero,
-                                                            title: Center(
-                                                              child: Text(
-                                                                '${FleamarketStatus.onBooking.korean}',
-                                                                style: TextStyle(
-                                                                  fontSize: 15,
-                                                                  fontWeight: FontWeight.bold,
-                                                                ),
+                                                              onTap: () async {
+                                                                Navigator.pop(context);
+                                                                await _fleamarketDetailViewModel.updateStatus(
+                                                                  fleamarketId: _fleamarketDetailViewModel.fleamarketDetail.fleaId!,
+                                                                  body: {
+                                                                    "user_id": _userViewModel.user.user_id,
+                                                                    "status": '${FleamarketStatus.soldOut.korean}',
+                                                                  },
+                                                                );
+                                                                await _fleamarketDetailViewModel.fetchFleamarketDetailFromAPI(
+                                                                  fleamarketId: _fleamarketDetailViewModel.fleamarketDetail.fleaId!,
+                                                                  userId: _userViewModel.user.user_id,
+                                                                );
+                                                              },
+                                                              shape: RoundedRectangleBorder(
+                                                                borderRadius: BorderRadius.circular(10),
                                                               ),
                                                             ),
-                                                            onTap: () async {
-                                                              Navigator.pop(context);
-                                                              await _fleamarketDetailViewModel.updateStatus(
-                                                                fleamarketId: _fleamarketDetailViewModel.fleamarketDetail.fleaId!,
-                                                                body: {
-                                                                  "user_id": _userViewModel.user.user_id,
-                                                                  "status": '${FleamarketStatus.onBooking.korean}',
-                                                                },
-                                                              );
-                                                              await _fleamarketDetailViewModel.fetchFleamarketDetailFromAPI(
-                                                                fleamarketId: _fleamarketDetailViewModel.fleamarketDetail.fleaId!,
-                                                                userId: _userViewModel.user.user_id,
-                                                              );
-                                                            },
-                                                            shape: RoundedRectangleBorder(
-                                                              borderRadius: BorderRadius.circular(10),
-                                                            ),
                                                           ),
-                                                        ),
-                                                        GestureDetector(
-                                                          child: ListTile(
-                                                            contentPadding: EdgeInsets.zero,
-                                                            title: Center(
-                                                              child: Text(
-                                                                '${FleamarketStatus.forSale.korean}',
-                                                                style: TextStyle(
-                                                                  fontSize: 15,
-                                                                  fontWeight: FontWeight.bold,
+                                                          GestureDetector(
+                                                            child: ListTile(
+                                                              contentPadding: EdgeInsets.zero,
+                                                              title: Center(
+                                                                child: Text(
+                                                                  '${FleamarketStatus.onBooking.korean}',
+                                                                  style: TextStyle(
+                                                                    fontSize: 15,
+                                                                    fontWeight: FontWeight.bold,
+                                                                  ),
                                                                 ),
                                                               ),
-                                                            ),
-                                                            onTap: () async {
-                                                              Navigator.pop(context);
-                                                              await _fleamarketDetailViewModel.updateStatus(
-                                                                fleamarketId: _fleamarketDetailViewModel.fleamarketDetail.fleaId!,
-                                                                body: {
-                                                                  "user_id": _userViewModel.user.user_id,
-                                                                  "status": '${FleamarketStatus.forSale.korean}',
-                                                                },
-                                                              );
-                                                              await _fleamarketDetailViewModel.fetchFleamarketDetailFromAPI(
-                                                                fleamarketId: _fleamarketDetailViewModel.fleamarketDetail.fleaId!,
-                                                                userId: _userViewModel.user.user_id,
-                                                              );
-                                                            },
-                                                            shape: RoundedRectangleBorder(
-                                                              borderRadius: BorderRadius.circular(10),
+                                                              onTap: () async {
+                                                                Navigator.pop(context);
+                                                                await _fleamarketDetailViewModel.updateStatus(
+                                                                  fleamarketId: _fleamarketDetailViewModel.fleamarketDetail.fleaId!,
+                                                                  body: {
+                                                                    "user_id": _userViewModel.user.user_id,
+                                                                    "status": '${FleamarketStatus.onBooking.korean}',
+                                                                  },
+                                                                );
+                                                                await _fleamarketDetailViewModel.fetchFleamarketDetailFromAPI(
+                                                                  fleamarketId: _fleamarketDetailViewModel.fleamarketDetail.fleaId!,
+                                                                  userId: _userViewModel.user.user_id,
+                                                                );
+                                                              },
+                                                              shape: RoundedRectangleBorder(
+                                                                borderRadius: BorderRadius.circular(10),
+                                                              ),
                                                             ),
                                                           ),
-                                                        ),
-                                                      ],
+                                                          GestureDetector(
+                                                            child: ListTile(
+                                                              contentPadding: EdgeInsets.zero,
+                                                              title: Center(
+                                                                child: Text(
+                                                                  '${FleamarketStatus.forSale.korean}',
+                                                                  style: TextStyle(
+                                                                    fontSize: 15,
+                                                                    fontWeight: FontWeight.bold,
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                              onTap: () async {
+                                                                Navigator.pop(context);
+                                                                await _fleamarketDetailViewModel.updateStatus(
+                                                                  fleamarketId: _fleamarketDetailViewModel.fleamarketDetail.fleaId!,
+                                                                  body: {
+                                                                    "user_id": _userViewModel.user.user_id,
+                                                                    "status": '${FleamarketStatus.forSale.korean}',
+                                                                  },
+                                                                );
+                                                                await _fleamarketDetailViewModel.fetchFleamarketDetailFromAPI(
+                                                                  fleamarketId: _fleamarketDetailViewModel.fleamarketDetail.fleaId!,
+                                                                  userId: _userViewModel.user.user_id,
+                                                                );
+                                                              },
+                                                              shape: RoundedRectangleBorder(
+                                                                borderRadius: BorderRadius.circular(10),
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
                                                     ),
                                                   ),
                                                 );
@@ -1562,17 +1209,7 @@ class _FleaMarketDetailViewState extends State<FleaMarketDetailView> {
                                       mainAxisAlignment: MainAxisAlignment.center,  // Column을 가운데로 정렬
                                       children: [
                                         CircularProgressIndicator(
-                                          strokeWidth: 4.0, // 인디케이터의 두께를 조절
-                                        ),
-                                        SizedBox(
-                                          height: 20, // 인디케이터와 텍스트 사이의 간격
-                                        ),
-                                        Text(
-                                          '로딩 중...', // 텍스트 내용 변경
-                                          style: TextStyle(
-                                            fontSize: 13,
-                                            color: Color(0xFF666666),
-                                          ),
+                                          strokeWidth: 4.0
                                         ),
                                       ],
                                     ),
@@ -1631,7 +1268,7 @@ class _FleaMarketDetailViewState extends State<FleaMarketDetailView> {
                                                   ),
                                                 if(!document.secret! ||
                                                     (document.secret! && (document.userId == _userViewModel.user.user_id
-                                                    || _fleamarketDetailViewModel.fleamarketDetail.userId == _userViewModel.user.user_id)))
+                                                        || _fleamarketDetailViewModel.fleamarketDetail.userId == _userViewModel.user.user_id)))
                                                   Column(
                                                     children: [
                                                       Row(
@@ -1717,170 +1354,336 @@ class _FleaMarketDetailViewState extends State<FleaMarketDetailView> {
                                                                     GestureDetector(
                                                                       onTap: () => showModalBottomSheet(
                                                                         enableDrag: false,
+                                                                        isScrollControlled: true,
+                                                                        backgroundColor: Colors.transparent,
                                                                         context: context,
                                                                         builder: (context) {
                                                                           return SafeArea(
-                                                                            child: Container(
-                                                                              height: (_friendDetailViewModel.friendDetailModel.friendUserInfo.userId ==
-                                                                                  _userViewModel.user.user_id ||
-                                                                                  document.userInfo!.userId == _userViewModel.user.user_id)
-                                                                                  ? 200
-                                                                                  : 150,
-                                                                              child: Padding(
-                                                                                padding: const EdgeInsets.symmetric(
-                                                                                    horizontal: 20.0, vertical: 14),
-                                                                                child: Column(
+                                                                            child: Padding(
+                                                                              padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 20),
+                                                                              child: Container(
+                                                                                margin: EdgeInsets.only(
+                                                                                  left: 16,
+                                                                                  right: 16,
+                                                                                  top: 16,
+                                                                                ),
+                                                                                padding: EdgeInsets.all(16),
+                                                                                decoration: BoxDecoration(
+                                                                                  color: Colors.white,
+                                                                                  borderRadius: BorderRadius.circular(16),
+                                                                                ),
+                                                                                child: Wrap(
                                                                                   children: [
-                                                                                    if (_friendDetailViewModel.friendDetailModel
-                                                                                        .friendUserInfo.userId ==
-                                                                                        _userViewModel.user.user_id ||
-                                                                                        document.userInfo!.userId ==
-                                                                                            _userViewModel.user.user_id)
+                                                                                    if (_friendDetailViewModel.friendDetailModel.friendUserInfo.userId != _userViewModel.user.user_id && document.userInfo!.userId != _userViewModel.user.user_id)
+                                                                                      Column(
+                                                                                        children: [
+                                                                                          GestureDetector(
+                                                                                          child: ListTile(
+                                                                                            contentPadding: EdgeInsets.zero,
+                                                                                            title: Center(
+                                                                                              child: Text(
+                                                                                                '신고하기',
+                                                                                                style: SDSTextStyle.bold.copyWith(
+                                                                                                  fontSize: 15,
+                                                                                                  color: SDSColor.gray900
+                                                                                                ),
+                                                                                              ),
+                                                                                            ),
+                                                                                            onTap: () async {
+                                                                                              Get.dialog(
+                                                                                                  AlertDialog(
+                                                                                                    backgroundColor: SDSColor.snowliveWhite,
+                                                                                                    contentPadding: EdgeInsets.only(bottom: 0, left: 28, right: 28, top: 36),
+                                                                                                    elevation: 0,
+                                                                                                    shape: RoundedRectangleBorder(
+                                                                                                        borderRadius: BorderRadius.circular(16)),
+                                                                                                    buttonPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+                                                                                                    content: Container(
+                                                                                                      height: 80,
+                                                                                                      child: Column(
+                                                                                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                                                                                        children: [
+                                                                                                          Text(
+                                                                                                            '이 회원을 신고하시겠습니까?',
+                                                                                                            textAlign: TextAlign.center,
+                                                                                                            style: SDSTextStyle.bold.copyWith(
+                                                                                                                color: SDSColor.gray900,
+                                                                                                                fontSize: 16
+                                                                                                            ),
+                                                                                                          ),
+                                                                                                          SizedBox(
+                                                                                                            height: 6,
+                                                                                                          ),
+                                                                                                          Text(
+                                                                                                            '신고가 일정 횟수 이상 누적되면 해당 게시물이 삭제 처리됩니다',
+                                                                                                            textAlign: TextAlign.center,
+                                                                                                            style: SDSTextStyle.regular.copyWith(
+                                                                                                              color: SDSColor.gray500,
+                                                                                                              fontSize: 14,
+                                                                                                            ),
+                                                                                                          ),
+                                                                                                        ],
+                                                                                                      ),
+                                                                                                    ),
+                                                                                                    actions: [
+                                                                                                      Padding(
+                                                                                                        padding: EdgeInsets.only(top: 10, left: 16, right: 16),
+                                                                                                        child: Row(
+                                                                                                          children: [
+                                                                                                            Expanded(
+                                                                                                              child: Container(
+                                                                                                                child: TextButton(
+                                                                                                                    onPressed: () {
+                                                                                                                      Navigator.pop(context);
+                                                                                                                    },
+                                                                                                                    style: TextButton.styleFrom(
+                                                                                                                      backgroundColor: Colors.transparent, // 배경색 투명
+                                                                                                                      splashFactory: NoSplash.splashFactory, // 터치 시 효과 제거
+                                                                                                                    ),
+                                                                                                                    child: Text('취소',
+                                                                                                                      style: SDSTextStyle.bold.copyWith(
+                                                                                                                        fontSize: 17,
+                                                                                                                        color: SDSColor.gray500,
+                                                                                                                      ),
+                                                                                                                    )
+                                                                                                                ),
+                                                                                                              ),
+                                                                                                            ),
+                                                                                                            SizedBox(
+                                                                                                              width: 10,
+                                                                                                            ),
+                                                                                                            Expanded(
+                                                                                                              child: Container(
+                                                                                                                child: TextButton(
+                                                                                                                    onPressed: () async {
+
+                                                                                                                      Navigator.pop(context);
+                                                                                                                      Navigator.pop(context);
+                                                                                                                    },
+                                                                                                                    style: TextButton.styleFrom(
+                                                                                                                      backgroundColor: Colors.transparent, // 배경색 투명
+                                                                                                                      splashFactory: NoSplash.splashFactory, // 터치 시 효과 제거
+                                                                                                                    ),
+                                                                                                                    child: Text('신고하기',
+                                                                                                                      style: SDSTextStyle.bold.copyWith(
+                                                                                                                        fontSize: 17,
+                                                                                                                        color: SDSColor.snowliveBlue,
+                                                                                                                      ),
+                                                                                                                    )),
+                                                                                                              ),
+                                                                                                            )
+                                                                                                          ],
+                                                                                                          mainAxisAlignment: MainAxisAlignment.center,
+                                                                                                        ),
+                                                                                                      )
+                                                                                                    ],
+                                                                                                  )
+                                                                                              );
+                                                                                            },
+                                                                                          ),
+                                                                                          ),
+                                                                                          GestureDetector(
+                                                                                            child: ListTile(
+                                                                                              contentPadding: EdgeInsets.zero,
+                                                                                              title: Center(
+                                                                                                child: Text(
+                                                                                                  '이 회원의 모든 글 숨기기',
+                                                                                                  style: SDSTextStyle.bold.copyWith(
+                                                                                                      fontSize: 15,
+                                                                                                      color: SDSColor.gray900
+                                                                                                  ),
+                                                                                                ),
+                                                                                              ),
+                                                                                              //selected: _isSelected[index]!,
+                                                                                              onTap: () async {
+                                                                                                Get.dialog(
+                                                                                                    AlertDialog(
+                                                                                                      backgroundColor: SDSColor.snowliveWhite,
+                                                                                                      contentPadding: EdgeInsets.only(bottom: 0, left: 28, right: 28, top: 36),
+                                                                                                      elevation: 0,
+                                                                                                      shape: RoundedRectangleBorder(
+                                                                                                          borderRadius: BorderRadius.circular(16)),
+                                                                                                      buttonPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+                                                                                                      content: Container(
+                                                                                                        height: 80,
+                                                                                                        child: Column(
+                                                                                                          crossAxisAlignment: CrossAxisAlignment.center,
+                                                                                                          children: [
+                                                                                                            Text(
+                                                                                                              '이 회원의 모든 글을 숨기시겠습니까?',
+                                                                                                              textAlign: TextAlign.center,
+                                                                                                              style: SDSTextStyle.bold.copyWith(
+                                                                                                                  color: SDSColor.gray900,
+                                                                                                                  fontSize: 16
+                                                                                                              ),
+                                                                                                            ),
+                                                                                                            SizedBox(
+                                                                                                              height: 6,
+                                                                                                            ),
+                                                                                                            Text(
+                                                                                                              '차단해제는 [더보기 - 친구 - 설정 - 차단목록]에서 하실 수 있습니다.',
+                                                                                                              textAlign: TextAlign.center,
+                                                                                                              style: SDSTextStyle.regular.copyWith(
+                                                                                                                color: SDSColor.gray500,
+                                                                                                                fontSize: 14,
+                                                                                                              ),
+                                                                                                            ),
+                                                                                                          ],
+                                                                                                        ),
+                                                                                                      ),
+                                                                                                      actions: [
+                                                                                                        Padding(
+                                                                                                          padding: EdgeInsets.only(top: 10, left: 16, right: 16),
+                                                                                                          child: Row(
+                                                                                                            children: [
+                                                                                                              Expanded(
+                                                                                                                child: Container(
+                                                                                                                  child: TextButton(
+                                                                                                                      onPressed: () {
+                                                                                                                        Navigator.pop(context);
+                                                                                                                      },
+                                                                                                                      style: TextButton.styleFrom(
+                                                                                                                        backgroundColor: Colors.transparent, // 배경색 투명
+                                                                                                                        splashFactory: NoSplash.splashFactory, // 터치 시 효과 제거
+                                                                                                                      ),
+                                                                                                                      child: Text('취소',
+                                                                                                                        style: SDSTextStyle.bold.copyWith(
+                                                                                                                          fontSize: 17,
+                                                                                                                          color: SDSColor.gray500,
+                                                                                                                        ),
+                                                                                                                      )
+                                                                                                                  ),
+                                                                                                                ),
+                                                                                                              ),
+                                                                                                              SizedBox(
+                                                                                                                width: 10,
+                                                                                                              ),
+                                                                                                              Expanded(
+                                                                                                                child: Container(
+                                                                                                                  child: TextButton(
+                                                                                                                      onPressed: () async {
+
+                                                                                                                      },
+                                                                                                                      style: TextButton.styleFrom(
+                                                                                                                        backgroundColor: Colors.transparent, // 배경색 투명
+                                                                                                                        splashFactory: NoSplash.splashFactory, // 터치 시 효과 제거
+                                                                                                                      ),
+                                                                                                                      child: Text('신고하기',
+                                                                                                                        style: SDSTextStyle.bold.copyWith(
+                                                                                                                          fontSize: 17,
+                                                                                                                          color: SDSColor.snowliveBlue,
+                                                                                                                        ),
+                                                                                                                      )),
+                                                                                                                ),
+                                                                                                              )
+                                                                                                            ],
+                                                                                                            mainAxisAlignment: MainAxisAlignment.center,
+                                                                                                          ),
+                                                                                                        )
+                                                                                                      ],
+                                                                                                    )
+                                                                                                );
+                                                                                              },
+                                                                                              shape: RoundedRectangleBorder(
+                                                                                                  borderRadius: BorderRadius.circular(10)),
+                                                                                            ),
+                                                                                          )
+                                                                                        ],
+                                                                                      ),
+                                                                                    if (_friendDetailViewModel.friendDetailModel.friendUserInfo.userId == _userViewModel.user.user_id || document.userInfo!.userId == _userViewModel.user.user_id)
                                                                                       GestureDetector(
                                                                                         child: ListTile(
                                                                                           contentPadding: EdgeInsets.zero,
                                                                                           title: Center(
                                                                                             child: Text(
-                                                                                              '삭제',
-                                                                                              style: TextStyle(
+                                                                                              '삭제하기',
+                                                                                              style: SDSTextStyle.bold.copyWith(
                                                                                                 fontSize: 15,
-                                                                                                fontWeight: FontWeight.bold,
-                                                                                                color: Color(0xFFD63636),
+                                                                                                color: SDSColor.red,
                                                                                               ),
                                                                                             ),
                                                                                           ),
                                                                                           onTap: () async {
-                                                                                            Navigator.pop(context);
-                                                                                            showModalBottomSheet(
-                                                                                                context: context,
-                                                                                                builder: (context) {
-                                                                                                  return Container(
-                                                                                                    color: Colors.white,
-                                                                                                    height: 180,
-                                                                                                    child: Padding(
-                                                                                                      padding:
-                                                                                                      const EdgeInsets.symmetric(
-                                                                                                          horizontal: 20.0),
-                                                                                                      child: Column(
-                                                                                                        crossAxisAlignment:
-                                                                                                        CrossAxisAlignment.start,
-                                                                                                        mainAxisAlignment:
-                                                                                                        MainAxisAlignment.start,
-                                                                                                        children: [
-                                                                                                          SizedBox(height: 30),
-                                                                                                          Text(
-                                                                                                            '삭제하시겠습니까?',
-                                                                                                            style: TextStyle(
-                                                                                                                fontSize: 20,
-                                                                                                                fontWeight:
-                                                                                                                FontWeight.bold,
-                                                                                                                color:
-                                                                                                                Color(0xFF111111)),
+                                                                                            Get.dialog(
+                                                                                                AlertDialog(
+                                                                                                  backgroundColor: SDSColor.snowliveWhite,
+                                                                                                  contentPadding: EdgeInsets.only(bottom: 0, left: 28, right: 28, top: 36),
+                                                                                                  elevation: 0,
+                                                                                                  shape: RoundedRectangleBorder(
+                                                                                                      borderRadius: BorderRadius.circular(16)),
+                                                                                                  buttonPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+                                                                                                  content: Container(
+                                                                                                    height: 40,
+                                                                                                    child: Column(
+                                                                                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                                                                                      children: [
+                                                                                                        Text(
+                                                                                                          '이 글을 삭제하시겠어요?',
+                                                                                                          textAlign: TextAlign.center,
+                                                                                                          style: SDSTextStyle.bold.copyWith(
+                                                                                                              color: SDSColor.gray900,
+                                                                                                              fontSize: 16
                                                                                                           ),
-                                                                                                          SizedBox(height: 30),
-                                                                                                          Row(
-                                                                                                            mainAxisAlignment:
-                                                                                                            MainAxisAlignment
-                                                                                                                .spaceEvenly,
-                                                                                                            children: [
-                                                                                                              Expanded(
-                                                                                                                child:
-                                                                                                                ElevatedButton(
+                                                                                                        ),
+                                                                                                      ],
+                                                                                                    ),
+                                                                                                  ),
+                                                                                                  actions: [
+                                                                                                    Padding(
+                                                                                                      padding: EdgeInsets.only(top: 10, left: 16, right: 16),
+                                                                                                      child: Row(
+                                                                                                        children: [
+                                                                                                          Expanded(
+                                                                                                            child: Container(
+                                                                                                              child: TextButton(
                                                                                                                   onPressed: () {
-                                                                                                                    Navigator.pop(
-                                                                                                                        context);
+                                                                                                                    Navigator.pop(context);
                                                                                                                   },
-                                                                                                                  child: Text(
-                                                                                                                    '취소',
-                                                                                                                    style: TextStyle(
-                                                                                                                        color: Colors
-                                                                                                                            .white,
-                                                                                                                        fontSize: 15,
-                                                                                                                        fontWeight:
-                                                                                                                        FontWeight
-                                                                                                                            .bold),
-                                                                                                                  ),
                                                                                                                   style: TextButton.styleFrom(
-                                                                                                                      splashFactory:
-                                                                                                                      InkRipple
-                                                                                                                          .splashFactory,
-                                                                                                                      elevation: 0,
-                                                                                                                      minimumSize:
-                                                                                                                      Size(100,
-                                                                                                                          56),
-                                                                                                                      backgroundColor:
-                                                                                                                      Color(
-                                                                                                                          0xff555555),
-                                                                                                                      padding: EdgeInsets
-                                                                                                                          .symmetric(
-                                                                                                                          horizontal:
-                                                                                                                          0)),
-                                                                                                                ),
+                                                                                                                    backgroundColor: Colors.transparent, // 배경색 투명
+                                                                                                                    splashFactory: NoSplash.splashFactory, // 터치 시 효과 제거
+                                                                                                                  ),
+                                                                                                                  child: Text('취소',
+                                                                                                                    style: SDSTextStyle.bold.copyWith(
+                                                                                                                      fontSize: 17,
+                                                                                                                      color: SDSColor.gray500,
+                                                                                                                    ),
+                                                                                                                  )
                                                                                                               ),
-                                                                                                              SizedBox(width: 10),
-                                                                                                              Expanded(
-                                                                                                                child:
-                                                                                                                ElevatedButton(
-                                                                                                                  onPressed:
-                                                                                                                      () async {
-                                                                                                                    await _fleamarketDetailViewModel.deleteFleamarket(
-                                                                                                                        fleamarketId: _fleamarketDetailViewModel.fleamarketDetail.fleaId!,
-                                                                                                                        userId: _userViewModel.user.user_id);
+                                                                                                            ),
+                                                                                                          ),
+                                                                                                          SizedBox(
+                                                                                                            width: 10,
+                                                                                                          ),
+                                                                                                          Expanded(
+                                                                                                            child: Container(
+                                                                                                              child: TextButton(
+                                                                                                                  onPressed: () async {
+
                                                                                                                   },
-                                                                                                                  child: Text(
-                                                                                                                    '확인',
-                                                                                                                    style: TextStyle(
-                                                                                                                        color: Colors
-                                                                                                                            .white,
-                                                                                                                        fontSize: 15,
-                                                                                                                        fontWeight:
-                                                                                                                        FontWeight
-                                                                                                                            .bold),
-                                                                                                                  ),
                                                                                                                   style: TextButton.styleFrom(
-                                                                                                                      splashFactory:
-                                                                                                                      InkRipple
-                                                                                                                          .splashFactory,
-                                                                                                                      elevation: 0,
-                                                                                                                      minimumSize:
-                                                                                                                      Size(100,
-                                                                                                                          56),
-                                                                                                                      backgroundColor:
-                                                                                                                      Color(
-                                                                                                                          0xff2C97FB),
-                                                                                                                      padding: EdgeInsets
-                                                                                                                          .symmetric(
-                                                                                                                          horizontal:
-                                                                                                                          0)),
-                                                                                                                ),
-                                                                                                              ),
-                                                                                                            ],
+                                                                                                                    backgroundColor: Colors.transparent, // 배경색 투명
+                                                                                                                    splashFactory: NoSplash.splashFactory, // 터치 시 효과 제거
+                                                                                                                  ),
+                                                                                                                  child: Text('삭제하기',
+                                                                                                                    style: SDSTextStyle.bold.copyWith(
+                                                                                                                      fontSize: 17,
+                                                                                                                      color: SDSColor.red,
+                                                                                                                    ),
+                                                                                                                  )),
+                                                                                                            ),
                                                                                                           )
                                                                                                         ],
+                                                                                                        mainAxisAlignment: MainAxisAlignment.center,
                                                                                                       ),
-                                                                                                    ),
-                                                                                                  );
-                                                                                                });
+                                                                                                    )
+                                                                                                  ],
+                                                                                                )
+                                                                                            );
                                                                                           },
                                                                                         ),
                                                                                       ),
-                                                                                    GestureDetector(
-                                                                                      child: ListTile(
-                                                                                        contentPadding: EdgeInsets.zero,
-                                                                                        title: Center(
-                                                                                          child: Text(
-                                                                                            '신고하기',
-                                                                                            style: TextStyle(
-                                                                                              fontSize: 15,
-                                                                                              fontWeight: FontWeight.bold,
-                                                                                            ),
-                                                                                          ),
-                                                                                        ),
-                                                                                        onTap: () async {
-                                                                                          // 신고 기능 처리
-                                                                                        },
-                                                                                      ),
-                                                                                    ),
+
                                                                                   ],
                                                                                 ),
                                                                               ),
@@ -1890,7 +1693,7 @@ class _FleaMarketDetailViewState extends State<FleaMarketDetailView> {
                                                                       ),
                                                                       child: Icon(
                                                                         Icons.more_horiz,
-                                                                        color: Color(0xFFdedede),
+                                                                        color: SDSColor.gray200,
                                                                         size: 20,
                                                                       ),
                                                                     ),
@@ -1915,7 +1718,7 @@ class _FleaMarketDetailViewState extends State<FleaMarketDetailView> {
                                                                           width: _size.width - 72,
                                                                           child: Text(
                                                                             document.content!,
-                                                                            style: TextStyle(
+                                                                            style: SDSTextStyle.regular.copyWith(
                                                                               fontSize: 14,
                                                                               color: SDSColor.gray900,
                                                                             ),
@@ -2031,8 +1834,8 @@ class _FleaMarketDetailViewState extends State<FleaMarketDetailView> {
                                 decoration: BoxDecoration(
                                   color:
                                   (_fleamarketDetailViewModel.isSecret == true)
-                                      ? Color(0xFFCBE0FF)
-                                      : Color(0xFFECECEC),
+                                      ? SDSColor.blue100
+                                      : SDSColor.gray50,
                                   borderRadius: BorderRadius.circular(30),
                                 ),
                                 child: Padding(
@@ -2090,7 +1893,7 @@ class _FleaMarketDetailViewState extends State<FleaMarketDetailView> {
                                       });
                                       await _fleamarketDetailViewModel.fetchFleamarketComments(
                                           fleaId: _fleamarketDetailViewModel.fleamarketDetail.fleaId!,
-                                          userId: _fleamarketDetailViewModel.fleamarketDetail.userId!,
+                                          userId: _userViewModel.user.user_id,
                                           isLoading_indi: true
                                       );
                                       FocusScope.of(context).unfocus();

@@ -450,10 +450,7 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                                         ),
                                       ),
                                     )
-                                        : SingleChildScrollView(
-                                      child: Padding(
-                                        padding: const EdgeInsets.symmetric(horizontal: 10),
-                                        child: Wrap(
+                                        : Wrap(
                                           alignment: WrapAlignment.start,
                                           runSpacing: 28, // 아이템 간의 세로 간격
                                           children: List.generate(_resortHomeViewModel.bestFriendList.length, (index) {
@@ -468,7 +465,7 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                                                 );
                                               },
                                               child: Container(
-                                                width: (MediaQuery.of(context).size.width - 14 * 5) / 4, // 화면 너비를 4등분
+                                                width: (_size.width - 40) / 4, // 화면 너비를 4등분
                                                 margin: const EdgeInsets.only(bottom: 28), // 각 아이템의 아래 여백
                                                 child: Column(
                                                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -601,12 +598,10 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                                             );
                                           }),
                                         ),
-                                      ),
-                                    ),
                                   ),
                                   SafeArea(
                                     child: Container(
-                                      width: MediaQuery.of(context).size.width,
+                                      width: _size.width,
                                       padding: EdgeInsets.only(top: 16, bottom: 20),
                                       child: ElevatedButton(
                                         onPressed: () async {
@@ -1522,7 +1517,7 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                                       ),
                                     if(_resortHomeViewModel.resortHomeModel.dailyTotalCount == 0 && _userViewModel.user.within_boundary == false)
                                       Container(
-                                        height: _size.height - 510,
+                                        height: _size.width,
                                         decoration: BoxDecoration(
                                           color: Color(0xFFF5F2F7),
                                           borderRadius: BorderRadius.circular(10),
