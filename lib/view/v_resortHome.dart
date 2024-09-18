@@ -402,10 +402,15 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                       isScrollControlled: true,
                       builder: (context) {
                         return Obx(() => DraggableScrollableSheet(
-                          initialChildSize: _resortHomeViewModel.initialHeightFriend > 0.4
-                              ? _resortHomeViewModel.initialHeightFriend
-                              : 0.4, // Ensure this value is at least equal to minChildSize
-                          minChildSize: 0.4,
+                          initialChildSize:
+                          (_resortHomeViewModel.bestFriendList.length > 12)
+                              ? 0.88
+                          : (_resortHomeViewModel.bestFriendList.length > 8)
+                              ? 0.76
+                              : (_resortHomeViewModel.bestFriendList.length > 4)
+                              ? 0.6
+                              : 0.44,
+                          minChildSize: 0.44,
                           maxChildSize: 0.88,
                           expand: false,
                           builder: (context, scrollController) {
@@ -452,7 +457,6 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                                     )
                                         : Wrap(
                                           alignment: WrapAlignment.start,
-                                          runSpacing: 28, // 아이템 간의 세로 간격
                                           children: List.generate(_resortHomeViewModel.bestFriendList.length, (index) {
                                             var BFdoc = _resortHomeViewModel.bestFriendList[index];
                                             return GestureDetector(
@@ -466,7 +470,6 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                                               },
                                               child: Container(
                                                 width: (_size.width - 40) / 4, // 화면 너비를 4등분
-                                                margin: const EdgeInsets.only(bottom: 28), // 각 아이템의 아래 여백
                                                 child: Column(
                                                   crossAxisAlignment: CrossAxisAlignment.center,
                                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
