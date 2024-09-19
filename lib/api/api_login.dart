@@ -16,7 +16,6 @@ class LoginAPI {
       final data = json.decode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
       return ApiResponse.success(data);
     } else{
-    print(response.statusCode);
       final data = json.decode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
       return ApiResponse.error(data);
     }
