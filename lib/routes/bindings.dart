@@ -41,6 +41,7 @@ class MainHomeBinding extends Bindings {
     Get.put(FriendDetailViewModel(),permanent: true);
     Get.put(FleamarketListViewModel(),permanent: true);
     Get.put(FleamarketDetailViewModel(),permanent: true);
+    Get.put(FleamarketUpdateViewModel(),permanent: true);
     Get.put(ImageController(),permanent: true);
     Get.put(FriendListViewModel(),permanent: true);
     Get.put(RankingListViewModel(), permanent: true);
@@ -86,7 +87,6 @@ class SetProfileBinding extends Bindings {
 class FriendListBinding extends Bindings {
   @override
   void dependencies() {
-    Get.put(FriendDetailUpdateViewModel(),);
   }
 }
 
