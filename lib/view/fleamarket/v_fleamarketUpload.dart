@@ -6,6 +6,7 @@ import 'package:com.snowlive/viewmodel/vm_user.dart';
 import 'package:com.snowlive/widget/w_category_main_fleamarket.dart';
 import 'package:com.snowlive/widget/w_category_sub_board_fleamarket.dart';
 import 'package:com.snowlive/widget/w_category_sub_ski_fleamarket.dart';
+import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 import 'package:com.snowlive/widget/w_tradeMethod_fleamarket.dart';
 import 'package:com.snowlive/widget/w_tradeSpot_fleamarket.dart';
 import 'package:extended_image/extended_image.dart';
@@ -996,8 +997,7 @@ class FleamarketUploadView extends StatelessWidget {
                                   "sns_url": _fleamarketUploadViewModel.textEditingController_sns.text,
                                   "title": _fleamarketUploadViewModel.textEditingController_title.text,
                                   "description": _fleamarketUploadViewModel.textEditingController_desc.text,
-                                },
-                                []
+                                }
                             );
                             await _fleamarketUploadViewModel.getImageUrlList(
                                 newImages: _fleamarketUploadViewModel.imageFiles,

@@ -92,7 +92,7 @@ class SetCrewViewModel extends GetxController {
 
   // 리조트 선택
   void selectResort(int selectedIndex) {
-    _selectedResortIndex.value = selectedIndex;
+    _selectedResortIndex.value = selectedIndex + 1;
     _selectedResortName.value = resortNameList[selectedIndex]!;
     updateNextButtonState();
   }

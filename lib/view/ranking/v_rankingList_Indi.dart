@@ -182,6 +182,44 @@ class RankingIndiView extends StatelessWidget {
                                       children: [
                                         ElevatedButton(
                                             onPressed: () async {
+                                              _rankingListViewModel.changeCategory_resort('${RankingFilter_resort.initial.korean}');
+                                              _rankingListViewModel.changeResortOrTotal('전체스키장');
+                                              _rankingListViewModel.changeResortNum(99);
+                                              await _rankingListViewModel.toggleDataDayOrTotal();
+                                            },
+                                            style: ElevatedButton.styleFrom(
+                                                padding: EdgeInsets.only(
+                                                    right: 32, left: 12, top: 3, bottom: 2),
+                                                side: BorderSide(
+                                                  width: 1,
+                                                  color: (_rankingListViewModel.resortOrTotal == '전체스키장') ? SDSColor.gray900 : SDSColor.gray100,
+                                                ),
+                                                backgroundColor: (_rankingListViewModel.resortOrTotal == '전체스키장') ? SDSColor.gray900 : SDSColor.snowliveWhite,
+                                                elevation: 0,
+                                                shape: RoundedRectangleBorder(
+                                                    borderRadius: BorderRadius.circular(50))),
+                                            child:
+                                            Text('${RankingFilter_resort.total.korean}',
+                                                style: SDSTextStyle.bold.copyWith(
+                                                    fontSize: 13,
+                                                    color: (_rankingListViewModel.resortOrTotal == '전체스키장') ? Color(0xFFFFFFFF) : Color(0xFF111111)))
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.only(top: 16, bottom: 8),
+                              child: Row(
+                                children: [
+                                  Padding(
+                                    padding: EdgeInsets.only(right: 8),
+                                    child: Stack(
+                                      children: [
+                                        ElevatedButton(
+                                            onPressed: () async {
                                               showModalBottomSheet(
                                                   enableDrag: false,
                                                   isScrollControlled: true,
@@ -834,44 +872,6 @@ class RankingIndiView extends StatelessWidget {
                                               height: 16,
                                             ),
                                           ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Padding(
-                              padding: EdgeInsets.only(top: 16, bottom: 8),
-                              child: Row(
-                                children: [
-                                  Padding(
-                                    padding: EdgeInsets.only(right: 8),
-                                    child: Stack(
-                                      children: [
-                                        ElevatedButton(
-                                            onPressed: () async {
-                                              _rankingListViewModel.changeCategory_resort('${RankingFilter_resort.initial.korean}');
-                                              _rankingListViewModel.changeResortOrTotal('전체스키장');
-                                              _rankingListViewModel.changeResortNum(99);
-                                              await _rankingListViewModel.toggleDataDayOrTotal();
-                                            },
-                                            style: ElevatedButton.styleFrom(
-                                                padding: EdgeInsets.only(
-                                                    right: 32, left: 12, top: 3, bottom: 2),
-                                                side: BorderSide(
-                                                  width: 1,
-                                                  color: (_rankingListViewModel.resortOrTotal == '전체스키장') ? SDSColor.gray900 : SDSColor.gray100,
-                                                ),
-                                                backgroundColor: (_rankingListViewModel.resortOrTotal == '전체스키장') ? SDSColor.gray900 : SDSColor.snowliveWhite,
-                                                elevation: 0,
-                                                shape: RoundedRectangleBorder(
-                                                    borderRadius: BorderRadius.circular(50))),
-                                            child:
-                                            Text('${RankingFilter_resort.total.korean}',
-                                                style: SDSTextStyle.bold.copyWith(
-                                                    fontSize: 13,
-                                                    color: (_rankingListViewModel.resortOrTotal == '전체스키장') ? Color(0xFFFFFFFF) : Color(0xFF111111)))
                                         ),
                                       ],
                                     ),

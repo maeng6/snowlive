@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:com.snowlive/data/snowliveDesignStyle.dart';
+import 'package:com.snowlive/util/util_1.dart';
 import 'package:com.snowlive/viewmodel/fleamarket/vm_fleamarketDetail.dart';
 import 'package:com.snowlive/viewmodel/fleamarket/vm_fleamarketList.dart';
 import 'package:com.snowlive/viewmodel/fleamarket/vm_fleamarketUpdate.dart';
@@ -1097,6 +1098,8 @@ class FleamarketUpdateView extends StatelessWidget {
                                 && _fleamarketUpdateViewModel.selectedTradeMethod != '거래방법 선택'
                                 && _fleamarketUpdateViewModel.selectedTradeSpot != '거래장소 선택'
                                 && _fleamarketUpdateViewModel.textEditingController_desc.text != ''){
+                            await deleteFolder('fleamarket',_fleamarketDetailViewModel.fleamarketDetail.fleaId.toString());
+
                             await _fleamarketUpdateViewModel.getImageUrlList(
                                 newImages: _fleamarketUpdateViewModel.imageFiles,
                                 pk: _fleamarketDetailViewModel.fleamarketDetail.fleaId);

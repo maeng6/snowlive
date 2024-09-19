@@ -38,7 +38,7 @@ class RankingListViewModel extends GetxController {
 
 
   RxString _tapName = '개인랭킹'.obs;
-  RxString _dayOrTotal = '일간'.obs;
+  RxString _dayOrTotal = '누적'.obs;
   RxString _resortOrTotal = '전체스키장'.obs;
   RxString _selectedCategory_resort = '스키장별 랭킹'.obs;
   RxInt _selectedResortNum = 99.obs;
@@ -98,19 +98,23 @@ class RankingListViewModel extends GetxController {
   void onInit() async{
     super.onInit();
 
+    await fetchRankingDataIndiv_total(userId: _userViewModel.user.user_id);
+    _rankingListIndivList_view.value =_rankingListIndivList_total;
+    _rankingListIndivMy_view.value = _rankingListIndivMy_total.value;
+
+    await fetchRankingDataCrew_total(userId: _userViewModel.user.user_id);
+    _rankingListCrewList_view.value =_rankingListCrewList_total;
+    _rankingListCrewMy_view.value = _rankingListCrewMy_total.value;
+
     await fetchRankingDataIndiv_total_daily(userId: _userViewModel.user.user_id,daily: true);
-    _rankingListIndivList_view.value =_rankingListIndivList_total_daily;
-    _rankingListIndivMy_view.value = _rankingListIndivMy_total_daily.value;
+    await fetchRankingDataCrew_total_daily(userId: _userViewModel.user.user_id,daily: true);
+
     await fetchRankingDataIndiv_resort_daily(userId: _userViewModel.user.user_id, resortId: _userViewModel.user.favorite_resort,daily: true);
     await fetchRankingDataIndiv_resort(userId: _userViewModel.user.user_id, resortId: _userViewModel.user.favorite_resort);
-    await fetchRankingDataIndiv_total(userId: _userViewModel.user.user_id);
 
-    await fetchRankingDataCrew_total_daily(userId: _userViewModel.user.user_id,daily: true);
-    _rankingListCrewList_view.value =_rankingListCrewList_resort_daily;
-    _rankingListCrewMy_view.value = _rankingListCrewMy_resort_daily.value;
     await fetchRankingDataCrew_resort_daily(userId: _userViewModel.user.user_id,resortId: _userViewModel.user.favorite_resort,daily: true);
     await fetchRankingDataCrew_resort(userId: _userViewModel.user.user_id,resortId: _userViewModel.user.favorite_resort);
-    await fetchRankingDataCrew_total(userId: _userViewModel.user.user_id);
+
 
     scrollController_indiv = ScrollController()
       ..addListener(_scrollListener_indiv);
@@ -507,6 +511,7 @@ class RankingListViewModel extends GetxController {
     String? season,
     String? url, // URL 추가
   }) async {
+    print('fetchRankingDataCrew_total 시작');
     try {
       isLoading(true);
       final response = await RankingAPI().fetchRankingData_crew(
@@ -537,6 +542,7 @@ class RankingListViewModel extends GetxController {
     } finally {
       isLoading(false);
     }
+    print('fetchRankingDataCrew_total 끝');
   }
 
   Future<void> fetchRankingDataCrew_resort({
@@ -546,6 +552,7 @@ class RankingListViewModel extends GetxController {
     String? season,
     String? url, // URL 추가
   }) async {
+    print('fetchRankingDataCrew_resort 시작');
     try {
       isLoading(true);
       final response = await RankingAPI().fetchRankingData_crew(
@@ -576,6 +583,7 @@ class RankingListViewModel extends GetxController {
     } finally {
       isLoading(false);
     }
+    print('fetchRankingDataCrew_resort 끝');
   }
 
 
@@ -586,6 +594,7 @@ class RankingListViewModel extends GetxController {
     String? season,
     String? url, // URL 추가
   }) async {
+    print('fetchRankingDataCrew_total_daily 시작');
     try {
       isLoading(true);
       final response = await RankingAPI().fetchRankingData_crew(
@@ -616,6 +625,7 @@ class RankingListViewModel extends GetxController {
     } finally {
       isLoading(false);
     }
+    print('fetchRankingDataCrew_total_daily 끝');
   }
 
   Future<void> fetchRankingDataCrew_resort_daily({
@@ -625,6 +635,7 @@ class RankingListViewModel extends GetxController {
     String? season,
     String? url, // URL 추가
   }) async {
+    print('fetchRankingDataCrew_resort_daily 시작');
     try {
       isLoading(true);
       final response = await RankingAPI().fetchRankingData_crew(
@@ -655,6 +666,7 @@ class RankingListViewModel extends GetxController {
     } finally {
       isLoading(false);
     }
+    print('fetchRankingDataCrew_resort_daily 끝');
   }
 
   void changeCategory_resort(value) {

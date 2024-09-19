@@ -5,13 +5,13 @@ import 'ApiResponse.dart';
 class FleamarketAPI {
   static const String baseUrl = 'https://snowlive-api-0eab29705c9f.herokuapp.com/api/fleamarket';
 
-  Future<ApiResponse> uploadFleamarket(Map<String, dynamic> body, List<Map<String, dynamic>> photos) async {
-    body['photos'] = photos;
+  Future<ApiResponse> uploadFleamarket(Map<String, dynamic> body) async {
     final response = await http.post(
       Uri.parse('$baseUrl/'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode(body),
     );
+
     if(response.statusCode==201){
       final data = json.decode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
       return ApiResponse.success(data);
