@@ -319,7 +319,7 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
             child: AppBar(
               actions: [
                 IconButton(
-                highlightColor: Colors.transparent,
+                  highlightColor: Colors.transparent,
                   onPressed: () async{
                     showModalBottomSheet(
                       context: context,
@@ -335,8 +335,8 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                         builder: (BuildContext context, ScrollController scrollController) {
                           return Container(
                             decoration: BoxDecoration(
-                              color: SDSColor.snowliveWhite,
-                              borderRadius: BorderRadius.only(topRight: Radius.circular(20), topLeft: Radius.circular(20))
+                                color: SDSColor.snowliveWhite,
+                                borderRadius: BorderRadius.only(topRight: Radius.circular(20), topLeft: Radius.circular(20))
                             ),
                             padding: EdgeInsets.only(top: 16),
                             child: Column(
@@ -401,234 +401,237 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                       isScrollControlled: true,
                       builder: (context) {
                         return Obx(() => DraggableScrollableSheet(
-                          initialChildSize: _resortHomeViewModel.initialHeightFriend > 0.4
-                              ? _resortHomeViewModel.initialHeightFriend
-                              : 0.4, // Ensure this value is at least equal to minChildSize
-                          minChildSize: 0.4,
+                          initialChildSize:
+                          (_resortHomeViewModel.bestFriendList.length > 12)
+                              ? 0.88
+                              : (_resortHomeViewModel.bestFriendList.length > 8)
+                              ? 0.76
+                              : (_resortHomeViewModel.bestFriendList.length > 4)
+                              ? 0.6
+                              : 0.44,
+                          minChildSize: 0.44,
                           maxChildSize: 0.88,
                           expand: false,
                           builder: (context, scrollController) {
                             return Container(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.only(topLeft: Radius.circular(16), topRight: Radius.circular(16)),
-                                color: SDSColor.snowliveWhite,
-                              ),
-                              padding: EdgeInsets.only(right: 20, left: 20, top: 12),
-                              child: Obx(()=>Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Center(
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(bottom: 20),
-                                      child: Container(
-                                        height: 4,
-                                        width: 36,
-                                        decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(10),
-                                          color: SDSColor.gray200,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  Center(
-                                    child: Text(
-                                      '라이브중인 친구',
-                                      style: SDSTextStyle.bold.copyWith(fontSize: 16, color: SDSColor.gray900),
-                                    ),
-                                  ),
-                                  SizedBox(height: 24),
-                                  Expanded(
-                                    child: _resortHomeViewModel.bestFriendList.isEmpty
-                                        ? Center(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.only(topLeft: Radius.circular(16), topRight: Radius.circular(16)),
+                                  color: SDSColor.snowliveWhite,
+                                ),
+                                padding: EdgeInsets.only(right: 20, left: 20, top: 12),
+                                child: Obx(()=>Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Center(
                                       child: Padding(
-                                        padding: const EdgeInsets.only(bottom: 24),
-                                        child: Text(
-                                          '친구 관리로 이동해 즐겨찾는 친구를 등록해 주세요.\n라이브중인 친구를 바로 확인하실 수 있어요.',
-                                          style: SDSTextStyle.regular.copyWith(fontSize: 14, color: SDSColor.gray500, height: 1.4),
-                                          textAlign: TextAlign.center,
+                                        padding: const EdgeInsets.only(bottom: 20),
+                                        child: Container(
+                                          height: 4,
+                                          width: 36,
+                                          decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.circular(10),
+                                            color: SDSColor.gray200,
+                                          ),
                                         ),
                                       ),
-                                    )
-                                        : Wrap(
-                                          alignment: WrapAlignment.start,
-                                          runSpacing: 28, // 아이템 간의 세로 간격
-                                          children: List.generate(_resortHomeViewModel.bestFriendList.length, (index) {
-                                            var BFdoc = _resortHomeViewModel.bestFriendList[index];
-                                            return GestureDetector(
-                                              onTap: () async {
-                                                Get.toNamed(AppRoutes.friendDetail);
-                                                await _friendDetailViewModel.fetchFriendDetailInfo(
-                                                  userId: _userViewModel.user.user_id,
-                                                  friendUserId: BFdoc.friendInfo.userId,
-                                                  season: _friendDetailViewModel.seasonDate,
-                                                );
-                                              },
-                                              child: Container(
-                                                width: (_size.width - 40) / 4, // 화면 너비를 4등분
-                                                margin: const EdgeInsets.only(bottom: 28), // 각 아이템의 아래 여백
-                                                child: Column(
-                                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                  children: [
-                                                    Stack(
-                                                      children: [
-                                                        Container(
-                                                          width: 68,
-                                                          height: 68,
-                                                          decoration: BoxDecoration(
-                                                            borderRadius: BorderRadius.circular(100),
-                                                            border: (BFdoc.friendInfo.withinBoundary == true &&
-                                                                BFdoc.friendInfo.revealWb == true)
-                                                                ? Border.all(
-                                                              color: SDSColor.snowliveBlue,
-                                                              width: 2,
-                                                            )
-                                                                : Border.all(
-                                                              color: SDSColor.gray100,
-                                                              width: 1,
-                                                            ),
-                                                          ),
-                                                          alignment: Alignment.center,
-                                                          child: BFdoc.friendInfo.profileImageUrlUser.isNotEmpty
-                                                              ? ExtendedImage.network(
-                                                            BFdoc.friendInfo.profileImageUrlUser,
-                                                            enableMemoryCache: true,
-                                                            shape: BoxShape.circle,
-                                                            borderRadius: BorderRadius.circular(100),
-                                                            width: 68,
-                                                            height: 68,
-                                                            fit: BoxFit.cover,
-                                                            loadStateChanged: (ExtendedImageState state) {
-                                                              switch (state.extendedImageLoadState) {
-                                                                case LoadState.loading:
-                                                                  return SizedBox.shrink();
-                                                                case LoadState.completed:
-                                                                  return state.completedWidget;
-                                                                case LoadState.failed:
-                                                                  return ExtendedImage.asset(
-                                                                    'assets/imgs/profile/img_profile_default_circle.png',
-                                                                    shape: BoxShape.circle,
-                                                                    borderRadius: BorderRadius.circular(100),
-                                                                    width: 68,
-                                                                    height: 68,
-                                                                    fit: BoxFit.cover,
-                                                                  );
-                                                                default:
-                                                                  return null;
-                                                              }
-                                                            },
+                                    ),
+                                    Center(
+                                      child: Text(
+                                        '라이브중인 친구',
+                                        style: SDSTextStyle.bold.copyWith(fontSize: 16, color: SDSColor.gray900),
+                                      ),
+                                    ),
+                                    SizedBox(height: 24),
+                                    Expanded(
+                                      child: _resortHomeViewModel.bestFriendList.isEmpty
+                                          ? Center(
+                                        child: Padding(
+                                          padding: const EdgeInsets.only(bottom: 24),
+                                          child: Text(
+                                            '친구 관리로 이동해 즐겨찾는 친구를 등록해 주세요.\n라이브중인 친구를 바로 확인하실 수 있어요.',
+                                            style: SDSTextStyle.regular.copyWith(fontSize: 14, color: SDSColor.gray500, height: 1.4),
+                                            textAlign: TextAlign.center,
+                                          ),
+                                        ),
+                                      )
+                                          : Wrap(
+                                        alignment: WrapAlignment.start,
+                                        children: List.generate(_resortHomeViewModel.bestFriendList.length, (index) {
+                                          var BFdoc = _resortHomeViewModel.bestFriendList[index];
+                                          return GestureDetector(
+                                            onTap: () async {
+                                              Get.toNamed(AppRoutes.friendDetail);
+                                              await _friendDetailViewModel.fetchFriendDetailInfo(
+                                                userId: _userViewModel.user.user_id,
+                                                friendUserId: BFdoc.friendInfo.userId,
+                                                season: _friendDetailViewModel.seasonDate,
+                                              );
+                                            },
+                                            child: Container(
+                                              width: (_size.width - 40) / 4, // 화면 너비를 4등분
+                                              child: Column(
+                                                crossAxisAlignment: CrossAxisAlignment.center,
+                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                children: [
+                                                  Stack(
+                                                    children: [
+                                                      Container(
+                                                        width: 68,
+                                                        height: 68,
+                                                        decoration: BoxDecoration(
+                                                          borderRadius: BorderRadius.circular(100),
+                                                          border: (BFdoc.friendInfo.withinBoundary == true &&
+                                                              BFdoc.friendInfo.revealWb == true)
+                                                              ? Border.all(
+                                                            color: SDSColor.snowliveBlue,
+                                                            width: 2,
                                                           )
-                                                              : ExtendedImage.asset(
-                                                            'assets/imgs/profile/img_profile_default_circle.png',
-                                                            enableMemoryCache: true,
-                                                            shape: BoxShape.circle,
-                                                            borderRadius: BorderRadius.circular(100),
-                                                            width: 68,
-                                                            height: 68,
-                                                            fit: BoxFit.cover,
+                                                              : Border.all(
+                                                            color: SDSColor.gray100,
+                                                            width: 1,
                                                           ),
                                                         ),
-                                                        if (BFdoc.friendInfo.withinBoundary == true &&
-                                                            BFdoc.friendInfo.revealWb == true)
-                                                          Positioned(
-                                                            right: 0,
-                                                            bottom: 0,
-                                                            left: 0,
-                                                            child: Center(
-                                                              child: Image.asset(
-                                                                'assets/imgs/icons/icon_badge_live.png',
-                                                                width: 34,
-                                                              ),
+                                                        alignment: Alignment.center,
+                                                        child: BFdoc.friendInfo.profileImageUrlUser.isNotEmpty
+                                                            ? ExtendedImage.network(
+                                                          BFdoc.friendInfo.profileImageUrlUser,
+                                                          enableMemoryCache: true,
+                                                          shape: BoxShape.circle,
+                                                          borderRadius: BorderRadius.circular(100),
+                                                          width: 68,
+                                                          height: 68,
+                                                          fit: BoxFit.cover,
+                                                          loadStateChanged: (ExtendedImageState state) {
+                                                            switch (state.extendedImageLoadState) {
+                                                              case LoadState.loading:
+                                                                return SizedBox.shrink();
+                                                              case LoadState.completed:
+                                                                return state.completedWidget;
+                                                              case LoadState.failed:
+                                                                return ExtendedImage.asset(
+                                                                  'assets/imgs/profile/img_profile_default_circle.png',
+                                                                  shape: BoxShape.circle,
+                                                                  borderRadius: BorderRadius.circular(100),
+                                                                  width: 68,
+                                                                  height: 68,
+                                                                  fit: BoxFit.cover,
+                                                                );
+                                                              default:
+                                                                return null;
+                                                            }
+                                                          },
+                                                        )
+                                                            : ExtendedImage.asset(
+                                                          'assets/imgs/profile/img_profile_default_circle.png',
+                                                          enableMemoryCache: true,
+                                                          shape: BoxShape.circle,
+                                                          borderRadius: BorderRadius.circular(100),
+                                                          width: 68,
+                                                          height: 68,
+                                                          fit: BoxFit.cover,
+                                                        ),
+                                                      ),
+                                                      if (BFdoc.friendInfo.withinBoundary == true &&
+                                                          BFdoc.friendInfo.revealWb == true)
+                                                        Positioned(
+                                                          right: 0,
+                                                          bottom: 0,
+                                                          left: 0,
+                                                          child: Center(
+                                                            child: Image.asset(
+                                                              'assets/imgs/icons/icon_badge_live.png',
+                                                              width: 34,
                                                             ),
                                                           ),
-                                                      ],
-                                                    ),
-                                                    SizedBox(height: 6),
-                                                    Container(
-                                                      width: 72,
-                                                      child: Text(
-                                                        BFdoc.friendInfo.displayName,
-                                                        overflow: TextOverflow.ellipsis,
-                                                        textAlign: TextAlign.center,
-                                                        style: TextStyle(
+                                                        ),
+                                                    ],
+                                                  ),
+                                                  SizedBox(height: 6),
+                                                  Container(
+                                                    width: 72,
+                                                    child: Text(
+                                                      BFdoc.friendInfo.displayName,
+                                                      overflow: TextOverflow.ellipsis,
+                                                      textAlign: TextAlign.center,
+                                                      style: TextStyle(
                                                           fontSize: 12,
                                                           fontWeight: FontWeight.normal,
                                                           color: SDSColor.gray900
-                                                        ),
                                                       ),
                                                     ),
-                                                    SizedBox(height: 6),
-                                                    Row(
-                                                      mainAxisAlignment: MainAxisAlignment.center,
-                                                      children: [
-                                                        Flexible(
-                                                          child: Text(
-                                                            (BFdoc.friendInfo.lastPassSlope == null)
-                                                                ? ''
-                                                                : '${BFdoc.friendInfo.lastPassSlope}',
-                                                            overflow: TextOverflow.ellipsis,
-                                                            textAlign: TextAlign.center,
-                                                            style: TextStyle(
-                                                                fontSize: 12,
-                                                                fontWeight: FontWeight.normal,
-                                                                color: SDSColor.gray500
-                                                            ),
+                                                  ),
+                                                  SizedBox(height: 6),
+                                                  Row(
+                                                    mainAxisAlignment: MainAxisAlignment.center,
+                                                    children: [
+                                                      Flexible(
+                                                        child: Text(
+                                                          (BFdoc.friendInfo.lastPassSlope == null)
+                                                              ? ''
+                                                              : '${BFdoc.friendInfo.lastPassSlope}',
+                                                          overflow: TextOverflow.ellipsis,
+                                                          textAlign: TextAlign.center,
+                                                          style: TextStyle(
+                                                              fontSize: 12,
+                                                              fontWeight: FontWeight.normal,
+                                                              color: SDSColor.gray500
                                                           ),
                                                         ),
-                                                        Flexible(
-                                                          child: Text(
-                                                            (BFdoc.friendInfo.lastPassTime == null)
-                                                                ? ''
-                                                                : ' · ${GetDatetime().getAgoString(BFdoc.friendInfo.lastPassTime!)}',
-                                                            overflow: TextOverflow.ellipsis,
-                                                            textAlign: TextAlign.center,
-                                                            style: TextStyle(
-                                                                fontSize: 12,
-                                                                fontWeight: FontWeight.normal,
-                                                                color: SDSColor.gray500
-                                                            ),
+                                                      ),
+                                                      Flexible(
+                                                        child: Text(
+                                                          (BFdoc.friendInfo.lastPassTime == null)
+                                                              ? ''
+                                                              : ' · ${GetDatetime().getAgoString(BFdoc.friendInfo.lastPassTime!)}',
+                                                          overflow: TextOverflow.ellipsis,
+                                                          textAlign: TextAlign.center,
+                                                          style: TextStyle(
+                                                              fontSize: 12,
+                                                              fontWeight: FontWeight.normal,
+                                                              color: SDSColor.gray500
                                                           ),
                                                         ),
-                                                      ],
-                                                    ),
-                                                  ],
-                                                ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ],
                                               ),
-                                            );
-                                          }),
-                                        ),
-                                  ),
-                                  SafeArea(
-                                    child: Container(
-                                      width: _size.width,
-                                      padding: EdgeInsets.only(top: 16, bottom: 20),
-                                      child: ElevatedButton(
-                                        onPressed: () async {
-                                          Navigator.pop(context);
-                                          Get.toNamed(AppRoutes.friendList);
-                                          await _friendListViewModel.fetchFriendList();
-                                          await _friendListViewModel.fetchFriendRequestList(_userViewModel.user.user_id);
-                                          await _friendListViewModel.fetchBlockUserList();
+                                            ),
+                                          );
+                                        }),
+                                      ),
+                                    ),
+                                    SafeArea(
+                                      child: Container(
+                                        width: _size.width,
+                                        padding: EdgeInsets.only(top: 16, bottom: 20),
+                                        child: ElevatedButton(
+                                          onPressed: () async {
+                                            Navigator.pop(context);
+                                            Get.toNamed(AppRoutes.friendList);
+                                            await _friendListViewModel.fetchFriendList();
+                                            await _friendListViewModel.fetchFriendRequestList(_userViewModel.user.user_id);
+                                            await _friendListViewModel.fetchBlockUserList();
 
-                                        },
-                                        child: Text(
-                                          '친구 관리 바로가기',
-                                          style: SDSTextStyle.bold.copyWith(color: SDSColor.gray700, fontSize: 16),
-                                        ),
-                                        style: TextButton.styleFrom(
-                                          shape: const RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.all(Radius.circular(6)),
+                                          },
+                                          child: Text(
+                                            '친구 관리 바로가기',
+                                            style: SDSTextStyle.bold.copyWith(color: SDSColor.gray700, fontSize: 16),
                                           ),
-                                          elevation: 0,
-                                          splashFactory: InkRipple.splashFactory,
-                                          minimumSize: Size(double.infinity, 48),
-                                          backgroundColor: SDSColor.gray100,
+                                          style: TextButton.styleFrom(
+                                            shape: const RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.all(Radius.circular(6)),
+                                            ),
+                                            elevation: 0,
+                                            splashFactory: InkRipple.splashFactory,
+                                            minimumSize: Size(double.infinity, 48),
+                                            backgroundColor: SDSColor.gray100,
+                                          ),
                                         ),
                                       ),
                                     ),
-                                  ),
-                                ],
-                              ),)
+                                  ],
+                                ),)
                             );
                           },
                         ));
@@ -1199,34 +1202,34 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                             ),
                             //TODO: 구분선
                             if((_resortHomeViewModel.resortHomeModel.dailyTotalCount != 0 || _userViewModel.user.within_boundary == true))
-                            Padding(
-                              padding: const EdgeInsets.only(bottom: 30),
-                              child: Container(
-                                width: _size.width,
-                                height: 10,
-                                color: SDSColor.gray50,
+                              Padding(
+                                padding: const EdgeInsets.only(bottom: 30),
+                                child: Container(
+                                  width: _size.width,
+                                  height: 10,
+                                  color: SDSColor.gray50,
+                                ),
                               ),
-                            ),
                             Padding(
                                 padding: EdgeInsets.only(left: 16, right: 16),
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     //TODO: 오늘의 기록
-                                      Padding(
+                                    Padding(
                                       padding: const EdgeInsets.only(right: 4, left: 4),
                                       child: Row(
                                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                         children: [
                                           if((_resortHomeViewModel.resortHomeModel.dailyTotalCount != 0 || _userViewModel.user.within_boundary == true))
-                                          Text('오늘의 기록',
-                                            style: SDSTextStyle.extraBold.copyWith(
-                                                fontSize: 15,
-                                                color: SDSColor.gray900
+                                            Text('오늘의 기록',
+                                              style: SDSTextStyle.extraBold.copyWith(
+                                                  fontSize: 15,
+                                                  color: SDSColor.gray900
+                                              ),
                                             ),
-                                          ),
                                           if((_resortHomeViewModel.resortHomeModel.dailyTotalCount != 0 && _userViewModel.user.within_boundary == true))
-                                          Row(
+                                            Row(
                                               children: [
                                                 Padding(
                                                   padding: const EdgeInsets.only(right: 2),
@@ -1293,80 +1296,80 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                                                       ),
                                                       if(_resortHomeViewModel.resortHomeModel.slopeCountInfoToday.length != 0)
                                                         Container(
-                                                          child: Column(
-                                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                                            children: _resortHomeViewModel.resortHomeModel.slopeCountInfoToday.map<Widget>((data)  {
-                                                              String slopeName = data.slope;
-                                                              int passCount = data.count;
-                                                              double barWidthRatio = data.ratio;
-                                                              return Padding(
-                                                                padding: (data != _resortHomeViewModel.resortHomeModel.slopeCountInfoToday.last)
-                                                                    ? EdgeInsets.only(bottom: 8, top: 10)
-                                                                    : EdgeInsets.only(bottom: 0, top: 10),
-                                                                child: Row(
-                                                                  children: [
-                                                                    Container(
-                                                                      width: 44,
-                                                                      child: Text(
-                                                                        slopeName,
-                                                                        style: SDSTextStyle.regular.copyWith(
-                                                                          fontSize: 11,
-                                                                          color: SDSColor.gray900,
+                                                            child: Column(
+                                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                                              children: _resortHomeViewModel.resortHomeModel.slopeCountInfoToday.map<Widget>((data)  {
+                                                                String slopeName = data.slope;
+                                                                int passCount = data.count;
+                                                                double barWidthRatio = data.ratio;
+                                                                return Padding(
+                                                                  padding: (data != _resortHomeViewModel.resortHomeModel.slopeCountInfoToday.last)
+                                                                      ? EdgeInsets.only(bottom: 8, top: 10)
+                                                                      : EdgeInsets.only(bottom: 0, top: 10),
+                                                                  child: Row(
+                                                                    children: [
+                                                                      Container(
+                                                                        width: 44,
+                                                                        child: Text(
+                                                                          slopeName,
+                                                                          style: SDSTextStyle.regular.copyWith(
+                                                                            fontSize: 11,
+                                                                            color: SDSColor.gray900,
+                                                                          ),
                                                                         ),
                                                                       ),
-                                                                    ),
-                                                                    Container(
-                                                                      height: 16,
-                                                                      width: (_size.width - 152) * barWidthRatio,
-                                                                      decoration: BoxDecoration(
-                                                                          color:
-                                                                          (data == _resortHomeViewModel.resortHomeModel.slopeCountInfoToday.first)
-                                                                              ? SDSColor.snowliveBlue
-                                                                              : SDSColor.blue200,
-                                                                          borderRadius: BorderRadius.only(
-                                                                              topRight: Radius.circular(4),
-                                                                              bottomRight: Radius.circular(4)
-                                                                          )
+                                                                      Container(
+                                                                        height: 16,
+                                                                        width: (_size.width - 152) * barWidthRatio,
+                                                                        decoration: BoxDecoration(
+                                                                            color:
+                                                                            (data == _resortHomeViewModel.resortHomeModel.slopeCountInfoToday.first)
+                                                                                ? SDSColor.snowliveBlue
+                                                                                : SDSColor.blue200,
+                                                                            borderRadius: BorderRadius.only(
+                                                                                topRight: Radius.circular(4),
+                                                                                bottomRight: Radius.circular(4)
+                                                                            )
+                                                                        ),
                                                                       ),
-                                                                    ),
-                                                                    Padding(
-                                                                      padding: (data == _resortHomeViewModel.resortHomeModel.slopeCountInfoToday.first)
-                                                                          ? EdgeInsets.only(left: 6)
-                                                                          : EdgeInsets.only(left: 2),
-                                                                      child: Container(
-                                                                        width: 30,
-                                                                        child: Column(
-                                                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                                                          mainAxisAlignment: MainAxisAlignment.center,
-                                                                          children: [
-                                                                            Container(
-                                                                              decoration: BoxDecoration(
-                                                                                borderRadius: BorderRadius.circular(20),
-                                                                                color: (data == _resortHomeViewModel.resortHomeModel.slopeCountInfoToday.first)
-                                                                                    ? SDSColor.gray900
-                                                                                    : Colors.transparent,
-                                                                              ),
-                                                                              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 2),
-                                                                              child: Text('$passCount',
-                                                                                style: SDSTextStyle.extraBold.copyWith(
-                                                                                  fontSize: 11,
-                                                                                  fontWeight: (data == _resortHomeViewModel.resortHomeModel.slopeCountInfoToday.first)
-                                                                                      ? FontWeight.w900 : FontWeight.w300,
+                                                                      Padding(
+                                                                        padding: (data == _resortHomeViewModel.resortHomeModel.slopeCountInfoToday.first)
+                                                                            ? EdgeInsets.only(left: 6)
+                                                                            : EdgeInsets.only(left: 2),
+                                                                        child: Container(
+                                                                          width: 30,
+                                                                          child: Column(
+                                                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                                                            mainAxisAlignment: MainAxisAlignment.center,
+                                                                            children: [
+                                                                              Container(
+                                                                                decoration: BoxDecoration(
+                                                                                  borderRadius: BorderRadius.circular(20),
                                                                                   color: (data == _resortHomeViewModel.resortHomeModel.slopeCountInfoToday.first)
-                                                                                      ? SDSColor.snowliveWhite : SDSColor.gray900.withOpacity(0.4),
+                                                                                      ? SDSColor.gray900
+                                                                                      : Colors.transparent,
+                                                                                ),
+                                                                                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 2),
+                                                                                child: Text('$passCount',
+                                                                                  style: SDSTextStyle.extraBold.copyWith(
+                                                                                    fontSize: 11,
+                                                                                    fontWeight: (data == _resortHomeViewModel.resortHomeModel.slopeCountInfoToday.first)
+                                                                                        ? FontWeight.w900 : FontWeight.w300,
+                                                                                    color: (data == _resortHomeViewModel.resortHomeModel.slopeCountInfoToday.first)
+                                                                                        ? SDSColor.snowliveWhite : SDSColor.gray900.withOpacity(0.4),
+                                                                                  ),
                                                                                 ),
                                                                               ),
-                                                                            ),
-                                                                          ],
+                                                                            ],
+                                                                          ),
                                                                         ),
                                                                       ),
-                                                                    ),
-                                                                  ],
-                                                                ),
-                                                              );
-                                                            }).toList(),
-                                                          )
-                                                      ),
+                                                                    ],
+                                                                  ),
+                                                                );
+                                                              }).toList(),
+                                                            )
+                                                        ),
                                                       if(_resortHomeViewModel.resortHomeModel.slopeCountInfoToday.length == 0)
                                                         Center(
                                                           child: Padding(
@@ -1381,8 +1384,8 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                                                                 ),
                                                                 Text('라이딩 기록이 없어요',
                                                                   style: SDSTextStyle.regular.copyWith(
-                                                                    fontSize: 14,
-                                                                    color: SDSColor.gray600
+                                                                      fontSize: 14,
+                                                                      color: SDSColor.gray600
                                                                   ),
                                                                 ),
                                                               ],
@@ -1426,86 +1429,86 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                                                         ],
                                                       ),
                                                       if(_resortHomeViewModel.resortHomeModel.dailyTotalCount != 0)
-                                                      Container(
-                                                        child: Row(
-                                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                          crossAxisAlignment: CrossAxisAlignment.end,
-                                                          children: _resortHomeViewModel.resortHomeModel.timeCountInfoToday.entries.map<Widget>((entry) {
-                                                            String slotName = entry.key;
-                                                            int passCount = entry.value;
-                                                            int maxCount = _resortHomeViewModel.resortHomeModel.timeInfo_maxCount;
-                                                            double barHeightRatio =  passCount/maxCount;
-                                                            return Container(
-                                                              width: 30,
-                                                              child: Column(
-                                                                mainAxisAlignment: MainAxisAlignment.end,
-                                                                children: [
-                                                                  AutoSizeText(
-                                                                    passCount != 0 ? '$passCount' : '',
-                                                                    style: SDSTextStyle.bold.copyWith(
-                                                                      fontSize: 11,
-                                                                      color: SDSColor.gray900.withOpacity(0.4),
-                                                                      fontWeight: FontWeight.w300,
-                                                                    ),
-                                                                    minFontSize: 6,
-                                                                    maxLines: 1,
-                                                                    overflow: TextOverflow.visible,
-                                                                  ),
-                                                                  Padding(
-                                                                    padding: EdgeInsets.only(top: passCount == maxCount ? 6 : 0),
-                                                                    child: Container(
-                                                                      width: 16,
-                                                                      height: 140 * barHeightRatio,
-                                                                      decoration: BoxDecoration(
-                                                                          color: SDSColor.blue200,
-                                                                          borderRadius: BorderRadius.only(
-                                                                              topRight: Radius.circular(4), topLeft: Radius.circular(4)
-                                                                          )
+                                                        Container(
+                                                          child: Row(
+                                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                            crossAxisAlignment: CrossAxisAlignment.end,
+                                                            children: _resortHomeViewModel.resortHomeModel.timeCountInfoToday.entries.map<Widget>((entry) {
+                                                              String slotName = entry.key;
+                                                              int passCount = entry.value;
+                                                              int maxCount = _resortHomeViewModel.resortHomeModel.timeInfo_maxCount;
+                                                              double barHeightRatio =  passCount/maxCount;
+                                                              return Container(
+                                                                width: 30,
+                                                                child: Column(
+                                                                  mainAxisAlignment: MainAxisAlignment.end,
+                                                                  children: [
+                                                                    AutoSizeText(
+                                                                      passCount != 0 ? '$passCount' : '',
+                                                                      style: SDSTextStyle.bold.copyWith(
+                                                                        fontSize: 11,
+                                                                        color: SDSColor.gray900.withOpacity(0.4),
+                                                                        fontWeight: FontWeight.w300,
                                                                       ),
+                                                                      minFontSize: 6,
+                                                                      maxLines: 1,
+                                                                      overflow: TextOverflow.visible,
                                                                     ),
-                                                                  ),
-                                                                  Padding(
-                                                                    padding: const EdgeInsets.only(top: 8),
-                                                                    child: Container(
-                                                                      width: 20,
-                                                                      child: Text(
-                                                                        slotName,
-                                                                        style: SDSTextStyle.regular.copyWith(
-                                                                          fontSize: 11,
-                                                                          color: SDSColor.gray900,
-                                                                          height: 1.2
+                                                                    Padding(
+                                                                      padding: EdgeInsets.only(top: passCount == maxCount ? 6 : 0),
+                                                                      child: Container(
+                                                                        width: 16,
+                                                                        height: 140 * barHeightRatio,
+                                                                        decoration: BoxDecoration(
+                                                                            color: SDSColor.blue200,
+                                                                            borderRadius: BorderRadius.only(
+                                                                                topRight: Radius.circular(4), topLeft: Radius.circular(4)
+                                                                            )
                                                                         ),
                                                                       ),
                                                                     ),
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                            );
-                                                          }).toList(),
-                                                        ),
-                                                      ),
-                                                      if(_resortHomeViewModel.resortHomeModel.dailyTotalCount == 0)
-                                                      Center(
-                                                        child: Padding(
-                                                          padding: const EdgeInsets.only(bottom: 30),
-                                                          child: Column(
-                                                            children: [
-                                                              ExtendedImage.asset(
-                                                                'assets/imgs/imgs/img_resoreHome_nodata.png',
-                                                                fit: BoxFit.cover,
-                                                                width: 72,
-                                                                height: 72,
-                                                              ),
-                                                              Text('라이딩 기록이 없어요',
-                                                                style: SDSTextStyle.regular.copyWith(
-                                                                    fontSize: 14,
-                                                                    color: SDSColor.gray600
+                                                                    Padding(
+                                                                      padding: const EdgeInsets.only(top: 8),
+                                                                      child: Container(
+                                                                        width: 20,
+                                                                        child: Text(
+                                                                          slotName,
+                                                                          style: SDSTextStyle.regular.copyWith(
+                                                                              fontSize: 11,
+                                                                              color: SDSColor.gray900,
+                                                                              height: 1.2
+                                                                          ),
+                                                                        ),
+                                                                      ),
+                                                                    ),
+                                                                  ],
                                                                 ),
-                                                              ),
-                                                            ],
+                                                              );
+                                                            }).toList(),
                                                           ),
                                                         ),
-                                                      )
+                                                      if(_resortHomeViewModel.resortHomeModel.dailyTotalCount == 0)
+                                                        Center(
+                                                          child: Padding(
+                                                            padding: const EdgeInsets.only(bottom: 30),
+                                                            child: Column(
+                                                              children: [
+                                                                ExtendedImage.asset(
+                                                                  'assets/imgs/imgs/img_resoreHome_nodata.png',
+                                                                  fit: BoxFit.cover,
+                                                                  width: 72,
+                                                                  height: 72,
+                                                                ),
+                                                                Text('라이딩 기록이 없어요',
+                                                                  style: SDSTextStyle.regular.copyWith(
+                                                                      fontSize: 14,
+                                                                      color: SDSColor.gray600
+                                                                  ),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          ),
+                                                        )
                                                     ],
                                                   ),
                                                 ),
@@ -1576,7 +1579,8 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                                                                   padding: const EdgeInsets.only(right: 6),
                                                                   child: Text(
                                                                     '더 알아보기',
-                                                                    style: SDSTextStyle.extraBold.copyWith(
+                                                                    style: SDSTextStyle.extraBold.copyWith
+                                                                      (
                                                                         color: Colors.black,
                                                                         fontSize: 13
                                                                     ),
