@@ -1,8 +1,8 @@
+import 'package:com.snowlive/api/ApiResponse.dart';
 import 'package:com.snowlive/api/api_user.dart';
+import 'package:com.snowlive/model/m_user.dart';
 import 'package:get/get.dart';
 import 'package:get/get_rx/get_rx.dart';
-import '../api/ApiResponse.dart';
-import '../model/m_user.dart';
 
 class UserViewModel extends GetxController {
   var isLoading = true.obs;

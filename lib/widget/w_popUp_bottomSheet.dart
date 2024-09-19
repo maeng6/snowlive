@@ -1,15 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-
+import 'package:com.snowlive/util/util_1.dart';
 import 'package:com.snowlive/viewmodel/vm_user.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
-import '../util/util_1.dart';
-
-
 
 final ref = FirebaseFirestore.instance;
 final auth = FirebaseAuth.instance;

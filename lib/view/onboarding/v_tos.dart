@@ -1,11 +1,11 @@
 import 'dart:io';
+import 'package:com.snowlive/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/routes/routes.dart';
-import 'package:com.snowlive/viewmodel/vm_tos.dart';
+import 'package:com.snowlive/viewmodel/onboarding_login/vm_tos.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:com.snowlive/view/v_webPage.dart';
-import '../../screens/snowliveDesignStyle.dart';
 
 class TermsOfServiceView extends StatelessWidget {
   const TermsOfServiceView({Key? key}) : super(key: key);

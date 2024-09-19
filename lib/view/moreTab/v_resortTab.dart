@@ -1,14 +1,10 @@
-import 'package:com.snowlive/controller/public/vm_urlLauncherController.dart';
+import 'package:com.snowlive/util/util_1.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:com.snowlive/model/m_resortModel.dart';
 
 class ResortTab extends StatelessWidget {
   ResortTab({Key? key}) : super(key: key);
-
-  //TODO: Dependency Injection**************************************************
-  UrlLauncherController _urlLauncherController = Get.find<UrlLauncherController>();
-  //TODO: Dependency Injection**************************************************
 
   @override
   Widget build(BuildContext context) {
@@ -99,7 +95,7 @@ class ResortTab extends StatelessWidget {
                   ),
                   OutlinedButton(
                     onPressed: () {
-                      _urlLauncherController.otherShare(contents: '${naverUrlList[index]}');
+                      otherShare(contents: '${naverUrlList[index]}');
                     },
                     child: Text(
                       '네이버 날씨',
@@ -125,7 +121,7 @@ class ResortTab extends StatelessWidget {
                         OutlinedButton(
                           onPressed: () {
                             if (webcamUrlList[index]!.isNotEmpty) {
-                              _urlLauncherController.otherShare(contents: '${webcamUrlList[index]}');
+                              otherShare(contents: '${webcamUrlList[index]}');
 
                             } else {
                               null;
@@ -164,7 +160,7 @@ class ResortTab extends StatelessWidget {
                         OutlinedButton(
                           onPressed: () {
                             if (slopeUrlList[index]!.isNotEmpty) {
-                              _urlLauncherController.otherShare(contents: '${slopeUrlList[index]}');
+                              otherShare(contents: '${slopeUrlList[index]}');
                             } else {
                               null;
                             }

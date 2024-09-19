@@ -1,4 +1,5 @@
 import 'dart:io' as io show Directory, File;
+import 'package:com.snowlive/viewmodel/util/vm_imageController.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:flutter_quill/extensions.dart'
@@ -9,9 +10,6 @@ import 'package:flutter_quill_extensions/embeds/widgets/image.dart'
 import 'package:flutter_quill_extensions/flutter_quill_extensions.dart';
 import 'package:flutter_quill_extensions/models/config/video/editor/youtube_video_support_mode.dart';
 import 'package:path/path.dart' as path;
-import '../../../controller/public/vm_timeStampController.dart';
-import '../../../controller/public/vm_settingController.dart';
-import '../../../viewmodel/vm_imageController.dart';
 
 
 class MyQuillEditor extends StatelessWidget {
@@ -29,10 +27,7 @@ class MyQuillEditor extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     //TODO : ****************************************************************
-    Get.put(ImageController(), permanent: true);
-    final SettingsController settingsController = Get.put(SettingsController());
-    final TimeStampController timeStampController = Get.put(TimeStampController());
-    final ImageController imageController = Get.put(ImageController());
+    Get.put(ImageController());
     //TODO : ****************************************************************
 
     final defaultTextStyle = DefaultTextStyle.of(context);

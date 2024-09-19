@@ -1,6 +1,6 @@
+import 'package:com.snowlive/model/m_licenseModel.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:com.snowlive/model_2/m_licenseModel.dart';
 import 'package:com.snowlive/view/moreTab/v_licenseDetailPage.dart';
 
 class LicenseListPage extends StatelessWidget {

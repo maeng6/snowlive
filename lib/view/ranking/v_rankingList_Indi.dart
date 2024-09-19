@@ -1,16 +1,16 @@
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:com.snowlive/screens/snowliveDesignStyle.dart';
+import 'package:com.snowlive/data/imgaUrls/Data_url_image.dart';
+import 'package:com.snowlive/data/snowliveDesignStyle.dart';
+import 'package:com.snowlive/routes/routes.dart';
+import 'package:com.snowlive/viewmodel/friend/vm_friendDetail.dart';
+import 'package:com.snowlive/viewmodel/ranking/vm_rankingList.dart';
+import 'package:com.snowlive/viewmodel/vm_user.dart';
 import 'package:com.snowlive/widget/w_verticalDivider.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import '../../../data/imgaUrls/Data_url_image.dart';
-import '../../routes/routes.dart';
-import '../../viewmodel/vm_friendDetail.dart';
-import '../../viewmodel/vm_rankingList.dart';
-import '../../viewmodel/vm_user.dart';
 
 class RankingIndiView extends StatelessWidget {
 
@@ -68,7 +68,8 @@ class RankingIndiView extends StatelessWidget {
                                 child: Transform.translate(
                                   offset: Offset(0, 0),
                                   child: ExtendedImage.network(
-                                    '${_rankingListViewModel.rankingListIndivMy_view!.overallTierIconUrl}',
+                                    '${_rankingListViewModel.rankingListIndivMy_view!.overallTierIconUrl
+                                        ??'https://i.esdrop.com/d/f/yytYSNBROy/6rPYflzCCZ.png'}',
                                     enableMemoryCache: true,
                                     fit: BoxFit.cover,
                                   ),
@@ -930,54 +931,65 @@ class RankingIndiView extends StatelessWidget {
                                         ),
                                       ),
                                       SizedBox(width: 8),
-                                      Container(
-                                        width: 32,
-                                        height: 32,
-                                        decoration: BoxDecoration(
-                                            color: Color(0xFFDFECFF),
-                                            borderRadius: BorderRadius.circular(50)
-                                        ),
-                                        child: document.profileImageUrlUser!.isNotEmpty
-                                            ? ExtendedImage.network(
-                                          document.profileImageUrlUser!,
-                                          enableMemoryCache: true,
-                                          shape: BoxShape.circle,
-                                          borderRadius: BorderRadius.circular(8),
-                                          cacheHeight: 100,
+                                      GestureDetector(
+                                        onTap: () async{
+                                          Get.toNamed(AppRoutes.friendDetail);
+                                          await _friendDetailViewModel.fetchFriendDetailInfo(
+                                            userId: _userViewModel.user.user_id,
+                                            friendUserId: document.userId!,
+                                            season: _friendDetailViewModel.seasonDate,
+                                          );
+                                        },
+                                        child: Container(
                                           width: 32,
                                           height: 32,
-                                          fit: BoxFit.cover,
-                                          loadStateChanged: (ExtendedImageState state) {
-                                            switch (state.extendedImageLoadState) {
-                                              case LoadState.loading:
-                                                return SizedBox.shrink();
-                                              case LoadState.completed:
-                                                return state.completedWidget;
-                                              case LoadState.failed:
-                                                return ExtendedImage.network(
-                                                  '${profileImgUrlList[0].default_round}',
-                                                  enableMemoryCache: true,
-                                                  cacheHeight: 100,
-                                                  shape: BoxShape.circle,
-                                                  borderRadius: BorderRadius.circular(8),
-                                                  width: 32,
-                                                  height: 32,
-                                                  fit: BoxFit.cover,
-                                                );
-                                              default:
-                                                return null;
-                                            }
-                                          },
-                                        )
-                                            : ExtendedImage.network(
-                                          '${profileImgUrlList[0].default_round}',
-                                          enableMemoryCache: true,
-                                          cacheHeight: 100,
-                                          shape: BoxShape.circle,
-                                          borderRadius: BorderRadius.circular(8),
-                                          width: 32,
-                                          height: 32,
-                                          fit: BoxFit.cover,
+                                          decoration: BoxDecoration(
+                                              color: Color(0xFFDFECFF),
+                                              borderRadius: BorderRadius.circular(50)
+                                          ),
+                                          child: document.profileImageUrlUser!.isNotEmpty
+                                              ? ExtendedImage.network(
+                                            document.profileImageUrlUser!,
+                                            enableMemoryCache: true,
+                                            shape: BoxShape.circle,
+                                            borderRadius: BorderRadius.circular(8),
+                                            cacheHeight: 100,
+                                            width: 32,
+                                            height: 32,
+                                            cacheWidth: 100,
+                                            fit: BoxFit.cover,
+                                            loadStateChanged: (ExtendedImageState state) {
+                                              switch (state.extendedImageLoadState) {
+                                                case LoadState.loading:
+                                                  return SizedBox.shrink();
+                                                case LoadState.completed:
+                                                  return state.completedWidget;
+                                                case LoadState.failed:
+                                                  return ExtendedImage.network(
+                                                    '${profileImgUrlList[0].default_round}',
+                                                    enableMemoryCache: true,
+                                                    cacheHeight: 100,
+                                                    shape: BoxShape.circle,
+                                                    borderRadius: BorderRadius.circular(8),
+                                                    width: 32,
+                                                    height: 32,
+                                                    fit: BoxFit.cover,
+                                                  );
+                                                default:
+                                                  return null;
+                                              }
+                                            },
+                                          )
+                                              : ExtendedImage.network(
+                                            '${profileImgUrlList[0].default_round}',
+                                            enableMemoryCache: true,
+                                            cacheHeight: 100,
+                                            shape: BoxShape.circle,
+                                            borderRadius: BorderRadius.circular(8),
+                                            width: 32,
+                                            height: 32,
+                                            fit: BoxFit.cover,
+                                          ),
                                         ),
                                       ),
                                       SizedBox(width: 10),
@@ -1067,6 +1079,7 @@ class RankingIndiView extends StatelessWidget {
                                                     fontSize: 16,
                                                   ),
                                                 ),
+                                                if(_rankingListViewModel.dayOrTotal == '누적')
                                                 Transform.translate(
                                                   offset: Offset(6, 1),
                                                   child: ExtendedImage.network(
@@ -1074,6 +1087,7 @@ class RankingIndiView extends StatelessWidget {
                                                     enableMemoryCache: true,
                                                     fit: BoxFit.cover,
                                                     width: 32,
+                                                    cacheWidth: 100,
                                                   ),
                                                 ),
                                               ],

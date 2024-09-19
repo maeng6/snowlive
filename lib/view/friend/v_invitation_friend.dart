@@ -1,11 +1,10 @@
 import 'package:com.snowlive/view/friend/v_invitation_receive_friend.dart';
 import 'package:com.snowlive/view/friend/v_invitation_send_friend.dart';
+import 'package:com.snowlive/viewmodel/friend/vm_friendList.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
-
-import '../../viewmodel/vm_friendList.dart';
 
 class InvitationFriendView extends StatefulWidget {
   InvitationFriendView({Key? key}) : super(key: key);

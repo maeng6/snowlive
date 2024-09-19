@@ -1,12 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:com.snowlive/util/util_1.dart';
+import 'package:com.snowlive/viewmodel/resortHome/vm_streamController_banner.dart';
+import 'package:com.snowlive/viewmodel/vm_user.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:get/get.dart';
-import '../../controller/banner/vm_streamController_banner.dart';
-import '../../controller/public/vm_urlLauncherController.dart';
-import '../../controller/user/vm_userModelController.dart';
 
 class Banner_resortHome extends StatefulWidget {
   @override
@@ -16,7 +16,7 @@ class Banner_resortHome extends StatefulWidget {
 
 class _Banner_resortHomeState
     extends State<Banner_resortHome> {
-  UserModelController _userModelController = Get.find<UserModelController>();
+  UserViewModel _userViewModel = Get.find<UserViewModel>();
   CarouselController _carouselController = CarouselController();
   ValueNotifier<int> _currentIndexNotifier = ValueNotifier<int>(0);
 
@@ -24,12 +24,7 @@ class _Banner_resortHomeState
   void initState() {
     super.initState();
   }
-
-
-  //TODO: Dependency Injection**************************************************
-  UrlLauncherController _urlLauncherController = Get.find<UrlLauncherController>();
   StreamController_Banner _streamController_Banner = Get.find<StreamController_Banner>();
-  //TODO: Dependency Injection**************************************************
 
   @override
   Widget build(BuildContext context) {
@@ -63,14 +58,14 @@ class _Banner_resortHomeState
 
                   String landingUrl =
                   _imageUrls[_currentIndexNotifier.value]['landingUrl'];
-                  _urlLauncherController.otherShare(contents: landingUrl);
+                  otherShare(contents: landingUrl);
                   try {
                     FirebaseAnalytics.instance.logEvent(
                       name: 'tap_banner_resortHome',
                       parameters: <String, Object>{
-                        'user_id': _userModelController.uid!,
-                        'user_name': _userModelController.displayName!,
-                        'user_resort': _userModelController.favoriteResort!,
+                        'user_id': _userViewModel.user.user_id!,
+                        'user_name': _userViewModel.user.display_name!,
+                        'user_resort': _userViewModel.user.favorite_resort,
                         'banner_number': _currentIndexNotifier.value
                       },
                     );

@@ -6,8 +6,8 @@ import 'package:flutter/rendering.dart';
 import 'package:get/get.dart';
 
 import '../../data/imgaUrls/Data_url_image.dart';
-import '../../screens/snowliveDesignStyle.dart';
-import '../../viewmodel/vm_fleamarketCommentDetail.dart';
+import '../../data/snowliveDesignStyle.dart';
+import '../../viewmodel/fleamarket/vm_fleamarketCommentDetail.dart';
 import '../../viewmodel/vm_user.dart';
 
 class FleamarketCommentDetailView extends StatelessWidget {

@@ -1,16 +1,16 @@
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:com.snowlive/screens/snowliveDesignStyle.dart';
+import 'package:com.snowlive/data/imgaUrls/Data_url_image.dart';
+import 'package:com.snowlive/data/snowliveDesignStyle.dart';
+import 'package:com.snowlive/routes/routes.dart';
+import 'package:com.snowlive/viewmodel/friend/vm_friendDetail.dart';
+import 'package:com.snowlive/viewmodel/ranking/vm_rankingList.dart';
+import 'package:com.snowlive/viewmodel/vm_user.dart';
 import 'package:com.snowlive/widget/w_verticalDivider.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import '../../../data/imgaUrls/Data_url_image.dart';
-import '../../routes/routes.dart';
-import '../../viewmodel/vm_friendDetail.dart';
-import '../../viewmodel/vm_rankingList.dart';
-import '../../viewmodel/vm_user.dart';
 
 class RankingCrewView extends StatelessWidget {
 
@@ -68,7 +68,7 @@ class RankingCrewView extends StatelessWidget {
                                 child: Transform.translate(
                                   offset: Offset(0, 0),
                                   child: ExtendedImage.network(
-                                    '${_rankingListViewModel.rankingListIndivMy_view!.overallTierIconUrl}',
+                                    '${_rankingListViewModel.rankingListCrewMy_view!.overallTierIconUrl??''}',
                                     enableMemoryCache: true,
                                     fit: BoxFit.cover,
                                   ),
@@ -91,7 +91,7 @@ class RankingCrewView extends StatelessWidget {
                                       Column(
                                         children: [
                                           Text(
-                                            '${_rankingListViewModel.rankingListIndivMy_view!.resortTotalScore}',
+                                            '${_rankingListViewModel.rankingListIndivMy_view!.resortTotalScore??''}',
                                             style: SDSTextStyle.bold.copyWith(
                                               color: Color(0xFF111111),
                                               fontSize: 15,
@@ -114,7 +114,7 @@ class RankingCrewView extends StatelessWidget {
                                         child: Column(
                                           children: [
                                             Text(
-                                              '${_rankingListViewModel.rankingListIndivMy_view!.resortRank}',
+                                              '${_rankingListViewModel.rankingListIndivMy_view!.resortRank??''}',
                                               style: SDSTextStyle.bold.copyWith(
                                                 color: Color(0xFF111111),
                                                 fontSize: 15,
@@ -138,7 +138,7 @@ class RankingCrewView extends StatelessWidget {
                                         child: Column(
                                           children: [
                                             Text(
-                                              '${_rankingListViewModel.rankingListIndivMy_view!.overallRank}',
+                                              '${_rankingListViewModel.rankingListIndivMy_view!.overallRank??''}',
                                               style: SDSTextStyle.bold.copyWith(
                                                 color: Color(0xFF111111),
                                                 fontSize: 15,
@@ -961,6 +961,7 @@ class RankingCrewView extends StatelessWidget {
                                                 borderRadius: BorderRadius.circular(8),
                                                 width: 32,
                                                 height: 32,
+                                                cacheWidth: 100,
                                                 fit: BoxFit.cover,
                                               );
                                             default:

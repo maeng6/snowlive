@@ -1,7 +1,9 @@
-import 'dart:convert';
 import 'dart:io';
-import 'package:com.snowlive/controller/login/vm_notificationController.dart';
+import 'package:com.snowlive/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/routes/routes.dart';
+import 'package:com.snowlive/viewmodel/onboarding_login/vm_setProfile.dart';
+import 'package:com.snowlive/viewmodel/vm_notificationController.dart';
+import 'package:com.snowlive/viewmodel/vm_user.dart';
 import 'package:com.snowlive/widget/w_favoriteResort.dart';
 import 'package:com.snowlive/widget/w_sex.dart';
 import 'package:com.snowlive/widget/w_skiorboard.dart';
@@ -12,10 +14,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-import '../../model/m_resortModel.dart';
-import '../../screens/snowliveDesignStyle.dart';
-import '../../viewmodel/vm_setProfile.dart';
-import '../../viewmodel/vm_user.dart';
 
 class SetProfileView extends StatelessWidget {
 

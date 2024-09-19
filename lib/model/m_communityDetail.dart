@@ -1,7 +1,5 @@
 import 'dart:convert';
-
 import 'package:flutter_quill/flutter_quill.dart' as quill;
-
 import 'm_communityList.dart';
 
 class CommunityDetailModel {

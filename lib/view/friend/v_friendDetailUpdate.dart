@@ -1,5 +1,8 @@
 import 'dart:io';
-import 'package:com.snowlive/viewmodel/vm_friendDetailUpdate.dart';
+import 'package:com.snowlive/data/snowliveDesignStyle.dart';
+import 'package:com.snowlive/viewmodel/friend/vm_friendDetail.dart';
+import 'package:com.snowlive/viewmodel/friend/vm_friendDetailUpdate.dart';
+import 'package:com.snowlive/viewmodel/vm_user.dart';
 import 'package:com.snowlive/widget/w_favoriteResort.dart';
 import 'package:com.snowlive/widget/w_sex.dart';
 import 'package:com.snowlive/widget/w_skiorboard.dart';
@@ -8,9 +11,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-import '../../screens/snowliveDesignStyle.dart';
-import '../../viewmodel/vm_friendDetail.dart';
-import '../../viewmodel/vm_user.dart';
 
 class FriendDetailUpdateView extends StatelessWidget {
 

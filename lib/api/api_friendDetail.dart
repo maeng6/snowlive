@@ -1,6 +1,6 @@
 import 'dart:convert';
+import 'package:com.snowlive/model/m_friendDetail.dart';
 import 'package:http/http.dart' as http;
-import '../model/m_friendDetail.dart';
 import 'ApiResponse.dart';
 
 class FriendDetailAPI {

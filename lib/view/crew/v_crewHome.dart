@@ -1,15 +1,15 @@
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:com.snowlive/screens/snowliveDesignStyle.dart';
-import 'package:com.snowlive/viewmodel/vm_crewDetail.dart';
-import 'package:com.snowlive/screens/LiveCrew/v_crewTodayPage.dart';
-import 'package:com.snowlive/viewmodel/vm_crewMemberList.dart';
+import 'package:com.snowlive/routes/routes.dart';
+import 'package:com.snowlive/data/snowliveDesignStyle.dart';
+import 'package:com.snowlive/viewmodel/crew/vm_crewDetail.dart';
+import 'package:com.snowlive/viewmodel/crew/vm_crewMemberList.dart';
+import 'package:com.snowlive/viewmodel/crew/vm_crewRecordRoom.dart';
 import 'package:com.snowlive/viewmodel/vm_user.dart';
+import 'package:com.snowlive/widget/w_verticalDivider.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:com.snowlive/screens/common/v_profileImageScreen.dart';
-import '../../widget/w_verticalDivider.dart';
 
 class CrewHomeView extends StatelessWidget {
   CrewHomeView({Key? key}) : super(key: key);
@@ -18,6 +18,7 @@ class CrewHomeView extends StatelessWidget {
   final CrewDetailViewModel _crewDetailViewModel = Get.find<CrewDetailViewModel>();
   final UserViewModel _userViewModel = Get.find<UserViewModel>();
   final CrewMemberListViewModel _crewMemberListViewModel = Get.find<CrewMemberListViewModel>();
+  final CrewRecordRoomViewModel _crewRecordRoomViewModel = Get.find<CrewRecordRoomViewModel>();
 
   @override
   Widget build(BuildContext context) {
@@ -257,8 +258,12 @@ class CrewHomeView extends StatelessWidget {
                       ),
                       Expanded(child: SizedBox()),
                       OutlinedButton(
-                        onPressed: () {
-                          Get.to(() => CrewTodayPage());
+                        onPressed: () async{
+                          Get.toNamed(AppRoutes.crewRecordRoom);
+                          await _crewRecordRoomViewModel.fetchCrewRidingRecords(
+                              _crewDetailViewModel.crewDetailInfo.crewId!,
+                              '${DateTime.now().year}'
+                          );
                         },
                         style: OutlinedButton.styleFrom(
                           backgroundColor: SDSColor.snowliveWhite,
@@ -270,7 +275,7 @@ class CrewHomeView extends StatelessWidget {
                           minimumSize: const Size(0, 0),
                         ),
                         child: Text(
-                          '오늘의 현황',
+                          '기록실',
                           style: TextStyle(
                             color: SDSColor.snowliveBlack, // 텍스트 색상
                             fontSize: 13, // 텍스트 크기
@@ -448,7 +453,6 @@ class CrewHomeView extends StatelessWidget {
                                     String slopeName = slopeData.slope ?? '';
                                     int passCount = slopeData.count ?? 0;
 
-                                    // barWidthRatio는 비율에 따라 설정, 여기서는 단순히 예시로 0~1 사이 값 설정
                                     double barWidthRatio = (passCount / (_crewDetailViewModel.countInfo.map((e) => e.count ?? 0).reduce((a, b) => a > b ? a : b)));
 
                                     return Padding(

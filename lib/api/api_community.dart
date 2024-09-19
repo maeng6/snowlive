@@ -8,6 +8,7 @@ class CommunityAPI {
 
   // 커뮤니티 게시글 생성
   Future<ApiResponse> createCommunityPost(Map<String, dynamic> body) async {
+    print(body);
     final response = await http.post(
       Uri.parse('$baseUrl/'),
       body: json.encode(body),
@@ -47,6 +48,7 @@ class CommunityAPI {
     );
 
     final response = await http.get(uri);
+    print(response.body);
 
     if (response.statusCode == 200) {
       final data = json.decode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;

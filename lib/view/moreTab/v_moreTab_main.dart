@@ -1,18 +1,17 @@
+import 'package:com.snowlive/routes/routes.dart';
+import 'package:com.snowlive/util/util_1.dart';
 import 'package:com.snowlive/view/moreTab/v_noticeListPage.dart';
 import 'package:com.snowlive/view/moreTab/v_resortTab.dart';
 import 'package:com.snowlive/view/moreTab/v_snowliveDetailPage.dart';
-import 'package:com.snowlive/viewmodel/vm_crewDetail.dart';
-import 'package:com.snowlive/viewmodel/vm_crewMemberList.dart';
+import 'package:com.snowlive/viewmodel/crew/vm_crewDetail.dart';
+import 'package:com.snowlive/viewmodel/crew/vm_crewMemberList.dart';
+import 'package:com.snowlive/viewmodel/friend/vm_friendDetail.dart';
+import 'package:com.snowlive/viewmodel/friend/vm_friendList.dart';
+import 'package:com.snowlive/viewmodel/vm_user.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:com.snowlive/view/moreTab/v_setting_moreTab.dart';
-import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
-import '../../routes/routes.dart';
-import '../../util/util_1.dart';
-import '../../viewmodel/vm_friendDetail.dart';
-import '../../viewmodel/vm_friendList.dart';
-import '../../viewmodel/vm_user.dart';
 
 class MoreTabMainView extends StatelessWidget {
   MoreTabMainView({Key? key}) : super(key: key);

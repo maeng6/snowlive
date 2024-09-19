@@ -1,24 +1,25 @@
 import 'dart:io';
-import 'package:com.snowlive/viewmodel/vm_fleamarketUpload.dart';
+import 'package:com.snowlive/data/snowliveDesignStyle.dart';
+import 'package:com.snowlive/viewmodel/fleamarket/vm_fleamarketDetail.dart';
+import 'package:com.snowlive/viewmodel/fleamarket/vm_fleamarketList.dart';
+import 'package:com.snowlive/viewmodel/fleamarket/vm_fleamarketUpdate.dart';
+import 'package:com.snowlive/viewmodel/vm_user.dart';
 import 'package:com.snowlive/widget/w_category_main_fleamarket.dart';
+import 'package:com.snowlive/widget/w_category_sub_board_fleamarket.dart';
+import 'package:com.snowlive/widget/w_category_sub_ski_fleamarket.dart';
 import 'package:com.snowlive/widget/w_tradeMethod_fleamarket.dart';
+import 'package:com.snowlive/widget/w_tradeSpot_fleamarket.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import '../../screens/snowliveDesignStyle.dart';
-import '../../viewmodel/vm_fleamarketList.dart';
-import '../../viewmodel/vm_fleamarketUpdate.dart';
-import '../../viewmodel/vm_user.dart';
-import '../../widget/w_category_sub_board_fleamarket.dart';
-import '../../widget/w_category_sub_ski_fleamarket.dart';
-import '../../widget/w_tradeSpot_fleamarket.dart';
 
 class FleamarketUpdateView extends StatelessWidget {
 
   final FleamarketUpdateViewModel _fleamarketUpdateViewModel = Get.find<FleamarketUpdateViewModel>();
   final UserViewModel _userViewModel = Get.find<UserViewModel>();
   final FleamarketListViewModel _fleamarketListViewModel = Get.find<FleamarketListViewModel>();
+  final FleamarketDetailViewModel _fleamarketDetailViewModel = Get.find<FleamarketDetailViewModel>();
 
 
   @override
@@ -1098,8 +1099,9 @@ class FleamarketUpdateView extends StatelessWidget {
                                 && _fleamarketUpdateViewModel.textEditingController_desc.text != ''){
                             await _fleamarketUpdateViewModel.getImageUrlList(
                                 newImages: _fleamarketUpdateViewModel.imageFiles,
-                                user_id: _userViewModel.user.user_id);
-                            await _fleamarketUpdateViewModel.uploadFleamarket(
+                                pk: _fleamarketDetailViewModel.fleamarketDetail.fleaId);
+                            await _fleamarketUpdateViewModel.updateFleamarket(
+                              _fleamarketDetailViewModel.fleamarketDetail.fleaId,
                                 {
                                   "user_id": _userViewModel.user.user_id,
                                   "product_name": _fleamarketUpdateViewModel.textEditingController_productName.text,
@@ -1148,7 +1150,7 @@ class FleamarketUpdateView extends StatelessWidget {
                           SDSColor.snowliveBlue
                           : SDSColor.gray200,
                         ),
-                        child: Text('작성 완료',
+                        child: Text('수정 완료',
                           style: SDSTextStyle.bold.copyWith(color:
                           (
                           _fleamarketUpdateViewModel.textEditingController_title.text != ''

@@ -1,18 +1,13 @@
 import 'dart:io';
+import 'package:com.snowlive/util/util_1.dart';
 import 'package:com.snowlive/view/moreTab/v_banner_resortHome.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import '../../controller/public/vm_urlLauncherController.dart';
-
 
 class SnowliveDetailPage extends StatelessWidget {
   SnowliveDetailPage({Key? key}) : super(key: key);
-
-  //TODO: Dependency Injection**************************************************
-  UrlLauncherController _urlLauncherController = Get.find<UrlLauncherController>();
-  //TODO: Dependency Injection**************************************************
 
   @override
   Widget build(BuildContext context) {
@@ -118,7 +113,7 @@ class SnowliveDetailPage extends StatelessWidget {
                     children: [
                       GestureDetector(
                         onTap: (){
-                          _urlLauncherController.otherShare(contents: 'https://snowlive.kr/');
+                          otherShare(contents: 'https://snowlive.kr/');
                         },
                         child: Column(
                           children: [
@@ -148,7 +143,7 @@ class SnowliveDetailPage extends StatelessWidget {
                       ),
                       GestureDetector(
                         onTap: (){
-                          _urlLauncherController.otherShare(contents: 'https://instagram.com/snowlive.134?igshid=YTQwZjQ0NmI0OA==');
+                          otherShare(contents: 'https://instagram.com/snowlive.134?igshid=YTQwZjQ0NmI0OA==');
                         },
                         child: Column(
                           children: [
@@ -178,7 +173,7 @@ class SnowliveDetailPage extends StatelessWidget {
                       ),
                       GestureDetector(
                         onTap: (){
-                          _urlLauncherController.otherShare(contents: 'http://pf.kakao.com/_LxnDdG/chat');
+                          otherShare(contents: 'http://pf.kakao.com/_LxnDdG/chat');
                         },
                         child: Column(
                           children: [

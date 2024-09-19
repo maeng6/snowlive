@@ -1,5 +1,5 @@
 import 'package:animated_splash_screen/animated_splash_screen.dart';
-import 'package:com.snowlive/viewmodel/vm_authcheck.dart';
+import 'package:com.snowlive/viewmodel/onboarding_login/vm_authcheck.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';

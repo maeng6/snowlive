@@ -1,13 +1,13 @@
-import 'package:com.snowlive/screens/snowliveDesignStyle.dart';
+import 'package:com.snowlive/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/view/ranking/v_rankingList_Indi.dart';
 import 'package:com.snowlive/view/ranking/v_rankingList_crew.dart';
+import 'package:com.snowlive/viewmodel/ranking/vm_rankingList.dart';
+import 'package:com.snowlive/viewmodel/vm_user.dart';
+import 'package:com.snowlive/widget/w_floatingButton_ranking.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import '../../../widget/w_floatingButton_ranking.dart';
-import '../../viewmodel/vm_rankingList.dart';
-import '../../viewmodel/vm_user.dart';
 
 class RankingHomeView extends StatelessWidget {
 

@@ -1,11 +1,11 @@
+import 'package:com.snowlive/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/routes/routes.dart';
+import 'package:com.snowlive/viewmodel/friend/vm_friendDetail.dart';
+import 'package:com.snowlive/viewmodel/friend/vm_friendList.dart';
+import 'package:com.snowlive/viewmodel/vm_user.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../../screens/snowliveDesignStyle.dart';
-import '../../viewmodel/vm_friendDetail.dart';
-import '../../viewmodel/vm_friendList.dart';
-import '../../viewmodel/vm_user.dart';
 
 class FriendListView extends StatelessWidget {
   FriendListView({Key? key}) : super(key: key);

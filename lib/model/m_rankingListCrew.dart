@@ -23,14 +23,64 @@ class RankingListCrewModel {
 }
 
 class MyCrewRankingInfo {
-  MyCrewRankingInfo();
+  int? crewId;
+  String? crewName;
+  String? crewLogoUrl;
+  String? description;
+  String? color;
+  String? baseResortNickname;
+  double? resortTotalScore;
+  int? resortRank;
+  double? overallTotalScore;
+  int? overallRank;
+  double? overallRankPercentage;
+  String? overallTierIconUrl;
+
+  MyCrewRankingInfo({
+    this.crewId,
+    this.crewName,
+    this.crewLogoUrl,
+    this.description,
+    this.color,
+    this.baseResortNickname,
+    this.resortTotalScore,
+    this.resortRank,
+    this.overallTotalScore,
+    this.overallRank,
+    this.overallRankPercentage,
+    this.overallTierIconUrl,
+  });
 
   MyCrewRankingInfo.fromJson(Map<String, dynamic> json) {
-    // 실제 구조에 따라 구현
+    crewId = json['crew_id'];
+    crewName = json['crew_name'];
+    crewLogoUrl = json['crew_logo_url'];
+    description = json['description'];
+    color = json['color'];
+    baseResortNickname = json['base_resort_nickname'];
+    resortTotalScore = json['resort_total_score']?.toDouble();
+    resortRank = json['resort_rank'];
+    overallTotalScore = json['overall_total_score']?.toDouble();
+    overallRank = json['overall_rank'];
+    overallRankPercentage = json['overall_rank_percentage']?.toDouble();
+    overallTierIconUrl = json['overall_tier_icon_url'];
   }
 
   Map<String, dynamic> toJson() {
-    return {};
+    return {
+      'crew_id': crewId,
+      'crew_name': crewName,
+      'crew_logo_url': crewLogoUrl,
+      'description': description,
+      'color': color,
+      'base_resort_nickname': baseResortNickname,
+      'resort_total_score': resortTotalScore,
+      'resort_rank': resortRank,
+      'overall_total_score': overallTotalScore,
+      'overall_rank': overallRank,
+      'overall_rank_percentage': overallRankPercentage,
+      'overall_tier_icon_url': overallTierIconUrl,
+    };
   }
 }
 

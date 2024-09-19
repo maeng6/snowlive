@@ -1,9 +1,7 @@
+import 'package:com.snowlive/data/snowliveDesignStyle.dart';
+import 'package:com.snowlive/model/m_resortModel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import '../model/m_resortModel.dart';
-import '../screens/snowliveDesignStyle.dart';
-
-
 
 class SelectResortWidget extends StatefulWidget {
 

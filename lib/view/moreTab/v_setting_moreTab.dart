@@ -1,23 +1,14 @@
 
 import 'package:com.snowlive/view/moreTab/v_licenseListPage.dart';
+import 'package:com.snowlive/view/v_webPage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:com.snowlive/viewmodel/vm_imageController.dart';
-import '../../controller/login/vm_loginController.dart';
-import '../../controller/user/vm_userModelController.dart';
-import '../v_webPage.dart';
 
 class setting_moreTab extends StatelessWidget {
   const setting_moreTab({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    //TODO: Dependency Injection**************************************************
-    Get.put(ImageController(), permanent: true);
-    UserModelController _userModelController = Get.find<UserModelController>();
-    LoginController _loginController = Get.find<LoginController>();
-    ImageController _imageController = Get.find<ImageController>();
-    //TODO: Dependency Injection**************************************************
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -189,19 +180,7 @@ class setting_moreTab extends StatelessWidget {
                                 Expanded(
                                   child: ElevatedButton(
                                     onPressed: () async {
-
-                                        try {
-                                          await _imageController.deleteProfileImage();
-                                        } catch (e) {
-                                          print('프사 없음');
-                                        }
-                                        await _loginController.deleteUser(
-                                            uid: _userModelController.uid,
-                                            fleaCount: _userModelController.fleaCount,
-                                            crewID: _userModelController.liveCrew,
-                                            bulletinCrewCount: _userModelController.bulletinCrewCount,
-                                            bulletinRoomCount: _userModelController.bulletinCrewCount,
-                                        );
+                                      //회원탈퇴처리
 
                                     },
                                     child: Text(

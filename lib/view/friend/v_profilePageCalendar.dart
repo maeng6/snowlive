@@ -1,9 +1,8 @@
+import 'package:com.snowlive/viewmodel/friend/vm_friendDetail.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:intl/intl.dart';
-
-import '../../viewmodel/vm_friendDetail.dart';  // 날짜 형식 변환을 위해 추가
 
 class ProfilePageCalendar extends StatefulWidget {
   @override
