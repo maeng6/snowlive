@@ -67,7 +67,7 @@ class CrewHomeView extends StatelessWidget {
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(16),
                     child: Container(
-                      color: Color(int.parse(_crewDetailViewModel.color, radix: 16) + 0xFF000000),
+                      color: Color(int.parse(_crewDetailViewModel.color.replaceFirst('0X', ''), radix: 16)),
                       padding: const EdgeInsets.only(top: 16, bottom: 16),
                       child: Column(
                         children: [

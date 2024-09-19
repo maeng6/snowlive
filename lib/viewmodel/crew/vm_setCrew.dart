@@ -137,9 +137,9 @@ class SetCrewViewModel extends GetxController {
     currentColorBackground.value = color.withOpacity(0.2);
   }
 
-  // 색상을 16진수 문자열로 변환하는 함수
+  // 색상을 16진수 문자열로 변환하는 함수 (0X 포함)
   String colorToHex(Color color) {
-    return color.value.toRadixString(16).substring(2).toUpperCase(); // 0xFF를 제거하고 변환
+    return '0X' + color.value.toRadixString(16).toUpperCase(); // '0X'를 포함하여 변환
   }
 
   // 다음 버튼 활성화 상태 업데이트

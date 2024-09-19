@@ -7,6 +7,7 @@ import 'package:com.snowlive/viewmodel/crew/vm_crewDetail.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewMain.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewMemberList.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewRecordRoom.dart';
+import 'package:com.snowlive/viewmodel/crew/vm_searchCrew.dart';
 import 'package:com.snowlive/viewmodel/fleamarket/vm_fleamarketCommentDetail.dart';
 import 'package:com.snowlive/viewmodel/fleamarket/vm_fleamarketDetail.dart';
 import 'package:com.snowlive/viewmodel/fleamarket/vm_fleamarketList.dart';
@@ -45,6 +46,7 @@ class MainHomeBinding extends Bindings {
     Get.put(RankingListViewModel(), permanent: true);
     Get.put(CommunityBulletinListViewModel(),permanent: true);
     Get.put(CommunityDetailViewModel(),permanent: true);
+    Get.put(SearchCrewViewModel(), permanent: true);
     Get.put(CrewMainViewModel(), permanent: true);
     Get.put(CrewDetailViewModel(), permanent: true);
     Get.put(CrewMemberListViewModel(), permanent: true);

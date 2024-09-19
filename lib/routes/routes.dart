@@ -3,6 +3,7 @@ import 'package:com.snowlive/view/community/free/v_community_bulletin_Upload.dar
 import 'package:com.snowlive/view/community/free/v_community_bulletin_update.dart';
 import 'package:com.snowlive/view/community/free/v_community_comment_detail.dart';
 import 'package:com.snowlive/view/community/v_community_main.dart';
+import 'package:com.snowlive/view/crew/v_searchCrew.dart';
 import 'package:com.snowlive/view/fleamarket/v_fleaMarketCommentDetail.dart';
 import 'package:com.snowlive/view/fleamarket/v_fleaMarketList_search.dart';
 import 'package:com.snowlive/view/fleamarket/v_fleamarketUpdate.dart';
@@ -68,6 +69,7 @@ class AppRoutes {
   static const String crewMember = '/crewMember';
   static const String rankingHome = '/rankingHome';
   static const String crewRecordRoom = '/crewRecordRoom';
+  static const String searchCrew = '/searchCrew';
 
 
 
@@ -225,6 +227,10 @@ class AppRoutes {
     GetPage(
       name: crewRecordRoom,
       page: () => CrewRecordRoomView(),
+    ),
+    GetPage(
+      name: searchCrew,
+      page: () => SearchCrewView(),
     ),
   ];
 }
