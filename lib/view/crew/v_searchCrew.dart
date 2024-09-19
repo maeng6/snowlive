@@ -24,6 +24,7 @@ class SearchCrewView extends StatelessWidget {
   final CrewDetailViewModel _crewDetailViewModel = Get.find<CrewDetailViewModel>();
   final FriendDetailViewModel _friendDetailViewModel = Get.find<FriendDetailViewModel>();
   final CrewMemberListViewModel _crewMemberListViewModel = Get.find<CrewMemberListViewModel>();
+  final UserViewModel _userViewModel = Get.find<UserViewModel>();
 
   @override
   Widget build(BuildContext context) {
@@ -297,7 +298,31 @@ class SearchCrewView extends StatelessWidget {
                                                     ),
                                                 ],
                                               ),
-
+                                              Expanded(child: SizedBox()),
+                                              if(_userViewModel.user.crew_id == null)
+                                                GestureDetector(
+                                                  onTap: () {
+                                                    // 버튼 클릭 시 실행할 동작
+                                                  },
+                                                  child: Container(
+                                                    padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10), // 버튼 크기 설정
+                                                    decoration: BoxDecoration(
+                                                      borderRadius: BorderRadius.circular(20), // 둥근 모서리 설정
+                                                      border: Border.all(
+                                                        color: SDSColor.gray500, // 테두리 색상 (검정색으로 설정)
+                                                        width: 0.5, // 테두리 두께 설정
+                                                      ),
+                                                    ),
+                                                    child: Text(
+                                                      '가입신청',
+                                                      style: TextStyle(
+                                                        fontSize: 12,
+                                                        fontWeight: FontWeight.bold, // 텍스트 스타일 설정
+                                                        color: Colors.black, // 텍스트 색상 설정
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
                                             ],
                                           ),
                                         ],

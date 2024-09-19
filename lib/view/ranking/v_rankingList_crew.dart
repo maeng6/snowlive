@@ -1000,16 +1000,35 @@ class RankingCrewView extends StatelessWidget {
                                           SizedBox(
                                             height: 2,
                                           ),
-                                          Row(
-                                            children: [
-                                              Text(
-                                                document.baseResortNickname!,
-                                                style: SDSTextStyle.regular.copyWith(
-                                                    fontSize: 12,
-                                                    color: Color(0xFF949494)
+                                          Container(
+                                            width: _size.width -230,
+                                            child: Row(
+                                              children: [
+                                                Text(
+                                                  document.baseResortNickname!,
+                                                  style: SDSTextStyle.regular.copyWith(
+                                                      fontSize: 12,
+                                                      color: Color(0xFF949494)
+                                                  ),
                                                 ),
-                                              ),
-                                            ],
+                                                Text('·',
+
+                                                  style: SDSTextStyle.regular.copyWith(
+                                                      fontSize: 12,
+                                                      color: Color(0xFF949494)
+                                                  ),
+                                                ),
+                                                Text(
+                                                  maxLines: 1,
+                                                  overflow: TextOverflow.ellipsis,
+                                                  document.description!,
+                                                  style: SDSTextStyle.regular.copyWith(
+                                                      fontSize: 12,
+                                                      color: Color(0xFF949494)
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
                                           )
                                         ],
                                       ),
