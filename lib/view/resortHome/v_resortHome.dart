@@ -8,6 +8,7 @@ import 'package:com.snowlive/viewmodel/friend/vm_friendDetail.dart';
 import 'package:com.snowlive/viewmodel/friend/vm_friendList.dart';
 import 'package:com.snowlive/viewmodel/resortHome/vm_resortHome.dart';
 import 'package:com.snowlive/viewmodel/vm_user.dart';
+import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 import 'package:com.snowlive/widget/w_liveOn_animatedGradient.dart';
 import 'package:com.snowlive/widget/w_selectResort.dart';
 import 'package:extended_image/extended_image.dart';
@@ -460,12 +461,15 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                                           var BFdoc = _resortHomeViewModel.bestFriendList[index];
                                           return GestureDetector(
                                             onTap: () async {
+                                              Navigator.pop(context);
                                               Get.toNamed(AppRoutes.friendDetail);
+                                              CustomFullScreenDialog.showDialog();
                                               await _friendDetailViewModel.fetchFriendDetailInfo(
                                                 userId: _userViewModel.user.user_id,
                                                 friendUserId: BFdoc.friendInfo.userId,
                                                 season: _friendDetailViewModel.seasonDate,
                                               );
+                                              CustomFullScreenDialog.cancelDialog();
                                             },
                                             child: Container(
                                               width: (_size.width - 40) / 4, // 화면 너비를 4등분

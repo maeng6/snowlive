@@ -39,6 +39,7 @@ class MainHomeBinding extends Bindings {
     Get.put(ResortHomeViewModel(),permanent: true);
     Get.put(StreamController_ResortHome(),permanent: true);
     Get.put(FriendDetailViewModel(),permanent: true);
+    Get.put(FriendDetailUpdateViewModel(),permanent: true);
     Get.put(FleamarketListViewModel(),permanent: true);
     Get.put(FleamarketDetailViewModel(),permanent: true);
     Get.put(FleamarketUpdateViewModel(),permanent: true);
@@ -93,7 +94,6 @@ class FriendListBinding extends Bindings {
 class FriendDetailBinding extends Bindings {
   @override
   void dependencies() {
-    Get.put(FriendDetailViewModel(),);
   }
 }
 

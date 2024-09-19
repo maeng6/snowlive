@@ -275,7 +275,7 @@ class FriendListView extends StatelessWidget {
                                     fontSize: 15,
                                   ),
                                 ),
-                                if (_userViewModel.user.state_msg != '')
+                                if (_userViewModel.user.state_msg != '' && _userViewModel.user.state_msg != null)
                                   Text(
                                     _userViewModel.user.state_msg,
                                     style: TextStyle(

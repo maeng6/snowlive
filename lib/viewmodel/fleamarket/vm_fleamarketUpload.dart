@@ -114,9 +114,9 @@ class FleamarketUploadViewModel extends GetxController {
   }
 
 
-  Future<void> uploadFleamarket(body, photos) async {
+  Future<void> uploadFleamarket(body) async {
 
-      ApiResponse response = await FleamarketAPI().uploadFleamarket(body,photos);
+      ApiResponse response = await FleamarketAPI().uploadFleamarket(body);
       if (response.success) {
         _pk.value = response.data['flea_id'];
         print('스노우마켓 업로드 완료');

@@ -250,7 +250,7 @@ class CrewRecordRoomView extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          buildScoreItem('${record.totalScore ?? 0}', '점수'),  // null 값 방지
+          buildScoreItem('${record.totalScore!.toStringAsFixed(0) ?? 0}', '점수'),  // null 값 방지
           buildVerticalDivider_ranking_indi_Screen(),
           buildScoreItem('${record.totalCount ?? 0}', '라이딩 횟수'),
           buildVerticalDivider_ranking_indi_Screen(),
@@ -435,7 +435,7 @@ class CrewRecordRoomView extends StatelessWidget {
                 ),
               ),
               trailing: Text(
-                '${member.totalScore!}점',
+                '${member.totalScore!.toStringAsFixed(0)}점',
                 style: TextStyle(fontSize: 16),
               ),
             );

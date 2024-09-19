@@ -80,12 +80,15 @@ class CrewDetailViewModel extends GetxController {
 
   // 리조트 번호를 리조트 이름으로 변환
   void changeResortNumberToName(int? selectedResortId) {
-    if (selectedResortId != null && selectedResortId >= 0 && selectedResortId < resortNameList.length) {
-      _resortName.value = resortNameList[selectedResortId] ?? "Unknown Resort";  // null 값 처리
+    int adjustedResortId = selectedResortId! - 1;  // 서버 인덱스가 1부터 시작하면 -1 해주기
+
+    if (adjustedResortId >= 0 && adjustedResortId < resortNameList.length) {
+      _resortName.value = resortNameList[adjustedResortId] ?? "Unknown Resort";
     } else {
       _resortName.value = "Unknown Resort";
     }
   }
+
 
   // 그래프 토글 함수
   void toggleGraph() {
