@@ -57,23 +57,13 @@ class FleamarketSearchViewModel extends GetxController {
   Future<void> _scrollListener() async {
     // 스크롤이 리스트의 끝에 도달했을 때
     if (_scrollController.position.pixels == _scrollController.position.maxScrollExtent) {
+      print('다음목록 로딩 시작');
       if (_nextPageUrl_total.value.isNotEmpty) {
         await fetchFleamarketData_total(
             userId: _userViewModel.user.user_id,
             url: _nextPageUrl_total.value
         ); // 추가 데이터 로딩
       }
-    }
-
-    // 버튼 표시 여부 결정
-    _showAddButton.value = _scrollController.offset <= 0;
-
-    // 숨김/표시 여부 결정
-    if (_scrollController.position.userScrollDirection == ScrollDirection.reverse) {
-      _isVisible.value = true;
-    } else if (_scrollController.position.userScrollDirection == ScrollDirection.forward ||
-        _scrollController.position.pixels <= _scrollController.position.maxScrollExtent) {
-      _isVisible.value = false;
     }
   }
 

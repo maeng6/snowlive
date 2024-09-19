@@ -208,6 +208,10 @@ class RankingListViewModel extends GetxController {
   Future<void> _scrollListener_indiv() async {
     // 스크롤이 리스트의 끝에 도달했을 때
     if (scrollController_indiv.position.pixels == scrollController_indiv.position.maxScrollExtent) {
+      print(tapName);
+      print(resortOrTotal);
+      print(dayOrTotal);
+      print(isLoading);
       print('다음 100개 불러오기 시작');
       if(tapName == '개인랭킹' && resortOrTotal == '개별스키장' && dayOrTotal == '일간' && isLoading != true){
         if (_nextPageUrl_indiv_resort_daily.value.isNotEmpty) {
@@ -237,8 +241,8 @@ class RankingListViewModel extends GetxController {
         if (_nextPageUrl_indiv_total.value.isNotEmpty) {
           isLoading.value=true;
           await fetchNextPage_indiv_total();
-          _rankingListIndivList_view.value = _rankingListIndivList_total_daily;
-          _rankingListIndivMy_view.value = _rankingListIndivMy_total_daily.value;
+          _rankingListIndivList_view.value = _rankingListIndivList_total;
+          _rankingListIndivMy_view.value = _rankingListIndivMy_total.value;
           isLoading.value=false;
         }
       }
@@ -277,8 +281,8 @@ class RankingListViewModel extends GetxController {
         if (_nextPageUrl_crew_total.value.isNotEmpty) {
           isLoading.value=true;
           await fetchNextPage_crew_total();
-          _rankingListCrewList_view.value = _rankingListCrewList_total_daily;
-          _rankingListCrewMy_view.value = _rankingListCrewMy_total_daily.value;
+          _rankingListCrewList_view.value = _rankingListCrewList_total;
+          _rankingListCrewMy_view.value = _rankingListCrewMy_total.value;
           isLoading.value=false;
         }
       }

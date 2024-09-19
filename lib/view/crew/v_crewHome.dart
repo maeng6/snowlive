@@ -659,11 +659,40 @@ class CrewHomeView extends StatelessWidget {
                             ),
                           ],
                         ),
-                      )
+                      ),
                     ],
                   ),
                 ),
               ),
+              SizedBox(height: 15),
+              if(_userViewModel.user.crew_id == null)
+                SafeArea(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: Container(
+                      width: MediaQuery.of(context).size.width,
+                      child: ElevatedButton(
+                        onPressed: () async {
+
+                        },
+                        child: Text(
+                          '가입 신청하기',
+                          style: SDSTextStyle.bold.copyWith(
+                              color: SDSColor.snowliveWhite, fontSize: 16),
+                        ),
+                        style: TextButton.styleFrom(
+                          shape: const RoundedRectangleBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(6)),
+                          ),
+                          elevation: 0,
+                          splashFactory: InkRipple.splashFactory,
+                          minimumSize: Size(double.infinity, 48),
+                          backgroundColor: SDSColor.snowliveBlue,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
             ],
           ),
         ),

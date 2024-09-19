@@ -226,254 +226,195 @@ class FleaMarketListView_search extends StatelessWidget {
                 Obx(() => (_fleamarketSearchViewModel.fleamarketListSearch.isNotEmpty)
                     ? Scrollbar(
                   controller: _fleamarketSearchViewModel.scrollController,
-                  child: ListView.builder(
-                    shrinkWrap: true,
-                    physics: NeverScrollableScrollPhysics(),
-                    controller: _fleamarketSearchViewModel.scrollController, // ScrollController 연결
-                    itemCount: _fleamarketSearchViewModel.fleamarketListSearch.length,
-                    itemBuilder: (context, index) {
-                      Fleamarket data = _fleamarketSearchViewModel.fleamarketListSearch[index];
-                      String _time = GetDatetime().getAgoString(data.uploadTime!);
+                  child: Container(
+                    height: 300,
+                    child: ListView.builder(
+                      shrinkWrap: true,
+                      controller: _fleamarketSearchViewModel.scrollController, // ScrollController 연결
+                      itemCount: _fleamarketSearchViewModel.fleamarketListSearch.length,
+                      itemBuilder: (context, index) {
+                        Fleamarket data = _fleamarketSearchViewModel.fleamarketListSearch[index];
+                        String _time = GetDatetime().getAgoString(data.uploadTime!);
 
-                      return GestureDetector(
-                          onTap: () async {
-                            _fleamarketDetailViewModel.fetchFleamarketDetailFromList(fleamarketResponse: _fleamarketSearchViewModel.fleamarketListSearch[index]);
-                            Get.toNamed(AppRoutes.fleamarketDetail);
-                            await _fleamarketDetailViewModel.fetchFleamarketComments(
-                                fleaId: _fleamarketSearchViewModel.fleamarketListSearch[index].fleaId!,
-                                userId: _userViewModel.user.user_id,
-                                isLoading_indi: true);
-                          },
-                          child: Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 16),
-                            child: Column(
-                              children: [
-                                Container(
-                                  color: Colors.white,
-                                  height: 110,
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Row(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Stack(
-                                            children: [
-                                              if (data.photos!.length != 0)
-                                                ExtendedImage.network(data.photos!.first.urlFleaPhoto!,
-                                                  cache: true,
-                                                  shape: BoxShape.rectangle,
-                                                  borderRadius: BorderRadius.circular(8),
-                                                  border: Border.all(width: 0.5, color: SDSColor.gray100),
-                                                  width: 110,
-                                                  height: 110,
-                                                  cacheHeight: 250,
-                                                  fit: BoxFit.cover,
-                                                ),
-                                              if (data.photos!.length == 0)
-                                                ExtendedImage.asset(
-                                                  'assets/imgs/imgs/img_flea_default.png',
-                                                  shape: BoxShape.rectangle,
-                                                  borderRadius: BorderRadius.circular(8),
-                                                  width: 110,
-                                                  height: 110,
-                                                  fit: BoxFit.cover,
-                                                ),
-                                              if (data.status == FleamarketStatus.soldOut.korean)
+                        return GestureDetector(
+                            onTap: () async {
+                              _fleamarketDetailViewModel.fetchFleamarketDetailFromList(fleamarketResponse: _fleamarketSearchViewModel.fleamarketListSearch[index]);
+                              Get.toNamed(AppRoutes.fleamarketDetail);
+                              await _fleamarketDetailViewModel.fetchFleamarketComments(
+                                  fleaId: _fleamarketSearchViewModel.fleamarketListSearch[index].fleaId!,
+                                  userId: _userViewModel.user.user_id,
+                                  isLoading_indi: true);
+                            },
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 16),
+                              child: Column(
+                                children: [
+                                  Container(
+                                    color: Colors.white,
+                                    height: 110,
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Row(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Stack(
+                                              children: [
+                                                if (data.photos!.length != 0)
+                                                  ExtendedImage.network(data.photos!.first.urlFleaPhoto!,
+                                                    cache: true,
+                                                    shape: BoxShape.rectangle,
+                                                    borderRadius: BorderRadius.circular(8),
+                                                    border: Border.all(width: 0.5, color: SDSColor.gray100),
+                                                    width: 110,
+                                                    height: 110,
+                                                    cacheHeight: 250,
+                                                    fit: BoxFit.cover,
+                                                  ),
+                                                if (data.photos!.length == 0)
+                                                  ExtendedImage.asset(
+                                                    'assets/imgs/imgs/img_flea_default.png',
+                                                    shape: BoxShape.rectangle,
+                                                    borderRadius: BorderRadius.circular(8),
+                                                    width: 110,
+                                                    height: 110,
+                                                    fit: BoxFit.cover,
+                                                  ),
+                                                if (data.status == FleamarketStatus.soldOut.korean)
+                                                  Container(
+                                                    width: 110, // 이미지와 동일한 너비
+                                                    height: 110, // 이미지와 동일한 높이
+                                                    decoration: BoxDecoration(
+                                                      color: Colors.black.withOpacity(0.6),  // 반투명한 검정색 오버레이
+                                                      borderRadius: BorderRadius.circular(8),  // 이미지와 동일한 둥근 모서리
+                                                    ),
+                                                  ),
+                                                if (data.status == FleamarketStatus.soldOut.korean)
+                                                  Positioned(
+                                                    top: 8,
+                                                    left: 8,  // 좌측 상단에 위치하도록 설정
+                                                    child: Container(
+                                                      padding: EdgeInsets.symmetric(horizontal: 6, vertical: 3),  // 패딩을 추가하여 뱃지 모양을 만듦
+                                                      decoration: BoxDecoration(
+                                                        borderRadius: BorderRadius.circular(4),  // 모서리를 둥글게 처리
+                                                        color: SDSColor.snowliveWhite,  // 배경색과 투명도 설정
+                                                      ),
+                                                      child: Text(
+                                                        '${FleamarketStatus.soldOut.korean}',
+                                                        style: SDSTextStyle.bold.copyWith(
+                                                          color: SDSColor.snowliveBlack,
+                                                          fontSize: 11,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                if (data.status == FleamarketStatus.onBooking.korean)
+                                                  Positioned(
+                                                    top: 8,
+                                                    left: 8,  // 좌측 상단에 위치하도록 설정
+                                                    child: Container(
+                                                      padding: EdgeInsets.symmetric(horizontal: 6, vertical: 3),  // 패딩을 추가하여 뱃지 모양을 만듦
+                                                      decoration: BoxDecoration(
+                                                        borderRadius: BorderRadius.circular(4),  // 모서리를 둥글게 처리
+                                                        color: SDSColor.snowliveBlue,  // 배경색과 투명도 설정
+                                                      ),
+                                                      child: Text(
+                                                        '${FleamarketStatus.onBooking.korean}',
+                                                        style: SDSTextStyle.bold.copyWith(
+                                                          color: SDSColor.snowliveWhite,
+                                                          fontWeight: FontWeight.bold,
+                                                          fontSize: 11,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                              ],
+                                            ),
+                                            SizedBox(width: 16),
+                                            Column(
+                                              crossAxisAlignment: CrossAxisAlignment.end,
+                                              children: [
                                                 Container(
-                                                  width: 110, // 이미지와 동일한 너비
-                                                  height: 110, // 이미지와 동일한 높이
-                                                  decoration: BoxDecoration(
-                                                    color: Colors.black.withOpacity(0.6),  // 반투명한 검정색 오버레이
-                                                    borderRadius: BorderRadius.circular(8),  // 이미지와 동일한 둥근 모서리
-                                                  ),
-                                                ),
-                                              if (data.status == FleamarketStatus.soldOut.korean)
-                                                Positioned(
-                                                  top: 8,
-                                                  left: 8,  // 좌측 상단에 위치하도록 설정
-                                                  child: Container(
-                                                    padding: EdgeInsets.symmetric(horizontal: 6, vertical: 3),  // 패딩을 추가하여 뱃지 모양을 만듦
-                                                    decoration: BoxDecoration(
-                                                      borderRadius: BorderRadius.circular(4),  // 모서리를 둥글게 처리
-                                                      color: SDSColor.snowliveWhite,  // 배경색과 투명도 설정
-                                                    ),
-                                                    child: Text(
-                                                      '${FleamarketStatus.soldOut.korean}',
-                                                      style: SDSTextStyle.bold.copyWith(
-                                                        color: SDSColor.snowliveBlack,
-                                                        fontSize: 11,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ),
-                                              if (data.status == FleamarketStatus.onBooking.korean)
-                                                Positioned(
-                                                  top: 8,
-                                                  left: 8,  // 좌측 상단에 위치하도록 설정
-                                                  child: Container(
-                                                    padding: EdgeInsets.symmetric(horizontal: 6, vertical: 3),  // 패딩을 추가하여 뱃지 모양을 만듦
-                                                    decoration: BoxDecoration(
-                                                      borderRadius: BorderRadius.circular(4),  // 모서리를 둥글게 처리
-                                                      color: SDSColor.snowliveBlue,  // 배경색과 투명도 설정
-                                                    ),
-                                                    child: Text(
-                                                      '${FleamarketStatus.onBooking.korean}',
-                                                      style: SDSTextStyle.bold.copyWith(
-                                                        color: SDSColor.snowliveWhite,
-                                                        fontWeight: FontWeight.bold,
-                                                        fontSize: 11,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ),
-                                            ],
-                                          ),
-                                          SizedBox(width: 16),
-                                          Column(
-                                            crossAxisAlignment: CrossAxisAlignment.end,
-                                            children: [
-                                              Container(
-                                                width: _size.width - 158,
-                                                height: 91,
-                                                child: Column(
-                                                  mainAxisAlignment: MainAxisAlignment.start,
-                                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                                  children: [
-                                                    //TODO: 타이틀
-                                                    Row(
-                                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                      children: [
-                                                        Container(
-                                                          constraints: BoxConstraints(maxWidth: _size.width - 158),
-                                                          child: Text(
-                                                            data.title!,
-                                                            maxLines: 2,
-                                                            overflow: TextOverflow.ellipsis,
-                                                            style: SDSTextStyle.regular.copyWith(
-                                                                fontSize: 15,
-                                                                color: SDSColor.gray900),
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                    //TODO: 장소, 시간
-                                                    Padding(
-                                                      padding: const EdgeInsets.only(top: 2),
-                                                      child: Row(
-                                                        mainAxisAlignment: MainAxisAlignment.start,
+                                                  width: _size.width - 158,
+                                                  height: 91,
+                                                  child: Column(
+                                                    mainAxisAlignment: MainAxisAlignment.start,
+                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                    children: [
+                                                      //TODO: 타이틀
+                                                      Row(
+                                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                         children: [
-                                                          Text(
-                                                            '${data.spot!} · ',
-                                                            style: SDSTextStyle.regular.copyWith(
-                                                                fontSize: 13,
-                                                                color: SDSColor.gray500
-                                                            ),
-                                                          ),
-                                                          Text(
-                                                            '$_time',
-                                                            style: SDSTextStyle.regular.copyWith(
-                                                                fontSize: 13,
-                                                                color: SDSColor.gray500
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    ),
-                                                    SizedBox(
-                                                      height: 2,
-                                                    ),
-                                                    //TODO: 가격
-                                                    Row(
-                                                      children: [
-                                                        Container(
-                                                            constraints: BoxConstraints(maxWidth: _size.width - 106),
+                                                          Container(
+                                                            constraints: BoxConstraints(maxWidth: _size.width - 158),
                                                             child: Text(
-                                                              f.format(data.price) + '원',
-                                                              maxLines: 1,
+                                                              data.title!,
+                                                              maxLines: 2,
                                                               overflow: TextOverflow.ellipsis,
-                                                              style: SDSTextStyle.bold.copyWith(
-                                                                  color: SDSColor.gray900,
-                                                                  fontSize: 17),
-                                                            )
-                                                        ),
-                                                      ],
-                                                    ),
-
-                                                  ],
-                                                ),
-                                              ),
-                                              //TODO: 조회수, 찜수, 댓글수
-                                              Row(
-                                                children: [
-                                                  //TODO: 조회수
-                                                  if(data.viewsCount!.toInt() != 0)
-                                                    Row(
-                                                      mainAxisAlignment: MainAxisAlignment.center,
-                                                      children: [
-                                                        ExtendedImage.asset(
-                                                          'assets/imgs/icons/icon_list_view.png',
-                                                          shape: BoxShape.rectangle,
-                                                          borderRadius: BorderRadius.circular(8),
-                                                          width: 16,
-                                                          height: 16,
-                                                          fit: BoxFit.cover,
-                                                        ),
-                                                        SizedBox(width: 2,),
-                                                        Text(
-                                                            '${data.viewsCount}',
-                                                            style: SDSTextStyle.regular.copyWith(
-                                                              fontSize: 13,
-                                                              color: SDSColor.gray500,
-                                                            )
-                                                        )
-                                                      ],
-                                                    ),
-                                                  //TODO: 찜수
-                                                  if(data.favoriteCount!.toInt() != 0)
-                                                    Padding(
-                                                      padding: const EdgeInsets.only(left: 6),
-                                                      child: Row(
-                                                        mainAxisAlignment: MainAxisAlignment.center,
-                                                        children: [
-                                                          (data.isFavorite == false)
-                                                              ? ExtendedImage.asset(
-                                                            'assets/imgs/icons/icon_list_scrap.png',
-                                                            shape: BoxShape.rectangle,
-                                                            borderRadius: BorderRadius.circular(8),
-                                                            width: 16,
-                                                            height: 16,
-                                                            fit: BoxFit.cover,
-                                                          )
-                                                              : ExtendedImage.asset(
-                                                            'assets/imgs/icons/icon_list_scrap_my.png',
-                                                            shape: BoxShape.rectangle,
-                                                            borderRadius: BorderRadius.circular(8),
-                                                            width: 16,
-                                                            height: 16,
-                                                            fit: BoxFit.cover,
-                                                          ),
-                                                          SizedBox(width: 2,),
-                                                          Text(
-                                                              '${data.favoriteCount.toString()}',
                                                               style: SDSTextStyle.regular.copyWith(
-                                                                fontSize: 13,
-                                                                color: SDSColor.gray500,
-                                                              )
-                                                          )
+                                                                  fontSize: 15,
+                                                                  color: SDSColor.gray900),
+                                                            ),
+                                                          ),
                                                         ],
                                                       ),
-                                                    ),
-                                                  //TODO: 댓글수
-                                                  if(data.commentCount!.toInt() != 0)
-                                                    Padding(
-                                                      padding: const EdgeInsets.only(left: 6),
-                                                      child: Row(
+                                                      //TODO: 장소, 시간
+                                                      Padding(
+                                                        padding: const EdgeInsets.only(top: 2),
+                                                        child: Row(
+                                                          mainAxisAlignment: MainAxisAlignment.start,
+                                                          children: [
+                                                            Text(
+                                                              '${data.spot!} · ',
+                                                              style: SDSTextStyle.regular.copyWith(
+                                                                  fontSize: 13,
+                                                                  color: SDSColor.gray500
+                                                              ),
+                                                            ),
+                                                            Text(
+                                                              '$_time',
+                                                              style: SDSTextStyle.regular.copyWith(
+                                                                  fontSize: 13,
+                                                                  color: SDSColor.gray500
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                      SizedBox(
+                                                        height: 2,
+                                                      ),
+                                                      //TODO: 가격
+                                                      Row(
+                                                        children: [
+                                                          Container(
+                                                              constraints: BoxConstraints(maxWidth: _size.width - 106),
+                                                              child: Text(
+                                                                f.format(data.price) + '원',
+                                                                maxLines: 1,
+                                                                overflow: TextOverflow.ellipsis,
+                                                                style: SDSTextStyle.bold.copyWith(
+                                                                    color: SDSColor.gray900,
+                                                                    fontSize: 17),
+                                                              )
+                                                          ),
+                                                        ],
+                                                      ),
+
+                                                    ],
+                                                  ),
+                                                ),
+                                                //TODO: 조회수, 찜수, 댓글수
+                                                Row(
+                                                  children: [
+                                                    //TODO: 조회수
+                                                    if(data.viewsCount!.toInt() != 0)
+                                                      Row(
                                                         mainAxisAlignment: MainAxisAlignment.center,
                                                         children: [
                                                           ExtendedImage.asset(
-                                                            'assets/imgs/icons/icon_list_reply.png',
+                                                            'assets/imgs/icons/icon_list_view.png',
                                                             shape: BoxShape.rectangle,
                                                             borderRadius: BorderRadius.circular(8),
                                                             width: 16,
@@ -482,7 +423,7 @@ class FleaMarketListView_search extends StatelessWidget {
                                                           ),
                                                           SizedBox(width: 2,),
                                                           Text(
-                                                              '${data.commentCount.toString()}',
+                                                              '${data.viewsCount}',
                                                               style: SDSTextStyle.regular.copyWith(
                                                                 fontSize: 13,
                                                                 color: SDSColor.gray500,
@@ -490,28 +431,89 @@ class FleaMarketListView_search extends StatelessWidget {
                                                           )
                                                         ],
                                                       ),
-                                                    ),
-                                                ],
-                                              ),
-                                            ],
-                                          ),
-                                        ],
-                                      ),
-                                    ],
+                                                    //TODO: 찜수
+                                                    if(data.favoriteCount!.toInt() != 0)
+                                                      Padding(
+                                                        padding: const EdgeInsets.only(left: 6),
+                                                        child: Row(
+                                                          mainAxisAlignment: MainAxisAlignment.center,
+                                                          children: [
+                                                            (data.isFavorite == false)
+                                                                ? ExtendedImage.asset(
+                                                              'assets/imgs/icons/icon_list_scrap.png',
+                                                              shape: BoxShape.rectangle,
+                                                              borderRadius: BorderRadius.circular(8),
+                                                              width: 16,
+                                                              height: 16,
+                                                              fit: BoxFit.cover,
+                                                            )
+                                                                : ExtendedImage.asset(
+                                                              'assets/imgs/icons/icon_list_scrap_my.png',
+                                                              shape: BoxShape.rectangle,
+                                                              borderRadius: BorderRadius.circular(8),
+                                                              width: 16,
+                                                              height: 16,
+                                                              fit: BoxFit.cover,
+                                                            ),
+                                                            SizedBox(width: 2,),
+                                                            Text(
+                                                                '${data.favoriteCount.toString()}',
+                                                                style: SDSTextStyle.regular.copyWith(
+                                                                  fontSize: 13,
+                                                                  color: SDSColor.gray500,
+                                                                )
+                                                            )
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    //TODO: 댓글수
+                                                    if(data.commentCount!.toInt() != 0)
+                                                      Padding(
+                                                        padding: const EdgeInsets.only(left: 6),
+                                                        child: Row(
+                                                          mainAxisAlignment: MainAxisAlignment.center,
+                                                          children: [
+                                                            ExtendedImage.asset(
+                                                              'assets/imgs/icons/icon_list_reply.png',
+                                                              shape: BoxShape.rectangle,
+                                                              borderRadius: BorderRadius.circular(8),
+                                                              width: 16,
+                                                              height: 16,
+                                                              fit: BoxFit.cover,
+                                                            ),
+                                                            SizedBox(width: 2,),
+                                                            Text(
+                                                                '${data.commentCount.toString()}',
+                                                                style: SDSTextStyle.regular.copyWith(
+                                                                  fontSize: 13,
+                                                                  color: SDSColor.gray500,
+                                                                )
+                                                            )
+                                                          ],
+                                                        ),
+                                                      ),
+                                                  ],
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                ),
-                                if (_fleamarketSearchViewModel.fleamarketListSearch.length != index + 1)
-                                  Divider(
-                                    color: SDSColor.gray100,
-                                    height: 32,
-                                    thickness: 1,
-                                  ),
-                              ],
-                            ),
-                          )
-                      );
-                    },
-                    padding: EdgeInsets.only(bottom: 80),
+                                  if (_fleamarketSearchViewModel.fleamarketListSearch.length != index + 1)
+                                    Divider(
+                                      color: SDSColor.gray100,
+                                      height: 32,
+                                      thickness: 1,
+                                    ),
+                                ],
+                              ),
+                            )
+                        );
+                      },
+                      padding: EdgeInsets.only(bottom: 80),
+                    ),
                   ),
                 )
                     : Container(),
