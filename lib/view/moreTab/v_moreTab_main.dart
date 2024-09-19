@@ -1,16 +1,17 @@
-import 'package:com.snowlive/screens/more/friend/v_snowliveDetailPage.dart';
-import 'package:com.snowlive/viewmodel/vm_crewDetail.dart';
-import 'package:com.snowlive/viewmodel/vm_crewMemberList.dart';
+import 'package:com.snowlive/routes/routes.dart';
+import 'package:com.snowlive/util/util_1.dart';
+import 'package:com.snowlive/view/moreTab/v_noticeListPage.dart';
+import 'package:com.snowlive/view/moreTab/v_resortTab.dart';
+import 'package:com.snowlive/view/moreTab/v_snowliveDetailPage.dart';
+import 'package:com.snowlive/viewmodel/crew/vm_crewDetail.dart';
+import 'package:com.snowlive/viewmodel/crew/vm_crewMemberList.dart';
+import 'package:com.snowlive/viewmodel/friend/vm_friendDetail.dart';
+import 'package:com.snowlive/viewmodel/friend/vm_friendList.dart';
+import 'package:com.snowlive/viewmodel/vm_user.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:com.snowlive/screens/more/v_setting_moreTab.dart';
-import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
-import '../../routes/routes.dart';
-import '../../util/util_1.dart';
-import '../../viewmodel/vm_friendDetail.dart';
-import '../../viewmodel/vm_friendList.dart';
-import '../../viewmodel/vm_user.dart';
+import 'package:com.snowlive/view/moreTab/v_setting_moreTab.dart';
 
 class MoreTabMainView extends StatelessWidget {
   MoreTabMainView({Key? key}) : super(key: key);
@@ -120,7 +121,7 @@ class MoreTabMainView extends StatelessWidget {
                                             fontSize: 15,
                                           ),
                                         ),
-                                        if (_userViewModel.user.state_msg != '')
+                                        if (_userViewModel.user.state_msg != '' && _userViewModel.user.state_msg != null)
                                           Text(
                                             _userViewModel.user.state_msg,
                                             style: TextStyle(
@@ -203,28 +204,6 @@ class MoreTabMainView extends StatelessWidget {
                         ),
                       ],
                     ),
-                    Column(
-                      children: [
-                        GestureDetector(
-                          onTap: (){
-
-                          },
-                          child: Padding(
-                            padding: const EdgeInsets.only(left: 8),
-                            child: Column(
-                              children: [
-                                Image.asset('assets/imgs/icons/icon_moretab_event.png', width: 40),
-                                SizedBox(height: 6),
-                                Text('이벤트', style: TextStyle(
-                                    fontSize: 14,
-                                    color: Color(0xFF555555)
-                                ),)
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
                   ],
                 ),
               ),
@@ -246,7 +225,7 @@ class MoreTabMainView extends StatelessWidget {
                 contentPadding: EdgeInsets.symmetric(horizontal: 16),
                 minVerticalPadding: 20,
                 onTap: () {
-
+                  //자주가는스키장
                 },
                 title: Text(
                   '자주가는 스키장',
@@ -265,6 +244,7 @@ class MoreTabMainView extends StatelessWidget {
                 contentPadding: EdgeInsets.symmetric(horizontal: 16),
                 minVerticalPadding: 20,
                 onTap: () {
+                  Get.to(ResortTab());
                 },
                 title: Text(
                   '스키장 모아보기',
@@ -295,7 +275,7 @@ class MoreTabMainView extends StatelessWidget {
                 contentPadding: EdgeInsets.symmetric(horizontal: 16),
                 minVerticalPadding: 20,
                 onTap: () {
-
+                  Get.to(NoticeList());
                 },
                 title: Text(
                   '공지사항',

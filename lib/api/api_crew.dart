@@ -89,7 +89,7 @@ class CrewAPI {
     bool? iskusbf,
     String? baseResortId,
   }) async {
-    final uri = Uri.parse('$baseUrl/crew-list/').replace(queryParameters: {
+    final uri = Uri.parse('$baseUrl/').replace(queryParameters: {
       if (crewName != null) 'crew_name': crewName,
       if (iskusbf != null) 'iskusbf': iskusbf.toString(),
       if (baseResortId != null) 'base_resort_id': baseResortId,

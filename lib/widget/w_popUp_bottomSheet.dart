@@ -1,24 +1,16 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:com.snowlive/controller/public/vm_urlLauncherController.dart';
+import 'package:com.snowlive/util/util_1.dart';
+import 'package:com.snowlive/viewmodel/vm_user.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:package_info_plus/package_info_plus.dart';
-import 'dart:io' show Platform, exit;
-
-import '../controller/user/vm_userModelController.dart';
-
-
 
 final ref = FirebaseFirestore.instance;
 final auth = FirebaseAuth.instance;
 
-//TODO: Dependency Injection************************************************
-UserModelController _userModelController = Get.find<UserModelController>();
-UrlLauncherController _urlLauncherController = Get.find<UrlLauncherController>();
-//TODO: Dependency Injection************************************************
+UserViewModel _userViewModel = Get.find<UserViewModel>();
 
 Future<void> bottomPopUp(BuildContext context) async {
 
@@ -83,8 +75,8 @@ Future<void> bottomPopUp(BuildContext context) async {
   await getMinusUidList();
 
     if (addUidBoolean==true &&
-        addUidList.contains(_userModelController.uid) &&
-        !addUidViewer.contains(_userModelController.uid)) {
+        addUidList.contains(_userViewModel.user.user_id) &&
+        !addUidViewer.contains(_userViewModel.user.user_id)) {
 
       showModalBottomSheet(
         context: context,
@@ -188,9 +180,9 @@ Future<void> bottomPopUp(BuildContext context) async {
                                 await FirebaseAnalytics.instance.logEvent(
                                   name: 'tap_resortHome_bottom_addUid',
                                   parameters: <String, Object>{
-                                    'user_id': _userModelController.uid!,
-                                    'user_name': _userModelController.displayName!,
-                                    'user_resort': _userModelController.favoriteResort!
+                                    'user_id': _userViewModel.user.user_id,
+                                    'user_name': _userViewModel.user.displayName!,
+                                    'user_resort': _userViewModel.user.favorite_resort
                                   },
                                 );
                               }catch(e, stackTrace){
@@ -198,7 +190,7 @@ Future<void> bottomPopUp(BuildContext context) async {
                                 print('Stack trace: $stackTrace');
                               }
 
-                              _urlLauncherController.otherShare(contents: '${addUidLandingUrl}');
+                              otherShare(contents: '${addUidLandingUrl}');
                             },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.white,
@@ -223,8 +215,8 @@ Future<void> bottomPopUp(BuildContext context) async {
       );
 
     } else if(isTotal == true &&
-        !minusUidList.contains(_userModelController.uid)&&
-    !totalViewer.contains(_userModelController.uid)){
+        !minusUidList.contains(_userViewModel.user.user_id)&&
+    !totalViewer.contains(_userViewModel.user.user_id)){
 
 
       showModalBottomSheet(
@@ -329,9 +321,9 @@ Future<void> bottomPopUp(BuildContext context) async {
                                 await FirebaseAnalytics.instance.logEvent(
                                   name: 'tap_resortHome_bottom_total',
                                   parameters: <String, Object>{
-                                    'user_id': _userModelController.uid!,
-                                    'user_name': _userModelController.displayName!,
-                                    'user_resort': _userModelController.favoriteResort!
+                                    'user_id': _userViewModel.user.user_id!,
+                                    'user_name': _userViewModel.user.displayName!,
+                                    'user_resort': _userViewModel.user.favorite_resort!
                                   },
                                 );
                               }catch(e, stackTrace){
@@ -339,7 +331,7 @@ Future<void> bottomPopUp(BuildContext context) async {
                                 print('Stack trace: $stackTrace');
                               }
 
-                              _urlLauncherController.otherShare(contents: '${totalLandingUrl}');
+                              otherShare(contents: '${totalLandingUrl}');
                             },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.white,

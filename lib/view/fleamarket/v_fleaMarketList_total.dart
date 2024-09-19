@@ -1,5 +1,10 @@
+import 'package:com.snowlive/data/snowliveDesignStyle.dart';
+import 'package:com.snowlive/model/m_fleamarket.dart';
 import 'package:com.snowlive/routes/routes.dart';
-import 'package:com.snowlive/viewmodel/vm_fleamarketList.dart';
+import 'package:com.snowlive/util/util_1.dart';
+import 'package:com.snowlive/viewmodel/fleamarket/vm_fleamarketDetail.dart';
+import 'package:com.snowlive/viewmodel/fleamarket/vm_fleamarketList.dart';
+import 'package:com.snowlive/viewmodel/vm_user.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -7,11 +12,6 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import '../../model/m_fleamarket.dart';
-import '../../screens/snowliveDesignStyle.dart';
-import '../../util/util_1.dart';
-import '../../viewmodel/vm_fleamarketDetail.dart';
-import '../../viewmodel/vm_user.dart';
 
 class FleaMarketListView_total extends StatelessWidget {
 
@@ -1589,6 +1589,7 @@ class FleaMarketListView_total extends StatelessWidget {
                                                       height: 110,
                                                       cacheHeight: 250,
                                                       fit: BoxFit.cover,
+                                                      handleLoadingProgress: true,
                                                     ),
                                                   if (data.photos!.length == 0)
                                                     ExtendedImage.asset(

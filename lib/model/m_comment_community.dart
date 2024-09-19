@@ -1,4 +1,3 @@
-import 'm_communityList.dart';
 
 class CommentResponseCommunity {
   int? count;

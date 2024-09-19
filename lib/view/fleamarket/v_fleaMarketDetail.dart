@@ -1,21 +1,19 @@
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:com.snowlive/screens/snowliveDesignStyle.dart';
-import 'package:com.snowlive/viewmodel/vm_fleamarketCommentDetail.dart';
-import 'package:com.snowlive/viewmodel/vm_fleamarketDetail.dart';
-import 'package:com.snowlive/viewmodel/vm_fleamarketList.dart';
-import 'package:com.snowlive/viewmodel/vm_fleamarketUpdate.dart';
-import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
+import 'package:com.snowlive/data/imgaUrls/Data_url_image.dart';
+import 'package:com.snowlive/data/snowliveDesignStyle.dart';
+import 'package:com.snowlive/routes/routes.dart';
+import 'package:com.snowlive/util/util_1.dart';
+import 'package:com.snowlive/view/fleamarket/v_fleaMarketImageScreen.dart';
+import 'package:com.snowlive/viewmodel/fleamarket/vm_fleamarketCommentDetail.dart';
+import 'package:com.snowlive/viewmodel/fleamarket/vm_fleamarketDetail.dart';
+import 'package:com.snowlive/viewmodel/fleamarket/vm_fleamarketList.dart';
+import 'package:com.snowlive/viewmodel/fleamarket/vm_fleamarketUpdate.dart';
+import 'package:com.snowlive/viewmodel/friend/vm_friendDetail.dart';
+import 'package:com.snowlive/viewmodel/vm_user.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:com.snowlive/screens/fleaMarket/v_fleaMarketImageScreen.dart';
-import 'package:shimmer/shimmer.dart';
-import '../../data/imgaUrls/Data_url_image.dart';
-import '../../routes/routes.dart';
-import '../../util/util_1.dart';
-import '../../viewmodel/vm_friendDetail.dart';
-import '../../viewmodel/vm_user.dart';
 
 class FleaMarketDetailView extends StatefulWidget {
 

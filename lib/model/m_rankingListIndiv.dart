@@ -1,23 +1,14 @@
 class RankingListIndivResponse {
   MyRankingInfo? myRankingInfo;
-  List<RankingUser>? rankingUsers; // List로 수정
+  Results? results; // Results 클래스를 사용하여 results를 저장
 
-  RankingListIndivResponse({this.myRankingInfo, this.rankingUsers});
+  RankingListIndivResponse({this.myRankingInfo, this.results});
 
   RankingListIndivResponse.fromJson(Map<String, dynamic> json) {
-    myRankingInfo = json['my_ranking_info'] != null
-        ? MyRankingInfo.fromJson(json['my_ranking_info'])
-        : null;
-    // JSON에서 rankingUsers를 가져와 List로 변환
-    if (json['results'] != null) {
-      rankingUsers = [];
-      json['results'].forEach((v) {
-        rankingUsers?.add(RankingUser.fromJson(v));
-      });
-    }
+    myRankingInfo = MyRankingInfo.fromJson(json['my_ranking_info']);
+    results = Results.fromJson(json['results']); // results를 Results 클래스로 변환
   }
 }
-
 
 class MyRankingInfo {
   int? userId;
@@ -65,21 +56,18 @@ class Results {
   int? count;
   String? next;
   String? previous;
-  List<RankingUser>? rankingUsers;
+  List<RankingUser> rankingUsers; // 기본값을 빈 리스트로 설정
 
-  Results({this.count, this.next, this.previous, this.rankingUsers});
+  Results({this.count, this.next, this.previous, List<RankingUser>? rankingUsers})
+      : rankingUsers = rankingUsers ?? []; // rankingUsers를 빈 리스트로 초기화
 
-  Results.fromJson(Map<String, dynamic> json) {
-    count = json['count'];
-    next = json['next'];
-    previous = json['previous'];
-    if (json['results'] != null) {
-      rankingUsers = [];
-      json['results'].forEach((v) {
-        rankingUsers?.add(RankingUser.fromJson(v));
-      });
-    }
-  }
+  Results.fromJson(Map<String, dynamic> json)
+      : count = json['count'],
+        next = json['next'],
+        previous = json['previous'],
+        rankingUsers = (json['results'] as List<dynamic>?)
+            ?.map((v) => RankingUser.fromJson(v))
+            .toList() ?? []; // JSON에서 results를 가져와 List로 변환
 }
 
 class RankingUser {

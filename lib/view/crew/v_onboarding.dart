@@ -92,7 +92,7 @@ class OnBoardingCrewMainView extends StatelessWidget {
                   Expanded(
                     child: ElevatedButton(
                       onPressed: () async {
-
+                        Get.toNamed(AppRoutes.searchCrew);
                       },
                       child: Text(
                         '가입하기',

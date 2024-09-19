@@ -1,32 +1,19 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+
+import 'package:com.snowlive/viewmodel/friend/vm_friendDetail.dart';
+import 'package:com.snowlive/viewmodel/friend/vm_friendList.dart';
+import 'package:com.snowlive/viewmodel/vm_user.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
-import '../../../../controller/friends/vm_streamController_friend.dart';
-import '../../../../controller/user/vm_userModelController.dart';
-import '../../viewmodel/vm_friendDetail.dart';
-import '../../viewmodel/vm_friendList.dart';
-import '../../viewmodel/vm_user.dart';
 
-class FriendBlockListView extends StatefulWidget {
-  const FriendBlockListView({Key? key}) : super(key: key);
+class FriendBlockListView extends StatelessWidget {
 
-  @override
-  State<FriendBlockListView> createState() => _FriendBlockListViewState();
-}
-
-class _FriendBlockListViewState extends State<FriendBlockListView> {
-  //TODO: Dependency Injection**************************************************
-  UserModelController _userModelController = Get.find<UserModelController>();
-  StreamController_Friend _streamController_Friend = Get.find<StreamController_Friend>();
-  //TODO: Dependency Injection**************************************************
-
-  FriendListViewModel _friendListViewModel = Get.find<FriendListViewModel>();
-  FriendDetailViewModel _friendDetailViewModel = Get.find<FriendDetailViewModel>();
-  UserViewModel _userViewModel = Get.find<UserViewModel>();
+  final FriendListViewModel _friendListViewModel = Get.find<FriendListViewModel>();
+  final FriendDetailViewModel _friendDetailViewModel = Get.find<FriendDetailViewModel>();
+  final UserViewModel _userViewModel = Get.find<UserViewModel>();
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(

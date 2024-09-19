@@ -1,16 +1,14 @@
+import 'dart:ui';
+
 class CrewListResponse {
   List<Crew>? results;
+
   CrewListResponse({
     this.results,
   });
 
-  CrewListResponse.fromJson(Map<String, dynamic> json) {
-    if (json['results'] != null) {
-      results = [];
-      json['results'].forEach((v) {
-        results?.add(Crew.fromJson(v));
-      });
-    }
+  CrewListResponse.fromJson(List<dynamic> jsonList) {
+    results = jsonList.map((v) => Crew.fromJson(v)).toList();
   }
 }
 
@@ -49,3 +47,17 @@ class Crew {
     createdDate = json['created_date'];
   }
 }
+
+
+List<Color?> crewColorList = [
+  Color(0xFFFFA835),
+  Color(0xFF2EB6FF),
+  Color(0xFFFF54A0),
+  Color(0xFF10BB88),
+  Color(0xFFB173FF),
+  Color(0xFFFF5F18),
+  Color(0xFF326EF6),
+  Color(0xFFEF0069),
+  Color(0xFF019D78),
+  Color(0xFF772ED3),
+];

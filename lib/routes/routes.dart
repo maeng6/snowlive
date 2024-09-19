@@ -1,6 +1,16 @@
-import 'package:com.snowlive/screens/common/v_profileImageScreen.dart';
-import 'package:com.snowlive/screens/resort/v_resortHome.dart';
-import 'package:com.snowlive/view/bulletin/free/v_community_Bulletin_Detail.dart';
+import 'package:com.snowlive/view/community/free/v_community_Bulletin_Detail.dart';
+import 'package:com.snowlive/view/community/free/v_community_bulletin_Upload.dart';
+import 'package:com.snowlive/view/community/free/v_community_bulletin_update.dart';
+import 'package:com.snowlive/view/community/free/v_community_comment_detail.dart';
+import 'package:com.snowlive/view/community/v_community_main.dart';
+import 'package:com.snowlive/view/crew/v_searchCrew.dart';
+import 'package:com.snowlive/view/fleamarket/v_fleaMarketCommentDetail.dart';
+import 'package:com.snowlive/view/fleamarket/v_fleaMarketList_search.dart';
+import 'package:com.snowlive/view/fleamarket/v_fleamarketUpdate.dart';
+import 'package:com.snowlive/view/fleamarket/v_fleamarketUpload.dart';
+import 'package:com.snowlive/view/friend/v_friendBlockList.dart';
+import 'package:com.snowlive/view/friend/v_invitation_friend.dart';
+import 'package:com.snowlive/view/v_profileImageScreen.dart';
 import 'package:com.snowlive/view/crew/v_crewHome.dart';
 import 'package:com.snowlive/view/crew/v_crewMain.dart';
 import 'package:com.snowlive/view/crew/v_crewMember.dart';
@@ -16,21 +26,12 @@ import 'package:com.snowlive/view/friend/v_friendDetail.dart';
 import 'package:com.snowlive/view/friend/v_friendDetailUpdate.dart';
 import 'package:com.snowlive/view/friend/v_friendList.dart';
 import 'package:com.snowlive/view/friend/v_friend_setting.dart';
-import 'package:com.snowlive/view/v_login.dart';
+import 'package:com.snowlive/view/login/v_login.dart';
 import 'package:com.snowlive/view/friend/v_searchFriend.dart';
 import 'package:com.snowlive/view/onboarding/v_setProfile.dart';
 import 'package:com.snowlive/view/onboarding/v_tos.dart';
+import 'package:com.snowlive/view/resortHome/v_resortHome.dart';
 import 'package:get/get.dart';
-import '../view/bulletin/free/v_community_bulletin_update.dart';
-import '../view/bulletin/free/v_community_comment_detail.dart';
-import '../view/bulletin/free/v_community_bulletin_Upload.dart';
-import '../view/bulletin/v_community_main.dart';
-import '../view/fleamarket/v_fleaMarketCommentDetail.dart';
-import '../view/fleamarket/v_fleaMarketList_search.dart';
-import '../view/fleamarket/v_fleamarketUpdate.dart';
-import '../view/fleamarket/v_fleamarketUpload.dart';
-import '../view/friend/v_friendBlockList.dart';
-import '../view/friend/v_invitation_friend.dart';
 import 'bindings.dart';
 
 class AppRoutes {
@@ -68,6 +69,7 @@ class AppRoutes {
   static const String crewMember = '/crewMember';
   static const String rankingHome = '/rankingHome';
   static const String crewRecordRoom = '/crewRecordRoom';
+  static const String searchCrew = '/searchCrew';
 
 
 
@@ -81,7 +83,7 @@ class AppRoutes {
     ),
     GetPage(
       name: resortHome,
-      page: () => ResortHome(),
+      page: () => ResortHomeView(),
       binding: ResortHomeBinding(),
     ),
     GetPage(
@@ -225,6 +227,10 @@ class AppRoutes {
     GetPage(
       name: crewRecordRoom,
       page: () => CrewRecordRoomView(),
+    ),
+    GetPage(
+      name: searchCrew,
+      page: () => SearchCrewView(),
     ),
   ];
 }

@@ -1,18 +1,17 @@
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:com.snowlive/data/imgaUrls/Data_url_image.dart';
+import 'package:com.snowlive/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/routes/routes.dart';
 import 'package:com.snowlive/view/friend/v_profilePageCalendar.dart';
-import 'package:com.snowlive/viewmodel/vm_friendDetail.dart';
+import 'package:com.snowlive/viewmodel/friend/vm_friendDetail.dart';
+import 'package:com.snowlive/viewmodel/friend/vm_friendDetailUpdate.dart';
+import 'package:com.snowlive/viewmodel/vm_user.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import '../../../../data/imgaUrls/Data_url_image.dart';
-import '../../screens/snowliveDesignStyle.dart';
-import '../../viewmodel/vm_friendDetailUpdate.dart';
-import '../../viewmodel/vm_user.dart';
 
 class FriendDetailView extends StatelessWidget {
 

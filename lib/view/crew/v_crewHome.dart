@@ -1,17 +1,15 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:com.snowlive/routes/routes.dart';
-import 'package:com.snowlive/screens/snowliveDesignStyle.dart';
-import 'package:com.snowlive/viewmodel/vm_crewDetail.dart';
-import 'package:com.snowlive/screens/LiveCrew/v_crewTodayPage.dart';
-import 'package:com.snowlive/viewmodel/vm_crewMemberList.dart';
-import 'package:com.snowlive/viewmodel/vm_crewRecordRoom.dart';
+import 'package:com.snowlive/data/snowliveDesignStyle.dart';
+import 'package:com.snowlive/viewmodel/crew/vm_crewDetail.dart';
+import 'package:com.snowlive/viewmodel/crew/vm_crewMemberList.dart';
+import 'package:com.snowlive/viewmodel/crew/vm_crewRecordRoom.dart';
 import 'package:com.snowlive/viewmodel/vm_user.dart';
+import 'package:com.snowlive/widget/w_verticalDivider.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:com.snowlive/screens/common/v_profileImageScreen.dart';
-import '../../widget/w_verticalDivider.dart';
 
 class CrewHomeView extends StatelessWidget {
   CrewHomeView({Key? key}) : super(key: key);
@@ -69,7 +67,7 @@ class CrewHomeView extends StatelessWidget {
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(16),
                     child: Container(
-                      color: Color(int.parse(_crewDetailViewModel.color, radix: 16) + 0xFF000000),
+                      color: Color(int.parse(_crewDetailViewModel.color.replaceFirst('0X', ''), radix: 16)),
                       padding: const EdgeInsets.only(top: 16, bottom: 16),
                       child: Column(
                         children: [

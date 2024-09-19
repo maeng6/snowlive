@@ -1,23 +1,26 @@
 import 'dart:io';
-import 'package:com.snowlive/viewmodel/vm_fleamarketUpload.dart';
+import 'package:com.snowlive/data/snowliveDesignStyle.dart';
+import 'package:com.snowlive/viewmodel/fleamarket/vm_fleamarketList.dart';
+import 'package:com.snowlive/viewmodel/fleamarket/vm_fleamarketUpload.dart';
+import 'package:com.snowlive/viewmodel/vm_user.dart';
 import 'package:com.snowlive/widget/w_category_main_fleamarket.dart';
+import 'package:com.snowlive/widget/w_category_sub_board_fleamarket.dart';
+import 'package:com.snowlive/widget/w_category_sub_ski_fleamarket.dart';
 import 'package:com.snowlive/widget/w_tradeMethod_fleamarket.dart';
+import 'package:com.snowlive/widget/w_tradeSpot_fleamarket.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import '../../screens/snowliveDesignStyle.dart';
-import '../../viewmodel/vm_fleamarketList.dart';
-import '../../viewmodel/vm_user.dart';
-import '../../widget/w_category_sub_board_fleamarket.dart';
-import '../../widget/w_category_sub_ski_fleamarket.dart';
-import '../../widget/w_tradeSpot_fleamarket.dart';
+
+import '../../viewmodel/fleamarket/vm_fleamarketUpdate.dart';
 
 class FleamarketUploadView extends StatelessWidget {
 
   final FleamarketUploadViewModel _fleamarketUploadViewModel = Get.find<FleamarketUploadViewModel>();
   final UserViewModel _userViewModel = Get.find<UserViewModel>();
   final FleamarketListViewModel _fleamarketListViewModel = Get.find<FleamarketListViewModel>();
+  final FleamarketUpdateViewModel _fleamarketUpdateViewModel = Get.find<FleamarketUpdateViewModel>();
 
   final FocusNode titleFocusNode = FocusNode();
   final FocusNode productNameFocusNode = FocusNode();
@@ -980,10 +983,27 @@ class FleamarketUploadView extends StatelessWidget {
                                 && _fleamarketUploadViewModel.selectedTradeMethod != '거래방법 선택'
                                 && _fleamarketUploadViewModel.selectedTradeSpot != '거래장소 선택'
                                 && _fleamarketUploadViewModel.textEditingController_desc.text != ''){
+                            await _fleamarketUploadViewModel.uploadFleamarket(
+                                {
+                                  "user_id": _userViewModel.user.user_id,
+                                  "product_name": _fleamarketUploadViewModel.textEditingController_productName.text,
+                                  "category_main": _fleamarketUploadViewModel.selectedCategoryMain,
+                                  "category_sub": _fleamarketUploadViewModel.selectedCategorySub,
+                                  "price": _fleamarketUploadViewModel.itemPriceTextEditingController.text,
+                                  "negotiable": _fleamarketUploadViewModel.negotiable,
+                                  "method": _fleamarketUploadViewModel.selectedTradeMethod,
+                                  "spot": _fleamarketUploadViewModel.selectedTradeSpot,
+                                  "sns_url": _fleamarketUploadViewModel.textEditingController_sns.text,
+                                  "title": _fleamarketUploadViewModel.textEditingController_title.text,
+                                  "description": _fleamarketUploadViewModel.textEditingController_desc.text,
+                                },
+                                []
+                            );
                             await _fleamarketUploadViewModel.getImageUrlList(
                                 newImages: _fleamarketUploadViewModel.imageFiles,
-                                user_id: _userViewModel.user.user_id);
-                            await _fleamarketUploadViewModel.uploadFleamarket(
+                                pk: _fleamarketUploadViewModel.pk);
+                            await _fleamarketUpdateViewModel.updateFleamarket(
+                              _fleamarketUploadViewModel.pk,
                                 {
                                   "user_id": _userViewModel.user.user_id,
                                   "product_name": _fleamarketUploadViewModel.textEditingController_productName.text,

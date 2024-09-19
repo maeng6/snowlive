@@ -1,14 +1,11 @@
 import 'package:com.snowlive/routes/routes.dart';
 import 'package:com.snowlive/view/crew/v_crewHome.dart';
 import 'package:com.snowlive/view/crew/v_crewMember.dart';
-import 'package:com.snowlive/viewmodel/vm_crewMain.dart';
+import 'package:com.snowlive/viewmodel/crew/vm_crewMain.dart';
 import 'package:com.snowlive/viewmodel/vm_mainHome.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import '../../controller/user/vm_userModelController.dart';
-import '../../controller/liveCrew/vm_liveCrewModelController.dart';
-import '../../controller/liveCrew/vm_streamController_liveCrew.dart';
 
 class CrewMainView extends StatelessWidget {
 
@@ -20,10 +17,6 @@ class CrewMainView extends StatelessWidget {
     final Size _size = MediaQuery.of(context).size;
     final double _statusBarSize = MediaQuery.of(context).padding.top;
 
-    //TODO: Dependency Injection
-    final UserModelController _userModelController = Get.find<UserModelController>();
-    final LiveCrewModelController _liveCrewModelController = Get.find<LiveCrewModelController>();
-    final StreamController_liveCrew _streamController_liveCrew = Get.find<StreamController_liveCrew>();
 
     return Scaffold(
       backgroundColor: Colors.white,

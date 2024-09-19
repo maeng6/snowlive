@@ -1,5 +1,7 @@
 import 'dart:io' as io show File;
 
+import 'package:com.snowlive/util/util_1.dart';
+import 'package:com.snowlive/viewmodel/util/vm_settingsController.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:flutter_quill/extensions.dart' show isAndroid, isIOS, isWeb;
@@ -9,9 +11,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart' show getApplicationDocumentsDirectory;
-
-import '../../../controller/public/vm_timeStampController.dart';
-import '../../../controller/public/vm_settingController.dart';
 
 class CommunityQuillToolbar extends StatelessWidget {
   const CommunityQuillToolbar({
@@ -88,7 +87,6 @@ class CommunityQuillToolbar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final SettingsController settingsController = Get.put(SettingsController());
-    final TimeStampController timeStampController = Get.put(TimeStampController());
 
     return Obx(() {
       if (settingsController.useCustomQuillToolbar.value) {
@@ -220,7 +218,7 @@ class CommunityQuillToolbar extends StatelessWidget {
             QuillToolbarCustomButtonOptions(
               icon: const Icon(Icons.add_alarm_rounded),
               onPressed: () {
-                final formattedDate = timeStampController.yyyymmddFormat(DateTime.now());
+                final formattedDate = GetDatetime().yyyymmddFormat(DateTime.now());
                 controller.document.insert(
                   controller.selection.extentOffset,
                   formattedDate,
