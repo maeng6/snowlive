@@ -118,7 +118,6 @@ class FriendListViewModel extends GetxController {
         // 응답 데이터가 단일 객체라고 가정하고 처리
         final Map<String, dynamic> responseData = response.data as Map<String, dynamic>;
 
-        print(responseData);
         // SeachFriend 모델에 데이터를 매핑
 
         // 여기서 _blockUserList 대신 적절한 상태 변수에 searchFriend 할당

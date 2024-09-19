@@ -15,7 +15,6 @@ class CommunityAPI {
       headers: {'Content-Type': 'application/json'},
     );
 
-    print(response.statusCode);
 
     if (response.statusCode == 201) {
       return ApiResponse.success(json.decode(utf8.decode(response.bodyBytes)));
@@ -48,7 +47,6 @@ class CommunityAPI {
     );
 
     final response = await http.get(uri);
-    print(response.body);
 
     if (response.statusCode == 200) {
       final data = json.decode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;

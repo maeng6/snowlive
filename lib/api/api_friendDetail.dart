@@ -110,7 +110,6 @@ class FriendDetailAPI {
       final data = json.decode(utf8.decode(response.bodyBytes));
       return ApiResponse.success(data);
     } else {
-      print(response.body);
       final data = json.decode(utf8.decode(response.bodyBytes));
       return ApiResponse.error(data);
     }
