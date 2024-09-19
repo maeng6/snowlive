@@ -9,8 +9,6 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:com.snowlive/controller/liveCrew/vm_liveCrewModelController.dart';
-import 'package:com.snowlive/controller/user/vm_userModelController.dart';
 import '../widget/w_fullScreenDialog.dart';
 import 'package:image/image.dart' as img;
 import 'package:path/path.dart' as p;
@@ -23,10 +21,6 @@ class ImageController extends GetxController {
   final auth = FirebaseAuth.instance;
   List<String> imagesUrlList = [];
 
-  //TODO : ****************************************************************
-  UserModelController _userModelController = Get.find<UserModelController>();
-  LiveCrewModelController _liveCrewModelController = Get.find<LiveCrewModelController>();
-  //TODO : ****************************************************************
 
   Future<List<String>> setNewMultiImage(
       {required List<XFile> newImages, required user_id}) async {
@@ -176,273 +170,45 @@ class ImageController extends GetxController {
   }
 
 
+  // Future<void> deleteProfileImage() async{
+  //   String? uid = _userModelController.uid;
+  //   await FirebaseStorage.instance.ref().child('images/profile/$uid.jpg').delete();
+  // }
 
-  Future<List<String>> setNewMultiImage_bulletinRoom(List<XFile> newImages,bulletinRoomCount) async {
-    int i =0;
-    var downloadUrlsingle;
-    String? uid = await FlutterSecureStorage().read(key: 'uid');
-    var metaData = SettableMetadata(contentType: 'image/jpeg');
-    List<String> downloadUrl = [];
-    if (newImages != null) {
-
-      while(i<newImages.length) {
-        Reference ref = FirebaseStorage.instance.ref('images/bulletinRoom/$uid#$bulletinRoomCount/#$i.jpg');
-        await ref.putFile(File(newImages[i].path), metaData);
-        downloadUrlsingle = await ref.getDownloadURL();
-        downloadUrl.add(downloadUrlsingle);
-        i++;
-      }
-    } else {
-      CustomFullScreenDialog.cancelDialog();
-    }
-    imagesUrlList.addAll(downloadUrl);
-    return downloadUrl;
-  }
-
-  Future<List<String>> setNewMultiImage_bulletinCrew(List<XFile> newImages,bulletinCrewCount) async {
-    int i =0;
-    var downloadUrlsingle;
-    String? uid = await FlutterSecureStorage().read(key: 'uid');
-    var metaData = SettableMetadata(contentType: 'image/jpeg');
-    List<String> downloadUrl = [];
-    if (newImages != null) {
-
-      while(i<newImages.length) {
-        Reference ref = FirebaseStorage.instance.ref('images/bulletinCrew/$uid#$bulletinCrewCount/#$i.jpg');
-        await ref.putFile(File(newImages[i].path), metaData);
-        downloadUrlsingle = await ref.getDownloadURL();
-        downloadUrl.add(downloadUrlsingle);
-        i++;
-      }
-    } else {
-      CustomFullScreenDialog.cancelDialog();
-    }
-    imagesUrlList.addAll(downloadUrl);
-    return downloadUrl;
-  }
-
-  Future<List<String>> setNewMultiImage_bulletinEvent(List<XFile> newImages,bulletinEventCount) async {
-    int i =0;
-    var downloadUrlsingle;
-    String? uid = await FlutterSecureStorage().read(key: 'uid');
-    var metaData = SettableMetadata(contentType: 'image/jpeg');
-    List<String> downloadUrl = [];
-    if (newImages != null) {
-
-      while(i<newImages.length) {
-        Reference ref = FirebaseStorage.instance.ref('images/bulletinEvent/$uid#$bulletinEventCount/#$i.jpg');
-        await ref.putFile(File(newImages[i].path), metaData);
-        downloadUrlsingle = await ref.getDownloadURL();
-        downloadUrl.add(downloadUrlsingle);
-        i++;
-      }
-    } else {
-      CustomFullScreenDialog.cancelDialog();
-    }
-    imagesUrlList.addAll(downloadUrl);
-    return downloadUrl;
-  }
-
-  Future<String> setNewImage_bulletinEvent(XFile newImage, bulletinEventCount) async {
-    String? uid = await FlutterSecureStorage().read(key: 'uid');
-    var metaData = SettableMetadata(contentType: 'image/jpeg');
-    String downloadUrl = '';
-    if (newImage != null) {
-      Reference ref = FirebaseStorage.instance.ref('images/bulletinEvent/$uid#$bulletinEventCount.jpg');
-      await ref.putFile(File(newImage.path), metaData);
-      downloadUrl = await ref.getDownloadURL();
-      print("이미지 업로드 완료: $downloadUrl"); // 로그 추가
-    } else {
-      CustomFullScreenDialog.cancelDialog();
-    }
-    return downloadUrl;
-  }
-
-  Future<List<String>> setNewMultiImage_bulletinFree(List<XFile> newImages,bulletinFreeCount) async {
-    int i =0;
-    var downloadUrlsingle;
-    String? uid = await FlutterSecureStorage().read(key: 'uid');
-    var metaData = SettableMetadata(contentType: 'image/jpeg');
-    List<String> downloadUrl = [];
-    if (newImages != null) {
-
-      while(i<newImages.length) {
-        Reference ref = FirebaseStorage.instance.ref('images/bulletinFree/$uid#$bulletinFreeCount/#$i.jpg');
-        await ref.putFile(File(newImages[i].path), metaData);
-        downloadUrlsingle = await ref.getDownloadURL();
-        downloadUrl.add(downloadUrlsingle);
-        i++;
-      }
-    } else {
-      CustomFullScreenDialog.cancelDialog();
-    }
-    imagesUrlList.addAll(downloadUrl);
-    return downloadUrl;
-  }
-
-  Future<List<String>> setNewMultiImage_bulletinLost(List<XFile> newImages,bulletinLostCount) async {
-    int i =0;
-    var downloadUrlsingle;
-    String? uid = await FlutterSecureStorage().read(key: 'uid');
-    var metaData = SettableMetadata(contentType: 'image/jpeg');
-    List<String> downloadUrl = [];
-    if (newImages != null) {
-
-      while(i<newImages.length) {
-        Reference ref = FirebaseStorage.instance.ref('images/bulletinLost/$uid#$bulletinLostCount/#$i.jpg');
-        await ref.putFile(File(newImages[i].path), metaData);
-        downloadUrlsingle = await ref.getDownloadURL();
-        downloadUrl.add(downloadUrlsingle);
-        i++;
-      }
-    } else {
-      CustomFullScreenDialog.cancelDialog();
-    }
-    imagesUrlList.addAll(downloadUrl);
-    return downloadUrl;
-  }
-
-  Future<void> deleteProfileImage() async{
-    String? uid = _userModelController.uid;
-    await FirebaseStorage.instance.ref().child('images/profile/$uid.jpg').delete();
-  }
-
-  Future<void> deleteLiveTalkImage({required String uid,required int count}) async {
-
-    await FirebaseStorage.instance.ref().child('images/livetalk/$uid#$count.jpg').delete();
-  }
-
-  Future<String> setNewImage_livetalk(XFile newImage, commentCount) async {
-    String? uid = await FlutterSecureStorage().read(key: 'uid');
-    var metaData = SettableMetadata(contentType: 'image/jpeg');
-    String downloadUrl = '';
-    if (newImage != null) {
-      Reference ref = FirebaseStorage.instance.ref('images/livetalk/$uid#$commentCount.jpg');
-      await ref.putFile(File(newImage.path), metaData);
-      downloadUrl = await ref.getDownloadURL();
-      print("이미지 업로드 완료: $downloadUrl"); // 로그 추가
-    } else {
-      CustomFullScreenDialog.cancelDialog();
-    }
-    return downloadUrl;
-  }
-
-  Future<String> setNewImage_Crew_Gallery({required XFile newImage, required String crewID}) async {
-    String? uid = await FlutterSecureStorage().read(key: 'uid');
-    var metaData = SettableMetadata(contentType: 'image/jpeg');
-    String downloadUrl = '';
-
-    if (newImage != null) {
-      String timestamp = DateTime.now().millisecondsSinceEpoch.toString();
-      String fileName = '$crewID\_$timestamp.jpg';
-
-      try {
-        // 폴더 존재 여부 확인
-        ListResult listResult = await FirebaseStorage.instance.ref('images/crewGallery/$crewID/').listAll();
-        bool folderExists = listResult.items.isNotEmpty;
-
-        if (!folderExists) {
-          // 폴더가 존재하지 않으면 생성
-          await FirebaseStorage.instance.ref('images/crewGallery/$crewID/').putData(Uint8List.fromList([]));
-        }
-
-        // 이미지 업로드
-        Reference ref = FirebaseStorage.instance.ref('images/crewGallery/$crewID/$fileName');
-        await ref.putFile(File(newImage.path), metaData);
-
-        // 다운로드 URL 가져오기
-        downloadUrl = await ref.getDownloadURL();
-
-        // Firestore에 URL 추가
-        FirebaseFirestore.instance
-            .collection('liveCrew')
-            .doc(_liveCrewModelController.crewID)
-            .set({
-          'galleryUrlList': FieldValue.arrayUnion([downloadUrl]),
-        }, SetOptions(merge: true));
-      } catch (e) {
-        print('Error creating folder or uploading image: $e');
-      }
-    } else {
-      CustomFullScreenDialog.cancelDialog();
-    }
-
-    return downloadUrl;
-  }
-
-  Future<List<String>> setNewMultiImages_Crew_Gallery({required List<XFile> newImages, required String crewID}) async {
-    String? uid = await FlutterSecureStorage().read(key: 'uid');
-    var metaData = SettableMetadata(contentType: 'image/jpeg');
-    List<String> downloadUrls = [];
-
-    try {
-      for (final newImage in newImages) {
-        String timestamp = DateTime.now().millisecondsSinceEpoch.toString();
-        String fileName = '$crewID\_$timestamp.jpg';
-
-        // 폴더 존재 여부 확인
-        ListResult listResult = await FirebaseStorage.instance.ref('images/crewGallery/$crewID/').listAll();
-        bool folderExists = listResult.items.isNotEmpty;
-
-        if (!folderExists) {
-          // 폴더가 존재하지 않으면 생성
-          await FirebaseStorage.instance.ref('images/crewGallery/$crewID/').putData(Uint8List.fromList([]));
-        }
-
-        // 이미지 업로드
-        Reference ref = FirebaseStorage.instance.ref('images/crewGallery/$crewID/$fileName');
-        await ref.putFile(File(newImage.path), metaData);
-
-        // 다운로드 URL 가져오기
-        String downloadUrl = await ref.getDownloadURL();
-        downloadUrls.add(downloadUrl);
-      }
-
-      // Firestore에 URL 추가
-      final docRef = FirebaseFirestore.instance.collection('liveCrew').doc(_liveCrewModelController.crewID);
-      await docRef.set({
-        'galleryUrlList': FieldValue.arrayUnion(downloadUrls),
-      }, SetOptions(merge: true));
-    } catch (e) {
-      print('Error creating folder or uploading images: $e');
-    }
-
-    return downloadUrls;
-  }
-
-  Future<void> deleteCrewGalleryImage(String imageUrl, String crewID) async {
-    final docRef = FirebaseFirestore.instance.collection('liveCrew').doc(crewID);
-
-    // Fetch the document from Firestore
-    DocumentSnapshot docSnapshot = await docRef.get();
-
-    // Get the galleryUrlList from the document
-    List<String> galleryUrlList = List<String>.from(docSnapshot['galleryUrlList']);
-
-    // Remove the image URL from the list
-    galleryUrlList.remove(imageUrl);
-
-    // Update the document with the modified list
-    await docRef.update({'galleryUrlList': galleryUrlList});
-
-    // Delete the image from Firebase Storage
-    await FirebaseStorage.instance.refFromURL(imageUrl).delete();
-  }
-
-  Future<void> deleteAllCrewGalleryImages(String crewID) async {
-    final docRef = FirebaseFirestore.instance.collection('liveCrew').doc(crewID);
-
-    // Fetch the document from Firestore
-    DocumentSnapshot docSnapshot = await docRef.get();
-
-    // Get the galleryUrlList from the document
-    List<String> galleryUrlList = List<String>.from(docSnapshot['galleryUrlList']);
-
-    // Delete each image from Firebase Storage and remove from the list
-    for (final imageUrl in galleryUrlList) {
-      await deleteCrewGalleryImage(imageUrl, crewID);
-    }
-  }
+  //
+  // Future<void> deleteCrewGalleryImage(String imageUrl, String crewID) async {
+  //   final docRef = FirebaseFirestore.instance.collection('liveCrew').doc(crewID);
+  //
+  //   // Fetch the document from Firestore
+  //   DocumentSnapshot docSnapshot = await docRef.get();
+  //
+  //   // Get the galleryUrlList from the document
+  //   List<String> galleryUrlList = List<String>.from(docSnapshot['galleryUrlList']);
+  //
+  //   // Remove the image URL from the list
+  //   galleryUrlList.remove(imageUrl);
+  //
+  //   // Update the document with the modified list
+  //   await docRef.update({'galleryUrlList': galleryUrlList});
+  //
+  //   // Delete the image from Firebase Storage
+  //   await FirebaseStorage.instance.refFromURL(imageUrl).delete();
+  // }
+  //
+  // Future<void> deleteAllCrewGalleryImages(String crewID) async {
+  //   final docRef = FirebaseFirestore.instance.collection('liveCrew').doc(crewID);
+  //
+  //   // Fetch the document from Firestore
+  //   DocumentSnapshot docSnapshot = await docRef.get();
+  //
+  //   // Get the galleryUrlList from the document
+  //   List<String> galleryUrlList = List<String>.from(docSnapshot['galleryUrlList']);
+  //
+  //   // Delete each image from Firebase Storage and remove from the list
+  //   for (final imageUrl in galleryUrlList) {
+  //     await deleteCrewGalleryImage(imageUrl, crewID);
+  //   }
+  // }
 
   Future<void> uploadDeltaImages(List<quill.Operation> ops, int bulletinFreeCount) async {
     for (var op in ops) {

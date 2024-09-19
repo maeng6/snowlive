@@ -1,36 +1,32 @@
 class RankingListCrewModel {
   MyCrewRankingInfo? myCrewRankingInfo;
-  List<CrewRanking>? rankingCrewList; // List로 수정
+  RankingResults? rankingResults; // 변경: List 대신 RankingResults 객체로 수정
 
-  RankingListCrewModel({this.myCrewRankingInfo, this.rankingCrewList});
+  RankingListCrewModel({this.myCrewRankingInfo, this.rankingResults});
 
   RankingListCrewModel.fromJson(Map<String, dynamic> json) {
     myCrewRankingInfo = json['my_crew_ranking_info'] != null
         ? MyCrewRankingInfo.fromJson(json['my_crew_ranking_info'])
         : null;
-    // JSON에서 rankingCrewList를 가져와 List로 변환
-    if (json['results'] != null) {
-      rankingCrewList = [];
-      json['results'].forEach((v) {
-        rankingCrewList?.add(CrewRanking.fromJson(v));
-      });
-    }
+    // JSON에서 rankingResults를 가져와서 객체로 변환
+    rankingResults = json['results'] != null
+        ? RankingResults.fromJson(json['results'])
+        : null;
   }
 
   Map<String, dynamic> toJson() {
     return {
       'my_crew_ranking_info': myCrewRankingInfo?.toJson(),
-      'results': rankingCrewList?.map((crew) => crew.toJson()).toList(),
+      'results': rankingResults?.toJson(),
     };
   }
 }
-
 
 class MyCrewRankingInfo {
   MyCrewRankingInfo();
 
   MyCrewRankingInfo.fromJson(Map<String, dynamic> json) {
-    // Implement based on actual structure
+    // 실제 구조에 따라 구현
   }
 
   Map<String, dynamic> toJson() {

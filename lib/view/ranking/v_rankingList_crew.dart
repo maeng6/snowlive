@@ -12,7 +12,7 @@ import '../../viewmodel/vm_friendDetail.dart';
 import '../../viewmodel/vm_rankingList.dart';
 import '../../viewmodel/vm_user.dart';
 
-class RankingIndiView extends StatelessWidget {
+class RankingCrewView extends StatelessWidget {
 
   final UserViewModel _userViewModel = Get.find<UserViewModel>();
 
@@ -31,8 +31,8 @@ class RankingIndiView extends StatelessWidget {
         bottom: true,
         child: Stack(
           children: [
-            (_rankingListViewModel.rankingListIndivList_view!.length != 0)
-            ? RefreshIndicator(
+            (_rankingListViewModel.rankingListCrewList_view!.length != 0)
+                ? RefreshIndicator(
               onRefresh: () async {
                 //리프레쉬처리
               },
@@ -886,217 +886,176 @@ class RankingIndiView extends StatelessWidget {
                       Container(
                         height: 300,
                         child: Scrollbar(
-                            controller: _rankingListViewModel.scrollController_indiv,
-                            child: ListView.builder(
-                              controller:  _rankingListViewModel.scrollController_indiv,
-                              itemCount: _rankingListViewModel.rankingListIndivList_view!.length,
-                              itemBuilder: (context, index) {
-                                final document = _rankingListViewModel.rankingListIndivList_view![index];
-                                return Padding(
-                                  padding: const EdgeInsets.only(bottom: 8, left: 2, right: 2),
-                                  child: Row(
-                                    children: [
-                                      Container(
-                                        width: 24,
-                                        height: 40,
-                                        child: Row(
-                                          mainAxisAlignment: MainAxisAlignment.center,
-                                          children: [
-                                            if (index == 0) ...[
-                                              Image.asset('assets/imgs/icons/icon_medal_1.png', width: 24),
-                                            ] else if (index == 1) ...[
-                                              Image.asset('assets/imgs/icons/icon_medal_2.png', width: 24),
-                                            ] else if (index == 2) ...[
-                                              Image.asset('assets/imgs/icons/icon_medal_3.png', width: 24),
-                                            ] else ...[
-                                              Expanded(
-                                                child: Center(
-                                                  child:
-                                                  AutoSizeText(
-                                                    (_rankingListViewModel.resortOrTotal=='개별스키장')
-                                                    ?'${document.resortRank??''}'
-                                                    :'${document.overallRank??''}',
-                                                    style: SDSTextStyle.bold.copyWith(
-                                                        fontSize: 14,
-                                                        color: Color(0xFF111111)
-                                                    ),
-                                                    maxLines: 1,
-                                                    minFontSize: 6,
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
-                                          ],
-                                        ),
-                                      ),
-                                      SizedBox(width: 8),
-                                      Container(
-                                        width: 32,
-                                        height: 32,
-                                        decoration: BoxDecoration(
-                                            color: Color(0xFFDFECFF),
-                                            borderRadius: BorderRadius.circular(50)
-                                        ),
-                                        child: document.profileImageUrlUser!.isNotEmpty
-                                            ? ExtendedImage.network(
-                                          document.profileImageUrlUser!,
-                                          enableMemoryCache: true,
-                                          shape: BoxShape.circle,
-                                          borderRadius: BorderRadius.circular(8),
-                                          cacheHeight: 100,
-                                          width: 32,
-                                          height: 32,
-                                          fit: BoxFit.cover,
-                                          loadStateChanged: (ExtendedImageState state) {
-                                            switch (state.extendedImageLoadState) {
-                                              case LoadState.loading:
-                                                return SizedBox.shrink();
-                                              case LoadState.completed:
-                                                return state.completedWidget;
-                                              case LoadState.failed:
-                                                return ExtendedImage.network(
-                                                  '${profileImgUrlList[0].default_round}',
-                                                  enableMemoryCache: true,
-                                                  cacheHeight: 100,
-                                                  shape: BoxShape.circle,
-                                                  borderRadius: BorderRadius.circular(8),
-                                                  width: 32,
-                                                  height: 32,
-                                                  fit: BoxFit.cover,
-                                                );
-                                              default:
-                                                return null;
-                                            }
-                                          },
-                                        )
-                                            : ExtendedImage.network(
-                                          '${profileImgUrlList[0].default_round}',
-                                          enableMemoryCache: true,
-                                          cacheHeight: 100,
-                                          shape: BoxShape.circle,
-                                          borderRadius: BorderRadius.circular(8),
-                                          width: 32,
-                                          height: 32,
-                                          fit: BoxFit.cover,
-                                        ),
-                                      ),
-                                      SizedBox(width: 10),
-                                      Container(
-                                        child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          mainAxisAlignment: MainAxisAlignment.center,
-                                          children: [
-                                            Row(
-                                              children: [
-                                                Text(document.displayName!,
-                                                  style: SDSTextStyle.regular.copyWith(
+                          controller: _rankingListViewModel.scrollController_crew,
+                          child: ListView.builder(
+                            controller:  _rankingListViewModel.scrollController_crew,
+                            itemCount: _rankingListViewModel.rankingListCrewList_view!.length,
+                            itemBuilder: (context, index) {
+                              final document = _rankingListViewModel.rankingListCrewList_view![index];
+                              return Padding(
+                                padding: const EdgeInsets.only(bottom: 8, left: 2, right: 2),
+                                child: Row(
+                                  children: [
+                                    Container(
+                                      width: 24,
+                                      height: 40,
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          if (index == 0) ...[
+                                            Image.asset('assets/imgs/icons/icon_medal_1.png', width: 24),
+                                          ] else if (index == 1) ...[
+                                            Image.asset('assets/imgs/icons/icon_medal_2.png', width: 24),
+                                          ] else if (index == 2) ...[
+                                            Image.asset('assets/imgs/icons/icon_medal_3.png', width: 24),
+                                          ] else ...[
+                                            Expanded(
+                                              child: Center(
+                                                child: AutoSizeText(
+                                                  (_rankingListViewModel.resortOrTotal=='개별스키장')
+                                                      ?'${document.resortRank??''}'
+                                                      :'${document.overallRank??''}',
+                                                  style: SDSTextStyle.bold.copyWith(
                                                       fontSize: 14,
                                                       color: Color(0xFF111111)
                                                   ),
+                                                  maxLines: 1,
+                                                  minFontSize: 6,
                                                 ),
-                                              ],
+                                              ),
                                             ),
-                                            SizedBox(
-                                              height: 2,
-                                            ),
-                                            Row(
-                                              children: [
-                                                Text(
-                                                      document.resortNickname!,
-                                                      style: SDSTextStyle.regular.copyWith(
-                                                          fontSize: 12,
-                                                          color: Color(0xFF949494)
-                                                      ),
-                                                    ),
-
-                                                if(document.crewName != null)
-                                                  Row(
-                                                    children: [
-                                                      Padding(
-                                                        padding: const EdgeInsets.symmetric(horizontal: 2),
-                                                        child: Text('·',
-                                                          style: SDSTextStyle.regular.copyWith(
-                                                              fontSize: 12,
-                                                              color: Color(0xFF949494)
-                                                          ),
-                                                        ),
-                                                      ),
-                                                      Text(document.crewName!,
-                                                        maxLines: 1,
-                                                        overflow: TextOverflow.ellipsis,
-                                                        style: SDSTextStyle.regular.copyWith(
-                                                            fontSize: 12,
-                                                            color: Color(0xFF949494)
-                                                        ),),
-                                                    ],
-                                                  )
-                                              ],
-                                            )
                                           ],
-                                        ),
-                                      ),
-                                      Expanded(child: SizedBox()),
-                                      Row(
-                                        children: [
-                                          if(_rankingListViewModel.resortOrTotal == '개별스키장' && document.resortTotalScore != null)
-                                            Row(
-                                              children: [
-                                                Text('${document.resortTotalScore!.toInt()}점',
-                                                  style: SDSTextStyle.regular.copyWith(
-                                                    color: Color(0xFF111111),
-                                                    fontSize: 16,
-                                                  ),
-                                                ),
-                                                Transform.translate(
-                                                  offset: Offset(6, 1),
-                                                  child: ExtendedImage.network(
-                                                    '${document.overallTierIconUrl}',
-                                                    enableMemoryCache: true,
-                                                    fit: BoxFit.cover,
-                                                    width: 32,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          if(_rankingListViewModel.resortOrTotal == '전체스키장' && document.overallTotalScore != null)
-                                            Row(
-                                              children: [
-                                                Text('${document.overallTotalScore!.toInt()}점',
-                                                  style: SDSTextStyle.regular.copyWith(
-                                                    color: Color(0xFF111111),
-                                                    fontSize: 16,
-                                                  ),
-                                                ),
-                                                Transform.translate(
-                                                  offset: Offset(6, 1),
-                                                  child: ExtendedImage.network(
-                                                    '${document.overallTierIconUrl}',
-                                                    enableMemoryCache: true,
-                                                    fit: BoxFit.cover,
-                                                    width: 32,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-
                                         ],
                                       ),
+                                    ),
+                                    SizedBox(width: 8),
+                                    Container(
+                                      width: 32,
+                                      height: 32,
+                                      decoration: BoxDecoration(
+                                          color: Color(0xFFDFECFF),
+                                          borderRadius: BorderRadius.circular(50)
+                                      ),
+                                      child: document.crewLogoUrl!.isNotEmpty
+                                          ? ExtendedImage.network(
+                                        document.crewLogoUrl!,
+                                        enableMemoryCache: true,
+                                        shape: BoxShape.circle,
+                                        borderRadius: BorderRadius.circular(8),
+                                        cacheHeight: 100,
+                                        width: 32,
+                                        height: 32,
+                                        fit: BoxFit.cover,
+                                        loadStateChanged: (ExtendedImageState state) {
+                                          switch (state.extendedImageLoadState) {
+                                            case LoadState.loading:
+                                              return SizedBox.shrink();
+                                            case LoadState.completed:
+                                              return state.completedWidget;
+                                            case LoadState.failed:
+                                              return ExtendedImage.network(
+                                                '${profileImgUrlList[0].default_round}',
+                                                enableMemoryCache: true,
+                                                cacheHeight: 100,
+                                                shape: BoxShape.circle,
+                                                borderRadius: BorderRadius.circular(8),
+                                                width: 32,
+                                                height: 32,
+                                                fit: BoxFit.cover,
+                                              );
+                                            default:
+                                              return null;
+                                          }
+                                        },
+                                      )
+                                          : ExtendedImage.network(
+                                        '${profileImgUrlList[0].default_round}',
+                                        enableMemoryCache: true,
+                                        cacheHeight: 100,
+                                        shape: BoxShape.circle,
+                                        borderRadius: BorderRadius.circular(8),
+                                        width: 32,
+                                        height: 32,
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+                                    SizedBox(width: 10),
+                                    Container(
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          Row(
+                                            children: [
+                                              Text(document.crewName!,
+                                                style: SDSTextStyle.regular.copyWith(
+                                                    fontSize: 14,
+                                                    color: Color(0xFF111111)
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          SizedBox(
+                                            height: 2,
+                                          ),
+                                          Row(
+                                            children: [
+                                              Text(
+                                                document.baseResortNickname!,
+                                                style: SDSTextStyle.regular.copyWith(
+                                                    fontSize: 12,
+                                                    color: Color(0xFF949494)
+                                                ),
+                                              ),
+                                            ],
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                    Expanded(child: SizedBox()),
+                                    Row(
+                                      children: [
+                                        if(_rankingListViewModel.resortOrTotal == '개별스키장' && document.resortTotalScore != null)
+                                          Text('${document.resortTotalScore!.toInt()}점',
+                                            style: SDSTextStyle.regular.copyWith(
+                                              color: Color(0xFF111111),
+                                              fontSize: 16,
+                                            ),
+                                          ),
+                                        if(_rankingListViewModel.resortOrTotal == '전체스키장' && document.overallTotalScore != null)
+                                          Text('${document.overallTotalScore!.toInt()}점',
+                                            style: SDSTextStyle.regular.copyWith(
+                                              color: Color(0xFF111111),
+                                              fontSize: 16,
+                                            ),
+                                          )
+                                        // Transform.translate(
+                                        //   offset: Offset(6, 1),
+                                        //   child: ExtendedImage.network(
+                                        //     '${document.overallTierIconUrl}',
+                                        //     enableMemoryCache: true,
+                                        //     fit: BoxFit.cover,
+                                        //     width: 32,
+                                        //   ),
+                                        // ),
+                                      ],
+                                    ),
 
-                                    ],
-                                  ),
+                                  ],
+                                ),
 
-                                );
-                              },
-                              padding: EdgeInsets.only(bottom: 80),
-                            ),
+                              );
+                            },
+                            padding: EdgeInsets.only(bottom: 80),
                           ),
+                        ),
                       ),
                     ],
                   ),
                 ),
               ),
             )
-            :Column(
+                :Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [

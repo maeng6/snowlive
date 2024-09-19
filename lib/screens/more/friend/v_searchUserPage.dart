@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:com.snowlive/controller/alarm/vm_alarmCenterController.dart';
-import 'package:com.snowlive/screens/more/friend/v_snowliveDetailPage.dart';
+import 'package:com.snowlive/view/moreTab/v_snowliveDetailPage.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';

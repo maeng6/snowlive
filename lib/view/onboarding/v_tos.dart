@@ -4,7 +4,7 @@ import 'package:com.snowlive/viewmodel/vm_tos.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:com.snowlive/screens/v_webPage.dart';
+import 'package:com.snowlive/view/v_webPage.dart';
 import '../../screens/snowliveDesignStyle.dart';
 
 class TermsOfServiceView extends StatelessWidget {

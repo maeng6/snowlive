@@ -72,13 +72,6 @@ class MainHomeView extends StatelessWidget {
             BottomNavigationBarItem(
               icon: Stack(
                 children: [
-                  Positioned(
-                    top: 3,
-                    right: 3,
-                    child: Icon(Icons.brightness_1,
-                        size: 6.0,
-                        color: Colors.white),
-                  ),
                   ImageIcon(
                     AssetImage('assets/imgs/icons/icon_community_off.png'),
                     size: 36,
@@ -135,7 +128,7 @@ class MainHomeView extends StatelessWidget {
           children: [
             ResortHomeView(),
             FleaMarketMainView(),
-            CommunityMainView(),
+            RankingHomeView(),
             CommunityMainView(),
             MoreTabMainView()
             // MoreTab(),

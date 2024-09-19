@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 import 'package:com.snowlive/controller/public/vm_timeStampController.dart';
-import 'package:com.snowlive/screens/more/v_noticeDetailPage.dart';
+import 'package:com.snowlive/view/moreTab/v_noticeDetailPage.dart';
 
 
 class NoticeList extends StatefulWidget {

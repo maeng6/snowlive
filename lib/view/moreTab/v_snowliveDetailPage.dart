@@ -1,10 +1,10 @@
 import 'dart:io';
+import 'package:com.snowlive/view/moreTab/v_banner_resortHome.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import '../../../controller/public/vm_urlLauncherController.dart';
-import '../../banner/v_banner_resortHome.dart';
+import '../../controller/public/vm_urlLauncherController.dart';
 
 
 class SnowliveDetailPage extends StatelessWidget {

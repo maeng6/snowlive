@@ -1,4 +1,5 @@
-import 'package:com.snowlive/screens/more/v_licenseListPage.dart';
+
+import 'package:com.snowlive/view/moreTab/v_licenseListPage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:com.snowlive/viewmodel/vm_imageController.dart';

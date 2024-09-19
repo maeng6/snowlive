@@ -12,7 +12,7 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:com.snowlive/screens/banner/v_banner_resortHome.dart';
+import 'package:com.snowlive/view/moreTab/v_banner_resortHome.dart';
 import 'package:lottie/lottie.dart';
 import '../util/util_1.dart';
 import '../viewmodel/vm_friendDetail.dart';

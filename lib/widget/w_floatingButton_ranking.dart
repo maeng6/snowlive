@@ -1,6 +1,7 @@
 import 'package:com.snowlive/screens/snowliveDesignStyle.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class FloatingButtonWithOptions extends StatelessWidget {
   final String selectedOption;
@@ -38,7 +39,10 @@ class FloatingButtonWithOptions extends StatelessWidget {
   Widget _buildOption(BuildContext context, String option) {
     final isSelected = option == selectedOption;
     return GestureDetector(
-      onTap: () => onOptionSelected(option),
+      onTap: (){
+        HapticFeedback.lightImpact();
+        onOptionSelected(option);
+      },
       child: Container(
         height: 40,
         decoration: BoxDecoration(
