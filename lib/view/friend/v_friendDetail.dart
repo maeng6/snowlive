@@ -27,6 +27,9 @@ class FriendDetailView extends StatelessWidget {
         backgroundColor: Colors.white,
         extendBodyBehindAppBar: true,
         appBar: AppBar(
+          backgroundColor: SDSColor.snowliveWhite,
+          foregroundColor: SDSColor.snowliveWhite,
+          surfaceTintColor: SDSColor.snowliveWhite,
           systemOverlayStyle: SystemUiOverlayStyle.dark,
           leading: GestureDetector(
             child: Column(
@@ -62,7 +65,7 @@ class FriendDetailView extends StatelessWidget {
                 ),
               ),
               onTap: () {
-                //TODO: 수정페이지로 이동
+                //수정페이지로 이동
                 _friendDetailUpdateViewModel.fetchFriendDetailUpdateData(
                     displayName: _friendDetailViewModel.friendDetailModel.friendUserInfo.displayName,
                     state_msg: _friendDetailViewModel.friendDetailModel.friendUserInfo.stateMsg,
@@ -80,7 +83,7 @@ class FriendDetailView extends StatelessWidget {
           elevation: 0.0,
           titleSpacing: 0,
           centerTitle: true,
-          toolbarHeight: 58.0, // 이 부분은 AppBar의 높이를 조절합니다.
+          toolbarHeight: 44.0, // 이 부분은 AppBar의 높이를 조절합니다.
         ),
         body: RefreshIndicator(
           strokeWidth: 2,
@@ -103,22 +106,22 @@ class FriendDetailView extends StatelessWidget {
                     child: Obx(()=> Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        //TODO: 프사, 닉네임, 상태메세지, 친구등록버튼
+                        //프사, 닉네임, 상태메세지, 친구등록버튼
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 20),
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              //TODO: 프사
+                              //프사
                               (_friendDetailViewModel.friendDetailModel.friendUserInfo.profileImageUrlUser.isNotEmpty)
                                   ? GestureDetector(
                                 onTap: () {
                                   Get.toNamed(AppRoutes.userProfileIamge,arguments:_friendDetailViewModel.friendDetailModel.friendUserInfo.profileImageUrlUser);
                                 },
                                 child: Container(
-                                    width: 110,
-                                    height: 110,
+                                    width: 82,
+                                    height: 82,
                                     decoration: BoxDecoration(
                                         color: Color(0xFFDFECFF),
                                         borderRadius: BorderRadius.circular(80)
@@ -128,8 +131,8 @@ class FriendDetailView extends StatelessWidget {
                                       enableMemoryCache: true,
                                       shape: BoxShape.circle,
                                       borderRadius: BorderRadius.circular(8),
-                                      width: 110,
-                                      height: 110,
+                                      width: 82,
+                                      height: 82,
                                       fit: BoxFit.cover,
                                       loadStateChanged: (ExtendedImageState state) {
                                         switch (state.extendedImageLoadState) {
@@ -142,8 +145,8 @@ class FriendDetailView extends StatelessWidget {
                                               'https://i.esdrop.com/d/f/yytYSNBROy/NIlGn0N46O.png',
                                               shape: BoxShape.circle,
                                               borderRadius: BorderRadius.circular(8),
-                                              width: 110,
-                                              height: 110,
+                                              width: 82,
+                                              height: 82,
                                               fit: BoxFit.cover,
                                             ); // 예시로 에러 아이콘을 반환하고 있습니다.
                                           default:
@@ -156,15 +159,15 @@ class FriendDetailView extends StatelessWidget {
                                 onTap: () {
                                 },
                                 child: Container(
-                                  width: 110,
-                                  height: 110,
+                                  width: 82,
+                                  height: 82,
                                   child: ExtendedImage.network(
                                     'https://i.esdrop.com/d/f/yytYSNBROy/NIlGn0N46O.png',
                                     enableMemoryCache: true,
                                     shape: BoxShape.circle,
                                     borderRadius: BorderRadius.circular(8),
-                                    width: 110,
-                                    height: 110,
+                                    width: 82,
+                                    height: 82,
                                     fit: BoxFit.cover,
                                   ),
                                 ),
@@ -174,18 +177,17 @@ class FriendDetailView extends StatelessWidget {
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    //TODO: 닉네임
+                                    //닉네임
                                     Padding(
-                                      padding: const EdgeInsets.only(top: 6),
+                                      padding: const EdgeInsets.only(top: 10),
                                       child: Row(
                                         mainAxisAlignment: MainAxisAlignment.center,
                                         crossAxisAlignment: CrossAxisAlignment.center,
                                         children: [
                                           Text('${_friendDetailViewModel.friendDetailModel.friendUserInfo.displayName}',
-                                            style: TextStyle(
-                                                fontSize: 22,
-                                                fontWeight: FontWeight.bold,
-                                                color: Color(0xFF111111)
+                                            style: SDSTextStyle.bold.copyWith(
+                                                fontSize: 18,
+                                                color: SDSColor.gray900
                                             ),),
                                         ],
                                       ),
