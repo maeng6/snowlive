@@ -225,25 +225,6 @@ class MoreTabMainView extends StatelessWidget {
                 contentPadding: EdgeInsets.symmetric(horizontal: 16),
                 minVerticalPadding: 20,
                 onTap: () {
-                  //자주가는스키장
-                },
-                title: Text(
-                  '자주가는 스키장',
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 15,
-                      color: Color(0xFF111111)),
-                ),
-                trailing: Image.asset(
-                  'assets/imgs/icons/icon_arrow_g.png',
-                  height: 24,
-                  width: 24,
-                ),
-              ),
-              ListTile(
-                contentPadding: EdgeInsets.symmetric(horizontal: 16),
-                minVerticalPadding: 20,
-                onTap: () {
                   Get.to(ResortTab());
                 },
                 title: Text(
@@ -271,25 +252,6 @@ class MoreTabMainView extends StatelessWidget {
                 ),
               ),
               SizedBox(height: 10),
-              ListTile(
-                contentPadding: EdgeInsets.symmetric(horizontal: 16),
-                minVerticalPadding: 20,
-                onTap: () {
-                  Get.to(NoticeList());
-                },
-                title: Text(
-                  '공지사항',
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 15,
-                      color: Color(0xFF111111)),
-                ),
-                trailing: Image.asset(
-                  'assets/imgs/icons/icon_arrow_g.png',
-                  height: 24,
-                  width: 24,
-                ),
-              ),
               ListTile(
                 contentPadding: EdgeInsets.symmetric(horizontal: 16),
                 minVerticalPadding: 20,

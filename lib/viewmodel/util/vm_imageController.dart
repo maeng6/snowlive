@@ -50,7 +50,6 @@ class ImageController extends GetxController {
 
     // 모든 업로드 작업을 병렬로 처리하고 완료된 후 결과를 기다림
     downloadUrlList = await Future.wait(uploadTasks);
-    print(downloadUrlList.length);
 
     return downloadUrlList;
   }
@@ -131,7 +130,6 @@ class ImageController extends GetxController {
 
     if(selectedImages.length <= 5) {
       if (selectedImages == null || selectedImages.isEmpty) {
-        CustomFullScreenDialog.cancelDialog();
         return [];
       }
       for (XFile image in selectedImages) {

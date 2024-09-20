@@ -38,6 +38,7 @@ class FleamarketUpdateViewModel extends GetxController {
   RxString _selectedTradeMethod = '거래방법 선택'.obs;
   RxString _selectedTradeSpot = '거래장소 선택'.obs;
   RxBool _isCategorySelected = true.obs;
+  RxBool updateCacheHeight = false.obs;
 
 
   List<XFile?> get imageFiles => _imageFiles;
@@ -133,7 +134,10 @@ class FleamarketUpdateViewModel extends GetxController {
 
   Future<void> getImageFromGallery() async {
     changeIsGettingImageFromGallery(true);
-    _imageFiles.value = await imageController.getMultiImage(ImageSource.gallery);
+    var imageList =  await imageController.getMultiImage(ImageSource.gallery);
+    if(imageList.length !=0) {
+      _imageFiles.value = imageList;
+    }
     if(_imageFiles.length <= 5){
       changeFleaImageSelected(true);
       setImageLength();
@@ -182,6 +186,10 @@ class FleamarketUpdateViewModel extends GetxController {
 
   void toggleNegotiable() {
     _negotiable.value = !_negotiable.value;
+  }
+
+  void toggleUpdateCacheHeight() {
+    updateCacheHeight.value = !updateCacheHeight.value;
   }
 
   Future<void> getImageUrlList({required newImages, required pk}) async {

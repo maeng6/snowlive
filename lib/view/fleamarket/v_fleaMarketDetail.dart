@@ -492,6 +492,7 @@ class _FleaMarketDetailViewState extends State<FleaMarketDetailView> {
                                           onTap: () async {
                                             Navigator.pop(context);
                                             CustomFullScreenDialog.showDialog();
+                                            _fleamarketUpdateViewModel.toggleUpdateCacheHeight();
                                             await _fleamarketUpdateViewModel.fetchFleamarketUpdateData(
                                                 textEditingController_title: _fleamarketDetailViewModel.fleamarketDetail.title,
                                                 selectedCategorySub: _fleamarketDetailViewModel.fleamarketDetail.categorySub,

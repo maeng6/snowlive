@@ -65,6 +65,7 @@ class LoginViewModel extends GetxController {
       if (currentUser != null) {
         loginUid!.value = currentUser.uid;
         await storage.write(key: 'signInMethod', value: 'google');
+        await getLocalSignInMethod();
         await FlutterSecureStorage().write(key: 'localUid', value: loginUid!.value);
         await FlutterSecureStorage().write(key: 'device_id', value: device_id!.value);
         await FlutterSecureStorage().write(key: 'device_token', value: device_token!.value);
@@ -85,6 +86,7 @@ class LoginViewModel extends GetxController {
       if (currentUser != null) {
         loginUid!.value = currentUser.uid;
         await storage.write(key: 'signInMethod', value: 'facebook');
+        await getLocalSignInMethod();
         await FlutterSecureStorage().write(key: 'localUid', value: loginUid!.value);
         await FlutterSecureStorage().write(key: 'device_id', value: device_id!.value);
         await FlutterSecureStorage().write(key: 'device_token', value: device_token!.value);
@@ -114,6 +116,7 @@ class LoginViewModel extends GetxController {
         await FlutterSecureStorage().write(key: 'localUid', value: loginUid!.value);
         await FlutterSecureStorage().write(key: 'device_id', value: device_id!.value);
         await FlutterSecureStorage().write(key: 'device_token', value: device_token!.value);
+
       }
     } catch (e) {
       print('Apple sign-in failed: $e');
@@ -127,6 +130,7 @@ class LoginViewModel extends GetxController {
       "device_token": "${device_token!.value}",
     });
 
+
     if (response.success) {
       final data = response.data as Map<String, dynamic>;
       final message = data['message'];
@@ -139,7 +143,12 @@ class LoginViewModel extends GetxController {
         await FlutterSecureStorage().write(key: 'user_id', value: data['user']['user_id']);
         Get.offAllNamed(AppRoutes.mainHome);
       } else if (message == '기존기기') {
+        print('1');
         await FlutterSecureStorage().write(key: 'user_id', value: data['user']['user_id']);
+        await FlutterSecureStorage().write(key: 'device_id', value: device_id!.value);
+        await FlutterSecureStorage().write(key: 'device_token', value: device_token!.value);
+        await FlutterSecureStorage().write(key: 'user_id', value: data['user']['user_id']);
+
         Get.offAllNamed(AppRoutes.mainHome);
       } else {
         // 추가 처리
