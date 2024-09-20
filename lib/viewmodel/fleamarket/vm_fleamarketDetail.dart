@@ -334,6 +334,36 @@ class FleamarketDetailViewModel extends GetxController {
       Get.snackbar('Error', '삭제 실패');
   }
 
+  Future<void> reportComment(Map<String, dynamic> body) async {
+    // 로딩 상태를 true로 설정
+    isLoading(true);
+    try {
+      // reportFleamarket API 호출
+      ApiResponse response = await FleamarketAPI().reportComment(body);
+
+      // 요청이 성공했는지 확인
+      if (response.success) {
+        print('댓글 Report 완료');
+      } else {
+        // 실패 시 오류 메시지 표시
+        if(response.error['message'] == 'You have already reported this comment.'){
+          Get.snackbar('신고 중복','이미 신고한 댓글입니다.');
+        }else{
+          Get.snackbar('Error', '댓글 Report 실패');
+        }
+      }
+    } catch (e) {
+      // 예외 처리
+      print('Error reporting comment: $e');
+      Get.snackbar('Error', '리포트 중 오류 발생');
+    } finally {
+      // 로딩 상태를 false로 설정
+      isLoading(false);
+    }
+  }
+
+
+
   void changeFleamarketCommentsInputText(value) {
     _fleamarketCommentsInputText.value = value;
   }

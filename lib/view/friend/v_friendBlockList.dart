@@ -2,6 +2,7 @@
 import 'package:com.snowlive/viewmodel/friend/vm_friendDetail.dart';
 import 'package:com.snowlive/viewmodel/friend/vm_friendList.dart';
 import 'package:com.snowlive/viewmodel/vm_user.dart';
+import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -140,6 +141,7 @@ class FriendBlockListView extends StatelessWidget {
                                       child: ElevatedButton(
                                         onPressed: () async {
                                           Navigator.pop(context);
+                                          CustomFullScreenDialog.showDialog();
                                           await _friendDetailViewModel.unblockUser(
                                               {
                                                 "user_id": _userViewModel.user.user_id,    //필수 - 차단을 해제하는 사람(나)
@@ -147,6 +149,7 @@ class FriendBlockListView extends StatelessWidget {
                                               }
                                           );
                                           await _friendListViewModel.fetchBlockUserList();
+                                          CustomFullScreenDialog.cancelDialog();
                                         },
                                         child: Text(
                                           '확인',

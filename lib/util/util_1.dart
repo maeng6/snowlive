@@ -131,21 +131,21 @@ Future<void> otherShare({required String contents}) async {
 }
 
 Future<void> deleteFolder(String ref, String id) async {
-  final storageRef = FirebaseStorage.instance.ref().child('$ref/$id/');
+  final storageRef = FirebaseStorage.instance.ref().child('$ref/#$id/');
 
   // 폴더 내의 모든 파일 가져오기
   final listResult = await storageRef.listAll();
 
-  // 파일 삭제
-  for (var item in listResult.items) {
-    await item.delete();
-  }
+  // 병렬로 파일 삭제 작업 수행
+  await Future.wait(listResult.items.map((item) => item.delete()));
+  print('파이어베이스 스토리지 이미지 삭제 완료');
 
   // 폴더 삭제 (비어있는 경우)
   try {
     await storageRef.delete();
     print('빈 폴더 삭제 완료');
-  }catch (e){
-    print('빈 폴더 없음');
+  } catch (e) {
+    print('빈 폴더 없음: $e');
   }
 }
+

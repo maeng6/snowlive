@@ -1564,7 +1564,8 @@ class FleaMarketListView_board extends StatelessWidget {
                                               Stack(
                                                 children: [
                                                   if (data.photos!.length != 0)
-                                                    ExtendedImage.network(data.photos!.first.urlFleaPhoto!,
+                                                    ExtendedImage.network(
+                                                      data.photos!.first.urlFleaPhoto!,
                                                       cache: true,
                                                       shape: BoxShape.rectangle,
                                                       borderRadius: BorderRadius.circular(8),
@@ -1573,6 +1574,25 @@ class FleaMarketListView_board extends StatelessWidget {
                                                       height: 110,
                                                       cacheHeight: 250,
                                                       fit: BoxFit.cover,
+                                                      handleLoadingProgress: true,
+                                                      loadStateChanged: (ExtendedImageState state) {
+                                                        switch (state.extendedImageLoadState) {
+                                                          case LoadState.loading:
+                                                          // 로딩 중일 때 로딩 인디케이터를 표시
+                                                            return Center(child: CircularProgressIndicator());
+                                                          case LoadState.completed:
+                                                          // 로딩이 완료되었을 때 이미지 반환
+                                                            return state.completedWidget;
+                                                          case LoadState.failed:
+                                                          // 로딩이 실패했을 때 대체 이미지 또는 다른 처리
+                                                            return Image.asset(
+                                                              'assets/imgs/imgs/img_flea_default.png', // 대체 이미지 경로
+                                                              width: 110,
+                                                              height: 110,
+                                                              fit: BoxFit.cover,
+                                                            );
+                                                        }
+                                                      },
                                                     ),
                                                   if (data.photos!.length == 0)
                                                     ExtendedImage.asset(

@@ -20,6 +20,11 @@ class FleamarketUploadViewModel extends GetxController {
   RxList<XFile> _imageFiles = <XFile>[].obs;
   RxList<String> _imageUrlList = <String>[].obs;
   RxBool _fleaImageSelected = false.obs;
+  RxBool _isGettingImageFromGallery = false.obs;
+  RxBool _isTitleWritten = false.obs;
+  RxBool _isProductNameWritten = false.obs;
+  RxBool _isPriceWritten = false.obs;
+  RxBool _isDescriptionWritten = false.obs;
   RxBool _negotiable = false.obs;
   RxInt _imageLength = 0.obs;
   RxList<Map<String, dynamic>> _photos = <Map<String, dynamic>>[].obs;
@@ -35,7 +40,12 @@ class FleamarketUploadViewModel extends GetxController {
   List<String?> get imageUrlList => _imageUrlList;
   List<Map<String, dynamic>?> get photos => _photos;
   bool get fleaImageSelected => _fleaImageSelected.value;
+  bool get isGettingImageFromGallery => _isGettingImageFromGallery.value;
   bool get negotiable => _negotiable.value;
+  bool get isTitleWritten => _isTitleWritten.value;
+  bool get isProductNameWritten => _isProductNameWritten.value;
+  bool get isPriceWritten => _isPriceWritten.value;
+  bool get isDescriptionWritten => _isDescriptionWritten.value;
   int get imageLength => _imageLength.value;
   String get selectedCategoryMain => _selectedCategoryMain.value;
   String get selectedCategorySub => _selectedCategorySub.value;
@@ -46,6 +56,7 @@ class FleamarketUploadViewModel extends GetxController {
 
 
   Future<void> getImageFromGallery() async {
+    changeIsGettingImageFromGallery(true);
     _imageFiles.value = await imageController.getMultiImage(ImageSource.gallery);
     if(_imageFiles.length <= 5){
       changeFleaImageSelected(true);
@@ -53,7 +64,7 @@ class FleamarketUploadViewModel extends GetxController {
     }else {
       deleteImageFromGallery();
     }
-
+    changeIsGettingImageFromGallery(false);
   }
 
   void deleteImageFromGallery()  {
@@ -62,6 +73,26 @@ class FleamarketUploadViewModel extends GetxController {
 
   void changeFleaImageSelected(bool boolean) {
     _fleaImageSelected.value = boolean;
+  }
+
+  void changeIsGettingImageFromGallery(bool boolean) {
+    _isGettingImageFromGallery.value = boolean;
+  }
+
+  void changeTitleWritten(bool boolean) {
+    _isTitleWritten.value = boolean;
+  }
+
+  void changeProductNameWritten(bool boolean) {
+    _isProductNameWritten.value = boolean;
+  }
+
+  void changePriceWritten(bool boolean) {
+    _isPriceWritten.value = boolean;
+  }
+
+  void changeDescriptionWritten(bool boolean) {
+    _isDescriptionWritten.value = boolean;
   }
 
   void setImageLength() {
