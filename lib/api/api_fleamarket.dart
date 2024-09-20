@@ -28,7 +28,7 @@ class FleamarketAPI {
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode(body),
     );
-    print(response.body);
+
     if(response.statusCode==200){
       final data = json.decode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
       return ApiResponse.success(data);

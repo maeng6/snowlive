@@ -103,11 +103,12 @@ class AuthCheckViewModel extends GetxController {
         Get.offAllNamed(AppRoutes.login);
       }
     } else {
+      print('로그아웃');
       await FlutterSecureStorage().delete(key: 'localUid');
       await FlutterSecureStorage().delete(key: 'device_id');
       await FlutterSecureStorage().delete(key: 'device_token');
       await FlutterSecureStorage().delete(key: 'user_id');
-      Get.toNamed(AppRoutes.login);
+      Get.offAllNamed(AppRoutes.login);
     }
   }
 

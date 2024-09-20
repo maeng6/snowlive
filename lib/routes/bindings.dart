@@ -34,24 +34,24 @@ import 'package:get/get.dart';
 class MainHomeBinding extends Bindings {
   @override
   void dependencies() {
-    Get.put(MainHomeViewModel(),permanent: true);
-    Get.put(StreamController_Banner(),permanent: true);
-    Get.put(ResortHomeViewModel(),permanent: true);
-    Get.put(StreamController_ResortHome(),permanent: true);
-    Get.put(FriendDetailViewModel(),permanent: true);
-    Get.put(FriendDetailUpdateViewModel(),permanent: true);
-    Get.put(FleamarketListViewModel(),permanent: true);
-    Get.put(FleamarketDetailViewModel(),permanent: true);
-    Get.put(FleamarketUpdateViewModel(),permanent: true);
-    Get.put(ImageController(),permanent: true);
-    Get.put(FriendListViewModel(),permanent: true);
-    Get.put(RankingListViewModel(), permanent: true);
-    Get.put(CommunityBulletinListViewModel(),permanent: true);
-    Get.put(CommunityDetailViewModel(),permanent: true);
-    Get.put(SearchCrewViewModel(), permanent: true);
-    Get.put(CrewMainViewModel(), permanent: true);
-    Get.put(CrewDetailViewModel(), permanent: true);
-    Get.put(CrewMemberListViewModel(), permanent: true);
+    Get.put(MainHomeViewModel());
+    Get.put(StreamController_Banner());
+    Get.put(ResortHomeViewModel());
+    Get.put(StreamController_ResortHome());
+    Get.put(FriendDetailViewModel());
+    Get.put(FriendDetailUpdateViewModel());
+    Get.put(FleamarketListViewModel());
+    Get.put(FleamarketDetailViewModel());
+    Get.put(FleamarketUpdateViewModel());
+    Get.put(ImageController());
+    Get.put(FriendListViewModel());
+    Get.put(RankingListViewModel());
+    Get.put(CommunityBulletinListViewModel());
+    Get.put(CommunityDetailViewModel());
+    Get.put(SearchCrewViewModel());
+    Get.put(CrewMainViewModel());
+    Get.put(CrewDetailViewModel());
+    Get.put(CrewMemberListViewModel());
 
   }
 }

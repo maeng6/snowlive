@@ -730,7 +730,7 @@ class FleamarketUpdateView extends StatelessWidget {
                                             : Expanded(
                                           child: SizedBox(
                                             height: 90,
-                                            child: Obx(()=> ListView.builder(
+                                            child: ListView.builder(
                                               scrollDirection: Axis.horizontal,
                                               shrinkWrap: true,
                                               itemCount: _fleamarketUpdateViewModel.imageLength,
@@ -750,11 +750,10 @@ class FleamarketUpdateView extends StatelessWidget {
                                                         width: 90,
                                                         child: ClipRRect(
                                                           borderRadius: BorderRadius.circular(7),
-                                                          child: Image.file(
+                                                          child: Obx(()=> Image.file(
                                                             File(_fleamarketUpdateViewModel.imageFiles[index]!.path),
                                                             fit: BoxFit.cover,
-                                                            cacheWidth:200,
-                                                          ),
+                                                          )),
                                                         ),
                                                       ),
                                                       Positioned(
@@ -811,7 +810,7 @@ class FleamarketUpdateView extends StatelessWidget {
                                                   ],
                                                 );
                                               },
-                                            )),
+                                            ),
                                           ),
                                         )
                                       ],

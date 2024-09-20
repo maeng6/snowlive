@@ -57,7 +57,10 @@ class FleamarketUploadViewModel extends GetxController {
 
   Future<void> getImageFromGallery() async {
     changeIsGettingImageFromGallery(true);
-    _imageFiles.value = await imageController.getMultiImage(ImageSource.gallery);
+    var imageList =  await imageController.getMultiImage(ImageSource.gallery);
+    if(imageList.length !=0) {
+      _imageFiles.value = imageList;
+    }
     if(_imageFiles.length <= 5){
       changeFleaImageSelected(true);
       setImageLength();
