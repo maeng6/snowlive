@@ -6,6 +6,7 @@ import 'package:dart_quill_delta/dart_quill_delta.dart' as quill;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
 import 'package:image_cropper/image_cropper.dart';
@@ -22,21 +23,51 @@ class ImageController extends GetxController {
   List<String> imagesUrlList = [];
 
 
-  Future<List<String>> setNewMultiImageFlea(
-      {required List<XFile> newImages, required pk}) async {
+  Future<List<String>> setNewMultiImageFlea({
+    required List<XFile> newImages,
+    required pk,
+  }) async {
     DateTime dateTime = DateTime.now();
-    int i =0;
-    var downloadUrlsingle;
     var metaData = SettableMetadata(contentType: 'image/jpeg');
+
+    // 비동기 작업들을 병렬로 처리하기 위해 Future 리스트 생성
+    List<Future<String>> uploadTasks = [];
     List<String> downloadUrlList = [];
-    while(i<newImages.length) {
+
+    print('파베업로드 & url다운 작업 시작');
+    for (int i = 0; i < newImages.length; i++) {
+      // 이미지 압축 작업 (이미지 크기 최적화)
+      File compressedImage = await _compressImage(File(newImages[i].path));
+
       Reference ref = FirebaseStorage.instance.ref('fleamarket/#$pk/$i.jpg');
-      await ref.putFile(File(newImages[i].path), metaData);
-      downloadUrlsingle = await ref.getDownloadURL();
-      downloadUrlList.add(downloadUrlsingle);
-      i++;
+      var uploadTask = ref
+          .putFile(compressedImage, metaData)
+          .then((p0) => ref.getDownloadURL());  // 업로드 후 URL 가져오기
+      uploadTasks.add(uploadTask);
     }
+
+    print('파베업로드 & url다운 작업 끝');
+
+    // 모든 업로드 작업을 병렬로 처리하고 완료된 후 결과를 기다림
+    downloadUrlList = await Future.wait(uploadTasks);
+    print(downloadUrlList.length);
+
     return downloadUrlList;
+  }
+
+// 이미지 압축 함수 - JPEG 코덱을 명시적으로 설정
+  Future<File> _compressImage(File file) async {
+    final compressedImage = await FlutterImageCompress.compressWithFile(
+      file.absolute.path,
+      format: CompressFormat.jpeg,  // JPEG 포맷으로 압축
+      quality: 85,  // 압축 품질 설정 (0에서 100)
+    );
+
+    // 압축된 이미지 파일을 새로운 경로에 저장
+    final compressedFile = File('${file.parent.path}/compressed_${file.uri.pathSegments.last}');
+    await compressedFile.writeAsBytes(compressedImage!);
+
+    return compressedFile;
   }
 
   Future<String> setNewImage_Crew({required XFile newImage,required crewID}) async {

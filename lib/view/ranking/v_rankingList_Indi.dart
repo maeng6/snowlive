@@ -92,7 +92,7 @@ class RankingIndiView extends StatelessWidget {
                                       Column(
                                         children: [
                                           Text(
-                                            '${_rankingListViewModel.rankingListIndivMy_view!.resortTotalScore}',
+                                            '${_rankingListViewModel.rankingListIndivMy_view!.resortTotalScore??'-'}',
                                             style: SDSTextStyle.bold.copyWith(
                                               color: Color(0xFF111111),
                                               fontSize: 15,
@@ -115,7 +115,7 @@ class RankingIndiView extends StatelessWidget {
                                         child: Column(
                                           children: [
                                             Text(
-                                              '${_rankingListViewModel.rankingListIndivMy_view!.resortRank}',
+                                              '${_rankingListViewModel.rankingListIndivMy_view!.resortRank??'-'}',
                                               style: SDSTextStyle.bold.copyWith(
                                                 color: Color(0xFF111111),
                                                 fontSize: 15,
@@ -139,7 +139,7 @@ class RankingIndiView extends StatelessWidget {
                                         child: Column(
                                           children: [
                                             Text(
-                                              '${_rankingListViewModel.rankingListIndivMy_view!.overallRank}',
+                                              '${_rankingListViewModel.rankingListIndivMy_view!.overallRank??'-'}',
                                               style: SDSTextStyle.bold.copyWith(
                                                 color: Color(0xFF111111),
                                                 fontSize: 15,

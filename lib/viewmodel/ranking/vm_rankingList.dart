@@ -291,6 +291,7 @@ class RankingListViewModel extends GetxController {
 
   void changeTap(value) {
     _tapName.value = value;
+
   }
 
   void changeResortOrTotal(value) {

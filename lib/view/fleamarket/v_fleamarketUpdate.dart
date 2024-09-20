@@ -8,6 +8,7 @@ import 'package:com.snowlive/viewmodel/vm_user.dart';
 import 'package:com.snowlive/widget/w_category_main_fleamarket.dart';
 import 'package:com.snowlive/widget/w_category_sub_board_fleamarket.dart';
 import 'package:com.snowlive/widget/w_category_sub_ski_fleamarket.dart';
+import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 import 'package:com.snowlive/widget/w_tradeMethod_fleamarket.dart';
 import 'package:com.snowlive/widget/w_tradeSpot_fleamarket.dart';
 import 'package:extended_image/extended_image.dart';
@@ -18,10 +19,12 @@ import 'package:get/get.dart';
 class FleamarketUpdateView extends StatelessWidget {
 
   final FleamarketUpdateViewModel _fleamarketUpdateViewModel = Get.find<FleamarketUpdateViewModel>();
-  final UserViewModel _userViewModel = Get.find<UserViewModel>();
-  final FleamarketListViewModel _fleamarketListViewModel = Get.find<FleamarketListViewModel>();
-  final FleamarketDetailViewModel _fleamarketDetailViewModel = Get.find<FleamarketDetailViewModel>();
 
+  final UserViewModel _userViewModel = Get.find<UserViewModel>();
+
+  final FleamarketListViewModel _fleamarketListViewModel = Get.find<FleamarketListViewModel>();
+
+  final FleamarketDetailViewModel _fleamarketDetailViewModel = Get.find<FleamarketDetailViewModel>();
 
   @override
   Widget build(BuildContext context) {
@@ -56,7 +59,7 @@ class FleamarketUpdateView extends StatelessWidget {
                   height: 26,
                 ),
                 onTap: () {
-                  Get.back();
+                  Navigator.pop(context);
                 },
               ),
               backgroundColor: Colors.white,
@@ -138,6 +141,13 @@ class FleamarketUpdateView extends StatelessWidget {
                                 ),
                               ),
                               validator: (val) {
+                                WidgetsBinding.instance.addPostFrameCallback((_) {
+                                  if (val!.length <= 50 && val.length >= 1) {
+                                    _fleamarketUpdateViewModel.changeTitleWritten(true);
+                                  } else {
+                                    _fleamarketUpdateViewModel.changeTitleWritten(false);
+                                  }
+                                });
                                 if (val!.length <= 50 && val.length >= 1) {
                                   return null;
                                 } else if (val.length == 0) {
@@ -208,6 +218,13 @@ class FleamarketUpdateView extends StatelessWidget {
                                 ),
                               ),
                               validator: (val) {
+                                WidgetsBinding.instance.addPostFrameCallback((_) {
+                                  if (val!.length <= 30 && val.length >= 1) {
+                                    _fleamarketUpdateViewModel.changeProductNameWritten(true);
+                                  } else {
+                                    _fleamarketUpdateViewModel.changeProductNameWritten(false);
+                                  }
+                                });
                                 if (val!.length <= 30 && val.length >= 1) {
                                   return null;
                                 } else if (val.length == 0) {
@@ -292,7 +309,7 @@ class FleamarketUpdateView extends StatelessWidget {
                                       ),
                                     ),
                                   ],
-                                ),//g
+                                ),
                                 SizedBox(width: 10),
                                 Column(
                                   mainAxisAlignment: MainAxisAlignment.start,
@@ -451,13 +468,20 @@ class FleamarketUpdateView extends StatelessWidget {
                                 ),
                               ),
                               validator: (val) {
-                                if (val!.length <= 8 && val.length >= 1) {
-                                return null;
-                              } else if (val.length == 0) {
-                                return '가격을 입력해주세요.';
-                              } else {
-                                return '최대 입력 가능한 글자 수를 초과했습니다.';
-                              }
+                                WidgetsBinding.instance.addPostFrameCallback((_) {
+                                  if (val!.length <= 10 && val.length >= 1) {
+                                    _fleamarketUpdateViewModel.changePriceWritten(true);
+                                  } else {
+                                    _fleamarketUpdateViewModel.changePriceWritten(false);
+                                  }
+                                });
+                                if (val!.length <= 10 && val.length >= 1) {
+                                  return null;
+                                } else if (val.length == 0) {
+                                  return '가격을 입력해주세요.';
+                                } else {
+                                  return '최대 입력 가능한 글자 수를 초과했습니다.';
+                                }
                               },
                             ),
                             SizedBox(height: 12),
@@ -679,14 +703,39 @@ class FleamarketUpdateView extends StatelessWidget {
                                         SizedBox(
                                           width: 8,
                                         ),
-                                        Expanded(
+                                        (_fleamarketUpdateViewModel.isGettingImageFromGallery == true)
+                                            ?ClipRRect(
+                                          borderRadius: BorderRadius.circular(7),
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                              border: Border.all(
+                                                color: Colors.transparent,
+                                              ),
+                                              borderRadius: BorderRadius.circular(8),
+                                              color: SDSColor.gray100,
+                                            ),
+                                            height: 90,
+                                            width: 90,
+                                            child: Center( // 인디케이터를 중앙에 배치
+                                              child: SizedBox(
+                                                height: 40, // CircularProgressIndicator 크기 설정
+                                                width: 40,  // CircularProgressIndicator 크기 설정
+                                                child: CircularProgressIndicator(
+                                                  strokeWidth: 1, // 인디케이터 두께 조절
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        )
+                                            : Expanded(
                                           child: SizedBox(
                                             height: 90,
-                                            child: ListView.builder(
+                                            child: Obx(()=> ListView.builder(
                                               scrollDirection: Axis.horizontal,
                                               shrinkWrap: true,
                                               itemCount: _fleamarketUpdateViewModel.imageLength,
                                               itemBuilder: (context, index) {
+                                                print('$index  -> ${_fleamarketUpdateViewModel.imageFiles[index]!.path}');
                                                 return Row(
                                                   children: [
                                                     Stack(
@@ -704,6 +753,7 @@ class FleamarketUpdateView extends StatelessWidget {
                                                           child: Image.file(
                                                             File(_fleamarketUpdateViewModel.imageFiles[index]!.path),
                                                             fit: BoxFit.cover,
+                                                            cacheWidth:200,
                                                           ),
                                                         ),
                                                       ),
@@ -761,7 +811,7 @@ class FleamarketUpdateView extends StatelessWidget {
                                                   ],
                                                 );
                                               },
-                                            ),
+                                            )),
                                           ),
                                         )
                                       ],
@@ -789,7 +839,7 @@ class FleamarketUpdateView extends StatelessWidget {
                                     ),
                                     Padding(
                                       padding: EdgeInsets.only(top: 4),
-                                      child: Text('1장당 2MB 이내로 업로드해주세요. (최대 5장 이내)\n대표 사진은 처음 선택한 사진으로 자동 등록됩니다.',
+                                      child: Text('대표 사진은 처음 선택한 사진으로 자동 등록됩니다.',
                                         style: SDSTextStyle.regular.copyWith(
                                           fontSize: 12,
                                           color: SDSColor.gray500,
@@ -1072,6 +1122,20 @@ class FleamarketUpdateView extends StatelessWidget {
                                   ),
                                 ),
                                 validator: (val) {
+                                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                                    if (val!.length <= 1000 && val.length >= 1) {
+                                      _fleamarketUpdateViewModel.changeDescriptionWritten(true);
+                                    } else {
+                                      _fleamarketUpdateViewModel.changeDescriptionWritten(false);
+                                    }
+                                  });
+                                  if (val!.length <= 1000 && val.length >= 1) {
+                                    return null;
+                                  } else if (val.length == 0) {
+                                    return '상세 설명을 입력해주세요.';
+                                  } else {
+                                    return '최대 입력 가능한 글자 수를 초과했습니다.';
+                                  }
                                 },
                               ),
                             ),
@@ -1090,16 +1154,19 @@ class FleamarketUpdateView extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
                       child: ElevatedButton(
                         onPressed: () async {
-                          if(_fleamarketUpdateViewModel.textEditingController_title.text != ''
-                                && _fleamarketUpdateViewModel.textEditingController_productName.text != ''
-                                && _fleamarketUpdateViewModel.selectedCategoryMain != '상위 카테고리'
-                                && _fleamarketUpdateViewModel.selectedCategorySub != '하위 카테고리'
-                                && _fleamarketUpdateViewModel.itemPriceTextEditingController.text != ''
-                                && _fleamarketUpdateViewModel.selectedTradeMethod != '거래방법 선택'
-                                && _fleamarketUpdateViewModel.selectedTradeSpot != '거래장소 선택'
-                                && _fleamarketUpdateViewModel.textEditingController_desc.text != ''){
+                          if(_fleamarketUpdateViewModel.isTitleWritten == true
+                              && _fleamarketUpdateViewModel.isProductNameWritten == true
+                              && _fleamarketUpdateViewModel.selectedCategoryMain != '상위 카테고리'
+                              && _fleamarketUpdateViewModel.selectedCategorySub != '하위 카테고리'
+                              && _fleamarketUpdateViewModel.isPriceWritten == true
+                              && _fleamarketUpdateViewModel.selectedTradeMethod != '거래방법 선택'
+                              && _fleamarketUpdateViewModel.selectedTradeSpot != '거래장소 선택'
+                              && _fleamarketUpdateViewModel.isDescriptionWritten == true){
+                            CustomFullScreenDialog.showDialog();
                             await deleteFolder('fleamarket',_fleamarketDetailViewModel.fleamarketDetail.fleaId.toString());
-
+                            await _fleamarketUpdateViewModel.deletePhotoUrls({
+                              "flea_id":_fleamarketDetailViewModel.fleamarketDetail.fleaId
+                            });
                             await _fleamarketUpdateViewModel.getImageUrlList(
                                 newImages: _fleamarketUpdateViewModel.imageFiles,
                                 pk: _fleamarketDetailViewModel.fleamarketDetail.fleaId);
@@ -1120,13 +1187,20 @@ class FleamarketUpdateView extends StatelessWidget {
                                 },
                                 _fleamarketUpdateViewModel.photos
                             );
+
+                            CustomFullScreenDialog.cancelDialog();
+                            Get.back();
+                            await _fleamarketDetailViewModel.fetchFleamarketDetailFromAPI(
+                                fleamarketId: _fleamarketDetailViewModel.fleamarketDetail.fleaId!,
+                                userId: _userViewModel.user.user_id
+                            );
                             await _fleamarketListViewModel.fetchFleamarketData_total(userId: _userViewModel.user.user_id);
                             if(_fleamarketUpdateViewModel.selectedCategoryMain == '스키')
                               await _fleamarketListViewModel.fetchFleamarketData_ski(userId: _userViewModel.user.user_id, categoryMain:'스키');
                             if(_fleamarketUpdateViewModel.selectedCategoryMain == '스노보드')
                               await _fleamarketListViewModel.fetchFleamarketData_board(userId: _userViewModel.user.user_id, categoryMain:'스노보드');
                             await _fleamarketListViewModel.fetchFleamarketData_my(userId: _userViewModel.user.user_id, myflea: true);
-                            Get.back();
+
                           }
 
 
@@ -1140,14 +1214,14 @@ class FleamarketUpdateView extends StatelessWidget {
                           minimumSize: Size(double.infinity, 48),
                           backgroundColor:
                           (
-                              _fleamarketUpdateViewModel.textEditingController_title.text != ''
-                                  && _fleamarketUpdateViewModel.textEditingController_productName != ''
+                              _fleamarketUpdateViewModel.isTitleWritten == true
+                                  && _fleamarketUpdateViewModel.isProductNameWritten == true
                                   && _fleamarketUpdateViewModel.selectedCategoryMain != '상위 카테고리'
                                   && _fleamarketUpdateViewModel.selectedCategorySub != '하위 카테고리'
-                                  && _fleamarketUpdateViewModel.itemPriceTextEditingController.text != ''
+                                  && _fleamarketUpdateViewModel.isPriceWritten == true
                                   && _fleamarketUpdateViewModel.selectedTradeMethod != '거래방법 선택'
                                   && _fleamarketUpdateViewModel.selectedTradeSpot != '거래장소 선택'
-                                  && _fleamarketUpdateViewModel.textEditingController_desc.text != ''
+                                  && _fleamarketUpdateViewModel.isDescriptionWritten == true
                           )
                               ?
                           SDSColor.snowliveBlue
@@ -1156,14 +1230,14 @@ class FleamarketUpdateView extends StatelessWidget {
                         child: Text('수정 완료',
                           style: SDSTextStyle.bold.copyWith(color:
                           (
-                          _fleamarketUpdateViewModel.textEditingController_title.text != ''
-                              && _fleamarketUpdateViewModel.textEditingController_productName != ''
-                              && _fleamarketUpdateViewModel.selectedCategoryMain != '상위 카테고리'
-                              && _fleamarketUpdateViewModel.selectedCategorySub != '하위 카테고리'
-                              && _fleamarketUpdateViewModel.itemPriceTextEditingController.text != ''
-                              && _fleamarketUpdateViewModel.selectedTradeMethod != '거래방법 선택'
-                              && _fleamarketUpdateViewModel.selectedTradeSpot != '거래장소 선택'
-                              && _fleamarketUpdateViewModel.textEditingController_desc.text != ''
+                              _fleamarketUpdateViewModel.isTitleWritten == true
+                                  && _fleamarketUpdateViewModel.isProductNameWritten == true
+                                  && _fleamarketUpdateViewModel.selectedCategoryMain != '상위 카테고리'
+                                  && _fleamarketUpdateViewModel.selectedCategorySub != '하위 카테고리'
+                                  && _fleamarketUpdateViewModel.isPriceWritten == true
+                                  && _fleamarketUpdateViewModel.selectedTradeMethod != '거래방법 선택'
+                                  && _fleamarketUpdateViewModel.selectedTradeSpot != '거래장소 선택'
+                                  && _fleamarketUpdateViewModel.isDescriptionWritten == true
                           )
                           ? SDSColor.snowliveWhite
                               :SDSColor.gray400, fontSize: 16),

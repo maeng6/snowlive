@@ -25,6 +25,11 @@ class FleamarketUpdateViewModel extends GetxController {
   RxList<XFile> _imageFiles = <XFile>[].obs;
   RxList<String> _imageUrlList = <String>[].obs;
   RxBool _fleaImageSelected = false.obs;
+  RxBool _isGettingImageFromGallery = false.obs;
+  RxBool _isTitleWritten = true.obs;
+  RxBool _isProductNameWritten = true.obs;
+  RxBool _isPriceWritten = true.obs;
+  RxBool _isDescriptionWritten = true.obs;
   RxBool _negotiable = false.obs;
   RxInt _imageLength = 0.obs;
   RxList<Map<String, dynamic>> _photos = <Map<String, dynamic>>[].obs;
@@ -39,6 +44,11 @@ class FleamarketUpdateViewModel extends GetxController {
   List<String?> get imageUrlList => _imageUrlList;
   List<Map<String, dynamic>?> get photos => _photos;
   bool get fleaImageSelected => _fleaImageSelected.value;
+  bool get isGettingImageFromGallery => _isGettingImageFromGallery.value;
+  bool get isTitleWritten => _isTitleWritten.value;
+  bool get isProductNameWritten => _isProductNameWritten.value;
+  bool get isPriceWritten => _isPriceWritten.value;
+  bool get isDescriptionWritten => _isDescriptionWritten.value;
   bool get negotiable => _negotiable.value;
   int get imageLength => _imageLength.value;
   String get selectedCategoryMain => _selectedCategoryMain.value;
@@ -69,12 +79,14 @@ class FleamarketUpdateViewModel extends GetxController {
     this.textEditingController_desc.text = textEditingController_desc;
 
     // Clear previous images
-    this._imageFiles.clear();
-    this._imageLength.value = 0;
+    _imageFiles.clear();
+    _imageLength.value = 0;
 
     if (photos != null) {
-      List<XFile> imageFiles = [];
-      for (Photo photo in photos) {
+      print('이미지 다운로드 시작');
+
+      // 병렬로 이미지를 다운로드하기 위한 Future 리스트 생성 (displayOrder 기억)
+      List<Future<Map<String, dynamic>?>> downloadTasks = photos.map((photo) async {
         if (photo.urlFleaPhoto != null) {
           final url = photo.urlFleaPhoto!;
           try {
@@ -85,21 +97,42 @@ class FleamarketUpdateViewModel extends GetxController {
               final file = File(filePath);
               await file.writeAsBytes(response.bodyBytes);
 
-              // Add to the imageFiles list
-              imageFiles.add(XFile(filePath));
+              // XFile과 displayOrder를 함께 반환
+              return {
+                'file': XFile(filePath),
+                'displayOrder': photo.displayOrder ?? 0
+              };
             }
           } catch (e) {
-            // Handle potential exceptions, such as network errors
-            print("Error downloading image: $e");
+            // 에러 처리
+            print("이미지 다운로드 에러: $e");
           }
         }
-      }
-      this._imageFiles.addAll(imageFiles);
-      this._imageLength.value = imageFiles.length;
+        return null;  // null 반환
+      }).toList();
+
+      // 병렬로 이미지 다운로드 처리
+      List<Map<String, dynamic>?> imageFiles = await Future.wait(downloadTasks);
+
+      // displayOrder 순서대로 정렬
+      imageFiles = imageFiles.where((element) => element != null).toList();
+      imageFiles.sort((a, b) => (a!['displayOrder'] as int).compareTo(b!['displayOrder'] as int));
+
+      // 최종적으로 _imageFiles에 정렬된 이미지들 할당
+      _imageFiles.value = imageFiles.map((e) => e!['file'] as XFile).toList();
+      // 이미지 길이 업데이트
+      _imageLength.value = _imageFiles.length;
+
+      print('이미지 다운로드 및 정렬 완료');
     }
   }
 
+
+
+
+
   Future<void> getImageFromGallery() async {
+    changeIsGettingImageFromGallery(true);
     _imageFiles.value = await imageController.getMultiImage(ImageSource.gallery);
     if(_imageFiles.length <= 5){
       changeFleaImageSelected(true);
@@ -107,7 +140,7 @@ class FleamarketUpdateViewModel extends GetxController {
     }else {
       deleteImageFromGallery();
     }
-
+    changeIsGettingImageFromGallery(false);
   }
   void deleteImageFromGallery()  {
     _imageFiles.value =[];
@@ -118,12 +151,33 @@ class FleamarketUpdateViewModel extends GetxController {
     _fleaImageSelected.value = boolean;
   }
 
+  void changeIsGettingImageFromGallery(bool boolean) {
+    _isGettingImageFromGallery.value = boolean;
+  }
+
+  void changeTitleWritten(bool boolean) {
+    _isTitleWritten.value = boolean;
+  }
+
+  void changeProductNameWritten(bool boolean) {
+    _isProductNameWritten.value = boolean;
+  }
+
+  void changePriceWritten(bool boolean) {
+    _isPriceWritten.value = boolean;
+  }
+
+  void changeDescriptionWritten(bool boolean) {
+    _isDescriptionWritten.value = boolean;
+  }
+
   void setImageLength() {
     _imageLength.value = _imageFiles.length;
   }
 
   void removeSelectedImage(index) {
     _imageFiles.removeAt(index);
+    update();
   }
 
   void toggleNegotiable() {
@@ -134,6 +188,7 @@ class FleamarketUpdateViewModel extends GetxController {
     _imageUrlList.value = await imageController.setNewMultiImageFlea(
         newImages: newImages, pk: pk);
 
+      _photos.value = [];
     for (int i = 0; i < _imageUrlList.length; i++) {
       _photos.add({
         "display_order": i + 1,
@@ -176,6 +231,16 @@ class FleamarketUpdateViewModel extends GetxController {
       else {
       }
     }
+
+  Future<void> deletePhotoUrls( body) async {
+
+    ApiResponse response = await FleamarketAPI().deletePhotoUrls(body);
+    if (response.success) {
+      print('이미지 Url 삭제 완료');
+    }
+    else {
+    }
+  }
 
 
 

@@ -52,6 +52,9 @@ class RankingHomeView extends StatelessWidget {
                             ),
                             onPressed: () async {
                               _rankingListViewModel.changeTap('개인랭킹');
+                              _rankingListViewModel.changeDayOrTotal('누적');
+                              _rankingListViewModel.changeResortOrTotal('전체스키장');
+                              _rankingListViewModel.changeCategory_resort('스키장별 랭킹');
                             },
                             style: ElevatedButton.styleFrom(
                               padding: EdgeInsets.only(top: 0),
@@ -68,6 +71,9 @@ class RankingHomeView extends StatelessWidget {
                           child: ElevatedButton(
                             onPressed: () async {
                               _rankingListViewModel.changeTap('크루랭킹');
+                              _rankingListViewModel.changeDayOrTotal('누적');
+                              _rankingListViewModel.changeResortOrTotal('전체스키장');
+                              _rankingListViewModel.changeCategory_resort('스키장별 랭킹');
                             },
                             style: ElevatedButton.styleFrom(
                               padding: EdgeInsets.only(top: 0),

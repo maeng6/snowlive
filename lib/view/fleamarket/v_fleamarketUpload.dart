@@ -79,11 +79,11 @@ class FleamarketUploadView extends StatelessWidget {
               elevation: 0.0,
             ),
           ),
-          body: Obx(()=>GestureDetector(
+          body: GestureDetector(
             onTap: (){
               FocusScope.of(context).unfocus();
             },
-            child: Stack(
+            child: Obx(()=>Stack(
               children: [
                 Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -155,6 +155,13 @@ class FleamarketUploadView extends StatelessWidget {
                                 ),
                               ),
                               validator: (val) {
+                                WidgetsBinding.instance.addPostFrameCallback((_) {
+                                  if (val!.length <= 50 && val.length >= 1) {
+                                    _fleamarketUploadViewModel.changeTitleWritten(true);
+                                  } else {
+                                    _fleamarketUploadViewModel.changeTitleWritten(false);
+                                  }
+                                });
                                 if (val!.length <= 50 && val.length >= 1) {
                                   return null;
                                 } else if (val.length == 0) {
@@ -226,6 +233,13 @@ class FleamarketUploadView extends StatelessWidget {
                                 ),
                               ),
                               validator: (val) {
+                                WidgetsBinding.instance.addPostFrameCallback((_) {
+                                  if (val!.length <= 30 && val.length >= 1) {
+                                    _fleamarketUploadViewModel.changeProductNameWritten(true);
+                                  } else {
+                                    _fleamarketUploadViewModel.changeProductNameWritten(false);
+                                  }
+                                });
                                 if (val!.length <= 30 && val.length >= 1) {
                                   return null;
                                 } else if (val.length == 0) {
@@ -474,13 +488,20 @@ class FleamarketUploadView extends StatelessWidget {
                                 ),
                               ),
                               validator: (val) {
-                                if (val!.length <= 8 && val.length >= 1) {
-                                return null;
-                              } else if (val.length == 0) {
-                                return '가격을 입력해주세요.';
-                              } else {
-                                return '최대 입력 가능한 글자 수를 초과했습니다.';
-                              }
+                                WidgetsBinding.instance.addPostFrameCallback((_) {
+                                  if (val!.length <= 10 && val.length >= 1) {
+                                    _fleamarketUploadViewModel.changePriceWritten(true);
+                                  } else {
+                                    _fleamarketUploadViewModel.changePriceWritten(false);
+                                  }
+                                });
+                                if (val!.length <= 10 && val.length >= 1) {
+                                  return null;
+                                } else if (val.length == 0) {
+                                  return '가격을 입력해주세요.';
+                                } else {
+                                  return '최대 입력 가능한 글자 수를 초과했습니다.';
+                                }
                               },
                             ),
                             SizedBox(height: 12),
@@ -527,7 +548,78 @@ class FleamarketUploadView extends StatelessWidget {
                                       children: [
                                         GestureDetector(
                                           onTap: () async {
-                                              await _fleamarketUploadViewModel.getImageFromGallery();
+                                            await _fleamarketUploadViewModel.getImageFromGallery();
+                                            if (_fleamarketUploadViewModel.imageFiles.length <= 5) {
+                                              _fleamarketUploadViewModel.changeFleaImageSelected(true);
+                                              _fleamarketUploadViewModel.setImageLength();
+                                            } else {
+                                              Get.dialog(
+                                                AlertDialog(
+                                                  backgroundColor: SDSColor.snowliveWhite,
+                                                  contentPadding: EdgeInsets.only(bottom: 0, left: 28, right: 28, top: 36),
+                                                  elevation: 0,
+                                                  shape: RoundedRectangleBorder(
+                                                      borderRadius: BorderRadius.circular(16)),
+                                                  buttonPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+                                                  content: Container(
+                                                    height: 80,
+                                                    child: Column(
+                                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                                      children: [
+                                                        Text(
+                                                          '사진 갯수가 5장을 초과했어요.',
+                                                          textAlign: TextAlign.center,
+                                                          style: SDSTextStyle.bold.copyWith(
+                                                              color: SDSColor.gray900,
+                                                              fontSize: 16
+                                                          ),
+                                                        ),
+                                                        SizedBox(
+                                                          height: 6,
+                                                        ),
+                                                        Text(
+                                                          '사진을 5장 이내로 업로드해주세요.',
+                                                          textAlign: TextAlign.center,
+                                                          style: SDSTextStyle.regular.copyWith(
+                                                            color: SDSColor.gray500,
+                                                            fontSize: 14,
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                  actions: [
+                                                    Padding(
+                                                      padding: EdgeInsets.only(top: 10, left: 16, right: 16),
+                                                      child: Row(
+                                                        children: [
+                                                          Expanded(
+                                                            child: Container(
+                                                              child: TextButton(
+                                                                  onPressed: () {
+                                                                    Navigator.pop(context);
+                                                                  },
+                                                                  style: TextButton.styleFrom(
+                                                                    backgroundColor: Colors.transparent, // 배경색 투명
+                                                                    splashFactory: NoSplash.splashFactory, // 터치 시 효과 제거
+                                                                  ),
+                                                                  child: Text('확인',
+                                                                    style: SDSTextStyle.bold.copyWith(
+                                                                      fontSize: 17,
+                                                                      color: SDSColor.gray900,
+                                                                    ),
+                                                                  )
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ],
+                                                        mainAxisAlignment: MainAxisAlignment.center,
+                                                      ),
+                                                    )
+                                                  ],
+                                                ),
+                                              );
+                                            }
                                           },
                                           child: Container(
                                             height: 90,
@@ -538,6 +630,77 @@ class FleamarketUploadView extends StatelessWidget {
                                                 IconButton(
                                                   onPressed: () async {
                                                     await _fleamarketUploadViewModel.getImageFromGallery();
+                                                    if (_fleamarketUploadViewModel.imageFiles.length <= 5) {
+                                                      _fleamarketUploadViewModel.changeFleaImageSelected(true);
+                                                      _fleamarketUploadViewModel.setImageLength();
+                                                    } else {
+                                                      Get.dialog(
+                                                        AlertDialog(
+                                                          backgroundColor: SDSColor.snowliveWhite,
+                                                          contentPadding: EdgeInsets.only(bottom: 0, left: 28, right: 28, top: 36),
+                                                          elevation: 0,
+                                                          shape: RoundedRectangleBorder(
+                                                              borderRadius: BorderRadius.circular(16)),
+                                                          buttonPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+                                                          content: Container(
+                                                            height: 80,
+                                                            child: Column(
+                                                              crossAxisAlignment: CrossAxisAlignment.center,
+                                                              children: [
+                                                                Text(
+                                                                  '사진 갯수가 5장을 초과했어요.',
+                                                                  textAlign: TextAlign.center,
+                                                                  style: SDSTextStyle.bold.copyWith(
+                                                                      color: SDSColor.gray900,
+                                                                      fontSize: 16
+                                                                  ),
+                                                                ),
+                                                                SizedBox(
+                                                                  height: 6,
+                                                                ),
+                                                                Text(
+                                                                  '사진을 5장 이내로 업로드해주세요.',
+                                                                  textAlign: TextAlign.center,
+                                                                  style: SDSTextStyle.regular.copyWith(
+                                                                    color: SDSColor.gray500,
+                                                                    fontSize: 14,
+                                                                  ),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          ),
+                                                          actions: [
+                                                            Padding(
+                                                              padding: EdgeInsets.only(top: 10, left: 16, right: 16),
+                                                              child: Row(
+                                                                children: [
+                                                                  Expanded(
+                                                                    child: Container(
+                                                                      child: TextButton(
+                                                                          onPressed: () {
+                                                                            Navigator.pop(context);
+                                                                          },
+                                                                          style: TextButton.styleFrom(
+                                                                            backgroundColor: Colors.transparent, // 배경색 투명
+                                                                            splashFactory: NoSplash.splashFactory, // 터치 시 효과 제거
+                                                                          ),
+                                                                          child: Text('확인',
+                                                                            style: SDSTextStyle.bold.copyWith(
+                                                                              fontSize: 17,
+                                                                              color: SDSColor.gray900,
+                                                                            ),
+                                                                          )
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                ],
+                                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                              ),
+                                                            )
+                                                          ],
+                                                        ),
+                                                      );
+                                                    }
                                                   },
                                                   icon: Icon(Icons.camera_alt_rounded,
                                                   size: 28,),
@@ -557,7 +720,31 @@ class FleamarketUploadView extends StatelessWidget {
                                         SizedBox(
                                           width: 8,
                                         ),
-                                        Expanded(
+                                        (_fleamarketUploadViewModel.isGettingImageFromGallery == true)
+                                            ?ClipRRect(
+                                          borderRadius: BorderRadius.circular(7),
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                              border: Border.all(
+                                                color: Colors.transparent,
+                                              ),
+                                              borderRadius: BorderRadius.circular(8),
+                                              color: SDSColor.gray100,
+                                            ),
+                                            height: 90,
+                                            width: 90,
+                                            child: Center( // 인디케이터를 중앙에 배치
+                                              child: SizedBox(
+                                                height: 40, // CircularProgressIndicator 크기 설정
+                                                width: 40,  // CircularProgressIndicator 크기 설정
+                                                child: CircularProgressIndicator(
+                                                  strokeWidth: 1, // 인디케이터 두께 조절
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        )
+                                        :Expanded(
                                           child: SizedBox(
                                             height: 90,
                                             child: ListView.builder(
@@ -565,82 +752,83 @@ class FleamarketUploadView extends StatelessWidget {
                                               shrinkWrap: true,
                                               itemCount: _fleamarketUploadViewModel.imageLength,
                                               itemBuilder: (context, index) {
-                                                return Row(
+                                                 return Row(
                                                   children: [
                                                     Stack(
                                                         children: [
-                                                      Container(
-                                                        decoration: BoxDecoration(
-                                                            border: Border.all(color: SDSColor.gray100),
-                                                            borderRadius: BorderRadius.circular(8),
-                                                            color: Colors.white
-                                                        ),
-                                                        height: 90,
-                                                        width: 90,
-                                                        child: ClipRRect(
-                                                          borderRadius: BorderRadius.circular(7),
-                                                          child: Image.file(
-                                                            File(_fleamarketUploadViewModel.imageFiles[index]!.path),
-                                                            fit: BoxFit.cover,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                      Positioned(
-                                                        top: -8,
-                                                        right: -8,
-                                                        child: IconButton(
-                                                          onPressed: () {
-                                                            _fleamarketUploadViewModel.removeSelectedImage(index);
-                                                            _fleamarketUploadViewModel.setImageLength();
-                                                          },
-                                                          icon: Container(
-                                                              decoration: BoxDecoration(
-                                                                shape: BoxShape.circle, // 버튼이 원형인 경우
-                                                                boxShadow: [
-                                                                  BoxShadow(
-                                                                    color: Colors.black.withOpacity(0.2),
-                                                                    spreadRadius: 2,
-                                                                    blurRadius: 2,
-                                                                    offset: Offset(0, 1),
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                              child: Icon(Icons.cancel)), color: SDSColor.snowliveWhite),
-                                                      ),
-                                                      if(index==0)
-                                                        Positioned(
-                                                          bottom: 0,
-                                                          left: 1,
-                                                          child: Container(
+                                                          Container(
                                                             decoration: BoxDecoration(
-                                                              border: Border.all(
-                                                                  color: Colors.transparent
-                                                              ),
-                                                              borderRadius: BorderRadius.only(
-                                                                  bottomRight: Radius.circular(8),
-                                                                  bottomLeft: Radius.circular(8)
-                                                              ),
-                                                              color: SDSColor.snowliveBlack.withOpacity(0.7),
+                                                                border: Border.all(color: SDSColor.gray100),
+                                                                borderRadius: BorderRadius.circular(8),
+                                                                color: Colors.white
                                                             ),
-                                                            height: 22,
-                                                            width: 88,
-                                                            child: Padding(
-                                                              padding: EdgeInsets.only(top: 1),
-                                                              child: Text('대표사진',
-                                                                style: SDSTextStyle.bold.copyWith(
-                                                                    color: Colors.white,
-                                                                    fontSize: 12),
-                                                                textAlign: TextAlign.center,
+                                                            height: 90,
+                                                            width: 90,
+                                                            child: ClipRRect(
+                                                              borderRadius: BorderRadius.circular(7),
+                                                              child: Image.file(
+                                                                File(_fleamarketUploadViewModel.imageFiles[index]!.path),
+                                                                fit: BoxFit.cover,
                                                               ),
                                                             ),
                                                           ),
-                                                        ),
-                                                    ]),
+                                                          Positioned(
+                                                            top: -8,
+                                                            right: -8,
+                                                            child: IconButton(
+                                                                onPressed: () {
+                                                                  _fleamarketUploadViewModel.removeSelectedImage(index);
+                                                                  _fleamarketUploadViewModel.setImageLength();
+                                                                },
+                                                                icon: Container(
+                                                                    decoration: BoxDecoration(
+                                                                      shape: BoxShape.circle, // 버튼이 원형인 경우
+                                                                      boxShadow: [
+                                                                        BoxShadow(
+                                                                          color: Colors.black.withOpacity(0.2),
+                                                                          spreadRadius: 2,
+                                                                          blurRadius: 2,
+                                                                          offset: Offset(0, 1),
+                                                                        ),
+                                                                      ],
+                                                                    ),
+                                                                    child: Icon(Icons.cancel)), color: SDSColor.snowliveWhite),
+                                                          ),
+                                                          if(index==0)
+                                                            Positioned(
+                                                              bottom: 0,
+                                                              left: 1,
+                                                              child: Container(
+                                                                decoration: BoxDecoration(
+                                                                  border: Border.all(
+                                                                      color: Colors.transparent
+                                                                  ),
+                                                                  borderRadius: BorderRadius.only(
+                                                                      bottomRight: Radius.circular(8),
+                                                                      bottomLeft: Radius.circular(8)
+                                                                  ),
+                                                                  color: SDSColor.snowliveBlack.withOpacity(0.7),
+                                                                ),
+                                                                height: 22,
+                                                                width: 88,
+                                                                child: Padding(
+                                                                  padding: EdgeInsets.only(top: 1),
+                                                                  child: Text('대표사진',
+                                                                    style: SDSTextStyle.bold.copyWith(
+                                                                        color: Colors.white,
+                                                                        fontSize: 12),
+                                                                    textAlign: TextAlign.center,
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                            ),
+                                                        ]),
                                                     SizedBox(
                                                       width: 8,
                                                     )
                                                   ],
                                                 );
+
                                               },
                                             ),
                                           ),
@@ -670,7 +858,7 @@ class FleamarketUploadView extends StatelessWidget {
                                     ),
                                       Padding(
                                         padding: EdgeInsets.only(top: 4),
-                                        child: Text('1장당 2MB 이내로 업로드해주세요. (최대 5장 이내)\n대표 사진은 처음 선택한 사진으로 자동 등록됩니다.',
+                                        child: Text('대표 사진은 처음 선택한 사진으로 자동 등록됩니다.',
                                           style: SDSTextStyle.regular.copyWith(
                                             fontSize: 12,
                                             color: SDSColor.gray500,
@@ -957,6 +1145,20 @@ class FleamarketUploadView extends StatelessWidget {
                                   ),
                                 ),
                                 validator: (val) {
+                                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                                    if (val!.length <= 1000 && val.length >= 1) {
+                                      _fleamarketUploadViewModel.changeDescriptionWritten(true);
+                                    } else {
+                                      _fleamarketUploadViewModel.changeDescriptionWritten(false);
+                                    }
+                                  });
+                                  if (val!.length <= 1000 && val.length >= 1) {
+                                    return null;
+                                  } else if (val.length == 0) {
+                                    return '상세 설명을 입력해주세요.';
+                                  } else {
+                                    return '최대 입력 가능한 글자 수를 초과했습니다.';
+                                  }
                                 },
                               ),
                             ),
@@ -976,14 +1178,15 @@ class FleamarketUploadView extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
                       child: ElevatedButton(
                         onPressed: () async {
-                          if(_fleamarketUploadViewModel.textEditingController_title.text != ''
-                                && _fleamarketUploadViewModel.textEditingController_productName.text != ''
+                          if(_fleamarketUploadViewModel.isTitleWritten == true
+                                && _fleamarketUploadViewModel.isProductNameWritten == true
                                 && _fleamarketUploadViewModel.selectedCategoryMain != '상위 카테고리'
                                 && _fleamarketUploadViewModel.selectedCategorySub != '하위 카테고리'
-                                && _fleamarketUploadViewModel.itemPriceTextEditingController.text != ''
+                                && _fleamarketUploadViewModel.isPriceWritten == true
                                 && _fleamarketUploadViewModel.selectedTradeMethod != '거래방법 선택'
                                 && _fleamarketUploadViewModel.selectedTradeSpot != '거래장소 선택'
-                                && _fleamarketUploadViewModel.textEditingController_desc.text != ''){
+                                && _fleamarketUploadViewModel.isDescriptionWritten == true){
+                            CustomFullScreenDialog.showDialog();
                             await _fleamarketUploadViewModel.uploadFleamarket(
                                 {
                                   "user_id": _userViewModel.user.user_id,
@@ -1019,13 +1222,15 @@ class FleamarketUploadView extends StatelessWidget {
                                 },
                                 _fleamarketUploadViewModel.photos
                             );
+                            CustomFullScreenDialog.cancelDialog();
+                            Get.back();
                             await _fleamarketListViewModel.fetchFleamarketData_total(userId: _userViewModel.user.user_id);
                             if(_fleamarketUploadViewModel.selectedCategoryMain == '스키')
                               await _fleamarketListViewModel.fetchFleamarketData_ski(userId: _userViewModel.user.user_id, categoryMain:'스키');
                             if(_fleamarketUploadViewModel.selectedCategoryMain == '스노보드')
                               await _fleamarketListViewModel.fetchFleamarketData_board(userId: _userViewModel.user.user_id, categoryMain:'스노보드');
                             await _fleamarketListViewModel.fetchFleamarketData_my(userId: _userViewModel.user.user_id, myflea: true);
-                            Get.back();
+
                           }
 
 
@@ -1039,14 +1244,14 @@ class FleamarketUploadView extends StatelessWidget {
                           minimumSize: Size(double.infinity, 48),
                           backgroundColor:
                           (
-                              _fleamarketUploadViewModel.textEditingController_title.text != ''
-                                  && _fleamarketUploadViewModel.selectedCategorySub != '하위 카테고리'
+                              _fleamarketUploadViewModel.isTitleWritten == true
+                                  && _fleamarketUploadViewModel.isProductNameWritten == true
                                   && _fleamarketUploadViewModel.selectedCategoryMain != '상위 카테고리'
-                                  && _fleamarketUploadViewModel.textEditingController_productName != ''
-                                  && _fleamarketUploadViewModel.itemPriceTextEditingController.text != ''
+                                  && _fleamarketUploadViewModel.selectedCategorySub != '하위 카테고리'
+                                  && _fleamarketUploadViewModel.isPriceWritten == true
                                   && _fleamarketUploadViewModel.selectedTradeMethod != '거래방법 선택'
                                   && _fleamarketUploadViewModel.selectedTradeSpot != '거래장소 선택'
-                                  && _fleamarketUploadViewModel.textEditingController_desc.text != ''
+                                  && _fleamarketUploadViewModel.isDescriptionWritten == true
                           )
                               ?
                           SDSColor.snowliveBlue
@@ -1055,14 +1260,14 @@ class FleamarketUploadView extends StatelessWidget {
                         child: Text('작성 완료',
                           style: SDSTextStyle.bold.copyWith(color:
                           (
-                          _fleamarketUploadViewModel.textEditingController_title.text != ''
-                              && _fleamarketUploadViewModel.textEditingController_productName != ''
-                              && _fleamarketUploadViewModel.selectedCategoryMain != '상위 카테고리'
-                              && _fleamarketUploadViewModel.selectedCategorySub != '하위 카테고리'
-                              && _fleamarketUploadViewModel.itemPriceTextEditingController.text != ''
-                              && _fleamarketUploadViewModel.selectedTradeMethod != '거래방법 선택'
-                              && _fleamarketUploadViewModel.selectedTradeSpot != '거래장소 선택'
-                              && _fleamarketUploadViewModel.textEditingController_desc.text != ''
+                              _fleamarketUploadViewModel.isTitleWritten == true
+                                  && _fleamarketUploadViewModel.isProductNameWritten == true
+                                  && _fleamarketUploadViewModel.selectedCategoryMain != '상위 카테고리'
+                                  && _fleamarketUploadViewModel.selectedCategorySub != '하위 카테고리'
+                                  && _fleamarketUploadViewModel.isPriceWritten == true
+                                  && _fleamarketUploadViewModel.selectedTradeMethod != '거래방법 선택'
+                                  && _fleamarketUploadViewModel.selectedTradeSpot != '거래장소 선택'
+                                  && _fleamarketUploadViewModel.isDescriptionWritten == true
                           )
                           ? SDSColor.snowliveWhite
                               :SDSColor.gray400, fontSize: 16),
@@ -1070,8 +1275,8 @@ class FleamarketUploadView extends StatelessWidget {
                       ),
                     ))
               ],
-            ),
-          )),
+            )),
+          ),
         ),
       ),
     );

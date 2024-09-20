@@ -813,7 +813,7 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                                               : Container(
                                             height: 54,
                                             child: Center(
-                                              child: Text('${_resortHomeViewModel.weatherInfo['temp']}', //u00B0
+                                              child: Text('${_resortHomeViewModel.weatherInfo['temp']??'-'}', //u00B0
                                                 style: GoogleFonts.bebasNeue(
                                                     fontSize: 44,
                                                     color: Colors.white,
@@ -905,7 +905,7 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                                                 padding:
                                                 const EdgeInsets.only(right: 2),
                                                 child: Text(
-                                                  '${_resortHomeViewModel.weatherInfo['wind']}',
+                                                  '${_resortHomeViewModel.weatherInfo['wind']??'-'}',
                                                   style: GoogleFonts.bebasNeue(
                                                       fontSize: 24,
                                                       color: SDSColor.snowliveWhite),
@@ -942,7 +942,7 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                                                   padding:
                                                   const EdgeInsets.only(right: 2),
                                                   child: Text(
-                                                    '${_resortHomeViewModel.weatherInfo['wet']}',
+                                                    '${_resortHomeViewModel.weatherInfo['wet']??'-'}',
                                                     style: GoogleFonts.bebasNeue(
                                                         fontSize: 24,
                                                         color: SDSColor.snowliveWhite),
@@ -977,7 +977,7 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                                               Obx(
                                                     () => Padding(
                                                   padding: const EdgeInsets.only(right: 2),
-                                                  child: Text('${_resortHomeViewModel.weatherInfo['rain']}',
+                                                  child: Text('${_resortHomeViewModel.weatherInfo['rain']??'-'}',
                                                     style: GoogleFonts.bebasNeue(
                                                         fontSize: 24,
                                                         color: SDSColor.snowliveWhite),
@@ -1011,7 +1011,7 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                                               crossAxisAlignment: CrossAxisAlignment.end,
                                               children: [
                                                 Text(
-                                                  '${_resortHomeViewModel.weatherInfo['minTemp']}',
+                                                  '${_resortHomeViewModel.weatherInfo['minTemp']??'-'}',
                                                   style: GoogleFonts.bebasNeue(
                                                       fontSize: 24,
                                                       color: SDSColor.snowliveWhite),
@@ -1028,7 +1028,7 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                                                   ),
                                                 ),
                                                 Text(
-                                                  '${_resortHomeViewModel.weatherInfo['maxTemp']}',
+                                                  '${_resortHomeViewModel.weatherInfo['maxTemp']??'-'}',
                                                   style: GoogleFonts.bebasNeue(
                                                       fontSize: 24,
                                                       color: SDSColor.snowliveWhite),

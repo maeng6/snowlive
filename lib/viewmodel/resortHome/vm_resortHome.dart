@@ -99,7 +99,8 @@ class ResortHomeViewModel extends GetxController {
       weatherIcons = WeatherModel().getWeatherIcon(_weatherInfo['pty'], _weatherInfo['sky']);
     }catch(e) {
       print(e);
-      Get.snackbar('Error', '날씨 불러오기 실패');
+      isLoading_weather(false);
+      Get.snackbar('날씨 정보 수신 지연', '잠시후 다시 시도해주세요.');
     }
     isLoading_weather(false);
   }
