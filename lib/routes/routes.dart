@@ -3,7 +3,15 @@ import 'package:com.snowlive/view/community/free/v_community_bulletin_Upload.dar
 import 'package:com.snowlive/view/community/free/v_community_bulletin_update.dart';
 import 'package:com.snowlive/view/community/free/v_community_comment_detail.dart';
 import 'package:com.snowlive/view/community/v_community_main.dart';
+import 'package:com.snowlive/view/crew/v_crewApplication_crew.dart';
+import 'package:com.snowlive/view/crew/v_crewApplication_user.dart';
+import 'package:com.snowlive/view/crew/v_crewDescription.dart';
+import 'package:com.snowlive/view/crew/v_crewMemberSettings.dart';
+import 'package:com.snowlive/view/crew/v_crewNotice.dart';
+import 'package:com.snowlive/view/crew/v_crewNoticeList.dart';
+import 'package:com.snowlive/view/crew/v_crewSetting.dart';
 import 'package:com.snowlive/view/crew/v_searchCrew.dart';
+import 'package:com.snowlive/view/crew/v_updateCrewImageAndColor.dart';
 import 'package:com.snowlive/view/fleamarket/v_fleaMarketCommentDetail.dart';
 import 'package:com.snowlive/view/fleamarket/v_fleaMarketList_search.dart';
 import 'package:com.snowlive/view/fleamarket/v_fleamarketUpdate.dart';
@@ -70,6 +78,19 @@ class AppRoutes {
   static const String rankingHome = '/rankingHome';
   static const String crewRecordRoom = '/crewRecordRoom';
   static const String searchCrew = '/searchCrew';
+  static const String crewApplicationUser = '/crewApplicationUser';
+  static const String crewSetting = '/crewSetting';
+  static const String crewApplicationCrew = '/crewApplicationCrew';
+  static const String updateCrewImageAndColor = '/updateCrewImageAndColor';
+  static const String crewDescription = '/crewDescription';
+  static const String crewNoticeCreate = '/crewNoticeCreate';
+  static const String crewNoticeList = '/crewNoticeList';
+  static const String crewMemberSettings = '/crewMemberSettings';
+
+
+
+
+
 
 
 
@@ -231,6 +252,38 @@ class AppRoutes {
     GetPage(
       name: searchCrew,
       page: () => SearchCrewView(),
+    ),
+    GetPage(
+      name: crewApplicationUser,
+      page: () => CrewApplicationUserView(),
+    ),
+    GetPage(
+      name: crewSetting,
+      page: () => CrewSettingView(),
+    ),
+    GetPage(
+      name: crewApplicationCrew,
+      page: () => CrewApplicationCrewView(),
+    ),
+    GetPage(
+      name: updateCrewImageAndColor,
+      page: () => UpdateCrewImageAndColorView(),
+    ),
+    GetPage(
+      name: crewDescription,
+      page: () => CrewDescriptionView(),
+    ),
+    GetPage(
+      name: crewNoticeCreate,
+      page: () => CrewNoticeCreateView(),
+    ),
+    GetPage(
+      name: crewNoticeList,
+      page: () => CrewNoticeListView(),
+    ),
+    GetPage(
+      name: crewMemberSettings,
+      page: () => CrewMemberSettingsView(),
     ),
   ];
 }

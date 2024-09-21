@@ -200,7 +200,7 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
                                 color: isEnabled ? Colors.blue : Colors.grey,
                                 onPressed: isEnabled
                                     ? () {
-                                  _streamController_ResortHome.sendMessage(_controller.text, _userViewModel.user.user_id!);
+                                  _streamController_ResortHome.sendMessage(_controller.text, _userViewModel.user.user_id.toString()!);
                                   _controller.clear();
                                   _isButtonEnabled.value = false;
                                   _scrollToBottom();
@@ -224,56 +224,6 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
             ],
           ),
         ),
-        floatingActionButton: Container(
-          width: 106,
-          decoration: BoxDecoration(
-            color: Colors.transparent,
-            borderRadius: BorderRadius.circular(50),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.04),
-                spreadRadius: 2,
-                blurRadius: 8,
-                offset: Offset(0, 6),
-              ),
-            ],
-          ),
-          child: FloatingActionButton(
-            onPressed: _scrollToBottom,
-            splashColor: Colors.transparent,
-            elevation: 0,
-            highlightElevation: 0,
-            hoverElevation: 0,
-            hoverColor: Colors.transparent,
-            mini: true,
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(40),
-              side: BorderSide(color: SDSColor.gray200)
-            ),
-            backgroundColor: SDSColor.snowliveWhite,
-            foregroundColor: Colors.white,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Icon(Icons.arrow_downward_rounded,
-                    color: SDSColor.gray900,
-                    size: 16),
-                Padding(
-                  padding: const EdgeInsets.only(left: 2, right: 3),
-                  child: Text('최신글 보기',
-                    style: TextStyle(
-                        fontSize: 13,
-                        fontWeight: FontWeight.bold,
-                        color: SDSColor.gray900,
-                        letterSpacing: 0
-                    ),),
-                )
-              ],
-            ),
-          ),
-        ),
-        floatingActionButtonLocation: FloatingActionButtonLocation.centerTop,
       ),
     );
   }

@@ -63,6 +63,7 @@ class FriendDetailViewModel extends GetxController {
 
   var _friendDetailModel = FriendDetailModel().obs;
   RxList<FriendsTalk> _friendsTalk = <FriendsTalk>[].obs;
+  var findFriendInfo = <int, Map<String, String>>{}.obs;
 
   final TextEditingController textEditingController = TextEditingController();
   final formKey = GlobalKey<FormState>();
@@ -316,7 +317,14 @@ class FriendDetailViewModel extends GetxController {
     isLoading(false);
   }
 
-
+  // 각 유저의의 상세 정보를 불러와 로고 URL, 이름 저장
+  Future<void> findFriendDetails(int userId, int friendUserId, String seasonDate) async {
+    await fetchFriendDetailInfo(userId: userId, friendUserId: friendUserId, season: seasonDate);
+    findFriendInfo[friendUserId] = {
+      'displayName': _friendDetailModel.value.friendUserInfo.displayName,
+      'profileImageUrlUser': _friendDetailModel.value.friendUserInfo.profileImageUrlUser ?? '',
+    };
+  }
 
 
 }

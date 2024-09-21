@@ -1,11 +1,16 @@
 import 'dart:io';
 import 'package:com.snowlive/routes/routes.dart';
+import 'package:com.snowlive/viewmodel/crew/vm_crewApply.dart';
+import 'package:com.snowlive/viewmodel/vm_user.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
 class OnBoardingCrewMainView extends StatelessWidget {
-  const OnBoardingCrewMainView({Key? key}) : super(key: key);
+  OnBoardingCrewMainView({Key? key}) : super(key: key);
+
+  final CrewApplyViewModel _crewApplyViewModel = Get.find<CrewApplyViewModel>();
+  final UserViewModel _userViewModel = Get.find<UserViewModel>();
 
   void _showBottomModal(BuildContext context) {
     showModalBottomSheet(
@@ -92,7 +97,14 @@ class OnBoardingCrewMainView extends StatelessWidget {
                   Expanded(
                     child: ElevatedButton(
                       onPressed: () async {
-                        Get.toNamed(AppRoutes.searchCrew);
+                        Navigator.pop(context);
+                        await _crewApplyViewModel.fetchCrewApplyListUser(_userViewModel.user.user_id);
+                        print(_crewApplyViewModel.crewApplyList);
+                        if(_crewApplyViewModel.crewApplyList.isNotEmpty){
+                          Get.toNamed(AppRoutes.crewApplicationUser);
+                        } else{
+                          Get.toNamed(AppRoutes.searchCrew);
+                        }
                       },
                       child: Text(
                         '가입하기',
