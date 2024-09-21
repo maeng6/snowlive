@@ -2,7 +2,9 @@ import 'package:com.snowlive/routes/routes.dart';
 import 'package:com.snowlive/view/crew/v_crewHome.dart';
 import 'package:com.snowlive/view/crew/v_crewMember.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewMain.dart';
+import 'package:com.snowlive/viewmodel/crew/vm_crewMemberList.dart';
 import 'package:com.snowlive/viewmodel/vm_mainHome.dart';
+import 'package:com.snowlive/viewmodel/vm_user.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -11,6 +13,8 @@ class CrewMainView extends StatelessWidget {
 
   final CrewMainViewModel _crewMainViewModel = Get.find<CrewMainViewModel>();
   final MainHomeViewModel _mainHomeViewModel = Get.find<MainHomeViewModel>();
+  final CrewMemberListViewModel _crewMemberListViewModel = Get.find<CrewMemberListViewModel>();
+  final UserViewModel _userViewModel = Get.find<UserViewModel>();
 
   @override
   Widget build(BuildContext context) {
@@ -23,16 +27,17 @@ class CrewMainView extends StatelessWidget {
       extendBodyBehindAppBar: true,
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(58),
-        child: Column(
+        child: Obx(()=>Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             AppBar(
               actions: [
+                if(_crewMemberListViewModel.crewLeaderName == _userViewModel.user.display_name)
                 Padding(
                   padding: EdgeInsets.only(right: 5),
                   child: IconButton(
                     onPressed: () {
-
+                      Get.toNamed(AppRoutes.crewSetting);
                     },
                     icon: Image.asset(
                       'assets/imgs/icons/icon_settings.png',
@@ -68,7 +73,7 @@ class CrewMainView extends StatelessWidget {
               elevation: 0.0,
             ),
           ],
-        ),
+        ),)
       ),
       body: SafeArea(
         child: Column(

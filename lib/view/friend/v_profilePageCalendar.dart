@@ -1,3 +1,4 @@
+import 'package:com.snowlive/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/viewmodel/friend/vm_friendDetail.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -38,7 +39,7 @@ class _ProfilePageCalendarState extends State<ProfilePageCalendar> {
     if (ridingHistory.isNotEmpty) {
       focusedDay = ridingHistory.keys.first;
     } else {
-      focusedDay = DateTime.now(); // 기본값으로 현재 날짜를 설정
+      focusedDay = DateTime.now().toLocal(); // 기본값으로 현재 날짜를 설정
     }
 
     selectedDay = focusedDay;
@@ -96,25 +97,37 @@ class _ProfilePageCalendarState extends State<ProfilePageCalendar> {
   }
 
   void _onDaySelected(DateTime selectDay, DateTime focusDay) {
-    print(selectDay);
-    print(focusDay);
+
     setState(() {
       if (_isMonthAllowed(selectDay)) {
-        selectedDay = selectDay;
-        focusedDay = focusDay;
-        selectedDateFormatted = DateFormat('yyyy-MM-dd').format(selectDay);
+        selectedDay = DateTime(selectDay.year, selectDay.month, selectDay.day);
+        focusedDay = DateTime(focusDay.year, focusDay.month, focusDay.day);
+        selectedDateFormatted = DateFormat('yyyy-MM-dd HH:mm:ss.SSS').format(selectedDay);
         print('Selected date: $selectedDateFormatted');
 
-        DateTime selectDayWithoutTime = DateTime(selectDay.year, selectDay.month, selectDay.day);
+        DateTime selectDayWithoutTime = selectedDay;
+
+        // 디버깅을 위한 코드
+        ridingHistory.forEach((key, value) {
+          print('Key: $key, Value: $value');
+          if (key == selectDayWithoutTime) {
+            print('Match found for $selectDayWithoutTime');
+          }
+        });
 
         int index = ridingHistory.keys.toList().indexOf(selectDayWithoutTime);
-        print(ridingHistory);
-        print(index);
+        print('Index found: $index');
+
         if (index != -1) {
           _friendDetailViewModel.updateSelectedDailyIndex(index);
+
+          print('Selected Day Local: $selectedDay');
+          print('Selected Day Without Time Local: $selectDayWithoutTime');
+
         } else {
           _friendDetailViewModel.updateSelectedDailyIndex(-1);
           print('선택된 날짜가 ridingHistory에 없습니다.');
+
         }
       }
     });
@@ -131,55 +144,106 @@ class _ProfilePageCalendarState extends State<ProfilePageCalendar> {
       startingDayOfWeek: StartingDayOfWeek.sunday,
       daysOfWeekVisible: true,
       onDaySelected: _onDaySelected,
-      selectedDayPredicate: (DateTime date) {
-        return isSameDay(selectedDay, date);
-      },
       eventLoader: _getEventsFromDay,
       calendarStyle: CalendarStyle(
+        outsideDaysVisible: false,
         isTodayHighlighted: true,
         selectedDecoration: BoxDecoration(
-          color: Colors.blue,
+          color: SDSColor.gray900,
           borderRadius: BorderRadius.circular(8.0),
+
         ),
-        selectedTextStyle: TextStyle(color: Colors.white),
-        todayDecoration: BoxDecoration(
-          color: Colors.blue,
-          borderRadius: BorderRadius.circular(8.0),
+        selectedTextStyle: SDSTextStyle.bold.copyWith(
+            color: SDSColor.snowliveWhite,
+        ),
+        todayTextStyle: SDSTextStyle.bold.copyWith(
+          color: SDSColor.snowliveBlue
         ),
       ),
       headerStyle: HeaderStyle(
+        headerPadding: EdgeInsets.symmetric(vertical: 4, horizontal: 50),
+        titleTextStyle: SDSTextStyle.bold.copyWith(
+          fontSize: 16,
+          color: SDSColor.gray900
+        ),
         formatButtonVisible: false,
         titleCentered: true,
         titleTextFormatter: (date, locale) => DateFormat('yyyy년 M월', 'ko').format(date),
         formatButtonShowsNext: false,
+        leftChevronIcon: Image.asset(
+          'assets/imgs/icons/icon_profile_calendar_btn_left.png',
+          fit: BoxFit.cover,
+          width: 30,
+          height: 30,
+        ),
+        rightChevronIcon: Image.asset(
+          'assets/imgs/icons/icon_profile_calendar_btn.png',
+          fit: BoxFit.cover,
+          width: 30,
+          height: 30,
+        ),
+      ),
+      daysOfWeekHeight: 40,
+      daysOfWeekStyle: DaysOfWeekStyle(
+        weekdayStyle: SDSTextStyle.regular.copyWith(
+          color: SDSColor.gray500,
+            fontSize: 13
+        ),
+        weekendStyle: SDSTextStyle.regular.copyWith(
+          color: SDSColor.red,
+          fontSize: 13
+        ),
+        dowTextFormatter: (date, locale) {
+          return DateFormat.E('ko_KR').format(date).substring(0, 1); // '월', '화', '수', '목', '금', '토', '일' 표기
+        },
+        decoration: BoxDecoration(
+          color: SDSColor.snowliveWhite,
+        ),
       ),
       calendarBuilders: CalendarBuilders<int>(
         defaultBuilder: (context, date, focusedDay) {
           DateTime dateTime = DateTime(date.year, date.month, date.day);
+          int? ridingCount = ridingHistory[dateTime];
+
+          print('Date: $dateTime, Riding Count: $ridingCount');
 
           bool hasData = ridingHistory[dateTime] != null;
 
           return Container(
-            margin: const EdgeInsets.all(6.0),
+            margin: const EdgeInsets.all(2),
+            padding: EdgeInsets.only(top: 5, bottom: 4),
             alignment: Alignment.center,
             decoration: BoxDecoration(
-              color: hasData ? Color(0xFFF0F6FF) : Colors.transparent,
+              color:
+              (isSameDay(selectedDay, dateTime)) ?
+              SDSColor.gray900
+              : hasData ? SDSColor.blue50 : Colors.transparent,
               borderRadius: BorderRadius.circular(8.0),
             ),
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
                   '${date.day}',
-                  style: TextStyle(color: Colors.black),
+                  style: SDSTextStyle.bold.copyWith(
+                      color:
+                      (isSameDay(selectedDay, dateTime))
+                      ? SDSColor.snowliveBlue
+                      : SDSColor.gray900,
+                      fontSize: 14),
                 ),
                 if (hasData)
                   Text(
                     '${ridingHistory[dateTime]}',
-                    style: TextStyle(fontSize: 12, color: Colors.black),
+                    style: SDSTextStyle.regular.copyWith(
+                        fontSize: 13,
+                        color:
+                        (isSameDay(selectedDay, dateTime))
+                            ? SDSColor.snowliveWhite
+                            : SDSColor.gray500),
                   )
                 else
-                  SizedBox(height: 15),
+                 Container()
               ],
             ),
           );

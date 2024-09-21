@@ -1,13 +1,3 @@
-class CrewNoticeListResponse {
-  List<CrewNotice>? notices;
-
-  CrewNoticeListResponse({this.notices});
-
-  CrewNoticeListResponse.fromJson(List<dynamic> json) {
-    notices = json.map((item) => CrewNotice.fromJson(item)).toList();
-  }
-}
-
 class CrewNotice {
   int? noticeCrewId;
   int? crewId;
@@ -30,7 +20,17 @@ class CrewNotice {
     crewId = json['crew_id'];
     authorUserId = json['author_user_id'];
     notice = json['notice'];
-    uploadTime = DateTime.tryParse(json['upload_time']);
-    updateTime = DateTime.tryParse(json['update_time']);
+    uploadTime = DateTime.parse(json['upload_time']);
+    updateTime = DateTime.parse(json['update_time']);
+  }
+}
+
+class CrewNoticeListResponse {
+  List<CrewNotice>? notices;
+
+  CrewNoticeListResponse({this.notices});
+
+  CrewNoticeListResponse.fromJson(List<dynamic> json) {
+    notices = json.map((item) => CrewNotice.fromJson(item as Map<String, dynamic>)).toList();
   }
 }

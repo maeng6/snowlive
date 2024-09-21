@@ -56,7 +56,7 @@ class CrewAPI {
 
   // 크루 세부사항 업데이트
   Future<ApiResponse<Map<String, dynamic>>> updateCrewDetails(int crewId, Map<String, dynamic> updateData) async {
-    final uri = Uri.parse('$baseUrl/crew-details/$crewId/');
+    final uri = Uri.parse('$baseUrl/$crewId/');
     final response = await http.put(
       uri,
       body: json.encode(updateData),
@@ -107,7 +107,7 @@ class CrewAPI {
   // 크루 가입 신청
   Future<ApiResponse<Map<String, dynamic>>> applyForCrew(Map<String, dynamic> applicationData) async {
     final response = await http.post(
-      Uri.parse('$baseUrl/apply-crew/'),
+      Uri.parse('$baseUrl/crew-member/apply/'),
       body: json.encode(applicationData),
       headers: {'Content-Type': 'application/json'},
     );
@@ -122,7 +122,7 @@ class CrewAPI {
   // 크루 가입 신청 승인
   Future<ApiResponse<Map<String, dynamic>>> approveCrewApplication(Map<String, dynamic> approvalData) async {
     final response = await http.post(
-      Uri.parse('$baseUrl/approve-crew-application/'),
+      Uri.parse('$baseUrl/crew-member/approve/'),
       body: json.encode(approvalData),
       headers: {'Content-Type': 'application/json'},
     );
@@ -137,7 +137,7 @@ class CrewAPI {
   // 크루 가입 신청 삭제
   Future<ApiResponse<Map<String, dynamic>>> deleteCrewApplication(Map<String, dynamic> deleteData) async {
     final response = await http.delete(
-      Uri.parse('$baseUrl/delete-crew-application/'),
+      Uri.parse('$baseUrl/crew-member/delete-apply/'),
       body: json.encode(deleteData),
       headers: {'Content-Type': 'application/json'},
     );
@@ -149,10 +149,37 @@ class CrewAPI {
     }
   }
 
+  // 크루 가입 신청 목록 (특정 크루의 신청목록)
+  Future<ApiResponse<List<dynamic>>> listCrewApplications(int crewId) async {
+    final uri = Uri.parse('$baseUrl/crew-member/apply/?crew_id=$crewId');
+
+    final response = await http.get(uri);
+
+    if (response.statusCode == 200) {
+      return ApiResponse.success(json.decode(utf8.decode(response.bodyBytes)));
+    } else {
+      return ApiResponse.error(json.decode(utf8.decode(response.bodyBytes)));
+    }
+  }
+
+  // 크루 가입 신청 목록 (특정 유저의 신청목록)
+  Future<ApiResponse<List<dynamic>>> listCrewApplicationsUser(int userId) async {
+    final uri = Uri.parse('$baseUrl/crew-member/apply/?user_id=$userId');
+
+    final response = await http.get(uri);
+
+    if (response.statusCode == 200) {
+      return ApiResponse.success(json.decode(utf8.decode(response.bodyBytes)));
+    } else {
+      return ApiResponse.error(json.decode(utf8.decode(response.bodyBytes)));
+    }
+  }
+
+
   // 크루 멤버 상태 업데이트
   Future<ApiResponse<Map<String, dynamic>>> updateCrewMemberStatus(Map<String, dynamic> statusData) async {
     final response = await http.patch(
-      Uri.parse('$baseUrl/update-crew-member-status/'),
+      Uri.parse('$baseUrl/crew-member/update-status/'),
       body: json.encode(statusData),
       headers: {'Content-Type': 'application/json'},
     );
@@ -180,9 +207,9 @@ class CrewAPI {
   }
 
   // 크루 탈퇴
-  Future<ApiResponse<Map<String, dynamic>>> leaveCrew(Map<String, dynamic> leaveData) async {
+  Future<ApiResponse<Map<String, dynamic>>> withdrawCrew(Map<String, dynamic> leaveData) async {
     final response = await http.post(
-      Uri.parse('$baseUrl/leave-crew/'),
+      Uri.parse('$baseUrl/crew-member/leave/'),
       body: json.encode(leaveData),
       headers: {'Content-Type': 'application/json'},
     );
@@ -214,7 +241,7 @@ class CrewAPI {
   // 크루 공지 생성
   Future<ApiResponse<Map<String, dynamic>>> createCrewNotice(Map<String, dynamic> noticeData) async {
     final response = await http.post(
-      Uri.parse('$baseUrl/crew-notice/'),
+      Uri.parse('$baseUrl/notice/create/'),
       body: json.encode(noticeData),
       headers: {'Content-Type': 'application/json'},
     );
@@ -230,7 +257,7 @@ class CrewAPI {
   Future<ApiResponse<Map<String, dynamic>>> updateCrewNotice(Map<String, dynamic> noticeData) async {
     final noticeId = noticeData['notice_id'];
     final response = await http.patch(
-      Uri.parse('$baseUrl/update-notice/$noticeId/'),
+      Uri.parse('$baseUrl/notice/update/'),
       body: json.encode(noticeData),
       headers: {'Content-Type': 'application/json'},
     );
@@ -257,8 +284,8 @@ class CrewAPI {
   }
 
   // 크루 공지 리스트 조회
-  Future<ApiResponse<List<dynamic>>> listCrewNotices(String userId, String crewId) async {
-    final uri = Uri.parse('$baseUrl/notice-crew-list/').replace(queryParameters: {'user_id': userId, 'crew_id': crewId});
+  Future<ApiResponse<List<dynamic>>> listCrewNotices(int userId, int crewId) async {
+    final uri = Uri.parse('$baseUrl/notice/list/').replace(queryParameters: {'user_id': userId.toString(), 'crew_id': crewId.toString()});
 
     final response = await http.get(uri);
 

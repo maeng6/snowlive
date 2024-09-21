@@ -5,16 +5,25 @@ import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
 
 class FleaMarketImageScreen extends StatefulWidget {
-  FleaMarketImageScreen({Key? key}) : super(key: key);
+  final List<String> itemImagesUrls;  // 이미지 URL 리스트를 받을 변수
+  final int initialIndex;  // 처음 보여줄 이미지의 인덱스
+
+  FleaMarketImageScreen({Key? key, required this.itemImagesUrls, required this.initialIndex}) : super(key: key);
 
   @override
   State<FleaMarketImageScreen> createState() => _FleaMarketImageScreenState();
 }
 
 class _FleaMarketImageScreenState extends State<FleaMarketImageScreen> {
-  int _currentPage = 0;
-  List<String> _itemImagesUrls = [];
+  late int _currentPage;
+  late List<String> _itemImagesUrls;
 
+  @override
+  void initState() {
+    super.initState();
+    _currentPage = widget.initialIndex;  // 처음 인덱스를 받아서 설정
+    _itemImagesUrls = widget.itemImagesUrls;  // 이미지 리스트를 받아서 설정
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +41,7 @@ class _FleaMarketImageScreenState extends State<FleaMarketImageScreen> {
           ),
           elevation: 0.0,
           title: Text(
-            '${_currentPage + 1} / ${_itemImagesUrls!.length}',
+            '${_currentPage + 1} / ${_itemImagesUrls.length}',
             style: TextStyle(
               color: Colors.white,
               fontWeight: FontWeight.bold,

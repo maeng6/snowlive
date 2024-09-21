@@ -1,9 +1,19 @@
 import 'package:com.snowlive/model/m_resortModel.dart';
+import 'package:com.snowlive/viewmodel/crew/vm_crewMemberList.dart';
+import 'package:com.snowlive/viewmodel/crew/vm_crewNotice.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:com.snowlive/api/api_crew.dart';
 import 'package:com.snowlive/model/m_crewDetail.dart';
 
 class CrewDetailViewModel extends GetxController {
+
+  final CrewMemberListViewModel _crewMemberListViewModel = Get.find<CrewMemberListViewModel>();
+  final CrewNoticeViewModel _crewNoticeViewModel = Get.find<CrewNoticeViewModel>();
+
+  TextEditingController textEditingController_description = TextEditingController();
+  final formKey_description = GlobalKey<FormState>();
+
   // 탭 관리 리스트
   static const tabNameListConst = ['홈', '멤버', '갤러리'];
 
@@ -22,6 +32,10 @@ class CrewDetailViewModel extends GetxController {
 
   // 리조트 이름 저장용 변수 (리조트 변환 로직 필요)
   final RxString _resortName = ''.obs;
+
+  // 각 크루의 ID에 대한 정보(로고, 이름, 디스크립션)를 저장할 맵
+  var crewDetails = <int, Map<String, String>>{}.obs;
+
 
   CrewDetailInfo get crewDetailInfo => crewDetailResponse.value.crewDetailInfo ?? CrewDetailInfo(); // Null-safe 처리
   SeasonRankingInfo get seasonRankingInfo => crewDetailResponse.value.seasonRankingInfo ?? SeasonRankingInfo(); // Null-safe 처리
@@ -52,6 +66,12 @@ class CrewDetailViewModel extends GetxController {
     _selectedTabName = tabNameList[0].obs;
   }
 
+  CrewDetailViewModel() {
+    textEditingController_description.addListener(() {
+      crewDetailInfo.description = textEditingController_description.text;
+    });
+  }
+
   // API 호출해서 데이터를 가져오는 메소드
   Future<void> fetchCrewDetail(int crewId, String season) async {
     isLoading.value = true;
@@ -63,6 +83,8 @@ class CrewDetailViewModel extends GetxController {
 
         // 리조트 이름 변환
         changeResortNumberToName(crewDetailResponse.value.crewDetailInfo?.baseResortId);
+        await _crewMemberListViewModel.findCrewLeaderName();
+        await _crewNoticeViewModel.fetchCrewNotices();
       } else {
         print('Error fetching crew details: ${response.error}');
       }
@@ -94,4 +116,15 @@ class CrewDetailViewModel extends GetxController {
   void toggleGraph() {
     isSlopeGraph.value = !isSlopeGraph.value;
   }
+
+  // 각 크루의 상세 정보를 불러와 로고 URL, 이름, 디스크립션 저장
+  Future<void> findCrewDetails(int crewId, String seasonDate) async {
+    await fetchCrewDetail(crewId, seasonDate);
+    crewDetails[crewId] = {
+      'logoUrl': crewLogoUrl,
+      'name': crewName,
+      'description': description,
+    };
+  }
+
 }

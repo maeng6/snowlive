@@ -40,7 +40,7 @@ class _SexWidgetState extends State<SexWidget> {
             ),
           ),
           Text(
-            '스키냐 스노보드냐.',
+            '성별을 선택해 주세요',
             style: SDSTextStyle.bold.copyWith(fontSize: 16, color: SDSColor.gray900),
           ),
           SizedBox(height: 24),

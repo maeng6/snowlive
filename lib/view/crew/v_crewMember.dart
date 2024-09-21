@@ -1,6 +1,5 @@
 import 'package:com.snowlive/routes/routes.dart';
 import 'package:com.snowlive/data/snowliveDesignStyle.dart';
-import 'package:com.snowlive/viewmodel/crew/vm_crewDetail.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewMemberList.dart';
 import 'package:com.snowlive/viewmodel/friend/vm_friendDetail.dart';
 import 'package:com.snowlive/viewmodel/vm_user.dart';
@@ -12,7 +11,6 @@ import 'package:get/get.dart';
 class CrewMemberListView extends StatelessWidget {
 
   final CrewMemberListViewModel _crewMemberListViewModel = Get.find<CrewMemberListViewModel>();
-  final CrewDetailViewModel _crewDetailViewModel = Get.find<CrewDetailViewModel>();
   final FriendDetailViewModel _friendDetailViewModel = Get.find<FriendDetailViewModel>();
   final UserViewModel _userViewModel = Get.find<UserViewModel>();
 

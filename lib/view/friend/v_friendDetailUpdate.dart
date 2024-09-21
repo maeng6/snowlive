@@ -47,6 +47,7 @@ class FriendDetailUpdateView extends StatelessWidget {
               },
             ),
             backgroundColor: Colors.white,
+            surfaceTintColor: Colors.transparent,
             elevation: 0.0,
             centerTitle: false,
             titleSpacing: 0,
@@ -534,7 +535,7 @@ class FriendDetailUpdateView extends StatelessWidget {
                                   onTap: () async {
                                     selectedSkiOrBoard = await showModalBottomSheet<String>(
                                       constraints: BoxConstraints(
-                                        maxHeight: _size.height - _statusBarSize - 44,
+                                        maxHeight: 300,
                                       ),
                                       backgroundColor: Colors.transparent,
                                       context: context,
@@ -587,7 +588,7 @@ class FriendDetailUpdateView extends StatelessWidget {
                                   onTap: () async {
                                     selectedSex = await showModalBottomSheet<String>(
                                       constraints: BoxConstraints(
-                                        maxHeight: _size.height - _statusBarSize - 44,
+                                        maxHeight: 300,
                                       ),
                                       backgroundColor: Colors.transparent,
                                       context: context,
@@ -627,21 +628,38 @@ class FriendDetailUpdateView extends StatelessWidget {
                                     )),
                                   ),
                                 ),
-                                SizedBox(height: 8),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      "프로필 공개 여부",  // 토글 스위치 라벨
-                                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                                    ),
-                                    Obx(() => Switch(
-                                      value: _friendDetailUpdateViewModel.hideProfile,
-                                      onChanged: (value) {
-                                        _friendDetailUpdateViewModel.toggleHideProfile(value);
-                                      },
-                                    )),
-                                  ],
+                                SizedBox(height: 24),
+                                Padding(
+                                  padding: EdgeInsets.only(left: 4),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        "프로필 공개 여부",  // 토글 스위치 라벨
+                                        style: SDSTextStyle.regular.copyWith(fontSize: 14, color: SDSColor.gray900),
+                                      ),
+                                      Obx(() => Switch(
+                                        value: _friendDetailUpdateViewModel.hideProfile,
+                                        onChanged: (value) {
+                                          _friendDetailUpdateViewModel.toggleHideProfile(value);
+                                        },
+                                        activeColor: SDSColor.snowliveWhite,
+                                        activeTrackColor: SDSColor.snowliveBlue,
+                                        inactiveTrackColor: SDSColor.gray100,
+                                        inactiveThumbColor: SDSColor.snowliveBlue,
+                                        trackOutlineWidth: MaterialStateProperty.resolveWith<double?>(
+                                              (Set<MaterialState> states) {
+                                            if (states.contains(MaterialState.selected)) {
+                                              return 0; // 스위치가 켜져 있을 때 외곽선 너비
+                                            } else {
+                                              return 0; // 스위치가 꺼져 있을 때 외곽선 너비
+                                            }
+                                          },
+                                        ),
+                                        trackOutlineColor: MaterialStateProperty.all(Colors.transparent),
+                                      )),
+                                    ],
+                                  ),
                                 ),
 
                               ],

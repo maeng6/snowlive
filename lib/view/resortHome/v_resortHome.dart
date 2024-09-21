@@ -403,12 +403,8 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                       builder: (context) {
                         return Obx(() => DraggableScrollableSheet(
                           initialChildSize:
-                          (_resortHomeViewModel.bestFriendList.length > 12)
-                              ? 0.88
-                              : (_resortHomeViewModel.bestFriendList.length > 8)
-                              ? 0.76
-                              : (_resortHomeViewModel.bestFriendList.length > 4)
-                              ? 0.6
+                              (_resortHomeViewModel.bestFriendList.length > 4)
+                              ? 0.64
                               : 0.44,
                           minChildSize: 0.44,
                           maxChildSize: 0.88,
@@ -443,6 +439,170 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                                       ),
                                     ),
                                     SizedBox(height: 24),
+                                    // Expanded(
+                                    //   child: _resortHomeViewModel.bestFriendList.isEmpty
+                                    //       ? Center(
+                                    //     child: Padding(
+                                    //       padding: const EdgeInsets.only(bottom: 24),
+                                    //       child: Text(
+                                    //         '친구 관리로 이동해 즐겨찾는 친구를 등록해 주세요.\n라이브중인 친구를 바로 확인하실 수 있어요.',
+                                    //         style: SDSTextStyle.regular.copyWith(fontSize: 14, color: SDSColor.gray500, height: 1.4),
+                                    //         textAlign: TextAlign.center,
+                                    //       ),
+                                    //     ),
+                                    //   )
+                                    //       : Wrap(
+                                    //     alignment: WrapAlignment.start,
+                                    //     children: List.generate(_resortHomeViewModel.bestFriendList.length, (index) {
+                                    //       var BFdoc = _resortHomeViewModel.bestFriendList[index];
+                                    //       return GestureDetector(
+                                    //         onTap: () async {
+                                    //           Navigator.pop(context);
+                                    //           Get.toNamed(AppRoutes.friendDetail);
+                                    //           CustomFullScreenDialog.showDialog();
+                                    //           await _friendDetailViewModel.fetchFriendDetailInfo(
+                                    //             userId: _userViewModel.user.user_id,
+                                    //             friendUserId: BFdoc.friendInfo.userId,
+                                    //             season: _friendDetailViewModel.seasonDate,
+                                    //           );
+                                    //           CustomFullScreenDialog.cancelDialog();
+                                    //         },
+                                    //         child: Container(
+                                    //           width: (_size.width - 40) / 4, // 화면 너비를 4등분
+                                    //           child: Column(
+                                    //             crossAxisAlignment: CrossAxisAlignment.center,
+                                    //             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    //             children: [
+                                    //               Stack(
+                                    //                 children: [
+                                    //                   Container(
+                                    //                     width: 68,
+                                    //                     height: 68,
+                                    //                     decoration: BoxDecoration(
+                                    //                       borderRadius: BorderRadius.circular(100),
+                                    //                       border: (BFdoc.friendInfo.withinBoundary == true &&
+                                    //                           BFdoc.friendInfo.revealWb == true)
+                                    //                           ? Border.all(
+                                    //                         color: SDSColor.snowliveBlue,
+                                    //                         width: 2,
+                                    //                       )
+                                    //                           : Border.all(
+                                    //                         color: SDSColor.gray100,
+                                    //                         width: 1,
+                                    //                       ),
+                                    //                     ),
+                                    //                     alignment: Alignment.center,
+                                    //                     child: BFdoc.friendInfo.profileImageUrlUser.isNotEmpty
+                                    //                         ? ExtendedImage.network(
+                                    //                       BFdoc.friendInfo.profileImageUrlUser,
+                                    //                       enableMemoryCache: true,
+                                    //                       shape: BoxShape.circle,
+                                    //                       borderRadius: BorderRadius.circular(100),
+                                    //                       width: 68,
+                                    //                       height: 68,
+                                    //                       fit: BoxFit.cover,
+                                    //                       loadStateChanged: (ExtendedImageState state) {
+                                    //                         switch (state.extendedImageLoadState) {
+                                    //                           case LoadState.loading:
+                                    //                             return SizedBox.shrink();
+                                    //                           case LoadState.completed:
+                                    //                             return state.completedWidget;
+                                    //                           case LoadState.failed:
+                                    //                             return ExtendedImage.asset(
+                                    //                               'assets/imgs/profile/img_profile_default_circle.png',
+                                    //                               shape: BoxShape.circle,
+                                    //                               borderRadius: BorderRadius.circular(100),
+                                    //                               width: 68,
+                                    //                               height: 68,
+                                    //                               fit: BoxFit.cover,
+                                    //                             );
+                                    //                           default:
+                                    //                             return null;
+                                    //                         }
+                                    //                       },
+                                    //                     )
+                                    //                         : ExtendedImage.asset(
+                                    //                       'assets/imgs/profile/img_profile_default_circle.png',
+                                    //                       enableMemoryCache: true,
+                                    //                       shape: BoxShape.circle,
+                                    //                       borderRadius: BorderRadius.circular(100),
+                                    //                       width: 68,
+                                    //                       height: 68,
+                                    //                       fit: BoxFit.cover,
+                                    //                     ),
+                                    //                   ),
+                                    //                   if (BFdoc.friendInfo.withinBoundary == true &&
+                                    //                       BFdoc.friendInfo.revealWb == true)
+                                    //                     Positioned(
+                                    //                       right: 0,
+                                    //                       bottom: 0,
+                                    //                       left: 0,
+                                    //                       child: Center(
+                                    //                         child: Image.asset(
+                                    //                           'assets/imgs/icons/icon_badge_live.png',
+                                    //                           width: 34,
+                                    //                         ),
+                                    //                       ),
+                                    //                     ),
+                                    //                 ],
+                                    //               ),
+                                    //               SizedBox(height: 6),
+                                    //               Container(
+                                    //                 width: 72,
+                                    //                 child: Text(
+                                    //                   BFdoc.friendInfo.displayName,
+                                    //                   overflow: TextOverflow.ellipsis,
+                                    //                   textAlign: TextAlign.center,
+                                    //                   style: TextStyle(
+                                    //                       fontSize: 12,
+                                    //                       fontWeight: FontWeight.normal,
+                                    //                       color: SDSColor.gray900
+                                    //                   ),
+                                    //                 ),
+                                    //               ),
+                                    //               SizedBox(height: 6),
+                                    //               Row(
+                                    //                 mainAxisAlignment: MainAxisAlignment.center,
+                                    //                 children: [
+                                    //                   Flexible(
+                                    //                     child: Text(
+                                    //                       (BFdoc.friendInfo.lastPassSlope == null)
+                                    //                           ? ''
+                                    //                           : '${BFdoc.friendInfo.lastPassSlope}',
+                                    //                       overflow: TextOverflow.ellipsis,
+                                    //                       textAlign: TextAlign.center,
+                                    //                       style: TextStyle(
+                                    //                           fontSize: 12,
+                                    //                           fontWeight: FontWeight.normal,
+                                    //                           color: SDSColor.gray500
+                                    //                       ),
+                                    //                     ),
+                                    //                   ),
+                                    //                   Flexible(
+                                    //                     child: Text(
+                                    //                       (BFdoc.friendInfo.lastPassTime == null)
+                                    //                           ? ''
+                                    //                           : ' · ${GetDatetime().getAgoString(BFdoc.friendInfo.lastPassTime!)}',
+                                    //                       overflow: TextOverflow.ellipsis,
+                                    //                       textAlign: TextAlign.center,
+                                    //                       style: TextStyle(
+                                    //                           fontSize: 12,
+                                    //                           fontWeight: FontWeight.normal,
+                                    //                           color: SDSColor.gray500
+                                    //                       ),
+                                    //                     ),
+                                    //                   ),
+                                    //                 ],
+                                    //               ),
+                                    //             ],
+                                    //           ),
+                                    //         ),
+                                    //       );
+                                    //     }),
+                                    //   ),
+                                    // ),
+
+
                                     Expanded(
                                       child: _resortHomeViewModel.bestFriendList.isEmpty
                                           ? Center(
@@ -455,160 +615,158 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                                           ),
                                         ),
                                       )
-                                          : Wrap(
-                                        alignment: WrapAlignment.start,
-                                        children: List.generate(_resortHomeViewModel.bestFriendList.length, (index) {
-                                          var BFdoc = _resortHomeViewModel.bestFriendList[index];
-                                          return GestureDetector(
-                                            onTap: () async {
-                                              Navigator.pop(context);
-                                              Get.toNamed(AppRoutes.friendDetail);
-                                              CustomFullScreenDialog.showDialog();
-                                              await _friendDetailViewModel.fetchFriendDetailInfo(
-                                                userId: _userViewModel.user.user_id,
-                                                friendUserId: BFdoc.friendInfo.userId,
-                                                season: _friendDetailViewModel.seasonDate,
-                                              );
-                                              CustomFullScreenDialog.cancelDialog();
-                                            },
-                                            child: Container(
-                                              width: (_size.width - 40) / 4, // 화면 너비를 4등분
-                                              child: Column(
-                                                crossAxisAlignment: CrossAxisAlignment.center,
-                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                children: [
-                                                  Stack(
-                                                    children: [
-                                                      Container(
-                                                        width: 68,
-                                                        height: 68,
-                                                        decoration: BoxDecoration(
-                                                          borderRadius: BorderRadius.circular(100),
-                                                          border: (BFdoc.friendInfo.withinBoundary == true &&
-                                                              BFdoc.friendInfo.revealWb == true)
-                                                              ? Border.all(
-                                                            color: SDSColor.snowliveBlue,
-                                                            width: 2,
-                                                          )
-                                                              : Border.all(
-                                                            color: SDSColor.gray100,
-                                                            width: 1,
-                                                          ),
-                                                        ),
-                                                        alignment: Alignment.center,
-                                                        child: BFdoc.friendInfo.profileImageUrlUser.isNotEmpty
-                                                            ? ExtendedImage.network(
-                                                          BFdoc.friendInfo.profileImageUrlUser,
-                                                          enableMemoryCache: true,
-                                                          shape: BoxShape.circle,
-                                                          borderRadius: BorderRadius.circular(100),
+                                          : GridView.builder(
+                                          controller: scrollController,
+                                          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                                            crossAxisCount: 4, // 4개의 열로 표시
+                                            childAspectRatio: 2 / 3, // 너비와 높이 비율 조정
+                                          ),
+                                          itemCount: _resortHomeViewModel.bestFriendList.length,
+                                          itemBuilder: (context, index) {
+                                            var BFdoc = _resortHomeViewModel.bestFriendList[index];
+                                            return GestureDetector(
+                                              onTap: () async {
+                                                Navigator.pop(context);
+                                                Get.toNamed(AppRoutes.friendDetail);
+                                                CustomFullScreenDialog.showDialog();
+                                                await _friendDetailViewModel.fetchFriendDetailInfo(
+                                                  userId: _userViewModel.user.user_id,
+                                                  friendUserId: BFdoc.friendInfo.userId,
+                                                  season: _friendDetailViewModel.seasonDate,
+                                                );
+                                                CustomFullScreenDialog.cancelDialog();
+                                              },
+                                              child: Container(
+                                                width: (_size.width - 40) / 4, // 화면 너비를 4등분
+                                                child: Column(
+                                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                                  mainAxisAlignment: MainAxisAlignment.start,
+                                                  children: [
+                                                    Stack(
+                                                      children: [
+                                                        Container(
                                                           width: 68,
                                                           height: 68,
-                                                          fit: BoxFit.cover,
-                                                          loadStateChanged: (ExtendedImageState state) {
-                                                            switch (state.extendedImageLoadState) {
-                                                              case LoadState.loading:
-                                                                return SizedBox.shrink();
-                                                              case LoadState.completed:
-                                                                return state.completedWidget;
-                                                              case LoadState.failed:
-                                                                return ExtendedImage.asset(
-                                                                  'assets/imgs/profile/img_profile_default_circle.png',
-                                                                  shape: BoxShape.circle,
-                                                                  borderRadius: BorderRadius.circular(100),
-                                                                  width: 68,
-                                                                  height: 68,
-                                                                  fit: BoxFit.cover,
-                                                                );
-                                                              default:
-                                                                return null;
-                                                            }
-                                                          },
-                                                        )
-                                                            : ExtendedImage.asset(
-                                                          'assets/imgs/profile/img_profile_default_circle.png',
-                                                          enableMemoryCache: true,
-                                                          shape: BoxShape.circle,
-                                                          borderRadius: BorderRadius.circular(100),
-                                                          width: 68,
-                                                          height: 68,
-                                                          fit: BoxFit.cover,
-                                                        ),
-                                                      ),
-                                                      if (BFdoc.friendInfo.withinBoundary == true &&
-                                                          BFdoc.friendInfo.revealWb == true)
-                                                        Positioned(
-                                                          right: 0,
-                                                          bottom: 0,
-                                                          left: 0,
-                                                          child: Center(
-                                                            child: Image.asset(
-                                                              'assets/imgs/icons/icon_badge_live.png',
-                                                              width: 34,
+                                                          decoration: BoxDecoration(
+                                                            borderRadius: BorderRadius.circular(100),
+                                                            border: (BFdoc.friendInfo.withinBoundary == true &&
+                                                                BFdoc.friendInfo.revealWb == true)
+                                                                ? Border.all(
+                                                              color: SDSColor.snowliveBlue,
+                                                              width: 2,
+                                                            )
+                                                                : Border.all(
+                                                              color: SDSColor.gray100,
+                                                              width: 1,
                                                             ),
                                                           ),
+                                                          alignment: Alignment.center,
+                                                          child: BFdoc.friendInfo.profileImageUrlUser.isNotEmpty
+                                                              ? ExtendedImage.network(
+                                                            BFdoc.friendInfo.profileImageUrlUser,
+                                                            enableMemoryCache: true,
+                                                            shape: BoxShape.circle,
+                                                            borderRadius: BorderRadius.circular(100),
+                                                            width: 68,
+                                                            height: 68,
+                                                            fit: BoxFit.cover,
+                                                            loadStateChanged: (ExtendedImageState state) {
+                                                              switch (state.extendedImageLoadState) {
+                                                                case LoadState.loading:
+                                                                  return SizedBox.shrink();
+                                                                case LoadState.completed:
+                                                                  return state.completedWidget;
+                                                                case LoadState.failed:
+                                                                  return ExtendedImage.asset(
+                                                                    'assets/imgs/profile/img_profile_default_circle.png',
+                                                                    shape: BoxShape.circle,
+                                                                    borderRadius: BorderRadius.circular(100),
+                                                                    width: 68,
+                                                                    height: 68,
+                                                                    fit: BoxFit.cover,
+                                                                  );
+                                                                default:
+                                                                  return null;
+                                                              }
+                                                            },
+                                                          )
+                                                              : ExtendedImage.asset(
+                                                            'assets/imgs/profile/img_profile_default_circle.png',
+                                                            enableMemoryCache: true,
+                                                            shape: BoxShape.circle,
+                                                            borderRadius: BorderRadius.circular(100),
+                                                            width: 68,
+                                                            height: 68,
+                                                            fit: BoxFit.cover,
+                                                          ),
                                                         ),
-                                                    ],
-                                                  ),
-                                                  SizedBox(height: 6),
-                                                  Container(
-                                                    width: 72,
-                                                    child: Text(
-                                                      BFdoc.friendInfo.displayName,
-                                                      overflow: TextOverflow.ellipsis,
-                                                      textAlign: TextAlign.center,
-                                                      style: TextStyle(
-                                                          fontSize: 12,
-                                                          fontWeight: FontWeight.normal,
-                                                          color: SDSColor.gray900
+                                                        if (BFdoc.friendInfo.withinBoundary == true &&
+                                                            BFdoc.friendInfo.revealWb == true)
+                                                          Positioned(
+                                                            right: 0,
+                                                            bottom: 0,
+                                                            left: 0,
+                                                            child: Center(
+                                                              child: Image.asset(
+                                                                'assets/imgs/icons/icon_badge_live.png',
+                                                                width: 34,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                      ],
+                                                    ),
+                                                    SizedBox(height: 6),
+                                                    Container(
+                                                      width: 72,
+                                                      child: Text(
+                                                        BFdoc.friendInfo.displayName,
+                                                        overflow: TextOverflow.ellipsis,
+                                                        textAlign: TextAlign.center,
+                                                        style: TextStyle(
+                                                            fontSize: 12,
+                                                            fontWeight: FontWeight.normal,
+                                                            color: SDSColor.gray900),
                                                       ),
                                                     ),
-                                                  ),
-                                                  SizedBox(height: 6),
-                                                  Row(
-                                                    mainAxisAlignment: MainAxisAlignment.center,
-                                                    children: [
-                                                      Flexible(
-                                                        child: Text(
+                                                    SizedBox(height: 6),
+                                                    Row(
+                                                      mainAxisAlignment: MainAxisAlignment.center,
+                                                      children: [
+                                                        Text(
                                                           (BFdoc.friendInfo.lastPassSlope == null)
                                                               ? ''
                                                               : '${BFdoc.friendInfo.lastPassSlope}',
                                                           overflow: TextOverflow.ellipsis,
                                                           textAlign: TextAlign.center,
-                                                          style: TextStyle(
+                                                          style: SDSTextStyle.regular.copyWith(
                                                               fontSize: 12,
-                                                              fontWeight: FontWeight.normal,
-                                                              color: SDSColor.gray500
-                                                          ),
+                                                              color: SDSColor.gray500),
                                                         ),
-                                                      ),
-                                                      Flexible(
-                                                        child: Text(
+                                                        Text(
                                                           (BFdoc.friendInfo.lastPassTime == null)
                                                               ? ''
                                                               : ' · ${GetDatetime().getAgoString(BFdoc.friendInfo.lastPassTime!)}',
                                                           overflow: TextOverflow.ellipsis,
                                                           textAlign: TextAlign.center,
-                                                          style: TextStyle(
+                                                          style: SDSTextStyle.regular.copyWith(
                                                               fontSize: 12,
-                                                              fontWeight: FontWeight.normal,
-                                                              color: SDSColor.gray500
-                                                          ),
+                                                              color: SDSColor.gray500),
                                                         ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ],
+                                                      ],
+                                                    ),
+                                                  ],
+                                                ),
                                               ),
-                                            ),
-                                          );
-                                        }),
-                                      ),
+                                            );
+                                          }),
                                     ),
+
+
                                     SafeArea(
                                       child: Container(
+                                        color: SDSColor.snowliveWhite,
                                         width: _size.width,
-                                        padding: EdgeInsets.only(top: 16, bottom: 20),
+                                        padding: EdgeInsets.only(top: 12, bottom: 20),
                                         child: ElevatedButton(
                                           onPressed: () async {
                                             Navigator.pop(context);
@@ -1308,8 +1466,8 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                                                                 double barWidthRatio = data.ratio;
                                                                 return Padding(
                                                                   padding: (data != _resortHomeViewModel.resortHomeModel.slopeCountInfoToday.last)
-                                                                      ? EdgeInsets.only(bottom: 8, top: 10)
-                                                                      : EdgeInsets.only(bottom: 0, top: 10),
+                                                                      ? EdgeInsets.only(bottom: 8, top: 4)
+                                                                      : EdgeInsets.only(bottom: 0, top: 4),
                                                                   child: Row(
                                                                     children: [
                                                                       Container(
@@ -1318,13 +1476,13 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                                                                           slopeName,
                                                                           style: SDSTextStyle.regular.copyWith(
                                                                             fontSize: 11,
-                                                                            color: SDSColor.gray900,
+                                                                            color: SDSColor.sBlue600,
                                                                           ),
                                                                         ),
                                                                       ),
                                                                       Container(
-                                                                        height: 16,
-                                                                        width: (_size.width - 152) * barWidthRatio,
+                                                                        height: 14,
+                                                                        width: (_size.width - 166) * barWidthRatio,
                                                                         decoration: BoxDecoration(
                                                                             color:
                                                                             (data == _resortHomeViewModel.resortHomeModel.slopeCountInfoToday.first)
@@ -1341,7 +1499,6 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                                                                             ? EdgeInsets.only(left: 6)
                                                                             : EdgeInsets.only(left: 2),
                                                                         child: Container(
-                                                                          width: 30,
                                                                           child: Column(
                                                                             crossAxisAlignment: CrossAxisAlignment.start,
                                                                             mainAxisAlignment: MainAxisAlignment.center,
@@ -1353,14 +1510,14 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                                                                                       ? SDSColor.gray900
                                                                                       : Colors.transparent,
                                                                                 ),
-                                                                                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 2),
+                                                                                padding: EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                                                                                 child: Text('$passCount',
                                                                                   style: SDSTextStyle.extraBold.copyWith(
-                                                                                    fontSize: 11,
+                                                                                    fontSize: 12,
                                                                                     fontWeight: (data == _resortHomeViewModel.resortHomeModel.slopeCountInfoToday.first)
                                                                                         ? FontWeight.w900 : FontWeight.w300,
                                                                                     color: (data == _resortHomeViewModel.resortHomeModel.slopeCountInfoToday.first)
-                                                                                        ? SDSColor.snowliveWhite : SDSColor.gray900.withOpacity(0.4),
+                                                                                        ? SDSColor.snowliveWhite : SDSColor.gray900,
                                                                                   ),
                                                                                 ),
                                                                               ),
@@ -1449,17 +1606,16 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                                                                   children: [
                                                                     AutoSizeText(
                                                                       passCount != 0 ? '$passCount' : '',
-                                                                      style: SDSTextStyle.bold.copyWith(
-                                                                        fontSize: 11,
-                                                                        color: SDSColor.gray900.withOpacity(0.4),
-                                                                        fontWeight: FontWeight.w300,
+                                                                      style: SDSTextStyle.regular.copyWith(
+                                                                        fontSize: 12,
+                                                                        color: SDSColor.gray900,
                                                                       ),
                                                                       minFontSize: 6,
                                                                       maxLines: 1,
                                                                       overflow: TextOverflow.visible,
                                                                     ),
                                                                     Padding(
-                                                                      padding: EdgeInsets.only(top: passCount == maxCount ? 6 : 0),
+                                                                      padding: EdgeInsets.only(top: 4),
                                                                       child: Container(
                                                                         width: 16,
                                                                         height: 140 * barHeightRatio,
@@ -1479,7 +1635,7 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                                                                           slotName,
                                                                           style: SDSTextStyle.regular.copyWith(
                                                                               fontSize: 11,
-                                                                              color: SDSColor.gray900,
+                                                                              color: SDSColor.sBlue600,
                                                                               height: 1.2
                                                                           ),
                                                                         ),

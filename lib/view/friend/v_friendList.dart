@@ -24,69 +24,62 @@ class FriendListView extends StatelessWidget {
       extendBodyBehindAppBar: true,
       appBar: AppBar(
         backgroundColor: Colors.white,
+        surfaceTintColor: Colors.transparent,
         actions: [
           if (_friendListViewModel.friendsRequestList.isEmpty)
-            Padding(
-              padding: const EdgeInsets.only(top: 4),
-              child: Stack(
-                children: [
-                  IconButton(
-                    onPressed: () async {
-                      Get.toNamed(AppRoutes.invitaionFriend);
-                      await _friendListViewModel.fetchFriendRequestList(_userViewModel.user.user_id);
-                    },
-                    icon: Image.asset(
-                      'assets/imgs/icons/icon_noti_off.png',
-                      scale: 4,
-                      width: 26,
-                      height: 26,
-                    ),
-                  ),
-                ],
+            IconButton(
+              highlightColor: Colors.transparent,
+              onPressed: () async {
+                Get.toNamed(AppRoutes.invitaionFriend);
+                await _friendListViewModel.fetchFriendRequestList(_userViewModel.user.user_id);
+              },
+              icon: Image.asset(
+                'assets/imgs/icons/icon_alarm_resortHome.png',
+                scale: 4,
+                width: 26,
+                height: 26,
               ),
             ),
           if (_friendListViewModel.friendsRequestList.isNotEmpty)
-            Padding(
-              padding: const EdgeInsets.only(top: 4),
-              child: Stack(
-                children: [
-                  IconButton(
-                    onPressed: () async {
-                      Get.toNamed(AppRoutes.invitaionFriend);
-                      await _friendListViewModel.fetchFriendRequestList(_userViewModel.user.user_id);
-                    },
-                    icon: Image.asset(
-                      'assets/imgs/icons/icon_noti_off.png',
-                      scale: 4,
-                      width: 26,
-                      height: 26,
+            Stack(
+              children: [
+                IconButton(
+                  highlightColor: Colors.transparent,
+                  onPressed: () async {
+                    Get.toNamed(AppRoutes.invitaionFriend);
+                    await _friendListViewModel.fetchFriendRequestList(_userViewModel.user.user_id);
+                  },
+                  icon: Image.asset(
+                    'assets/imgs/icons/icon_alarm_resortHome.png',
+                    scale: 4,
+                    width: 26,
+                    height: 26,
+                  ),
+                ),
+                Positioned(
+                  top: 6,
+                  right: 0,
+                  child: Container(
+                    padding: EdgeInsets.symmetric(horizontal: 3, vertical: 2),
+                    decoration: BoxDecoration(
+                      color: SDSColor.snowliveBlue,
+                      borderRadius: BorderRadius.circular(6),
+                    ),
+                    child: Text(
+                      'NEW',
+                      style: SDSTextStyle.bold.copyWith(
+                        fontSize: 10,
+                        color: SDSColor.snowliveWhite,
+                      ),
                     ),
                   ),
-                  Positioned(
-                    top: 6,
-                    right: 0,
-                    child: Container(
-                      padding: EdgeInsets.symmetric(horizontal: 3, vertical: 2),
-                      decoration: BoxDecoration(
-                        color: Color(0xFFD6382B),
-                        borderRadius: BorderRadius.circular(6),
-                      ),
-                      child: Text(
-                        'NEW',
-                        style: TextStyle(
-                          fontSize: 10,
-                          fontWeight: FontWeight.bold,
-                          color: Color(0xFFFFFFFF),
-                        ),
-                      ),
-                    ),
-                  )
-                ],
-              ),
+                )
+              ],
             ),
           Padding(
-            padding: EdgeInsets.only(right: 5),
+            padding: EdgeInsets.only(right: 10),
             child: IconButton(
+              highlightColor: Colors.transparent,
               onPressed: () {
                 Get.toNamed(AppRoutes.settingFriend);
               },
@@ -113,13 +106,12 @@ class FriendListView extends StatelessWidget {
         elevation: 0.0,
         titleSpacing: 0,
         centerTitle: true,
+        toolbarHeight: 44,
         title: Text(
           '친구',
-          style: TextStyle(
-            color: Color(0xFF111111),
-            fontWeight: FontWeight.bold,
-            fontSize: 18,
-          ),
+          style: SDSTextStyle.extraBold.copyWith(
+              color: SDSColor.gray900,
+              fontSize: 18),
         ),
       ),
       body: SingleChildScrollView(
