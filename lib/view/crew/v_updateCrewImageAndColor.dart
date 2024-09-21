@@ -2,19 +2,21 @@ import 'dart:io';
 import 'package:com.snowlive/model/m_crewList.dart';
 import 'package:com.snowlive/routes/routes.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewApply.dart';
+import 'package:com.snowlive/viewmodel/crew/vm_crewDetail.dart';
 import 'package:com.snowlive/viewmodel/vm_user.dart';
 import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:get/get.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_setCrew.dart';
 import 'package:com.snowlive/data/snowliveDesignStyle.dart';
 import 'package:image_picker/image_picker.dart';
 
-class SetCrewImageAndColorView extends StatelessWidget {
+class UpdateCrewImageAndColorView extends StatelessWidget {
   final SetCrewViewModel _setCrewViewModel = Get.find<SetCrewViewModel>();
-  final CrewApplyViewModel _crewApplyViewModel = Get.find<CrewApplyViewModel>();
   final UserViewModel _userViewModel = Get.find<UserViewModel>();
+
 
 
   @override
@@ -81,57 +83,57 @@ class SetCrewImageAndColorView extends StatelessWidget {
                         child: Padding(
                           padding: const EdgeInsets.all(10.0), // 이미지와 배경 사이 간격
                           child:
-                              (_setCrewViewModel.croppedFile != null)
-                                ?Stack(
-                                  children: [
-                                    Center(
-                                      child: ClipRRect(
-                                        borderRadius: BorderRadius.circular(20),
-                                        child: ExtendedImage.file(
-                                          File(_setCrewViewModel.croppedFile!.path),
-                                          fit: BoxFit.cover, // 배경을 모두 채우도록 설정
-                                          cacheRawData: true,
-                                          enableLoadState: true,
-                                          width: 80, // 배경 안에 들어가도록 크기 조정
-                                          height: 80,
-                                        ),
-                                      ),
+                          (_setCrewViewModel.croppedFile != null)
+                              ?Stack(
+                            children: [
+                              Center(
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(20),
+                                  child: ExtendedImage.file(
+                                    File(_setCrewViewModel.croppedFile!.path),
+                                    fit: BoxFit.cover, // 배경을 모두 채우도록 설정
+                                    cacheRawData: true,
+                                    enableLoadState: true,
+                                    width: 80, // 배경 안에 들어가도록 크기 조정
+                                    height: 80,
+                                  ),
+                                ),
+                              ),
+                              Positioned(
+                                top: 20,
+                                right: 20,
+                                child: GestureDetector(
+                                  onTap: () {
+                                    _setCrewViewModel.resetImage();
+                                  },
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      color: SDSColor.snowliveBlack.withOpacity(0.7),
+                                      shape: BoxShape.circle,
                                     ),
-                                    Positioned(
-                                      top: 20,
-                                      right: 20,
-                                      child: GestureDetector(
-                                        onTap: () {
-                                          _setCrewViewModel.resetImage();
-                                        },
-                                        child: Container(
-                                          decoration: BoxDecoration(
-                                            color: SDSColor.snowliveBlack.withOpacity(0.7),
-                                            shape: BoxShape.circle,
-                                          ),
-                                          child: Icon(
-                                            Icons.close,
-                                            color: SDSColor.snowliveWhite,
-                                            size: 20,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                )
-                                :Center(
-                                  child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(20),
-                                    child: ExtendedImage.asset(
-                                      'assets/imgs/liveCrew/img_liveCrew_logo_setCrewImage.png',
-                                      width: 130, // 배경 안에 들어가도록 크기 조정
-                                      height: 130,
-                                      fit: BoxFit.cover,
-                                      cacheRawData: true,
-                                      enableLoadState: true,
+                                    child: Icon(
+                                      Icons.close,
+                                      color: SDSColor.snowliveWhite,
+                                      size: 20,
                                     ),
                                   ),
                                 ),
+                              ),
+                            ],
+                          )
+                              :Center(
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(20),
+                              child: ExtendedImage.asset(
+                                'assets/imgs/liveCrew/img_liveCrew_logo_setCrewImage.png',
+                                width: 130, // 배경 안에 들어가도록 크기 조정
+                                height: 130,
+                                fit: BoxFit.cover,
+                                cacheRawData: true,
+                                enableLoadState: true,
+                              ),
+                            ),
+                          ),
 
 
                         ),
@@ -290,88 +292,77 @@ class SetCrewImageAndColorView extends StatelessWidget {
               padding: EdgeInsets.only(left: 16, right: 16, bottom: 16),
               child: Obx(() => ElevatedButton(
                 onPressed: () async {
-                  if(_crewApplyViewModel.crewApplyList.isNotEmpty){
-                    showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return AlertDialog(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          title: Text('현재 가입 신청중인 크루가 있어요',
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        title: Text('이대로 변경하시겠습니까?',
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16
+                            ),
+                            textAlign: TextAlign.center
+                        ),
+                        content: Text('선택하신 이미지와 대표 색상으로 변경됩니다',
+                            style: TextStyle(
+                                fontSize: 14,
+                                color: SDSColor.gray600
+                            ),
+                            textAlign: TextAlign.center
+                        ),
+                        actions: [
+                          ElevatedButton(
+                            onPressed: () async {
+                              Navigator.of(context).pop();
+                              Get.back();
+                              await _setCrewViewModel.updateCrewDetails(
+                                  _userViewModel.user.crew_id,
+                              );
+                            },
+                            child: Text('크루 이미지 및 대표 색상 수정',
                               style: TextStyle(
+                                  color: SDSColor.snowliveWhite,
                                   fontWeight: FontWeight.bold,
                                   fontSize: 16
                               ),
-                              textAlign: TextAlign.center
+                            ),
+                            style: ElevatedButton.styleFrom(
+                              elevation: 0,
+                              backgroundColor: SDSColor.snowliveBlue, // 신청 취소 버튼 색상
+                              minimumSize: Size(double.infinity, 48), // 버튼 크기
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                            ),
                           ),
-                          content: Text('크루를 생성하시면\n자동으로 신청이 취소됩니다',
+                          ElevatedButton(
+                            onPressed: () {
+                              Navigator.of(context).pop(); // 팝업 닫기
+                            },
+                            child: Text('돌아가기',
                               style: TextStyle(
-                                  fontSize: 14,
-                                  color: SDSColor.gray600
+                                  color: SDSColor.snowliveBlack,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16
                               ),
-                              textAlign: TextAlign.center
+                            ),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.transparent,
+                              elevation: 0,
+                              minimumSize: Size(double.infinity, 48), // 버튼 크기
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                            ),
                           ),
-                          actions: [
-                            ElevatedButton(
-                              onPressed: () async {
-                                Navigator.of(context).pop();
-                                CustomFullScreenDialog.showDialog();
-                                  for (var crew in _crewApplyViewModel.crewApplyList) {
-                                    await _crewApplyViewModel.deleteCrewApplication(
-                                      _userViewModel.user.user_id, // 사용자 ID
-                                      crew.crewId!, // 크루 ID
-                                      _userViewModel.user.user_id, // 신청한 사용자 ID
-                                    );
-                                  }
-                                  Get.toNamed(AppRoutes.crewMain);
-                                  await _setCrewViewModel.createCrew();
-                                  CustomFullScreenDialog.cancelDialog();
-                                  },
-                              child: Text('크루 생성하기',
-                                style: TextStyle(
-                                    color: SDSColor.snowliveWhite,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 16
-                                ),
-                              ),
-                              style: ElevatedButton.styleFrom(
-                                elevation: 0,
-                                backgroundColor: SDSColor.snowliveBlue, // 신청 취소 버튼 색상
-                                minimumSize: Size(double.infinity, 48), // 버튼 크기
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                              ),
-                            ),
-                            ElevatedButton(
-                              onPressed: () {
-                                Navigator.of(context).pop(); // 팝업 닫기
-                              },
-                              child: Text('돌아가기',
-                                style: TextStyle(
-                                    color: SDSColor.snowliveBlack,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 16
-                                ),
-                              ),
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.transparent,
-                                elevation: 0,
-                                minimumSize: Size(double.infinity, 48), // 버튼 크기
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                              ),
-                            ),
-                          ],
-                        );
-                      },
-                    );
-                  } else{
-                    Get.toNamed(AppRoutes.crewMain);
-                    await _setCrewViewModel.createCrew();
-                  }
+                        ],
+                      );
+                    },
+                  );
+
                 },
                 child: Text(
                   '완료',

@@ -1,8 +1,10 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:com.snowlive/routes/routes.dart';
 import 'package:com.snowlive/data/snowliveDesignStyle.dart';
+import 'package:com.snowlive/viewmodel/crew/vm_crewApply.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewDetail.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewMemberList.dart';
+import 'package:com.snowlive/viewmodel/crew/vm_crewNotice.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewRecordRoom.dart';
 import 'package:com.snowlive/viewmodel/vm_user.dart';
 import 'package:com.snowlive/widget/w_verticalDivider.dart';
@@ -19,6 +21,8 @@ class CrewHomeView extends StatelessWidget {
   final UserViewModel _userViewModel = Get.find<UserViewModel>();
   final CrewMemberListViewModel _crewMemberListViewModel = Get.find<CrewMemberListViewModel>();
   final CrewRecordRoomViewModel _crewRecordRoomViewModel = Get.find<CrewRecordRoomViewModel>();
+  final CrewApplyViewModel _crewApplyViewModel = Get.find<CrewApplyViewModel>();
+  final CrewNoticeViewModel _crewNoticeViewModel = Get.find<CrewNoticeViewModel>();
 
   @override
   Widget build(BuildContext context) {
@@ -34,9 +38,11 @@ class CrewHomeView extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               SizedBox(height: 20,),
-              if(_crewDetailViewModel.notice.isNotEmpty)
+              if(_crewNoticeViewModel.noticeList.isNotEmpty)
                 GestureDetector(
-                  onTap: () {},
+                  onTap: () {
+                    Get.toNamed(AppRoutes.crewNoticeList);
+                  },
                   child: Padding(
                     padding: const EdgeInsets.all(16),
                     child: Column(
@@ -51,7 +57,7 @@ class CrewHomeView extends StatelessWidget {
                             ),
                             const SizedBox(width: 5),
                             Text(
-                              _crewDetailViewModel.notice,
+                              _crewNoticeViewModel.noticeList.first.notice!,
                               style: const TextStyle(
                                   fontSize: 13,
                                   color: Color(0xFF111111)),
@@ -148,7 +154,7 @@ class CrewHomeView extends StatelessWidget {
                                       Row(
                                         children: [
                                           Text(
-                                            _userViewModel.user.display_name,
+                                            '${_crewMemberListViewModel.crewLeaderName}',
                                             style: const TextStyle(
                                                 fontSize: 13,
                                                 color: Color(0xFF5DDEBF)),
@@ -179,7 +185,7 @@ class CrewHomeView extends StatelessWidget {
                                     text: TextSpan(
                                       children: [
                                         TextSpan(
-                                          text: '${_crewDetailViewModel.crewMemberTotal}',
+                                          text: '${_crewMemberListViewModel.totalMemberCount}',
                                           style: GoogleFonts.bebasNeue(
                                             color: const Color(0xFFFFFFFF),
                                             fontSize: 35,
@@ -673,7 +679,142 @@ class CrewHomeView extends StatelessWidget {
                       width: MediaQuery.of(context).size.width,
                       child: ElevatedButton(
                         onPressed: () async {
-
+                          showModalBottomSheet(
+                            context: context,
+                            isScrollControlled: true, // 전체 화면 크기 조절 가능
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.vertical(
+                                top: Radius.circular(25.0),
+                              ),
+                            ),
+                            builder: (BuildContext context) {
+                              return StatefulBuilder(
+                                builder: (BuildContext context, StateSetter setState) {
+                                  return Container(
+                                    height: MediaQuery.of(context).size.height * 0.35,
+                                    child: Padding(
+                                        padding: EdgeInsets.only(
+                                          left: 16,
+                                          right: 16,
+                                          bottom: MediaQuery.of(context).viewInsets.bottom + 16,
+                                        ),
+                                        child: Obx(()=>Column(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Container(
+                                              width: 50,
+                                              height: 5,
+                                              margin: EdgeInsets.only(top: 8, bottom: 16),
+                                              decoration: BoxDecoration(
+                                                color: SDSColor.gray500,
+                                                borderRadius: BorderRadius.circular(10),
+                                              ),
+                                            ),
+                                            SizedBox(height: 10),
+                                            Text(
+                                              '해당 크루에 가입 신청을 하시겠어요? ',
+                                              style: TextStyle(
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                            SizedBox(height: 20),
+                                            TextFormField(
+                                              controller: _crewApplyViewModel.textEditingController,
+                                              onChanged: (value) {
+                                                _crewApplyViewModel.isSubmitButtonEnabled.value = value.isNotEmpty; // 입력 여부에 따라 버튼 활성화 여부 결정
+                                              },
+                                              decoration: InputDecoration(
+                                                hintText: '인사말을 남겨주세요.',
+                                                hintStyle: TextStyle(color: SDSColor.gray500),
+                                                filled: true,
+                                                fillColor: SDSColor.gray100,
+                                                contentPadding: EdgeInsets.symmetric(vertical: 14, horizontal: 16),
+                                                border: OutlineInputBorder(
+                                                  borderRadius: BorderRadius.circular(12),
+                                                  borderSide: BorderSide.none,
+                                                ),
+                                                focusedBorder: OutlineInputBorder(
+                                                  borderRadius: BorderRadius.circular(12),
+                                                  borderSide: BorderSide.none,
+                                                ),
+                                                enabledBorder: OutlineInputBorder(
+                                                  borderRadius: BorderRadius.circular(12),
+                                                  borderSide: BorderSide.none,
+                                                ),
+                                              ),
+                                              maxLength: 100, // 최대 100자 제한
+                                            ),
+                                            SizedBox(height: 30),
+                                            Row(
+                                              children: [
+                                                Expanded(
+                                                  child: ElevatedButton(
+                                                    onPressed: () {
+                                                      Navigator.pop(context);
+                                                    },
+                                                    child: Text(
+                                                      '돌아가기',
+                                                      style: TextStyle(
+                                                        color: Color(0xFFFFFFFF),
+                                                        fontWeight: FontWeight.bold,
+                                                        fontSize: 16,
+                                                      ),
+                                                    ),
+                                                    style: TextButton.styleFrom(
+                                                      shape: const RoundedRectangleBorder(
+                                                        borderRadius: BorderRadius.all(Radius.circular(6)),
+                                                      ),
+                                                      elevation: 0,
+                                                      splashFactory: InkRipple.splashFactory,
+                                                      backgroundColor: Color(0xff7C899D),
+                                                    ),
+                                                  ),
+                                                ),
+                                                SizedBox(width: 10),
+                                                Expanded(
+                                                  child: ElevatedButton(
+                                                    onPressed: _crewApplyViewModel.isSubmitButtonEnabled.value == true
+                                                        ? () async {
+                                                      await _crewApplyViewModel.applyForCrew(
+                                                        _crewDetailViewModel.crewDetailInfo.crewId!,
+                                                        _userViewModel.user.user_id,
+                                                        _crewApplyViewModel.textEditingController.text,
+                                                      );
+                                                      _crewApplyViewModel.textEditingController.clear();
+                                                      Navigator.pop(context);
+                                                    }
+                                                        : null, // 버튼 비활성화 시 null
+                                                    child: Text(
+                                                      '신청하기',
+                                                      style: TextStyle(
+                                                        color: Color(0xFFFFFFFF),
+                                                        fontWeight: FontWeight.bold,
+                                                        fontSize: 16,
+                                                      ),
+                                                    ),
+                                                    style: TextButton.styleFrom(
+                                                      shape: const RoundedRectangleBorder(
+                                                        borderRadius: BorderRadius.all(Radius.circular(6)),
+                                                      ),
+                                                      elevation: 0,
+                                                      splashFactory: InkRipple.splashFactory,
+                                                      backgroundColor: _crewApplyViewModel.isSubmitButtonEnabled.value == true
+                                                          ? SDSColor.snowliveBlue // 입력이 있을 때 버튼 활성화
+                                                          : SDSColor.gray300, // 입력이 없을 때 버튼 비활성화
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        ),)
+                                    ),
+                                  );
+                                },
+                              );
+                            },
+                          );
                         },
                         child: Text(
                           '가입 신청하기',

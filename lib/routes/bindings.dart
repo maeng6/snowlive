@@ -3,9 +3,11 @@ import 'package:com.snowlive/viewmodel/community/vm_communityCommentDetail.dart'
 import 'package:com.snowlive/viewmodel/community/vm_communityDetail.dart';
 import 'package:com.snowlive/viewmodel/community/vm_communityUpdate.dart';
 import 'package:com.snowlive/viewmodel/community/vm_communityUpload.dart';
+import 'package:com.snowlive/viewmodel/crew/vm_crewApply.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewDetail.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewMain.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewMemberList.dart';
+import 'package:com.snowlive/viewmodel/crew/vm_crewNotice.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewRecordRoom.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_searchCrew.dart';
 import 'package:com.snowlive/viewmodel/fleamarket/vm_fleamarketCommentDetail.dart';
@@ -48,11 +50,13 @@ class MainHomeBinding extends Bindings {
     Get.put(RankingListViewModel());
     Get.put(CommunityBulletinListViewModel());
     Get.put(CommunityDetailViewModel());
+    Get.put(CrewMemberListViewModel());
+    Get.put(CrewNoticeViewModel());
+    Get.put(CrewApplyViewModel());
     Get.put(SearchCrewViewModel());
     Get.put(CrewMainViewModel());
     Get.put(CrewDetailViewModel());
-    Get.put(CrewMemberListViewModel());
-
+    Get.put(SetCrewViewModel());
   }
 }
 
@@ -164,7 +168,7 @@ class OnBoardingCrewMainBinding extends Bindings {
 class SetCrewNameAndResortBinding extends Bindings {
   @override
   void dependencies() {
-    Get.put(SetCrewViewModel());
+
   }
 }
 

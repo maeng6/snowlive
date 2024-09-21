@@ -1,4 +1,5 @@
 import 'package:com.snowlive/api/api_crew.dart';
+import 'package:com.snowlive/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/routes/routes.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewDetail.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewMemberList.dart';
@@ -34,8 +35,8 @@ class SetCrewViewModel extends GetxController {
   // 이미지 및 색상 관련 변수
   Rx<XFile?> _imageFile = Rx<XFile?>(null);
   Rx<XFile?> _croppedFile = Rx<XFile?>(null);
-  Rx<Color> currentColor = Color(0xff3D83ED).obs;
-  Rx<Color> currentColorBackground = Color(0xffF1F1F3).obs;
+  Rx<Color> currentColor = SDSColor.snowliveBlue.obs;
+  Rx<Color> currentColorBackground = SDSColor.snowliveBlue.obs;
 
   String? profileImageUrl;
 
@@ -103,19 +104,12 @@ class SetCrewViewModel extends GetxController {
       _imageFile.value = await imageController.getSingleImage(source);
       if (_imageFile.value != null) {
         _croppedFile.value = await imageController.cropImage(_imageFile.value);
-        updateImagePreview();
       }
     } catch (e) {
       print('Image upload error: $e');
     }
   }
 
-  // 이미지 미리보기 업데이트
-  void updateImagePreview() {
-    if (_croppedFile.value != null) {
-      currentColorBackground.value = Colors.white;
-    }
-  }
 
   // 이미지 URL 생성
   Future<void> getImageUrl() async {
@@ -209,6 +203,52 @@ class SetCrewViewModel extends GetxController {
     _croppedFile.value = null;
     currentColor.value = Color(0xff3D83ED);
     currentColorBackground.value = Color(0xffF1F1F3);
+  }
+
+  // 이미지와 초기화
+  void resetImage() {
+    _imageFile.value = null;
+    _croppedFile.value = null;
+  }
+
+  // 크루 세부사항 업데이트 메서드
+  Future<void> updateCrewDetails(int crewId) async {
+    isLoading.value = true;  // 로딩 시작
+    try {
+      await getImageUrl();
+      // 서버로 전송할 데이터 준비
+      final updateCrewData = {
+        "user_id": _userViewModel.user.user_id, // 유저 ID
+        "crew_name": _crewDetailViewModel.crewName,
+        "crew_logo_url": profileImageUrl ?? '',
+        "color": colorToHex(currentColor.value),
+        "base_resort_id": _crewDetailViewModel.crewDetailInfo.baseResortId,    //선택
+        "description": _crewDetailViewModel.crewDetailInfo.description,    //선택
+      };
+
+      print(_crewDetailViewModel.crewDetailInfo.notice);
+
+
+      // 서버에 크루 세부사항 업데이트 요청
+      var response = await CrewAPI().updateCrewDetails(crewId, updateCrewData);
+
+      if (response.success) {
+        // 업데이트 성공 후 필요한 추가 작업 (예: 로컬 모델 업데이트)
+        await _crewDetailViewModel.fetchCrewDetail(
+            _userViewModel.user.crew_id,
+            _friendDetailViewModel.seasonDate
+        );
+        Get.snackbar("성공", "크루 정보가 성공적으로 변경되었습니다");
+      } else {
+        // 오류 메시지 출력
+        Get.snackbar("오류", "크루 세부사항 업데이트 실패: ${response.error}");
+      }
+    } catch (e) {
+      print("크루 세부사항 업데이트 중 예외 발생: $e");
+      Get.snackbar("오류", "크루 세부사항 업데이트 중 문제가 발생했습니다.");
+    } finally {
+      isLoading.value = false;  // 로딩 종료
+    }
   }
 
   @override

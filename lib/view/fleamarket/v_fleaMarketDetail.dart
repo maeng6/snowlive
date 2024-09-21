@@ -672,7 +672,10 @@ class _FleaMarketDetailViewState extends State<FleaMarketDetailView> {
                                           children: [
                                             GestureDetector(
                                               onTap: () {
-                                                Get.to(() => FleaMarketImageScreen());
+                                                Get.to(() => FleaMarketImageScreen(
+                                                  itemImagesUrls: _fleamarketDetailViewModel.fleamarketDetail.photos!.map((photo) => photo.urlFleaPhoto!).toList(),
+                                                  initialIndex: index,
+                                                ));
                                               },
                                               child: ExtendedImage.network(
                                                 _fleamarketDetailViewModel.fleamarketDetail.photos![index].urlFleaPhoto!,
