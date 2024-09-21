@@ -312,54 +312,66 @@ class RankingListViewModel extends GetxController {
     _selectedResortNum.value = value;
   }
 
+  void changeMyBoxText(){
+    if(tapName == '개인랭킹' && resortOrTotal == '개별스키장' && dayOrTotal == '일간'){
+      _myBox_score.value = '${nicknameList[selectedResortNum-1]}\n일간 개인 점수';
+      _myBox_ranking.value = '${nicknameList[selectedResortNum-1]}\n일간 개인 랭킹';
+      print(_rankingListIndivList_view[0].displayName);
+    } else if (tapName == '개인랭킹' && resortOrTotal == '개별스키장' && dayOrTotal == '누적'){
+      _myBox_score.value = '${nicknameList[selectedResortNum-1]}\n누적 개인 점수';
+      _myBox_ranking.value = '${nicknameList[selectedResortNum-1]}\n누적 개인 랭킹';
+    } else if (tapName == '개인랭킹' && resortOrTotal == '전체스키장' && dayOrTotal == '일간'){
+      _myBox_score.value = '전체 스키장\n일간 개인 점수';
+      _myBox_ranking.value = '전체 스키장\n일간 개인 랭킹';
+    } else if (tapName == '개인랭킹' && resortOrTotal == '전체스키장' && dayOrTotal == '누적'){
+      _myBox_score.value = '전체 스키장\n누적 개인 점수';
+      _myBox_ranking.value = '전체 스키장\n누적 개인 랭킹';
+    } else if(tapName == '크루랭킹' && resortOrTotal == '개별스키장' && dayOrTotal == '일간'){
+      _myBox_score.value = '${nicknameList[selectedResortNum-1]}\n일간 크루 점수';
+      _myBox_ranking.value = '${nicknameList[selectedResortNum-1]}\n일간 크루 랭킹';
+    } else if (tapName == '크루랭킹' && resortOrTotal == '개별스키장' && dayOrTotal == '누적'){
+      _myBox_score.value = '${nicknameList[selectedResortNum-1]}\n누적 크루 점수';
+      _myBox_ranking.value = '${nicknameList[selectedResortNum-1]}\n누적 크루 랭킹';
+    } else if (tapName == '크루랭킹' && resortOrTotal == '전체스키장' && dayOrTotal == '일간'){
+      _myBox_score.value = '전체 스키장\n일간 크루 점수';
+      _myBox_ranking.value = '전체 스키장\n일간 크루 랭킹';
+    } else if (tapName == '크루랭킹' && resortOrTotal == '전체스키장' && dayOrTotal == '누적'){
+      _myBox_score.value = '전체 스키장\n누적 크루 점수';
+      _myBox_ranking.value = '전체 스키장\n누적 크루 랭킹';
+    }
+  }
+
   Future<void> toggleDataDayOrTotal({int? resortNum}) async{
     if(tapName == '개인랭킹' && resortOrTotal == '개별스키장' && dayOrTotal == '일간'){
       await fetchRankingDataIndiv_resort_daily(userId: _userViewModel.user.user_id, resortId: resortNum,daily: true);
-      _myBox_score.value = '${nicknameList[selectedResortNum-1]}\n일간 개인 점수';
-      _myBox_ranking.value = '${nicknameList[selectedResortNum-1]}\n일간 개인 랭킹';
       _rankingListIndivList_view.value = _rankingListIndivList_resort_daily;
       _rankingListIndivMy_view.value = _rankingListIndivMy_resort_daily.value;
-      print(_rankingListIndivList_view[0].displayName);
     } else if (tapName == '개인랭킹' && resortOrTotal == '개별스키장' && dayOrTotal == '누적'){
       await fetchRankingDataIndiv_resort(userId: _userViewModel.user.user_id, resortId: resortNum);
-      _myBox_score.value = '${nicknameList[selectedResortNum-1]}\n누적 개인 점수';
-      _myBox_ranking.value = '${nicknameList[selectedResortNum-1]}\n누적 개인 랭킹';
       _rankingListIndivList_view.value = _rankingListIndivList_resort;
       _rankingListIndivMy_view.value = _rankingListIndivMy_resort.value;
     } else if (tapName == '개인랭킹' && resortOrTotal == '전체스키장' && dayOrTotal == '일간'){
-      await fetchRankingDataIndiv_total_daily(userId: _userViewModel.user.user_id,daily: true);
-      _myBox_score.value = '전체 스키장\n일간 개인 점수';
-      _myBox_ranking.value = '전체 스키장\n일간 개인 랭킹';
+      //await fetchRankingDataIndiv_total_daily(userId: _userViewModel.user.user_id,daily: true);
       _rankingListIndivList_view.value = _rankingListIndivList_total_daily;
       _rankingListIndivMy_view.value = _rankingListIndivMy_total_daily.value;
     } else if (tapName == '개인랭킹' && resortOrTotal == '전체스키장' && dayOrTotal == '누적'){
-      await fetchRankingDataIndiv_total(userId: _userViewModel.user.user_id);
-      _myBox_score.value = '전체 스키장\n누적 개인 점수';
-      _myBox_ranking.value = '전체 스키장\n누적 개인 랭킹';
+      //await fetchRankingDataIndiv_total(userId: _userViewModel.user.user_id);
       _rankingListIndivList_view.value = _rankingListIndivList_total;
       _rankingListIndivMy_view.value = _rankingListIndivMy_total.value;
     } else if(tapName == '크루랭킹' && resortOrTotal == '개별스키장' && dayOrTotal == '일간'){
       await fetchRankingDataCrew_resort_daily(userId: _userViewModel.user.user_id, resortId: resortNum,daily: true);
-      _myBox_score.value = '${nicknameList[selectedResortNum-1]}\n일간 크루 점수';
-      _myBox_ranking.value = '${nicknameList[selectedResortNum-1]}\n일간 크루 랭킹';
       _rankingListCrewList_view.value = _rankingListCrewList_resort_daily;
       _rankingListCrewMy_view.value = _rankingListCrewMy_resort_daily.value;
     } else if (tapName == '크루랭킹' && resortOrTotal == '개별스키장' && dayOrTotal == '누적'){
       await fetchRankingDataCrew_resort(userId: _userViewModel.user.user_id, resortId: resortNum);
-      _myBox_score.value = '${nicknameList[selectedResortNum-1]}\n누적 크루 점수';
-      _myBox_ranking.value = '${nicknameList[selectedResortNum-1]}\n누적 크루 랭킹';
       _rankingListCrewList_view.value = _rankingListCrewList_resort;
       _rankingListCrewMy_view.value = _rankingListCrewMy_resort.value;
     } else if (tapName == '크루랭킹' && resortOrTotal == '전체스키장' && dayOrTotal == '일간'){
-      await fetchRankingDataCrew_total_daily(userId: _userViewModel.user.user_id,daily: true);
-      _myBox_score.value = '전체 스키장\n일간 크루 점수';
-      _myBox_ranking.value = '전체 스키장\n일간 크루 랭킹';
+      //await fetchRankingDataCrew_total_daily(userId: _userViewModel.user.user_id,daily: true);
       _rankingListCrewList_view.value = _rankingListCrewList_total_daily;
       _rankingListCrewMy_view.value = _rankingListCrewMy_total_daily.value;
     } else if (tapName == '크루랭킹' && resortOrTotal == '전체스키장' && dayOrTotal == '누적'){
-      await fetchRankingDataCrew_total(userId: _userViewModel.user.user_id);
-      _myBox_score.value = '전체 스키장\n누적 크루 점수';
-      _myBox_ranking.value = '전체 스키장\n누적 크루 랭킹';
+      //await fetchRankingDataCrew_total(userId: _userViewModel.user.user_id);
       _rankingListCrewList_view.value = _rankingListCrewList_total;
       _rankingListCrewMy_view.value = _rankingListCrewMy_total.value;
     }

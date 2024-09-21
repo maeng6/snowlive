@@ -104,6 +104,29 @@ class LoginViewModel extends GetxController {
     return digest.toString();
   }
 
+  Future<void> signInWithFacebook_android() async {
+    print('1');
+    final LoginResult loginResult = await facebookAuth.login();
+    if (loginResult == null) {
+
+    } else {
+      print('2');
+      OAuthCredential facebookAuthCredential = FacebookAuthProvider.credential(loginResult.accessToken!.tokenString);
+      print('3');
+      await auth.signInWithCredential(facebookAuthCredential);
+      print('4');
+      User? currentUser = auth.currentUser;
+      if (currentUser != null) {
+        loginUid!.value = currentUser.uid;
+        await storage.write(key: 'signInMethod', value: 'facebook');
+        await getLocalSignInMethod();
+        await FlutterSecureStorage().write(key: 'localUid', value: loginUid!.value);
+        await FlutterSecureStorage().write(key: 'device_id', value: device_id!.value);
+        await FlutterSecureStorage().write(key: 'device_token', value: device_token!.value);
+      }
+    }
+  }
+
   Future<void> signInWithFacebook() async {
     CustomFullScreenDialog.showDialog();
     try {

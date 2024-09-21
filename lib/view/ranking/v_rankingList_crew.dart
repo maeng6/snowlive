@@ -31,7 +31,7 @@ class RankingCrewView extends StatelessWidget {
         bottom: true,
         child: Stack(
           children: [
-            (_rankingListViewModel.rankingListCrewList_view!.length != 0 )
+            (_rankingListViewModel.rankingListCrewList_total!.length != 0 )
                 ? RefreshIndicator(
               onRefresh: () async {
                 //리프레쉬처리
@@ -164,6 +164,7 @@ class RankingCrewView extends StatelessWidget {
                                               _rankingListViewModel.changeCategory_resort('${RankingFilter_resort.initial.korean}');
                                               _rankingListViewModel.changeResortOrTotal('전체스키장');
                                               _rankingListViewModel.changeResortNum(99);
+                                              _rankingListViewModel.changeMyBoxText();
                                               await _rankingListViewModel.toggleDataDayOrTotal();
                                             },
                                             style: ElevatedButton.styleFrom(
@@ -241,6 +242,7 @@ class RankingCrewView extends StatelessWidget {
                                                                       _rankingListViewModel.changeCategory_resort('${RankingFilter_resort.konjiam.korean}');
                                                                       _rankingListViewModel.changeResortOrTotal('개별스키장');
                                                                       _rankingListViewModel.changeResortNum(1);
+                                                                      _rankingListViewModel.changeMyBoxText();
                                                                       await _rankingListViewModel.toggleDataDayOrTotal(resortNum: 1);
                                                                     },
                                                                     shape: RoundedRectangleBorder(
@@ -264,6 +266,7 @@ class RankingCrewView extends StatelessWidget {
                                                                       _rankingListViewModel.changeCategory_resort('${RankingFilter_resort.muju.korean}');
                                                                       _rankingListViewModel.changeResortOrTotal('개별스키장');
                                                                       _rankingListViewModel.changeResortNum(2);
+                                                                      _rankingListViewModel.changeMyBoxText();
                                                                       await _rankingListViewModel.toggleDataDayOrTotal(resortNum: 2);
                                                                     },
                                                                     shape: RoundedRectangleBorder(
@@ -287,6 +290,7 @@ class RankingCrewView extends StatelessWidget {
                                                                       _rankingListViewModel.changeCategory_resort('${RankingFilter_resort.vivaldi.korean}');
                                                                       _rankingListViewModel.changeResortOrTotal('개별스키장');
                                                                       _rankingListViewModel.changeResortNum(3);
+                                                                      _rankingListViewModel.changeMyBoxText();
                                                                       await _rankingListViewModel.toggleDataDayOrTotal(resortNum: 3);
                                                                     },
                                                                     shape: RoundedRectangleBorder(
@@ -310,6 +314,7 @@ class RankingCrewView extends StatelessWidget {
                                                                       _rankingListViewModel.changeCategory_resort('${RankingFilter_resort.alphen.korean}');
                                                                       _rankingListViewModel.changeResortOrTotal('개별스키장');
                                                                       _rankingListViewModel.changeResortNum(4);
+                                                                      _rankingListViewModel.changeMyBoxText();
                                                                       await _rankingListViewModel.toggleDataDayOrTotal(resortNum:4);
                                                                     },
                                                                     shape: RoundedRectangleBorder(
@@ -333,6 +338,7 @@ class RankingCrewView extends StatelessWidget {
                                                                       _rankingListViewModel.changeCategory_resort('${RankingFilter_resort.gangchon.korean}');
                                                                       _rankingListViewModel.changeResortOrTotal('개별스키장');
                                                                       _rankingListViewModel.changeResortNum(6);
+                                                                      _rankingListViewModel.changeMyBoxText();
                                                                       await _rankingListViewModel.toggleDataDayOrTotal(resortNum: 6);
                                                                     },
                                                                     shape: RoundedRectangleBorder(
@@ -356,6 +362,7 @@ class RankingCrewView extends StatelessWidget {
                                                                       _rankingListViewModel.changeCategory_resort('${RankingFilter_resort.oak.korean}');
                                                                       _rankingListViewModel.changeResortOrTotal('개별스키장');
                                                                       _rankingListViewModel.changeResortNum(7);
+                                                                      _rankingListViewModel.changeMyBoxText();
                                                                       await _rankingListViewModel.toggleDataDayOrTotal(resortNum: 7);
                                                                     },
                                                                     shape: RoundedRectangleBorder(
@@ -379,6 +386,7 @@ class RankingCrewView extends StatelessWidget {
                                                                       _rankingListViewModel.changeCategory_resort('${RankingFilter_resort.o2.korean}');
                                                                       _rankingListViewModel.changeResortOrTotal('개별스키장');
                                                                       _rankingListViewModel.changeResortNum(8);
+                                                                      _rankingListViewModel.changeMyBoxText();
                                                                       await _rankingListViewModel.toggleDataDayOrTotal(resortNum: 8);
                                                                     },
                                                                     shape: RoundedRectangleBorder(
@@ -402,6 +410,7 @@ class RankingCrewView extends StatelessWidget {
                                                                       _rankingListViewModel.changeCategory_resort('${RankingFilter_resort.yongpyong.korean}');
                                                                       _rankingListViewModel.changeResortOrTotal('개별스키장');
                                                                       _rankingListViewModel.changeResortNum(9);
+                                                                      _rankingListViewModel.changeMyBoxText();
                                                                       await _rankingListViewModel.toggleDataDayOrTotal(resortNum: 9);
                                                                     },
                                                                     shape: RoundedRectangleBorder(
@@ -425,6 +434,7 @@ class RankingCrewView extends StatelessWidget {
                                                                       _rankingListViewModel.changeCategory_resort('${RankingFilter_resort.welli.korean}');
                                                                       _rankingListViewModel.changeResortOrTotal('개별스키장');
                                                                       _rankingListViewModel.changeResortNum(10);
+                                                                      _rankingListViewModel.changeMyBoxText();
                                                                       await _rankingListViewModel.toggleDataDayOrTotal(resortNum: 10);
                                                                     },
                                                                     shape: RoundedRectangleBorder(
@@ -448,6 +458,7 @@ class RankingCrewView extends StatelessWidget {
                                                                       _rankingListViewModel.changeCategory_resort('${RankingFilter_resort.jisan.korean}');
                                                                       _rankingListViewModel.changeResortOrTotal('개별스키장');
                                                                       _rankingListViewModel.changeResortNum(11);
+                                                                      _rankingListViewModel.changeMyBoxText();
                                                                       await _rankingListViewModel.toggleDataDayOrTotal(resortNum: 11);
                                                                     },
                                                                     shape: RoundedRectangleBorder(
@@ -471,6 +482,7 @@ class RankingCrewView extends StatelessWidget {
                                                                       _rankingListViewModel.changeCategory_resort('${RankingFilter_resort.high1.korean}');
                                                                       _rankingListViewModel.changeResortOrTotal('개별스키장');
                                                                       _rankingListViewModel.changeResortNum(12);
+                                                                      _rankingListViewModel.changeMyBoxText();
                                                                       await _rankingListViewModel.toggleDataDayOrTotal(resortNum: 12);
                                                                     },
                                                                     shape: RoundedRectangleBorder(
@@ -494,6 +506,7 @@ class RankingCrewView extends StatelessWidget {
                                                                       _rankingListViewModel.changeCategory_resort('${RankingFilter_resort.phoenix.korean}');
                                                                       _rankingListViewModel.changeResortOrTotal('개별스키장');
                                                                       _rankingListViewModel.changeResortNum(13);
+                                                                      _rankingListViewModel.changeMyBoxText();
                                                                       await _rankingListViewModel.toggleDataDayOrTotal(resortNum: 13);
                                                                     },
                                                                     shape: RoundedRectangleBorder(
@@ -572,6 +585,7 @@ class RankingCrewView extends StatelessWidget {
                                                                     _rankingListViewModel.changeCategory_resort('${RankingFilter_resort.konjiam.korean}');
                                                                     _rankingListViewModel.changeResortOrTotal('개별스키장');
                                                                     _rankingListViewModel.changeResortNum(1);
+                                                                    _rankingListViewModel.changeMyBoxText();
                                                                     await _rankingListViewModel.toggleDataDayOrTotal(resortNum: 1);
                                                                   },
                                                                   shape: RoundedRectangleBorder(
@@ -595,6 +609,7 @@ class RankingCrewView extends StatelessWidget {
                                                                     _rankingListViewModel.changeCategory_resort('${RankingFilter_resort.muju.korean}');
                                                                     _rankingListViewModel.changeResortOrTotal('개별스키장');
                                                                     _rankingListViewModel.changeResortNum(2);
+                                                                    _rankingListViewModel.changeMyBoxText();
                                                                     await _rankingListViewModel.toggleDataDayOrTotal(resortNum: 2);
                                                                   },
                                                                   shape: RoundedRectangleBorder(
@@ -618,6 +633,7 @@ class RankingCrewView extends StatelessWidget {
                                                                     _rankingListViewModel.changeCategory_resort('${RankingFilter_resort.vivaldi.korean}');
                                                                     _rankingListViewModel.changeResortOrTotal('개별스키장');
                                                                     _rankingListViewModel.changeResortNum(3);
+                                                                    _rankingListViewModel.changeMyBoxText();
                                                                     await _rankingListViewModel.toggleDataDayOrTotal(resortNum: 3);
                                                                   },
                                                                   shape: RoundedRectangleBorder(
@@ -641,6 +657,7 @@ class RankingCrewView extends StatelessWidget {
                                                                     _rankingListViewModel.changeCategory_resort('${RankingFilter_resort.alphen.korean}');
                                                                     _rankingListViewModel.changeResortOrTotal('개별스키장');
                                                                     _rankingListViewModel.changeResortNum(4);
+                                                                    _rankingListViewModel.changeMyBoxText();
                                                                     await _rankingListViewModel.toggleDataDayOrTotal(resortNum:4);
                                                                   },
                                                                   shape: RoundedRectangleBorder(
@@ -664,6 +681,7 @@ class RankingCrewView extends StatelessWidget {
                                                                     _rankingListViewModel.changeCategory_resort('${RankingFilter_resort.gangchon.korean}');
                                                                     _rankingListViewModel.changeResortOrTotal('개별스키장');
                                                                     _rankingListViewModel.changeResortNum(6);
+                                                                    _rankingListViewModel.changeMyBoxText();
                                                                     await _rankingListViewModel.toggleDataDayOrTotal(resortNum: 6);
                                                                   },
                                                                   shape: RoundedRectangleBorder(
@@ -687,6 +705,7 @@ class RankingCrewView extends StatelessWidget {
                                                                     _rankingListViewModel.changeCategory_resort('${RankingFilter_resort.oak.korean}');
                                                                     _rankingListViewModel.changeResortOrTotal('개별스키장');
                                                                     _rankingListViewModel.changeResortNum(7);
+                                                                    _rankingListViewModel.changeMyBoxText();
                                                                     await _rankingListViewModel.toggleDataDayOrTotal(resortNum: 7);
                                                                   },
                                                                   shape: RoundedRectangleBorder(
@@ -710,6 +729,7 @@ class RankingCrewView extends StatelessWidget {
                                                                     _rankingListViewModel.changeCategory_resort('${RankingFilter_resort.o2.korean}');
                                                                     _rankingListViewModel.changeResortOrTotal('개별스키장');
                                                                     _rankingListViewModel.changeResortNum(8);
+                                                                    _rankingListViewModel.changeMyBoxText();
                                                                     await _rankingListViewModel.toggleDataDayOrTotal(resortNum: 8);
                                                                   },
                                                                   shape: RoundedRectangleBorder(
@@ -733,6 +753,7 @@ class RankingCrewView extends StatelessWidget {
                                                                     _rankingListViewModel.changeCategory_resort('${RankingFilter_resort.yongpyong.korean}');
                                                                     _rankingListViewModel.changeResortOrTotal('개별스키장');
                                                                     _rankingListViewModel.changeResortNum(9);
+                                                                    _rankingListViewModel.changeMyBoxText();
                                                                     await _rankingListViewModel.toggleDataDayOrTotal(resortNum: 9);
                                                                   },
                                                                   shape: RoundedRectangleBorder(
@@ -756,6 +777,7 @@ class RankingCrewView extends StatelessWidget {
                                                                     _rankingListViewModel.changeCategory_resort('${RankingFilter_resort.welli.korean}');
                                                                     _rankingListViewModel.changeResortOrTotal('개별스키장');
                                                                     _rankingListViewModel.changeResortNum(10);
+                                                                    _rankingListViewModel.changeMyBoxText();
                                                                     await _rankingListViewModel.toggleDataDayOrTotal(resortNum: 10);
                                                                   },
                                                                   shape: RoundedRectangleBorder(
@@ -779,6 +801,7 @@ class RankingCrewView extends StatelessWidget {
                                                                     _rankingListViewModel.changeCategory_resort('${RankingFilter_resort.jisan.korean}');
                                                                     _rankingListViewModel.changeResortOrTotal('개별스키장');
                                                                     _rankingListViewModel.changeResortNum(11);
+                                                                    _rankingListViewModel.changeMyBoxText();
                                                                     await _rankingListViewModel.toggleDataDayOrTotal(resortNum: 11);
                                                                   },
                                                                   shape: RoundedRectangleBorder(
@@ -802,6 +825,7 @@ class RankingCrewView extends StatelessWidget {
                                                                     _rankingListViewModel.changeCategory_resort('${RankingFilter_resort.high1.korean}');
                                                                     _rankingListViewModel.changeResortOrTotal('개별스키장');
                                                                     _rankingListViewModel.changeResortNum(12);
+                                                                    _rankingListViewModel.changeMyBoxText();
                                                                     await _rankingListViewModel.toggleDataDayOrTotal(resortNum: 12);
                                                                   },
                                                                   shape: RoundedRectangleBorder(
@@ -825,6 +849,7 @@ class RankingCrewView extends StatelessWidget {
                                                                     _rankingListViewModel.changeCategory_resort('${RankingFilter_resort.phoenix.korean}');
                                                                     _rankingListViewModel.changeResortOrTotal('개별스키장');
                                                                     _rankingListViewModel.changeResortNum(13);
+                                                                    _rankingListViewModel.changeMyBoxText();
                                                                     await _rankingListViewModel.toggleDataDayOrTotal(resortNum: 13);
                                                                   },
                                                                   shape: RoundedRectangleBorder(
@@ -863,7 +888,8 @@ class RankingCrewView extends StatelessWidget {
                       ),
                       SizedBox(height: 16),
                       //여기 높이 처리해야함. 지금 500으로 박혀있음. fleamarketList랑 똑같이해보려고했는데 실패
-                      Container(
+                      (_rankingListViewModel.rankingListCrewList_view!.length != 0 )
+                          ? Container(
                         height: 300,
                         child: Scrollbar(
                           controller: _rankingListViewModel.scrollController_crew,
@@ -1049,11 +1075,50 @@ class RankingCrewView extends StatelessWidget {
                             padding: EdgeInsets.only(bottom: 80),
                           ),
                         ),
+                      )
+                          : Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Container(
+                            width: 90,
+                            child: ExtendedImage.asset(
+                              'assets/imgs/icons/icon_nodata_rankin_all.png',
+                              enableMemoryCache: true,
+                            ),
+                          ),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          Center(
+                            child: Text('랭킹전 기록이 없어요',
+                              style: TextStyle(
+                                  color: Color(0xFF666666),
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.normal
+                              ),),
+                          ),
+                          Center(
+                            child: Padding(
+                              padding: const EdgeInsets.only(top: 2),
+                              child: Text('지금 바로 랭킹전에 참여해 보세요',
+                                style: TextStyle(
+                                    color: Color(0xFF666666),
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.normal
+                                ),),
+                            ),
+                          ),
+                          SizedBox(
+                            height: _size.height / 8,
+                          ),
+                        ],
                       ),
                     ],
                   ),
                 ),
-              ),
+              )
+
             )
                 :Column(
               crossAxisAlignment: CrossAxisAlignment.center,

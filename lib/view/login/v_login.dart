@@ -291,7 +291,10 @@ class LoginButton extends StatelessWidget {
           if (signInMethod == SignInMethod.google) {
             await loginViewModel.signInWithGoogle();
           } else if (signInMethod == SignInMethod.facebook) {
+            if (Platform.isIOS)
             await loginViewModel.signInWithFacebook();
+            if (Platform.isAndroid)
+            await loginViewModel.signInWithFacebook_android();
           } else {
             await loginViewModel.signInWithApple();
           }
