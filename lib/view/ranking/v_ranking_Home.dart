@@ -42,33 +42,6 @@ class RankingHomeView extends StatelessWidget {
                         Padding(
                           padding: EdgeInsets.only(left: 16, right: 12),
                           child: ElevatedButton(
-                            child: Text(
-                              '개인랭킹',
-                              style: SDSTextStyle.extraBold.copyWith(
-                                  color: (_rankingListViewModel.tapName=='개인랭킹')
-                                      ? Color(0xFF111111)
-                                      : Color(0xFFDEDEDE),
-                                  fontSize: 18),
-                            ),
-                            onPressed: () async {
-                              _rankingListViewModel.changeTap('개인랭킹');
-                              _rankingListViewModel.changeDayOrTotal('누적');
-                              _rankingListViewModel.changeResortOrTotal('전체스키장');
-                              _rankingListViewModel.changeCategory_resort('스키장별 랭킹');
-                            },
-                            style: ElevatedButton.styleFrom(
-                              padding: EdgeInsets.only(top: 0),
-                              minimumSize: Size(40, 10),
-                              backgroundColor: Color(0xFFFFFFFF),
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(8)),
-                              elevation: 0,
-                            ),
-                          ),
-                        ),
-                        Padding(
-                          padding: EdgeInsets.only(right: 12),
-                          child: ElevatedButton(
                             onPressed: () async {
                               _rankingListViewModel.changeTap('크루랭킹');
                               _rankingListViewModel.changeDayOrTotal('누적');
@@ -92,6 +65,33 @@ class RankingHomeView extends StatelessWidget {
                                         : Color(0xFFC8C8C8),
                                     fontSize: 18),
                               ),
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.only(right: 12),
+                          child: ElevatedButton(
+                            child: Text(
+                              '개인랭킹',
+                              style: SDSTextStyle.extraBold.copyWith(
+                                  color: (_rankingListViewModel.tapName=='개인랭킹')
+                                      ? Color(0xFF111111)
+                                      : Color(0xFFDEDEDE),
+                                  fontSize: 18),
+                            ),
+                            onPressed: () async {
+                              _rankingListViewModel.changeTap('개인랭킹');
+                              _rankingListViewModel.changeDayOrTotal('누적');
+                              _rankingListViewModel.changeResortOrTotal('전체스키장');
+                              _rankingListViewModel.changeCategory_resort('스키장별 랭킹');
+                            },
+                            style: ElevatedButton.styleFrom(
+                              padding: EdgeInsets.only(top: 0),
+                              minimumSize: Size(40, 10),
+                              backgroundColor: Color(0xFFFFFFFF),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8)),
+                              elevation: 0,
                             ),
                           ),
                         ),

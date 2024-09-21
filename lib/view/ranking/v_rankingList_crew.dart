@@ -68,9 +68,10 @@ class RankingCrewView extends StatelessWidget {
                                 child: Transform.translate(
                                   offset: Offset(0, 0),
                                   child: ExtendedImage.network(
-                                    '${_rankingListViewModel.rankingListCrewMy_view!.overallTierIconUrl
-                                        ??'https://i.esdrop.com/d/f/yytYSNBROy/6rPYflzCCZ.png'}',
+                                    '${_rankingListViewModel.rankingListCrewMy_view!.crewLogoUrl
+                                        ?? crewDefaultLogoUrl['${_rankingListViewModel.rankingListCrewMy_view!.color}']}',
                                     enableMemoryCache: true,
+                                    cacheWidth: 300,
                                     fit: BoxFit.cover,
                                   ),
                                 ),
@@ -80,7 +81,7 @@ class RankingCrewView extends StatelessWidget {
                               ),
                               Expanded(
                                 child: Container(
-                                  height: 90,
+                                  height: 100,
                                   decoration: BoxDecoration(
                                     color: Color(0xFFF5F2F7),
                                     borderRadius: BorderRadius.circular(16),
@@ -92,7 +93,9 @@ class RankingCrewView extends StatelessWidget {
                                       Column(
                                         children: [
                                           Text(
-                                            '${_rankingListViewModel.rankingListIndivMy_view!.resortTotalScore??'-'}',
+                                            (_rankingListViewModel.resortOrTotal == '개별스키장')
+                                            ? '${_rankingListViewModel.rankingListCrewMy_view!.resortTotalScore??'-'}'
+                                            : '${_rankingListViewModel.rankingListCrewMy_view!.overallTotalScore??'-'}',
                                             style: SDSTextStyle.bold.copyWith(
                                               color: Color(0xFF111111),
                                               fontSize: 15,
@@ -100,8 +103,7 @@ class RankingCrewView extends StatelessWidget {
                                           ),
                                           Padding(
                                             padding: const EdgeInsets.only(top: 3),
-                                            child: Text(
-                                              '내 점수',
+                                            child: Text(_rankingListViewModel.myBox_score,
                                               style: SDSTextStyle.regular.copyWith(
                                                 color: Color(0xFF111111).withOpacity(0.5),
                                                 fontSize: 13,
@@ -114,8 +116,9 @@ class RankingCrewView extends StatelessWidget {
                                       Container(
                                         child: Column(
                                           children: [
-                                            Text(
-                                              '${_rankingListViewModel.rankingListIndivMy_view!.resortRank??'-'}',
+                                            Text((_rankingListViewModel.resortOrTotal == '개별스키장')
+                                                ? '${_rankingListViewModel.rankingListCrewMy_view!.resortRank??'-'}'
+                                                : '${_rankingListViewModel.rankingListCrewMy_view!.overallRank??'-'}',
                                               style: SDSTextStyle.bold.copyWith(
                                                 color: Color(0xFF111111),
                                                 fontSize: 15,
@@ -123,8 +126,7 @@ class RankingCrewView extends StatelessWidget {
                                             ),
                                             Padding(
                                               padding: const EdgeInsets.only(top: 3),
-                                              child: Text(
-                                                '스키장 랭킹',
+                                              child: Text(_rankingListViewModel.myBox_ranking,
                                                 style: SDSTextStyle.regular.copyWith(
                                                   color: Color(0xFF111111).withOpacity(0.5),
                                                   fontSize: 13,
@@ -135,29 +137,6 @@ class RankingCrewView extends StatelessWidget {
                                         ),
                                       ),
                                       buildVerticalDivider_ranking_indi_Screen(),
-                                      Container(
-                                        child: Column(
-                                          children: [
-                                            Text(
-                                              '${_rankingListViewModel.rankingListIndivMy_view!.overallRank??'-'}',
-                                              style: SDSTextStyle.bold.copyWith(
-                                                color: Color(0xFF111111),
-                                                fontSize: 15,
-                                              ),
-                                            ),
-                                            Padding(
-                                              padding: const EdgeInsets.only(top: 3),
-                                              child: Text(
-                                                '통합 랭킹',
-                                                style: SDSTextStyle.regular.copyWith(
-                                                  color: Color(0xFF111111).withOpacity(0.5),
-                                                  fontSize: 13,
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
                                     ],
                                   ),
                                 ),

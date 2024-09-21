@@ -4,6 +4,7 @@ import 'package:com.snowlive/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/routes/routes.dart';
 import 'package:com.snowlive/view/login/v_email_login.dart';
 import 'package:com.snowlive/viewmodel/onboarding_login/vm_login.dart';
+import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
@@ -289,16 +290,13 @@ class LoginButton extends StatelessWidget {
         try {
           if (signInMethod == SignInMethod.google) {
             await loginViewModel.signInWithGoogle();
-            await loginViewModel.getLocalSignInMethod();
           } else if (signInMethod == SignInMethod.facebook) {
             await loginViewModel.signInWithFacebook();
-            await loginViewModel.getLocalSignInMethod();
           } else {
             await loginViewModel.signInWithApple();
-            await loginViewModel.getLocalSignInMethod();
           }
-          await loginViewModel.findUserAPI();
         } catch (e) {
+        CustomFullScreenDialog.cancelDialog();
 
         }
       },

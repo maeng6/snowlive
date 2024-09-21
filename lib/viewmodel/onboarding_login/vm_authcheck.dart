@@ -22,6 +22,9 @@ class AuthCheckViewModel extends GetxController {
   RxString? device_token = ''.obs;
   ApiResponse? response;
   UserViewModel _userViewModel = Get.find<UserViewModel>();
+  RxBool? _gotoMainHome = false.obs;
+
+  bool get gotoMainHome => _gotoMainHome!.value;
 
   @override
   void onInit() async {
@@ -55,7 +58,7 @@ class AuthCheckViewModel extends GetxController {
         await FlutterSecureStorage().delete(key: 'device_id');
         await FlutterSecureStorage().delete(key: 'device_token');
         await FlutterSecureStorage().delete(key: 'user_id');
-        Get.offAllNamed(AppRoutes.login);
+        _gotoMainHome!.value = true;
       }
 
       if(response!.success){
@@ -71,13 +74,13 @@ class AuthCheckViewModel extends GetxController {
             String? userIdString = await FlutterSecureStorage().read(key: 'user_id');
             int user_id = int.parse(userIdString!);
             await _userViewModel.updateUserModel_api(user_id);
-            Get.offAllNamed(AppRoutes.mainHome);
+            _gotoMainHome!.value = true;
           }catch(e){
             await FlutterSecureStorage().write(key: 'user_id', value: response!.data['user_id']);
             String? userIdString = await FlutterSecureStorage().read(key: 'user_id');
             int user_id = int.parse(userIdString!);
             await _userViewModel.updateUserModel_api(user_id);
-            Get.offAllNamed(AppRoutes.mainHome);
+            _gotoMainHome!.value = true;
           }
         } else if (response!.data['message'] == '기존기기') {
           print('compareDeviceId 결과 : ${response!.data['message']}');
@@ -85,13 +88,13 @@ class AuthCheckViewModel extends GetxController {
             String? userIdString = await FlutterSecureStorage().read(key: 'user_id');
             int user_id = int.parse(userIdString!);
             await _userViewModel.updateUserModel_api(user_id);
-            Get.offAllNamed(AppRoutes.mainHome);
+            _gotoMainHome!.value = true;
           }catch(e){
             await FlutterSecureStorage().write(key: 'user_id', value: response!.data['user_id'].toString());
             String? userIdString = await FlutterSecureStorage().read(key: 'user_id');
             int user_id = int.parse(userIdString!);
             await _userViewModel.updateUserModel_api(user_id);
-            Get.offAllNamed(AppRoutes.mainHome);
+            _gotoMainHome!.value = true;
           }
         }
       }else{
@@ -100,7 +103,7 @@ class AuthCheckViewModel extends GetxController {
         await FlutterSecureStorage().delete(key: 'device_id');
         await FlutterSecureStorage().delete(key: 'device_token');
         await FlutterSecureStorage().delete(key: 'user_id');
-        Get.offAllNamed(AppRoutes.login);
+        _gotoMainHome!.value = false;
       }
     } else {
       print('로그아웃');

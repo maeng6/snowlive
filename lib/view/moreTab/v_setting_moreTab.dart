@@ -3,6 +3,7 @@ import 'package:com.snowlive/routes/routes.dart';
 import 'package:com.snowlive/view/moreTab/v_licenseListPage.dart';
 import 'package:com.snowlive/view/v_webPage.dart';
 import 'package:com.snowlive/viewmodel/onboarding_login/vm_authcheck.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
@@ -185,12 +186,13 @@ class setting_moreTab extends StatelessWidget {
                                   child: ElevatedButton(
                                     onPressed: () async {
                                       Navigator.pop(context);
-                                      Get.offAllNamed(AppRoutes.mainHome);
+                                      Get.toNamed(AppRoutes.mainHome);
                                       await FlutterSecureStorage().delete(key: 'localUid');
                                       await FlutterSecureStorage().delete(key: 'device_id');
                                       await FlutterSecureStorage().delete(key: 'device_token');
                                       await FlutterSecureStorage().delete(key: 'user_id');
-                                      _authCheckViewModel.userCheck();
+                                      await FirebaseAuth.instance.signOut();
+                                      await _authCheckViewModel.userCheck();
                                     },
                                     child: Text(
                                       '확인',

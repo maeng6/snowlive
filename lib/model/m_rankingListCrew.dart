@@ -5,13 +5,11 @@ class RankingListCrewModel {
   RankingListCrewModel({this.myCrewRankingInfo, this.rankingResults});
 
   RankingListCrewModel.fromJson(Map<String, dynamic> json) {
-    myCrewRankingInfo = json['my_crew_ranking_info'] != null
-        ? MyCrewRankingInfo.fromJson(json['my_crew_ranking_info'])
-        : null;
+    myCrewRankingInfo = MyCrewRankingInfo.fromJson(json['my_crew_ranking_info']);
+
     // JSON에서 rankingResults를 가져와서 객체로 변환
-    rankingResults = json['results'] != null
-        ? RankingResults.fromJson(json['results'])
-        : null;
+    rankingResults = RankingResults.fromJson(json['results']);
+
   }
 
   Map<String, dynamic> toJson() {
@@ -29,9 +27,9 @@ class MyCrewRankingInfo {
   String? description;
   String? color;
   String? baseResortNickname;
-  double? resortTotalScore;
+  int? resortTotalScore;
   int? resortRank;
-  double? overallTotalScore;
+  int? overallTotalScore;
   int? overallRank;
   double? overallRankPercentage;
   String? overallTierIconUrl;
@@ -54,13 +52,18 @@ class MyCrewRankingInfo {
   MyCrewRankingInfo.fromJson(Map<String, dynamic> json) {
     crewId = json['crew_id'];
     crewName = json['crew_name'];
-    crewLogoUrl = json['crew_logo_url'];
+    if(json['crew_logo_url'] == ""){
+      crewLogoUrl = null;
+    }else{
+      crewLogoUrl = json['crew_logo_url']??null;
+    }
+    print(crewLogoUrl);
     description = json['description'];
     color = json['color'];
     baseResortNickname = json['base_resort_nickname'];
-    resortTotalScore = json['resort_total_score']?.toDouble();
+    resortTotalScore = json['resort_total_score']?.toInt();
     resortRank = json['resort_rank'];
-    overallTotalScore = json['overall_total_score']?.toDouble();
+    overallTotalScore = json['overall_total_score']?.toInt();
     overallRank = json['overall_rank'];
     overallRankPercentage = json['overall_rank_percentage']?.toDouble();
     overallTierIconUrl = json['overall_tier_icon_url'];
@@ -90,7 +93,8 @@ class RankingResults {
   String? previous;
   List<CrewRanking>? results;
 
-  RankingResults({this.count, this.next, this.previous, this.results});
+  RankingResults({this.count, this.next, this.previous, List<CrewRanking>? results})
+      : results = results ?? [];
 
   RankingResults.fromJson(Map<String, dynamic> json) {
     count = json['count'];
@@ -121,11 +125,11 @@ class CrewRanking {
   String? description;
   String? color;
   String? baseResortNickname;
-  double? overallTotalScore;
+  int? overallTotalScore;
   int? overallRank;
   double? overallRankPercentage;
   String? overallTierIconUrl;
-  double? resortTotalScore;
+  int? resortTotalScore;
   int? resortRank;
 
   CrewRanking({
@@ -150,11 +154,11 @@ class CrewRanking {
     description = json['description'];
     color = json['color'];
     baseResortNickname = json['base_resort_nickname'];
-    overallTotalScore = json['overall_total_score']?.toDouble();
+    overallTotalScore = json['overall_total_score']?.toInt();
     overallRank = json['overall_rank'];
     overallRankPercentage = json['overall_rank_percentage']?.toDouble();
     overallTierIconUrl = json['overall_tier_icon_url'];
-    resortTotalScore = json['resort_total_score']?.toDouble();
+    resortTotalScore = json['resort_total_score']?.toInt();
     resortRank = json['resort_rank'];
   }
 

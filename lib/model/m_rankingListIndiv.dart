@@ -16,11 +16,11 @@ class MyRankingInfo {
   String? profileImageUrlUser;
   String? resortNickname;
   String? crewName;
-  double? overallTotalScore;
+  int? overallTotalScore;
   int? overallRank;
   double? overallRankPercentage;
   String? overallTierIconUrl;
-  double? resortTotalScore;
+  int? resortTotalScore;
   int? resortRank;
 
   MyRankingInfo({
@@ -43,11 +43,11 @@ class MyRankingInfo {
     profileImageUrlUser = json['profile_image_url_user'];
     resortNickname = json['resort_nickname'];
     crewName = json['crew_name'];
-    overallTotalScore = json['overall_total_score']?.toDouble();
+    overallTotalScore = json['overall_total_score']?.toInt();
     overallRank = json['overall_rank'];
     overallRankPercentage = json['overall_rank_percentage']?.toDouble();
     overallTierIconUrl = json['overall_tier_icon_url'];
-    resortTotalScore = json['resort_total_score']?.toDouble();
+    resortTotalScore = json['resort_total_score']?.toInt();
     resortRank = json['resort_rank'];
   }
 }
@@ -76,11 +76,11 @@ class RankingUser {
   String? profileImageUrlUser;
   String? resortNickname;
   String? crewName;
-  double? overallTotalScore;
+  int? overallTotalScore;
   int? overallRank;
   double? overallRankPercentage;
   String? overallTierIconUrl;
-  double? resortTotalScore;
+  int? resortTotalScore;
   int? resortRank;
 
   RankingUser({
@@ -103,11 +103,11 @@ class RankingUser {
     profileImageUrlUser = json['profile_image_url_user'];
     resortNickname = json['resort_nickname'];
     crewName = json['crew_name'];
-    overallTotalScore = json['overall_total_score']?.toDouble();
+    overallTotalScore = json['overall_total_score']?.toInt();
     overallRank = json['overall_rank'];
     overallRankPercentage = json['overall_rank_percentage']?.toDouble();
     overallTierIconUrl = json['overall_tier_icon_url'];
-    resortTotalScore = json['resort_total_score']?.toDouble();
+    resortTotalScore = json['resort_total_score']?.toInt();
     resortRank = json['resort_rank'];
   }
 }

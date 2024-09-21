@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 class ProfileImgUrl {
   final String default_round;
   final String default_suqare;
@@ -29,6 +31,7 @@ class RankingTierUrl {
   });
 
 }
+
 
 class KusbfAssetUrl {
   final String mainLogo;
@@ -68,6 +71,21 @@ List<RankingTierUrl> rankingTierUrlList = [
   ),
 ];
 
+Map<String, String> crewDefaultLogoUrl = {
+
+  "0XFFFFA835": 'https://i.esdrop.com/d/f/yytYSNBROy/G017nvg1rV.png',
+  "0XFF2EB6FF": 'https://i.esdrop.com/d/f/yytYSNBROy/MhoKgYVdel.png',
+  "0XFFFF54A0": 'https://i.esdrop.com/d/f/yytYSNBROy/ecIhTcQfBC.png',
+  "0XFF10BB88": 'https://i.esdrop.com/d/f/yytYSNBROy/3Z334m5Bf3.png',
+  "0XFFB173FF": 'https://i.esdrop.com/d/f/yytYSNBROy/AEc8rqvTTO.png',
+  "0XFFFF5F18": 'https://i.esdrop.com/d/f/yytYSNBROy/R3kA6TprLZ.png',
+  "0XFF326EF6": 'https://i.esdrop.com/d/f/yytYSNBROy/pXOiCC6n3G.png',
+  "0XFFEF0069": 'https://i.esdrop.com/d/f/yytYSNBROy/lBsRF5aLqb.png',
+  "0XFF019D78": 'https://i.esdrop.com/d/f/yytYSNBROy/zvA5hiKedr.png',
+  "0XFF772ED3": 'https://i.esdrop.com/d/f/yytYSNBROy/XJyCNPi4nS.png',
+
+};
+
 
 List<KusbfAssetUrl> KusbfAssetUrlList = [
   KusbfAssetUrl(
@@ -80,4 +98,3 @@ List<IconAssetUrl> IconAssetUrlList = [
     filter: 'https://i.esdrop.com/d/f/yytYSNBROy/WD1ovQIAOq.png',
   ),
 ];
-

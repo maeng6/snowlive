@@ -15,7 +15,9 @@ class UserViewModel extends GetxController {
     isLoading(true);
     ApiResponse response = await UserAPI().getUserInfo(user_id);
     if(response.success) {
+
       _user.value = UserModel.fromJson(response.data);
+
       print('updateUserModel_api 완료');
     }else {
       Get.snackbar('Error', '데이터 로딩 실패');
