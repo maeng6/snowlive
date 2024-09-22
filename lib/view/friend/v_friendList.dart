@@ -117,40 +117,46 @@ class FriendListView extends StatelessWidget {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            SizedBox(height: _statusBarSize + 58),
-            GestureDetector(
-              onTap: () async {
-                await _friendListViewModel.resetSearchFriend();
-                Get.toNamed(AppRoutes.searchFriend);
-              },
-              child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16),
-                child: Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(6),
-                    color: Color(0xFFEFEFEF),
-                  ),
-                  height: 50,
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 16),
-                    child: Row(
-                      children: [
-                        Icon(Icons.search, color: Color(0xFF666666)),
-                        SizedBox(width: 5),
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 1),
-                          child: Text(
-                            '친구 검색',
-                            style: TextStyle(fontSize: 15, color: Color(0xFF666666)),
+            SizedBox(height: _statusBarSize + 44),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16),
+              child: GestureDetector(
+                onTap: () async {
+                  await _friendListViewModel.resetSearchFriend();
+                  Get.toNamed(AppRoutes.searchFriend);
+                },
+                child: Padding(
+                  padding: EdgeInsets.only(top: 4, bottom: 10),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(6),
+                      color: SDSColor.gray50,
+                    ),
+                    height: 40,
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 16),
+                      child: Row(
+                        children: [
+                          Image.asset('assets/imgs/icons/icon_search.png',
+                            width: 16,),
+                          SizedBox(
+                            width: 6,
                           ),
-                        ),
-                      ],
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: 1),
+                            child: Text(
+                              '친구 검색',
+                              style: SDSTextStyle.regular.copyWith(fontSize: 14, color: SDSColor.gray400),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
               ),
             ),
-            SizedBox(height: 25),
+            SizedBox(height: 14),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -253,7 +259,7 @@ class FriendListView extends StatelessWidget {
                         Padding(
                           padding: const EdgeInsets.only(left: 10),
                           child: Container(
-                            width: _size.width - 160,
+                            width: _size.width - 98,
                             child: Column(
                               mainAxisAlignment:  _userViewModel.user.state_msg != ''
                                   ? MainAxisAlignment.center
@@ -262,17 +268,17 @@ class FriendListView extends StatelessWidget {
                               children: [
                                 Text(
                                   _userViewModel.user.display_name,
-                                  style: TextStyle(
-                                    color: Color(0xFF111111),
-                                    fontSize: 15,
+                                  style: SDSTextStyle.regular.copyWith(
+                                    color: SDSColor.gray900,
+                                    fontSize: 16,
                                   ),
                                 ),
                                 if (_userViewModel.user.state_msg != '' && _userViewModel.user.state_msg != null)
                                   Text(
                                     _userViewModel.user.state_msg,
-                                    style: TextStyle(
-                                      color: Color(0xFF949494),
-                                      fontSize: 13,
+                                    style: SDSTextStyle.regular.copyWith(
+                                      color: SDSColor.gray500,
+                                      fontSize: 14,
                                     ),
                                     overflow: TextOverflow.ellipsis,
                                   ),
@@ -285,10 +291,10 @@ class FriendListView extends StatelessWidget {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: Divider(
                     color: SDSColor.gray50,
-                    height: 32,
+                    height: 48,
                     thickness: 1,
                   ),
                 ),
@@ -301,10 +307,9 @@ class FriendListView extends StatelessWidget {
                         padding: const EdgeInsets.symmetric(horizontal: 16),
                         child: Text(
                           '친구',
-                          style: TextStyle(
-                            fontWeight: FontWeight.normal,
-                            fontSize: 13,
-                            color: Color(0xFF949494),
+                          style: SDSTextStyle.bold.copyWith(
+                            fontSize: 14,
+                            color: SDSColor.gray900,
                           ),
                         ),
                       ),
@@ -362,18 +367,17 @@ class FriendListView extends StatelessWidget {
                         padding: const EdgeInsets.symmetric(horizontal: 16),
                         child: Text(
                           '친구 ${_friendListViewModel.friendList.length}',
-                          style: TextStyle(
-                            fontWeight: FontWeight.normal,
+                          style: SDSTextStyle.bold.copyWith(
                             fontSize: 13,
-                            color: Color(0xFF949494),
+                            color: SDSColor.gray900,
                           ),
                         ),
                       ),
-                      SizedBox(height: 10),
+                      SizedBox(height: 4),
                       Column(
                         children: _friendListViewModel.friendList.map((friend) {
                           return Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
                             child: GestureDetector(
                               onTap: () async {
                                 Get.toNamed(AppRoutes.friendDetail);
@@ -483,16 +487,16 @@ class FriendListView extends StatelessWidget {
                                             children: [
                                               Text(
                                                 friend.friendInfo.displayName,
-                                                style: TextStyle(
-                                                  color: Color(0xFF111111),
+                                                style: SDSTextStyle.regular.copyWith(
+                                                  color: SDSColor.gray900,
                                                   fontSize: 15,
                                                 ),
                                               ),
                                               if (friend.friendInfo.stateMsg.isNotEmpty)
                                                 Text(
                                                   friend.friendInfo.stateMsg,
-                                                  style: TextStyle(
-                                                    color: Color(0xFF949494),
+                                                  style: SDSTextStyle.regular.copyWith(
+                                                    color: SDSColor.gray500,
                                                     fontSize: 13,
                                                   ),
                                                   overflow: TextOverflow.ellipsis,
@@ -505,7 +509,7 @@ class FriendListView extends StatelessWidget {
                                   ),
                                   (friend.bestFriend)
                                       ? Container(
-                                    width: 56,
+                                    width: 64,
                                     child: Row(
                                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       children: [
@@ -516,25 +520,38 @@ class FriendListView extends StatelessWidget {
                                             );
                                             await _friendListViewModel.fetchFriendList();
                                           },
-                                          child: Icon(
-                                            Icons.star_rounded,
-                                            color: Color(0xFFFDAF04),
+                                          child: Image.asset(
+                                            'assets/imgs/icons/icon_profile_bestfriend_on.png',
+                                            width: 24,
+                                            height: 24,
+                                            fit: BoxFit.cover,
                                           ),
+                                        ),
+                                        SizedBox(
+                                          width: 6,
                                         ),
                                         GestureDetector(
                                           onTap: () => showModalBottomSheet(
                                             enableDrag: false,
+                                            isScrollControlled: true,
+                                            backgroundColor: Colors.transparent,
                                             context: context,
                                             builder: (context) {
                                               return SafeArea(
-                                                child: Container(
-                                                  height: 120,
-                                                  child: Padding(
-                                                    padding: const EdgeInsets.symmetric(
-                                                      horizontal: 20.0,
-                                                      vertical: 14,
+                                                child: Padding(
+                                                  padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 20),
+                                                  child: Container(
+                                                    margin: EdgeInsets.only(
+                                                      left: 16,
+                                                      right: 16,
+                                                      top: 16,
                                                     ),
-                                                    child: Column(
+                                                    padding: EdgeInsets.all(16),
+                                                    decoration: BoxDecoration(
+                                                      color: Colors.white,
+                                                      borderRadius: BorderRadius.circular(16),
+                                                    ),
+                                                    child: Wrap(
                                                       children: [
                                                         GestureDetector(
                                                           onTap: () {
@@ -602,15 +619,14 @@ class FriendListView extends StatelessWidget {
                                                               ),
                                                             );
                                                           },
-                                                          child: Center(
-                                                            child: Padding(
-                                                              padding: const EdgeInsets.only(top: 24),
+                                                          child: ListTile(
+                                                            contentPadding: EdgeInsets.zero,
+                                                            title: Center(
                                                               child: Text(
-                                                                '친구 삭제',
-                                                                style: TextStyle(
+                                                                '친구 삭제하기',
+                                                                style: SDSTextStyle.bold.copyWith(
                                                                   fontSize: 15,
-                                                                  fontWeight: FontWeight.bold,
-                                                                  color: Color(0xFFD63636),
+                                                                  color: SDSColor.gray900,
                                                                 ),
                                                               ),
                                                             ),
@@ -624,8 +640,8 @@ class FriendListView extends StatelessWidget {
                                             },
                                           ),
                                           child: Icon(
-                                            Icons.more_vert,
-                                            color: Color(0xFFdedede),
+                                            Icons.more_horiz,
+                                            color: SDSColor.gray200,
                                             size: 24,
                                           ),
                                         ),
@@ -633,7 +649,7 @@ class FriendListView extends StatelessWidget {
                                     ),
                                   )
                                       : Container(
-                                    width: 56,
+                                    width: 64,
                                     child: Row(
                                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       children: [
@@ -644,25 +660,38 @@ class FriendListView extends StatelessWidget {
                                             );
                                             await _friendListViewModel.fetchFriendList();
                                           },
-                                          child: Icon(
-                                            Icons.star_rounded,
-                                            color: Color(0xFFdedede),
+                                          child: Image.asset(
+                                            'assets/imgs/icons/icon_profile_bestfriend_off.png',
+                                            width: 24,
+                                            height: 24,
+                                            fit: BoxFit.cover,
                                           ),
+                                        ),
+                                        SizedBox(
+                                          width: 6,
                                         ),
                                         GestureDetector(
                                           onTap: () => showModalBottomSheet(
                                             enableDrag: false,
+                                            isScrollControlled: true,
+                                            backgroundColor: Colors.transparent,
                                             context: context,
                                             builder: (context) {
                                               return SafeArea(
-                                                child: Container(
-                                                  height: 120,
-                                                  child: Padding(
-                                                    padding: const EdgeInsets.symmetric(
-                                                      horizontal: 20.0,
-                                                      vertical: 14,
+                                                child: Padding(
+                                                  padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 20),
+                                                  child: Container(
+                                                    margin: EdgeInsets.only(
+                                                      left: 16,
+                                                      right: 16,
+                                                      top: 16,
                                                     ),
-                                                    child: Column(
+                                                    padding: EdgeInsets.all(16),
+                                                    decoration: BoxDecoration(
+                                                      color: Colors.white,
+                                                      borderRadius: BorderRadius.circular(16),
+                                                    ),
+                                                    child: Wrap(
                                                       children: [
                                                         GestureDetector(
                                                           onTap: () {
@@ -683,7 +712,7 @@ class FriendListView extends StatelessWidget {
                                                                   vertical: 0,
                                                                 ),
                                                                 content: Text(
-                                                                  '친구목록에서 삭제하시겠습니까?',
+                                                                  '친구 목록에서 삭제하시겠습니까?',
                                                                   style: TextStyle(
                                                                     fontWeight: FontWeight.w600,
                                                                     fontSize: 15,
@@ -729,15 +758,14 @@ class FriendListView extends StatelessWidget {
                                                               ),
                                                             );
                                                           },
-                                                          child: Center(
-                                                            child: Padding(
-                                                              padding: const EdgeInsets.only(top: 24),
+                                                          child: ListTile(
+                                                            contentPadding: EdgeInsets.zero,
+                                                            title: Center(
                                                               child: Text(
-                                                                '친구 삭제',
-                                                                style: TextStyle(
+                                                                '친구 삭제하기',
+                                                                style: SDSTextStyle.bold.copyWith(
                                                                   fontSize: 15,
-                                                                  fontWeight: FontWeight.bold,
-                                                                  color: Color(0xFFD63636),
+                                                                  color: SDSColor.gray900,
                                                                 ),
                                                               ),
                                                             ),
@@ -751,8 +779,8 @@ class FriendListView extends StatelessWidget {
                                             },
                                           ),
                                           child: Icon(
-                                            Icons.more_vert,
-                                            color: Color(0xFFdedede),
+                                            Icons.more_horiz,
+                                            color: SDSColor.gray200,
                                             size: 24,
                                           ),
                                         ),
