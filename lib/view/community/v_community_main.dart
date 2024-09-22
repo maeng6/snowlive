@@ -29,6 +29,7 @@ class CommunityMainView extends StatelessWidget {
                   fontSize: 18),
             ),
             backgroundColor: Colors.white,
+            surfaceTintColor: Colors.transparent,
           ),
         ),
         body:
@@ -165,10 +166,10 @@ class CommunityMainView extends StatelessWidget {
                                             borderRadius: BorderRadius.circular(30.0),
                                             border: Border.all(
                                                 color: (_communityBulletinListViewModel.chipName==Community_Category_sub_bulletin.total.korean)
-                                                    ? SDSColor.gray900 : SDSColor.gray200),
+                                                    ? SDSColor.gray900 : SDSColor.gray100),
                                           ),
-                                          padding: EdgeInsets.symmetric(horizontal: 12, vertical: 7),
-                                          height: 32,
+                                          padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                                          height: 36,
                                           child: Text('${Community_Category_sub_bulletin.total.korean}',
                                             style: SDSTextStyle.bold.copyWith(
                                                 fontSize: 13,
@@ -189,10 +190,10 @@ class CommunityMainView extends StatelessWidget {
                                           color: (_communityBulletinListViewModel.chipName==Community_Category_sub_bulletin.free.korean) ? SDSColor.gray900 : SDSColor.snowliveWhite,
                                           borderRadius: BorderRadius.circular(30.0),
                                           border: Border.all(
-                                              color: (_communityBulletinListViewModel.chipName==Community_Category_sub_bulletin.free.korean) ? SDSColor.gray900 : SDSColor.gray200),
+                                              color: (_communityBulletinListViewModel.chipName==Community_Category_sub_bulletin.free.korean) ? SDSColor.gray900 : SDSColor.gray100),
                                         ),
-                                        padding: EdgeInsets.symmetric(horizontal: 12, vertical: 7),
-                                        height: 32,
+                                        padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                                        height: 36,
                                         child: Text('${Community_Category_sub_bulletin.free.korean}',
                                           style: SDSTextStyle.bold.copyWith(
                                               fontSize: 13,
@@ -212,10 +213,10 @@ class CommunityMainView extends StatelessWidget {
                                           color: (_communityBulletinListViewModel.chipName==Community_Category_sub_bulletin.room.korean) ? SDSColor.gray900 : SDSColor.snowliveWhite,
                                           borderRadius: BorderRadius.circular(30.0),
                                           border: Border.all(
-                                              color: (_communityBulletinListViewModel.chipName==Community_Category_sub_bulletin.room.korean) ? SDSColor.gray900 : SDSColor.gray200),
+                                              color: (_communityBulletinListViewModel.chipName==Community_Category_sub_bulletin.room.korean) ? SDSColor.gray900 : SDSColor.gray100),
                                         ),
-                                        padding: EdgeInsets.symmetric(horizontal: 12, vertical: 7),
-                                        height: 32,
+                                        padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                                        height: 36,
                                         child: Text('${Community_Category_sub_bulletin.room.korean}',
                                           style: SDSTextStyle.bold.copyWith(
                                               fontSize: 13,
@@ -235,10 +236,10 @@ class CommunityMainView extends StatelessWidget {
                                           color: (_communityBulletinListViewModel.chipName==Community_Category_sub_bulletin.crew.korean) ? SDSColor.gray900 : SDSColor.snowliveWhite,
                                           borderRadius: BorderRadius.circular(30.0),
                                           border: Border.all(
-                                              color: (_communityBulletinListViewModel.chipName==Community_Category_sub_bulletin.crew.korean) ? SDSColor.gray900 : SDSColor.gray200),
+                                              color: (_communityBulletinListViewModel.chipName==Community_Category_sub_bulletin.crew.korean) ? SDSColor.gray900 : SDSColor.gray100),
                                         ),
-                                        padding: EdgeInsets.symmetric(horizontal: 12, vertical: 7),
-                                        height: 32,
+                                        padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                                        height: 36,
                                         child: Text('${Community_Category_sub_bulletin.crew.korean}',
                                           style: SDSTextStyle.bold.copyWith(
                                               fontSize: 13,

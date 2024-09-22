@@ -1,4 +1,5 @@
 import 'dart:io' as io show File;
+import 'package:com.snowlive/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/util/util_1.dart';
 import 'package:com.snowlive/viewmodel/util/vm_settingsController.dart';
 import 'package:flutter/material.dart';
@@ -104,14 +105,14 @@ class BulletinQuillToolbar extends StatelessWidget {
                     Icons.width_normal,
                   ),
                 ),
-                // QuillToolbarHistoryButton(
-                //   isUndo: true,
-                //   controller: controller,
-                // ),
-                // QuillToolbarHistoryButton(
-                //   isUndo: false,
-                //   controller: controller,
-                // ),
+                QuillToolbarHistoryButton(
+                  isUndo: true,
+                  controller: controller,
+                ),
+                QuillToolbarHistoryButton(
+                  isUndo: false,
+                  controller: controller,
+                ),
                 QuillToolbarToggleStyleButton(
                   options: const QuillToolbarToggleStyleButtonOptions(),
                   controller: controller,
@@ -194,52 +195,84 @@ class BulletinQuillToolbar extends StatelessWidget {
       return QuillToolbar.simple(
         configurations: QuillSimpleToolbarConfigurations(
           controller: controller,
-          showAlignmentButtons: true,
-          multiRowsDisplay: true,
+          color: SDSColor.gray900,
+          showRedo: false,
+          showUndo: false,
+          showFontFamily: false,
+          showFontSize: false,
+          showBoldButton: true,
+          showAlignmentButtons: false,
+          showSearchButton: false,
+          showClearFormat: false,
+          showBackgroundColorButton: false,
+          showCodeBlock: false,
+          showDirection: false,
+          showQuote: false,
+          showSmallButton: false,
+          showListBullets: false,
+          showListNumbers: false,
+          showListCheck: false,
+          showJustifyAlignment: false,
+          showCenterAlignment: false,
+          showColorButton: false,
+          showLineHeightButton: false,
+          showInlineCode: false,
+          showSubscript: false,
+          showSuperscript: false,
+          showHeaderStyle: false,
+          showDividers: false,
+          showIndent: false,
+          multiRowsDisplay: false,
+          toolbarSize: 40,
+          toolbarSectionSpacing: 2,
+          decoration: BoxDecoration(
+            color: SDSColor.blue50, // 툴바의 배경색을 설정합니다.
+            borderRadius: BorderRadius.circular(12), // 필요에 따라 모서리를 둥글게 설정할 수 있습니다.
+          ),
+
+          buttonOptions: QuillSimpleToolbarButtonOptions(
+            base: QuillToolbarBaseButtonOptions(
+              iconSize: 15,
+              iconTheme: QuillIconTheme(
+                iconButtonSelectedData: IconButtonData(
+                  padding: EdgeInsets.zero,
+                  color: SDSColor.snowliveBlue,
+                    highlightColor: Colors.transparent,
+                    splashColor: Colors.transparent,
+                    focusColor: Colors.transparent,
+                    style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.resolveWith<Color>(
+                            (Set<MaterialState> states) {
+                          if (states.contains(MaterialState.pressed)) {
+                            return SDSColor.sBlue200;
+                          } else if (states.contains(MaterialState.hovered)) {
+                            return SDSColor.sBlue200;
+                          } else if (states.contains(MaterialState.disabled)) {
+                            return SDSColor.sBlue50;
+                          }
+                          return Colors.transparent; // 기본 상태에서의 색상
+                        },
+                      ),
+                      foregroundColor: MaterialStateProperty.all<Color>(SDSColor.snowliveBlue,),
+                    )
+                ),
+                iconButtonUnselectedData: IconButtonData(
+                  padding: EdgeInsets.zero,
+                    color: SDSColor.gray900
+                )
+              )
+            ),
+          ),
           fontFamilyValues: {
-            'Amatic': GoogleFonts.amaticSc().fontFamily!,
-            'Annie': GoogleFonts.annieUseYourTelescope().fontFamily!,
-            'Formal': GoogleFonts.petitFormalScript().fontFamily!,
-            'Roboto': GoogleFonts.roboto().fontFamily!
+            'Pretendard': 'Pretendard',
           },
           fontSizesValues: const {
             '14': '14.0',
             '16': '16.0',
             '18': '18.0',
-            '20': '20.0',
-            '22': '22.0',
-            '24': '24.0',
-            '26': '26.0',
-            '28': '28.0',
-            '30.0': '30.0',
-            '35': '35.0',
-            '40': '40.0'
+            '20': '20.0'
           },
           searchButtonType: SearchButtonType.modern,
-          customButtons: [
-            QuillToolbarCustomButtonOptions(
-              icon: const Icon(Icons.add_alarm_rounded),
-              onPressed: () {
-                final formattedDate = GetDatetime().yyyymmddFormat(DateTime.now());
-                controller.document.insert(
-                  controller.selection.extentOffset,
-                  formattedDate,
-                );
-                controller.updateSelection(
-                  TextSelection.collapsed(
-                    offset: controller.selection.extentOffset + formattedDate.length,
-                  ),
-                  ChangeSource.local,
-                );
-              },
-            ),
-            QuillToolbarCustomButtonOptions(
-              icon: const Icon(Icons.dashboard_customize),
-              onPressed: () {
-                settingsController.toggleCustomQuillToolbar();
-              },
-            ),
-          ],
           embedButtons: FlutterQuillEmbeds.toolbarButtons(
             imageButtonOptions: QuillToolbarImageButtonOptions(
               imageButtonConfigurations: QuillToolbarImageConfigurations(
@@ -251,7 +284,6 @@ class BulletinQuillToolbar extends StatelessWidget {
                     : onImageInsert,
               ),
             ),
-            tableButtonOptions: const QuillToolbarTableButtonOptions(),
           ),
         ),
       );

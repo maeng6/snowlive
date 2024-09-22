@@ -33,43 +33,55 @@ class CommunityBulletinTotalListView extends StatelessWidget {
           floatingActionButton: Stack(
             children: [
               //최신글보기
-              Center(
-                child: Padding(
-                  padding: EdgeInsets.only(top: _size.height - 292),
-                  child: Visibility(
-                    visible: _communityBulletinListViewModel.isVisible_total,
-                    child: Container(
-                      width: 106,
-                      child: FloatingActionButton(
-                        heroTag: 'bulletin_total',
-                        mini: true,
-                        elevation: 0,
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(40)
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: Visibility(
+                  visible: _communityBulletinListViewModel.isVisible_total,
+                  child: Container(
+                    width: 106,
+                    decoration: BoxDecoration(
+                      color: Colors.transparent,
+                      borderRadius: BorderRadius.circular(50),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.04),
+                          spreadRadius: 2,
+                          blurRadius: 8,
+                          offset: Offset(0, 6),
                         ),
-                        backgroundColor: Color(0xFF000000).withOpacity(0.8),
-                        foregroundColor: Colors.white,
-                        onPressed: () {
-                          _communityBulletinListViewModel.scrollController_total.jumpTo(0);
-                        },
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Icon(Icons.arrow_upward_rounded,
-                                color: Color(0xFFffffff),
-                                size: 18),
-                            Padding(
-                              padding: const EdgeInsets.only(left: 2, right: 3),
-                              child: Text('최신글 보기',
-                                style: SDSTextStyle.bold.copyWith(
-                                    fontSize: 13,
-                                    color: SDSColor.snowliveWhite.withOpacity(0.8),
-                                    letterSpacing: 0
-                                ),),
-                            )
-                          ],
-                        ),
+                      ],
+                    ),
+                    child: FloatingActionButton(
+                      heroTag: 'bulletin_total',
+                      mini: true,
+                      elevation: 0,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(40),
+                        side: BorderSide(color: SDSColor.gray200),
+                      ),
+                      backgroundColor: SDSColor.snowliveWhite,
+                      foregroundColor: SDSColor.snowliveWhite,
+                      onPressed: () {
+                        _communityBulletinListViewModel.scrollController_total.jumpTo(0);
+                      },
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Icon(Icons.arrow_upward_rounded,
+                              color: SDSColor.gray900,
+                              size: 16),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 2, right: 3),
+                            child: Text('최신글 보기',
+                              style: TextStyle(
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.bold,
+                                  color: SDSColor.gray900,
+                                  letterSpacing: 0
+                              ),),
+                          )
+                        ],
                       ),
                     ),
                   ),
@@ -77,47 +89,44 @@ class CommunityBulletinTotalListView extends StatelessWidget {
               ),
               //글쓰기 버튼
               Positioned(
-                bottom: 0, // Adjust the position as needed
-                right: 16, // Adjust the position as needed
-                child: AnimatedContainer(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(50),
-                      boxShadow: [
-                        BoxShadow(
-                          color: SDSColor.snowliveBlack.withOpacity(0.2),
-                          blurRadius: 12,
-                          offset: Offset(0, 4),
+                child: Padding(
+                  padding: EdgeInsets.only(right: 14),
+                  child: Align(
+                    alignment: Alignment.bottomRight,
+                    child: AnimatedContainer(
+                      width: _communityBulletinListViewModel.showAddButton_total ? 104 : 52,
+                      height: 52,
+                      duration: Duration(milliseconds: 200),
+                      child: FloatingActionButton.extended(
+                        heroTag: 'bulletin_total',
+                        elevation: 4,
+                        onPressed: () async {
+                          Get.toNamed(AppRoutes.bulletinUpload);
+                        },
+                        icon: Transform.translate(
+                          offset: Offset(6, 0),
+                          child: Center(child: Icon(Icons.add,
+                            color: SDSColor.snowliveWhite,)),
+                        ),
+                        label: _communityBulletinListViewModel.showAddButton_total
+                            ? Padding(
+                          padding: const EdgeInsets.only(right: 6),
+                          child: Text(
+                            '글쓰기',
+                            style: SDSTextStyle.bold.copyWith(
+                                letterSpacing: 0.5,
+                                fontSize: 15,
+                                color: SDSColor.snowliveWhite,
+                                overflow: TextOverflow.ellipsis),
+                          ),
                         )
-                      ]
-                  ),
-                  width: _communityBulletinListViewModel.showAddButton_total ? 104 : 52,
-                  height: 52,
-                  duration: Duration(milliseconds: 200),
-                  child: FloatingActionButton.extended(
-                    heroTag: 'bulletin_total',
-                    elevation: 0,
-                    onPressed: () async {
-                      Get.toNamed(AppRoutes.bulletinUpload);
-                    },
-                    icon: Transform.translate(
-                      offset: Offset(6, 0),
-                      child: Center(child: Icon(Icons.add,
-                      size: 24,)),
-                    ),
-                    label: _communityBulletinListViewModel.showAddButton_total
-                        ? Padding(
-                      padding: const EdgeInsets.only(right: 6),
-                      child: Text(
-                        '글쓰기',
-                        style: SDSTextStyle.bold.copyWith(
-                          letterSpacing: 0.5,
-                          fontSize: 15,
-                          color: Colors.white,
+                            : SizedBox.shrink(),
+                        backgroundColor: SDSColor.snowliveBlue,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(50)
                         ),
                       ),
-                    )
-                        : SizedBox.shrink(),
-                    backgroundColor: SDSColor.snowliveBlue,
+                    ),
                   ),
                 ),
               ),
