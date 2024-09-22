@@ -2,6 +2,7 @@ import 'package:com.snowlive/routes/routes.dart';
 import 'package:com.snowlive/viewmodel/friend/vm_friendDetail.dart';
 import 'package:com.snowlive/viewmodel/friend/vm_friendList.dart';
 import 'package:com.snowlive/viewmodel/vm_user.dart';
+import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -39,11 +40,13 @@ class _SendFriendRequestViewState extends State<SendFriendRequestView> {
                   leading:  (friend.friendUserInfo.profileImageUrlUser.isNotEmpty)
                       ? GestureDetector(
                     onTap: () async{
+                      CustomFullScreenDialog.showDialog();
                       await _friendDetailViewModel.fetchFriendDetailInfo(
                         userId: _userViewModel.user.user_id,
                         friendUserId: friend.friendUserId,
                         season: _friendDetailViewModel.seasonDate,
                       );
+                      CustomFullScreenDialog.cancelDialog();
                       Get.toNamed(AppRoutes.friendDetail);
                     },
                     child: Container(
@@ -99,11 +102,13 @@ class _SendFriendRequestViewState extends State<SendFriendRequestView> {
                   )
                       : GestureDetector(
                     onTap: () async{
+                      CustomFullScreenDialog.showDialog();
                       await _friendDetailViewModel.fetchFriendDetailInfo(
                         userId: _userViewModel.user.user_id,
                         friendUserId: friend.friendUserId,
                         season: _friendDetailViewModel.seasonDate,
                       );
+                      CustomFullScreenDialog.cancelDialog();
                       Get.toNamed(AppRoutes.friendDetail);
                     },
                     child: Container(

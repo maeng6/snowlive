@@ -3,6 +3,7 @@ import 'package:com.snowlive/routes/routes.dart';
 import 'package:com.snowlive/viewmodel/friend/vm_friendDetail.dart';
 import 'package:com.snowlive/viewmodel/friend/vm_friendList.dart';
 import 'package:com.snowlive/viewmodel/vm_user.dart';
+import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -246,12 +247,14 @@ class SearchFriendView extends StatelessWidget {
                                 padding: EdgeInsets.only(right: 16, left: 16),
                                 child: ElevatedButton(
                                   onPressed: () async {
-                                    Get.toNamed(AppRoutes.friendDetail);
+                                    CustomFullScreenDialog.showDialog();
                                     await _friendDetailViewModel.fetchFriendDetailInfo(
                                       userId: _userViewModel.user.user_id,
                                       friendUserId: _friendListViewModel.searchFriend.userId!,
                                       season: _friendDetailViewModel.seasonDate,
                                     );
+                                    CustomFullScreenDialog.cancelDialog();
+                                    Get.toNamed(AppRoutes.friendDetail);
                                   },
                                   child: Text(
                                     '프로필 보기',
@@ -280,10 +283,78 @@ class SearchFriendView extends StatelessWidget {
                             width: MediaQuery.of(context).size.width,
                             child: ElevatedButton(
                               onPressed: () async {
-                                await _friendDetailViewModel.sendFriendRequest({
-                                  "user_id": _userViewModel.user.user_id,    //필수 - 신청자 (나)
-                                  "friend_user_id": _friendListViewModel.searchFriend.userId!   //필수 - 신청받는사람
-                                });
+                                Get.dialog(
+                                    AlertDialog(
+                                      backgroundColor: SDSColor.snowliveWhite,
+                                      contentPadding: EdgeInsets.only(bottom: 0, left: 28, right: 28, top: 36),
+                                      elevation: 0,
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(16)),
+                                      buttonPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+                                      content: Container(
+                                        height: 40,
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.center,
+                                          children: [
+                                            Text(
+                                              '친구등록 요청을 보내시겠습니까?',
+                                              style: SDSTextStyle.bold.copyWith(
+                                                  fontSize: 15,
+                                                  color: SDSColor.gray900),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      actions: [
+                                        Padding(
+                                          padding: EdgeInsets.only(top: 10, left: 16, right: 16),
+                                          child: Row(
+                                            children: [
+                                              Expanded(
+                                                child: Container(
+                                                  child: TextButton(
+                                                      onPressed: () async {
+                                                        Navigator.pop(context);
+                                                      },
+                                                      child: Text('취소',
+                                                        style: TextStyle(
+                                                          fontSize: 15,
+                                                          color: Color(0xFF949494),
+                                                          fontWeight: FontWeight.bold,
+                                                        ),
+                                                      )),
+                                                ),
+                                              ),
+                                              SizedBox(
+                                                width: 10,
+                                              ),
+                                              Expanded(
+                                                child: Container(
+                                                  child: TextButton(
+                                                      onPressed: () async {
+                                                        Navigator.pop(context);
+                                                        CustomFullScreenDialog.showDialog();
+                                                        await _friendDetailViewModel.sendFriendRequest({
+                                                          "user_id": _userViewModel.user.user_id,    //필수 - 신청자 (나)
+                                                          "friend_user_id": _friendDetailViewModel.friendDetailModel.friendUserInfo.userId    //필수 - 신청받는사람
+                                                        });
+                                                        CustomFullScreenDialog.cancelDialog();
+                                                      },
+                                                      child: Text('보내기',
+                                                        style: TextStyle(
+                                                          fontSize: 15,
+                                                          color: Color(0xFF3D83ED),
+                                                          fontWeight: FontWeight.bold,
+                                                        ),
+                                                      )),
+                                                ),
+                                              ),
+                                            ],
+                                            mainAxisAlignment: MainAxisAlignment.end,
+                                          ),
+                                        )
+                                      ],
+                                    ));
                               },
                               child: Text(
                                 '친구 요청하기',

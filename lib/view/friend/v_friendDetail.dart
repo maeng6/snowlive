@@ -7,6 +7,7 @@ import 'package:com.snowlive/view/friend/v_profilePageCalendar.dart';
 import 'package:com.snowlive/viewmodel/friend/vm_friendDetail.dart';
 import 'package:com.snowlive/viewmodel/friend/vm_friendDetailUpdate.dart';
 import 'package:com.snowlive/viewmodel/vm_user.dart';
+import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -25,7 +26,7 @@ class FriendDetailView extends StatelessWidget {
     UserViewModel _userViewModel = Get.find<UserViewModel>();
     FriendDetailUpdateViewModel _friendDetailUpdateViewModel = Get.find<FriendDetailUpdateViewModel>();
 
-    return Scaffold(
+    return Obx(()=>Scaffold(
         backgroundColor: Colors.white,
         extendBodyBehindAppBar: true,
         appBar: AppBar(
@@ -297,10 +298,12 @@ class FriendDetailView extends StatelessWidget {
                                                                   child: TextButton(
                                                                       onPressed: () async {
                                                                         Navigator.pop(context);
+                                                                        CustomFullScreenDialog.showDialog();
                                                                         await _friendDetailViewModel.sendFriendRequest({
                                                                           "user_id": _userViewModel.user.user_id,    //필수 - 신청자 (나)
                                                                           "friend_user_id": _friendDetailViewModel.friendDetailModel.friendUserInfo.userId    //필수 - 신청받는사람
                                                                         });
+                                                                        CustomFullScreenDialog.cancelDialog();
                                                                       },
                                                                       child: Text('보내기',
                                                                         style: TextStyle(
@@ -623,6 +626,19 @@ class FriendDetailView extends StatelessWidget {
                                                         enableMemoryCache: true,
                                                         width: 56,
                                                         height: 56,
+                                                        loadStateChanged: (ExtendedImageState state) {
+                                                          switch (state.extendedImageLoadState) {
+                                                            case LoadState.loading:
+                                                            // 로딩 중일 때 로딩 인디케이터를 표시
+                                                              return Center(child: CircularProgressIndicator());
+                                                            case LoadState.completed:
+                                                            // 로딩이 완료되었을 때 이미지 반환
+                                                              return state.completedWidget;
+                                                            case LoadState.failed:
+                                                            // 로딩이 실패했을 때 대체 이미지 또는 다른 처리
+                                                              return Container();
+                                                          }
+                                                        },
                                                       )
                                                     ],
                                                   ),
@@ -1256,7 +1272,9 @@ class FriendDetailView extends StatelessWidget {
                                                                     if (document.authorInfo.profileImageUrlUser != "")
                                                                       GestureDetector(
                                                                         onTap: () async{
+                                                                          CustomFullScreenDialog.showDialog();
                                                                           await _friendDetailViewModel.fetchFriendDetailInfo(userId: _userViewModel.user.user_id, friendUserId: document.authorInfo.userId, season: _friendDetailViewModel.seasonDate);
+                                                                          CustomFullScreenDialog.cancelDialog();
                                                                           Get.toNamed(AppRoutes.friendDetail);
                                                                         },
                                                                         child: Container(
@@ -1300,7 +1318,9 @@ class FriendDetailView extends StatelessWidget {
                                                                     if (document.authorInfo.profileImageUrlUser == "")
                                                                       GestureDetector(
                                                                         onTap: () async{
+                                                                          CustomFullScreenDialog.showDialog();
                                                                           await _friendDetailViewModel.fetchFriendDetailInfo(userId: _userViewModel.user.user_id, friendUserId: document.authorInfo.userId, season: _friendDetailViewModel.seasonDate);
+                                                                          CustomFullScreenDialog.cancelDialog();
                                                                           Get.toNamed(AppRoutes.friendDetail);
                                                                         },
                                                                         child: ExtendedImage.network(
@@ -1434,14 +1454,15 @@ class FriendDetailView extends StatelessWidget {
                                                                                                                   child: Container(
                                                                                                                     child: TextButton(
                                                                                                                         onPressed: () async {
-                                                                                                                          await _friendDetailViewModel.reportFriendsTalk({
+                                                                                                                          Navigator.pop(context);
+                                                                                                                          Navigator.pop(context);
+                                                                                                                          CustomFullScreenDialog.showDialog();
+                                                                                                                          await _friendDetailViewModel.reportFriendsTalk(
                                                                                                                             {
-                                                                                                                              "user_id": _userViewModel.user.user_id,    //필수 - 신고자(나)
+                                                                                                                              "user_id": _userViewModel.user.user_id.toString(),    //필수 - 신고자(나)
                                                                                                                               "friends_talk_id": document.friendsTalkId   //필수 - 신고할 친구톡id
                                                                                                                             }
-                                                                                                                          });
-                                                                                                                          Navigator.pop(context);
-                                                                                                                          Navigator.pop(context);
+                                                                                                                          );
                                                                                                                         },
                                                                                                                         style: TextButton.styleFrom(
                                                                                                                           backgroundColor: Colors.transparent, // 배경색 투명
@@ -1547,12 +1568,13 @@ class FriendDetailView extends StatelessWidget {
                                                                                                                     child: TextButton(
                                                                                                                         onPressed: () async{
                                                                                                                           Navigator.pop(context);
+                                                                                                                          Navigator.pop(context);
+                                                                                                                          CustomFullScreenDialog.showDialog();
                                                                                                                           await _userViewModel.block_user({
                                                                                                                             "user_id" : _userViewModel.user.user_id,    //필수 - 차단하는 사람(나)
                                                                                                                             "block_user_id" : document.authorInfo.userId   //필수 - 내가 차단할 사람
                                                                                                                           });
                                                                                                                           await _friendDetailViewModel.fetchFriendsTalkList(userId: _userViewModel.user.user_id, friendUserId: _friendDetailViewModel.friendDetailModel.friendUserInfo.userId);
-                                                                                                                          Navigator.pop(context);
                                                                                                                         },
                                                                                                                         child: Text('확인',
                                                                                                                           style: SDSTextStyle.bold.copyWith(
@@ -1643,9 +1665,12 @@ class FriendDetailView extends StatelessWidget {
                                                                                                                     child: TextButton(
                                                                                                                         onPressed: () async {
                                                                                                                           Navigator.pop(context);
+                                                                                                                          Navigator.pop(context);
+                                                                                                                          CustomFullScreenDialog.showDialog();
                                                                                                                           await _friendDetailViewModel.deleteFriendsTalk(userId: _userViewModel.user.user_id, friendsTalkId: document.friendsTalkId);
                                                                                                                           await _friendDetailViewModel.fetchFriendsTalkList(userId: _userViewModel.user.user_id, friendUserId: _friendDetailViewModel.friendDetailModel.friendUserInfo.userId);
                                                                                                                           print('삭제 완료');
+                                                                                                                          CustomFullScreenDialog.cancelDialog();
                                                                                                                         },
                                                                                                                         style: TextButton.styleFrom(
                                                                                                                           backgroundColor: Colors.transparent, // 배경색 투명
@@ -2279,7 +2304,7 @@ class FriendDetailView extends StatelessWidget {
             ),
           ),
         )
-    );
+    ));
   }
 }
 

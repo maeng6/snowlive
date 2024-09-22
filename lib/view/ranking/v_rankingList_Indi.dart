@@ -5,6 +5,7 @@ import 'package:com.snowlive/routes/routes.dart';
 import 'package:com.snowlive/viewmodel/friend/vm_friendDetail.dart';
 import 'package:com.snowlive/viewmodel/ranking/vm_rankingList.dart';
 import 'package:com.snowlive/viewmodel/vm_user.dart';
+import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 import 'package:com.snowlive/widget/w_verticalDivider.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/cupertino.dart';
@@ -45,10 +46,12 @@ class RankingIndiView extends StatelessWidget {
                       //마이인포 박스 - 점수와 랭킹없는경우 널처리해야함
                       GestureDetector(
                         onTap: () async{
+                          CustomFullScreenDialog.showDialog();
                           await _friendDetailViewModel.fetchFriendDetailInfo(
                               userId: _userViewModel.user.user_id,
                               friendUserId:_userViewModel.user.user_id,
                               season: _friendDetailViewModel.seasonDate);
+                          CustomFullScreenDialog.cancelDialog();
                           Get.toNamed(AppRoutes.friendDetail);
                         },
                         child: Obx(() => Padding(
@@ -927,12 +930,14 @@ class RankingIndiView extends StatelessWidget {
                                       SizedBox(width: 8),
                                       GestureDetector(
                                         onTap: () async{
-                                          Get.toNamed(AppRoutes.friendDetail);
+                                          CustomFullScreenDialog.showDialog();
                                           await _friendDetailViewModel.fetchFriendDetailInfo(
                                             userId: _userViewModel.user.user_id,
                                             friendUserId: document.userId!,
                                             season: _friendDetailViewModel.seasonDate,
                                           );
+                                          CustomFullScreenDialog.cancelDialog();
+                                          Get.toNamed(AppRoutes.friendDetail);
                                         },
                                         child: Container(
                                           width: 32,

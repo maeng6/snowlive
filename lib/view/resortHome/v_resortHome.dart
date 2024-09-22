@@ -282,9 +282,11 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                           }
                           else if(_userViewModel.user.within_boundary == false) {
                             HapticFeedback.lightImpact();
+                            CustomFullScreenDialog.showDialog();
                             await _resortHomeViewModel.startForegroundLocationService(user_id: _userViewModel.user.user_id);
                             await _resortHomeViewModel.startBackgroundLocationService(user_id: _userViewModel.user.user_id);
                             await _userViewModel.updateUserModel_api(_userViewModel.user.user_id);
+                            CustomFullScreenDialog.cancelDialog();
                           }
                         },
                         elevation: 0,
@@ -636,7 +638,6 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                                               return GestureDetector(
                                                 onTap: () async {
                                                   Navigator.pop(context);
-                                                  Get.toNamed(AppRoutes.friendDetail);
                                                   CustomFullScreenDialog.showDialog();
                                                   await _friendDetailViewModel.fetchFriendDetailInfo(
                                                     userId: _userViewModel.user.user_id,
@@ -644,6 +645,7 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                                                     season: _friendDetailViewModel.seasonDate,
                                                   );
                                                   CustomFullScreenDialog.cancelDialog();
+                                                  Get.toNamed(AppRoutes.friendDetail);
                                                 },
                                                 child: Container(
                                                   width: (_size.width - 40) / 4, // 화면 너비를 4등분

@@ -23,7 +23,7 @@ class FleamarketSearchViewModel extends GetxController {
   RxString _tapName = '전체'.obs;
   RxString _selectedCategory_sub_total = '전체 카테고리'.obs;
   RxString _selectedCategory_spot_total = '전체 거래장소'.obs;
-  RxBool _showRecentSearch = true.obs;
+  RxBool showRecentSearch = true.obs;
 
 
   List<Fleamarket> get fleamarketListSearch => _fleamarketList_search;
@@ -37,7 +37,6 @@ class FleamarketSearchViewModel extends GetxController {
   ScrollController get scrollController => _scrollController;
   List<String> get recentSearches => _recentSearches;
   bool get isSearching => _isSearching.value;
-  bool get showRecentSearch => _showRecentSearch.value;
 
 
   ScrollController _scrollController = ScrollController();
@@ -120,7 +119,7 @@ class FleamarketSearchViewModel extends GetxController {
   Future<void> fetchNextPage_total() async{
     if (_nextPageUrl_total.value.isNotEmpty) {
       await fetchFleamarketData_total(
-        userId: _userViewModel.user.user_id,
+          userId: _userViewModel.user.user_id,
           url: _nextPageUrl_total.value
       );
     }
@@ -183,11 +182,6 @@ class FleamarketSearchViewModel extends GetxController {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     recentSearches.clear();
     await prefs.remove('recentSearches');
-  }
-
-
-  void changeShowRecentSearch() {
-    _showRecentSearch.value = !_showRecentSearch.value;
   }
 
 

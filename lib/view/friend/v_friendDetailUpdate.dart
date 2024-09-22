@@ -4,6 +4,7 @@ import 'package:com.snowlive/viewmodel/friend/vm_friendDetail.dart';
 import 'package:com.snowlive/viewmodel/friend/vm_friendDetailUpdate.dart';
 import 'package:com.snowlive/viewmodel/vm_user.dart';
 import 'package:com.snowlive/widget/w_favoriteResort.dart';
+import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 import 'package:com.snowlive/widget/w_sex.dart';
 import 'package:com.snowlive/widget/w_skiorboard.dart';
 import 'package:extended_image/extended_image.dart';
@@ -13,6 +14,8 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 
 class FriendDetailUpdateView extends StatelessWidget {
+
+  final FocusNode displayNameFocusNode = FocusNode();
 
   @override
   Widget build(BuildContext context) {
@@ -26,6 +29,15 @@ class FriendDetailUpdateView extends StatelessWidget {
     String? selectedSkiOrBoard;
     String? selectedSex;
     Size _size = MediaQuery.of(context).size;
+
+    displayNameFocusNode.addListener(() {
+      if (displayNameFocusNode.hasFocus) {
+        // 텍스트 필드가 활성화될 때
+        _friendDetailUpdateViewModel.toggleActiveCheckDisplaynameButton(false);
+        _friendDetailUpdateViewModel.toggleIsCheckedDisplayName(true);
+      }
+    });
+
 
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
@@ -254,6 +266,7 @@ class FriendDetailUpdateView extends StatelessWidget {
                                 Obx(() => Stack(
                                   children: [
                                     TextFormField(
+                                      focusNode: displayNameFocusNode,
                                       textAlignVertical: TextAlignVertical.center,
                                       cursorColor: SDSColor.snowliveBlue,
                                       cursorHeight: 16,
@@ -296,11 +309,12 @@ class FriendDetailUpdateView extends StatelessWidget {
                                       validator: (val) {
                                         WidgetsBinding.instance.addPostFrameCallback((_) {
                                           if ((val!.length <= 10 && val.length >= 1)
-                                              &&  _friendDetailUpdateViewModel.textEditingController_displayName.text != _friendDetailUpdateViewModel.displayName) {
-                                            _friendDetailUpdateViewModel.toggleCheckDisplayname(true);
+                                              &&  (_friendDetailUpdateViewModel.textEditingController_displayName.text != _friendDetailViewModel.friendDetailModel.friendUserInfo.displayName)
+                                          && _friendDetailUpdateViewModel.isCheckedDisplayName ==false) {
+                                            _friendDetailUpdateViewModel.toggleActiveCheckDisplaynameButton(true);
                                             _friendDetailUpdateViewModel.toggleIsCheckedDisplayName(false);
                                           } else {
-                                            _friendDetailUpdateViewModel.toggleCheckDisplayname(false);
+                                            _friendDetailUpdateViewModel.toggleActiveCheckDisplaynameButton(false);
                                             _friendDetailUpdateViewModel.toggleIsCheckedDisplayName(true);
 
                                           }
@@ -318,13 +332,20 @@ class FriendDetailUpdateView extends StatelessWidget {
                                       right: 0,
                                       top: 0,
                                       bottom: 0,
-                                      child: TextButton(
+                                      child:
+                                      (_friendDetailUpdateViewModel.textEditingController_displayName.text != '')
+                                      ?TextButton(
                                         onPressed: (_friendDetailUpdateViewModel.activeCheckDisplaynameButton == true && !_friendDetailUpdateViewModel.isCheckedDisplayName)
                                             ? () async {
                                           print(_friendDetailUpdateViewModel.textEditingController_displayName.text);
+                                          if(_friendDetailUpdateViewModel.textEditingController_displayName.text !=_friendDetailViewModel.friendDetailModel.friendUserInfo.displayName){
                                           await _friendDetailUpdateViewModel.checkDisplayName({
                                             "display_name": _friendDetailUpdateViewModel.textEditingController_displayName.text,
-                                          });
+                                          });}else{
+                                            _friendDetailUpdateViewModel.toggleActiveCheckDisplaynameButton(false);
+                                            _friendDetailUpdateViewModel.toggleIsCheckedDisplayName(true);
+                                            print(_friendDetailUpdateViewModel.isCheckedDisplayName);
+                                          }
                                           FocusScope.of(context).unfocus();
                                           if (!_friendDetailUpdateViewModel.isCheckedDisplayName)
                                             Get.dialog(
@@ -387,7 +408,8 @@ class FriendDetailUpdateView extends StatelessWidget {
                                                 : SDSColor.gray600
                                         ),
                                         ),
-                                      ),
+                                      )
+                                      : Container(),
                                     ),
                                   ],
                                 )),
@@ -635,7 +657,7 @@ class FriendDetailUpdateView extends StatelessWidget {
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
                                       Text(
-                                        "프로필 공개 여부",  // 토글 스위치 라벨
+                                        "프로필 비공개",  // 토글 스위치 라벨
                                         style: SDSTextStyle.regular.copyWith(fontSize: 14, color: SDSColor.gray900),
                                       ),
                                       Obx(() => Switch(
@@ -677,11 +699,12 @@ class FriendDetailUpdateView extends StatelessWidget {
               child: Column(
                 children: [
                   Obx(() =>
-                  (_friendDetailUpdateViewModel.selectedResortIndex != 99 && _friendDetailUpdateViewModel.displayName != '')
+                  (_friendDetailUpdateViewModel.selectedResortIndex != 99 && _friendDetailUpdateViewModel.isCheckedDisplayName == true)
                       ? Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
                     child: ElevatedButton(
                       onPressed: () async {
+                        CustomFullScreenDialog.showDialog();
                         await _friendDetailUpdateViewModel.getImageUrl();
                         await _friendDetailUpdateViewModel.updateFriendDetail(
                             {
@@ -702,6 +725,7 @@ class FriendDetailUpdateView extends StatelessWidget {
                           season: _friendDetailViewModel.seasonDate,
                         );
                         await _userViewModel.updateUserModel_api(_userViewModel.user.user_id);
+                        CustomFullScreenDialog.cancelDialog();
                         Get.back();
                       },
                       style: TextButton.styleFrom(

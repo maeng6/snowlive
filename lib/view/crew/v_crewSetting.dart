@@ -4,6 +4,7 @@ import 'package:com.snowlive/viewmodel/crew/vm_crewApply.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewDetail.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewMemberList.dart';
 import 'package:com.snowlive/viewmodel/vm_user.dart';
+import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -126,11 +127,15 @@ class CrewSettingView extends StatelessWidget {
                       ),
                       TextButton(
                         onPressed: () async{
+                          Navigator.pop(context);
+                          CustomFullScreenDialog.showDialog();
                           await _crewMemberListViewModel.withdrawCrew(
                               crewMemberUserId: _userViewModel.user.user_id
                           );
                           await _crewMemberListViewModel.fetchCrewMembers(crewId: _userViewModel.user.crew_id);
-                          Get.back(); // 팝업 닫기
+                          await _userViewModel.updateUserModel_api(_userViewModel.user.user_id);
+                          CustomFullScreenDialog.cancelDialog();
+                          Get.offAllNamed(AppRoutes.mainHome);
                         },
                         child: Text(
                           '예',

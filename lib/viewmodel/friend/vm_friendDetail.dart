@@ -280,11 +280,18 @@ class FriendDetailViewModel extends GetxController {
   Future<void> reportFriendsTalk(body) async {
     isLoading(true);
     ApiResponse response = await FriendDetailAPI().reportFriendsTalk(body);
-    if(response.success)
-      print('방명록 신고 완료');
-    if(!response.success)
-      Get.snackbar('Error', '신고 실패');
-    isLoading(false);
+
+    if (response.success) {
+      if(response.data['message']=='Friends talk has been reported.') {
+        CustomFullScreenDialog.cancelDialog();
+        Get.snackbar('신고 완료', '신고 내역이 접수되었습니다.');
+      }
+      if(response.data['message']=='You have already reported this friends talk.'){
+        CustomFullScreenDialog.cancelDialog();
+        Get.snackbar('신고 중복', '이미 신고한 글입니다.');
+      }
+    }
+    isLoading(true);
   }
 
 

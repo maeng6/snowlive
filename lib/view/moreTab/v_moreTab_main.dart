@@ -8,6 +8,7 @@ import 'package:com.snowlive/viewmodel/crew/vm_crewMemberList.dart';
 import 'package:com.snowlive/viewmodel/friend/vm_friendDetail.dart';
 import 'package:com.snowlive/viewmodel/friend/vm_friendList.dart';
 import 'package:com.snowlive/viewmodel/vm_user.dart';
+import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -59,12 +60,14 @@ class MoreTabMainView extends StatelessWidget {
               ),
               Obx(() => GestureDetector(
                   onTap: () async{
-                    Get.toNamed(AppRoutes.friendDetail);
+                    CustomFullScreenDialog.showDialog();
                     await _friendDetailViewModel.fetchFriendDetailInfo(
                       userId: _userViewModel.user.user_id,
                       friendUserId: _userViewModel.user.user_id,
                       season: _friendDetailViewModel.seasonDate,
                     );
+                    CustomFullScreenDialog.cancelDialog();
+                    Get.toNamed(AppRoutes.friendDetail);
                   },
                   child: Padding(
                     padding: EdgeInsets.symmetric(horizontal: 16),

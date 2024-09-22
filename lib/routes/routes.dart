@@ -9,6 +9,7 @@ import 'package:com.snowlive/view/crew/v_crewDescription.dart';
 import 'package:com.snowlive/view/crew/v_crewMemberSettings.dart';
 import 'package:com.snowlive/view/crew/v_crewNotice.dart';
 import 'package:com.snowlive/view/crew/v_crewNoticeList.dart';
+import 'package:com.snowlive/view/crew/v_crewNoticeModify.dart';
 import 'package:com.snowlive/view/crew/v_crewSetting.dart';
 import 'package:com.snowlive/view/crew/v_managerPermission.dart';
 import 'package:com.snowlive/view/crew/v_searchCrew.dart';
@@ -88,6 +89,8 @@ class AppRoutes {
   static const String crewNoticeList = '/crewNoticeList';
   static const String crewMemberSettings = '/crewMemberSettings';
   static const String managerPermission = '/managerPermission';
+  static const String crewNoticeModify = '/crewNoticeModify';
+
 
 
 
@@ -159,13 +162,13 @@ class AppRoutes {
       binding: FleamarketDetailBinding(),
     ),
     GetPage(
-      name: fleamarketCommentDetail,
-      page: () => FleamarketCommentDetailView()
+        name: fleamarketCommentDetail,
+        page: () => FleamarketCommentDetailView()
     ),
     GetPage(
-        name: fleamarketUpload,
-        page: () => FleamarketUploadView(),
-        binding: FleamarketUploadBinding(),
+      name: fleamarketUpload,
+      page: () => FleamarketUploadView(),
+      binding: FleamarketUploadBinding(),
     ),
     GetPage(
       name: fleamarketUpdate,
@@ -206,17 +209,17 @@ class AppRoutes {
       binding: BulletinUploadBinding(),
     ),
     GetPage(
-      name: bulletinDetail,
-      page: () => CommunityBulletinDetailView(),
-      binding: BulletinDetailBinding()
+        name: bulletinDetail,
+        page: () => CommunityBulletinDetailView(),
+        binding: BulletinDetailBinding()
     ),
     GetPage(
       name: bulletinDetailUpdate,
       page: () => CommunityBulletinUpdateView(),
     ),
     GetPage(
-        name: bulletinCommentDetail,
-        page: () => CommunityCommentDetailView(),
+      name: bulletinCommentDetail,
+      page: () => CommunityCommentDetailView(),
     ),
     GetPage(
       name: moreTab,
@@ -227,13 +230,13 @@ class AppRoutes {
       page: () => OnBoardingCrewMainView(),
     ),
     GetPage(
-      name: setCrewNameAndResort,
-      page: () => SetCrewNameAndResortView(),
-      binding: SetCrewNameAndResortBinding()
+        name: setCrewNameAndResort,
+        page: () => SetCrewNameAndResortView(),
+        binding: SetCrewNameAndResortBinding()
     ),
     GetPage(
-        name: setCrewImageAndColor,
-        page: () => SetCrewImageAndColorView(),
+      name: setCrewImageAndColor,
+      page: () => SetCrewImageAndColorView(),
     ),
     GetPage(
         name: crewMain,
@@ -241,12 +244,12 @@ class AppRoutes {
         binding: CrewMainBinding()
     ),
     GetPage(
-        name: crewHome,
-        page: () => CrewHomeView(),
+      name: crewHome,
+      page: () => CrewHomeView(),
     ),
     GetPage(
-        name: crewMember,
-        page: () => CrewMemberListView(),
+      name: crewMember,
+      page: () => CrewMemberListView(),
     ),
     GetPage(
       name: crewRecordRoom,
@@ -291,6 +294,10 @@ class AppRoutes {
     GetPage(
       name: managerPermission,
       page: () => ManagerPermissionView(),
+    ),
+    GetPage(
+      name: crewNoticeModify,
+      page: () => CrewNoticeModifyView(),
     ),
   ];
 }
