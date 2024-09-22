@@ -10,7 +10,6 @@ class UserAPI {
       queryParameters: {
         'user_id': user_id.toString(),
       });
-    print(user_id);
 
   final response = await http.get(uri);
 

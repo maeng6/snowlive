@@ -31,7 +31,7 @@ class AuthCheckViewModel extends GetxController {
     super.onInit();
   }
 
-  Future<void> userCheck() async {
+  Future<bool> userCheck() async {
 
     await loginAgain();
 
@@ -59,6 +59,7 @@ class AuthCheckViewModel extends GetxController {
         await FlutterSecureStorage().delete(key: 'device_token');
         await FlutterSecureStorage().delete(key: 'user_id');
         _gotoMainHome!.value = true;
+        return _gotoMainHome!.value;
       }
 
       if(response!.success){
@@ -89,12 +90,14 @@ class AuthCheckViewModel extends GetxController {
             int user_id = int.parse(userIdString!);
             await _userViewModel.updateUserModel_api(user_id);
             _gotoMainHome!.value = true;
+            return _gotoMainHome!.value;
           }catch(e){
             await FlutterSecureStorage().write(key: 'user_id', value: response!.data['user_id'].toString());
             String? userIdString = await FlutterSecureStorage().read(key: 'user_id');
             int user_id = int.parse(userIdString!);
             await _userViewModel.updateUserModel_api(user_id);
             _gotoMainHome!.value = true;
+            return _gotoMainHome!.value;
           }
         }
       }else{
@@ -104,7 +107,9 @@ class AuthCheckViewModel extends GetxController {
         await FlutterSecureStorage().delete(key: 'device_token');
         await FlutterSecureStorage().delete(key: 'user_id');
         _gotoMainHome!.value = false;
+        return _gotoMainHome!.value;
       }
+
     } else {
       print('로그아웃');
       await FlutterSecureStorage().delete(key: 'localUid');
@@ -112,7 +117,9 @@ class AuthCheckViewModel extends GetxController {
       await FlutterSecureStorage().delete(key: 'device_token');
       await FlutterSecureStorage().delete(key: 'user_id');
       Get.offAllNamed(AppRoutes.login);
+      return _gotoMainHome!.value;
     }
+    return _gotoMainHome!.value;
   }
 
   Future<void> checkForUpdate() async {

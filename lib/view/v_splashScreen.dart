@@ -19,6 +19,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
   // Get.find로 컨트롤러 가져오기
   final AuthCheckViewModel controller = Get.find<AuthCheckViewModel>();
+  bool gotoMainHome = false;
 
   @override
   void initState() {
@@ -29,7 +30,8 @@ class _SplashScreenState extends State<SplashScreen> {
   // initState에서 초기화 작업 수행
   Future<void> _initialize() async {
     await controller.checkForUpdate();
-    await controller.userCheck();
+    gotoMainHome = await controller.userCheck();
+
   }
 
   @override
@@ -56,7 +58,7 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   void gotoMainHomeOrLogin(){
-    if(controller.gotoMainHome == true) {
+    if(gotoMainHome == true) {
       Get.offAllNamed(AppRoutes.mainHome);
     }else{
       Get.offAllNamed(AppRoutes.login);

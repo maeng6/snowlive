@@ -10,6 +10,7 @@ import 'package:com.snowlive/view/crew/v_crewMemberSettings.dart';
 import 'package:com.snowlive/view/crew/v_crewNotice.dart';
 import 'package:com.snowlive/view/crew/v_crewNoticeList.dart';
 import 'package:com.snowlive/view/crew/v_crewSetting.dart';
+import 'package:com.snowlive/view/crew/v_managerPermission.dart';
 import 'package:com.snowlive/view/crew/v_searchCrew.dart';
 import 'package:com.snowlive/view/crew/v_updateCrewImageAndColor.dart';
 import 'package:com.snowlive/view/fleamarket/v_fleaMarketCommentDetail.dart';
@@ -86,6 +87,8 @@ class AppRoutes {
   static const String crewNoticeCreate = '/crewNoticeCreate';
   static const String crewNoticeList = '/crewNoticeList';
   static const String crewMemberSettings = '/crewMemberSettings';
+  static const String managerPermission = '/managerPermission';
+
 
 
 
@@ -284,6 +287,10 @@ class AppRoutes {
     GetPage(
       name: crewMemberSettings,
       page: () => CrewMemberSettingsView(),
+    ),
+    GetPage(
+      name: managerPermission,
+      page: () => ManagerPermissionView(),
     ),
   ];
 }

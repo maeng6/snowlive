@@ -27,12 +27,11 @@ class CrewMainView extends StatelessWidget {
       extendBodyBehindAppBar: true,
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(58),
-        child: Obx(()=>Column(
+        child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             AppBar(
               actions: [
-                if(_crewMemberListViewModel.crewLeaderName == _userViewModel.user.display_name)
                 Padding(
                   padding: EdgeInsets.only(right: 5),
                   child: IconButton(
@@ -73,7 +72,7 @@ class CrewMainView extends StatelessWidget {
               elevation: 0.0,
             ),
           ],
-        ),)
+        ),
       ),
       body: SafeArea(
         child: Column(

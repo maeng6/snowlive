@@ -154,41 +154,6 @@ class LoginView extends StatelessWidget {
                             SizedBox(
                               width: 12,
                             ),
-                            Column(
-                              children: [
-                                if (_loginViewModel.signInMethod == 'facebook')
-                                  Padding(
-                                    padding: const EdgeInsets.only(bottom: 10),
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                        color: Color(0xFF111111).withOpacity(0.8),
-                                        borderRadius: BorderRadius.circular(4),
-                                      ),
-                                      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-                                      child: Text(
-                                        '마지막\n로그인',
-                                        style: SDSTextStyle.regular.copyWith(
-                                          color: Color(0xFFFFFFFF),
-                                          fontSize: 12,
-                                        ),
-                                        textAlign: TextAlign.center,
-                                      ),
-                                    ),
-                                  ),
-                                LoginButton(
-                                  buttonText: 'Facebook으로 로그인하기',
-                                  logoAddress: 'assets/imgs/logos/logos_facebook.png',
-                                  signInMethod: SignInMethod.facebook,
-                                  buttonColor: Color(0xff1877F2),
-                                  borderColor: Colors.transparent,
-                                  textColor: Colors.white,
-                                  loginViewModel: _loginViewModel,
-                                ),
-                              ],
-                            ),
-                            SizedBox(
-                              width: 12,
-                            ),
                             (Platform.isIOS)
                                 ? Column(
                               children: [

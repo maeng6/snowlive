@@ -60,7 +60,7 @@ class LoginViewModel extends GetxController {
     CustomFullScreenDialog.showDialog();
     GoogleSignInAccount? googleSignInAccount = await googleSignIn.signIn();
     if (googleSignInAccount == null) {
-
+      CustomFullScreenDialog.cancelDialog();
     } else {
       GoogleSignInAuthentication googleSignInAuthentication = await googleSignInAccount.authentication;
       OAuthCredential oAuthCredential = GoogleAuthProvider.credential(
@@ -108,7 +108,7 @@ class LoginViewModel extends GetxController {
     print('1');
     final LoginResult loginResult = await facebookAuth.login();
     if (loginResult == null) {
-
+      CustomFullScreenDialog.cancelDialog();
     } else {
       print('2');
       OAuthCredential facebookAuthCredential = FacebookAuthProvider.credential(loginResult.accessToken!.tokenString);
@@ -217,6 +217,7 @@ class LoginViewModel extends GetxController {
       final String? authorizationCode = appleCredential.authorizationCode;
 
       if (idToken == null || authorizationCode == null) {
+
         throw Exception('Apple sign-in failed: idToken or authorizationCode is null');
       }
 

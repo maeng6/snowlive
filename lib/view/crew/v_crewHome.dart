@@ -397,6 +397,74 @@ class CrewHomeView extends StatelessWidget {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
+                          //TODO: 슬로프별, 시간대별 버튼
+                          Container(
+                            decoration: BoxDecoration(
+                              color: const Color(0xFFD2DFF4),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 4),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Expanded(
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      _crewDetailViewModel.toggleGraph();
+                                    },
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        color: _crewDetailViewModel.isSlopeGraph.value
+                                            ? SDSColor.snowliveWhite
+                                            : Colors.transparent,
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                                      alignment: Alignment.center,
+                                      child: Text(
+                                        '슬로프별',
+                                        style: SDSTextStyle.regular.copyWith(
+                                          color: _crewDetailViewModel.isSlopeGraph.value
+                                              ? SDSColor.gray900
+                                              : SDSColor.gray600,
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(width: 10),
+                                Expanded(
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      _crewDetailViewModel.toggleGraph();
+                                    },
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        color: !_crewDetailViewModel.isSlopeGraph.value
+                                            ? SDSColor.snowliveWhite
+                                            : Colors.transparent,
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                                      alignment: Alignment.center,
+                                      child: Text(
+                                        '시간대별',
+                                        style: SDSTextStyle.regular.copyWith(
+                                          color: !_crewDetailViewModel.isSlopeGraph.value
+                                              ? SDSColor.gray900
+                                              : SDSColor.gray600,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 14,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
                           Text(
                             '총 라이딩 횟수',
                             style: SDSTextStyle.regular.copyWith(
@@ -598,74 +666,7 @@ class CrewHomeView extends StatelessWidget {
                         ],
                       ),
                       SizedBox(height: 20),
-                      //TODO: 슬로프별, 시간대별 버튼
-                      Container(
-                        decoration: BoxDecoration(
-                          color: const Color(0xFFD2DFF4),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 4),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Expanded(
-                              child: GestureDetector(
-                                onTap: () {
-                                  _crewDetailViewModel.toggleGraph();
-                                },
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    color: _crewDetailViewModel.isSlopeGraph.value
-                                        ? SDSColor.snowliveWhite
-                                        : Colors.transparent,
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                                  alignment: Alignment.center,
-                                  child: Text(
-                                    '슬로프별',
-                                    style: SDSTextStyle.regular.copyWith(
-                                      color: _crewDetailViewModel.isSlopeGraph.value
-                                          ? SDSColor.gray900
-                                          : SDSColor.gray600,
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                            SizedBox(width: 10),
-                            Expanded(
-                              child: GestureDetector(
-                                onTap: () {
-                                  _crewDetailViewModel.toggleGraph();
-                                },
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    color: !_crewDetailViewModel.isSlopeGraph.value
-                                        ? SDSColor.snowliveWhite
-                                        : Colors.transparent,
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                                  alignment: Alignment.center,
-                                  child: Text(
-                                    '시간대별',
-                                    style: SDSTextStyle.regular.copyWith(
-                                      color: !_crewDetailViewModel.isSlopeGraph.value
-                                          ? SDSColor.gray900
-                                          : SDSColor.gray600,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 14,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
+
                     ],
                   ),
                 ),
