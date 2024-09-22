@@ -40,8 +40,9 @@ class CrewHomeView extends StatelessWidget {
               SizedBox(height: 20,),
               if(_crewNoticeViewModel.noticeList.isNotEmpty)
                 GestureDetector(
-                  onTap: () {
+                  onTap: () async{
                     Get.toNamed(AppRoutes.crewNoticeList);
+                    await _crewNoticeViewModel.fetchCrewNotices();
                   },
                   child: Padding(
                     padding: const EdgeInsets.all(16),
@@ -465,6 +466,7 @@ class CrewHomeView extends StatelessWidget {
                               ],
                             ),
                           ),
+                          SizedBox(height: 15,),
                           Text(
                             '총 라이딩 횟수',
                             style: SDSTextStyle.regular.copyWith(

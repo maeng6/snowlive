@@ -166,12 +166,14 @@ class FriendListView extends StatelessWidget {
               children: [
                 GestureDetector(
                   onTap: () async{
-                    Get.toNamed(AppRoutes.friendDetail);
+                    CustomFullScreenDialog.showDialog();
                     await _friendDetailViewModel.fetchFriendDetailInfo(
                       userId: _userViewModel.user.user_id,
                       friendUserId: _userViewModel.user.user_id,
                       season: _friendDetailViewModel.seasonDate,
                     );
+                    CustomFullScreenDialog.cancelDialog();
+                    Get.toNamed(AppRoutes.friendDetail);
                   },
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -384,12 +386,14 @@ class FriendListView extends StatelessWidget {
                             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
                             child: GestureDetector(
                               onTap: () async {
-                                Get.toNamed(AppRoutes.friendDetail);
+                                CustomFullScreenDialog.showDialog();
                                 await _friendDetailViewModel.fetchFriendDetailInfo(
                                   userId: _userViewModel.user.user_id,
                                   friendUserId: friend.friendInfo.userId,
                                   season: _friendDetailViewModel.seasonDate,
                                 );
+                                CustomFullScreenDialog.cancelDialog();
+                                Get.toNamed(AppRoutes.friendDetail);
                               },
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,

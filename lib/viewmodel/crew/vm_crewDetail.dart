@@ -16,7 +16,9 @@ class CrewDetailViewModel extends GetxController {
   final FriendDetailViewModel _friendDetailViewModel = Get.find<FriendDetailViewModel>();
 
   TextEditingController textEditingController_description = TextEditingController();
+  TextEditingController textEditingController_notice = TextEditingController();
   final formKey_description = GlobalKey<FormState>();
+  final formKey_notice = GlobalKey<FormState>();
 
   // 탭 관리 리스트
   static const tabNameListConst = ['홈', '멤버', '갤러리'];

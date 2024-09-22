@@ -2,6 +2,7 @@ import 'package:com.snowlive/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/routes/routes.dart';
 import 'package:com.snowlive/viewmodel/friend/vm_friendDetail.dart';
 import 'package:com.snowlive/viewmodel/vm_user.dart';
+import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewApply.dart';
@@ -79,12 +80,14 @@ class CrewApplicationCrewView extends StatelessWidget {
                               if (userInfo['profileImageUrlUser']!.isNotEmpty)
                                 GestureDetector(
                                   onTap: () async{
-                                    Get.toNamed(AppRoutes.friendDetail);
+                                    CustomFullScreenDialog.showDialog();
                                     await _friendDetailViewModel.fetchFriendDetailInfo(
                                       userId: _userViewModel.user.user_id,
                                       friendUserId: user.applicantUserId!,
                                       season: _friendDetailViewModel.seasonDate,
                                     );
+                                    CustomFullScreenDialog.cancelDialog();
+                                    Get.toNamed(AppRoutes.friendDetail);
                                   },
                                   child: Container(
                                     decoration: const BoxDecoration(
@@ -113,12 +116,14 @@ class CrewApplicationCrewView extends StatelessWidget {
                               else
                                 GestureDetector(
                                   onTap: () async{
-                                    Get.toNamed(AppRoutes.friendDetail);
+                                    CustomFullScreenDialog.showDialog();
                                     await _friendDetailViewModel.fetchFriendDetailInfo(
                                       userId: _userViewModel.user.user_id,
                                       friendUserId: user.applicantUserId!,
                                       season: _friendDetailViewModel.seasonDate,
                                     );
+                                    CustomFullScreenDialog.cancelDialog();
+                                    Get.toNamed(AppRoutes.friendDetail);
                                   },
                                   child: ExtendedImage.asset(
                                     'assets/imgs/profile/img_profile_default_.png',

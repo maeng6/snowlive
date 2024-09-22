@@ -114,7 +114,7 @@ class FriendDetailUpdateViewModel extends GetxController {
     }
   }
 
-  void toggleCheckDisplayname(bool active) {
+  void toggleActiveCheckDisplaynameButton(bool active) {
     _activeCheckDisplaynameButton.value = active;
   }
 

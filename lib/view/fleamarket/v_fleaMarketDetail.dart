@@ -13,6 +13,7 @@ import 'package:com.snowlive/viewmodel/vm_user.dart';
 import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
@@ -116,12 +117,20 @@ class _FleaMarketDetailViewState extends State<FleaMarketDetailView> {
                     padding: EdgeInsets.only(right: 20),
                     child: GestureDetector(
                     onTap: () async{
+                      HapticFeedback.lightImpact();
+                      CustomFullScreenDialog.showDialog();
                       await _fleamarketDetailViewModel.addFavoriteFleamarket(
                           fleamarketID: _fleamarketDetailViewModel.fleamarketDetail.fleaId,
                           body: {
                             "user_id": _userViewModel.user.user_id
                           }
                       );
+                      CustomFullScreenDialog.cancelDialog();
+                      await _fleamarketListViewModel.fetchFleamarketData_total(userId: _userViewModel.user.user_id);
+                      await _fleamarketListViewModel.fetchFleamarketData_ski(userId: _userViewModel.user.user_id, categoryMain:'스키');
+                      await _fleamarketListViewModel.fetchFleamarketData_board(userId: _userViewModel.user.user_id, categoryMain:'스노보드');
+                      await _fleamarketListViewModel.fetchFleamarketData_my(userId: _userViewModel.user.user_id, myflea: true);
+                      await _fleamarketListViewModel.fetchFleamarketData_favorite(userId: _userViewModel.user.user_id, favorite_list: true);
                     },
                     child:Image.asset(
                       'assets/imgs/icons/icon_flea_appbar_scrap.png',
@@ -140,12 +149,20 @@ class _FleaMarketDetailViewState extends State<FleaMarketDetailView> {
                    padding: EdgeInsets.only(right: 20),
                    child: GestureDetector(
                     onTap: () async{
+                      HapticFeedback.lightImpact();
+                      CustomFullScreenDialog.showDialog();
                       await _fleamarketDetailViewModel.deleteFavoriteFleamarket(
                           fleamarketID: _fleamarketDetailViewModel.fleamarketDetail.fleaId,
                           body: {
                             "user_id": _userViewModel.user.user_id
                           }
                       );
+                      CustomFullScreenDialog.cancelDialog();
+                      await _fleamarketListViewModel.fetchFleamarketData_total(userId: _userViewModel.user.user_id);
+                      await _fleamarketListViewModel.fetchFleamarketData_ski(userId: _userViewModel.user.user_id, categoryMain:'스키');
+                      await _fleamarketListViewModel.fetchFleamarketData_board(userId: _userViewModel.user.user_id, categoryMain:'스노보드');
+                      await _fleamarketListViewModel.fetchFleamarketData_my(userId: _userViewModel.user.user_id, myflea: true);
+                      await _fleamarketListViewModel.fetchFleamarketData_favorite(userId: _userViewModel.user.user_id, favorite_list: true);
                     },
                     child: Image.asset(
                       'assets/imgs/icons/icon_flea_appbar_scrap_on.png',
@@ -758,10 +775,12 @@ class _FleaMarketDetailViewState extends State<FleaMarketDetailView> {
                                                 if (_fleamarketDetailViewModel.fleamarketDetail.userInfo!.profileImageUrlUser!.isEmpty)
                                                   GestureDetector(
                                                     onTap: () async{
+                                                      CustomFullScreenDialog.showDialog();
                                                       await _friendDetailViewModel.fetchFriendDetailInfo(
                                                           userId: _userViewModel.user.user_id,
                                                           friendUserId:_fleamarketDetailViewModel.fleamarketDetail.userInfo!.userId!,
                                                           season: _friendDetailViewModel.seasonDate);
+                                                      CustomFullScreenDialog.cancelDialog();
                                                       Get.toNamed(AppRoutes.friendDetail);
                                                     },
                                                     child: ExtendedImage.asset(
@@ -776,10 +795,12 @@ class _FleaMarketDetailViewState extends State<FleaMarketDetailView> {
                                                 if (_fleamarketDetailViewModel.fleamarketDetail.userInfo!.profileImageUrlUser!.isNotEmpty)
                                                   GestureDetector(
                                                     onTap: () async{
+                                                      CustomFullScreenDialog.showDialog();
                                                       await _friendDetailViewModel.fetchFriendDetailInfo(
                                                           userId: _userViewModel.user.user_id,
                                                           friendUserId:_fleamarketDetailViewModel.fleamarketDetail.userInfo!.userId!,
                                                           season: _friendDetailViewModel.seasonDate);
+                                                      CustomFullScreenDialog.cancelDialog();
                                                       Get.toNamed(AppRoutes.friendDetail);
                                                     },
                                                     child: Container(
@@ -1308,10 +1329,12 @@ class _FleaMarketDetailViewState extends State<FleaMarketDetailView> {
                                                           if (document_comment.userInfo!.profileImageUrlUser != "")
                                                             GestureDetector(
                                                               onTap: () async {
+                                                                CustomFullScreenDialog.showDialog();
                                                                 await _friendDetailViewModel.fetchFriendDetailInfo(
                                                                     userId: _userViewModel.user.user_id,
                                                                     friendUserId: document_comment.userInfo!.userId!,
                                                                     season: _friendDetailViewModel.seasonDate);
+                                                                CustomFullScreenDialog.cancelDialog();
                                                                 Get.toNamed(AppRoutes.friendDetail);
                                                               },
                                                               child: Container(
@@ -1335,10 +1358,12 @@ class _FleaMarketDetailViewState extends State<FleaMarketDetailView> {
                                                           if (document_comment.userInfo!.profileImageUrlUser == "")
                                                             GestureDetector(
                                                               onTap: () async {
+                                                                CustomFullScreenDialog.showDialog();
                                                                 await _friendDetailViewModel.fetchFriendDetailInfo(
                                                                     userId: _userViewModel.user.user_id,
                                                                     friendUserId: document_comment.userInfo!.userId!,
                                                                     season: _friendDetailViewModel.seasonDate);
+                                                                CustomFullScreenDialog.cancelDialog();
                                                                 Get.toNamed(AppRoutes.friendDetail);
                                                               },
                                                               child: ExtendedImage.network(

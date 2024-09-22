@@ -80,12 +80,18 @@ class FleaMarketListView_search extends StatelessWidget {
                                 ),
                                 child: TextFormField(
                                   onFieldSubmitted: (val) async {
-                                    _fleamarketSearchViewModel.changeShowRecentSearch();
-                                    await _fleamarketSearchViewModel.fetchFleamarketData_total(
-                                        userId: _userViewModel.user.user_id,
-                                        search_query: _fleamarketSearchViewModel.textEditingController.text
-                                    );
-                                    await _fleamarketSearchViewModel.saveRecentSearch(_fleamarketSearchViewModel.textEditingController.text);
+
+                                    if(val.isEmpty){
+                                      _fleamarketSearchViewModel.showRecentSearch.value = true;
+                                    }else{
+                                      _fleamarketSearchViewModel.showRecentSearch.value = false;
+                                      await _fleamarketSearchViewModel.fetchFleamarketData_total(
+                                          userId: _userViewModel.user.user_id,
+                                          search_query: _fleamarketSearchViewModel.textEditingController.text
+                                      );
+                                      await _fleamarketSearchViewModel.saveRecentSearch(_fleamarketSearchViewModel.textEditingController.text);
+                                    }
+
                                   },
                                   autofocus: true,
                                   textAlignVertical: TextAlignVertical.center,
@@ -147,7 +153,7 @@ class FleaMarketListView_search extends StatelessWidget {
                         ),
                       ),
                       SizedBox(height: 20),
-                      if(_fleamarketSearchViewModel.showRecentSearch)
+                      if(_fleamarketSearchViewModel.showRecentSearch.value == true)
                         Row(
                           children: [
                             Text('최근 검색어',
@@ -169,7 +175,7 @@ class FleaMarketListView_search extends StatelessWidget {
                                 )),
                           ],
                         ),
-                      if(!_fleamarketSearchViewModel.showRecentSearch)
+                      if(_fleamarketSearchViewModel.showRecentSearch.value == false)
                         Text('검색 결과',
                           style: SDSTextStyle.bold.copyWith(
                               fontSize: 14,
@@ -181,43 +187,54 @@ class FleaMarketListView_search extends StatelessWidget {
                 ),),
                 SizedBox(height: 20),
                 Obx(() => !_fleamarketSearchViewModel.isSearching && _fleamarketSearchViewModel.recentSearches.isNotEmpty
-                    && _fleamarketSearchViewModel.showRecentSearch
+                    && _fleamarketSearchViewModel.showRecentSearch.value == true
                     ? ListView.builder(
                   shrinkWrap: true,
                   physics: NeverScrollableScrollPhysics(),
                   itemCount: _fleamarketSearchViewModel.recentSearches.length,
                   itemBuilder: (context, index) {
                     String recentSearch = _fleamarketSearchViewModel.recentSearches[index];
-                    return Row(
-                      children: [
-                        Padding(
-                          padding: EdgeInsets.only(left: 16, right: 8), // 좌우 padding 조절
-                          child: Image.asset(
-                            'assets/imgs/icons/icon_search.png',
-                            color: SDSColor.gray400,
-                            width: 16,
-                          ),
-                        ),
-                        Expanded(
-                          child: Text(
-                            recentSearch,
-                            style: SDSTextStyle.regular.copyWith(
-                              fontSize: 16,
-                              color: SDSColor.gray900,
+                    return GestureDetector(
+                      onTap: () async{
+                        _fleamarketSearchViewModel.textEditingController.text = recentSearch;
+                        _fleamarketSearchViewModel.showRecentSearch.value = false;
+                        await _fleamarketSearchViewModel.fetchFleamarketData_total(
+                            userId: _userViewModel.user.user_id,
+                            search_query: recentSearch
+                        );
+                        await _fleamarketSearchViewModel.saveRecentSearch(recentSearch);
+                      },
+                      child: Row(
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.only(left: 16, right: 8), // 좌우 padding 조절
+                            child: Image.asset(
+                              'assets/imgs/icons/icon_search.png',
+                              color: SDSColor.gray400,
+                              width: 16,
                             ),
                           ),
-                        ),
-                        IconButton(
-                          icon: Icon(
-                            Icons.clear,
-                            color: SDSColor.gray500,
-                            size: 20,
+                          Expanded(
+                            child: Text(
+                              recentSearch,
+                              style: SDSTextStyle.regular.copyWith(
+                                fontSize: 16,
+                                color: SDSColor.gray900,
+                              ),
+                            ),
                           ),
-                          onPressed: () {
-                            _fleamarketSearchViewModel.deleteRecentSearch(recentSearch);
-                          },
-                        ),
-                      ],
+                          IconButton(
+                            icon: Icon(
+                              Icons.clear,
+                              color: SDSColor.gray500,
+                              size: 20,
+                            ),
+                            onPressed: () {
+                              _fleamarketSearchViewModel.deleteRecentSearch(recentSearch);
+                            },
+                          ),
+                        ],
+                      ),
                     );
                   },
                 )

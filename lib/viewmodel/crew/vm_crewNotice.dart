@@ -13,12 +13,6 @@ class CrewNoticeViewModel extends GetxController {
   final UserViewModel _userViewModel = Get.find<UserViewModel>();
   final CrewMemberListViewModel _crewMemberListViewModel = Get.find<CrewMemberListViewModel>();
 
-  // 초기화 메소드
-  @override
-  void onClose() {
-    noticeController.dispose();
-    super.onClose();
-  }
 
   // 공지사항 입력 필드 관리
   TextEditingController noticeController = TextEditingController();
@@ -60,14 +54,14 @@ class CrewNoticeViewModel extends GetxController {
   }
 
   // 공지사항을 업데이트하는 메소드
-  Future<void> updateCrewNotice(int userId, int noticeId) async {
+  Future<void> updateCrewNotice(int noticeId, String noticeText) async {
     if (formKeyNotice.currentState!.validate()) {
       isLoading.value = true;
       try {
         final noticeData = {
-          "user_id": userId,
+          "user_id": _userViewModel.user.user_id,
           "notice_id": noticeId,
-          "notice": noticeController.text,
+          "notice": noticeText,
         };
 
         final response = await CrewAPI().updateCrewNotice(noticeData);
@@ -111,24 +105,33 @@ class CrewNoticeViewModel extends GetxController {
     }
   }
 
-//   // 공지사항 삭제
-//   Future<void> deleteCrewNotice(int noticeId) async {
-//     isLoading.value = true;
-//     try {
-//       final response = await CrewAPI().deleteCrewNotice(noticeId);
-//       if (response.success) {
-//         // 공지사항 삭제 후 리스트 업데이트
-//         noticeList.removeWhere((notice) => notice.noticeCrewId == noticeId);
-//       } else {
-//         print('공지사항 삭제 중 오류: ${response.error}');
-//       }
-//     } catch (e) {
-//       print('공지사항 삭제 중 예외 발생: $e');
-//     } finally {
-//       isLoading.value = false;
-//     }
-//   }
-// }
+  // 공지사항 삭제
+  Future<void> deleteCrewNotice(int userId, int noticeId) async {
+    isLoading.value = true; // 로딩 상태 활성화
+    try {
+      // API 호출 (userId와 noticeId를 JSON body로 보냄)
+      final response = await CrewAPI().deleteCrewNotice(userId, noticeId);
+
+      if (response.success) {
+        // 성공적으로 삭제된 경우 noticeList에서 해당 공지 삭제
+        noticeList.removeWhere((notice) => notice.noticeCrewId == noticeId);
+
+        // 삭제 성공 메시지 출력 (선택 사항)
+        Get.snackbar('삭제 완료', '공지사항이 성공적으로 삭제되었습니다.');
+      } else {
+        // 오류 발생 시 처리
+        Get.snackbar('삭제 실패', '공지사항 삭제 중 오류 발생');
+        print('공지사항 삭제 중 오류');
+      }
+    } catch (e) {
+      // 예외 처리
+      Get.snackbar('예외 발생', '공지사항 삭제 중 예외 발생: $e');
+      print('공지사항 삭제 중 예외 발생: $e');
+    } finally {
+      isLoading.value = false; // 로딩 상태 해제
+    }
+  }
+
 
   // 작성자의 이름을 찾아주는 메서드
   String getAuthorInfo(int authorUserId) {

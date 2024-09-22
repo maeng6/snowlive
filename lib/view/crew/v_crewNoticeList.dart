@@ -1,11 +1,17 @@
 import 'package:com.snowlive/data/snowliveDesignStyle.dart';
+import 'package:com.snowlive/routes/routes.dart';
+import 'package:com.snowlive/viewmodel/crew/vm_crewMemberList.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewNotice.dart';
+import 'package:com.snowlive/viewmodel/vm_user.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class CrewNoticeListView extends StatelessWidget {
-
   final CrewNoticeViewModel _crewNoticeViewModel = Get.find<CrewNoticeViewModel>();
+  final CrewMemberListViewModel _crewMemberListViewModel = Get.find<CrewMemberListViewModel>();
+  final UserViewModel _userViewModel = Get.find<UserViewModel>();
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -54,18 +60,117 @@ class CrewNoticeListView extends StatelessWidget {
             itemBuilder: (context, index) {
               final notice = _crewNoticeViewModel.noticeList[index];
               bool isLatest = index == 0; // 첫 번째 항목이 최신 공지
+              final isCrewLeader = _crewMemberListViewModel.getMemberRole(_userViewModel.user.user_id) == '크루장';
+              final isAuthor = notice.authorUserId == _userViewModel.user.user_id;
 
               return Padding(
                 padding: const EdgeInsets.only(bottom: 16),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      notice.notice ?? '공지 없음',
-                      style: TextStyle(
-                        fontSize: 15,
-                        color: SDSColor.snowliveBlack,
-                      ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Expanded(
+                          child: Text(
+                            notice.notice ?? '공지 없음',
+                            style: TextStyle(
+                              fontSize: 15,
+                              color: SDSColor.snowliveBlack,
+                            ),
+                          ),
+                        ),
+                        if(isCrewLeader || isAuthor)
+                          GestureDetector(
+                            onTap: () {
+                              // 더보기 아이콘 클릭 시 수행할 작업
+                              showModalBottomSheet(
+                                context: context,
+                                isScrollControlled: true, // 전체 화면 제어 가능
+                                backgroundColor: Colors.transparent,
+                                builder: (context) {
+                                  double modalHeight;
+
+                                  if (isAuthor) {
+                                    modalHeight = 150; // 수정 및 삭제 모두 가능할 때
+                                  } else if (isCrewLeader) {
+                                    modalHeight = 100; // 크루장일 때, 삭제만 가능할 때
+                                  } else {
+                                    modalHeight = 0; // 해당하지 않으면 모달을 띄우지 않음 (이 조건은 필요에 따라 설정)
+                                  }
+
+                                  return Padding(
+                                    padding: EdgeInsets.only(left: 16, right: 16, bottom: 48), // 양옆과 아래를 띄움
+                                    child: Container(
+                                      height: modalHeight, // 조건에 따른 모달 높이 설정
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.circular(16), // 모서리 둥글게 설정
+                                      ),
+                                      child: Column(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                        children: [
+                                          if (isCrewLeader && !isAuthor) ...[
+                                            ListTile(
+                                              title: Center(child: Text('삭제',
+                                                  style: TextStyle(
+                                                      color: SDSColor.snowliveBlack,
+                                                      fontWeight: FontWeight.bold
+                                                  ))),
+                                              onTap: () {
+                                                // 삭제 기능 호출
+                                                Navigator.pop(context); // 모달 닫기
+                                                _crewNoticeViewModel.deleteCrewNotice(notice.authorUserId!, notice.noticeCrewId!); // 삭제 로직 실행
+                                              },
+                                            ),
+                                          ],
+                                          if (isAuthor)
+                                            Column(
+                                              children: [
+                                                ListTile(
+                                                  title: Center(
+                                                    child: Text('수정',
+                                                        style: TextStyle(
+                                                            color: SDSColor.snowliveBlack,
+                                                            fontWeight: FontWeight.bold
+                                                        )),
+                                                  ),
+                                                  onTap: () {
+                                                    Navigator.pop(context);
+                                                    Get.toNamed(
+                                                        AppRoutes.crewNoticeModify,
+                                                        arguments: {
+                                                          'noticeId': notice.noticeCrewId,
+                                                          'noticeText': notice.notice,
+                                                        });
+
+                                                  },
+                                                ),
+                                                ListTile(
+                                                  title: Center(child: Text('삭제',
+                                                      style: TextStyle(
+                                                          color: SDSColor.red,
+                                                          fontWeight: FontWeight.bold
+                                                      ))),
+                                                  onTap: () {
+                                                    // 삭제 기능 호출
+                                                    Navigator.pop(context); // 모달 닫기
+                                                    _crewNoticeViewModel.deleteCrewNotice(notice.authorUserId!, notice.noticeCrewId!); // 삭제 로직 실행
+                                                  },
+                                                ),
+                                              ],
+                                            ),
+                                        ],
+                                      ),
+                                    ),
+                                  );
+                                },
+                              );
+                            },
+                            child: Icon(Icons.more_vert, color: SDSColor.gray700),
+                          ),
+                      ],
                     ),
                     SizedBox(height: 8),
                     Row(
@@ -104,9 +209,9 @@ class CrewNoticeListView extends StatelessWidget {
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 4),
                           child: Text('·',
-                          style: TextStyle(
-                            color: SDSColor.gray700
-                          ),
+                            style: TextStyle(
+                                color: SDSColor.gray700
+                            ),
                           ),
                         ),
                         Text(

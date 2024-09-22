@@ -51,7 +51,7 @@ class FriendDetailAPI {
       body: jsonEncode(body),
     );
 
-    if (response.statusCode == 201) {
+    if (response.statusCode == 201 || response.statusCode == 400) {
       final data = json.decode(utf8.decode(response.bodyBytes));
       return ApiResponse.success(data);
     } else {
