@@ -223,16 +223,15 @@ class BulletinQuillToolbar extends StatelessWidget {
           showDividers: false,
           showIndent: false,
           multiRowsDisplay: false,
-          toolbarSize: 40,
+          toolbarSize: 36,
           toolbarSectionSpacing: 2,
           decoration: BoxDecoration(
             color: SDSColor.blue50, // 툴바의 배경색을 설정합니다.
             borderRadius: BorderRadius.circular(12), // 필요에 따라 모서리를 둥글게 설정할 수 있습니다.
           ),
-
           buttonOptions: QuillSimpleToolbarButtonOptions(
             base: QuillToolbarBaseButtonOptions(
-              iconSize: 15,
+              iconSize: 14,
               iconTheme: QuillIconTheme(
                 iconButtonSelectedData: IconButtonData(
                   padding: EdgeInsets.zero,
@@ -275,6 +274,26 @@ class BulletinQuillToolbar extends StatelessWidget {
           searchButtonType: SearchButtonType.modern,
           embedButtons: FlutterQuillEmbeds.toolbarButtons(
             imageButtonOptions: QuillToolbarImageButtonOptions(
+              dialogTheme: QuillDialogTheme(
+                dialogBackgroundColor: Colors.white, // 다이얼로그 배경색
+                buttonTextStyle: TextStyle(
+                  color: Colors.red, // 버튼 텍스트 색상
+                  fontSize: 16,
+                ),
+                inputTextStyle: TextStyle(
+                  color: Colors.black, // 제목 텍스트 색상
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20,
+                ),
+                labelTextStyle: TextStyle(
+                  color: Colors.grey[800], // 내용 텍스트 색상
+                  fontSize: 18,
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8), // 모서리를 둥글게 처리
+                ),
+
+              ),
               imageButtonConfigurations: QuillToolbarImageConfigurations(
                 onImageInsertCallback: isAndroid(supportWeb: false) ||
                     isIOS(supportWeb: false) ||

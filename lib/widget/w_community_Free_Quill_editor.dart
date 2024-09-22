@@ -1,4 +1,5 @@
 import 'dart:io' as io show Directory, File;
+import 'package:com.snowlive/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/viewmodel/util/vm_imageController.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -45,22 +46,90 @@ class MyQuillEditor extends StatelessWidget {
           ),
         ),
         customStyles: DefaultStyles(
-          h1: DefaultTextBlockStyle(
+          color: SDSColor.gray900,
+          placeHolder: DefaultTextBlockStyle(
             defaultTextStyle.style.copyWith(
-              fontSize: 32,
-              height: 1.15,
-              fontWeight: FontWeight.w300,
+              fontSize: 16,
+              height: 1.4,
+              color: SDSColor.gray300
             ),
             const HorizontalSpacing(0, 0),
             const VerticalSpacing(16, 0),
             const VerticalSpacing(0, 0),
             null,
           ),
-          sizeSmall: defaultTextStyle.style.copyWith(fontSize: 9),
+          h1: DefaultTextBlockStyle(
+            defaultTextStyle.style.copyWith(
+              fontSize: 16,
+              height: 1.4,
+              fontWeight: FontWeight.normal,
+            ),
+            const HorizontalSpacing(0, 0),
+            const VerticalSpacing(16, 0),
+            const VerticalSpacing(0, 0),
+            null,
+          ),
+          h2: DefaultTextBlockStyle(
+            defaultTextStyle.style.copyWith(
+              fontSize: 16,
+              height: 1.4,
+              fontWeight: FontWeight.normal,
+            ),
+            const HorizontalSpacing(0, 0),
+            const VerticalSpacing(16, 0),
+            const VerticalSpacing(0, 0),
+            null,
+          ),
+          h3: DefaultTextBlockStyle(
+            defaultTextStyle.style.copyWith(
+              fontSize: 16,
+              height: 1.4,
+              fontWeight: FontWeight.normal,
+            ),
+            const HorizontalSpacing(0, 0),
+            const VerticalSpacing(16, 0),
+            const VerticalSpacing(0, 0),
+            null,
+          ),
+          h4: DefaultTextBlockStyle(
+            defaultTextStyle.style.copyWith(
+              fontSize: 16,
+              height: 1.4,
+              fontWeight: FontWeight.normal,
+            ),
+            const HorizontalSpacing(0, 0),
+            const VerticalSpacing(16, 0),
+            const VerticalSpacing(0, 0),
+            null,
+          ),
+          h5: DefaultTextBlockStyle(
+            defaultTextStyle.style.copyWith(
+              fontSize: 16,
+              height: 1.4,
+              fontWeight: FontWeight.normal,
+            ),
+            const HorizontalSpacing(0, 0),
+            const VerticalSpacing(16, 0),
+            const VerticalSpacing(0, 0),
+            null,
+          ),
+          h6: DefaultTextBlockStyle(
+            defaultTextStyle.style.copyWith(
+              fontSize: 16,
+              height: 1.4,
+              fontWeight: FontWeight.normal,
+            ),
+            const HorizontalSpacing(0, 0),
+            const VerticalSpacing(16, 0),
+            const VerticalSpacing(0, 0),
+            null,
+          ),
+          sizeSmall: defaultTextStyle.style.copyWith(fontSize: 16),
         ),
         scrollable: true,
-        placeholder: 'Start writing your notes...',
-        padding: const EdgeInsets.all(16),
+        placeholder: '게시글 상세 내용을 적어주세요.',
+
+        padding: const EdgeInsets.only(top: 20, bottom: 40, left: 10, right: 10),
         onImagePaste: (imageBytes) async {
           if (isWeb()) {
             return null;
