@@ -57,7 +57,6 @@ class MyCrewRankingInfo {
     }else{
       crewLogoUrl = json['crew_logo_url']??null;
     }
-    print(crewLogoUrl);
     description = json['description'];
     color = json['color'];
     baseResortNickname = json['base_resort_nickname'];

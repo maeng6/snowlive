@@ -5,6 +5,7 @@ import 'package:com.snowlive/util/util_1.dart';
 import 'package:com.snowlive/viewmodel/fleamarket/vm_fleamarketDetail.dart';
 import 'package:com.snowlive/viewmodel/fleamarket/vm_fleamarketList.dart';
 import 'package:com.snowlive/viewmodel/vm_user.dart';
+import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -193,6 +194,7 @@ class FleaMarketListView_board extends StatelessWidget {
                                                         //selected: _isSelected[index]!,
                                                         onTap: () async {
                                                           Navigator.pop(context);
+                                                          CustomFullScreenDialog.showDialog();
                                                           _fleamarketListViewModel.changeCategory_sub_board('${FleamarketCategory_sub.total.korean}');
                                                           await _fleamarketListViewModel.fetchFleamarketData_board(
                                                             userId: _userViewModel.user.user_id,
@@ -202,7 +204,7 @@ class FleaMarketListView_board extends StatelessWidget {
                                                                 ? null
                                                                 :_fleamarketListViewModel.selectedCategory_spot_board,
                                                           );
-
+                                                          CustomFullScreenDialog.cancelDialog();
                                                         },
                                                         shape: RoundedRectangleBorder(
                                                             borderRadius:
@@ -222,6 +224,7 @@ class FleaMarketListView_board extends StatelessWidget {
                                                         //selected: _isSelected[index]!,
                                                         onTap: () async {
                                                           Navigator.pop(context);
+                                                          CustomFullScreenDialog.showDialog();
                                                           _fleamarketListViewModel.changeCategory_sub_board('${FleamarketCategory_sub.deck.korean}');
                                                           await _fleamarketListViewModel.fetchFleamarketData_board(
                                                             userId: _userViewModel.user.user_id,
@@ -232,6 +235,7 @@ class FleaMarketListView_board extends StatelessWidget {
                                                                 ? null
                                                                 :_fleamarketListViewModel.selectedCategory_spot_board,
                                                           );
+                                                          CustomFullScreenDialog.cancelDialog();
                                                         },
                                                         shape: RoundedRectangleBorder(
                                                             borderRadius:
@@ -251,6 +255,7 @@ class FleaMarketListView_board extends StatelessWidget {
                                                         //selected: _isSelected[index]!,
                                                         onTap: () async {
                                                           Navigator.pop(context);
+                                                          CustomFullScreenDialog.showDialog();
                                                           _fleamarketListViewModel.changeCategory_sub_board('${FleamarketCategory_sub.binding.korean}');
                                                           await _fleamarketListViewModel.fetchFleamarketData_board(
                                                             userId: _userViewModel.user.user_id,
@@ -261,6 +266,7 @@ class FleaMarketListView_board extends StatelessWidget {
                                                                 ? null
                                                                 :_fleamarketListViewModel.selectedCategory_spot_board,
                                                           );
+                                                          CustomFullScreenDialog.cancelDialog();
                                                         },
                                                         shape: RoundedRectangleBorder(
                                                             borderRadius:
@@ -280,6 +286,7 @@ class FleaMarketListView_board extends StatelessWidget {
                                                         //selected: _isSelected[index]!,
                                                         onTap: () async {
                                                           Navigator.pop(context);
+                                                          CustomFullScreenDialog.showDialog();
                                                           _fleamarketListViewModel.changeCategory_sub_board('${FleamarketCategory_sub.boots.korean}');
                                                           await _fleamarketListViewModel.fetchFleamarketData_board(
                                                             userId: _userViewModel.user.user_id,
@@ -290,6 +297,7 @@ class FleaMarketListView_board extends StatelessWidget {
                                                                 ? null
                                                                 :_fleamarketListViewModel.selectedCategory_spot_board,
                                                           );
+                                                          CustomFullScreenDialog.cancelDialog();
                                                         },
                                                         shape: RoundedRectangleBorder(
                                                             borderRadius:
@@ -309,6 +317,7 @@ class FleaMarketListView_board extends StatelessWidget {
                                                         //selected: _isSelected[index]!,
                                                         onTap: () async {
                                                           Navigator.pop(context);
+                                                          CustomFullScreenDialog.showDialog();
                                                           _fleamarketListViewModel.changeCategory_sub_board('${FleamarketCategory_sub.cloth.korean}');
                                                           await _fleamarketListViewModel.fetchFleamarketData_board(
                                                             userId: _userViewModel.user.user_id,
@@ -319,6 +328,7 @@ class FleaMarketListView_board extends StatelessWidget {
                                                                 ? null
                                                                 :_fleamarketListViewModel.selectedCategory_spot_board,
                                                           );
+                                                          CustomFullScreenDialog.cancelDialog();
                                                         },
                                                         shape: RoundedRectangleBorder(
                                                             borderRadius:
@@ -338,6 +348,7 @@ class FleaMarketListView_board extends StatelessWidget {
                                                         //selected: _isSelected[index]!,
                                                         onTap: () async {
                                                           Navigator.pop(context);
+                                                          CustomFullScreenDialog.showDialog();
                                                           _fleamarketListViewModel.changeCategory_sub_board('${FleamarketCategory_sub.etc.korean}');
                                                           await _fleamarketListViewModel.fetchFleamarketData_board(
                                                             userId: _userViewModel.user.user_id,
@@ -348,6 +359,7 @@ class FleaMarketListView_board extends StatelessWidget {
                                                                 ? null
                                                                 :_fleamarketListViewModel.selectedCategory_spot_board,
                                                           );
+                                                          CustomFullScreenDialog.cancelDialog();
                                                         },
                                                         shape: RoundedRectangleBorder(
                                                             borderRadius:
@@ -420,6 +432,7 @@ class FleaMarketListView_board extends StatelessWidget {
                                                         //selected: _isSelected[index]!,
                                                         onTap: () async {
                                                           Navigator.pop(context);
+                                                          CustomFullScreenDialog.showDialog();
                                                           _fleamarketListViewModel.changeCategory_sub_board('${FleamarketCategory_sub.total.korean}');
                                                           await _fleamarketListViewModel.fetchFleamarketData_board(
                                                             userId: _userViewModel.user.user_id,
@@ -429,6 +442,7 @@ class FleaMarketListView_board extends StatelessWidget {
                                                                 ? null
                                                                 :_fleamarketListViewModel.selectedCategory_spot_board,
                                                           );
+                                                          CustomFullScreenDialog.cancelDialog();
                                                         },
                                                         shape: RoundedRectangleBorder(
                                                             borderRadius:
@@ -449,6 +463,7 @@ class FleaMarketListView_board extends StatelessWidget {
                                                         onTap: () async {
                                                           print('${_fleamarketListViewModel.selectedCategory_spot_board }');
                                                           Navigator.pop(context);
+                                                          CustomFullScreenDialog.showDialog();
                                                           _fleamarketListViewModel.changeCategory_sub_board('${FleamarketCategory_sub.deck.korean}');
                                                           await _fleamarketListViewModel.fetchFleamarketData_board(
                                                             userId: _userViewModel.user.user_id,
@@ -458,6 +473,7 @@ class FleaMarketListView_board extends StatelessWidget {
                                                                 ? null
                                                                 :_fleamarketListViewModel.selectedCategory_spot_board,
                                                           );
+                                                          CustomFullScreenDialog.cancelDialog();
                                                         },
                                                         shape: RoundedRectangleBorder(
                                                             borderRadius:
@@ -478,6 +494,7 @@ class FleaMarketListView_board extends StatelessWidget {
                                                         onTap: () async {
                                                           print('${_fleamarketListViewModel.selectedCategory_spot_board }');
                                                           Navigator.pop(context);
+                                                          CustomFullScreenDialog.showDialog();
                                                           _fleamarketListViewModel.changeCategory_sub_board('${FleamarketCategory_sub.binding.korean}');
                                                           await _fleamarketListViewModel.fetchFleamarketData_board(
                                                             userId: _userViewModel.user.user_id,
@@ -487,6 +504,7 @@ class FleaMarketListView_board extends StatelessWidget {
                                                                 ? null
                                                                 :_fleamarketListViewModel.selectedCategory_spot_board,
                                                           );
+                                                          CustomFullScreenDialog.cancelDialog();
                                                         },
                                                         shape: RoundedRectangleBorder(
                                                             borderRadius:
@@ -507,6 +525,7 @@ class FleaMarketListView_board extends StatelessWidget {
                                                         onTap: () async {
                                                           print('${_fleamarketListViewModel.selectedCategory_spot_board }');
                                                           Navigator.pop(context);
+                                                          CustomFullScreenDialog.showDialog();
                                                           _fleamarketListViewModel.changeCategory_sub_board('${FleamarketCategory_sub.boots.korean}');
                                                           await _fleamarketListViewModel.fetchFleamarketData_board(
                                                             userId: _userViewModel.user.user_id,
@@ -517,6 +536,7 @@ class FleaMarketListView_board extends StatelessWidget {
                                                                 ? null
                                                                 :_fleamarketListViewModel.selectedCategory_spot_board,
                                                           );
+                                                          CustomFullScreenDialog.cancelDialog();
                                                         },
                                                         shape: RoundedRectangleBorder(
                                                             borderRadius:
@@ -537,6 +557,7 @@ class FleaMarketListView_board extends StatelessWidget {
                                                         onTap: () async {
                                                           print('${_fleamarketListViewModel.selectedCategory_spot_board }');
                                                           Navigator.pop(context);
+                                                          CustomFullScreenDialog.showDialog();
                                                           _fleamarketListViewModel.changeCategory_sub_board('${FleamarketCategory_sub.cloth.korean}');
                                                           await _fleamarketListViewModel.fetchFleamarketData_board(
                                                             userId: _userViewModel.user.user_id,
@@ -547,6 +568,7 @@ class FleaMarketListView_board extends StatelessWidget {
                                                                 ? null
                                                                 :_fleamarketListViewModel.selectedCategory_spot_board,
                                                           );
+                                                          CustomFullScreenDialog.cancelDialog();
                                                         },
                                                         shape: RoundedRectangleBorder(
                                                             borderRadius:
@@ -567,6 +589,7 @@ class FleaMarketListView_board extends StatelessWidget {
                                                         onTap: () async {
                                                           print('${_fleamarketListViewModel.selectedCategory_spot_board }');
                                                           Navigator.pop(context);
+                                                          CustomFullScreenDialog.showDialog();
                                                           _fleamarketListViewModel.changeCategory_sub_board('${FleamarketCategory_sub.etc.korean}');
                                                           await _fleamarketListViewModel.fetchFleamarketData_board(
                                                             userId: _userViewModel.user.user_id,
@@ -577,6 +600,7 @@ class FleaMarketListView_board extends StatelessWidget {
                                                                 ? null
                                                                 :_fleamarketListViewModel.selectedCategory_spot_board,
                                                           );
+                                                          CustomFullScreenDialog.cancelDialog();
                                                         },
                                                         shape: RoundedRectangleBorder(
                                                             borderRadius:
@@ -651,6 +675,7 @@ class FleaMarketListView_board extends StatelessWidget {
                                                           //selected: _isSelected[index]!,
                                                           onTap: () async {
                                                             Navigator.pop(context);
+                                                            CustomFullScreenDialog.showDialog();
                                                             _fleamarketListViewModel.changeCategory_spot_board('${FleamarketCategory_spot.total.korean}');
                                                             await _fleamarketListViewModel.fetchFleamarketData_board(
                                                               userId: _userViewModel.user.user_id,
@@ -659,6 +684,7 @@ class FleaMarketListView_board extends StatelessWidget {
                                                                   ? null
                                                                   :_fleamarketListViewModel.selectedCategory_sub_board,
                                                             );
+                                                            CustomFullScreenDialog.cancelDialog();
                                                           },
                                                           shape: RoundedRectangleBorder(
                                                               borderRadius:
@@ -678,6 +704,7 @@ class FleaMarketListView_board extends StatelessWidget {
                                                           //selected: _isSelected[index]!,
                                                           onTap: () async {
                                                             Navigator.pop(context);
+                                                            CustomFullScreenDialog.showDialog();
                                                             _fleamarketListViewModel.changeCategory_spot_board('${FleamarketCategory_spot.konjiam.korean}');
                                                             await _fleamarketListViewModel.fetchFleamarketData_board(
                                                               userId: _userViewModel.user.user_id,
@@ -687,6 +714,7 @@ class FleaMarketListView_board extends StatelessWidget {
                                                                   :_fleamarketListViewModel.selectedCategory_sub_board,
                                                               spot: _fleamarketListViewModel.selectedCategory_spot_board,
                                                             );
+                                                            CustomFullScreenDialog.cancelDialog();
                                                           },
                                                           shape: RoundedRectangleBorder(
                                                               borderRadius:
@@ -706,6 +734,7 @@ class FleaMarketListView_board extends StatelessWidget {
                                                           //selected: _isSelected[index]!,
                                                           onTap: () async {
                                                             Navigator.pop(context);
+                                                            CustomFullScreenDialog.showDialog();
                                                             _fleamarketListViewModel.changeCategory_spot_board('${FleamarketCategory_spot.muju.korean}');
                                                             await _fleamarketListViewModel.fetchFleamarketData_board(
                                                               userId: _userViewModel.user.user_id,
@@ -715,6 +744,7 @@ class FleaMarketListView_board extends StatelessWidget {
                                                                   :_fleamarketListViewModel.selectedCategory_sub_board,
                                                               spot: _fleamarketListViewModel.selectedCategory_spot_board,
                                                             );
+                                                            CustomFullScreenDialog.cancelDialog();
                                                           },
                                                           shape: RoundedRectangleBorder(
                                                               borderRadius:
@@ -734,6 +764,7 @@ class FleaMarketListView_board extends StatelessWidget {
                                                           //selected: _isSelected[index]!,
                                                           onTap: () async {
                                                             Navigator.pop(context);
+                                                            CustomFullScreenDialog.showDialog();
                                                             _fleamarketListViewModel.changeCategory_spot_board('${FleamarketCategory_spot.vivaldi.korean}');
                                                             await _fleamarketListViewModel.fetchFleamarketData_board(
                                                               userId: _userViewModel.user.user_id,
@@ -743,6 +774,7 @@ class FleaMarketListView_board extends StatelessWidget {
                                                                   :_fleamarketListViewModel.selectedCategory_sub_board,
                                                               spot: _fleamarketListViewModel.selectedCategory_spot_board,
                                                             );
+                                                            CustomFullScreenDialog.cancelDialog();
                                                           },
                                                           shape: RoundedRectangleBorder(
                                                               borderRadius:
@@ -762,6 +794,7 @@ class FleaMarketListView_board extends StatelessWidget {
                                                           //selected: _isSelected[index]!,
                                                           onTap: () async {
                                                             Navigator.pop(context);
+                                                            CustomFullScreenDialog.showDialog();
                                                             _fleamarketListViewModel.changeCategory_spot_board('${FleamarketCategory_spot.alphen.korean}');
                                                             await _fleamarketListViewModel.fetchFleamarketData_board(
                                                               userId: _userViewModel.user.user_id,
@@ -771,6 +804,7 @@ class FleaMarketListView_board extends StatelessWidget {
                                                                   :_fleamarketListViewModel.selectedCategory_sub_board,
                                                               spot: _fleamarketListViewModel.selectedCategory_spot_board,
                                                             );
+                                                            CustomFullScreenDialog.cancelDialog();
                                                           },
                                                           shape: RoundedRectangleBorder(
                                                               borderRadius:
@@ -790,6 +824,7 @@ class FleaMarketListView_board extends StatelessWidget {
                                                           //selected: _isSelected[index]!,
                                                           onTap: () async {
                                                             Navigator.pop(context);
+                                                            CustomFullScreenDialog.showDialog();
                                                             _fleamarketListViewModel.changeCategory_spot_board('${FleamarketCategory_spot.gangchon.korean}');
                                                             await _fleamarketListViewModel.fetchFleamarketData_board(
                                                               userId: _userViewModel.user.user_id,
@@ -799,6 +834,7 @@ class FleaMarketListView_board extends StatelessWidget {
                                                                   :_fleamarketListViewModel.selectedCategory_sub_board,
                                                               spot: _fleamarketListViewModel.selectedCategory_spot_board,
                                                             );
+                                                            CustomFullScreenDialog.cancelDialog();
                                                           },
                                                           shape: RoundedRectangleBorder(
                                                               borderRadius:
@@ -818,6 +854,7 @@ class FleaMarketListView_board extends StatelessWidget {
                                                           //selected: _isSelected[index]!,
                                                           onTap: () async {
                                                             Navigator.pop(context);
+                                                            CustomFullScreenDialog.showDialog();
                                                             _fleamarketListViewModel.changeCategory_spot_board('${FleamarketCategory_spot.oak.korean}');
                                                             await _fleamarketListViewModel.fetchFleamarketData_board(
                                                               userId: _userViewModel.user.user_id,
@@ -827,6 +864,7 @@ class FleaMarketListView_board extends StatelessWidget {
                                                                   :_fleamarketListViewModel.selectedCategory_sub_board,
                                                               spot: _fleamarketListViewModel.selectedCategory_spot_board,
                                                             );
+                                                            CustomFullScreenDialog.cancelDialog();
                                                           },
                                                           shape: RoundedRectangleBorder(
                                                               borderRadius:
@@ -846,6 +884,7 @@ class FleaMarketListView_board extends StatelessWidget {
                                                           //selected: _isSelected[index]!,
                                                           onTap: () async {
                                                             Navigator.pop(context);
+                                                            CustomFullScreenDialog.showDialog();
                                                             _fleamarketListViewModel.changeCategory_spot_board('${FleamarketCategory_spot.o2.korean}');
                                                             await _fleamarketListViewModel.fetchFleamarketData_board(
                                                               userId: _userViewModel.user.user_id,
@@ -855,6 +894,7 @@ class FleaMarketListView_board extends StatelessWidget {
                                                                   :_fleamarketListViewModel.selectedCategory_sub_board,
                                                               spot: _fleamarketListViewModel.selectedCategory_spot_board,
                                                             );
+                                                            CustomFullScreenDialog.cancelDialog();
                                                           },
                                                           shape: RoundedRectangleBorder(
                                                               borderRadius:
@@ -874,6 +914,7 @@ class FleaMarketListView_board extends StatelessWidget {
                                                           //selected: _isSelected[index]!,
                                                           onTap: () async {
                                                             Navigator.pop(context);
+                                                            CustomFullScreenDialog.showDialog();
                                                             _fleamarketListViewModel.changeCategory_spot_board('${FleamarketCategory_spot.yongpyong.korean}');
                                                             await _fleamarketListViewModel.fetchFleamarketData_board(
                                                               userId: _userViewModel.user.user_id,
@@ -883,6 +924,7 @@ class FleaMarketListView_board extends StatelessWidget {
                                                                   :_fleamarketListViewModel.selectedCategory_sub_board,
                                                               spot: _fleamarketListViewModel.selectedCategory_spot_board,
                                                             );
+                                                            CustomFullScreenDialog.cancelDialog();
                                                           },
                                                           shape: RoundedRectangleBorder(
                                                               borderRadius:
@@ -902,6 +944,7 @@ class FleaMarketListView_board extends StatelessWidget {
                                                           //selected: _isSelected[index]!,
                                                           onTap: () async {
                                                             Navigator.pop(context);
+                                                            CustomFullScreenDialog.showDialog();
                                                             _fleamarketListViewModel.changeCategory_spot_board('${FleamarketCategory_spot.welli.korean}');
                                                             await _fleamarketListViewModel.fetchFleamarketData_board(
                                                               userId: _userViewModel.user.user_id,
@@ -911,6 +954,7 @@ class FleaMarketListView_board extends StatelessWidget {
                                                                   :_fleamarketListViewModel.selectedCategory_sub_board,
                                                               spot: _fleamarketListViewModel.selectedCategory_spot_board,
                                                             );
+                                                            CustomFullScreenDialog.cancelDialog();
                                                           },
                                                           shape: RoundedRectangleBorder(
                                                               borderRadius:
@@ -930,6 +974,7 @@ class FleaMarketListView_board extends StatelessWidget {
                                                           //selected: _isSelected[index]!,
                                                           onTap: () async {
                                                             Navigator.pop(context);
+                                                            CustomFullScreenDialog.showDialog();
                                                             _fleamarketListViewModel.changeCategory_spot_board('${FleamarketCategory_spot.jisan.korean}');
                                                             await _fleamarketListViewModel.fetchFleamarketData_board(
                                                               userId: _userViewModel.user.user_id,
@@ -939,6 +984,7 @@ class FleaMarketListView_board extends StatelessWidget {
                                                                   :_fleamarketListViewModel.selectedCategory_sub_board,
                                                               spot: _fleamarketListViewModel.selectedCategory_spot_board,
                                                             );
+                                                            CustomFullScreenDialog.cancelDialog();
                                                           },
                                                           shape: RoundedRectangleBorder(
                                                               borderRadius:
@@ -958,6 +1004,7 @@ class FleaMarketListView_board extends StatelessWidget {
                                                           //selected: _isSelected[index]!,
                                                           onTap: () async {
                                                             Navigator.pop(context);
+                                                            CustomFullScreenDialog.showDialog();
                                                             _fleamarketListViewModel.changeCategory_spot_board('${FleamarketCategory_spot.high1.korean}');
                                                             await _fleamarketListViewModel.fetchFleamarketData_board(
                                                               userId: _userViewModel.user.user_id,
@@ -967,6 +1014,7 @@ class FleaMarketListView_board extends StatelessWidget {
                                                                   :_fleamarketListViewModel.selectedCategory_sub_board,
                                                               spot: _fleamarketListViewModel.selectedCategory_spot_board,
                                                             );
+                                                            CustomFullScreenDialog.cancelDialog();
                                                           },
                                                           shape: RoundedRectangleBorder(
                                                               borderRadius:
@@ -986,6 +1034,7 @@ class FleaMarketListView_board extends StatelessWidget {
                                                           //selected: _isSelected[index]!,
                                                           onTap: () async {
                                                             Navigator.pop(context);
+                                                            CustomFullScreenDialog.showDialog();
                                                             _fleamarketListViewModel.changeCategory_spot_board('${FleamarketCategory_spot.phoenix.korean}');
                                                             await _fleamarketListViewModel.fetchFleamarketData_board(
                                                               userId: _userViewModel.user.user_id,
@@ -995,6 +1044,7 @@ class FleaMarketListView_board extends StatelessWidget {
                                                                   :_fleamarketListViewModel.selectedCategory_sub_board,
                                                               spot: _fleamarketListViewModel.selectedCategory_spot_board,
                                                             );
+                                                            CustomFullScreenDialog.cancelDialog();
                                                           },
                                                           shape: RoundedRectangleBorder(
                                                               borderRadius:
@@ -1014,6 +1064,7 @@ class FleaMarketListView_board extends StatelessWidget {
                                                           //selected: _isSelected[index]!,
                                                           onTap: () async {
                                                             Navigator.pop(context);
+                                                            CustomFullScreenDialog.showDialog();
                                                             _fleamarketListViewModel.changeCategory_spot_board('${FleamarketCategory_spot.etc.korean}');
                                                             await _fleamarketListViewModel.fetchFleamarketData_board(
                                                               userId: _userViewModel.user.user_id,
@@ -1023,6 +1074,7 @@ class FleaMarketListView_board extends StatelessWidget {
                                                                   :_fleamarketListViewModel.selectedCategory_sub_board,
                                                               spot: _fleamarketListViewModel.selectedCategory_spot_board,
                                                             );
+                                                            CustomFullScreenDialog.cancelDialog();
                                                           },
                                                           shape: RoundedRectangleBorder(
                                                               borderRadius:
@@ -1097,6 +1149,7 @@ class FleaMarketListView_board extends StatelessWidget {
                                                         //selected: _isSelected[index]!,
                                                         onTap: () async {
                                                           Navigator.pop(context);
+                                                          CustomFullScreenDialog.showDialog();
                                                           _fleamarketListViewModel.changeCategory_spot_board('${FleamarketCategory_spot.total.korean}');
                                                           await _fleamarketListViewModel.fetchFleamarketData_board(
                                                             userId: _userViewModel.user.user_id,
@@ -1105,6 +1158,7 @@ class FleaMarketListView_board extends StatelessWidget {
                                                                 ? null
                                                                 :_fleamarketListViewModel.selectedCategory_sub_board,
                                                           );
+                                                          CustomFullScreenDialog.cancelDialog();
                                                         },
                                                         shape: RoundedRectangleBorder(
                                                             borderRadius:
@@ -1124,6 +1178,7 @@ class FleaMarketListView_board extends StatelessWidget {
                                                         //selected: _isSelected[index]!,
                                                         onTap: () async {
                                                           Navigator.pop(context);
+                                                          CustomFullScreenDialog.showDialog();
                                                           _fleamarketListViewModel.changeCategory_spot_board('${FleamarketCategory_spot.konjiam.korean}');
                                                           await _fleamarketListViewModel.fetchFleamarketData_board(
                                                             userId: _userViewModel.user.user_id,
@@ -1133,6 +1188,7 @@ class FleaMarketListView_board extends StatelessWidget {
                                                                 :_fleamarketListViewModel.selectedCategory_sub_board,
                                                             spot: _fleamarketListViewModel.selectedCategory_spot_board,
                                                           );
+                                                          CustomFullScreenDialog.cancelDialog();
                                                         },
                                                         shape: RoundedRectangleBorder(
                                                             borderRadius:
@@ -1152,6 +1208,7 @@ class FleaMarketListView_board extends StatelessWidget {
                                                         //selected: _isSelected[index]!,
                                                         onTap: () async {
                                                           Navigator.pop(context);
+                                                          CustomFullScreenDialog.showDialog();
                                                           _fleamarketListViewModel.changeCategory_spot_board('${FleamarketCategory_spot.muju.korean}');
                                                           await _fleamarketListViewModel.fetchFleamarketData_board(
                                                             userId: _userViewModel.user.user_id,
@@ -1161,6 +1218,7 @@ class FleaMarketListView_board extends StatelessWidget {
                                                                 :_fleamarketListViewModel.selectedCategory_sub_board,
                                                             spot: _fleamarketListViewModel.selectedCategory_spot_board,
                                                           );
+                                                          CustomFullScreenDialog.cancelDialog();
                                                         },
                                                         shape: RoundedRectangleBorder(
                                                             borderRadius:
@@ -1180,6 +1238,7 @@ class FleaMarketListView_board extends StatelessWidget {
                                                         //selected: _isSelected[index]!,
                                                         onTap: () async {
                                                           Navigator.pop(context);
+                                                          CustomFullScreenDialog.showDialog();
                                                           _fleamarketListViewModel.changeCategory_spot_board('${FleamarketCategory_spot.vivaldi.korean}');
                                                           await _fleamarketListViewModel.fetchFleamarketData_board(
                                                             userId: _userViewModel.user.user_id,
@@ -1189,6 +1248,7 @@ class FleaMarketListView_board extends StatelessWidget {
                                                                 :_fleamarketListViewModel.selectedCategory_sub_board,
                                                             spot: _fleamarketListViewModel.selectedCategory_spot_board,
                                                           );
+                                                          CustomFullScreenDialog.cancelDialog();
                                                         },
                                                         shape: RoundedRectangleBorder(
                                                             borderRadius:
@@ -1208,6 +1268,7 @@ class FleaMarketListView_board extends StatelessWidget {
                                                         //selected: _isSelected[index]!,
                                                         onTap: () async {
                                                           Navigator.pop(context);
+                                                          CustomFullScreenDialog.showDialog();
                                                           _fleamarketListViewModel.changeCategory_spot_board('${FleamarketCategory_spot.alphen.korean}');
                                                           await _fleamarketListViewModel.fetchFleamarketData_board(
                                                             userId: _userViewModel.user.user_id,
@@ -1217,6 +1278,7 @@ class FleaMarketListView_board extends StatelessWidget {
                                                                 :_fleamarketListViewModel.selectedCategory_sub_board,
                                                             spot: _fleamarketListViewModel.selectedCategory_spot_board,
                                                           );
+                                                          CustomFullScreenDialog.cancelDialog();
                                                         },
                                                         shape: RoundedRectangleBorder(
                                                             borderRadius:
@@ -1236,6 +1298,7 @@ class FleaMarketListView_board extends StatelessWidget {
                                                         //selected: _isSelected[index]!,
                                                         onTap: () async {
                                                           Navigator.pop(context);
+                                                          CustomFullScreenDialog.showDialog();
                                                           _fleamarketListViewModel.changeCategory_spot_board('${FleamarketCategory_spot.gangchon.korean}');
                                                           await _fleamarketListViewModel.fetchFleamarketData_board(
                                                             userId: _userViewModel.user.user_id,
@@ -1245,6 +1308,7 @@ class FleaMarketListView_board extends StatelessWidget {
                                                                 :_fleamarketListViewModel.selectedCategory_sub_board,
                                                             spot: _fleamarketListViewModel.selectedCategory_spot_board,
                                                           );
+                                                          CustomFullScreenDialog.cancelDialog();
                                                         },
                                                         shape: RoundedRectangleBorder(
                                                             borderRadius:
@@ -1264,6 +1328,7 @@ class FleaMarketListView_board extends StatelessWidget {
                                                         //selected: _isSelected[index]!,
                                                         onTap: () async {
                                                           Navigator.pop(context);
+                                                          CustomFullScreenDialog.showDialog();
                                                           _fleamarketListViewModel.changeCategory_spot_board('${FleamarketCategory_spot.oak.korean}');
                                                           await _fleamarketListViewModel.fetchFleamarketData_board(
                                                             userId: _userViewModel.user.user_id,
@@ -1273,6 +1338,7 @@ class FleaMarketListView_board extends StatelessWidget {
                                                                 :_fleamarketListViewModel.selectedCategory_sub_board,
                                                             spot: _fleamarketListViewModel.selectedCategory_spot_board,
                                                           );
+                                                          CustomFullScreenDialog.cancelDialog();
                                                         },
                                                         shape: RoundedRectangleBorder(
                                                             borderRadius:
@@ -1292,6 +1358,7 @@ class FleaMarketListView_board extends StatelessWidget {
                                                         //selected: _isSelected[index]!,
                                                         onTap: () async {
                                                           Navigator.pop(context);
+                                                          CustomFullScreenDialog.showDialog();
                                                           _fleamarketListViewModel.changeCategory_spot_board('${FleamarketCategory_spot.o2.korean}');
                                                           await _fleamarketListViewModel.fetchFleamarketData_board(
                                                             userId: _userViewModel.user.user_id,
@@ -1301,6 +1368,7 @@ class FleaMarketListView_board extends StatelessWidget {
                                                                 :_fleamarketListViewModel.selectedCategory_sub_board,
                                                             spot: _fleamarketListViewModel.selectedCategory_spot_board,
                                                           );
+                                                          CustomFullScreenDialog.cancelDialog();
                                                         },
                                                         shape: RoundedRectangleBorder(
                                                             borderRadius:
@@ -1320,6 +1388,7 @@ class FleaMarketListView_board extends StatelessWidget {
                                                         //selected: _isSelected[index]!,
                                                         onTap: () async {
                                                           Navigator.pop(context);
+                                                          CustomFullScreenDialog.showDialog();
                                                           _fleamarketListViewModel.changeCategory_spot_board('${FleamarketCategory_spot.yongpyong.korean}');
                                                           await _fleamarketListViewModel.fetchFleamarketData_board(
                                                             userId: _userViewModel.user.user_id,
@@ -1329,6 +1398,7 @@ class FleaMarketListView_board extends StatelessWidget {
                                                                 :_fleamarketListViewModel.selectedCategory_sub_board,
                                                             spot: _fleamarketListViewModel.selectedCategory_spot_board,
                                                           );
+                                                          CustomFullScreenDialog.cancelDialog();
                                                         },
                                                         shape: RoundedRectangleBorder(
                                                             borderRadius:
@@ -1348,6 +1418,7 @@ class FleaMarketListView_board extends StatelessWidget {
                                                         //selected: _isSelected[index]!,
                                                         onTap: () async {
                                                           Navigator.pop(context);
+                                                          CustomFullScreenDialog.showDialog();
                                                           _fleamarketListViewModel.changeCategory_spot_board('${FleamarketCategory_spot.welli.korean}');
                                                           await _fleamarketListViewModel.fetchFleamarketData_board(
                                                             userId: _userViewModel.user.user_id,
@@ -1357,6 +1428,7 @@ class FleaMarketListView_board extends StatelessWidget {
                                                                 :_fleamarketListViewModel.selectedCategory_sub_board,
                                                             spot: _fleamarketListViewModel.selectedCategory_spot_board,
                                                           );
+                                                          CustomFullScreenDialog.cancelDialog();
                                                         },
                                                         shape: RoundedRectangleBorder(
                                                             borderRadius:
@@ -1376,6 +1448,7 @@ class FleaMarketListView_board extends StatelessWidget {
                                                         //selected: _isSelected[index]!,
                                                         onTap: () async {
                                                           Navigator.pop(context);
+                                                          CustomFullScreenDialog.showDialog();
                                                           _fleamarketListViewModel.changeCategory_spot_board('${FleamarketCategory_spot.jisan.korean}');
                                                           await _fleamarketListViewModel.fetchFleamarketData_board(
                                                             userId: _userViewModel.user.user_id,
@@ -1385,6 +1458,7 @@ class FleaMarketListView_board extends StatelessWidget {
                                                                 :_fleamarketListViewModel.selectedCategory_sub_board,
                                                             spot: _fleamarketListViewModel.selectedCategory_spot_board,
                                                           );
+                                                          CustomFullScreenDialog.cancelDialog();
                                                         },
                                                         shape: RoundedRectangleBorder(
                                                             borderRadius:
@@ -1404,6 +1478,7 @@ class FleaMarketListView_board extends StatelessWidget {
                                                         //selected: _isSelected[index]!,
                                                         onTap: () async {
                                                           Navigator.pop(context);
+                                                          CustomFullScreenDialog.showDialog();
                                                           _fleamarketListViewModel.changeCategory_spot_board('${FleamarketCategory_spot.high1.korean}');
                                                           await _fleamarketListViewModel.fetchFleamarketData_board(
                                                             userId: _userViewModel.user.user_id,
@@ -1413,6 +1488,7 @@ class FleaMarketListView_board extends StatelessWidget {
                                                                 :_fleamarketListViewModel.selectedCategory_sub_board,
                                                             spot: _fleamarketListViewModel.selectedCategory_spot_board,
                                                           );
+                                                          CustomFullScreenDialog.cancelDialog();
                                                         },
                                                         shape: RoundedRectangleBorder(
                                                             borderRadius:
@@ -1432,6 +1508,7 @@ class FleaMarketListView_board extends StatelessWidget {
                                                         //selected: _isSelected[index]!,
                                                         onTap: () async {
                                                           Navigator.pop(context);
+                                                          CustomFullScreenDialog.showDialog();
                                                           _fleamarketListViewModel.changeCategory_spot_board('${FleamarketCategory_spot.phoenix.korean}');
                                                           await _fleamarketListViewModel.fetchFleamarketData_board(
                                                             userId: _userViewModel.user.user_id,
@@ -1441,6 +1518,7 @@ class FleaMarketListView_board extends StatelessWidget {
                                                                 :_fleamarketListViewModel.selectedCategory_sub_board,
                                                             spot: _fleamarketListViewModel.selectedCategory_spot_board,
                                                           );
+                                                          CustomFullScreenDialog.cancelDialog();
                                                         },
                                                         shape: RoundedRectangleBorder(
                                                             borderRadius:
@@ -1460,6 +1538,7 @@ class FleaMarketListView_board extends StatelessWidget {
                                                         //selected: _isSelected[index]!,
                                                         onTap: () async {
                                                           Navigator.pop(context);
+                                                          CustomFullScreenDialog.showDialog();
                                                           _fleamarketListViewModel.changeCategory_spot_board('${FleamarketCategory_spot.etc.korean}');
                                                           await _fleamarketListViewModel.fetchFleamarketData_board(
                                                             userId: _userViewModel.user.user_id,
@@ -1469,6 +1548,7 @@ class FleaMarketListView_board extends StatelessWidget {
                                                                 :_fleamarketListViewModel.selectedCategory_sub_board,
                                                             spot: _fleamarketListViewModel.selectedCategory_spot_board,
                                                           );
+                                                          CustomFullScreenDialog.cancelDialog();
                                                         },
                                                         shape: RoundedRectangleBorder(
                                                             borderRadius:

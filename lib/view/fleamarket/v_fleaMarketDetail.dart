@@ -280,6 +280,8 @@ class _FleaMarketDetailViewState extends State<FleaMarketDetailView> {
                                                             child: Container(
                                                               child: TextButton(
                                                                   onPressed: () async {
+                                                                    Navigator.pop(context);
+                                                                    Navigator.pop(context);
                                                                     CustomFullScreenDialog.showDialog();
                                                                     await _fleamarketDetailViewModel.reportFleamarket(
                                                                         {
@@ -287,9 +289,6 @@ class _FleaMarketDetailViewState extends State<FleaMarketDetailView> {
                                                                           "flea_id": _fleamarketDetailViewModel.fleamarketDetail.fleaId
                                                                         }
                                                                         );
-                                                                    CustomFullScreenDialog.cancelDialog();
-                                                                    Navigator.pop(context);
-                                                                    Get.back();
                                                                     },
                                                                   style: TextButton.styleFrom(
                                                                     backgroundColor: Colors.transparent, // 배경색 투명
@@ -397,19 +396,19 @@ class _FleaMarketDetailViewState extends State<FleaMarketDetailView> {
                                                             child: Container(
                                                               child: TextButton(
                                                                   onPressed: () async {
+                                                                    Navigator.pop(context);
+                                                                    Navigator.pop(context);
+                                                                    CustomFullScreenDialog.showDialog();
                                                                     await _userViewModel.block_user({
                                                                       "user_id": _userViewModel.user.user_id,
                                                                       "block_user_id": _fleamarketDetailViewModel.fleamarketDetail.userId
                                                                     });
-                                                                    Navigator.pop(context);
-                                                                    Navigator.pop(context);
-                                                                    Navigator.pop(context);
                                                                   },
                                                                   style: TextButton.styleFrom(
                                                                     backgroundColor: Colors.transparent, // 배경색 투명
                                                                     splashFactory: NoSplash.splashFactory, // 터치 시 효과 제거
                                                                   ),
-                                                                  child: Text('신고하기',
+                                                                  child: Text('숨기기',
                                                                     style: SDSTextStyle.bold.copyWith(
                                                                       fontSize: 17,
                                                                       color: SDSColor.snowliveBlue,
@@ -1366,6 +1365,27 @@ class _FleaMarketDetailViewState extends State<FleaMarketDetailView> {
                                                                       ),
                                                                     ),
                                                                     SizedBox(width: 6),
+                                                                    Container(
+                                                                      decoration: BoxDecoration(
+                                                                        borderRadius: BorderRadius.circular(30),
+                                                                        color:
+                                                                        (document_comment.userInfo!.userId == _fleamarketDetailViewModel.fleamarketDetail.userId)
+                                                                            ? SDSColor.blue100
+                                                                            : Colors.transparent,
+                                                                      ),
+                                                                      child: Padding(
+                                                                        padding: const EdgeInsets.only(top: 3, bottom: 3, left: 6, right: 6),
+                                                                        child: Text(
+                                                                          '글쓴이',
+                                                                          style: SDSTextStyle.bold.copyWith(fontSize: 11,
+                                                                              color:
+                                                                              (document_comment.userInfo!.userId == _fleamarketDetailViewModel.fleamarketDetail.userId)
+                                                                                  ? SDSColor.snowliveBlue
+                                                                                  : Colors.transparent),
+                                                                        ),
+                                                                      ),
+                                                                    ),
+                                                                    SizedBox(width: 6),
                                                                     Text(
                                                                       time,
                                                                       style: SDSTextStyle.regular.copyWith(
@@ -1489,8 +1509,9 @@ class _FleaMarketDetailViewState extends State<FleaMarketDetailView> {
                                                                                                                     onPressed: () async {
                                                                                                                       Navigator.pop(context);
                                                                                                                       Navigator.pop(context);
+                                                                                                                      CustomFullScreenDialog.showDialog();
                                                                                                                       await _fleamarketDetailViewModel.reportComment({
-                                                                                                                        "user_id": _userViewModel.user.user_id,
+                                                                                                                        "user_id": _userViewModel.user.user_id.toString(),
                                                                                                                         "comment_id": document_comment.commentId
                                                                                                                       });
                                                                                                                     },
@@ -1573,7 +1594,7 @@ class _FleaMarketDetailViewState extends State<FleaMarketDetailView> {
                                                                                                               Expanded(
                                                                                                                 child: Container(
                                                                                                                   child: TextButton(
-                                                                                                                      onPressed: () {
+                                                                                                                      onPressed: () async{
                                                                                                                         Navigator.pop(context);
                                                                                                                       },
                                                                                                                       style: TextButton.styleFrom(
@@ -1596,14 +1617,17 @@ class _FleaMarketDetailViewState extends State<FleaMarketDetailView> {
                                                                                                                 child: Container(
                                                                                                                   child: TextButton(
                                                                                                                       onPressed: () async {
-                                                                                                                        await _friendDetailViewModel.blockUser({
+                                                                                                                        Navigator.pop(context);
+                                                                                                                        Navigator.pop(context);
+                                                                                                                        CustomFullScreenDialog.showDialog();
+                                                                                                                        await _userViewModel.block_user({
                                                                                                                           "user_id" : _userViewModel.user.user_id,    //필수 - 차단하는 사람(나)
                                                                                                                           "block_user_id" : document_comment.userId      //필수 - 내가 차단할 사람
                                                                                                                         });
-                                                                                                                        _fleamarketDetailViewModel.fetchFleamarketComments(
+                                                                                                                        await _fleamarketDetailViewModel.fetchFleamarketComments(
                                                                                                                             fleaId: _fleamarketDetailViewModel.fleamarketDetail.fleaId!,
                                                                                                                             userId: _userViewModel.user.user_id,
-                                                                                                                            isLoading_indi: true
+                                                                                                                          isLoading_indi: true,
                                                                                                                         );
                                                                                                                       },
                                                                                                                       style: TextButton.styleFrom(
@@ -1680,6 +1704,7 @@ class _FleaMarketDetailViewState extends State<FleaMarketDetailView> {
                                                                                                               child: TextButton(
                                                                                                                   onPressed: () {
                                                                                                                     Navigator.pop(context);
+                                                                                                                    Navigator.pop(context);
                                                                                                                   },
                                                                                                                   style: TextButton.styleFrom(
                                                                                                                     backgroundColor: Colors.transparent, // 배경색 투명
@@ -1701,7 +1726,19 @@ class _FleaMarketDetailViewState extends State<FleaMarketDetailView> {
                                                                                                             child: Container(
                                                                                                               child: TextButton(
                                                                                                                   onPressed: () async {
-
+                                                                                                                    Navigator.pop(context);
+                                                                                                                    Navigator.pop(context);
+                                                                                                                    CustomFullScreenDialog.showDialog();
+                                                                                                                    await _fleamarketDetailViewModel.deleteFleamarketComments(
+                                                                                                                        user_id: _userViewModel.user.user_id,
+                                                                                                                        comment_id: document_comment.commentId
+                                                                                                                    );
+                                                                                                                    await _fleamarketDetailViewModel.fetchFleamarketComments(
+                                                                                                                      fleaId: _fleamarketDetailViewModel.fleamarketDetail.fleaId!,
+                                                                                                                      userId: _userViewModel.user.user_id,
+                                                                                                                      isLoading_indi: true,
+                                                                                                                    );
+                                                                                                                    CustomFullScreenDialog.cancelDialog();
                                                                                                                   },
                                                                                                                   style: TextButton.styleFrom(
                                                                                                                     backgroundColor: Colors.transparent, // 배경색 투명
@@ -1743,13 +1780,17 @@ class _FleaMarketDetailViewState extends State<FleaMarketDetailView> {
                                                                 ),
                                                                 GestureDetector(
                                                                   onTap: () async{
+                                                                    CustomFullScreenDialog.showDialog();
                                                                     if(document_comment.secret! &&
                                                                         (document_comment.userId != _userViewModel.user.user_id
                                                                             && _fleamarketDetailViewModel.fleamarketDetail.userId != _userViewModel.user.user_id)){
+                                                                      CustomFullScreenDialog.cancelDialog();
                                                                     }else {
                                                                       await _fleamarketCommentDetailViewModel.fetchFleamarketCommentDetail(commentId: document_comment.commentId!);
+                                                                      CustomFullScreenDialog.cancelDialog();
                                                                       Get.toNamed(AppRoutes.fleamarketCommentDetail);
                                                                     }
+
                                                                   },
                                                                   child: Padding(
                                                                     padding: const EdgeInsets.only(top: 6),
@@ -1924,6 +1965,7 @@ class _FleaMarketDetailViewState extends State<FleaMarketDetailView> {
                                   suffixIcon: IconButton(
                                     splashColor: Colors.transparent,
                                     onPressed: () async {
+                                      CustomFullScreenDialog.showDialog();
                                       if (_fleamarketDetailViewModel.textEditingController.text.trim().isEmpty) {
                                         return;
                                       }
@@ -1936,10 +1978,11 @@ class _FleaMarketDetailViewState extends State<FleaMarketDetailView> {
                                       await _fleamarketDetailViewModel.fetchFleamarketComments(
                                           fleaId: _fleamarketDetailViewModel.fleamarketDetail.fleaId!,
                                           userId: _userViewModel.user.user_id,
-                                          isLoading_indi: true
+                                        isLoading_indi: true,
                                       );
                                       FocusScope.of(context).unfocus();
                                       _fleamarketDetailViewModel.textEditingController.clear();
+                                      CustomFullScreenDialog.cancelDialog();
                                     },
                                     icon: (_fleamarketDetailViewModel.isCommentButtonEnabled.value == false)
                                         ? Image.asset(

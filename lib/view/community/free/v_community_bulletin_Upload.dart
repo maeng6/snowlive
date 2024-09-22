@@ -79,7 +79,6 @@ class CommunityFreeUpload extends StatelessWidget {
                         print('이미지 링크 생성 완료');
                         final deltaList = _communityUploadViewModel.quillController.document.toDelta().toList();
                         final jsonString = jsonEncode(deltaList);
-                        print(jsonString);
                         print(_communityUploadViewModel.findFirstInsertedImage(_communityUploadViewModel.quillController.document.toDelta().toList()));
                         await _communityUploadViewModel.updateCommunityPost(_communityUploadViewModel.pk,
                             {

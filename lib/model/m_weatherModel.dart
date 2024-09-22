@@ -126,7 +126,6 @@ class WeatherModel {
     currentWeatherDate();
     var date = currentBaseDate;
     var time = currentBaseTime;
-    print('기상청 시작');
     http.Response response = await http.get(Uri.parse(
         'https://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getUltraSrtNcst'
             '?serviceKey=$apiKey'

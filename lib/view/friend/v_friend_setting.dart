@@ -29,7 +29,8 @@ class FriendSettingView extends StatelessWidget {
           ListTile(
             contentPadding: EdgeInsets.symmetric(horizontal: 16),
             minVerticalPadding: 20,
-            onTap: () {
+            onTap: () async{
+              await
               Get.toNamed(AppRoutes.friendBlockList);
             },
             title: Text(

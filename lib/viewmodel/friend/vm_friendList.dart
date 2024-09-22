@@ -97,10 +97,7 @@ class FriendListViewModel extends GetxController {
     isLoading(true);
     ApiResponse response = await FriendAPI().deleteFriend(body);
     if (response.success) {
-      Get.snackbar('친구삭제 성공', '상대방에게도 내가 친구목록에서 제외됩니다.');
-      await fetchFriendList();
     } else {
-      Get.snackbar('앗!', '${response.error['error']}');
     }
     isLoading(false);
   }

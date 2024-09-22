@@ -3,6 +3,7 @@ import 'package:com.snowlive/routes/routes.dart';
 import 'package:com.snowlive/viewmodel/friend/vm_friendDetail.dart';
 import 'package:com.snowlive/viewmodel/friend/vm_friendList.dart';
 import 'package:com.snowlive/viewmodel/vm_user.dart';
+import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -80,7 +81,10 @@ class FriendListView extends StatelessWidget {
             padding: EdgeInsets.only(right: 10),
             child: IconButton(
               highlightColor: Colors.transparent,
-              onPressed: () {
+              onPressed: () async{
+                CustomFullScreenDialog.showDialog();
+                await _friendListViewModel.fetchBlockUserList();
+                CustomFullScreenDialog.cancelDialog();
                 Get.toNamed(AppRoutes.settingFriend);
               },
               icon: Image.asset(
@@ -599,10 +603,13 @@ class FriendListView extends StatelessWidget {
                                                                       TextButton(
                                                                         onPressed: () async {
                                                                           Navigator.pop(context);
+                                                                          Navigator.pop(context);
+                                                                          CustomFullScreenDialog.showDialog();
                                                                           await _friendListViewModel.deleteFriend(
                                                                             {"friend_id": friend.friendId},
                                                                           );
-                                                                          Navigator.pop(context);
+                                                                          await _friendListViewModel.fetchFriendList();
+                                                                          CustomFullScreenDialog.cancelDialog();
                                                                         },
                                                                         child: Text(
                                                                           '확인',

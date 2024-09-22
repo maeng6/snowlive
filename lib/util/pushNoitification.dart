@@ -25,7 +25,7 @@ class PushNotification {
 
     // get the device fcm token
     _token = await _firebaseMessaging.getToken(); // 토큰 얻기
-    print("device token: $_token");
+    //print("device token: $_token");
   }
 
   // flutter_local_notifications 패키지 관련 초기화

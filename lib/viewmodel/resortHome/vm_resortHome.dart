@@ -7,7 +7,9 @@ import 'package:com.snowlive/api/api_resortHome.dart';
 import 'package:com.snowlive/api/api_user.dart';
 import 'package:com.snowlive/model/m_bestFriendListModel.dart';
 import 'package:com.snowlive/model/m_weatherModel.dart';
+import 'package:com.snowlive/util/util_1.dart';
 import 'package:com.snowlive/viewmodel/vm_user.dart';
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_background_geolocation/flutter_background_geolocation.dart';
@@ -18,9 +20,12 @@ import 'package:get/get_rx/get_rx.dart';
 import 'package:get/get_rx/src/rx_types/rx_types.dart';
 import 'package:get/state_manager.dart';
 import 'package:intl/intl.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:synchronized/synchronized.dart';
 import 'package:flutter_background_geolocation/flutter_background_geolocation.dart' as bg;
+import 'dart:io';
 
+final ref = FirebaseFirestore.instance;
 
 class ResortHomeViewModel extends GetxController {
   var _resortHomeModel = ResortHomeModel().obs;
@@ -75,6 +80,7 @@ class ResortHomeViewModel extends GetxController {
     await getRankingGuideUrl();
     await fetchResortHome(_userViewModel.user.user_id!);
     await fetchWeatherModel();
+    await checkForUpdate();
     scrollController_resortHome_openchat = ScrollController()
       ..addListener(_scrollListener_resortHome_openchat);
   }
@@ -84,6 +90,7 @@ class ResortHomeViewModel extends GetxController {
       ApiResponse response = await ResortHomeAPI().fetchResortHomeData(userId);
       if(response.success)
       _resortHomeModel.value = ResortHomeModel.fromJson(response.data);
+      print('리조트홈 패치 완료');
       if(!response.success)
       Get.snackbar('Error', '데이터 로딩 실패');
       isLoading(false);
@@ -94,13 +101,13 @@ class ResortHomeViewModel extends GetxController {
     try {
       _weatherInfo.value = await WeatherModel().parseWeatherData(
           _resortHomeModel.value.nx, _resortHomeModel.value.ny);
-      print('파스웨더 끝');
+      print('날씨정보 패치 완료');
       weatherColors = WeatherModel().getWeatherColor(_weatherInfo['pty'], _weatherInfo['sky']);
       weatherIcons = WeatherModel().getWeatherIcon(_weatherInfo['pty'], _weatherInfo['sky']);
     }catch(e) {
       print(e);
       isLoading_weather(false);
-      Get.snackbar('날씨 정보 수신 지연', '잠시후 다시 시도해주세요.');
+      Get.snackbar('날씨 정보 수신 지연', '잠시후 다시 시도해주세요');
     }
     isLoading_weather(false);
   }
@@ -557,6 +564,150 @@ class ResortHomeViewModel extends GetxController {
         height: 40,
       );
     }
+  }
+
+  Future<void> checkForUpdate() async {
+    try {
+      final currentVersion = await getCurrentAppVersion();
+      final latestVersion = await getLatestAppVersion();
+      final useUpdatePopup = await getUseUpdatePopup();
+      print('로컬버전 : ${currentVersion}');
+      print('서버버전 : ${latestVersion}');
+      print('강제업데이트 사용 : ${useUpdatePopup}');
+
+      if ((currentVersion != latestVersion) && (useUpdatePopup == true)) {
+        Get.dialog(
+          WillPopScope(
+            onWillPop: () async {
+              return false;
+            },
+            child: AlertDialog(
+              contentPadding: EdgeInsets.zero,
+              elevation: 0,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16),
+              ),
+              actionsPadding:
+              EdgeInsets.only(top: 0, right: 20, left: 20, bottom: 20),
+              content: Container(
+                height: 330,
+                child: Column(
+                  children: [
+                    ExtendedImage.asset(
+                      'assets/imgs/imgs/img_app_update.png',
+                      scale: 4,
+                      fit: BoxFit.fitHeight,
+                      width: MediaQuery.of(Get.context!).size.width,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(
+                        top: 20,
+                        right: 20,
+                        left: 20,
+                        bottom: 24,
+                      ),
+                      child: Column(
+                        children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                '새로운 버전이 업데이트 되었습니다',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: Color(0xFF111111),
+                                  fontSize: 18,
+                                ),
+                              ),
+                              SizedBox(
+                                height: 6,
+                              ),
+                              Text(
+                                '최신 버전 앱으로 업데이트를 위해 스토어로 이동합니다.',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.normal,
+                                  color: Color(0xFF949494),
+                                  fontSize: 15,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              actions: [
+                Container(
+                  width: MediaQuery.of(Get.context!).size.width,
+                  height: 48,
+                  child: ElevatedButton(
+                    onPressed: () async {
+                      if (Platform.isAndroid) {
+                        final url =
+                            'https://play.google.com/store/apps/details?id=com.snowlive';
+                        await otherShare(contents: url);
+                      } else if (Platform.isIOS) {
+                        final url =
+                            'https://apps.apple.com/us/app/apple-store/id6444235991';
+                        await otherShare(contents: url);
+                      }
+                    },
+                    child: Text(
+                      '업데이트',
+                      style: TextStyle(
+                        fontSize: 15,
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Color(0xFF3D83ED),
+                      elevation: 0,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          barrierDismissible: false,
+        );
+      }
+    } catch (e) {
+      print('업데이트 확인 중 오류 발생: $e');
+    }
+  }
+
+  Future<String> getCurrentAppVersion() async {
+    try {
+      final PackageInfo packageInfo = await PackageInfo.fromPlatform();
+      return packageInfo.version;
+    } catch (e) {
+      print('앱 버전을 가져오는 동안 오류 발생: $e');
+      return ''; // 오류 발생 시 기본값 또는 빈 문자열 반환
+    }
+  }
+
+  Future<String> getLatestAppVersion() async {
+    DocumentReference<Map<String, dynamic>> documentReference =
+    ref.collection('version').doc('1');
+    final DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
+    await documentReference.get();
+    String latestAppVersion = documentSnapshot.get('version');
+    return latestAppVersion;
+  }
+
+  Future<bool> getUseUpdatePopup() async {
+    DocumentReference<Map<String, dynamic>> documentReference =
+    ref.collection('version').doc('1');
+    final DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
+    await documentReference.get();
+    bool useUpdatePopup = documentSnapshot.get('useUpdatePopup');
+    return useUpdatePopup;
   }
 
 }

@@ -57,6 +57,7 @@ class RankingIndiView extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.center,
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
+                              if(_rankingListViewModel.resortOrTotal=='전체스키장' && _rankingListViewModel.dayOrTotal=='누적')
                               Container(
                                 height: 76,
                                 width: 76,

@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:com.snowlive/util/util_1.dart';
+import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -485,12 +486,13 @@ class FleamarketCommentDetailView extends StatelessWidget {
                                                                                             child: Container(
                                                                                               child: TextButton(
                                                                                                   onPressed: () async {
+                                                                                                    Navigator.pop(context);
+                                                                                                    Navigator.pop(context);
+                                                                                                    CustomFullScreenDialog.showDialog();
                                                                                                     await _fleamarketCommentDetailViewModel.reportReply({
-                                                                                                      "user_id": _userViewModel.user.user_id,
+                                                                                                      "user_id": _userViewModel.user.user_id.toString(),
                                                                                                       "reply_id": reply_id
                                                                                                     });
-                                                                                                    Navigator.pop(context);
-                                                                                                    Navigator.pop(context);
                                                                                                     },
                                                                                                   style: TextButton.styleFrom(
                                                                                                     backgroundColor: Colors.transparent, // 배경색 투명
@@ -573,12 +575,7 @@ class FleamarketCommentDetailView extends StatelessWidget {
                                                                                           Expanded(
                                                                                             child: Container(
                                                                                               child: TextButton(
-                                                                                                  onPressed: () {
-                                                                                                    _userViewModel.block_user({
-                                                                                                      "user_id" : _userViewModel.user.user_id,
-                                                                                                      "block_user_id" : user_id_reply
-                                                                                                    });
-                                                                                                    Navigator.pop(context);
+                                                                                                  onPressed: () async{
                                                                                                     Navigator.pop(context);
                                                                                                   },
                                                                                                   style: TextButton.styleFrom(
@@ -601,7 +598,16 @@ class FleamarketCommentDetailView extends StatelessWidget {
                                                                                             child: Container(
                                                                                               child: TextButton(
                                                                                                   onPressed: () async {
-
+                                                                                                    Navigator.pop(context);
+                                                                                                    Navigator.pop(context);
+                                                                                                    CustomFullScreenDialog.showDialog();
+                                                                                                    await _userViewModel.block_user({
+                                                                                                      "user_id" : _userViewModel.user.user_id,    //필수 - 차단하는 사람(나)
+                                                                                                      "block_user_id" : user_id_reply   //필수 - 내가 차단할 사람
+                                                                                                    });
+                                                                                                    await _fleamarketCommentDetailViewModel.fetchFleamarketCommentDetail(
+                                                                                                        commentId: _fleamarketCommentDetailViewModel.commentModel_flea.commentId!
+                                                                                                    );
                                                                                                   },
                                                                                                   style: TextButton.styleFrom(
                                                                                                     backgroundColor: Colors.transparent, // 배경색 투명
@@ -733,6 +739,9 @@ class FleamarketCommentDetailView extends StatelessWidget {
                                                                                           child: Container(
                                                                                             child: TextButton(
                                                                                                 onPressed: () async {
+                                                                                                  Navigator.pop(context);
+                                                                                                  Navigator.pop(context);
+                                                                                                  CustomFullScreenDialog.showDialog();
                                                                                                   await _fleamarketCommentDetailViewModel.deleteFleamarketReply(
                                                                                                       replyID: reply_id,
                                                                                                       userID: _userViewModel.user.user_id.toString()
@@ -741,8 +750,7 @@ class FleamarketCommentDetailView extends StatelessWidget {
                                                                                                       commentId: _fleamarketCommentDetailViewModel.commentModel_flea.commentId!
                                                                                                   );
                                                                                                   print('댓글 삭제 완료');
-                                                                                                  Navigator.pop(context);
-                                                                                                  Navigator.pop(context);
+                                                                                                  CustomFullScreenDialog.cancelDialog();
                                                                                                 },
                                                                                                 style: TextButton.styleFrom(
                                                                                                   backgroundColor: Colors.transparent, // 배경색 투명
@@ -862,6 +870,7 @@ class FleamarketCommentDetailView extends StatelessWidget {
                                       suffixIcon: IconButton(
                                         splashColor: Colors.transparent,
                                         onPressed: () async {
+                                          CustomFullScreenDialog.showDialog();
                                           if (_fleamarketCommentDetailViewModel.textEditingController.text.trim().isEmpty) {
                                             return;
                                           }
@@ -876,6 +885,7 @@ class FleamarketCommentDetailView extends StatelessWidget {
                                           );
                                           FocusScope.of(context).unfocus();
                                           _fleamarketCommentDetailViewModel.textEditingController.clear();
+                                          CustomFullScreenDialog.cancelDialog();
                                         },
                                         icon: (_fleamarketCommentDetailViewModel.isCommentButtonEnabled.value == false)
                                             ? Image.asset(

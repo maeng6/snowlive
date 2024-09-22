@@ -40,8 +40,8 @@ class NotificationController extends GetxController {
     _deviceToken.value = deviceToken ?? '';
     _deviceID.value = deviceId ?? '';
 
-    print('deviceToken: $_deviceToken');
-    print('deviceID: $_deviceID');
+    //print('deviceToken: $_deviceToken');
+    //print('deviceID: $_deviceID');
   }
 
   Future<String?> postMessage({required String fcmToken, required String title, required String body}) async {
@@ -91,12 +91,12 @@ class NotificationController extends GetxController {
 
     // 알림 클릭 시 앱이 열리는 처리
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-      print('알림 클릭 후 앱이 열림: ${message.notification?.title}');
+      //print('알림 클릭 후 앱이 열림: ${message.notification?.title}');
     });
 
     // 앱 종료 상태에서 알림 클릭 시 처리
     FirebaseMessaging.instance.getInitialMessage().then((RemoteMessage? message) {
-      print('앱이 종료된 상태에서 알림을 클릭해 앱이 열림: ${message?.notification?.title}');
+      //print('앱이 종료된 상태에서 알림을 클릭해 앱이 열림: ${message?.notification?.title}');
     });
   }
 
