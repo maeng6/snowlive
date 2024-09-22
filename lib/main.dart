@@ -62,9 +62,10 @@ void main() async {
 
   HttpOverrides.global = MyHttpOverrides();
   // Dependency Injection
-  Get.put(UserViewModel(), permanent: true);
-  Get.put(NotificationController(),permanent: true);
-  Get.put(AuthCheckViewModel(), permanent: true);
+  await Get.put(UserViewModel(), permanent: true);
+  await Get.put(NotificationController(),permanent: true);
+  await Get.put(AuthCheckViewModel(), permanent: true);
+  await Get.put(SplashController(),permanent: true);
 
   // FCM 푸시 알림 관련 초기화
   PushNotification.init();
@@ -108,16 +109,10 @@ class _MyAppState extends State<MyApp> {
 
   Future<void>? loadingSplashImgUrl;
   String splashUrl='';
+  bool gotoMainHome = false;
 
   //TODO: Dependency Injection********************************************
-  SplashController _splashController = Get.put(SplashController());
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    loadingSplashImgUrl = _splashController.getSplashUrl();
-  }
+  SplashController _splashController = Get.find<SplashController>();
 
   @override
   Widget build(BuildContext context) {
@@ -158,14 +153,15 @@ class _MyAppState extends State<MyApp> {
           ),
         ),
         home: FutureBuilder(
-          future: loadingSplashImgUrl,
+          future: _splashController.getSplashUrlandGotoMainHome(),
           builder: (context, snapshot){
             if (snapshot.connectionState == ConnectionState.done) {
               if (snapshot.hasError) {
                 return Center(child: Text('에러 발생: ${snapshot.error}'));
               }
               splashUrl = _splashController.url;
-              return SplashScreen(imageUrl: splashUrl);
+              gotoMainHome = _splashController.gotoMainHome;
+              return SplashScreen(imageUrl: splashUrl, gotoMainHome: gotoMainHome,);
             } else {
               return ExtendedImage.asset(
                 'assets/imgs/splash_screen/splash_logo.png',

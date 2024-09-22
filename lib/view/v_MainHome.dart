@@ -131,7 +131,6 @@ class MainHomeView extends StatelessWidget {
             RankingHomeView(),
             CommunityMainView(),
             MoreTabMainView()
-            // MoreTab(),
           ],
         )
     ));

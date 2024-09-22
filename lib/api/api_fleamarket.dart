@@ -220,7 +220,7 @@ class FleamarketAPI {
       Uri.parse('$baseUrl/comments/$commentId/').replace(queryParameters: {'user_id': userId.toString()}),
     );
     if(response.statusCode==204){
-      final data = json.decode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
+      final data = '';
       return ApiResponse.success(data);
     } else{
       final data = json.decode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
@@ -310,7 +310,8 @@ class FleamarketAPI {
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode(body),
     );
-    if(response.statusCode==201){
+
+    if(response.statusCode==201 || response.statusCode==400){
       final data = json.decode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
       return ApiResponse.success(data);
     } else{
@@ -325,7 +326,8 @@ class FleamarketAPI {
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode(body),
     );
-    if(response.statusCode==201){
+
+    if(response.statusCode==201|| response.statusCode==400){
       final data = json.decode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
       return ApiResponse.success(data);
     } else{
@@ -340,7 +342,7 @@ class FleamarketAPI {
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode(body),
     );
-    if(response.statusCode==201){
+    if(response.statusCode==201 || response.statusCode==400){
       final data = json.decode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
       return ApiResponse.success(data);
     } else{

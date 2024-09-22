@@ -46,7 +46,7 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
   @override
   void initState() {
     super.initState();
-    print(_userViewModel.user.user_id);
+    print('내 유저아이디 : ${_userViewModel.user.user_id}');
     _controller = AnimationController(
       vsync: this,
       duration: Duration(milliseconds: 1500),
@@ -782,8 +782,6 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                                               Get.toNamed(AppRoutes.friendList);
                                               await _friendListViewModel.fetchFriendList();
                                               await _friendListViewModel.fetchFriendRequestList(_userViewModel.user.user_id);
-                                              await _friendListViewModel.fetchBlockUserList();
-
                                             },
                                             child: Text(
                                               '친구 관리 바로가기',

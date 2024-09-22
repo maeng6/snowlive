@@ -50,7 +50,7 @@ class CommunityUploadViewModel extends GetxController {
 
       if (response.success) {
         _pk.value = response.data['community_id'];
-        print(pk);
+        print('커뮤니티 pk : $pk');
         print('Community post created successfully');
       } else {
         print('Failed to create community post: ${response.error}');
@@ -88,7 +88,6 @@ class CommunityUploadViewModel extends GetxController {
     isLoading.value = true;
     try {
       final response = await CommunityAPI().updateCommunity(pk, body);
-      print(pk);
 
       if (response.success) {
         print('Community post updated successfully');

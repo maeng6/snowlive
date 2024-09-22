@@ -5,6 +5,7 @@ import 'package:com.snowlive/api/api_friendDetail.dart';
 import 'package:com.snowlive/model/m_friendDetail.dart';
 import 'package:com.snowlive/model/m_friendsTalk.dart';
 import 'package:com.snowlive/viewmodel/util/vm_imageController.dart';
+import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_quill_extensions/services/image_picker/image_picker.dart';
 import 'package:get/get.dart';
@@ -53,7 +54,6 @@ class FriendDetailViewModel extends GetxController {
     _mainTabName = mainTabNameList[0].obs;
     _ridingStatisticsTabName = ridingStatisticsTabNameList[0].obs;
     await getCurrentSeason();
-    print('프디페 끝');
   }
 
   late RxList<String> mainTabNameList;
@@ -149,7 +149,6 @@ class FriendDetailViewModel extends GetxController {
           .map((item) => FriendsTalk.fromJson(item))
           .toList();
       _friendsTalk.value = talkList;
-      print(talkList);
     } else {
       Get.snackbar('Error', '데이터 로딩 실패');
     }
@@ -257,6 +256,7 @@ class FriendDetailViewModel extends GetxController {
     _seasonEndDate.value = documentSnapshot.get('endDate');
     String seasonDate = "${_seasonStartDate.value}, ${_seasonEndDate.value}";
     _seasonDate.value = seasonDate;
+    print('현재 시즌 : $seasonDate');
   }
 
   void updateSelectedDailyIndex(int index) {
@@ -287,15 +287,7 @@ class FriendDetailViewModel extends GetxController {
     isLoading(false);
   }
 
-  Future<void> blockUser(body) async {
-    isLoading(true);
-    ApiResponse response = await FriendDetailAPI().blockUser(body);
-    if(response.success)
-      print('차단 완료');
-    if(!response.success)
-      Get.snackbar('Error', '차단 실패');
-    isLoading(false);
-  }
+
 
   Future<void> unblockUser(body) async {
     isLoading(true);

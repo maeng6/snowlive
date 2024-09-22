@@ -1547,7 +1547,7 @@ class FriendDetailView extends StatelessWidget {
                                                                                                                     child: TextButton(
                                                                                                                         onPressed: () async{
                                                                                                                           Navigator.pop(context);
-                                                                                                                          await _friendDetailViewModel.blockUser({
+                                                                                                                          await _userViewModel.block_user({
                                                                                                                             "user_id" : _userViewModel.user.user_id,    //필수 - 차단하는 사람(나)
                                                                                                                             "block_user_id" : document.authorInfo.userId   //필수 - 내가 차단할 사람
                                                                                                                           });
@@ -1898,7 +1898,7 @@ class FriendDetailView extends StatelessWidget {
                                                                                                                     child: TextButton(
                                                                                                                         onPressed: () async{
                                                                                                                           Navigator.pop(context);
-                                                                                                                          await _friendDetailViewModel.blockUser({
+                                                                                                                          await _userViewModel.block_user({
                                                                                                                             "user_id" : _userViewModel.user.user_id,    //필수 - 차단하는 사람(나)
                                                                                                                             "block_user_id" : document.authorInfo.userId   //필수 - 내가 차단할 사람
                                                                                                                           });

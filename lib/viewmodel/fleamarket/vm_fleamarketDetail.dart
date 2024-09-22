@@ -5,6 +5,7 @@ import 'package:com.snowlive/model/m_fleamarketDetail.dart';
 import 'package:com.snowlive/util/util_1.dart';
 import 'package:com.snowlive/viewmodel/fleamarket/vm_fleamarketList.dart';
 import 'package:com.snowlive/viewmodel/vm_user.dart';
+import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -165,13 +166,21 @@ class FleamarketDetailViewModel extends GetxController {
 
       // 요청이 성공했는지 확인
       if (response.success) {
-        print('Report 완료');
+        if(response.data['message']=='Report has been submitted.') {
+          CustomFullScreenDialog.cancelDialog();
+          Get.snackbar('신고 완료', '신고 내역이 접수되었습니다.');
+        }
+        if(response.data['message']=='You have already reported this community.'){
+          CustomFullScreenDialog.cancelDialog();
+          Get.snackbar('신고 중복', '이미 신고한 글입니다.');
+        }
       } else {
         // 실패 시 오류 메시지 표시
         Get.snackbar('Error', '리포트 실패');
       }
     } catch (e) {
       // 예외 처리
+      CustomFullScreenDialog.cancelDialog();
       print('Error reporting fleamarket: $e');
       Get.snackbar('Error', '리포트 중 오류 발생');
     } finally {
@@ -343,17 +352,18 @@ class FleamarketDetailViewModel extends GetxController {
 
       // 요청이 성공했는지 확인
       if (response.success) {
-        print('댓글 Report 완료');
-      } else {
-        // 실패 시 오류 메시지 표시
-        if(response.error['message'] == 'You have already reported this comment.'){
-          Get.snackbar('신고 중복','이미 신고한 댓글입니다.');
-        }else{
-          Get.snackbar('Error', '댓글 Report 실패');
+        if(response.data['message']=='Comment has been reported.') {
+          CustomFullScreenDialog.cancelDialog();
+          Get.snackbar('신고 완료', '신고 내역이 접수되었습니다.');
+        }
+        if(response.data['message']=='You have already reported this comment.'){
+          CustomFullScreenDialog.cancelDialog();
+          Get.snackbar('신고 중복', '이미 신고한 글입니다.');
         }
       }
     } catch (e) {
       // 예외 처리
+      CustomFullScreenDialog.cancelDialog();
       print('Error reporting comment: $e');
       Get.snackbar('Error', '리포트 중 오류 발생');
     } finally {
