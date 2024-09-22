@@ -25,7 +25,7 @@ class CrewMemberSettingsView extends StatelessWidget {
         return Padding(
           padding: EdgeInsets.only(left: 16, right: 16, bottom: 48), // 양옆과 아래를 띄움
           child: Container(
-            height: 144, // 적절한 높이 설정
+            height: 180, // 적절한 높이 설정
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(16), // 모서리 둥글게 설정
@@ -33,6 +33,74 @@ class CrewMemberSettingsView extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
+                ListTile(
+                  title: Center(
+                    child: Text(
+                      '크루장 위임',
+                      style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.bold,
+                        color: SDSColor.snowliveBlack,
+                      ),
+                    ),
+                  ),
+                  onTap: () {
+                    // 권한 변경 로직 확인 팝업
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          title: Text('크루장을 위임하시겠습니까?',
+                            style: TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.bold
+                            ),
+                          ),
+                          actions: [
+                            TextButton(
+                              onPressed: () {
+                                Get.back(); // 팝업 닫기
+                              },
+                              child: Text(
+                                '아니오',
+                                style: TextStyle(
+                                    color: SDSColor.snowliveBlack,
+                                    fontSize: 15
+                                ),
+                              ),
+                            ),
+                            TextButton(
+                              onPressed: () async {
+                                // 권한 변경 로직 실행
+                                await _crewMemberListViewModel.updateCrewMemberStatus(
+                                    crewMemberUserId: _crewMemberListViewModel.crewMembersList[index].userInfo!.userId!,
+                                    newStatus: '크루장');
+                                await _crewMemberListViewModel.updateCrewMemberStatus(
+                                    crewMemberUserId: _userViewModel.user.user_id,
+                                    newStatus: '운영진');
+                                await _crewMemberListViewModel.fetchCrewMembers(crewId: _userViewModel.user.crew_id);
+                                print('크루장 위임에 성공하였습니다');
+                                Get.back(); // 팝업 닫기
+                                Get.back(); // bottom sheet 닫기
+                              },
+                              child: Text(
+                                '예',
+                                style: TextStyle(
+                                    color: SDSColor.snowliveBlack,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 15
+                                ),
+                              ),
+                            ),
+                          ],
+                        );
+                      },
+                    );
+                  },
+                ),
                 ListTile(
                   title: Center(
                     child: Text(

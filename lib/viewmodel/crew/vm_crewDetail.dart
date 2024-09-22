@@ -1,6 +1,8 @@
 import 'package:com.snowlive/model/m_resortModel.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewMemberList.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewNotice.dart';
+import 'package:com.snowlive/viewmodel/friend/vm_friendDetail.dart';
+import 'package:com.snowlive/viewmodel/vm_user.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:com.snowlive/api/api_crew.dart';
@@ -10,6 +12,8 @@ class CrewDetailViewModel extends GetxController {
 
   final CrewMemberListViewModel _crewMemberListViewModel = Get.find<CrewMemberListViewModel>();
   final CrewNoticeViewModel _crewNoticeViewModel = Get.find<CrewNoticeViewModel>();
+  final UserViewModel _userViewModel = Get.find<UserViewModel>();
+  final FriendDetailViewModel _friendDetailViewModel = Get.find<FriendDetailViewModel>();
 
   TextEditingController textEditingController_description = TextEditingController();
   final formKey_description = GlobalKey<FormState>();
@@ -48,6 +52,9 @@ class CrewDetailViewModel extends GetxController {
   String get color => crewDetailInfo.color ?? 'FFFFFF';
   String get resortName => _resortName.value;
   String get notice => crewDetailInfo.notice ?? '';
+  bool get permission_join => crewDetailInfo.permissionJoin ?? true;
+  bool get permission_desc => crewDetailInfo.permissionDesc ?? true;
+  bool get permission_notice => crewDetailInfo.permissionNotice ?? true;
 
   double get overallTotalScore => seasonRankingInfo.overallTotalScore ?? 0;
   int get overallRank => seasonRankingInfo.overallRank ?? 0;
@@ -126,5 +133,111 @@ class CrewDetailViewModel extends GetxController {
       'description': description,
     };
   }
+
+
+  // 크루 가입 신청 허가 권한 토글
+  Future<void> togglePermissionJoin(bool value) async{
+    crewDetailInfo.permissionJoin = value;
+    isLoading.value = true;  // 로딩 시작
+    try {
+      final updateCrewData = {
+        "user_id": _userViewModel.user.user_id,
+        "crew_name": crewName,
+        "permission_join": value,
+      };
+
+      // 서버에 크루 세부사항 업데이트 요청
+      var response = await CrewAPI().updateCrewDetails(crewDetailInfo.crewId!, updateCrewData);
+
+      if (response.success) {
+        // 업데이트 성공 후 필요한 추가 작업 (예: 로컬 모델 업데이트)
+        await fetchCrewDetail(
+            _userViewModel.user.crew_id,
+            _friendDetailViewModel.seasonDate
+        );
+        Get.snackbar("성공", "운영진 권한이 성공적으로 변경되었습니다");
+      } else {
+        // 오류 메시지 출력
+        Get.snackbar("오류", "크루 세부사항 업데이트 실패: ${response.error}");
+      }
+    } catch (e) {
+      print("크루 세부사항 업데이트 중 예외 발생: $e");
+      Get.snackbar("오류", "크루 세부사항 업데이트 중 문제가 발생했습니다.");
+    } finally {
+      isLoading.value = false;  // 로딩 종료
+    }
+
+
+  }
+
+  // 크루 소개글 변경 권한 토글
+  Future<void> togglePermissionDesc(bool value) async{
+    crewDetailInfo.permissionDesc = value;
+    isLoading.value = true;  // 로딩 시작
+    try {
+      final updateCrewData = {
+        "user_id": _userViewModel.user.user_id,
+        "crew_name": crewName,
+        "permission_desc": crewDetailInfo.permissionDesc,
+      };
+
+      // 서버에 크루 세부사항 업데이트 요청
+      var response = await CrewAPI().updateCrewDetails(crewDetailInfo.crewId!, updateCrewData);
+
+      if (response.success) {
+        // 업데이트 성공 후 필요한 추가 작업 (예: 로컬 모델 업데이트)
+        await fetchCrewDetail(
+            _userViewModel.user.crew_id,
+            _friendDetailViewModel.seasonDate
+        );
+        Get.snackbar("성공", "운영진 권한이 성공적으로 변경되었습니다");
+      } else {
+        // 오류 메시지 출력
+        Get.snackbar("오류", "크루 세부사항 업데이트 실패: ${response.error}");
+      }
+    } catch (e) {
+      print("크루 세부사항 업데이트 중 예외 발생: $e");
+      Get.snackbar("오류", "크루 세부사항 업데이트 중 문제가 발생했습니다.");
+    } finally {
+      isLoading.value = false;  // 로딩 종료
+    }
+
+  }
+
+  // 공지사항 추가 권한 토글
+  Future<void> togglePermissionNotice(bool value) async{
+    crewDetailInfo.permissionNotice = value;
+    isLoading.value = true;  // 로딩 시작
+    try {
+      final updateCrewData = {
+        "user_id": _userViewModel.user.user_id,
+        "crew_name": crewName,
+        "permission_desc": crewDetailInfo.permissionNotice,
+      };
+
+      // 서버에 크루 세부사항 업데이트 요청
+      var response = await CrewAPI().updateCrewDetails(crewDetailInfo.crewId!, updateCrewData);
+
+      if (response.success) {
+        // 업데이트 성공 후 필요한 추가 작업 (예: 로컬 모델 업데이트)
+        await fetchCrewDetail(
+            _userViewModel.user.crew_id,
+            _friendDetailViewModel.seasonDate
+        );
+        Get.snackbar("성공", "운영진 권한이 성공적으로 변경되었습니다");
+      } else {
+        // 오류 메시지 출력
+        Get.snackbar("오류", "크루 세부사항 업데이트 실패: ${response.error}");
+      }
+    } catch (e) {
+      print("크루 세부사항 업데이트 중 예외 발생: $e");
+      Get.snackbar("오류", "크루 세부사항 업데이트 중 문제가 발생했습니다.");
+    } finally {
+      isLoading.value = false;  // 로딩 종료
+    }
+  }
+
+
+
 
 }
