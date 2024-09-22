@@ -249,48 +249,71 @@ class FriendDetailView extends StatelessWidget {
                                               onPressed: () async{
                                                 Get.dialog(
                                                     AlertDialog(
-                                                      contentPadding: EdgeInsets.only(bottom: 0, left: 20, right: 20, top: 30),
+                                                      backgroundColor: SDSColor.snowliveWhite,
+                                                      contentPadding: EdgeInsets.only(bottom: 0, left: 28, right: 28, top: 36),
                                                       elevation: 0,
                                                       shape: RoundedRectangleBorder(
-                                                          borderRadius: BorderRadius.circular(10.0)),
-                                                      buttonPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 0),
-                                                      content: Text(
-                                                        '친구등록 요청을 보내시겠습니까?',
-                                                        style: TextStyle(
-                                                            fontWeight: FontWeight.w600,
-                                                            fontSize: 15),
+                                                          borderRadius: BorderRadius.circular(16)),
+                                                      buttonPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+                                                      content: Container(
+                                                        height: 40,
+                                                        child: Column(
+                                                          crossAxisAlignment: CrossAxisAlignment.center,
+                                                          children: [
+                                                            Text(
+                                                              '친구등록 요청을 보내시겠습니까?',
+                                                              style: SDSTextStyle.bold.copyWith(
+                                                                  fontSize: 15,
+                                                                  color: SDSColor.gray900),
+                                                            ),
+                                                          ],
+                                                        ),
                                                       ),
                                                       actions: [
-                                                        Row(
-                                                          children: [
-                                                            TextButton(
-                                                                onPressed: () async {
-                                                                  Navigator.pop(context);
-                                                                },
-                                                                child: Text('취소',
-                                                                  style: TextStyle(
-                                                                    fontSize: 15,
-                                                                    color: Color(0xFF949494),
-                                                                    fontWeight: FontWeight.bold,
-                                                                  ),
-                                                                )),
-                                                            TextButton(
-                                                                onPressed: () async {
-                                                                  Navigator.pop(context);
-                                                                  await _friendDetailViewModel.sendFriendRequest({
-                                                                    "user_id": _userViewModel.user.user_id,    //필수 - 신청자 (나)
-                                                                    "friend_user_id": _friendDetailViewModel.friendDetailModel.friendUserInfo.userId    //필수 - 신청받는사람
-                                                                  });
-                                                                },
-                                                                child: Text('보내기',
-                                                                  style: TextStyle(
-                                                                    fontSize: 15,
-                                                                    color: Color(0xFF3D83ED),
-                                                                    fontWeight: FontWeight.bold,
-                                                                  ),
-                                                                )),
-                                                          ],
-                                                          mainAxisAlignment: MainAxisAlignment.end,
+                                                        Padding(
+                                                          padding: EdgeInsets.only(top: 10, left: 16, right: 16),
+                                                          child: Row(
+                                                            children: [
+                                                              Expanded(
+                                                                child: Container(
+                                                                  child: TextButton(
+                                                                      onPressed: () async {
+                                                                        Navigator.pop(context);
+                                                                      },
+                                                                      child: Text('취소',
+                                                                        style: TextStyle(
+                                                                          fontSize: 15,
+                                                                          color: Color(0xFF949494),
+                                                                          fontWeight: FontWeight.bold,
+                                                                        ),
+                                                                      )),
+                                                                ),
+                                                              ),
+                                                              SizedBox(
+                                                                width: 10,
+                                                              ),
+                                                              Expanded(
+                                                                child: Container(
+                                                                  child: TextButton(
+                                                                      onPressed: () async {
+                                                                        Navigator.pop(context);
+                                                                        await _friendDetailViewModel.sendFriendRequest({
+                                                                          "user_id": _userViewModel.user.user_id,    //필수 - 신청자 (나)
+                                                                          "friend_user_id": _friendDetailViewModel.friendDetailModel.friendUserInfo.userId    //필수 - 신청받는사람
+                                                                        });
+                                                                      },
+                                                                      child: Text('보내기',
+                                                                        style: TextStyle(
+                                                                          fontSize: 15,
+                                                                          color: Color(0xFF3D83ED),
+                                                                          fontWeight: FontWeight.bold,
+                                                                        ),
+                                                                      )),
+                                                                ),
+                                                              ),
+                                                            ],
+                                                            mainAxisAlignment: MainAxisAlignment.end,
+                                                          ),
                                                         )
                                                       ],
                                                     ));
@@ -1340,9 +1363,9 @@ class FriendDetailView extends StatelessWidget {
                                                                                                 contentPadding: EdgeInsets.zero,
                                                                                                 title: Center(
                                                                                                   child: Text('신고하기',
-                                                                                                    style: TextStyle(
+                                                                                                    style: SDSTextStyle.bold.copyWith(
                                                                                                       fontSize: 15,
-                                                                                                      fontWeight: FontWeight.bold,
+                                                                                                      color: SDSColor.gray900,
                                                                                                     ),
                                                                                                   ),
                                                                                                 ),
@@ -1363,9 +1386,9 @@ class FriendDetailView extends StatelessWidget {
                                                                                                             children: [
                                                                                                               Text(
                                                                                                                 '이 회원을 신고하시겠습니까?',
-                                                                                                                style: TextStyle(
-                                                                                                                    fontWeight: FontWeight.w600,
-                                                                                                                    fontSize: 15),
+                                                                                                                style: SDSTextStyle.bold.copyWith(
+                                                                                                                    fontSize: 15,
+                                                                                                                    color: SDSColor.gray900),
                                                                                                               ),
                                                                                                               SizedBox(
                                                                                                                 height: 6,
