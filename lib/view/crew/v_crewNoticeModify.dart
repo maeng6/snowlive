@@ -7,7 +7,6 @@ import 'package:get/get.dart';
 class CrewNoticeModifyView extends StatelessWidget {
 
   final CrewNoticeViewModel _crewNoticeViewModel = Get.find<CrewNoticeViewModel>();
-  final CrewDetailViewModel _crewDetailViewModel = Get.find<CrewDetailViewModel>();
 
 
   CrewNoticeModifyView() {
@@ -15,7 +14,7 @@ class CrewNoticeModifyView extends StatelessWidget {
     Map<String, dynamic> args = Get.arguments;
     int noticeId = args['noticeId'];
     String noticeText = args['noticeText'] ?? '';
-    _crewNoticeViewModel.noticeController.text = noticeText;
+    _crewNoticeViewModel.noticeModifyController.text = noticeText;
     _noticeId = noticeId;
   }
 
@@ -70,7 +69,7 @@ class CrewNoticeModifyView extends StatelessWidget {
               Form(
                 key: _crewNoticeViewModel.formKeyNotice,
                 child: TextFormField(
-                  controller: _crewNoticeViewModel.noticeController,
+                  controller: _crewNoticeViewModel.noticeModifyController,
                   maxLength: 100,  // 최대 100자 제한
                   maxLines: 10,
                   decoration: InputDecoration(
@@ -101,7 +100,7 @@ class CrewNoticeModifyView extends StatelessWidget {
                       Get.back();
                       await _crewNoticeViewModel.updateCrewNotice(
                           _noticeId!,
-                          _crewNoticeViewModel.noticeController.text
+                          _crewNoticeViewModel.noticeModifyController.text
                       );
                     }
                   },

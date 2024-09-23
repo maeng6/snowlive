@@ -59,95 +59,95 @@ class MoreTabMainView extends StatelessWidget {
                 height: 24,
               ),
               Obx(() => GestureDetector(
-                  onTap: () async{
-                    CustomFullScreenDialog.showDialog();
-                    await _friendDetailViewModel.fetchFriendDetailInfo(
-                      userId: _userViewModel.user.user_id,
-                      friendUserId: _userViewModel.user.user_id,
-                      season: _friendDetailViewModel.seasonDate,
-                    );
-                    CustomFullScreenDialog.cancelDialog();
-                    Get.toNamed(AppRoutes.friendDetail);
-                  },
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 16),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(14),
-                        color: Color(0xFFF1F1F3),
-                      ),
-                      width: _size.width - 32,
-                      child: Padding(
-                        padding:
-                        EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Row(
-                              children: [
-                                (_userViewModel.user.profile_image_url_user != '')
-                                    ? Container(
+                onTap: () async{
+                  CustomFullScreenDialog.showDialog();
+                  await _friendDetailViewModel.fetchFriendDetailInfo(
+                    userId: _userViewModel.user.user_id,
+                    friendUserId: _userViewModel.user.user_id,
+                    season: _friendDetailViewModel.seasonDate,
+                  );
+                  CustomFullScreenDialog.cancelDialog();
+                  Get.toNamed(AppRoutes.friendDetail);
+                },
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 16),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(14),
+                      color: Color(0xFFF1F1F3),
+                    ),
+                    width: _size.width - 32,
+                    child: Padding(
+                      padding:
+                      EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              (_userViewModel.user.profile_image_url_user != '')
+                                  ? Container(
+                                width: 56,
+                                child: ExtendedImage.network(
+                                  _userViewModel.user.profile_image_url_user,
+                                  shape: BoxShape.circle,
                                   width: 56,
-                                  child: ExtendedImage.network(
-                                    _userViewModel.user.profile_image_url_user,
-                                    shape: BoxShape.circle,
-                                    width: 56,
-                                    height: 56,
-                                    fit: BoxFit.cover,
-                                  ),
-                                )
-                                    : Container(
-                                  width: 56,
-                                  child: ExtendedImage.asset(
-                                    'assets/imgs/profile/img_profile_default_circle.png',
-                                    shape: BoxShape.circle,
-                                    width: 56,
-                                    height: 56,
-                                    fit: BoxFit.cover,
-                                  ),
+                                  height: 56,
+                                  fit: BoxFit.cover,
                                 ),
-                                Padding(
-                                  padding: const EdgeInsets.only(left: 10),
-                                  child: Container(
-                                    width: _size.width - 160,
-                                    child: Column(
-                                      mainAxisAlignment:  _userViewModel.user.state_msg != ''
-                                          ? MainAxisAlignment.center
-                                          : MainAxisAlignment.start,
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          _userViewModel.user.display_name,
-                                          style: TextStyle(
-                                            color: Color(0xFF111111),
-                                            fontSize: 15,
-                                          ),
+                              )
+                                  : Container(
+                                width: 56,
+                                child: ExtendedImage.asset(
+                                  'assets/imgs/profile/img_profile_default_circle.png',
+                                  shape: BoxShape.circle,
+                                  width: 56,
+                                  height: 56,
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 10),
+                                child: Container(
+                                  width: _size.width - 160,
+                                  child: Column(
+                                    mainAxisAlignment:  _userViewModel.user.state_msg != ''
+                                        ? MainAxisAlignment.center
+                                        : MainAxisAlignment.start,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        _userViewModel.user.display_name,
+                                        style: TextStyle(
+                                          color: Color(0xFF111111),
+                                          fontSize: 15,
                                         ),
-                                        if (_userViewModel.user.state_msg != '' && _userViewModel.user.state_msg != null)
-                                          Text(
-                                            _userViewModel.user.state_msg,
-                                            style: TextStyle(
-                                              color: Color(0xFF949494),
-                                              fontSize: 13,
-                                            ),
-                                            overflow: TextOverflow.ellipsis,
+                                      ),
+                                      if (_userViewModel.user.state_msg != '' && _userViewModel.user.state_msg != null)
+                                        Text(
+                                          _userViewModel.user.state_msg,
+                                          style: TextStyle(
+                                            color: Color(0xFF949494),
+                                            fontSize: 13,
                                           ),
-                                      ],
-                                    ),
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                    ],
                                   ),
                                 ),
-                              ],
-                            ),
-                            SizedBox(
-                              width: 16,
-                            ),
-                          ],
-                        ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(
+                            width: 16,
+                          ),
+                        ],
                       ),
                     ),
                   ),
                 ),
+              ),
               ),
               SizedBox(height: 30),
               Container(
@@ -186,12 +186,15 @@ class MoreTabMainView extends StatelessWidget {
                               Get.toNamed(AppRoutes.onBoardingCrewMain);
                             }
                             else{
-                              Get.toNamed(AppRoutes.crewMain);
+                              CustomFullScreenDialog.showDialog();
                               await _crewDetailViewModel.fetchCrewDetail(
                                   _userViewModel.user.crew_id,
-                                _friendDetailViewModel.seasonDate
+                                  _friendDetailViewModel.seasonDate
                               );
                               await _crewMemberListViewModel.fetchCrewMembers(crewId: _userViewModel.user.crew_id);
+                              CustomFullScreenDialog.cancelDialog();
+                              Get.toNamed(AppRoutes.crewMain);
+
                             }
                           },
                           child: Column(
@@ -259,7 +262,7 @@ class MoreTabMainView extends StatelessWidget {
                 contentPadding: EdgeInsets.symmetric(horizontal: 16),
                 minVerticalPadding: 20,
                 onTap: () {
-                 otherShare(contents: 'http://pf.kakao.com/_LxnDdG/chat');
+                  otherShare(contents: 'http://pf.kakao.com/_LxnDdG/chat');
                 },
                 title: Stack(
                   children: [
