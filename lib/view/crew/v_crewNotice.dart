@@ -1,5 +1,6 @@
 import 'package:com.snowlive/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewNotice.dart';
+import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -56,7 +57,7 @@ class CrewNoticeCreateView extends StatelessWidget {
                 child: TextFormField(
                   controller: _crewNoticeViewModel.noticeController,
                   maxLength: 100,  // 최대 100자 제한
-                  maxLines: 10,
+                  maxLines: 7,
                   decoration: InputDecoration(
                     hintText: '공지사항을 입력해 주세요. (최대 100자 이내)',
                     hintStyle: TextStyle(
@@ -82,8 +83,10 @@ class CrewNoticeCreateView extends StatelessWidget {
                 child: ElevatedButton(
                   onPressed: () async {
                     if (_crewNoticeViewModel.formKeyNotice.currentState!.validate()) {
-                      Get.back();
+                      CustomFullScreenDialog.showDialog();
                       await _crewNoticeViewModel.createCrewNotice();
+                      CustomFullScreenDialog.cancelDialog();
+                      Get.back();
                     }
                   },
                   style: ElevatedButton.styleFrom(
@@ -102,6 +105,7 @@ class CrewNoticeCreateView extends StatelessWidget {
                   ),
                 ),
               ),
+              SizedBox(height: 30,)
             ],
           ),
         ),

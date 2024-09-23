@@ -1,6 +1,7 @@
 import 'package:com.snowlive/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_setCrew.dart';
 import 'package:com.snowlive/widget/w_favoriteResort.dart';
+import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -102,7 +103,9 @@ class SetCrewNameAndResortView extends StatelessWidget {
                       child: TextButton(
                         onPressed: (_setCrewViewModel.crewName.isNotEmpty && !_setCrewViewModel.isCrewNameChecked)
                             ? () async {
+                          CustomFullScreenDialog.showDialog();
                           await _setCrewViewModel.checkCrewName();
+                          CustomFullScreenDialog.cancelDialog();
                           FocusScope.of(context).unfocus();
                           if (!_setCrewViewModel.isCrewNameChecked) {
                             print('이미 존재하는 크루명입니다');
@@ -112,7 +115,7 @@ class SetCrewNameAndResortView extends StatelessWidget {
                         child: Obx(() => Text(
                           _setCrewViewModel.isCrewNameChecked ? '검사완료' : '중복검사',
                           style: TextStyle(
-                            color: (_setCrewViewModel.crewName.isNotEmpty)
+                            color: (_setCrewViewModel.crewName.isNotEmpty && !_setCrewViewModel.isCrewNameChecked)
                                 ? SDSColor.snowliveBlue
                                 : SDSColor.gray400,
                             fontWeight: FontWeight.bold,

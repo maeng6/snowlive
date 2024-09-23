@@ -2,6 +2,7 @@ import 'package:com.snowlive/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewDetail.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_setCrew.dart';
 import 'package:com.snowlive/viewmodel/vm_user.dart';
+import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -87,9 +88,11 @@ class CrewDescriptionView extends StatelessWidget {
                 width: double.infinity,
                 height: 48,
                 child: ElevatedButton(
-                  onPressed: () {
+                  onPressed: () async{
                     if (_crewDetailViewModel.formKey_description.currentState!.validate()) {
-                      _setCrewViewModel.updateCrewDetails(_userViewModel.user.crew_id);
+                      CustomFullScreenDialog.showDialog();
+                      await _setCrewViewModel.updateCrewDetails(_userViewModel.user.crew_id);
+                      CustomFullScreenDialog.cancelDialog();
                       Get.back();
                     }
                   },
@@ -109,6 +112,7 @@ class CrewDescriptionView extends StatelessWidget {
                   ),
                 ),
               ),
+              SizedBox(height: 30,)
             ],
           ),
         ),

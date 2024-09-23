@@ -3,6 +3,7 @@ import 'package:com.snowlive/view/crew/v_crewHome.dart';
 import 'package:com.snowlive/view/crew/v_crewMember.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewMain.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewMemberList.dart';
+import 'package:com.snowlive/viewmodel/crew/vm_searchCrew.dart';
 import 'package:com.snowlive/viewmodel/vm_mainHome.dart';
 import 'package:com.snowlive/viewmodel/vm_user.dart';
 import 'package:flutter/material.dart';
@@ -13,8 +14,7 @@ class CrewMainView extends StatelessWidget {
 
   final CrewMainViewModel _crewMainViewModel = Get.find<CrewMainViewModel>();
   final MainHomeViewModel _mainHomeViewModel = Get.find<MainHomeViewModel>();
-  final CrewMemberListViewModel _crewMemberListViewModel = Get.find<CrewMemberListViewModel>();
-  final UserViewModel _userViewModel = Get.find<UserViewModel>();
+  final SearchCrewViewModel _searchCrewViewModel = Get.find<SearchCrewViewModel>();
 
   @override
   Widget build(BuildContext context) {
@@ -32,6 +32,17 @@ class CrewMainView extends StatelessWidget {
           children: [
             AppBar(
               actions: [
+                IconButton(
+                    onPressed: () {
+                      _searchCrewViewModel.textEditingController.clear();
+                      _searchCrewViewModel.crewList.clear();
+                      _searchCrewViewModel.showRecentSearch.value = true;
+                      Get.toNamed(AppRoutes.searchCrew);
+                    },
+                    icon: Icon(Icons.search,
+                      size: 26,
+                    )
+                ),
                 Padding(
                   padding: EdgeInsets.only(right: 5),
                   child: IconButton(

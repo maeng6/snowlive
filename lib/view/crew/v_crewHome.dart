@@ -1,4 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:com.snowlive/data/imgaUrls/Data_url_image.dart';
 import 'package:com.snowlive/routes/routes.dart';
 import 'package:com.snowlive/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewApply.dart';
@@ -7,6 +8,7 @@ import 'package:com.snowlive/viewmodel/crew/vm_crewMemberList.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewNotice.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewRecordRoom.dart';
 import 'package:com.snowlive/viewmodel/vm_user.dart';
+import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 import 'package:com.snowlive/widget/w_verticalDivider.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
@@ -38,7 +40,8 @@ class CrewHomeView extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               SizedBox(height: 20,),
-              if(_crewNoticeViewModel.noticeList.isNotEmpty)
+              if(_crewNoticeViewModel.noticeList.isNotEmpty
+                  && _userViewModel.user.crew_id == _crewDetailViewModel.crewDetailInfo.crewId)
                 GestureDetector(
                   onTap: () async{
                     Get.toNamed(AppRoutes.crewNoticeList);
@@ -129,12 +132,16 @@ class CrewHomeView extends StatelessWidget {
                                         ),
                                         width: 56,
                                         height: 56,
-                                        child: Image.asset(
-                                          'assets/imgs/liveCrew/img_liveCrew_logo_setCrewImage.png',
+                                        child: ExtendedImage.network(
+                                          '${crewDefaultLogoUrl['${_crewDetailViewModel.color}']}',
+                                          enableMemoryCache: true,
+                                          shape: BoxShape.rectangle,
+                                          borderRadius: BorderRadius.circular(10),
                                           width: 56,
                                           height: 56,
                                           fit: BoxFit.cover,
                                         ),
+
                                       ),
                                     ),
                                   const SizedBox(width: 15),
@@ -779,13 +786,16 @@ class CrewHomeView extends StatelessWidget {
                                                   child: ElevatedButton(
                                                     onPressed: _crewApplyViewModel.isSubmitButtonEnabled.value == true
                                                         ? () async {
+                                                      Navigator.pop(context);
+                                                      CustomFullScreenDialog.showDialog();
                                                       await _crewApplyViewModel.applyForCrew(
                                                         _crewDetailViewModel.crewDetailInfo.crewId!,
                                                         _userViewModel.user.user_id,
                                                         _crewApplyViewModel.textEditingController.text,
                                                       );
                                                       _crewApplyViewModel.textEditingController.clear();
-                                                      Navigator.pop(context);
+                                                      _crewApplyViewModel.isSubmitButtonEnabled.value = false;
+
                                                     }
                                                         : null, // 버튼 비활성화 시 null
                                                     child: Text(

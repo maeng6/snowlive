@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:com.snowlive/data/imgaUrls/Data_url_image.dart';
 import 'package:com.snowlive/model/m_crewList.dart';
 import 'package:com.snowlive/routes/routes.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewApply.dart';
@@ -38,8 +39,8 @@ class SetCrewImageAndColorView extends StatelessWidget {
                   height: 26,
                 ),
                 onTap: () {
-                  _setCrewViewModel.resetImageAndColor(); // 이미지와 색상만 초기화
                   Navigator.pop(context);
+                  _setCrewViewModel.resetImageAndColor(); // 이미지와 색상만 초기화
                 },
               ),
               backgroundColor: Colors.white,
@@ -122,10 +123,13 @@ class SetCrewImageAndColorView extends StatelessWidget {
                                 :Center(
                                   child: ClipRRect(
                                     borderRadius: BorderRadius.circular(20),
-                                    child: ExtendedImage.asset(
-                                      'assets/imgs/liveCrew/img_liveCrew_logo_setCrewImage.png',
-                                      width: 130, // 배경 안에 들어가도록 크기 조정
-                                      height: 130,
+                                    child: ExtendedImage.network(
+                                      '${crewDefaultLogoUrl['${_setCrewViewModel.colorToHex(_setCrewViewModel.currentColor.value)}']}',
+                                      enableMemoryCache: true,
+                                      shape: BoxShape.rectangle,
+                                      borderRadius: BorderRadius.circular(10),
+                                      width: 80,
+                                      height: 80,
                                       fit: BoxFit.cover,
                                       cacheRawData: true,
                                       enableLoadState: true,
@@ -369,8 +373,10 @@ class SetCrewImageAndColorView extends StatelessWidget {
                       },
                     );
                   } else{
-                    Get.toNamed(AppRoutes.crewMain);
+                    CustomFullScreenDialog.showDialog();
                     await _setCrewViewModel.createCrew();
+                    CustomFullScreenDialog.cancelDialog();
+                    Get.toNamed(AppRoutes.crewMain);
                   }
                 },
                 child: Text(

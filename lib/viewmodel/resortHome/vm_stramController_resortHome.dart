@@ -24,6 +24,7 @@ class StreamController_ResortHome extends GetxController {
     return FirebaseFirestore.instance
         .collection('chat')
         .orderBy('createdAt', descending: true)
+        .limit(500)
         .snapshots();
   }
 

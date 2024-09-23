@@ -1,5 +1,7 @@
 import 'package:com.snowlive/data/snowliveDesignStyle.dart';
+import 'package:com.snowlive/routes/routes.dart';
 import 'package:com.snowlive/viewmodel/vm_user.dart';
+import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:com.snowlive/model/m_crewMemberList.dart';
@@ -15,6 +17,7 @@ class CrewMemberListViewModel extends GetxController {
   int get totalMemberCount => crewMemberListResponse.value.totalMemberCount ?? 0;
   int get liveMemberCount => crewMemberListResponse.value.liveMemberCount ?? 0;
   List<CrewMember> get crewMembersList => crewMemberListResponse.value.crewMembers ?? [];
+
 
   // 로딩 상태 관리
   RxBool isLoading = false.obs;
@@ -134,12 +137,19 @@ class CrewMemberListViewModel extends GetxController {
 
       // 성공적으로 롤 업데이트된 경우 처리
       if (response.success) {
+        await fetchCrewMembers(crewId: _userViewModel.user.crew_id);
+        await _userViewModel.updateUserModel_api(_userViewModel.user.user_id);
+        CustomFullScreenDialog.cancelDialog();
+        Get.offAllNamed(AppRoutes.mainHome);
         print("성공적으로 탈퇴처리 되었습니다.");
         // 여기서 필요한 로직 추가 (예: UI 업데이트, 리스트 갱신 등)
       } else {
+        CustomFullScreenDialog.cancelDialog();
+        Get.snackbar('탈퇴 실패', '잠시후 다시 시도해주세요.');
         print('탈퇴 중 오류 발생: ${response.error}');
       }
     } catch (e) {
+      CustomFullScreenDialog.cancelDialog();
       // 예외 처리
       print('탈퇴 중 예외 발생: $e');
     }

@@ -1,4 +1,5 @@
 import 'dart:ffi';
+import 'package:com.snowlive/data/imgaUrls/Data_url_image.dart';
 import 'package:com.snowlive/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/model/m_crewList.dart';
 import 'package:com.snowlive/routes/routes.dart';
@@ -8,6 +9,7 @@ import 'package:com.snowlive/viewmodel/crew/vm_crewMemberList.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_searchCrew.dart';
 import 'package:com.snowlive/viewmodel/friend/vm_friendDetail.dart';
 import 'package:com.snowlive/viewmodel/vm_user.dart';
+import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -61,10 +63,10 @@ class _SearchCrewViewState extends State<SearchCrewView> {
                   height: 26,
                 ),
                 onTap: () {
-                  Get.back();
-                  _searchCrewViewModel.textEditingController.clear(); // 텍스트 필드 클리어
+                  _searchCrewViewModel.textEditingController.clear();
                   _searchCrewViewModel.crewList.clear();
-                  _searchCrewViewModel.showRecentSearch.value = true;  // 입력이 없으면 최근 검색어 보여주기
+                  _searchCrewViewModel.showRecentSearch.value = true;
+                  Get.back();
                 },
               ),
               elevation: 0.0,
@@ -98,9 +100,11 @@ class _SearchCrewViewState extends State<SearchCrewView> {
                                 if (val.isEmpty) {
                                   _searchCrewViewModel.showRecentSearch.value = true;  // 검색어 없을 때 최근 검색어 노출
                                 } else {
+                                  CustomFullScreenDialog.showDialog();
                                   _searchCrewViewModel.showRecentSearch.value = false;  // 검색 결과 표시
                                   await _searchCrewViewModel.searchCrews(val);
                                   await _searchCrewViewModel.saveRecentSearch(val);
+                                  CustomFullScreenDialog.cancelDialog();
                                 }
                               },
                               autofocus: true,
@@ -163,7 +167,9 @@ class _SearchCrewViewState extends State<SearchCrewView> {
                               Expanded(child: SizedBox()),
                               GestureDetector(
                                 onTap: () async {
+                                  CustomFullScreenDialog.showDialog();
                                   await _searchCrewViewModel.deleteAllRecentSearches();
+                                  CustomFullScreenDialog.cancelDialog();
                                 },
                                 child: Text(
                                   '전체삭제',
@@ -199,10 +205,12 @@ class _SearchCrewViewState extends State<SearchCrewView> {
                               _searchCrewViewModel.deleteRecentSearch(recentSearch);
                             },
                           ),
-                          onTap: () {
+                          onTap: () async{
                             _searchCrewViewModel.textEditingController.text = recentSearch;
                             _searchCrewViewModel.search(recentSearch);
-                            _searchCrewViewModel.searchCrews(recentSearch);
+                            CustomFullScreenDialog.showDialog();
+                            await _searchCrewViewModel.searchCrews(recentSearch);
+                            CustomFullScreenDialog.cancelDialog();
                             _searchCrewViewModel.showRecentSearch.value = false;  // 검색 결과로 전환
                           },
                         );
@@ -225,10 +233,12 @@ class _SearchCrewViewState extends State<SearchCrewView> {
 
                           return GestureDetector(
                               onTap: () async {
-                                Get.toNamed(AppRoutes.crewMain);
+                                CustomFullScreenDialog.showDialog();
                                 await _crewDetailViewModel.fetchCrewDetail(
                                     data.crewId!, _friendDetailViewModel.seasonDate);
                                 await _crewMemberListViewModel.fetchCrewMembers(crewId: data.crewId!);
+                                CustomFullScreenDialog.cancelDialog();
+                                Get.toNamed(AppRoutes.crewMain);
                               },
                               child: Padding(
                                 padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -271,13 +281,28 @@ class _SearchCrewViewState extends State<SearchCrewView> {
                                                   ),
                                                 ),
                                               if (data.crewLogoUrl!.isEmpty)
-                                                ExtendedImage.asset(
-                                                  'assets/imgs/profile/img_profile_default_.png',
-                                                  shape: BoxShape.rectangle,
-                                                  borderRadius: BorderRadius.circular(8),
+                                                Container(
+                                                  decoration: const BoxDecoration(
+                                                    boxShadow: [
+                                                      BoxShadow(
+                                                        color: Colors.black12,
+                                                        spreadRadius: 0,
+                                                        blurRadius: 16,
+                                                        offset: Offset(0, 2),
+                                                      ),
+                                                    ],
+                                                  ),
                                                   width: 40,
                                                   height: 40,
-                                                  fit: BoxFit.cover,
+                                                  child: ExtendedImage.network(
+                                                    '${crewDefaultLogoUrl['${data.color}']}',
+                                                    enableMemoryCache: true,
+                                                    shape: BoxShape.rectangle,
+                                                    borderRadius: BorderRadius.circular(10),
+                                                    width: 40,
+                                                    height: 40,
+                                                    fit: BoxFit.cover,
+                                                  ),
                                                 ),
                                               SizedBox(width: 16),
                                               Column(
@@ -326,6 +351,7 @@ class _SearchCrewViewState extends State<SearchCrewView> {
                                                         return WillPopScope(
                                                           onWillPop: () async{
                                                             _crewApplyViewModel.textEditingController.clear(); // 텍스트 클리어
+                                                            _crewApplyViewModel.isSubmitButtonEnabled.value = false;
                                                             return true;
                                                           },
                                                           child: StatefulBuilder(
@@ -333,125 +359,129 @@ class _SearchCrewViewState extends State<SearchCrewView> {
                                                               return Container(
                                                                 height: MediaQuery.of(context).size.height * 0.35,
                                                                 child: Padding(
-                                                                  padding: EdgeInsets.only(
-                                                                    left: 16,
-                                                                    right: 16,
-                                                                    bottom: MediaQuery.of(context).viewInsets.bottom + 16,
-                                                                  ),
-                                                                  child: Obx(()=>Column(
-                                                                    mainAxisSize: MainAxisSize.min,
-                                                                    children: [
-                                                                      SizedBox(height: 10),
-                                                                      Container(
-                                                                        width: 36,
-                                                                        height: 4,
-                                                                        margin: EdgeInsets.only(top: 8, bottom: 16),
-                                                                        decoration: BoxDecoration(
-                                                                          color: SDSColor.gray300,
-                                                                          borderRadius: BorderRadius.circular(10),
+                                                                    padding: EdgeInsets.only(
+                                                                      left: 16,
+                                                                      right: 16,
+                                                                      bottom: MediaQuery.of(context).viewInsets.bottom + 16,
+                                                                    ),
+                                                                    child: Obx(()=>Column(
+                                                                      mainAxisSize: MainAxisSize.min,
+                                                                      children: [
+                                                                        SizedBox(height: 10),
+                                                                        Container(
+                                                                          width: 36,
+                                                                          height: 4,
+                                                                          margin: EdgeInsets.only(top: 8, bottom: 16),
+                                                                          decoration: BoxDecoration(
+                                                                            color: SDSColor.gray300,
+                                                                            borderRadius: BorderRadius.circular(10),
+                                                                          ),
                                                                         ),
-                                                                      ),
-                                                                      SizedBox(height: 10),
-                                                                      Text(
-                                                                        '해당 크루에 가입 신청을 하시겠어요? ',
-                                                                        style: TextStyle(
-                                                                          fontSize: 16,
-                                                                          fontWeight: FontWeight.bold,
+                                                                        SizedBox(height: 10),
+                                                                        Text(
+                                                                          '해당 크루에 가입 신청을 하시겠어요? ',
+                                                                          style: TextStyle(
+                                                                            fontSize: 16,
+                                                                            fontWeight: FontWeight.bold,
+                                                                          ),
                                                                         ),
-                                                                      ),
-                                                                      SizedBox(height: 20),
-                                                                      TextFormField(
-                                                                        controller: _crewApplyViewModel.textEditingController,
-                                                                        onChanged: (value) {
+                                                                        SizedBox(height: 20),
+                                                                        TextFormField(
+                                                                          controller: _crewApplyViewModel.textEditingController,
+                                                                          onChanged: (value) {
                                                                             _crewApplyViewModel.isSubmitButtonEnabled.value = value.isNotEmpty; // 입력 여부에 따라 버튼 활성화 여부 결정
-                                                                        },
-                                                                        decoration: InputDecoration(
-                                                                          hintText: '인사말을 남겨주세요.',
-                                                                          hintStyle: TextStyle(color: SDSColor.gray500),
-                                                                          filled: true,
-                                                                          fillColor: SDSColor.gray100,
-                                                                          contentPadding: EdgeInsets.symmetric(vertical: 14, horizontal: 16),
-                                                                          border: OutlineInputBorder(
-                                                                            borderRadius: BorderRadius.circular(12),
-                                                                            borderSide: BorderSide.none,
+                                                                          },
+                                                                          decoration: InputDecoration(
+                                                                            hintText: '인사말을 남겨주세요.',
+                                                                            hintStyle: TextStyle(color: SDSColor.gray500),
+                                                                            filled: true,
+                                                                            fillColor: SDSColor.gray100,
+                                                                            contentPadding: EdgeInsets.symmetric(vertical: 14, horizontal: 16),
+                                                                            border: OutlineInputBorder(
+                                                                              borderRadius: BorderRadius.circular(12),
+                                                                              borderSide: BorderSide.none,
+                                                                            ),
+                                                                            focusedBorder: OutlineInputBorder(
+                                                                              borderRadius: BorderRadius.circular(12),
+                                                                              borderSide: BorderSide.none,
+                                                                            ),
+                                                                            enabledBorder: OutlineInputBorder(
+                                                                              borderRadius: BorderRadius.circular(12),
+                                                                              borderSide: BorderSide.none,
+                                                                            ),
                                                                           ),
-                                                                          focusedBorder: OutlineInputBorder(
-                                                                            borderRadius: BorderRadius.circular(12),
-                                                                            borderSide: BorderSide.none,
-                                                                          ),
-                                                                          enabledBorder: OutlineInputBorder(
-                                                                            borderRadius: BorderRadius.circular(12),
-                                                                            borderSide: BorderSide.none,
-                                                                          ),
+                                                                          maxLength: 100, // 최대 100자 제한
                                                                         ),
-                                                                        maxLength: 100, // 최대 100자 제한
-                                                                      ),
-                                                                      SizedBox(height: 30),
-                                                                      Row(
-                                                                        children: [
-                                                                          Expanded(
-                                                                            child: ElevatedButton(
-                                                                              onPressed: () {
-                                                                                _crewApplyViewModel.textEditingController.clear();
-                                                                                Navigator.pop(context);
-                                                                              },
-                                                                              child: Text(
-                                                                                '돌아가기',
-                                                                                style: TextStyle(
-                                                                                  color: Color(0xFFFFFFFF),
-                                                                                  fontWeight: FontWeight.bold,
-                                                                                  fontSize: 16,
+                                                                        SizedBox(height: 30),
+                                                                        Row(
+                                                                          children: [
+                                                                            Expanded(
+                                                                              child: ElevatedButton(
+                                                                                onPressed: () {
+                                                                                  _crewApplyViewModel.textEditingController.clear();
+                                                                                  _crewApplyViewModel.isSubmitButtonEnabled.value = false;
+                                                                                  Navigator.pop(context);
+                                                                                },
+                                                                                child: Text(
+                                                                                  '돌아가기',
+                                                                                  style: TextStyle(
+                                                                                    color: Color(0xFFFFFFFF),
+                                                                                    fontWeight: FontWeight.bold,
+                                                                                    fontSize: 16,
+                                                                                  ),
                                                                                 ),
-                                                                              ),
-                                                                              style: TextButton.styleFrom(
-                                                                                shape: const RoundedRectangleBorder(
-                                                                                  borderRadius: BorderRadius.all(Radius.circular(6)),
+                                                                                style: TextButton.styleFrom(
+                                                                                  shape: const RoundedRectangleBorder(
+                                                                                    borderRadius: BorderRadius.all(Radius.circular(6)),
+                                                                                  ),
+                                                                                  elevation: 0,
+                                                                                  splashFactory: InkRipple.splashFactory,
+                                                                                  backgroundColor: Color(0xff7C899D),
                                                                                 ),
-                                                                                elevation: 0,
-                                                                                splashFactory: InkRipple.splashFactory,
-                                                                                backgroundColor: Color(0xff7C899D),
                                                                               ),
                                                                             ),
-                                                                          ),
-                                                                          SizedBox(width: 10),
-                                                                          Expanded(
-                                                                            child: ElevatedButton(
-                                                                              onPressed: _crewApplyViewModel.isSubmitButtonEnabled.value == true
-                                                                                  ? () async {
-                                                                                Navigator.pop(context);
-                                                                                Get.offNamed(AppRoutes.crewApplicationUser);
-                                                                                await _crewApplyViewModel.applyForCrew(
-                                                                                  data.crewId!,
-                                                                                  _userViewModel.user.user_id,
-                                                                                  _crewApplyViewModel.textEditingController.text,
-                                                                                );
-                                                                                _crewApplyViewModel.textEditingController.clear();
-                                                                              }
-                                                                                  : null, // 버튼 비활성화 시 null
-                                                                              child: Text(
-                                                                                '신청하기',
-                                                                                style: TextStyle(
-                                                                                  color: Color(0xFFFFFFFF),
-                                                                                  fontWeight: FontWeight.bold,
-                                                                                  fontSize: 16,
+                                                                            SizedBox(width: 10),
+                                                                            Expanded(
+                                                                              child: ElevatedButton(
+                                                                                onPressed: _crewApplyViewModel.isSubmitButtonEnabled.value == true
+                                                                                    ? () async {
+                                                                                  Navigator.pop(context);
+                                                                                  CustomFullScreenDialog.showDialog();
+                                                                                  await _crewApplyViewModel.applyForCrew(
+                                                                                    data.crewId!,
+                                                                                    _userViewModel.user.user_id,
+                                                                                    _crewApplyViewModel.textEditingController.text,
+                                                                                  );
+
+                                                                                  _crewApplyViewModel.textEditingController.clear();
+                                                                                  _crewApplyViewModel.isSubmitButtonEnabled.value = false;
+
+                                                                                }
+                                                                                    : null, // 버튼 비활성화 시 null
+                                                                                child: Text(
+                                                                                  '신청하기',
+                                                                                  style: TextStyle(
+                                                                                    color: Color(0xFFFFFFFF),
+                                                                                    fontWeight: FontWeight.bold,
+                                                                                    fontSize: 16,
+                                                                                  ),
                                                                                 ),
-                                                                              ),
-                                                                              style: TextButton.styleFrom(
-                                                                                shape: const RoundedRectangleBorder(
-                                                                                  borderRadius: BorderRadius.all(Radius.circular(6)),
+                                                                                style: TextButton.styleFrom(
+                                                                                  shape: const RoundedRectangleBorder(
+                                                                                    borderRadius: BorderRadius.all(Radius.circular(6)),
+                                                                                  ),
+                                                                                  elevation: 0,
+                                                                                  splashFactory: InkRipple.splashFactory,
+                                                                                  backgroundColor: _crewApplyViewModel.isSubmitButtonEnabled.value == true
+                                                                                      ? SDSColor.snowliveBlue // 입력이 있을 때 버튼 활성화
+                                                                                      : SDSColor.gray300, // 입력이 없을 때 버튼 비활성화
                                                                                 ),
-                                                                                elevation: 0,
-                                                                                splashFactory: InkRipple.splashFactory,
-                                                                                backgroundColor: _crewApplyViewModel.isSubmitButtonEnabled.value == true
-                                                                                    ? SDSColor.snowliveBlue // 입력이 있을 때 버튼 활성화
-                                                                                    : SDSColor.gray300, // 입력이 없을 때 버튼 비활성화
                                                                               ),
                                                                             ),
-                                                                          ),
-                                                                        ],
-                                                                      ),
-                                                                    ],
-                                                                  ),)
+                                                                          ],
+                                                                        ),
+                                                                      ],
+                                                                    ),)
                                                                 ),
                                                               );
                                                             },

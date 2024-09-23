@@ -1,7 +1,9 @@
 import 'dart:io';
 import 'package:com.snowlive/routes/routes.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewApply.dart';
+import 'package:com.snowlive/viewmodel/crew/vm_searchCrew.dart';
 import 'package:com.snowlive/viewmodel/vm_user.dart';
+import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -11,6 +13,7 @@ class OnBoardingCrewMainView extends StatelessWidget {
 
   final CrewApplyViewModel _crewApplyViewModel = Get.find<CrewApplyViewModel>();
   final UserViewModel _userViewModel = Get.find<UserViewModel>();
+  final SearchCrewViewModel _searchCrewViewModel = Get.find<SearchCrewViewModel>();
 
   void _showBottomModal(BuildContext context) {
     showModalBottomSheet(
@@ -98,11 +101,17 @@ class OnBoardingCrewMainView extends StatelessWidget {
                     child: ElevatedButton(
                       onPressed: () async {
                         Navigator.pop(context);
+                        CustomFullScreenDialog.showDialog();
                         await _crewApplyViewModel.fetchCrewApplyListUser(_userViewModel.user.user_id);
                         print(_crewApplyViewModel.crewApplyList);
                         if(_crewApplyViewModel.crewApplyList.isNotEmpty){
+                          CustomFullScreenDialog.cancelDialog();
                           Get.toNamed(AppRoutes.crewApplicationUser);
                         } else{
+                          _searchCrewViewModel.textEditingController.clear();
+                          _searchCrewViewModel.crewList.clear();
+                          _searchCrewViewModel.showRecentSearch.value = true;
+                          CustomFullScreenDialog.cancelDialog();
                           Get.toNamed(AppRoutes.searchCrew);
                         }
                       },
