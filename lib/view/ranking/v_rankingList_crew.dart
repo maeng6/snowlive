@@ -60,24 +60,44 @@ class RankingCrewView extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.center,
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
-                              Container(
-                                height: 76,
-                                width: 76,
-                                decoration: BoxDecoration(
-                                  color: Color(0xFFF0F6FF),
-                                  borderRadius: BorderRadius.circular(16),
-                                ),
-                                padding: EdgeInsets.only(top: 18, bottom: 14, left: 14, right: 14),
-                                child: Transform.translate(
-                                  offset: Offset(0, 0),
-                                  child: ExtendedImage.network(
-                                    '${_rankingListViewModel.rankingListCrewMy_view!.crewLogoUrl
-                                        ?? crewDefaultLogoUrl['${_rankingListViewModel.rankingListCrewMy_view!.color}']}',
-                                    enableMemoryCache: true,
-                                    cacheWidth: 300,
-                                    fit: BoxFit.cover,
+                              Column(
+                                children: [
+                                  //크루로고이미지
+                                  Container(
+                                    height: 76,
+                                    width: 76,
+                                    decoration: const BoxDecoration(
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.black12,
+                                          spreadRadius: 0,
+                                          blurRadius: 16,
+                                          offset: Offset(0, 2),
+                                        ),
+                                      ],
+                                    ),
+                                    padding: EdgeInsets.only(top: 18, bottom: 14, left: 14, right: 14),
+                                    child: Transform.translate(
+                                      offset: Offset(0, 0),
+                                      child: ExtendedImage.network(
+                                        '${_rankingListViewModel.rankingListCrewMy_view!.crewLogoUrl
+                                            ?? crewDefaultLogoUrl['${_rankingListViewModel.rankingListCrewMy_view!.color}']}',
+                                        enableMemoryCache: true,
+                                        cacheWidth: 300,
+                                        shape: BoxShape.rectangle,
+                                        borderRadius: BorderRadius.circular(10),
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
                                   ),
-                                ),
+                                  //크루네임
+                                  Text(_rankingListViewModel.rankingListCrewMy_view!.crewName!,
+                                    style: SDSTextStyle.regular.copyWith(
+                                        fontSize: 14,
+                                        color: Color(0xFF111111)
+                                    ),
+                                  ),
+                                ],
                               ),
                               Container(
                                 width: 10,
@@ -941,16 +961,22 @@ class RankingCrewView extends StatelessWidget {
                                     Container(
                                       width: 32,
                                       height: 32,
-                                      decoration: BoxDecoration(
-                                          color: Color(0xFFDFECFF),
-                                          borderRadius: BorderRadius.circular(50)
+                                      decoration: const BoxDecoration(
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: Colors.black12,
+                                            spreadRadius: 0,
+                                            blurRadius: 16,
+                                            offset: Offset(0, 2),
+                                          ),
+                                        ],
                                       ),
                                       child: document.crewLogoUrl!.isNotEmpty
                                           ? ExtendedImage.network(
                                         document.crewLogoUrl!,
                                         enableMemoryCache: true,
-                                        shape: BoxShape.circle,
-                                        borderRadius: BorderRadius.circular(8),
+                                        shape: BoxShape.rectangle,
+                                        borderRadius: BorderRadius.circular(10),
                                         cacheHeight: 100,
                                         width: 32,
                                         height: 32,
@@ -977,13 +1003,14 @@ class RankingCrewView extends StatelessWidget {
                                               return null;
                                           }
                                         },
+
                                       )
                                           : ExtendedImage.network(
-                                        '${profileImgUrlList[0].default_round}',
+                                        '${crewDefaultLogoUrl['${_rankingListViewModel.rankingListCrewMy_view!.color}']}',
                                         enableMemoryCache: true,
                                         cacheHeight: 100,
-                                        shape: BoxShape.circle,
-                                        borderRadius: BorderRadius.circular(8),
+                                        shape: BoxShape.rectangle,
+                                        borderRadius: BorderRadius.circular(10),
                                         width: 32,
                                         height: 32,
                                         fit: BoxFit.cover,

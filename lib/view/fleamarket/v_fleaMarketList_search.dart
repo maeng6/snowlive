@@ -6,6 +6,7 @@ import 'package:com.snowlive/viewmodel/fleamarket/vm_fleamarketDetail.dart';
 import 'package:com.snowlive/viewmodel/fleamarket/vm_fleamarketList.dart';
 import 'package:com.snowlive/viewmodel/fleamarket/vm_fleamarketSearch.dart';
 import 'package:com.snowlive/viewmodel/vm_user.dart';
+import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -196,12 +197,14 @@ class FleaMarketListView_search extends StatelessWidget {
                     String recentSearch = _fleamarketSearchViewModel.recentSearches[index];
                     return GestureDetector(
                       onTap: () async{
+                        CustomFullScreenDialog.showDialog();
                         _fleamarketSearchViewModel.textEditingController.text = recentSearch;
                         _fleamarketSearchViewModel.showRecentSearch.value = false;
                         await _fleamarketSearchViewModel.fetchFleamarketData_total(
                             userId: _userViewModel.user.user_id,
                             search_query: recentSearch
                         );
+                        CustomFullScreenDialog.cancelDialog();
                         await _fleamarketSearchViewModel.saveRecentSearch(recentSearch);
                       },
                       child: Row(
