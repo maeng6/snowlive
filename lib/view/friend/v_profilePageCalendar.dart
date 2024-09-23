@@ -136,6 +136,7 @@ class _ProfilePageCalendarState extends State<ProfilePageCalendar> {
   @override
   Widget build(BuildContext context) {
     return TableCalendar<int>(
+      availableGestures: AvailableGestures.horizontalSwipe,
       focusedDay: focusedDay,
       firstDay: DateTime(1900, 11, 1),
       lastDay: DateTime(2100, 3, 31),
@@ -154,17 +155,17 @@ class _ProfilePageCalendarState extends State<ProfilePageCalendar> {
 
         ),
         selectedTextStyle: SDSTextStyle.bold.copyWith(
-            color: SDSColor.snowliveWhite,
+          color: SDSColor.snowliveWhite,
         ),
         todayTextStyle: SDSTextStyle.bold.copyWith(
-          color: SDSColor.snowliveBlue
+            color: SDSColor.snowliveBlue
         ),
       ),
       headerStyle: HeaderStyle(
         headerPadding: EdgeInsets.symmetric(vertical: 4, horizontal: 50),
         titleTextStyle: SDSTextStyle.bold.copyWith(
-          fontSize: 16,
-          color: SDSColor.gray900
+            fontSize: 16,
+            color: SDSColor.gray900
         ),
         formatButtonVisible: false,
         titleCentered: true,
@@ -186,12 +187,12 @@ class _ProfilePageCalendarState extends State<ProfilePageCalendar> {
       daysOfWeekHeight: 40,
       daysOfWeekStyle: DaysOfWeekStyle(
         weekdayStyle: SDSTextStyle.regular.copyWith(
-          color: SDSColor.gray500,
+            color: SDSColor.gray500,
             fontSize: 13
         ),
         weekendStyle: SDSTextStyle.regular.copyWith(
-          color: SDSColor.red,
-          fontSize: 13
+            color: SDSColor.red,
+            fontSize: 13
         ),
         dowTextFormatter: (date, locale) {
           return DateFormat.E('ko_KR').format(date).substring(0, 1); // '월', '화', '수', '목', '금', '토', '일' 표기
@@ -217,7 +218,7 @@ class _ProfilePageCalendarState extends State<ProfilePageCalendar> {
               color:
               (isSameDay(selectedDay, dateTime)) ?
               SDSColor.gray900
-              : hasData ? SDSColor.blue50 : Colors.transparent,
+                  : hasData ? SDSColor.blue50 : Colors.transparent,
               borderRadius: BorderRadius.circular(8.0),
             ),
             child: Column(
@@ -228,8 +229,8 @@ class _ProfilePageCalendarState extends State<ProfilePageCalendar> {
                   style: SDSTextStyle.bold.copyWith(
                       color:
                       (isSameDay(selectedDay, dateTime))
-                      ? SDSColor.snowliveBlue
-                      : SDSColor.gray900,
+                          ? SDSColor.snowliveBlue
+                          : SDSColor.gray900,
                       fontSize: 14),
                 ),
                 if (hasData)
@@ -243,7 +244,7 @@ class _ProfilePageCalendarState extends State<ProfilePageCalendar> {
                             : SDSColor.gray500),
                   )
                 else
-                 Container()
+                  Container()
               ],
             ),
           );

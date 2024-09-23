@@ -16,6 +16,7 @@ class CrewNoticeViewModel extends GetxController {
 
   // 공지사항 입력 필드 관리
   TextEditingController noticeController = TextEditingController();
+  TextEditingController noticeModifyController = TextEditingController();
   final formKeyNotice = GlobalKey<FormState>();
 
   // 로딩 상태 관리
