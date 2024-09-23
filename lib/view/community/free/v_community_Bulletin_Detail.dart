@@ -17,6 +17,8 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:flutter_quill/flutter_quill.dart' as quill;
 import 'package:flutter_quill_extensions/flutter_quill_extensions.dart';
+import 'dart:io' as io;
+
 
 
 class CommunityBulletinDetailView extends StatelessWidget {
@@ -739,8 +741,13 @@ class CommunityBulletinDetailView extends StatelessWidget {
                                                   configurations: quill.QuillEditorConfigurations(
                                                     controller: _communityDetailViewModel.quillController,
                                                     scrollable: true,
+                                                    showCursor: false,
+                                                    checkBoxReadOnly: true,
                                                     padding: EdgeInsets.zero,
-                                                    embedBuilders: FlutterQuillEmbeds.defaultEditorBuilders(),
+                                                    embedBuilders: [
+                                                      CustomImageEmbedBuilder(),
+                                                      ...FlutterQuillEmbeds.defaultEditorBuilders(),
+                                                    ],
                                                     customStyles: quill.DefaultStyles(
                                                       h1: quill.DefaultTextBlockStyle(
                                                         TextStyle(
@@ -808,7 +815,8 @@ class CommunityBulletinDetailView extends StatelessWidget {
                                                 ],
                                               ),
                                             ),
-                                           Obx(()=> ListView.builder(
+                                            if(_communityDetailViewModel.commentsList.length > 0)
+                                             Obx(()=> ListView.builder(
                                                 controller: _communityDetailViewModel.scrollController_comment,
                                                 shrinkWrap: true,
                                                 itemCount: _communityDetailViewModel.commentsList.length,
@@ -1407,7 +1415,34 @@ class CommunityBulletinDetailView extends StatelessWidget {
                                                     )),
                                                   );
                                                 },
-                                              ))
+                                              )),
+                                            if(_communityDetailViewModel.commentsList.length == 0)
+                                              Padding(
+                                                padding: const EdgeInsets.all(20),
+                                                child: Center(
+                                                  child: Padding(
+                                                    padding: EdgeInsets.only(top: 10),
+                                                    child: Column(
+                                                      mainAxisAlignment: MainAxisAlignment.center,
+                                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                                      children: [
+                                                        Image.asset(
+                                                          'assets/imgs/icons/icon_friendsTalk_nodata.png',
+                                                          width: 74,
+                                                        ),
+                                                        SizedBox(
+                                                          height: 4,
+                                                        ),
+                                                        Text('댓글이 없어요',
+                                                          style: SDSTextStyle.regular.copyWith(
+                                                              fontSize: 14,
+                                                              color: SDSColor.gray500),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ),
+                                              )
                                           ],
                                         ),
                                       ),
@@ -1538,3 +1573,55 @@ class CommunityBulletinDetailView extends StatelessWidget {
   }
 }
 
+
+
+class CustomImageEmbedBuilder extends quill.EmbedBuilder {
+  @override
+  String get key => 'image';
+
+  @override
+  Widget build(BuildContext context, quill.QuillController controller, quill.Embed node, bool readOnly, bool inline, TextStyle textStyle) {
+    final imageUrl = node.value.data;
+
+    final imageProvider = imageUrl.startsWith('http') || imageUrl.startsWith('https')
+        ? NetworkImage(imageUrl)
+        : FileImage(io.File(imageUrl)) as ImageProvider;
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 20),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(8),
+        child: Image(
+          image: imageProvider,
+          fit: BoxFit.cover,
+          loadingBuilder: (context, child, loadingProgress) {
+            if (loadingProgress == null) return child;
+            return Container(
+              width: double.infinity,
+              height: 300, // 필요에 따라 높이 조정
+              color: SDSColor.gray50, // 회색 박스
+              child: Center(
+                child: CircularProgressIndicator(
+                  color: SDSColor.gray200,
+                  value: loadingProgress.expectedTotalBytes != null
+                      ? loadingProgress.cumulativeBytesLoaded / (loadingProgress.expectedTotalBytes ?? 1)
+                      : null,
+                ),
+              ),
+            );
+          },
+          errorBuilder: (context, error, stackTrace) {
+            return Container(
+              width: double.infinity,
+              height: 300, // 필요에 따라 높이 조정
+              color: SDSColor.gray50,
+              child: const Center(
+                child: Icon(Icons.error, color: Colors.red),
+              ),
+            );
+          },
+        ),
+      ),
+    );
+  }
+}

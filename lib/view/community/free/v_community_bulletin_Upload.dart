@@ -181,7 +181,7 @@ class CommunityFreeUpload extends StatelessWidget {
                                           ),
                                         ),
                                         SizedBox(height: 8),
-                                        Row(
+                                        Obx(() => Row(
                                           children: [
                                             Column(
                                               children: [
@@ -222,7 +222,7 @@ class CommunityFreeUpload extends StatelessWidget {
                                                             fontSize: 14,
                                                           ),
                                                         ),
-                                                        ExtendedImage.asset(
+                                                        Image.asset(
                                                           'assets/imgs/icons/icon_dropdown.png',
                                                           fit: BoxFit.cover,
                                                           width: 20,
@@ -271,7 +271,7 @@ class CommunityFreeUpload extends StatelessWidget {
                                                         fontSize: 14,
                                                       ),
                                                     ),
-                                                    ExtendedImage.asset(
+                                                    Image.asset(
                                                       'assets/imgs/icons/icon_dropdown.png',
                                                       fit: BoxFit.cover,
                                                       width: 20,
@@ -283,7 +283,7 @@ class CommunityFreeUpload extends StatelessWidget {
                                             : Container(),
 
                                           ],
-                                        ),
+                                        )),
                                       ],
                                     ),
                                   ),

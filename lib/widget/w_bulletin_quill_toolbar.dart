@@ -276,6 +276,7 @@ class BulletinQuillToolbar extends StatelessWidget {
           ),
           searchButtonType: SearchButtonType.modern,
           embedButtons: FlutterQuillEmbeds.toolbarButtons(
+            videoButtonOptions: null,
             imageButtonOptions: QuillToolbarImageButtonOptions(
               dialogTheme: QuillDialogTheme(
                 dialogBackgroundColor: Colors.white, // 다이얼로그 배경색

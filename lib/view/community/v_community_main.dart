@@ -81,7 +81,9 @@ class CommunityMainView extends StatelessWidget {
                                       shape: RoundedRectangleBorder(
                                           borderRadius: BorderRadius.circular(8)),
                                       elevation: 0,
-                                      shadowColor: Colors.transparent
+                                    shadowColor: Colors.transparent,
+                                    overlayColor: Colors.transparent,
+                                    surfaceTintColor: Colors.transparent,
                                   ),
                                 ),
                               ),
@@ -125,7 +127,9 @@ class CommunityMainView extends StatelessWidget {
                                       shape: RoundedRectangleBorder(
                                           borderRadius: BorderRadius.circular(8)),
                                       elevation: 0,
-                                      shadowColor: Colors.transparent
+                                    shadowColor: Colors.transparent,
+                                    overlayColor: Colors.transparent,
+                                    surfaceTintColor: Colors.transparent,
                                   ),
                                 ),
                               ),
