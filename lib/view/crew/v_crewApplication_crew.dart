@@ -179,10 +179,12 @@ class CrewApplicationCrewView extends StatelessWidget {
                                           ElevatedButton(
                                             onPressed: () async {
                                               Navigator.of(context).pop();
-                                              Get.back();
+                                              CustomFullScreenDialog.showDialog();
                                               await _crewApplyViewModel.approveCrewApplication(
                                                   user.applicantUserId!, user.crewId!
                                               );
+                                              await _crewApplyViewModel.fetchCrewApplyList(user.crewId!);
+                                              CustomFullScreenDialog.cancelDialog();
                                             },
                                             child: Text('신청 승인하기',
                                               style: TextStyle(
@@ -269,13 +271,15 @@ class CrewApplicationCrewView extends StatelessWidget {
                                         actions: [
                                           ElevatedButton(
                                             onPressed: () async {
-                                              Navigator.of(context).pop();
-                                              Get.back();
+                                              CustomFullScreenDialog.showDialog();
                                               await _crewApplyViewModel.deleteCrewApplication(
                                                 user.applicantUserId!,
                                                 user.crewId!,
                                                 _userViewModel.user.user_id,
                                               );
+                                              await _crewApplyViewModel.fetchCrewApplyList(user.crewId!);
+                                              Navigator.of(context).pop();
+                                              CustomFullScreenDialog.cancelDialog();
                                             },
                                             child: Text('신청 거절하기',
                                               style: TextStyle(

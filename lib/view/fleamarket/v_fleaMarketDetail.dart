@@ -1390,6 +1390,15 @@ class _FleaMarketDetailViewState extends State<FleaMarketDetailView> {
                                                                       ),
                                                                     ),
                                                                     SizedBox(width: 6),
+                                                                    Text(
+                                                                      time,
+                                                                      style: SDSTextStyle.regular.copyWith(
+                                                                        fontSize: 13,
+                                                                        color: SDSColor.gray500,
+                                                                      ),
+                                                                    ),
+
+                                                                    SizedBox(width: 6),
                                                                     Container(
                                                                       decoration: BoxDecoration(
                                                                         borderRadius: BorderRadius.circular(30),
@@ -1408,14 +1417,6 @@ class _FleaMarketDetailViewState extends State<FleaMarketDetailView> {
                                                                                   ? SDSColor.snowliveBlue
                                                                                   : Colors.transparent),
                                                                         ),
-                                                                      ),
-                                                                    ),
-                                                                    SizedBox(width: 6),
-                                                                    Text(
-                                                                      time,
-                                                                      style: SDSTextStyle.regular.copyWith(
-                                                                        fontSize: 13,
-                                                                        color: SDSColor.gray500,
                                                                       ),
                                                                     ),
                                                                     if (document_comment.secret!)

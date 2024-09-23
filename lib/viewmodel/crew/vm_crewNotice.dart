@@ -39,15 +39,14 @@ class CrewNoticeViewModel extends GetxController {
         final response = await CrewAPI().createCrewNotice(noticeData);
 
         if (response.success) {
-          Get.snackbar('성공', '공지사항이 생성되었습니다.');
+          print('공지사항이 생성되었습니다.');
           noticeController.clear();  // 공지사항 입력 필드 초기화
           await fetchCrewNotices();  // 공지사항 목록 새로고침
         } else {
-          Get.snackbar('오류', '공지사항 생성에 실패했습니다.');
+          print('공지사항 생성에 실패했습니다.');
         }
       } catch (e) {
         print('공지사항 생성 중 오류: $e');
-        Get.snackbar('오류', '공지사항 생성 중 오류가 발생했습니다.');
       } finally {
         isLoading.value = false;
       }

@@ -1,12 +1,10 @@
 import 'dart:io';
+import 'package:com.snowlive/data/imgaUrls/Data_url_image.dart';
 import 'package:com.snowlive/model/m_crewList.dart';
-import 'package:com.snowlive/routes/routes.dart';
-import 'package:com.snowlive/viewmodel/crew/vm_crewApply.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewDetail.dart';
 import 'package:com.snowlive/viewmodel/vm_user.dart';
 import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:get/get.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_setCrew.dart';
@@ -16,6 +14,7 @@ import 'package:image_picker/image_picker.dart';
 class UpdateCrewImageAndColorView extends StatelessWidget {
   final SetCrewViewModel _setCrewViewModel = Get.find<SetCrewViewModel>();
   final UserViewModel _userViewModel = Get.find<UserViewModel>();
+  final CrewDetailViewModel _crewDetailViewModel = Get.find<CrewDetailViewModel>();
 
 
 
@@ -23,6 +22,7 @@ class UpdateCrewImageAndColorView extends StatelessWidget {
   Widget build(BuildContext context) {
     final Size _size = MediaQuery.of(context).size;
     final double _statusBarSize = MediaQuery.of(context).padding.top;
+    print(_setCrewViewModel.currentColor);
 
     return Stack(
       children: [
@@ -124,14 +124,18 @@ class UpdateCrewImageAndColorView extends StatelessWidget {
                               :Center(
                             child: ClipRRect(
                               borderRadius: BorderRadius.circular(20),
-                              child: ExtendedImage.asset(
-                                'assets/imgs/liveCrew/img_liveCrew_logo_setCrewImage.png',
-                                width: 130, // 배경 안에 들어가도록 크기 조정
-                                height: 130,
+                              child:
+                              ExtendedImage.network(
+                                '${crewDefaultLogoUrl['${_setCrewViewModel.colorToHex(_setCrewViewModel.currentColor.value)}']}',
+                                enableMemoryCache: true,
+                                shape: BoxShape.rectangle,
+                                borderRadius: BorderRadius.circular(10),
+                                width: 80,
+                                height: 80,
                                 fit: BoxFit.cover,
                                 cacheRawData: true,
                                 enableLoadState: true,
-                              ),
+                              )
                             ),
                           ),
 
@@ -316,11 +320,13 @@ class UpdateCrewImageAndColorView extends StatelessWidget {
                         actions: [
                           ElevatedButton(
                             onPressed: () async {
+                              CustomFullScreenDialog.showDialog();
+                              await _setCrewViewModel.updateCrewDetails(
+                                _userViewModel.user.crew_id,
+                              );
+                              CustomFullScreenDialog.cancelDialog();
                               Navigator.of(context).pop();
                               Get.back();
-                              await _setCrewViewModel.updateCrewDetails(
-                                  _userViewModel.user.crew_id,
-                              );
                             },
                             child: Text('크루 이미지 및 대표 색상 수정',
                               style: TextStyle(

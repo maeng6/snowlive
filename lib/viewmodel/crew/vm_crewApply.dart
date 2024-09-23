@@ -1,5 +1,7 @@
 import 'package:com.snowlive/model/m_crewApplyList.dart';
+import 'package:com.snowlive/routes/routes.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewMemberList.dart';
+import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:com.snowlive/api/api_crew.dart';
@@ -22,18 +24,22 @@ class CrewApplyViewModel extends GetxController {
       final response = await CrewAPI().applyForCrew({
         'crew_id': crewId,
         'applicant_user_id': userId,
-        'title': title,
+        'title': title
       });
 
       if (response.success) {
-        Get.snackbar('성공', '크루 가입 신청이 완료되었습니다.');
-        fetchCrewApplyListUser(userId);
+
+        await fetchCrewApplyListUser(userId);
+        CustomFullScreenDialog.cancelDialog();
+        Get.offNamed(AppRoutes.crewApplicationUser);
       } else {
-        Get.snackbar('앗!', '이미 가입 신청 중이거나 가입된 크루가 존재합니다');
+        Get.back();
+        Get.snackbar('중복 신청', '이미 가입 신청 중인 크루입니다.');
       }
     } catch (e) {
       print('$e');
-      Get.snackbar('앗!', '이미 가입 신청 중이거나 가입된 크루가 존재합니다');
+      Get.back();
+      Get.snackbar('신청 오류', '잠시후 다시 시도해주세요.');
     } finally {
       isLoading.value = false;
     }
@@ -85,15 +91,15 @@ class CrewApplyViewModel extends GetxController {
         "crew_id": applyCrewId    //필수
       });
       if (response.success) {
-        Get.snackbar('성공', '크루 가입 신청을 승인했습니다.');
+        print('크루 가입 신청을 승인했습니다.');
         // 승인 후 목록 갱신
         fetchCrewApplyList(applyCrewId);
         _crewMemberListViewModel.fetchCrewMembers(crewId: applyCrewId);
       } else {
-        Get.snackbar('오류', '크루 가입 신청 승인에 실패했습니다.');
+        print('크루 가입 신청 승인에 실패했습니다.');
       }
     } catch (e) {
-      Get.snackbar('오류', '에러가 발생했습니다: $e');
+      print('에러가 발생했습니다: $e');
     } finally {
       isLoading.value = false;
     }
@@ -109,14 +115,14 @@ class CrewApplyViewModel extends GetxController {
         "user_id": userId
       });
       if (response.success) {
-        Get.snackbar('성공', '크루 가입 신청을 삭제했습니다.');
+        print('크루 가입 신청을 삭제했습니다.');
         // 삭제 후 목록 갱신
         crewApplyList.removeWhere((apply) => apply.applyCrewId == applyCrewId);
       } else {
-        Get.snackbar('오류', '크루 가입 신청 삭제에 실패했습니다.');
+        print('크루 가입 신청 삭제에 실패했습니다.');
       }
     } catch (e) {
-      Get.snackbar('오류', '에러가 발생했습니다: $e');
+      print('에러가 발생했습니다: $e');
     } finally {
       isLoading.value = false;
     }

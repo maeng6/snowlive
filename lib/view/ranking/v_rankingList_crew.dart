@@ -43,7 +43,8 @@ class RankingCrewView extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: Column(
                     children: [
-                      //마이인포 박스 - 점수와 랭킹없는경우 널처리해야함
+                      //마이인포 박스 - 점수와 랭킹없는경우 안보여주게함
+                      if(_rankingListViewModel.rankingListCrewMy_view!.crewName != null)
                       GestureDetector(
                         onTap: () async{
                           CustomFullScreenDialog.showDialog();
@@ -91,7 +92,7 @@ class RankingCrewView extends StatelessWidget {
                                     ),
                                   ),
                                   //크루네임
-                                  Text(_rankingListViewModel.rankingListCrewMy_view!.crewName!,
+                                  Text(_rankingListViewModel.rankingListCrewMy_view!.crewName??'',
                                     style: SDSTextStyle.regular.copyWith(
                                         fontSize: 14,
                                         color: Color(0xFF111111)

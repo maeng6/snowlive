@@ -3,6 +3,8 @@ import 'package:com.snowlive/routes/routes.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewApply.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewDetail.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewMemberList.dart';
+import 'package:com.snowlive/viewmodel/crew/vm_setCrew.dart';
+import 'package:com.snowlive/viewmodel/friend/vm_friendDetail.dart';
 import 'package:com.snowlive/viewmodel/vm_user.dart';
 import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 import 'package:flutter/material.dart';
@@ -14,7 +16,7 @@ class CrewSettingView extends StatelessWidget {
   final CrewDetailViewModel _crewDetailViewModel = Get.find<CrewDetailViewModel>();
   final UserViewModel _userViewModel = Get.find<UserViewModel>();
   final CrewMemberListViewModel _crewMemberListViewModel = Get.find<CrewMemberListViewModel>();
-
+  final SetCrewViewModel _setCrewViewModel = Get.find<SetCrewViewModel>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -40,7 +42,7 @@ class CrewSettingView extends StatelessWidget {
         ),
         elevation: 0,
       ),
-      body: ListView(
+      body: Obx(()=> ListView(
         children: [
           // 일반 섹션
           if(_crewMemberListViewModel.getMemberRole(_userViewModel.user.user_id) == '크루장'
@@ -67,7 +69,11 @@ class CrewSettingView extends StatelessWidget {
                   Get.toNamed(AppRoutes.crewNoticeCreate);
                 }),
               if(_crewMemberListViewModel.getMemberRole(_userViewModel.user.user_id) == '크루장')
-                _buildSettingsItem('크루 이미지 및 컬러 설정', onTap: () {
+                _buildSettingsItem('크루 이미지 및 컬러 설정', onTap: () async{
+                  CustomFullScreenDialog.showDialog();
+                  await _setCrewViewModel.setCrewLogoAsCroppedFile();
+                  await _setCrewViewModel.initializeColor();
+                  CustomFullScreenDialog.cancelDialog();
                   Get.toNamed(AppRoutes.updateCrewImageAndColor);
                 }),
             ]),
@@ -97,6 +103,7 @@ class CrewSettingView extends StatelessWidget {
                 }),
             ]),
           _buildSettingsSection('일반', [
+            if(_crewMemberListViewModel.getMemberRole(_userViewModel.user.user_id) != '크루장')
             _buildSettingsItem('크루 탈퇴', onTap: () async{
               showDialog(
                 context: context,
@@ -132,10 +139,58 @@ class CrewSettingView extends StatelessWidget {
                           await _crewMemberListViewModel.withdrawCrew(
                               crewMemberUserId: _userViewModel.user.user_id
                           );
-                          await _crewMemberListViewModel.fetchCrewMembers(crewId: _userViewModel.user.crew_id);
-                          await _userViewModel.updateUserModel_api(_userViewModel.user.user_id);
-                          CustomFullScreenDialog.cancelDialog();
-                          Get.offAllNamed(AppRoutes.mainHome);
+                        },
+                        child: Text(
+                          '예',
+                          style: TextStyle(
+                              color: SDSColor.snowliveBlack,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 15
+                          ),
+                        ),
+                      ),
+                    ],
+                  );
+                },
+              );
+            }),
+            if(_crewMemberListViewModel.getMemberRole(_userViewModel.user.user_id) == '크루장')
+            _buildSettingsItem('크루 삭제', onTap: () async{
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    title: Text('정말 삭제하시겠습니까?',
+                      style: TextStyle(
+                          color: SDSColor.snowliveBlack,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 15
+                      ),
+                    ),
+                    actions: [
+                      TextButton(
+                        onPressed: () {
+                          Get.back(); // 팝업 닫기
+                        },
+                        child: Text(
+                          '아니오',
+                          style: TextStyle(
+                              color: SDSColor.snowliveBlack,
+                              fontSize: 15
+                          ),
+                        ),
+                      ),
+                      TextButton(
+                        onPressed: () async{
+                          Navigator.pop(context);
+                          CustomFullScreenDialog.showDialog();
+                          await _crewDetailViewModel.deleteCrew(
+                              _crewDetailViewModel.crewDetailInfo.crewId!,
+                              _userViewModel.user.user_id.toString()
+                          );
                         },
                         child: Text(
                           '예',
@@ -153,8 +208,9 @@ class CrewSettingView extends StatelessWidget {
             }),
           ]),
 
+
         ],
-      ),
+      )),
     );
   }
 

@@ -75,6 +75,7 @@ class CrewMemberSettingsView extends StatelessWidget {
                             ),
                             TextButton(
                               onPressed: () async {
+                                CustomFullScreenDialog.showDialog();
                                 // 권한 변경 로직 실행
                                 await _crewMemberListViewModel.updateCrewMemberStatus(
                                     crewMemberUserId: _crewMemberListViewModel.crewMembersList[index].userInfo!.userId!,
@@ -83,9 +84,11 @@ class CrewMemberSettingsView extends StatelessWidget {
                                     crewMemberUserId: _userViewModel.user.user_id,
                                     newStatus: '운영진');
                                 await _crewMemberListViewModel.fetchCrewMembers(crewId: _userViewModel.user.crew_id);
+                                Navigator.pop(context);
+                                Navigator.pop(context);
+                                CustomFullScreenDialog.cancelDialog();
+                                Get.back();
                                 print('크루장 위임에 성공하였습니다');
-                                Get.back(); // 팝업 닫기
-                                Get.back(); // bottom sheet 닫기
                               },
                               child: Text(
                                 '예',
@@ -123,10 +126,10 @@ class CrewMemberSettingsView extends StatelessWidget {
                             borderRadius: BorderRadius.circular(12),
                           ),
                           title: Text(roleChangeOption + '하시겠습니까?',
-                          style: TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.bold
-                          ),
+                            style: TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.bold
+                            ),
                           ),
                           actions: [
                             TextButton(
@@ -137,12 +140,13 @@ class CrewMemberSettingsView extends StatelessWidget {
                                 '아니오',
                                 style: TextStyle(
                                     color: SDSColor.snowliveBlack,
-                                  fontSize: 15
+                                    fontSize: 15
                                 ),
                               ),
                             ),
                             TextButton(
                               onPressed: () async {
+                                CustomFullScreenDialog.showDialog();
                                 // 권한 변경 로직 실행
                                 String newRole = _crewMemberListViewModel.getMemberRole(_crewMemberListViewModel.crewMembersList[index].userInfo!.userId!) == '운영진'
                                     ? '크루원'
@@ -151,6 +155,7 @@ class CrewMemberSettingsView extends StatelessWidget {
                                     crewMemberUserId: _crewMemberListViewModel.crewMembersList[index].userInfo!.userId!,
                                     newStatus: newRole);
                                 await _crewMemberListViewModel.fetchCrewMembers(crewId: _userViewModel.user.crew_id);
+                                CustomFullScreenDialog.cancelDialog();
                                 print('권한이 $newRole 으로 변경되었습니다.');
                                 Get.back(); // 팝업 닫기
                                 Get.back(); // bottom sheet 닫기
@@ -191,11 +196,11 @@ class CrewMemberSettingsView extends StatelessWidget {
                             borderRadius: BorderRadius.circular(12),
                           ),
                           title: Text('정말 강퇴하시겠습니까?',
-                          style: TextStyle(
-                              color: SDSColor.snowliveBlack,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 15
-                          ),
+                            style: TextStyle(
+                                color: SDSColor.snowliveBlack,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 15
+                            ),
                           ),
                           actions: [
                             TextButton(
@@ -212,10 +217,12 @@ class CrewMemberSettingsView extends StatelessWidget {
                             ),
                             TextButton(
                               onPressed: () async{
+                                CustomFullScreenDialog.showDialog();
                                 await _crewMemberListViewModel.withdrawCrew(
                                     crewMemberUserId: _crewMemberListViewModel.crewMembersList[index].userInfo!.userId!
                                 );
                                 await _crewMemberListViewModel.fetchCrewMembers(crewId: _userViewModel.user.crew_id);
+                                CustomFullScreenDialog.cancelDialog();
                                 Get.back(); // 팝업 닫기
                                 Get.back(); // bottom sheet 닫기
                               },
@@ -459,34 +466,34 @@ class CrewMemberSettingsView extends StatelessWidget {
                                           ),
                                           if(_crewMemberListViewModel.getMemberRole(
                                               _crewMemberListViewModel.crewMembersList[index].userInfo!.userId!) != '크루장')
-                                          GestureDetector(
-                                            onTap: (){
-                                              _showRoleChangeBottomSheet(context, index);
-                                            },
-                                            child: Padding(
-                                              padding: const EdgeInsets.only(left: 10),
-                                              child: Container(
-                                                width: 40, // 원하는 너비 설정
-                                                height: 20, // 원하는 높이 설정
-                                                padding: EdgeInsets.symmetric(horizontal: 4, vertical: 2),
-                                                decoration: BoxDecoration(
-                                                  borderRadius: BorderRadius.circular(3),
-                                                  border: Border.all(color: SDSColor.gray600), // 테두리 회색
-                                                  color: Colors.transparent,
-                                                ),
-                                                child: Center(
-                                                  child: Text(
-                                                    '관리',
-                                                    style: TextStyle(
-                                                      color: SDSColor.gray600, // 글자색 회색
-                                                      fontWeight: FontWeight.bold,
-                                                      fontSize: 10,
+                                            GestureDetector(
+                                              onTap: (){
+                                                _showRoleChangeBottomSheet(context, index);
+                                              },
+                                              child: Padding(
+                                                padding: const EdgeInsets.only(left: 10),
+                                                child: Container(
+                                                  width: 40, // 원하는 너비 설정
+                                                  height: 20, // 원하는 높이 설정
+                                                  padding: EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+                                                  decoration: BoxDecoration(
+                                                    borderRadius: BorderRadius.circular(3),
+                                                    border: Border.all(color: SDSColor.gray600), // 테두리 회색
+                                                    color: Colors.transparent,
+                                                  ),
+                                                  child: Center(
+                                                    child: Text(
+                                                      '관리',
+                                                      style: TextStyle(
+                                                        color: SDSColor.gray600, // 글자색 회색
+                                                        fontWeight: FontWeight.bold,
+                                                        fontSize: 10,
+                                                      ),
                                                     ),
                                                   ),
                                                 ),
                                               ),
                                             ),
-                                          ),
                                         ],
                                       ),
                                     ),

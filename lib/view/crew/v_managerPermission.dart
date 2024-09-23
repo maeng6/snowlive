@@ -1,5 +1,6 @@
 import 'package:com.snowlive/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewDetail.dart';
+import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -9,58 +10,58 @@ class ManagerPermissionView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: SDSColor.snowliveWhite,
-        leading: GestureDetector(
-          child: Image.asset(
-            'assets/imgs/icons/icon_snowLive_back.png',
-            scale: 4,
-            width: 26,
-            height: 26,
+        appBar: AppBar(
+          backgroundColor: SDSColor.snowliveWhite,
+          leading: GestureDetector(
+            child: Image.asset(
+              'assets/imgs/icons/icon_snowLive_back.png',
+              scale: 4,
+              width: 26,
+              height: 26,
+            ),
+            onTap: () {
+              Get.back();
+            },
           ),
-          onTap: () {
-            Get.back();
-          },
+          title: Text(
+            '운영진 권한 설정',
+            style: TextStyle(
+                color: SDSColor.snowliveBlack,
+                fontSize: 18
+            ),
+          ),
+          elevation: 0,
         ),
-        title: Text(
-          '운영진 권한 설정',
-          style: TextStyle(
-              color: SDSColor.snowliveBlack,
-              fontSize: 18
-          ),
-        ),
-        elevation: 0,
-      ),
-      body: Obx(()=>Column(
-        children: [
-          // 크루 가입 신청 허가 권한
-          _buildOnOffButton(
-            context,
-            "크루 가입 신청 승인 권한",
-            "크루 가입 신청 승인 권한을 부여합니다.",
-            _crewDetailViewModel.permission_join,
-                (bool value) => _crewDetailViewModel.togglePermissionJoin(value),
-          ),
+        body: Obx(()=>Column(
+          children: [
+            // 크루 가입 신청 허가 권한
+            _buildOnOffButton(
+              context,
+              "크루 가입 신청 승인 권한",
+              "크루 가입 신청 승인 권한을 부여합니다.",
+              _crewDetailViewModel.permission_join,
+                  (bool value) => _crewDetailViewModel.togglePermissionJoin(value),
+            ),
 
-          // 크루 소개글 변경 권한
-          _buildOnOffButton(
-            context,
-            "크루 소개글 변경 권한",
-            "크루 소개글 변경 권한을 부여합니다.",
-            _crewDetailViewModel.permission_desc,
-                (bool value) => _crewDetailViewModel.togglePermissionDesc(value),
-          ),
+            // 크루 소개글 변경 권한
+            _buildOnOffButton(
+              context,
+              "크루 소개글 변경 권한",
+              "크루 소개글 변경 권한을 부여합니다.",
+              _crewDetailViewModel.permission_desc,
+                  (bool value) => _crewDetailViewModel.togglePermissionDesc(value),
+            ),
 
-          // 공지사항 추가 권한
-          _buildOnOffButton(
-            context,
-            "공지사항 작성 권한",
-            "크루 공지사항 작성 권한을 부여합니다.",
-            _crewDetailViewModel.permission_notice,
-                (bool value) => _crewDetailViewModel.togglePermissionNotice(value),
-          ),
-        ],
-      ),)
+            // 공지사항 추가 권한
+            _buildOnOffButton(
+              context,
+              "공지사항 작성 권한",
+              "크루 공지사항 작성 권한을 부여합니다.",
+              _crewDetailViewModel.permission_notice,
+                  (bool value) => _crewDetailViewModel.togglePermissionNotice(value),
+            ),
+          ],
+        ),)
     );
   }
 
@@ -74,14 +75,16 @@ class ManagerPermissionView extends StatelessWidget {
       ) {
     return ListTile(
       title: Text(title,
-      style: TextStyle(
-        fontSize: 15
-      ),
+        style: TextStyle(
+            fontSize: 15
+        ),
       ),
       subtitle: subtitle != null ? Text(subtitle, style: TextStyle(fontSize: 12, color: Colors.grey)) : null,
       trailing: GestureDetector(
-        onTap: () {
-          onChanged(!currentValue); // ON/OFF 상태 변경
+        onTap: () async{
+          CustomFullScreenDialog.showDialog();
+          await onChanged(!currentValue); // ON/OFF 상태 변경
+          CustomFullScreenDialog.cancelDialog();
         },
         child: Container(
           width: 40,

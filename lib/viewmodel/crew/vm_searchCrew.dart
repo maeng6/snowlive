@@ -55,11 +55,11 @@ class SearchCrewViewModel extends GetxController {
   }
 
   // 검색어 입력에 따라 검색 실행
-  void onSearchTextChanged(String text) {
+  Future<void> onSearchTextChanged(String text) async{
     searchText.value = text;
     if (text.isNotEmpty) {
       showRecentSearch.value = false;  // 검색어가 입력되면 최근 검색어 숨기기
-      searchCrews(text);
+      await searchCrews(text);
     } else {
       showRecentSearch.value = true;  // 검색어가 없으면 최근 검색어 보여주기
       crewList.clear();

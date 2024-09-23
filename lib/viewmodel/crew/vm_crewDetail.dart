@@ -1,12 +1,19 @@
+import 'dart:convert';
+
+import 'package:com.snowlive/api/ApiResponse.dart';
 import 'package:com.snowlive/model/m_resortModel.dart';
+import 'package:com.snowlive/routes/routes.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewMemberList.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewNotice.dart';
 import 'package:com.snowlive/viewmodel/friend/vm_friendDetail.dart';
+import 'package:com.snowlive/viewmodel/ranking/vm_rankingList.dart';
 import 'package:com.snowlive/viewmodel/vm_user.dart';
+import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:com.snowlive/api/api_crew.dart';
 import 'package:com.snowlive/model/m_crewDetail.dart';
+import 'package:http/http.dart' as http;
 
 class CrewDetailViewModel extends GetxController {
 
@@ -14,6 +21,7 @@ class CrewDetailViewModel extends GetxController {
   final CrewNoticeViewModel _crewNoticeViewModel = Get.find<CrewNoticeViewModel>();
   final UserViewModel _userViewModel = Get.find<UserViewModel>();
   final FriendDetailViewModel _friendDetailViewModel = Get.find<FriendDetailViewModel>();
+  final RankingListViewModel _rankingListViewModel = Get.find<RankingListViewModel>();
 
   TextEditingController textEditingController_description = TextEditingController();
   final formKey_description = GlobalKey<FormState>();
@@ -155,14 +163,13 @@ class CrewDetailViewModel extends GetxController {
             _userViewModel.user.crew_id,
             _friendDetailViewModel.seasonDate
         );
-        Get.snackbar("성공", "운영진 권한이 성공적으로 변경되었습니다");
+        print("운영진 권한이 성공적으로 변경되었습니다");
       } else {
         // 오류 메시지 출력
-        Get.snackbar("오류", "크루 세부사항 업데이트 실패: ${response.error}");
+        print("크루 세부사항 업데이트 실패: ${response.error}");
       }
     } catch (e) {
       print("크루 세부사항 업데이트 중 예외 발생: $e");
-      Get.snackbar("오류", "크루 세부사항 업데이트 중 문제가 발생했습니다.");
     } finally {
       isLoading.value = false;  // 로딩 종료
     }
@@ -190,14 +197,13 @@ class CrewDetailViewModel extends GetxController {
             _userViewModel.user.crew_id,
             _friendDetailViewModel.seasonDate
         );
-        Get.snackbar("성공", "운영진 권한이 성공적으로 변경되었습니다");
+        print("운영진 권한이 성공적으로 변경되었습니다");
       } else {
         // 오류 메시지 출력
-        Get.snackbar("오류", "크루 세부사항 업데이트 실패: ${response.error}");
+        print("크루 세부사항 업데이트 실패: ${response.error}");
       }
     } catch (e) {
       print("크루 세부사항 업데이트 중 예외 발생: $e");
-      Get.snackbar("오류", "크루 세부사항 업데이트 중 문제가 발생했습니다.");
     } finally {
       isLoading.value = false;  // 로딩 종료
     }
@@ -224,16 +230,33 @@ class CrewDetailViewModel extends GetxController {
             _userViewModel.user.crew_id,
             _friendDetailViewModel.seasonDate
         );
-        Get.snackbar("성공", "운영진 권한이 성공적으로 변경되었습니다");
+        print("운영진 권한이 성공적으로 변경되었습니다");
       } else {
         // 오류 메시지 출력
-        Get.snackbar("오류", "크루 세부사항 업데이트 실패: ${response.error}");
+        print("크루 세부사항 업데이트 실패: ${response.error}");
       }
     } catch (e) {
       print("크루 세부사항 업데이트 중 예외 발생: $e");
-      Get.snackbar("오류", "크루 세부사항 업데이트 중 문제가 발생했습니다.");
     } finally {
       isLoading.value = false;  // 로딩 종료
+    }
+  }
+
+  // 크루 삭제
+  Future<ApiResponse> deleteCrew(int crewId, String userId) async {
+    final uri = Uri.parse('https://snowlive-api-0eab29705c9f.herokuapp.com/api/crew/$crewId/')
+        .replace(queryParameters: {'user_id': userId.toString()});
+
+    final response = await http.delete(uri, headers: {'Content-Type': 'application/json'});
+
+    if (response.statusCode == 204) {
+      await _userViewModel.updateUserModel_api(_userViewModel.user.user_id);
+      CustomFullScreenDialog.cancelDialog();
+      Get.offAllNamed(AppRoutes.mainHome);
+      return ApiResponse.success(null);
+    } else {
+      CustomFullScreenDialog.cancelDialog();
+      return ApiResponse.error(json.decode(utf8.decode(response.bodyBytes)));
     }
   }
 

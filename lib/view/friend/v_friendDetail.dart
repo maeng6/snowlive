@@ -217,7 +217,16 @@ class FriendDetailView extends StatelessWidget {
                                                   ),
                                                   if(_friendDetailViewModel.friendDetailModel.friendUserInfo.crewName != null)
                                                     GestureDetector(
-                                                      onTap: () async{},
+                                                      onTap: () async{
+                                                        CustomFullScreenDialog.showDialog();
+                                                        await _crewDetailViewModel.fetchCrewDetail(
+                                                            _friendDetailViewModel.friendDetailModel.friendUserInfo.crewId,
+                                                            _friendDetailViewModel.seasonDate
+                                                        );
+                                                        await _crewMemberListViewModel.fetchCrewMembers(crewId: _friendDetailViewModel.friendDetailModel.friendUserInfo.crewId);
+                                                        CustomFullScreenDialog.cancelDialog();
+                                                        Get.toNamed(AppRoutes.crewMain);
+                                                      },
                                                       child: Text(
                                                         ' · ${_friendDetailViewModel.friendDetailModel.friendUserInfo.crewName} >',
                                                         style: SDSTextStyle.regular.copyWith(

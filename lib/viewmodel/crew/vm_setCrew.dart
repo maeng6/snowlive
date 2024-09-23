@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:com.snowlive/api/api_crew.dart';
 import 'package:com.snowlive/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/routes/routes.dart';
@@ -10,6 +12,8 @@ import 'package:image_picker/image_picker.dart';
 import 'package:com.snowlive/viewmodel/vm_user.dart';
 import 'package:com.snowlive/viewmodel/util/vm_imageController.dart';
 import 'package:com.snowlive/model/m_resortModel.dart';
+import 'package:http/http.dart' as http;
+import 'package:path_provider/path_provider.dart';
 
 class SetCrewViewModel extends GetxController {
 
@@ -35,8 +39,8 @@ class SetCrewViewModel extends GetxController {
   // 이미지 및 색상 관련 변수
   Rx<XFile?> _imageFile = Rx<XFile?>(null);
   Rx<XFile?> _croppedFile = Rx<XFile?>(null);
-  Rx<Color> currentColor = SDSColor.snowliveBlue.obs;
-  Rx<Color> currentColorBackground = SDSColor.snowliveBlue.obs;
+  Rx<Color> currentColor = Color(0XFFFFA835).obs;
+  Rx<Color> currentColorBackground = Color(0XFFFFA835).obs;
 
   String? profileImageUrl;
 
@@ -125,6 +129,32 @@ class SetCrewViewModel extends GetxController {
     }
   }
 
+
+  Future<void> setCrewLogoAsCroppedFile() async {
+    if (_crewDetailViewModel.crewLogoUrl.isNotEmpty && _croppedFile.value == null) {
+      try {
+        // 네트워크에서 이미지 다운로드
+        final response = await http.get(Uri.parse(_crewDetailViewModel.crewLogoUrl));
+        if (response.statusCode == 200) {
+          // 로컬 파일로 저장
+          final directory = await getApplicationDocumentsDirectory();
+          final filePath = '${directory.path}/crew_logo_image.png';
+          final file = File(filePath);
+          await file.writeAsBytes(response.bodyBytes);
+
+          // 로컬 파일을 크롭된 파일처럼 설정
+          final croppedFile = XFile(filePath);
+          _croppedFile.value = croppedFile;
+        } else {
+          print('Failed to download image');
+        }
+      } catch (e) {
+        print('Error downloading crew logo: $e');
+      }
+    }
+  }
+
+
   // 색상 선택
   void selectColor(Color color) {
     currentColor.value = color;
@@ -135,6 +165,20 @@ class SetCrewViewModel extends GetxController {
   String colorToHex(Color color) {
     return '0X' + color.value.toRadixString(16).toUpperCase(); // '0X'를 포함하여 변환
   }
+
+  Future<void> initializeColor() async{
+    if (_crewDetailViewModel.color.isNotEmpty) {
+      // Assuming the color is in hex format (e.g., "0XFF3D83ED")
+      try {
+        // Convert the color from a hex string to a Color object
+        currentColor.value = Color(int.parse(_crewDetailViewModel.color));
+        currentColorBackground.value = Color(int.parse(_crewDetailViewModel.color)).withOpacity(0.2);
+      } catch (e) {
+        print('Error parsing color: $e');
+      }
+    }
+  }
+
 
   // 다음 버튼 활성화 상태 업데이트
   void updateNextButtonState() {
@@ -193,16 +237,16 @@ class SetCrewViewModel extends GetxController {
     isNextButtonEnabled.value = false;
     _imageFile.value = null;
     _croppedFile.value = null;
-    currentColor.value = Color(0xff3D83ED);
-    currentColorBackground.value = Color(0xffF1F1F3);
+    currentColor.value = Color(0XFFFFA835);
+    currentColorBackground.value = Color(0XFFFFA835);
   }
 
   // 이미지와 색상 초기화
   void resetImageAndColor() {
     _imageFile.value = null;
     _croppedFile.value = null;
-    currentColor.value = Color(0xff3D83ED);
-    currentColorBackground.value = Color(0xffF1F1F3);
+    currentColor.value = Color(0XFFFFA835);
+    currentColorBackground.value = Color(0XFFFFA835);
   }
 
   // 이미지와 초기화
@@ -238,22 +282,16 @@ class SetCrewViewModel extends GetxController {
             _userViewModel.user.crew_id,
             _friendDetailViewModel.seasonDate
         );
-        Get.snackbar("성공", "크루 정보가 성공적으로 변경되었습니다");
+        print("크루 정보가 성공적으로 변경되었습니다");
       } else {
         // 오류 메시지 출력
-        Get.snackbar("오류", "크루 세부사항 업데이트 실패: ${response.error}");
+        print("크루 세부사항 업데이트 실패: ${response.error}");
       }
     } catch (e) {
       print("크루 세부사항 업데이트 중 예외 발생: $e");
-      Get.snackbar("오류", "크루 세부사항 업데이트 중 문제가 발생했습니다.");
     } finally {
       isLoading.value = false;  // 로딩 종료
     }
   }
 
-  @override
-  void onClose() {
-    textEditingController.dispose();
-    super.onClose();
-  }
 }
