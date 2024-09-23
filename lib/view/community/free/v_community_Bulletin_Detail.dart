@@ -927,7 +927,7 @@ class CommunityBulletinDetailView extends StatelessWidget {
                                                                         SizedBox(
                                                                             width: 6),
                                                                         Text(
-                                                                          '· $_time',
+                                                                          '$_time',
                                                                           style: SDSTextStyle.regular.copyWith(
                                                                             fontSize: 12,
                                                                             color: SDSColor.gray500,
@@ -936,14 +936,14 @@ class CommunityBulletinDetailView extends StatelessWidget {
                                                                         SizedBox(width: 6),
                                                                         Container(
                                                                           decoration: BoxDecoration(
-                                                                            borderRadius: BorderRadius.circular(30),
+                                                                            borderRadius: BorderRadius.circular(4),
                                                                             color:
                                                                             (comment.userInfo!.userId == _communityDetailViewModel.communityDetail.userId)
-                                                                                ? SDSColor.blue100
+                                                                                ? SDSColor.blue50
                                                                                 : Colors.transparent,
                                                                           ),
                                                                           child: Padding(
-                                                                            padding: const EdgeInsets.only(top: 3, bottom: 3, left: 6, right: 6),
+                                                                            padding: const EdgeInsets.only(top: 2, bottom: 2, left: 6, right: 6),
                                                                             child: Text(
                                                                               '글쓴이',
                                                                               style: SDSTextStyle.bold.copyWith(fontSize: 11,
@@ -966,7 +966,7 @@ class CommunityBulletinDetailView extends StatelessWidget {
                                                                           Get.toNamed(AppRoutes.bulletinCommentDetail);
                                                                       },
                                                                       child: Padding(
-                                                                        padding: const EdgeInsets.only(top: 10),
+                                                                        padding: const EdgeInsets.only(top: 2),
                                                                         child: Column(
                                                                           crossAxisAlignment: CrossAxisAlignment.start,
                                                                           children: [
@@ -982,7 +982,7 @@ class CommunityBulletinDetailView extends StatelessWidget {
                                                                                     height: 1.4),
                                                                               ),
                                                                             ),
-                                                                            SizedBox(height: 10),
+                                                                            SizedBox(height: 12),
                                                                             Text(
                                                                               (comment.replies!.length == 0)
                                                                                   ? '답글 달기'
@@ -1011,7 +1011,7 @@ class CommunityBulletinDetailView extends StatelessWidget {
                                                                   builder: (context) {
                                                                     return SafeArea(
                                                                       child: Padding(
-                                                                        padding: const EdgeInsets.symmetric(vertical: 20),
+                                                                        padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 20),
                                                                         child: Container(
                                                                           margin: EdgeInsets.only(
                                                                             left: 16,
@@ -1024,178 +1024,227 @@ class CommunityBulletinDetailView extends StatelessWidget {
                                                                             color: Colors.white,
                                                                             borderRadius: BorderRadius.circular(16),
                                                                           ),
-                                                                          child: Column(
+                                                                          child: Wrap(
                                                                             children: [
-                                                                              GestureDetector(
-                                                                                child: ListTile(
-                                                                                  contentPadding: EdgeInsets.zero,
-                                                                                  title: Center(
-                                                                                    child: Text(
-                                                                                      '신고하기',
-                                                                                      style: TextStyle(
-                                                                                        fontSize: 15,
-                                                                                        fontWeight: FontWeight.bold,
-                                                                                      ),
-                                                                                    ),
-                                                                                  ),
-                                                                                  onTap: () async {
-                                                                                    Get.dialog(
-                                                                                        AlertDialog(
-                                                                                          contentPadding: EdgeInsets.only(bottom: 0, left: 28, right: 28, top: 30),
-                                                                                          elevation: 0,
-                                                                                          shape: RoundedRectangleBorder(
-                                                                                              borderRadius: BorderRadius.circular(16)),
-                                                                                          buttonPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
-                                                                                          content: Container(
-                                                                                            height: 32,
-                                                                                            child: Column(
-                                                                                              crossAxisAlignment: CrossAxisAlignment.center,
-                                                                                              children: [
-                                                                                                Text('이 회원을 신고하시겠습니까?',
-                                                                                                  style: SDSTextStyle.bold.copyWith(
-                                                                                                      fontSize: 16,
-                                                                                                      color: SDSColor.gray900),
-                                                                                                ),
-                                                                                              ],
-                                                                                            ),
+                                                                              Column(
+                                                                                children: [
+                                                                                  GestureDetector(
+                                                                                    child: ListTile(
+                                                                                      contentPadding: EdgeInsets.zero,
+                                                                                      title: Center(
+                                                                                        child: Text(
+                                                                                          '신고하기',
+                                                                                          style: SDSTextStyle.bold.copyWith(
+                                                                                              fontSize: 15,
+                                                                                              color: SDSColor.gray900
                                                                                           ),
-                                                                                          actions: [
-                                                                                            Row(
-                                                                                              children: [
-                                                                                                Expanded(
-                                                                                                  child: Container(
-                                                                                                    child: TextButton(
-                                                                                                        onPressed: () {
-                                                                                                          Navigator.pop(context);
-                                                                                                        },
-                                                                                                        child: Text(
-                                                                                                          '취소',
-                                                                                                          style: SDSTextStyle.bold.copyWith(
-                                                                                                            fontSize: 16,
-                                                                                                            color: SDSColor.gray500,
-                                                                                                          ),
-                                                                                                        )),
-                                                                                                  ),
-                                                                                                ),
-                                                                                                Expanded(
-                                                                                                  child: Container(
-                                                                                                    child: TextButton(
-                                                                                                        onPressed: () async {
-                                                                                                          await _communityDetailViewModel.reportCommunity(userId: _userViewModel.user.user_id, communityId: comment.commentId);
-                                                                                                          Navigator.pop(context);
-                                                                                                          Navigator.pop(context);
-                                                                                                        },
-                                                                                                        child: Text(
-                                                                                                          '신고',
-                                                                                                          style: SDSTextStyle.bold.copyWith(
-                                                                                                            fontSize: 16,
-                                                                                                            color: SDSColor.gray900,
-                                                                                                          ),
-                                                                                                        )),
-                                                                                                  ),
-                                                                                                )
-                                                                                              ],
-                                                                                              mainAxisAlignment: MainAxisAlignment.end,
-                                                                                            )
-                                                                                          ],
-                                                                                        ));
-                                                                                  },
-                                                                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                                                                                ),
-                                                                              ),
-                                                                              GestureDetector(
-                                                                                child: ListTile(
-                                                                                  contentPadding: EdgeInsets.zero,
-                                                                                  title: Center(
-                                                                                    child: Text(
-                                                                                      '이 회원의 글 모두 숨기기',
-                                                                                      style: TextStyle(
-                                                                                        fontSize: 15,
-                                                                                        fontWeight: FontWeight.bold,
+                                                                                        ),
                                                                                       ),
-                                                                                    ),
-                                                                                  ),
-                                                                                  onTap: () async {
-                                                                                    Get.dialog(
-                                                                                        AlertDialog(
-                                                                                          contentPadding: EdgeInsets.only(bottom: 0, left: 28, right: 28, top: 30),
-                                                                                          elevation: 0,
-                                                                                          shape: RoundedRectangleBorder(
-                                                                                              borderRadius: BorderRadius.circular(16)),
-                                                                                          buttonPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
-                                                                                          content:  Container(
-                                                                                            height: 70,
-                                                                                            child: Column(
-                                                                                              crossAxisAlignment: CrossAxisAlignment.center,
-                                                                                              children: [
-                                                                                                Text(
-                                                                                                  '이 회원의 게시물을 모두 숨길까요?',
-                                                                                                  style: SDSTextStyle.bold.copyWith(
-                                                                                                      fontSize: 16,
-                                                                                                      color: SDSColor.gray900),
-                                                                                                ),
-                                                                                                Padding(
-                                                                                                  padding: const EdgeInsets.only(top: 8),
-                                                                                                  child: Text(
-                                                                                                    '차단해제는 [더보기 - 친구 - 설정 - 차단목록]에서하실 수 있습니다.',
-                                                                                                    style: SDSTextStyle.regular.copyWith(
+                                                                                      onTap: () async {
+                                                                                        Get.dialog(
+                                                                                            AlertDialog(
+                                                                                              backgroundColor: SDSColor.snowliveWhite,
+                                                                                              contentPadding: EdgeInsets.only(bottom: 0, left: 28, right: 28, top: 36),
+                                                                                              elevation: 0,
+                                                                                              shape: RoundedRectangleBorder(
+                                                                                                  borderRadius: BorderRadius.circular(16)),
+                                                                                              buttonPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+                                                                                              content: Container(
+                                                                                                height: 80,
+                                                                                                child: Column(
+                                                                                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                                                                                  children: [
+                                                                                                    Text(
+                                                                                                      '이 회원을 신고하시겠습니까?',
+                                                                                                      textAlign: TextAlign.center,
+                                                                                                      style: SDSTextStyle.bold.copyWith(
+                                                                                                          color: SDSColor.gray900,
+                                                                                                          fontSize: 16
+                                                                                                      ),
+                                                                                                    ),
+                                                                                                    SizedBox(
+                                                                                                      height: 6,
+                                                                                                    ),
+                                                                                                    Text(
+                                                                                                      '신고가 일정 횟수 이상 누적되면 해당 게시물이 삭제 처리됩니다',
+                                                                                                      textAlign: TextAlign.center,
+                                                                                                      style: SDSTextStyle.regular.copyWith(
+                                                                                                        color: SDSColor.gray500,
                                                                                                         fontSize: 14,
-                                                                                                        color: SDSColor.gray600,
-                                                                                                        height: 1.4),
-                                                                                                    textAlign: TextAlign.center,
-                                                                                                  ),
+                                                                                                      ),
+                                                                                                    ),
+                                                                                                  ],
                                                                                                 ),
-                                                                                              ],
-                                                                                            ),
-                                                                                          ),
-                                                                                          actions: [
-                                                                                            Row(
-                                                                                              children: [
-                                                                                                Expanded(
-                                                                                                  child: Container(
-                                                                                                    child: TextButton(
-                                                                                                        onPressed: () {
-                                                                                                          Navigator.pop(context);
-                                                                                                        },
-                                                                                                        child: Text(
-                                                                                                          '취소',
-                                                                                                          style: SDSTextStyle.bold.copyWith(
-                                                                                                            fontSize: 16,
-                                                                                                            color: SDSColor.gray500,
-                                                                                                          ),
-                                                                                                        )),
-                                                                                                  ),
-                                                                                                ),
-                                                                                                Expanded(
-                                                                                                  child: Container(
-                                                                                                    child: TextButton(
-                                                                                                        onPressed: () async{
-                                                                                                          await _userViewModel.block_user({
-                                                                                                            "user_id": _userViewModel.user.user_id,
-                                                                                                            "block_user_id": comment.userId
-                                                                                                          });
-                                                                                                          Navigator.pop(context);
-                                                                                                          Navigator.pop(context);
-                                                                                                          Navigator.pop(context);
-                                                                                                        },
-                                                                                                        child: Text(
-                                                                                                          '확인',
-                                                                                                          style: SDSTextStyle.bold.copyWith(
-                                                                                                            fontSize: 16,
-                                                                                                            color: SDSColor.gray900,
-                                                                                                          ),
-                                                                                                        )),
+                                                                                              ),
+                                                                                              actions: [
+                                                                                                Padding(
+                                                                                                  padding: EdgeInsets.only(top: 10, left: 16, right: 16),
+                                                                                                  child: Row(
+                                                                                                    children: [
+                                                                                                      Expanded(
+                                                                                                        child: Container(
+                                                                                                          child: TextButton(
+                                                                                                              onPressed: () {
+                                                                                                                Navigator.pop(context);
+                                                                                                              },
+                                                                                                              style: TextButton.styleFrom(
+                                                                                                                backgroundColor: Colors.transparent, // 배경색 투명
+                                                                                                                splashFactory: NoSplash.splashFactory, // 터치 시 효과 제거
+                                                                                                              ),
+                                                                                                              child: Text(
+                                                                                                                '취소',
+                                                                                                                style: SDSTextStyle.bold.copyWith(
+                                                                                                                  fontSize: 17,
+                                                                                                                  color: SDSColor.gray500,
+                                                                                                                ),
+                                                                                                              )),
+                                                                                                        ),
+                                                                                                      ),
+                                                                                                      SizedBox(
+                                                                                                        width: 10,
+                                                                                                      ),
+                                                                                                      Expanded(
+                                                                                                        child: Container(
+                                                                                                          child: TextButton(
+                                                                                                              onPressed: () async {
+                                                                                                                await _communityDetailViewModel.reportCommunity(userId: _userViewModel.user.user_id, communityId: comment.commentId);
+                                                                                                                Navigator.pop(context);
+                                                                                                                Navigator.pop(context);
+                                                                                                              },
+                                                                                                              style: TextButton.styleFrom(
+                                                                                                                backgroundColor: Colors.transparent, // 배경색 투명
+                                                                                                                splashFactory: NoSplash.splashFactory, // 터치 시 효과 제거
+                                                                                                              ),
+                                                                                                              child: Text('신고하기',
+                                                                                                                style: SDSTextStyle.bold.copyWith(
+                                                                                                                  fontSize: 17,
+                                                                                                                  color: SDSColor.snowliveBlue,
+                                                                                                                ),
+                                                                                                              )),
+                                                                                                        ),
+                                                                                                      )
+                                                                                                    ],
+                                                                                                    mainAxisAlignment: MainAxisAlignment.center,
                                                                                                   ),
                                                                                                 )
                                                                                               ],
-                                                                                              mainAxisAlignment: MainAxisAlignment.end,
-                                                                                            )
-                                                                                          ],
-                                                                                        ));
-                                                                                  },
-                                                                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                                                                                ),
-                                                                              )
+                                                                                            ));
+                                                                                      },
+                                                                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                                                                                    ),
+                                                                                  ),
+                                                                                  GestureDetector(
+                                                                                    child: ListTile(
+                                                                                      contentPadding: EdgeInsets.zero,
+                                                                                      title: Center(
+                                                                                        child: Text(
+                                                                                          '이 회원의 글 모두 숨기기',
+                                                                                          style: SDSTextStyle.bold.copyWith(
+                                                                                              fontSize: 15,
+                                                                                              color: SDSColor.gray900
+                                                                                          ),
+                                                                                        ),
+                                                                                      ),
+                                                                                      onTap: () async {
+                                                                                        Get.dialog(
+                                                                                            AlertDialog(
+                                                                                              backgroundColor: SDSColor.snowliveWhite,
+                                                                                              contentPadding: EdgeInsets.only(bottom: 0, left: 28, right: 28, top: 36),
+                                                                                              elevation: 0,
+                                                                                              shape: RoundedRectangleBorder(
+                                                                                                  borderRadius: BorderRadius.circular(16)),
+                                                                                              buttonPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+                                                                                              content:  Container(
+                                                                                                height: 80,
+                                                                                                child: Column(
+                                                                                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                                                                                  children: [
+                                                                                                    Text(
+                                                                                                      '이 회원의 모든 글을 숨기시겠습니까?',
+                                                                                                      textAlign: TextAlign.center,
+                                                                                                      style: SDSTextStyle.bold.copyWith(
+                                                                                                          color: SDSColor.gray900,
+                                                                                                          fontSize: 16
+                                                                                                      ),
+                                                                                                    ),
+                                                                                                    SizedBox(
+                                                                                                      height: 6,
+                                                                                                    ),
+                                                                                                    Text(
+                                                                                                      '숨김해제는 [더보기 - 친구 - 설정 - 차단목록]에서 하실 수 있습니다.',
+                                                                                                      textAlign: TextAlign.center,
+                                                                                                      style: SDSTextStyle.regular.copyWith(
+                                                                                                        color: SDSColor.gray500,
+                                                                                                        fontSize: 14,
+                                                                                                      ),
+                                                                                                    ),
+                                                                                                  ],
+                                                                                                ),
+                                                                                              ),
+                                                                                              actions: [
+                                                                                                Padding(
+                                                                                                  padding: EdgeInsets.only(top: 10, left: 16, right: 16),
+                                                                                                  child: Row(
+                                                                                                    children: [
+                                                                                                      Expanded(
+                                                                                                        child: Container(
+                                                                                                          child: TextButton(
+                                                                                                              onPressed: () {
+                                                                                                                Navigator.pop(context);
+                                                                                                              },
+                                                                                                              style: TextButton.styleFrom(
+                                                                                                                backgroundColor: Colors.transparent, // 배경색 투명
+                                                                                                                splashFactory: NoSplash.splashFactory, // 터치 시 효과 제거
+                                                                                                              ),
+                                                                                                              child: Text('취소',
+                                                                                                                style: SDSTextStyle.bold.copyWith(
+                                                                                                                  fontSize: 17,
+                                                                                                                  color: SDSColor.gray500,
+                                                                                                                ),
+                                                                                                              )
+                                                                                                          ),
+                                                                                                        ),
+                                                                                                      ),
+                                                                                                      SizedBox(
+                                                                                                        width: 10,
+                                                                                                      ),
+                                                                                                      Expanded(
+                                                                                                        child: Container(
+                                                                                                          child: TextButton(
+                                                                                                              onPressed: () async{
+                                                                                                                await _userViewModel.block_user({
+                                                                                                                  "user_id": _userViewModel.user.user_id,
+                                                                                                                  "block_user_id": comment.userId
+                                                                                                                });
+                                                                                                                Navigator.pop(context);
+                                                                                                                Navigator.pop(context);
+                                                                                                                Navigator.pop(context);
+                                                                                                              },
+                                                                                                              style: TextButton.styleFrom(
+                                                                                                                backgroundColor: Colors.transparent, // 배경색 투명
+                                                                                                                splashFactory: NoSplash.splashFactory, // 터치 시 효과 제거
+                                                                                                              ),
+                                                                                                              child: Text('숨기기',
+                                                                                                                style: SDSTextStyle.bold.copyWith(
+                                                                                                                  fontSize: 17,
+                                                                                                                  color: SDSColor.snowliveBlue,
+                                                                                                                ),
+                                                                                                              )
+                                                                                                          ),
+                                                                                                        ),
+                                                                                                      )
+                                                                                                    ],
+                                                                                                    mainAxisAlignment: MainAxisAlignment.center,
+                                                                                                  ),
+                                                                                                )
+                                                                                              ],
+                                                                                            ));
+                                                                                      },
+                                                                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                                                                                    ),
+                                                                                  )
+                                                                                ],
+                                                                              ),
                                                                             ],
                                                                           ),
                                                                         ),
@@ -1207,7 +1256,7 @@ class CommunityBulletinDetailView extends StatelessWidget {
                                                                 padding: const EdgeInsets.only(bottom: 22),
                                                                 child:
                                                                 Icon(
-                                                                  Icons.more_vert,
+                                                                  Icons.more_horiz,
                                                                   color: SDSColor.gray200,
                                                                   size: 20,
                                                                 ),
@@ -1216,94 +1265,126 @@ class CommunityBulletinDetailView extends StatelessWidget {
                                                                 : GestureDetector(
                                                               onTap: () => showModalBottomSheet(
                                                                   enableDrag: false,
+                                                                  isScrollControlled: true,
+                                                                  backgroundColor: Colors.transparent,
                                                                   context: context,
                                                                   builder: (context) {
                                                                     return SafeArea(
-                                                                      child: Container(
-                                                                        height: 90,
-                                                                        child:
-                                                                        Padding(
-                                                                          padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 14),
-                                                                          child: Column(
+                                                                      child: Padding(
+                                                                        padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 20),
+                                                                        child: Container(
+                                                                          margin: EdgeInsets.only(
+                                                                            left: 16,
+                                                                            right: 16,
+                                                                            top: 16,
+                                                                          ),
+                                                                          padding: EdgeInsets.all(16),
+                                                                          decoration: BoxDecoration(
+                                                                            color: Colors.white,
+                                                                            borderRadius: BorderRadius.circular(16),
+                                                                          ),
+                                                                          child: Wrap(
                                                                             children: [
-                                                                              GestureDetector(
-                                                                                child: ListTile(
-                                                                                  contentPadding: EdgeInsets.zero,
-                                                                                  title: Center(
-                                                                                    child: Text(
-                                                                                      '삭제',
-                                                                                      style: TextStyle(
-                                                                                          fontSize: 15,
-                                                                                          fontWeight: FontWeight.bold,
-                                                                                          color: Color(0xFFD63636)
+                                                                              Column(
+                                                                                children: [
+                                                                                  GestureDetector(
+                                                                                    child: ListTile(
+                                                                                      contentPadding: EdgeInsets.zero,
+                                                                                      title: Center(
+                                                                                        child: Text(
+                                                                                          '삭제하기',
+                                                                                          style: SDSTextStyle.bold.copyWith(
+                                                                                            fontSize: 15,
+                                                                                            color: SDSColor.red,
+                                                                                          ),
+                                                                                        ),
                                                                                       ),
-                                                                                    ),
-                                                                                  ),
-                                                                                  onTap: () async {
-                                                                                    Navigator.pop(context);
-                                                                                    showModalBottomSheet(
-                                                                                        context: context,
-                                                                                        builder: (context) {
-                                                                                          return Container(
-                                                                                            color: Colors.white,
-                                                                                            height: 180,
-                                                                                            child: Padding(
-                                                                                              padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                                                                                              child: Column(
-                                                                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                                                                mainAxisAlignment: MainAxisAlignment.start,
-                                                                                                children: [
-                                                                                                  SizedBox(
-                                                                                                    height: 30,
-                                                                                                  ),
-                                                                                                  Text(
-                                                                                                    '삭제하시겠습니까?',
-                                                                                                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Color(0xFF111111)),
-                                                                                                  ),
-                                                                                                  SizedBox(
-                                                                                                    height: 30,
-                                                                                                  ),
-                                                                                                  Row(
-                                                                                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                                                                      onTap: () async {
+                                                                                        Get.dialog(
+                                                                                            AlertDialog(
+                                                                                              backgroundColor: SDSColor.snowliveWhite,
+                                                                                              contentPadding: EdgeInsets.only(bottom: 0, left: 28, right: 28, top: 36),
+                                                                                              elevation: 0,
+                                                                                              shape: RoundedRectangleBorder(
+                                                                                                  borderRadius: BorderRadius.circular(16)),
+                                                                                              buttonPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+                                                                                              content: Container(
+                                                                                                height: 40,
+                                                                                                child: Column(
+                                                                                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                                                                                  children: [
+                                                                                                    Text(
+                                                                                                      '이 글을 삭제하시겠어요?',
+                                                                                                      textAlign: TextAlign.center,
+                                                                                                      style: SDSTextStyle.bold.copyWith(
+                                                                                                          color: SDSColor.gray900,
+                                                                                                          fontSize: 16
+                                                                                                      ),
+                                                                                                    ),
+                                                                                                  ],
+                                                                                                ),
+                                                                                              ),
+                                                                                              actions: [
+                                                                                                Padding(
+                                                                                                  padding: EdgeInsets.only(top: 10, left: 16, right: 16),
+                                                                                                  child: Row(
                                                                                                     children: [
                                                                                                       Expanded(
-                                                                                                        child: ElevatedButton(
-                                                                                                          onPressed: () {
-                                                                                                            Navigator.pop(context);
-                                                                                                          },
-                                                                                                          child: Text(
-                                                                                                            '취소',
-                                                                                                            style: TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.bold),
+                                                                                                        child: Container(
+                                                                                                          child: TextButton(
+                                                                                                              onPressed: () {
+                                                                                                                Navigator.pop(context);
+                                                                                                                Navigator.pop(context);
+                                                                                                              },
+                                                                                                              style: TextButton.styleFrom(
+                                                                                                                backgroundColor: Colors.transparent, // 배경색 투명
+                                                                                                                splashFactory: NoSplash.splashFactory, // 터치 시 효과 제거
+                                                                                                              ),
+                                                                                                              child: Text('취소',
+                                                                                                                style: SDSTextStyle.bold.copyWith(
+                                                                                                                  fontSize: 17,
+                                                                                                                  color: SDSColor.gray500,
+                                                                                                                ),
+                                                                                                              )
                                                                                                           ),
-                                                                                                          style: TextButton.styleFrom(splashFactory: InkRipple.splashFactory, elevation: 0, minimumSize: Size(100, 56), backgroundColor: Color(0xff555555), padding: EdgeInsets.symmetric(horizontal: 0)),
                                                                                                         ),
                                                                                                       ),
                                                                                                       SizedBox(
                                                                                                         width: 10,
                                                                                                       ),
                                                                                                       Expanded(
-                                                                                                        child: ElevatedButton(
-                                                                                                          onPressed: () async {
-                                                                                                            await _communityDetailViewModel.deleteComment(comment.commentId!, _userViewModel.user.user_id);
-                                                                                                            Navigator.pop(context);
-                                                                                                          },
-                                                                                                          child: Text(
-                                                                                                            '확인',
-                                                                                                            style: TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.bold),
-                                                                                                          ),
-                                                                                                          style: TextButton.styleFrom(splashFactory: InkRipple.splashFactory, elevation: 0, minimumSize: Size(100, 56), backgroundColor: Color(0xff2C97FB), padding: EdgeInsets.symmetric(horizontal: 0)),
+                                                                                                        child: Container(
+                                                                                                          child: TextButton(
+                                                                                                              onPressed: () async {
+                                                                                                                CustomFullScreenDialog.showDialog();
+                                                                                                                await _communityDetailViewModel.deleteComment(comment.commentId!, _userViewModel.user.user_id);
+                                                                                                                Navigator.pop(context);
+                                                                                                                CustomFullScreenDialog.cancelDialog();
+                                                                                                              },
+                                                                                                              style: TextButton.styleFrom(
+                                                                                                                backgroundColor: Colors.transparent, // 배경색 투명
+                                                                                                                splashFactory: NoSplash.splashFactory, // 터치 시 효과 제거
+                                                                                                              ),
+                                                                                                              child: Text('삭제하기',
+                                                                                                                style: SDSTextStyle.bold.copyWith(
+                                                                                                                  fontSize: 17,
+                                                                                                                  color: SDSColor.red,
+                                                                                                                ),
+                                                                                                              )),
                                                                                                         ),
-                                                                                                      ),
+                                                                                                      )
                                                                                                     ],
-                                                                                                  )
-                                                                                                ],
-                                                                                              ),
-                                                                                            ),
-                                                                                          );
-                                                                                        });
-                                                                                  },
-                                                                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                                                                                ),
+                                                                                                    mainAxisAlignment: MainAxisAlignment.center,
+                                                                                                  ),
+                                                                                                )
+                                                                                              ],
+                                                                                            )
+                                                                                        );
+                                                                                      },
+                                                                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                                                                                    ),
+                                                                                  ),
+                                                                                ],
                                                                               ),
                                                                             ],
                                                                           ),
@@ -1314,8 +1395,10 @@ class CommunityBulletinDetailView extends StatelessWidget {
                                                               child:
                                                               Padding(
                                                                 padding: const EdgeInsets.only(bottom: 22),
-                                                                child: Icon(Icons.more_vert,
-                                                                  color: Color(0xFFdedede),
+                                                                child:  Icon(
+                                                                  Icons.more_horiz,
+                                                                  color: SDSColor.gray200,
+                                                                  size: 20,
                                                                 ),
                                                               ),
                                                             )

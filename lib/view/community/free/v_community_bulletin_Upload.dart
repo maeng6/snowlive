@@ -294,10 +294,26 @@ class CommunityFreeUpload extends StatelessWidget {
                                       children: [
                                         Padding(
                                           padding: const EdgeInsets.only(top: 32, left: 4),
-                                          child: Text('상세 설명', style: SDSTextStyle.regular.copyWith(
-                                              fontSize: 13,
-                                              color: SDSColor.gray900
-                                          ),),
+                                          child: Row(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              Text('상세 설명', style: SDSTextStyle.regular.copyWith(
+                                                  fontSize: 13,
+                                                  color: SDSColor.gray900
+                                              ),),
+                                              Padding(
+                                                padding: const EdgeInsets.only(left: 2, top: 2),
+                                                child: Container(
+                                                  width: 4,
+                                                  height: 4,
+                                                  decoration: BoxDecoration(
+                                                    borderRadius: BorderRadius.circular(10),
+                                                    color: SDSColor.red,
+                                                  ),
+                                                ),
+                                              )
+                                            ],
+                                          ),
                                         ),
                                         SizedBox(height: 8),
                                         if (!_communityUploadViewModel.isReadOnly)
@@ -309,6 +325,9 @@ class CommunityFreeUpload extends StatelessWidget {
                                           builder: (context) {
                                             return MyQuillEditor(
                                               configurations: QuillEditorConfigurations(
+                                                sharedConfigurations: const QuillSharedConfigurations(
+                                                  locale: Locale('ko'),
+                                                ),
                                                 controller: _communityUploadViewModel.quillController,
                                               ),
                                               scrollController: _communityUploadViewModel.scrollController,

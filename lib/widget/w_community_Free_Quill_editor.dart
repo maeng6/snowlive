@@ -36,6 +36,22 @@ class MyQuillEditor extends StatelessWidget {
       scrollController: scrollController,
       focusNode: focusNode,
       configurations: configurations.copyWith(
+        dialogTheme: QuillDialogTheme(
+            buttonTextStyle: SDSTextStyle.bold.copyWith(
+              fontSize: 17,
+              color: SDSColor.snowliveBlue
+            ),
+            labelTextStyle: SDSTextStyle.regular.copyWith(
+              fontSize: 15,
+                color: SDSColor.gray300
+            ),
+            inputTextStyle: SDSTextStyle.regular.copyWith(
+              fontSize: 15,
+              color: SDSColor.gray900
+            ),
+          dialogBackgroundColor: SDSColor.snowliveWhite,
+        ),
+        showCursor: true,
         elementOptions: const QuillEditorElementOptions(
           codeBlock: QuillEditorCodeBlockElementOptions(
             enableLineNumbers: true,
