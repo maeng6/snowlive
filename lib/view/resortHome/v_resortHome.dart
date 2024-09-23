@@ -426,7 +426,7 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                                     borderRadius: BorderRadius.only(topLeft: Radius.circular(16), topRight: Radius.circular(16)),
                                     color: SDSColor.snowliveWhite,
                                   ),
-                                  padding: EdgeInsets.only(right: 20, left: 20, top: 12),
+                                  padding: EdgeInsets.only(right: 16, left: 16, top: 12),
                                   child: Obx(()=>Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
@@ -450,170 +450,6 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                                         ),
                                       ),
                                       SizedBox(height: 24),
-                                      // Expanded(
-                                      //   child: _resortHomeViewModel.bestFriendList.isEmpty
-                                      //       ? Center(
-                                      //     child: Padding(
-                                      //       padding: const EdgeInsets.only(bottom: 24),
-                                      //       child: Text(
-                                      //         '친구 관리로 이동해 즐겨찾는 친구를 등록해 주세요.\n라이브중인 친구를 바로 확인하실 수 있어요.',
-                                      //         style: SDSTextStyle.regular.copyWith(fontSize: 14, color: SDSColor.gray500, height: 1.4),
-                                      //         textAlign: TextAlign.center,
-                                      //       ),
-                                      //     ),
-                                      //   )
-                                      //       : Wrap(
-                                      //     alignment: WrapAlignment.start,
-                                      //     children: List.generate(_resortHomeViewModel.bestFriendList.length, (index) {
-                                      //       var BFdoc = _resortHomeViewModel.bestFriendList[index];
-                                      //       return GestureDetector(
-                                      //         onTap: () async {
-                                      //           Navigator.pop(context);
-                                      //           Get.toNamed(AppRoutes.friendDetail);
-                                      //           CustomFullScreenDialog.showDialog();
-                                      //           await _friendDetailViewModel.fetchFriendDetailInfo(
-                                      //             userId: _userViewModel.user.user_id,
-                                      //             friendUserId: BFdoc.friendInfo.userId,
-                                      //             season: _friendDetailViewModel.seasonDate,
-                                      //           );
-                                      //           CustomFullScreenDialog.cancelDialog();
-                                      //         },
-                                      //         child: Container(
-                                      //           width: (_size.width - 40) / 4, // 화면 너비를 4등분
-                                      //           child: Column(
-                                      //             crossAxisAlignment: CrossAxisAlignment.center,
-                                      //             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                      //             children: [
-                                      //               Stack(
-                                      //                 children: [
-                                      //                   Container(
-                                      //                     width: 68,
-                                      //                     height: 68,
-                                      //                     decoration: BoxDecoration(
-                                      //                       borderRadius: BorderRadius.circular(100),
-                                      //                       border: (BFdoc.friendInfo.withinBoundary == true &&
-                                      //                           BFdoc.friendInfo.revealWb == true)
-                                      //                           ? Border.all(
-                                      //                         color: SDSColor.snowliveBlue,
-                                      //                         width: 2,
-                                      //                       )
-                                      //                           : Border.all(
-                                      //                         color: SDSColor.gray100,
-                                      //                         width: 1,
-                                      //                       ),
-                                      //                     ),
-                                      //                     alignment: Alignment.center,
-                                      //                     child: BFdoc.friendInfo.profileImageUrlUser.isNotEmpty
-                                      //                         ? ExtendedImage.network(
-                                      //                       BFdoc.friendInfo.profileImageUrlUser,
-                                      //                       enableMemoryCache: true,
-                                      //                       shape: BoxShape.circle,
-                                      //                       borderRadius: BorderRadius.circular(100),
-                                      //                       width: 68,
-                                      //                       height: 68,
-                                      //                       fit: BoxFit.cover,
-                                      //                       loadStateChanged: (ExtendedImageState state) {
-                                      //                         switch (state.extendedImageLoadState) {
-                                      //                           case LoadState.loading:
-                                      //                             return SizedBox.shrink();
-                                      //                           case LoadState.completed:
-                                      //                             return state.completedWidget;
-                                      //                           case LoadState.failed:
-                                      //                             return ExtendedImage.asset(
-                                      //                               'assets/imgs/profile/img_profile_default_circle.png',
-                                      //                               shape: BoxShape.circle,
-                                      //                               borderRadius: BorderRadius.circular(100),
-                                      //                               width: 68,
-                                      //                               height: 68,
-                                      //                               fit: BoxFit.cover,
-                                      //                             );
-                                      //                           default:
-                                      //                             return null;
-                                      //                         }
-                                      //                       },
-                                      //                     )
-                                      //                         : ExtendedImage.asset(
-                                      //                       'assets/imgs/profile/img_profile_default_circle.png',
-                                      //                       enableMemoryCache: true,
-                                      //                       shape: BoxShape.circle,
-                                      //                       borderRadius: BorderRadius.circular(100),
-                                      //                       width: 68,
-                                      //                       height: 68,
-                                      //                       fit: BoxFit.cover,
-                                      //                     ),
-                                      //                   ),
-                                      //                   if (BFdoc.friendInfo.withinBoundary == true &&
-                                      //                       BFdoc.friendInfo.revealWb == true)
-                                      //                     Positioned(
-                                      //                       right: 0,
-                                      //                       bottom: 0,
-                                      //                       left: 0,
-                                      //                       child: Center(
-                                      //                         child: Image.asset(
-                                      //                           'assets/imgs/icons/icon_badge_live.png',
-                                      //                           width: 34,
-                                      //                         ),
-                                      //                       ),
-                                      //                     ),
-                                      //                 ],
-                                      //               ),
-                                      //               SizedBox(height: 6),
-                                      //               Container(
-                                      //                 width: 72,
-                                      //                 child: Text(
-                                      //                   BFdoc.friendInfo.displayName,
-                                      //                   overflow: TextOverflow.ellipsis,
-                                      //                   textAlign: TextAlign.center,
-                                      //                   style: TextStyle(
-                                      //                       fontSize: 12,
-                                      //                       fontWeight: FontWeight.normal,
-                                      //                       color: SDSColor.gray900
-                                      //                   ),
-                                      //                 ),
-                                      //               ),
-                                      //               SizedBox(height: 6),
-                                      //               Row(
-                                      //                 mainAxisAlignment: MainAxisAlignment.center,
-                                      //                 children: [
-                                      //                   Flexible(
-                                      //                     child: Text(
-                                      //                       (BFdoc.friendInfo.lastPassSlope == null)
-                                      //                           ? ''
-                                      //                           : '${BFdoc.friendInfo.lastPassSlope}',
-                                      //                       overflow: TextOverflow.ellipsis,
-                                      //                       textAlign: TextAlign.center,
-                                      //                       style: TextStyle(
-                                      //                           fontSize: 12,
-                                      //                           fontWeight: FontWeight.normal,
-                                      //                           color: SDSColor.gray500
-                                      //                       ),
-                                      //                     ),
-                                      //                   ),
-                                      //                   Flexible(
-                                      //                     child: Text(
-                                      //                       (BFdoc.friendInfo.lastPassTime == null)
-                                      //                           ? ''
-                                      //                           : ' · ${GetDatetime().getAgoString(BFdoc.friendInfo.lastPassTime!)}',
-                                      //                       overflow: TextOverflow.ellipsis,
-                                      //                       textAlign: TextAlign.center,
-                                      //                       style: TextStyle(
-                                      //                           fontSize: 12,
-                                      //                           fontWeight: FontWeight.normal,
-                                      //                           color: SDSColor.gray500
-                                      //                       ),
-                                      //                     ),
-                                      //                   ),
-                                      //                 ],
-                                      //               ),
-                                      //             ],
-                                      //           ),
-                                      //         ),
-                                      //       );
-                                      //     }),
-                                      //   ),
-                                      // ),
-
-
                                       Expanded(
                                         child: _resortHomeViewModel.bestFriendList.isEmpty
                                             ? Center(
@@ -630,7 +466,7 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                                             controller: scrollController,
                                             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                                               crossAxisCount: 4, // 4개의 열로 표시
-                                              childAspectRatio: 2 / 3, // 너비와 높이 비율 조정
+                                              childAspectRatio: 2 / 3.2, // 너비와 높이 비율 조정
                                             ),
                                             itemCount: _resortHomeViewModel.bestFriendList.length,
                                             itemBuilder: (context, index) {
@@ -739,7 +575,6 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                                                               color: SDSColor.gray900),
                                                         ),
                                                       ),
-                                                      SizedBox(height: 6),
                                                       Row(
                                                         mainAxisAlignment: MainAxisAlignment.center,
                                                         children: [
@@ -750,17 +585,17 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                                                             overflow: TextOverflow.ellipsis,
                                                             textAlign: TextAlign.center,
                                                             style: SDSTextStyle.regular.copyWith(
-                                                                fontSize: 12,
+                                                                fontSize: 11,
                                                                 color: SDSColor.gray500),
                                                           ),
                                                           Text(
                                                             (BFdoc.lastPassTime == null)
                                                                 ? ''
-                                                                : ' · ${GetDatetime().getAgoString(BFdoc.lastPassTime!)}',
+                                                                : '·${GetDatetime().getAgoString(BFdoc.lastPassTime!)}',
                                                             overflow: TextOverflow.ellipsis,
                                                             textAlign: TextAlign.center,
                                                             style: SDSTextStyle.regular.copyWith(
-                                                                fontSize: 12,
+                                                                fontSize: 11,
                                                                 color: SDSColor.gray500),
                                                           ),
                                                         ],
