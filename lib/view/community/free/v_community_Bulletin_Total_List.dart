@@ -366,7 +366,7 @@ class CommunityBulletinTotalListView extends StatelessWidget {
                               )),
                             );
                           },
-                          padding: EdgeInsets.only(bottom: 90),
+                          padding: EdgeInsets.only(bottom: 80),
                         ),
                       )
                     ],

@@ -1,7 +1,9 @@
-import 'dart:io' as io show Directory, File;
+import 'dart:io' as io show Directory, File, io;
 import 'package:com.snowlive/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/viewmodel/util/vm_imageController.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_quill/flutter_quill.dart' as quill;
+
 import 'package:get/get.dart';
 import 'package:flutter_quill/extensions.dart'
     show isAndroid, isDesktop, isIOS, isWeb;
@@ -165,6 +167,7 @@ class MyQuillEditor extends StatelessWidget {
           return file.path;
         },
         embedBuilders: [
+          CustomImageEmbedBuilder(),
           ...(isWeb()
               ? FlutterQuillEmbeds.editorWebBuilders()
               : FlutterQuillEmbeds.editorBuilders(
@@ -187,6 +190,60 @@ class MyQuillEditor extends StatelessWidget {
             ),
           )),
         ],
+      ),
+    );
+  }
+}
+
+
+
+
+class CustomImageEmbedBuilder extends EmbedBuilder {
+  @override
+  String get key => 'image';
+
+  @override
+  Widget build(BuildContext context, QuillController controller, Embed node, bool readOnly, bool inline, TextStyle textStyle) {
+    final imageUrl = node.value.data;
+
+    final imageProvider = imageUrl.startsWith('http') || imageUrl.startsWith('https')
+        ? NetworkImage(imageUrl)
+        : FileImage(io.File(imageUrl)) as ImageProvider;
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 16.0), // 상하 padding 적용
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(8.0), // borderRadius 적용
+        child: Image(
+          image: imageProvider,
+          fit: BoxFit.cover,
+          loadingBuilder: (context, child, loadingProgress) {
+            if (loadingProgress == null) return child;
+            return Container(
+              width: double.infinity,
+              height: 300, // 필요에 따라 높이 조정
+              color: SDSColor.gray50, // 회색 박스
+              child: Center(
+                child: CircularProgressIndicator(
+                  color: SDSColor.gray200,
+                  value: loadingProgress.expectedTotalBytes != null
+                      ? loadingProgress.cumulativeBytesLoaded / (loadingProgress.expectedTotalBytes ?? 1)
+                      : null,
+                ),
+              ),
+            );
+          },
+          errorBuilder: (context, error, stackTrace) {
+            return Container(
+              width: double.infinity,
+              height: 300, // 필요에 따라 높이 조정
+              color: SDSColor.gray50,
+              child: const Center(
+                child: Icon(Icons.error, color: Colors.red),
+              ),
+            );
+          },
+        ),
       ),
     );
   }
