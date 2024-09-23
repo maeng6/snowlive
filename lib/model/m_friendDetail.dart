@@ -25,6 +25,7 @@ class FriendUserInfo {
   late String displayName;
   late String? profileImageUrlUser;
   late String? crewName;
+  late int? crewId;
   late String? stateMsg;
   late String favoriteResort;
   late int? favoriteResortId;
@@ -42,6 +43,7 @@ class FriendUserInfo {
     displayName = '';
     profileImageUrlUser = '';
     crewName = '';
+    crewId = 0;
     stateMsg = null;
     favoriteResort = '';
     favoriteResortId = null;
@@ -60,6 +62,7 @@ class FriendUserInfo {
     displayName = json['display_name'];
     profileImageUrlUser = json['profile_image_url_user'];
     crewName = json['crew_name'];
+    crewId = json['crew_id'];
     stateMsg = json['state_msg'];
     favoriteResort = json['favorite_resort'];
     favoriteResortId = json['favorite_resort_id'];
