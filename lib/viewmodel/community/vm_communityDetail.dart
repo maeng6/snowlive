@@ -74,6 +74,7 @@ class CommunityDetailViewModel extends GetxController {
     _quillController!.value = quill.QuillController(
       document: document!,
       selection: TextSelection.collapsed(offset: 0),
+      readOnly: true,
     );
 
     _time.value = GetDatetime().getAgoString(_communityDetail.value.uploadTime!);

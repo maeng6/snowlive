@@ -271,6 +271,9 @@ class BulletinQuillToolbar extends StatelessWidget {
             '18': '18.0',
             '20': '20.0'
           },
+          sharedConfigurations: const QuillSharedConfigurations(
+            locale: Locale('ko'),
+          ),
           searchButtonType: SearchButtonType.modern,
           embedButtons: FlutterQuillEmbeds.toolbarButtons(
             imageButtonOptions: QuillToolbarImageButtonOptions(
