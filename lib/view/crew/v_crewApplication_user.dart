@@ -49,25 +49,19 @@ class CrewApplicationUserView extends StatelessWidget {
                 '가입 신청한 크루',
                 style: TextStyle(
                     color: SDSColor.snowliveBlack,
-                  fontSize: 18
+                    fontSize: 18
                 ),
               ),
               elevation: 0,
             ),
             body: Obx(() {
+              var crewApplyList = _crewApplyViewModel.crewApplyList;
+
               return Column(
                 children: [
                   Expanded(
-                    child: ListView.builder(
-                      itemCount: _crewApplyViewModel.crewApplyList.length,
-                      itemBuilder: (context, index) {
-                        var crew = _crewApplyViewModel.crewApplyList[index];
-
-                        // 로고와 크루 정보를 가져오기
-                        if (!_crewDetailViewModel.crewDetails.containsKey(crew.crewId)) {
-                          _crewDetailViewModel.findCrewDetails(crew.crewId!, _friendDetailViewModel.seasonDate);
-                        }
-
+                    child: ListView(
+                      children: crewApplyList.map((crew) {
                         var crewInfo = _crewDetailViewModel.crewDetails[crew.crewId] ?? {
                           'logoUrl': '',
                           'name': '',
@@ -77,7 +71,7 @@ class CrewApplicationUserView extends StatelessWidget {
                         return Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                           child: GestureDetector(
-                            onTap: () async{
+                            onTap: () async {
                               CustomFullScreenDialog.showDialog();
                               await _crewDetailViewModel.fetchCrewDetail(
                                   crew.crewId!,
@@ -127,18 +121,18 @@ class CrewApplicationUserView extends StatelessWidget {
                                             borderRadius: BorderRadius.circular(20),
                                           ),
                                           title: Text('가입 신청을 취소하시겠어요?',
-                                          style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 16
-                                          ),
-                                            textAlign: TextAlign.center
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 16
+                                              ),
+                                              textAlign: TextAlign.center
                                           ),
                                           content: Text('가입 신청을 취소하셔도 다음에 다시\n가입 신청을 하실 수 있어요.',
-                                          style: TextStyle(
-                                            fontSize: 14,
-                                            color: SDSColor.gray600
-                                          ),
-                                          textAlign: TextAlign.center
+                                              style: TextStyle(
+                                                  fontSize: 14,
+                                                  color: SDSColor.gray600
+                                              ),
+                                              textAlign: TextAlign.center
                                           ),
                                           actions: [
                                             ElevatedButton(
@@ -150,15 +144,15 @@ class CrewApplicationUserView extends StatelessWidget {
                                                   crew.crewId!,
                                                   _userViewModel.user.user_id,
                                                 );
+                                                await _crewApplyViewModel.fetchCrewApplyListUser(_userViewModel.user.user_id);
                                                 CustomFullScreenDialog.cancelDialog();
-                                                Get.back();
                                               },
                                               child: Text('신청 취소하기',
-                                              style: TextStyle(
-                                                color: SDSColor.snowliveWhite,
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 16
-                                              ),
+                                                style: TextStyle(
+                                                    color: SDSColor.snowliveWhite,
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 16
+                                                ),
                                               ),
                                               style: ElevatedButton.styleFrom(
                                                 elevation: 0,
@@ -215,7 +209,7 @@ class CrewApplicationUserView extends StatelessWidget {
                             ),
                           ),
                         );
-                      },
+                      }).toList(),
                     ),
                   ),
                   // 하단의 다른 크루 찾아보기 버튼

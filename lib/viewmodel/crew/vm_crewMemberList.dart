@@ -155,5 +155,35 @@ class CrewMemberListViewModel extends GetxController {
     }
   }
 
+  Future<void> expelCrewMember({
+    required int crewMemberUserId,
+  }) async {
+    // 보낼 데이터 맵 구성
+    Map<String, dynamic> withdrawData = {
+      "crew_member_user_id": crewMemberUserId,    //필수
+      "user_id": _userViewModel.user.user_id,    //필수
+      "crew_id": _userViewModel.user.crew_id    //필수
+    };
+
+    try {
+      // API 호출
+      final response = await CrewAPI().withdrawCrew(withdrawData);
+
+      // 성공적으로 롤 업데이트된 경우 처리
+      if (response.success) {
+        await fetchCrewMembers(crewId: _userViewModel.user.crew_id);
+        await _userViewModel.updateUserModel_api(_userViewModel.user.user_id);
+        print("성공적으로 탈퇴처리 되었습니다.");
+        // 여기서 필요한 로직 추가 (예: UI 업데이트, 리스트 갱신 등)
+      } else {
+        Get.snackbar('탈퇴 실패', '잠시후 다시 시도해주세요.');
+        print('탈퇴 중 오류 발생: ${response.error}');
+      }
+    } catch (e) {
+      // 예외 처리
+      print('탈퇴 중 예외 발생: $e');
+    }
+  }
+
 
 }

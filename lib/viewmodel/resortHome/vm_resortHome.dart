@@ -5,10 +5,12 @@ import 'package:com.snowlive/api/api_friend.dart';
 import 'package:com.snowlive/api/api_ranking.dart';
 import 'package:com.snowlive/api/api_resortHome.dart';
 import 'package:com.snowlive/api/api_user.dart';
+import 'package:com.snowlive/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/model/m_bestFriendListModel.dart';
 import 'package:com.snowlive/model/m_weatherModel.dart';
 import 'package:com.snowlive/util/util_1.dart';
 import 'package:com.snowlive/viewmodel/vm_user.dart';
+import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -81,19 +83,17 @@ class ResortHomeViewModel extends GetxController {
     await fetchResortHome(_userViewModel.user.user_id!);
     await fetchWeatherModel();
     await checkForUpdate();
-    scrollController_resortHome_openchat = ScrollController()
-      ..addListener(_scrollListener_resortHome_openchat);
   }
 
   Future<void> fetchResortHome(int userId) async {
-      isLoading(true);
-      ApiResponse response = await ResortHomeAPI().fetchResortHomeData(userId);
-      if(response.success)
+    isLoading(true);
+    ApiResponse response = await ResortHomeAPI().fetchResortHomeData(userId);
+    if(response.success)
       _resortHomeModel.value = ResortHomeModel.fromJson(response.data);
-      print('리조트홈 패치 완료');
-      if(!response.success)
+    print('리조트홈 패치 완료');
+    if(!response.success)
       Get.snackbar('Error', '데이터 로딩 실패');
-      isLoading(false);
+    isLoading(false);
   }
 
   Future<void> fetchWeatherModel() async {
@@ -179,9 +179,9 @@ class ResortHomeViewModel extends GetxController {
     final snapshot = await FirebaseFirestore.instance
         .collection('Ranking_guideUrl')
         .get();
-     _rankingGuideUrl_aos.value = snapshot.docs[0]['url_android'];
-     _rankingGuideUrl_ios.value = snapshot.docs[0]['url_iOS'];
-     print('가이드 url 불러오기 완료');
+    _rankingGuideUrl_aos.value = snapshot.docs[0]['url_android'];
+    _rankingGuideUrl_ios.value = snapshot.docs[0]['url_iOS'];
+    print('가이드 url 불러오기 완료');
   }
 
   Future<void> liveOff(Map<String, dynamic> body,user_id) async {
@@ -192,28 +192,38 @@ class ResortHomeViewModel extends GetxController {
       ApiResponse response_fetchResortHome = await ResortHomeAPI().fetchResortHomeData(user_id);
       if (response_fetchResortHome.success)
         _resortHomeModel.value = ResortHomeModel.fromJson(response_fetchResortHome.data);
-    print('liveOff 완료');
+      print('liveOff 완료');
     }
     else {
+      CustomFullScreenDialog.cancelDialog();
       Get.snackbar('Error', '라이브off 실패');
     }
     isLoading(false);
   }
 
   Future<ApiResponse> liveOn(Map<String, dynamic> body) async {
-    isLoading(true);
-    ApiResponse response = await RankingAPI().check_wb(body);
-    if (response.success) {
-      _resort_info.value = response.data['resort_info'];
-      _slope_info.value = List<Map<String, dynamic>>.from(response.data['slope_info']);
-      _reset_point.value = List<Map<String, dynamic>>.from(response.data['reset_point']);
-      _respawn_point.value = List<Map<String, dynamic>>.from(response.data['respawn_point']);
-      return response;
-    } else {
-      isLoading(false);
-      return response;
+    try {
+      isLoading(true);
+      ApiResponse response = await RankingAPI().check_wb(body);
+      if (response.success) {
+        _resort_info.value = response.data['resort_info'];
+        _slope_info.value = List<Map<String, dynamic>>.from(response.data['slope_info']);
+        _reset_point.value = List<Map<String, dynamic>>.from(response.data['reset_point']);
+        _respawn_point.value = List<Map<String, dynamic>>.from(response.data['respawn_point']);
+        return response;
+      } else {
+        CustomFullScreenDialog.cancelDialog();
+        return response;
+      }
+    } catch (e) {
+      CustomFullScreenDialog.cancelDialog();
+      print('Error in liveOn: $e'); // 예외 발생 시 출력
+      return ApiResponse.error('An error occurred: $e'); // 에러 응답 반환
+    } finally {
+      isLoading(false); // 성공/실패/예외 발생 여부와 상관없이 로딩 상태 종료
     }
   }
+
 
   Future<void> stopForegroundLocationService() async {
     await _positionStreamSubscription?.cancel();
@@ -289,16 +299,19 @@ class ResortHomeViewModel extends GetxController {
               }
             });
           } else {
+            CustomFullScreenDialog.cancelDialog();
             await stopForegroundLocationService();
             await stopBackgroundLocationService();
             await liveOff({"user_id": user_id}, user_id);
           }
         } catch (e, stackTrace) {
+          CustomFullScreenDialog.cancelDialog();
           print('위치 서비스 오류: $e');
           print('Stack trace: $stackTrace');
         }
       });
     } else {
+      CustomFullScreenDialog.cancelDialog();
       await stopForegroundLocationService();
       await stopBackgroundLocationService();
       _isSnackbarShown.value = true;
@@ -306,10 +319,10 @@ class ResortHomeViewModel extends GetxController {
         '라이브 불가 지역입니다',
         '스키장 내에서만 라이브가 활성화됩니다.',
         margin: EdgeInsets.only(right: 20, left: 20, bottom: 12),
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.black87,
-        colorText: Colors.white,
-        duration: Duration(milliseconds: 3000),
+        snackPosition: SnackPosition.TOP,
+        backgroundColor: SDSColor.snowliveWhite,
+        colorText: SDSColor.snowliveBlack,
+        duration: Duration(milliseconds: 5000),
       );
       Future.delayed(Duration(milliseconds: 4500), () {
         _isSnackbarShown.value = false;
@@ -345,87 +358,86 @@ class ResortHomeViewModel extends GetxController {
     await bg.BackgroundGeolocation.start();
 
     bg.BackgroundGeolocation.onLocation((bg.Location location) async {
+
+      double latitude = location.coords.latitude;
+      double longitude = location.coords.longitude;
+
+      Position position = Position(
+        latitude: latitude,
+        longitude: longitude,
+        accuracy: location.coords.accuracy,
+        altitude: location.coords.altitude,
+        heading: location.coords.heading,
+        speed: location.coords.speed,
+        speedAccuracy: location.coords.speedAccuracy,
+        timestamp: DateTime.parse(location.timestamp),
+        altitudeAccuracy: 0,
+        headingAccuracy: 0,
+      );
+
       try {
-        double latitude = location.coords.latitude;
-        double longitude = location.coords.longitude;
-
-        Position position = Position(
-          latitude: latitude,
-          longitude: longitude,
-          accuracy: location.coords.accuracy,
-          altitude: location.coords.altitude,
-          heading: location.coords.heading,
-          speed: location.coords.speed,
-          speedAccuracy: location.coords.speedAccuracy,
-          timestamp: DateTime.parse(location.timestamp),
-          altitudeAccuracy: 0,
-          headingAccuracy: 0,
+        bool withinBoundary = _checkPositionWithinBoundary(
+            position.latitude,
+            position.longitude,
+            _resort_info['coordinates']['latitude'],
+            _resort_info['coordinates']['longitude'],
+            _resort_info['radius']
         );
+        if (withinBoundary) {
+          Map<String, dynamic>? passPointInfo = checkPositionInAreas(position, slope_info, reset_point, respawn_point);
 
-        try {
-          bool withinBoundary = _checkPositionWithinBoundary(
-              position.latitude,
-              position.longitude,
-              _resort_info['coordinates']['latitude'],
-              _resort_info['coordinates']['longitude'],
-              _resort_info['radius']
+          // 동시성 제어를 위해 lock 사용
+          await _lock.synchronized(() async {
+            if (passPointInfo != null && passPointInfo['type'] == 'slope_info') {
+              await RankingAPI().addCheckPoint({
+                "user_id": user_id,
+                "slope_id": passPointInfo['id'],
+                "coordinates": "${position.latitude}, ${position.longitude}"
+              });
+            }
+
+            if (passPointInfo != null && passPointInfo['type'] == 'reset_point') {
+              await RankingAPI().reset({"user_id": user_id});
+            }
+
+            if (passPointInfo != null && passPointInfo['type'] == 'respawn_point') {
+              await RankingAPI().respawn({"user_id": user_id});
+            }
+          });
+        } else {
+          CustomFullScreenDialog.cancelDialog();
+          await stopForegroundLocationService();
+          await stopBackgroundLocationService();
+          await liveOff({"user_id": user_id}, user_id);
+          Get.snackbar(
+            '라이브 불가 지역입니다',
+            '스키장 내에서만 라이브가 활성화됩니다.',
+            margin: EdgeInsets.only(right: 20, left: 20, bottom: 12),
+            snackPosition: SnackPosition.TOP,
+            backgroundColor: SDSColor.snowliveWhite,
+            colorText: SDSColor.snowliveBlack,
+            duration: Duration(milliseconds: 5000),
           );
-          if (withinBoundary) {
-            Map<String, dynamic>? passPointInfo = checkPositionInAreas(position, slope_info, reset_point, respawn_point);
-
-            // 동시성 제어를 위해 lock 사용
-            await _lock.synchronized(() async {
-              if (passPointInfo != null && passPointInfo['type'] == 'slope_info') {
-                await RankingAPI().addCheckPoint({
-                  "user_id": user_id,
-                  "slope_id": passPointInfo['id'],
-                  "coordinates": "${position.latitude}, ${position.longitude}"
-                });
-              }
-
-              if (passPointInfo != null && passPointInfo['type'] == 'reset_point') {
-                await RankingAPI().reset({"user_id": user_id});
-              }
-
-              if (passPointInfo != null && passPointInfo['type'] == 'respawn_point') {
-                await RankingAPI().respawn({"user_id": user_id});
-              }
-            });
-          } else {
-            await stopForegroundLocationService();
-            await stopBackgroundLocationService();
-            await liveOff({"user_id": user_id}, user_id);
-          }
-        } catch (e, stackTrace) {
-          print('위치 서비스 오류: $e');
-          print('Stack trace: $stackTrace');
         }
       } catch (e, stackTrace) {
-        print('백그라운드 위치 업데이트 오류: $e');
+        CustomFullScreenDialog.cancelDialog();
+        Get.snackbar(
+          '위치서비스 오류',
+          '잠시후에 다시 시도해 주세요.',
+          margin: EdgeInsets.only(right: 20, left: 20, bottom: 12),
+          snackPosition: SnackPosition.TOP,
+          backgroundColor: SDSColor.snowliveWhite,
+          colorText: SDSColor.snowliveBlack,
+          duration: Duration(milliseconds: 5000),
+        );
+        print('위치 서비스 오류: $e');
         print('Stack trace: $stackTrace');
       }
+
     }, (bg.LocationError error) {
+      CustomFullScreenDialog.cancelDialog();
       print('[onLocation] ERROR: $error 리조트 구역 벗어남');
     });
-  }
-
-
-  Future<void> _scrollListener_resortHome_openchat() async {
-
-    print('User scroll direction: ${scrollController_resortHome_openchat.position.userScrollDirection}');
-    print('Current offset: ${scrollController_resortHome_openchat.offset}');
-    // 버튼 표시 여부 결정
-    _showRecentButton_resortHome_openchat.value = scrollController_resortHome_openchat.offset <= 0;
-
-    // 숨김/표시 여부 결정
-    if (scrollController_resortHome_openchat.position.userScrollDirection == ScrollDirection.reverse) {
-      _isVisible_resortHome_openchat.value = true; // 스크롤이 올라갈 때 보이게
-    } else if (scrollController_resortHome_openchat.position.userScrollDirection == ScrollDirection.forward ||
-        scrollController_resortHome_openchat.position.pixels <= scrollController_resortHome_openchat.position.maxScrollExtent) {
-      _isVisible_resortHome_openchat.value = false;
-    }
-
-    print('Button visibility: ${_isVisible_resortHome_openchat.value}');
   }
 
 

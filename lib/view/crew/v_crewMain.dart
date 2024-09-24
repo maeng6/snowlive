@@ -1,6 +1,7 @@
 import 'package:com.snowlive/routes/routes.dart';
 import 'package:com.snowlive/view/crew/v_crewHome.dart';
 import 'package:com.snowlive/view/crew/v_crewMember.dart';
+import 'package:com.snowlive/viewmodel/crew/vm_crewDetail.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewMain.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewMemberList.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_searchCrew.dart';
@@ -15,6 +16,8 @@ class CrewMainView extends StatelessWidget {
   final CrewMainViewModel _crewMainViewModel = Get.find<CrewMainViewModel>();
   final MainHomeViewModel _mainHomeViewModel = Get.find<MainHomeViewModel>();
   final SearchCrewViewModel _searchCrewViewModel = Get.find<SearchCrewViewModel>();
+  final UserViewModel _userViewModel = Get.find<UserViewModel>();
+  final CrewDetailViewModel _crewDetailViewModel = Get.find<CrewDetailViewModel>();
 
   @override
   Widget build(BuildContext context) {
@@ -43,20 +46,21 @@ class CrewMainView extends StatelessWidget {
                       size: 26,
                     )
                 ),
-                Padding(
-                  padding: EdgeInsets.only(right: 5),
-                  child: IconButton(
-                    onPressed: () {
-                      Get.toNamed(AppRoutes.crewSetting);
-                    },
-                    icon: Image.asset(
-                      'assets/imgs/icons/icon_settings.png',
-                      scale: 4,
-                      width: 26,
-                      height: 26,
+                if(_userViewModel.user.crew_id == _crewDetailViewModel.crewDetailInfo.crewId)
+                  Padding(
+                    padding: EdgeInsets.only(right: 5),
+                    child: IconButton(
+                      onPressed: () {
+                        Get.toNamed(AppRoutes.crewSetting);
+                      },
+                      icon: Image.asset(
+                        'assets/imgs/icons/icon_settings.png',
+                        scale: 4,
+                        width: 26,
+                        height: 26,
+                      ),
                     ),
-                  ),
-                )
+                  )
               ],
               leading: GestureDetector(
                 child: Image.asset(
@@ -66,8 +70,7 @@ class CrewMainView extends StatelessWidget {
                   height: 26,
                 ),
                 onTap: () async {
-                  Get.until((route) => Get.currentRoute == AppRoutes.mainHome);
-                  _mainHomeViewModel.changePage(4);
+                  Get.back();
                 },
               ),
               centerTitle: true,

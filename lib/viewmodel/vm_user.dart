@@ -21,13 +21,13 @@ class UserViewModel extends GetxController {
 
       print('updateUserModel_api 완료');
     }else {
-      Get.snackbar('Error', '데이터 로딩 실패');
+      print('데이터 로딩 실패');
     }
     isLoading(false);
   }
 
   Future<void> updateUserModel_data(var data)  async{
-      _user.value = UserModel.fromJson(data);
+    _user.value = UserModel.fromJson(data);
   }
 
   Future<void> block_user(body)  async{

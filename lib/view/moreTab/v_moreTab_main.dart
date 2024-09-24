@@ -159,10 +159,12 @@ class MoreTabMainView extends StatelessWidget {
                       children: [
                         GestureDetector(
                           onTap: () async{
-                            Get.toNamed(AppRoutes.friendList);
+                            CustomFullScreenDialog.showDialog();
                             await _friendListViewModel.fetchFriendList();
                             await _friendListViewModel.fetchFriendRequestList(_userViewModel.user.user_id);
                             await _friendListViewModel.fetchBlockUserList();
+                            CustomFullScreenDialog.cancelDialog();
+                            Get.toNamed(AppRoutes.friendList);
                           },
                           child: Column(
                             children: [

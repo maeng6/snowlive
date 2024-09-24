@@ -10,11 +10,15 @@ class CrewApplyViewModel extends GetxController {
 
   final CrewMemberListViewModel _crewMemberListViewModel = Get.find<CrewMemberListViewModel>();
   TextEditingController textEditingController = TextEditingController();
+  TextEditingController textEditingController_crewHome = TextEditingController();
+
 
   // 크루 가입 신청 목록과 로딩 상태를 위한 Rx 변수
   var crewApplyList = <CrewApply>[].obs;
   var isLoading = false.obs;
   var isSubmitButtonEnabled = false.obs;
+  var isSubmitButtonEnabled_crewHome = false.obs;
+
 
   // 크루 가입 신청
   Future<void> applyForCrew(int crewId, int userId, String title) async {
