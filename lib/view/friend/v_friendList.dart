@@ -326,20 +326,20 @@ class FriendListView extends StatelessWidget {
                           width: 72,
                         ),
                       ),
-                      SizedBox(height: 10),
+                      SizedBox(height: 6),
                       Center(
                         child: Text(
                           '등록된 친구가 없습니다',
-                          style: TextStyle(fontSize: 14, color: Color(0xFF666666)),
+                          style: SDSTextStyle.regular.copyWith(fontSize: 14, color: SDSColor.gray500),
                         ),
                       ),
                       Center(
                         child: Text(
                           '친구를 검색해 추가해 보세요',
-                          style: TextStyle(fontSize: 14, color: Color(0xFF666666)),
+                          style: SDSTextStyle.regular.copyWith(fontSize: 14, color: SDSColor.gray500),
                         ),
                       ),
-                      SizedBox(height: 10),
+                      SizedBox(height: 12),
                       Center(
                         child: OutlinedButton(
                           onPressed: () async {
@@ -348,16 +348,16 @@ class FriendListView extends StatelessWidget {
                           },
                           child: Text(
                             '친구 추가하기',
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: Color(0xFF666666),
+                            style: SDSTextStyle.bold.copyWith(
+                              color: SDSColor.gray900,
                               fontSize: 14,
                             ),
                           ),
                           style: OutlinedButton.styleFrom(
-                            side: BorderSide(width: 1, color: Color(0xFFDEDEDE)),
+                            padding: EdgeInsets.symmetric(horizontal: 6, vertical: 3),
+                            side: BorderSide(width: 1, color: SDSColor.gray200),
                             shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8),
+                              borderRadius: BorderRadius.circular(40),
                             ),
                           ),
                         ),

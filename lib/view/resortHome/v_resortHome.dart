@@ -795,70 +795,91 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                                           onTap: (){
                                           _resortHomeViewModel.toggleExpandWeatherInfo();
                                         },
-                                        child: Row(
-                                          mainAxisAlignment: MainAxisAlignment.center,
-                                          crossAxisAlignment: CrossAxisAlignment.center,
-                                          children: [
-                                            (_resortHomeViewModel.isLoading_weather == true)
-                                                ? Container()
-                                                : Padding(
-                                              padding: const EdgeInsets.only(bottom: 2),
-                                              child: Container(
-                                                  width: 32,
-                                                  child: _resortHomeViewModel.weatherIcons),
-                                            ),
-                                            SizedBox(width: 10,),
-                                            Obx(() => (_resortHomeViewModel.isLoading_weather == true)
-                                                ? Padding(
-                                              padding: const EdgeInsets.only(right: 16),
-                                              child: Container(
-                                                  height: 30,
-                                                  width: 50,
-                                                  child: Lottie.asset('assets/json/loadings_wht_final.json')),
-                                            )
-                                                : Container(
-                                              height: 54,
-                                              child: Center(
-                                                child: Text('${_resortHomeViewModel.weatherInfo['temp']??'-'}', //u00B0
-                                                  style: GoogleFonts.bebasNeue(
-                                                      fontSize: 44,
-                                                      color: Colors.white,
-                                                      height: 1.3
-                                                  ),
-                                                ),
+                                        child: Padding(
+                                          padding: EdgeInsets.only(right: 4),
+                                          child: Row(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            crossAxisAlignment: CrossAxisAlignment.center,
+                                            children: [
+                                              (_resortHomeViewModel.isLoading_weather == true)
+                                                  ? Container()
+                                                  : Padding(
+                                                padding: const EdgeInsets.only(bottom: 2),
+                                                child: Container(
+                                                    width: 32,
+                                                    child: _resortHomeViewModel.weatherIcons),
                                               ),
-                                            ),
-                                            ),
-                                            Padding(
-                                              padding: const EdgeInsets.only(right: 10),
-                                              child: Obx(
-                                                    () => (_resortHomeViewModel.isLoading_weather == true)
-                                                    ? Text(' ',
-                                                  style: GoogleFonts.bebasNeue(
-                                                      fontSize: 44,
-                                                      color: Colors.white),
-                                                )
-                                                    : Padding(
-                                                  padding: const EdgeInsets.only(bottom: 4, left: 2),
-                                                  child: Text('\u00B0',
+                                              SizedBox(width: 10,),
+                                              Obx(() => (_resortHomeViewModel.isLoading_weather == true)
+                                                  ? Padding(
+                                                padding: const EdgeInsets.only(right: 16),
+                                                child: Container(
+                                                    height: 30,
+                                                    width: 50,
+                                                    child: Lottie.asset('assets/json/loadings_wht_final.json')),
+                                              )
+                                                  : Container(
+                                                height: 54,
+                                                child: Center(
+                                                  child: Text('${_resortHomeViewModel.weatherInfo['temp']??'-'}', //u00B0
                                                     style: GoogleFonts.bebasNeue(
-                                                        fontSize: 36,
-                                                        color: Colors.white),
+                                                        fontSize: 44,
+                                                        color: Colors.white,
+                                                        height: 1.3
+                                                    ),
                                                   ),
                                                 ),
                                               ),
-                                            ),
-                                            Padding(
-                                              padding: const EdgeInsets.only(bottom: 2, right: 20),
-                                              child: ExtendedImage.asset(
-                                                'assets/imgs/icons/icon_plus_round.png',
-                                                fit: BoxFit.cover,
-                                                width: 20,
-                                                height: 20,
                                               ),
-                                            ),
+                                              Padding(
+                                                padding: const EdgeInsets.only(right: 6),
+                                                child: Obx(() => (_resortHomeViewModel.isLoading_weather == true)
+                                                      ? Text(' ',
+                                                    style: GoogleFonts.bebasNeue(
+                                                        fontSize: 44,
+                                                        color: Colors.white),
+                                                  )
+                                                      : Padding(
+                                                    padding: const EdgeInsets.only(bottom: 4, left: 2),
+                                                    child: Text('\u00B0',
+                                                      style: GoogleFonts.bebasNeue(
+                                                          fontSize: 36,
+                                                          color: Colors.white),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                              Stack(
+                                                children: [
+                                                  Container(
+                                                    height: 40,
+                                                    width: 40,
+                                                      color: Colors.transparent,
+                                                  ),
+                                                  (_resortHomeViewModel.isWeatherInfoExpanded == false)
+                                                      ? Positioned(
+                                                    left: 0,
+                                                    top: 10,
+                                                    child: ExtendedImage.asset(
+                                                      'assets/imgs/icons/icon_plus_round.png',
+                                                      width: 20,
+                                                      height: 20,
+                                                    ),
+                                                  )
+                                                      : Positioned(
+                                                    left: 0,
+                                                    top: 10,
+                                                    child: ExtendedImage.asset(
+                                                      'assets/imgs/icons/icon_minus_round.png',
+                                                      width: 20,
+                                                      height: 20,
+                                                    ),
+                                                  )
+                                                ],
+                                              )
 
-                                          ],
+                                            ],
+                                          ),
                                         ),
                                       ),
                                     ],
@@ -1239,8 +1260,15 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                                               children: [
                                                 Padding(
                                                   padding: const EdgeInsets.only(right: 2),
-                                                  child: Image.asset(
+                                                  child:
+                                                  (_resortHomeViewModel.resort_info['fullname'] != null)
+                                                      ? Image.asset(
                                                     'assets/imgs/icons/icon_pin.png',
+                                                    width: 18,
+                                                    height: 18,
+                                                  )
+                                                  : Image.asset(
+                                                    'assets/imgs/icons/icon_pin_inactive리.png',
                                                     width: 18,
                                                     height: 18,
                                                   ),
