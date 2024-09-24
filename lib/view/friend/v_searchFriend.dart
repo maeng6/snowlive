@@ -207,8 +207,8 @@ class SearchFriendView extends StatelessWidget {
                                         child: (_friendListViewModel.searchFriend.profileImageUrlUser != null &&
                                             _friendListViewModel.searchFriend.profileImageUrlUser!.isNotEmpty)
                                             ? Container(
-                                          width: 80,
-                                          height: 80,
+                                          width: 90,
+                                          height: 90,
                                           decoration: BoxDecoration(
                                             color: Color(0xFFDFECFF),
                                             borderRadius: BorderRadius.circular(50),
@@ -219,8 +219,8 @@ class SearchFriendView extends StatelessWidget {
                                             shape: BoxShape.circle,
                                             cacheHeight: 150,
                                             borderRadius: BorderRadius.circular(8),
-                                            width: 80,
-                                            height: 80,
+                                            width: 90,
+                                            height: 90,
                                             fit: BoxFit.cover,
                                             loadStateChanged: (ExtendedImageState state) {
                                               switch (state.extendedImageLoadState) {
@@ -233,8 +233,8 @@ class SearchFriendView extends StatelessWidget {
                                                     'assets/imgs/profile/img_profile_default_circle.png',
                                                     shape: BoxShape.circle,
                                                     borderRadius: BorderRadius.circular(8),
-                                                    width: 80,
-                                                    height: 80,
+                                                    width: 90,
+                                                    height: 90,
                                                     fit: BoxFit.cover,
                                                   );
                                                 default:
@@ -244,15 +244,15 @@ class SearchFriendView extends StatelessWidget {
                                           ),
                                         )
                                             : Container(
-                                          width: 80,
-                                          height: 80,
+                                          width: 90,
+                                          height: 90,
                                           child: ExtendedImage.asset(
                                             'assets/imgs/profile/img_profile_default_circle.png',
                                             enableMemoryCache: true,
                                             shape: BoxShape.circle,
                                             borderRadius: BorderRadius.circular(8),
-                                            width: 80,
-                                            height: 80,
+                                            width: 90,
+                                            height: 90,
                                             fit: BoxFit.cover,
                                           ),
                                         ),
