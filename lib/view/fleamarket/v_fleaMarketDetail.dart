@@ -118,19 +118,17 @@ class _FleaMarketDetailViewState extends State<FleaMarketDetailView> {
                     child: GestureDetector(
                     onTap: () async{
                       HapticFeedback.lightImpact();
-                      CustomFullScreenDialog.showDialog();
+                      setState(() {_fleamarketDetailViewModel.changeIsFavorite(true);});
                       await _fleamarketDetailViewModel.addFavoriteFleamarket(
                           fleamarketID: _fleamarketDetailViewModel.fleamarketDetail.fleaId,
                           body: {
                             "user_id": _userViewModel.user.user_id
                           }
                       );
-                      CustomFullScreenDialog.cancelDialog();
+                      await _fleamarketListViewModel.fetchFleamarketData_favorite(userId: _userViewModel.user.user_id, favorite_list: true);
                       await _fleamarketListViewModel.fetchFleamarketData_total(userId: _userViewModel.user.user_id);
                       await _fleamarketListViewModel.fetchFleamarketData_ski(userId: _userViewModel.user.user_id, categoryMain:'스키');
                       await _fleamarketListViewModel.fetchFleamarketData_board(userId: _userViewModel.user.user_id, categoryMain:'스노보드');
-                      await _fleamarketListViewModel.fetchFleamarketData_my(userId: _userViewModel.user.user_id, myflea: true);
-                      await _fleamarketListViewModel.fetchFleamarketData_favorite(userId: _userViewModel.user.user_id, favorite_list: true);
                     },
                     child:Image.asset(
                       'assets/imgs/icons/icon_flea_appbar_scrap.png',
@@ -150,19 +148,18 @@ class _FleaMarketDetailViewState extends State<FleaMarketDetailView> {
                    child: GestureDetector(
                     onTap: () async{
                       HapticFeedback.lightImpact();
-                      CustomFullScreenDialog.showDialog();
+                      setState(() {_fleamarketDetailViewModel.changeIsFavorite(false);});
                       await _fleamarketDetailViewModel.deleteFavoriteFleamarket(
                           fleamarketID: _fleamarketDetailViewModel.fleamarketDetail.fleaId,
                           body: {
                             "user_id": _userViewModel.user.user_id
                           }
                       );
-                      CustomFullScreenDialog.cancelDialog();
+
+                      await _fleamarketListViewModel.fetchFleamarketData_favorite(userId: _userViewModel.user.user_id, favorite_list: true);
                       await _fleamarketListViewModel.fetchFleamarketData_total(userId: _userViewModel.user.user_id);
                       await _fleamarketListViewModel.fetchFleamarketData_ski(userId: _userViewModel.user.user_id, categoryMain:'스키');
                       await _fleamarketListViewModel.fetchFleamarketData_board(userId: _userViewModel.user.user_id, categoryMain:'스노보드');
-                      await _fleamarketListViewModel.fetchFleamarketData_my(userId: _userViewModel.user.user_id, myflea: true);
-                      await _fleamarketListViewModel.fetchFleamarketData_favorite(userId: _userViewModel.user.user_id, favorite_list: true);
                     },
                     child: Image.asset(
                       'assets/imgs/icons/icon_flea_appbar_scrap_on.png',

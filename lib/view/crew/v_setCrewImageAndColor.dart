@@ -330,9 +330,9 @@ class SetCrewImageAndColorView extends StatelessWidget {
                                     _userViewModel.user.user_id, // 신청한 사용자 ID
                                   );
                                 }
-                                Get.toNamed(AppRoutes.crewMain);
                                 await _setCrewViewModel.createCrew();
                                 CustomFullScreenDialog.cancelDialog();
+                                Get.toNamed(AppRoutes.crewMain);
                               },
                               child: Text('크루 생성하기',
                                 style: TextStyle(

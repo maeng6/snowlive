@@ -796,21 +796,11 @@ class CommunityBulletinDetailView extends StatelessWidget {
                                               child: Row(
                                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                 children: [
-                                                  Row(
-                                                    children: [
-                                                      Text(
-                                                        '댓글',
-                                                        style: SDSTextStyle.bold.copyWith(
-                                                            fontSize: 14,
-                                                            color: SDSColor.gray900),
-                                                      ),
-                                                      Text(
-                                                        ' ${_communityDetailViewModel.communityDetail.commentCount}',
-                                                        style: SDSTextStyle.bold.copyWith(
-                                                            fontSize: 14,
-                                                            color: SDSColor.gray900),
-                                                      ),
-                                                    ],
+                                                  Text(
+                                                    '댓글',
+                                                    style: SDSTextStyle.bold.copyWith(
+                                                        fontSize: 14,
+                                                        color: SDSColor.gray900),
                                                   ),
                                                 ],
                                               ),
@@ -969,8 +959,9 @@ class CommunityBulletinDetailView extends StatelessWidget {
                                                                     ),
                                                                     GestureDetector(
                                                                       onTap: () async{
+                                                                        CustomFullScreenDialog.showDialog();
                                                                           await _communityCommentDetailViewModel.fetchCommunityCommentDetail(commentId: comment.commentId!);
-                                                                          print(_communityCommentDetailViewModel.commentModel_community.userInfo!.profileImageUrlUser);
+                                                                          CustomFullScreenDialog.cancelDialog();
                                                                           Get.toNamed(AppRoutes.bulletinCommentDetail);
                                                                       },
                                                                       child: Padding(
@@ -1492,6 +1483,7 @@ class CommunityBulletinDetailView extends StatelessWidget {
                                     suffixIcon: IconButton(
                                       splashColor: Colors.transparent,
                                       onPressed: () async {
+                                        CustomFullScreenDialog.showDialog();
                                         if (_communityDetailViewModel.textEditingController.text.trim().isEmpty) {
                                           return;
                                         }
@@ -1500,13 +1492,10 @@ class CommunityBulletinDetailView extends StatelessWidget {
                                           "content": _communityDetailViewModel.textEditingController.text,
                                           "user_id": _userViewModel.user.user_id,
                                         });
-                                        await _communityDetailViewModel.fetchCommunityComments(
-                                            communityId: _communityDetailViewModel.communityDetail.communityId!,
-                                            userId: _userViewModel.user.user_id,
-                                            isLoading_indi: true
-                                        );
                                         FocusScope.of(context).unfocus();
                                         _communityDetailViewModel.textEditingController.clear();
+                                        CustomFullScreenDialog.cancelDialog();
+                                        await _communityBulletinListViewModel.fetchCommunityList_total(userId: _userViewModel.user.user_id,categoryMain: '게시판');
                                       },
                                       icon: (_communityDetailViewModel.isCommentButtonEnabled.value == false)
                                           ? Image.asset(
