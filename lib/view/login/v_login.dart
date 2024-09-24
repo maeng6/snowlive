@@ -107,8 +107,10 @@ class LoginView extends StatelessWidget {
                   ],
                 ),
                 Container(
-                  height: 240,
-                  color: Colors.red.withOpacity(0.2),
+                  child: Image.asset(
+                    'assets/imgs/imgs/img_onboarding_1.png',
+                    width: _size.width,
+                  ),
                 ),
                 Obx(() => Padding(
                   padding: EdgeInsets.only(bottom: 48),
