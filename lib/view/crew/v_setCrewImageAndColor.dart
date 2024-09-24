@@ -3,6 +3,7 @@ import 'package:com.snowlive/data/imgaUrls/Data_url_image.dart';
 import 'package:com.snowlive/model/m_crewList.dart';
 import 'package:com.snowlive/routes/routes.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewApply.dart';
+import 'package:com.snowlive/viewmodel/vm_mainHome.dart';
 import 'package:com.snowlive/viewmodel/vm_user.dart';
 import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 import 'package:flutter/material.dart';
@@ -16,6 +17,7 @@ class SetCrewImageAndColorView extends StatelessWidget {
   final SetCrewViewModel _setCrewViewModel = Get.find<SetCrewViewModel>();
   final CrewApplyViewModel _crewApplyViewModel = Get.find<CrewApplyViewModel>();
   final UserViewModel _userViewModel = Get.find<UserViewModel>();
+  final MainHomeViewModel _mainHomeViewModel = Get.find<MainHomeViewModel>();
 
 
   @override
@@ -82,60 +84,60 @@ class SetCrewImageAndColorView extends StatelessWidget {
                         child: Padding(
                           padding: const EdgeInsets.all(10.0), // 이미지와 배경 사이 간격
                           child:
-                              (_setCrewViewModel.croppedFile != null)
-                                ?Stack(
-                                  children: [
-                                    Center(
-                                      child: ClipRRect(
-                                        borderRadius: BorderRadius.circular(20),
-                                        child: ExtendedImage.file(
-                                          File(_setCrewViewModel.croppedFile!.path),
-                                          fit: BoxFit.cover, // 배경을 모두 채우도록 설정
-                                          cacheRawData: true,
-                                          enableLoadState: true,
-                                          width: 80, // 배경 안에 들어가도록 크기 조정
-                                          height: 80,
-                                        ),
-                                      ),
+                          (_setCrewViewModel.croppedFile != null)
+                              ?Stack(
+                            children: [
+                              Center(
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(20),
+                                  child: ExtendedImage.file(
+                                    File(_setCrewViewModel.croppedFile!.path),
+                                    fit: BoxFit.cover, // 배경을 모두 채우도록 설정
+                                    cacheRawData: true,
+                                    enableLoadState: true,
+                                    width: 80, // 배경 안에 들어가도록 크기 조정
+                                    height: 80,
+                                  ),
+                                ),
+                              ),
+                              Positioned(
+                                top: 20,
+                                right: 20,
+                                child: GestureDetector(
+                                  onTap: () {
+                                    _setCrewViewModel.resetImage();
+                                  },
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      color: SDSColor.snowliveBlack.withOpacity(0.7),
+                                      shape: BoxShape.circle,
                                     ),
-                                    Positioned(
-                                      top: 20,
-                                      right: 20,
-                                      child: GestureDetector(
-                                        onTap: () {
-                                          _setCrewViewModel.resetImage();
-                                        },
-                                        child: Container(
-                                          decoration: BoxDecoration(
-                                            color: SDSColor.snowliveBlack.withOpacity(0.7),
-                                            shape: BoxShape.circle,
-                                          ),
-                                          child: Icon(
-                                            Icons.close,
-                                            color: SDSColor.snowliveWhite,
-                                            size: 20,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                )
-                                :Center(
-                                  child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(20),
-                                    child: ExtendedImage.network(
-                                      '${crewDefaultLogoUrl['${_setCrewViewModel.colorToHex(_setCrewViewModel.currentColor.value)}']}',
-                                      enableMemoryCache: true,
-                                      shape: BoxShape.rectangle,
-                                      borderRadius: BorderRadius.circular(10),
-                                      width: 80,
-                                      height: 80,
-                                      fit: BoxFit.cover,
-                                      cacheRawData: true,
-                                      enableLoadState: true,
+                                    child: Icon(
+                                      Icons.close,
+                                      color: SDSColor.snowliveWhite,
+                                      size: 20,
                                     ),
                                   ),
                                 ),
+                              ),
+                            ],
+                          )
+                              :Center(
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(20),
+                              child: ExtendedImage.network(
+                                '${crewDefaultLogoUrl['${_setCrewViewModel.colorToHex(_setCrewViewModel.currentColor.value)}']}',
+                                enableMemoryCache: true,
+                                shape: BoxShape.rectangle,
+                                borderRadius: BorderRadius.circular(10),
+                                width: 80,
+                                height: 80,
+                                fit: BoxFit.cover,
+                                cacheRawData: true,
+                                enableLoadState: true,
+                              ),
+                            ),
+                          ),
 
 
                         ),
@@ -321,17 +323,17 @@ class SetCrewImageAndColorView extends StatelessWidget {
                               onPressed: () async {
                                 Navigator.of(context).pop();
                                 CustomFullScreenDialog.showDialog();
-                                  for (var crew in _crewApplyViewModel.crewApplyList) {
-                                    await _crewApplyViewModel.deleteCrewApplication(
-                                      _userViewModel.user.user_id, // 사용자 ID
-                                      crew.crewId!, // 크루 ID
-                                      _userViewModel.user.user_id, // 신청한 사용자 ID
-                                    );
-                                  }
-                                  Get.toNamed(AppRoutes.crewMain);
-                                  await _setCrewViewModel.createCrew();
-                                  CustomFullScreenDialog.cancelDialog();
-                                  },
+                                for (var crew in _crewApplyViewModel.crewApplyList) {
+                                  await _crewApplyViewModel.deleteCrewApplication(
+                                    _userViewModel.user.user_id, // 사용자 ID
+                                    crew.crewId!, // 크루 ID
+                                    _userViewModel.user.user_id, // 신청한 사용자 ID
+                                  );
+                                }
+                                Get.toNamed(AppRoutes.crewMain);
+                                await _setCrewViewModel.createCrew();
+                                CustomFullScreenDialog.cancelDialog();
+                              },
                               child: Text('크루 생성하기',
                                 style: TextStyle(
                                     color: SDSColor.snowliveWhite,
@@ -376,7 +378,9 @@ class SetCrewImageAndColorView extends StatelessWidget {
                     CustomFullScreenDialog.showDialog();
                     await _setCrewViewModel.createCrew();
                     CustomFullScreenDialog.cancelDialog();
-                    Get.toNamed(AppRoutes.crewMain);
+                    Get.until((route) => Get.currentRoute == AppRoutes.mainHome); // mainHome까지 pop
+                    _mainHomeViewModel.changePage(4); // 모어탭 활성화
+                    Get.toNamed(AppRoutes.crewMain);  // crewMain 화면으로 이동
                   }
                 },
                 child: Text(

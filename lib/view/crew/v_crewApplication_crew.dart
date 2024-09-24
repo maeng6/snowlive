@@ -53,11 +53,8 @@ class CrewApplicationCrewView extends StatelessWidget {
               return Column(
                 children: [
                   Expanded(
-                    child: ListView.builder(
-                      itemCount: _crewApplyViewModel.crewApplyList.length,
-                      itemBuilder: (context, index) {
-                        var user = _crewApplyViewModel.crewApplyList[index];
-
+                    child: ListView(
+                      children: _crewApplyViewModel.crewApplyList.map((user) {
                         // 유저 정보 가져오기
                         if (!_friendDetailViewModel.findFriendInfo.containsKey(user.applicantUserId)) {
                           _friendDetailViewModel.findFriendDetails(
@@ -76,10 +73,10 @@ class CrewApplicationCrewView extends StatelessWidget {
                           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                           child: Row(
                             children: [
-                              // 크루 이미지
+                              // 프로필 이미지
                               if (userInfo['profileImageUrlUser']!.isNotEmpty)
                                 GestureDetector(
-                                  onTap: () async{
+                                  onTap: () async {
                                     CustomFullScreenDialog.showDialog();
                                     await _friendDetailViewModel.fetchFriendDetailInfo(
                                       userId: _userViewModel.user.user_id,
@@ -115,7 +112,7 @@ class CrewApplicationCrewView extends StatelessWidget {
                                 )
                               else
                                 GestureDetector(
-                                  onTap: () async{
+                                  onTap: () async {
                                     CustomFullScreenDialog.showDialog();
                                     await _friendDetailViewModel.fetchFriendDetailInfo(
                                       userId: _userViewModel.user.user_id,
@@ -135,7 +132,7 @@ class CrewApplicationCrewView extends StatelessWidget {
                                   ),
                                 ),
                               SizedBox(width: 16),
-                              // 크루명 및 부가 정보
+                              // 유저명 및 부가 정보
                               Expanded(
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -152,6 +149,7 @@ class CrewApplicationCrewView extends StatelessWidget {
                                   ],
                                 ),
                               ),
+                              // 승인 버튼
                               TextButton(
                                 onPressed: () {
                                   showDialog(
@@ -183,7 +181,7 @@ class CrewApplicationCrewView extends StatelessWidget {
                                               await _crewApplyViewModel.approveCrewApplication(
                                                   user.applicantUserId!, user.crewId!
                                               );
-                                              await _crewApplyViewModel.fetchCrewApplyList(user.crewId!);
+                                              _crewApplyViewModel.crewApplyList.remove(user); // 개별 항목만 삭제
                                               CustomFullScreenDialog.cancelDialog();
                                             },
                                             child: Text('신청 승인하기',
@@ -195,7 +193,7 @@ class CrewApplicationCrewView extends StatelessWidget {
                                             ),
                                             style: ElevatedButton.styleFrom(
                                               elevation: 0,
-                                              backgroundColor: SDSColor.snowliveBlue, // 신청 취소 버튼 색상
+                                              backgroundColor: SDSColor.snowliveBlue, // 신청 승인 버튼 색상
                                               minimumSize: Size(double.infinity, 48), // 버튼 크기
                                               shape: RoundedRectangleBorder(
                                                 borderRadius: BorderRadius.circular(8),
@@ -245,6 +243,7 @@ class CrewApplicationCrewView extends StatelessWidget {
                                     )),
                               ),
                               SizedBox(width: 5),
+                              // 거절 버튼
                               TextButton(
                                 onPressed: () {
                                   showDialog(
@@ -271,14 +270,14 @@ class CrewApplicationCrewView extends StatelessWidget {
                                         actions: [
                                           ElevatedButton(
                                             onPressed: () async {
+                                              Navigator.pop(context);
                                               CustomFullScreenDialog.showDialog();
                                               await _crewApplyViewModel.deleteCrewApplication(
                                                 user.applicantUserId!,
                                                 user.crewId!,
                                                 _userViewModel.user.user_id,
                                               );
-                                              await _crewApplyViewModel.fetchCrewApplyList(user.crewId!);
-                                              Navigator.of(context).pop();
+                                              _crewApplyViewModel.crewApplyList.remove(user); // 개별 항목만 삭제
                                               CustomFullScreenDialog.cancelDialog();
                                             },
                                             child: Text('신청 거절하기',
@@ -290,7 +289,7 @@ class CrewApplicationCrewView extends StatelessWidget {
                                             ),
                                             style: ElevatedButton.styleFrom(
                                               elevation: 0,
-                                              backgroundColor: SDSColor.snowliveBlue, // 신청 취소 버튼 색상
+                                              backgroundColor: SDSColor.snowliveBlue, // 신청 거절 버튼 색상
                                               minimumSize: Size(double.infinity, 48), // 버튼 크기
                                               shape: RoundedRectangleBorder(
                                                 borderRadius: BorderRadius.circular(8),
@@ -342,7 +341,7 @@ class CrewApplicationCrewView extends StatelessWidget {
                             ],
                           ),
                         );
-                      },
+                      }).toList(),
                     ),
                   ),
                 ],
@@ -354,3 +353,4 @@ class CrewApplicationCrewView extends StatelessWidget {
     );
   }
 }
+

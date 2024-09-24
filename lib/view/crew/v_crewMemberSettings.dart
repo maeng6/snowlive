@@ -187,7 +187,7 @@ class CrewMemberSettingsView extends StatelessWidget {
                     ),
                   ),
                   onTap: () {
-                    // 강퇴 확인 팝업
+                    Navigator.pop(context);
                     showDialog(
                       context: context,
                       builder: (BuildContext context) {
@@ -217,14 +217,13 @@ class CrewMemberSettingsView extends StatelessWidget {
                             ),
                             TextButton(
                               onPressed: () async{
+                                Navigator.pop(context);
                                 CustomFullScreenDialog.showDialog();
-                                await _crewMemberListViewModel.withdrawCrew(
+                                await _crewMemberListViewModel.expelCrewMember(
                                     crewMemberUserId: _crewMemberListViewModel.crewMembersList[index].userInfo!.userId!
                                 );
                                 await _crewMemberListViewModel.fetchCrewMembers(crewId: _userViewModel.user.crew_id);
                                 CustomFullScreenDialog.cancelDialog();
-                                Get.back(); // 팝업 닫기
-                                Get.back(); // bottom sheet 닫기
                               },
                               child: Text(
                                 '예',

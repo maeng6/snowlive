@@ -689,145 +689,123 @@ class CrewHomeView extends StatelessWidget {
                       width: MediaQuery.of(context).size.width,
                       child: ElevatedButton(
                         onPressed: () async {
-                          showModalBottomSheet(
+                          showDialog(
                             context: context,
-                            isScrollControlled: true, // 전체 화면 크기 조절 가능
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.vertical(
-                                top: Radius.circular(25.0),
-                              ),
-                            ),
                             builder: (BuildContext context) {
-                              return StatefulBuilder(
-                                builder: (BuildContext context, StateSetter setState) {
-                                  return Container(
-                                    height: MediaQuery.of(context).size.height * 0.35,
-                                    child: Padding(
-                                        padding: EdgeInsets.only(
-                                          left: 16,
-                                          right: 16,
-                                          bottom: MediaQuery.of(context).viewInsets.bottom + 16,
+                              return WillPopScope(
+                                onWillPop: () async{
+                                  _crewApplyViewModel.textEditingController_crewHome.clear(); // 텍스트 클리어
+                                  _crewApplyViewModel.isSubmitButtonEnabled_crewHome.value = false;
+                                  return true;
+                                },
+                                child: StatefulBuilder(
+                                  builder: (BuildContext context, StateSetter setState) {
+                                    return AlertDialog(
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.all(Radius.circular(20)),
                                         ),
-                                        child: Obx(()=>Column(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            Container(
-                                              width: 50,
-                                              height: 5,
-                                              margin: EdgeInsets.only(top: 8, bottom: 16),
-                                              decoration: BoxDecoration(
-                                                color: SDSColor.gray500,
-                                                borderRadius: BorderRadius.circular(10),
-                                              ),
-                                            ),
-                                            SizedBox(height: 10),
-                                            Text(
-                                              '해당 크루에 가입 신청을 하시겠어요? ',
-                                              style: TextStyle(
-                                                fontSize: 18,
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                            ),
-                                            SizedBox(height: 20),
-                                            TextFormField(
-                                              controller: _crewApplyViewModel.textEditingController,
-                                              onChanged: (value) {
-                                                _crewApplyViewModel.isSubmitButtonEnabled.value = value.isNotEmpty; // 입력 여부에 따라 버튼 활성화 여부 결정
-                                              },
-                                              decoration: InputDecoration(
-                                                hintText: '인사말을 남겨주세요.',
-                                                hintStyle: TextStyle(color: SDSColor.gray500),
-                                                filled: true,
-                                                fillColor: SDSColor.gray100,
-                                                contentPadding: EdgeInsets.symmetric(vertical: 14, horizontal: 16),
-                                                border: OutlineInputBorder(
-                                                  borderRadius: BorderRadius.circular(12),
-                                                  borderSide: BorderSide.none,
-                                                ),
-                                                focusedBorder: OutlineInputBorder(
-                                                  borderRadius: BorderRadius.circular(12),
-                                                  borderSide: BorderSide.none,
-                                                ),
-                                                enabledBorder: OutlineInputBorder(
-                                                  borderRadius: BorderRadius.circular(12),
-                                                  borderSide: BorderSide.none,
-                                                ),
-                                              ),
-                                              maxLength: 100, // 최대 100자 제한
-                                            ),
-                                            SizedBox(height: 30),
-                                            Row(
+                                        title: Text('해당 크루에\n가입 신청을 하시겠어요?',
+                                          style: TextStyle(
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        content: Obx(()=>
+                                            Column(
+                                              mainAxisSize: MainAxisSize.min,
                                               children: [
-                                                Expanded(
-                                                  child: ElevatedButton(
-                                                    onPressed: () {
-                                                      Navigator.pop(context);
-                                                    },
-                                                    child: Text(
-                                                      '돌아가기',
-                                                      style: TextStyle(
-                                                        color: Color(0xFFFFFFFF),
-                                                        fontWeight: FontWeight.bold,
-                                                        fontSize: 16,
-                                                      ),
-                                                    ),
-                                                    style: TextButton.styleFrom(
-                                                      shape: const RoundedRectangleBorder(
-                                                        borderRadius: BorderRadius.all(Radius.circular(6)),
-                                                      ),
-                                                      elevation: 0,
-                                                      splashFactory: InkRipple.splashFactory,
-                                                      backgroundColor: Color(0xff7C899D),
+                                                TextFormField(
+                                                  controller: _crewApplyViewModel.textEditingController_crewHome,
+                                                  onChanged: (value) {
+                                                    _crewApplyViewModel.isSubmitButtonEnabled_crewHome.value = value.isNotEmpty; // 입력 여부에 따라 버튼 활성화 여부 결정
+                                                  },
+                                                  decoration: InputDecoration(
+                                                    hintText: '인사말을 남겨주세요.',
+                                                    hintStyle: TextStyle(color: SDSColor.gray500),
+                                                    filled: true,
+                                                    fillColor: SDSColor.gray100,
+                                                    contentPadding: EdgeInsets.symmetric(vertical: 14, horizontal: 16),
+                                                    border: OutlineInputBorder(
+                                                      borderRadius: BorderRadius.circular(12),
+                                                      borderSide: BorderSide.none,
                                                     ),
                                                   ),
+                                                  maxLength: 50, // 최대 100자 제한
                                                 ),
-                                                SizedBox(width: 10),
-                                                Expanded(
-                                                  child: ElevatedButton(
-                                                    onPressed: _crewApplyViewModel.isSubmitButtonEnabled.value == true
-                                                        ? () async {
-                                                      Navigator.pop(context);
-                                                      CustomFullScreenDialog.showDialog();
-                                                      await _crewApplyViewModel.applyForCrew(
-                                                        _crewDetailViewModel.crewDetailInfo.crewId!,
-                                                        _userViewModel.user.user_id,
-                                                        _crewApplyViewModel.textEditingController.text,
-                                                      );
-                                                      _crewApplyViewModel.textEditingController.clear();
-                                                      _crewApplyViewModel.isSubmitButtonEnabled.value = false;
-
-                                                    }
-                                                        : null, // 버튼 비활성화 시 null
-                                                    child: Text(
-                                                      '신청하기',
-                                                      style: TextStyle(
-                                                        color: Color(0xFFFFFFFF),
-                                                        fontWeight: FontWeight.bold,
-                                                        fontSize: 16,
+                                                SizedBox(height: 30),
+                                                Row(
+                                                  children: [
+                                                    Expanded(
+                                                      child: ElevatedButton(
+                                                        onPressed: () {
+                                                          _crewApplyViewModel.textEditingController_crewHome.clear();
+                                                          _crewApplyViewModel.isSubmitButtonEnabled_crewHome.value = false;
+                                                          Navigator.pop(context); // 팝업 닫기
+                                                        },
+                                                        child: Text(
+                                                          '돌아가기',
+                                                          style: TextStyle(
+                                                            color: Colors.white,
+                                                            fontWeight: FontWeight.bold,
+                                                            fontSize: 16,
+                                                          ),
+                                                        ),
+                                                        style: TextButton.styleFrom(
+                                                          shape: const RoundedRectangleBorder(
+                                                            borderRadius: BorderRadius.all(Radius.circular(6)),
+                                                          ),
+                                                          elevation: 0,
+                                                          splashFactory: InkRipple.splashFactory,
+                                                          backgroundColor: Color(0xff7C899D),
+                                                        ),
                                                       ),
                                                     ),
-                                                    style: TextButton.styleFrom(
-                                                      shape: const RoundedRectangleBorder(
-                                                        borderRadius: BorderRadius.all(Radius.circular(6)),
+                                                    SizedBox(width: 10),
+                                                    Expanded(
+                                                      child: ElevatedButton(
+                                                        onPressed: _crewApplyViewModel.isSubmitButtonEnabled_crewHome.value
+                                                            ? () async {
+                                                          Navigator.pop(context);
+                                                          CustomFullScreenDialog.showDialog();
+                                                          await _crewApplyViewModel.applyForCrew(
+                                                            _crewDetailViewModel.crewDetailInfo.crewId!,
+                                                            _userViewModel.user.user_id,
+                                                            _crewApplyViewModel.textEditingController_crewHome.text,
+                                                          );
+                                                          _crewApplyViewModel.textEditingController_crewHome.clear();
+                                                          _crewApplyViewModel.isSubmitButtonEnabled_crewHome.value = false;
+                                                        }
+                                                            : null, // 버튼 비활성화 시 null
+                                                        child: Text(
+                                                          '신청하기',
+                                                          style: TextStyle(
+                                                            color: SDSColor.snowliveWhite,
+                                                            fontWeight: FontWeight.bold,
+                                                            fontSize: 16,
+                                                          ),
+                                                        ),
+                                                        style: TextButton.styleFrom(
+                                                          shape: const RoundedRectangleBorder(
+                                                            borderRadius: BorderRadius.all(Radius.circular(6)),
+                                                          ),
+                                                          elevation: 0,
+                                                          backgroundColor: _crewApplyViewModel.isSubmitButtonEnabled_crewHome.value
+                                                              ? SDSColor.snowliveBlue // 입력이 있을 때 버튼 활성화
+                                                              : SDSColor.gray300, // 입력이 없을 때 버튼 비활성화
+                                                        ),
                                                       ),
-                                                      elevation: 0,
-                                                      splashFactory: InkRipple.splashFactory,
-                                                      backgroundColor: _crewApplyViewModel.isSubmitButtonEnabled.value == true
-                                                          ? SDSColor.snowliveBlue // 입력이 있을 때 버튼 활성화
-                                                          : SDSColor.gray300, // 입력이 없을 때 버튼 비활성화
                                                     ),
-                                                  ),
+                                                  ],
                                                 ),
                                               ],
-                                            ),
-                                          ],
-                                        ),)
-                                    ),
-                                  );
-                                },
+                                            ),)
+                                    );
+                                  },
+                                ),
                               );
                             },
                           );
+
                         },
                         child: Text(
                           '가입 신청하기',
