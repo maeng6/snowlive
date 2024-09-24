@@ -123,6 +123,27 @@ class FleamarketDetailViewModel extends GetxController {
     }
   }
 
+  Future<void> addViewerFleamarket({
+    required int fleamarketId,
+    required int userId,
+  }) async {
+    // isLoading(true);
+    try {
+      final response = await FleamarketAPI().addView(fleamarketId: fleamarketId, body: {
+        "user_id":userId
+      });
+      if (response.success) {
+        print('조회수 업데이트완료');
+      } else {
+        print('Failed to load data: ${response.error}');
+      }
+    } catch (e) {
+      print('Error fetching data: $e');
+    } finally {
+      // isLoading(false);
+    }
+  }
+
 
   Future<void> fetchFleamarketComments({
     required int fleaId,
@@ -139,6 +160,7 @@ class FleamarketDetailViewModel extends GetxController {
       );
       if (response.success) {
         final commentResponse = CommentResponse.fromJson(response.data!);
+        await addViewerFleamarket(fleamarketId: fleaId, userId: userId);
 
         if (url == null) {
           _commentsList.value = commentResponse.results ?? [];
@@ -362,6 +384,11 @@ class FleamarketDetailViewModel extends GetxController {
       // 로딩 상태를 false로 설정
       isLoading(false);
     }
+  }
+
+  void changeIsFavorite(bool? bool){
+    _fleamarketDetail.value.isFavorite = bool;
+    print(_fleamarketDetail.value.isFavorite);
   }
 
 

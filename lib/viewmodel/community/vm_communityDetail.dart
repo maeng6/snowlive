@@ -148,6 +148,22 @@ class CommunityDetailViewModel extends GetxController {
     }
   }
 
+  Future<void> addViewerCommunity(int communityId, Map<String, dynamic> userId) async {
+    isLoading.value = true;
+    try {
+      final response = await CommunityAPI().addView(communityId, userId);
+
+      if (response.success) {
+      } else {
+        print('Failed to addview community post: ${response.error}');
+      }
+    } catch (e) {
+      print('Error adding view community post: $e');
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
   // 커뮤니티 신고하기
   Future<void> reportCommunity({required userId, required communityId}) async {
     isLoading(true);
@@ -177,6 +193,8 @@ class CommunityDetailViewModel extends GetxController {
       final response = await CommunityAPI().createComment(body);
 
       if (response.success) {
+        final CommentResponseCommunity commentResponse = CommentResponseCommunity.fromJson_comment(response.data!);
+        _commentsList.value = commentResponse.results??[];
         print('Comment created successfully');
       } else {
         print('Failed to create comment: ${response.error}');
@@ -206,6 +224,9 @@ class CommunityDetailViewModel extends GetxController {
 
       if (response.success) {
         final CommentResponseCommunity commentResponse = CommentResponseCommunity.fromJson(response.data!);
+        await addViewerCommunity(communityId, {
+          "user_id":userId.toString()
+        });
         if (url == null) {
           _commentsList.value = commentResponse.results ?? [];
         } else {

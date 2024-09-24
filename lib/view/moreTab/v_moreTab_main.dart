@@ -193,9 +193,10 @@ class MoreTabMainView extends StatelessWidget {
                                   _userViewModel.user.crew_id,
                                   _friendDetailViewModel.seasonDate
                               );
-                              await _crewMemberListViewModel.fetchCrewMembers(crewId: _userViewModel.user.crew_id);
                               CustomFullScreenDialog.cancelDialog();
                               Get.toNamed(AppRoutes.crewMain);
+                              await _crewMemberListViewModel.fetchCrewMembers(crewId: _userViewModel.user.crew_id);
+
 
                             }
                           },

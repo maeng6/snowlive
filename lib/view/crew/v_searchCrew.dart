@@ -236,9 +236,10 @@ class _SearchCrewViewState extends State<SearchCrewView> {
                                 CustomFullScreenDialog.showDialog();
                                 await _crewDetailViewModel.fetchCrewDetail(
                                     data.crewId!, _friendDetailViewModel.seasonDate);
-                                await _crewMemberListViewModel.fetchCrewMembers(crewId: data.crewId!);
                                 CustomFullScreenDialog.cancelDialog();
                                 Get.toNamed(AppRoutes.crewMain);
+                                await _crewMemberListViewModel.fetchCrewMembers(crewId: data.crewId!);
+
                               },
                               child: Padding(
                                 padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -259,9 +260,10 @@ class _SearchCrewViewState extends State<SearchCrewView> {
                                                     CustomFullScreenDialog.showDialog();
                                                     await _crewDetailViewModel.fetchCrewDetail(
                                                         data.crewId!, _friendDetailViewModel.seasonDate);
-                                                    await _crewMemberListViewModel.fetchCrewMembers(crewId: data.crewId!);
                                                     CustomFullScreenDialog.cancelDialog();
                                                     Get.toNamed(AppRoutes.crewMain);
+                                                    await _crewMemberListViewModel.fetchCrewMembers(crewId: data.crewId!);
+
                                                   },
                                                   child: Container(
                                                     decoration: const BoxDecoration(
@@ -293,9 +295,10 @@ class _SearchCrewViewState extends State<SearchCrewView> {
                                                     CustomFullScreenDialog.showDialog();
                                                     await _crewDetailViewModel.fetchCrewDetail(
                                                         data.crewId!, _friendDetailViewModel.seasonDate);
-                                                    await _crewMemberListViewModel.fetchCrewMembers(crewId: data.crewId!);
                                                     CustomFullScreenDialog.cancelDialog();
                                                     Get.toNamed(AppRoutes.crewMain);
+                                                    await _crewMemberListViewModel.fetchCrewMembers(crewId: data.crewId!);
+
                                                   },
                                                   child: Container(
                                                     decoration: const BoxDecoration(

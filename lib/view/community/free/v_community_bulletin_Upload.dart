@@ -6,6 +6,7 @@ import 'package:com.snowlive/viewmodel/vm_user.dart';
 import 'package:com.snowlive/widget/w_bulletin_quill_toolbar.dart';
 import 'package:com.snowlive/widget/w_category_main_commu_bulletin.dart';
 import 'package:com.snowlive/widget/w_category_sub_commu_bulletin_room.dart';
+import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -356,6 +357,7 @@ class CommunityFreeUpload extends StatelessWidget {
                             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
                             child: ElevatedButton(
                               onPressed: () async {
+                                CustomFullScreenDialog.showDialog();
 
                                 if(_communityUploadViewModel.textEditingController_title.text != ''
                                     && _communityUploadViewModel.selectedCategoryMain != '상위 카테고리'
@@ -370,7 +372,7 @@ class CommunityFreeUpload extends StatelessWidget {
                                     "title": "${_communityUploadViewModel.textEditingController_title.text}",     // 필수 - 제목
                                     "thumb_img_url": "",
                                     "description": jsonEncode([{
-                                      "string": "임시내용"
+                                      "insert": ""
                                     }])
                                   });
 
@@ -388,6 +390,7 @@ class CommunityFreeUpload extends StatelessWidget {
                                         "description" : jsonString
                                       });
                                 }
+                                CustomFullScreenDialog.cancelDialog();
                                 Navigator.pop(context);
                                 await _communityBulletinListViewModel.fetchCommunityList_total(userId: _userViewModel.user.user_id,categoryMain: '게시판');
 

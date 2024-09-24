@@ -1,6 +1,7 @@
 import 'package:com.snowlive/data/imgaUrls/Data_url_image.dart';
 import 'package:com.snowlive/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/util/util_1.dart';
+import 'package:com.snowlive/viewmodel/community/vm_communityBulletinList.dart';
 import 'package:com.snowlive/viewmodel/community/vm_communityCommentDetail.dart';
 import 'package:com.snowlive/viewmodel/community/vm_communityDetail.dart';
 import 'package:com.snowlive/viewmodel/vm_user.dart';
@@ -15,6 +16,7 @@ class CommunityCommentDetailView extends StatelessWidget {
   final CommunityCommentDetailViewModel _communityCommentDetailViewModel = Get.find<CommunityCommentDetailViewModel>();
   final CommunityDetailViewModel _communityDetailViewModel = Get.find<CommunityDetailViewModel>();
   final UserViewModel _userViewModel = Get.find<UserViewModel>();
+  final CommunityBulletinListViewModel _communityBulletinListViewModel = Get.find<CommunityBulletinListViewModel>();
 
   @override
   Widget build(BuildContext context) {
@@ -773,6 +775,7 @@ class CommunityCommentDetailView extends StatelessWidget {
                                       suffixIcon: IconButton(
                                         splashColor: Colors.transparent,
                                         onPressed: () async {
+                                          CustomFullScreenDialog.showDialog();
                                           if (_communityCommentDetailViewModel.textEditingController.text.trim().isEmpty) {
                                             return;
                                           }
@@ -786,6 +789,14 @@ class CommunityCommentDetailView extends StatelessWidget {
                                           );
                                           FocusScope.of(context).unfocus();
                                           _communityCommentDetailViewModel.textEditingController.clear();
+                                          CustomFullScreenDialog.cancelDialog();
+                                          await _communityDetailViewModel.fetchCommunityComments(
+                                              communityId: _communityDetailViewModel.communityDetail.communityId!,
+                                              userId: _userViewModel.user.user_id,
+                                              isLoading_indi: true);
+                                          await _communityBulletinListViewModel.fetchCommunityList_total(userId: _userViewModel.user.user_id,categoryMain: '게시판');
+
+
                                         },
                                         icon: (_communityCommentDetailViewModel.isCommentButtonEnabled.value == false)
                                             ? Image.asset(

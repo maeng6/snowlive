@@ -223,9 +223,10 @@ class FriendDetailView extends StatelessWidget {
                                                             _friendDetailViewModel.friendDetailModel.friendUserInfo.crewId,
                                                             _friendDetailViewModel.seasonDate
                                                         );
-                                                        await _crewMemberListViewModel.fetchCrewMembers(crewId: _friendDetailViewModel.friendDetailModel.friendUserInfo.crewId);
                                                         CustomFullScreenDialog.cancelDialog();
                                                         Get.toNamed(AppRoutes.crewMain);
+                                                        await _crewMemberListViewModel.fetchCrewMembers(crewId: _friendDetailViewModel.friendDetailModel.friendUserInfo.crewId);
+
                                                       },
                                                       child: Text(
                                                         ' · ${_friendDetailViewModel.friendDetailModel.friendUserInfo.crewName} >',

@@ -18,8 +18,17 @@ class CommentResponseCommunity {
     }
   }
 
+  CommentResponseCommunity.fromJson_comment(var commentList) {
+    count = 0;
+    next = '';
+    previous = '';
 
-}
+      results = (commentList as List)
+          .map((i) => CommentModel_community.fromJson(i))
+          .toList();
+    }
+  }
+
 
 class CommentModel_community {
   int? commentId;

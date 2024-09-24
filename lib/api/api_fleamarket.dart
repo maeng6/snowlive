@@ -101,6 +101,26 @@ class FleamarketAPI {
     }
   }
 
+  Future<ApiResponse> addView({
+    required int fleamarketId,
+    required Map<String, dynamic> body,
+  }) async {
+    // 쿼리 파라미터로 user_id를 추가
+    final response = await http.put(
+      Uri.parse('$baseUrl/view/$fleamarketId/'),
+      body: json.encode(body),
+      headers: {'Content-Type': 'application/json'},
+    );
+
+    if(response.statusCode==200){
+      final data = json.decode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
+      return ApiResponse.success(data);
+    } else{
+      final data = json.decode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
+      return ApiResponse.error(data);
+    }
+  }
+
   Future<ApiResponse> fetchFleamarketList({
     required int userId,
     String? categoryMain,

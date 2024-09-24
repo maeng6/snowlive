@@ -99,11 +99,26 @@ class CommunityAPI {
     }
   }
 
+  Future<ApiResponse> addView(int communityId,Map<String, dynamic> body) async {
+
+    final response = await http.put(
+      Uri.parse('$baseUrl/view/$communityId/'),
+      body: json.encode(body),
+      headers: {'Content-Type': 'application/json'},
+    );
+
+    if (response.statusCode == 200) {
+      return ApiResponse.success(null);
+    } else {
+      return ApiResponse.error(json.decode(utf8.decode(response.bodyBytes)));
+    }
+  }
+
   // 댓글 생성
-  Future<ApiResponse> createComment(Map<String, dynamic> commentData) async {
+  Future<ApiResponse> createComment(Map<String, dynamic> body) async {
     final response = await http.post(
-      Uri.parse('$baseUrl/comments/'),
-      body: json.encode(commentData),
+      Uri.parse('$baseUrl/comments/create/'),
+      body: json.encode(body),
       headers: {'Content-Type': 'application/json'},
     );
 
