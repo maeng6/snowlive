@@ -142,7 +142,7 @@ class SearchFriendView extends StatelessWidget {
                               ),
                             ),
                           ),
-                          SizedBox(height: 80),
+                          SizedBox(height: 40),
                           Obx(() {
                             // 검색된 친구 데이터가 없을 때 처리
                             if (_friendListViewModel.searchFriend.userId == null) {
@@ -186,7 +186,7 @@ class SearchFriendView extends StatelessWidget {
                               children: [
                                 Container(
                                   width: 280,
-                                  height: 375,
+                                  height: 360,
                                   decoration: BoxDecoration(
                                     image: DecorationImage(
                                       image: AssetImage(
@@ -194,6 +194,11 @@ class SearchFriendView extends StatelessWidget {
                                       fit: BoxFit.fill,
                                     ),
                                     borderRadius: BorderRadius.circular(20),
+                                    border: Border.all(
+                                      style: BorderStyle.solid,
+                                      width: 4,
+                                      color: SDSColor.blue100
+                                    )
                                   ),
                                   child: Column(
                                     children: [
@@ -289,42 +294,44 @@ class SearchFriendView extends StatelessWidget {
                                           ),
                                         ],
                                       ),
-                                      Spacer(),
-                                      Container(
-                                        width: MediaQuery.of(context).size.width,
-                                        padding: EdgeInsets.only(right: 16, left: 16),
-                                        child: ElevatedButton(
-                                          onPressed: () async {
-                                            CustomFullScreenDialog.showDialog();
-                                            await _friendDetailViewModel.fetchFriendDetailInfo(
-                                              userId: _userViewModel.user.user_id,
-                                              friendUserId: _friendListViewModel.searchFriend.userId!,
-                                              season: _friendDetailViewModel.seasonDate,
-                                            );
-                                            CustomFullScreenDialog.cancelDialog();
-                                            Get.toNamed(AppRoutes.friendDetail);
-                                          },
-                                          child: Text(
-                                            '프로필 보기',
-                                            style: SDSTextStyle.bold.copyWith(
-                                                color: SDSColor.snowliveBlack, fontSize: 16),
-                                          ),
-                                          style: TextButton.styleFrom(
-                                            shape: const RoundedRectangleBorder(
-                                              borderRadius: BorderRadius.all(Radius.circular(6)),
-                                            ),
-                                            elevation: 0,
-                                            splashFactory: InkRipple.splashFactory,
-                                            minimumSize: Size(double.infinity, 48),
-                                            backgroundColor: SDSColor.snowliveWhite,
-                                          ),
-                                        ),
-                                      ),
-                                      SizedBox(height: 20),
                                     ],
                                   ),
                                 ),
-                                SizedBox(height: 80),
+                                SizedBox(height: 20),
+                                Container(
+                                  width: 96,
+                                  height: 36,
+                                  child: ElevatedButton(
+                                    onPressed: () async {
+                                      CustomFullScreenDialog.showDialog();
+                                      await _friendDetailViewModel.fetchFriendDetailInfo(
+                                        userId: _userViewModel.user.user_id,
+                                        friendUserId: _friendListViewModel.searchFriend.userId!,
+                                        season: _friendDetailViewModel.seasonDate,
+                                      );
+                                      CustomFullScreenDialog.cancelDialog();
+                                      Get.toNamed(AppRoutes.friendDetail);
+                                    },
+                                    child: Text(
+                                      '프로필 보기',
+                                      style: SDSTextStyle.bold.copyWith(
+                                          color: SDSColor.gray900, fontSize: 14),
+                                    ),
+                                    style: TextButton.styleFrom(
+                                      padding: EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                      side:BorderSide(
+                                        color: SDSColor.gray200
+                                      ),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.all(Radius.circular(6)),
+                                      ),
+                                      elevation: 0,
+                                      splashFactory: InkRipple.splashFactory,
+                                      minimumSize: Size(double.infinity, 48),
+                                      backgroundColor: SDSColor.snowliveWhite,
+                                    ),
+                                  ),
+                                ),
                                 if(_friendListViewModel.searchFriend.userId != _userViewModel.user.user_id)
                                 SafeArea(
                                   child: Container(
