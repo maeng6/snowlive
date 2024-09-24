@@ -1,3 +1,4 @@
+import 'package:com.snowlive/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/routes/routes.dart';
 import 'package:com.snowlive/viewmodel/friend/vm_friendDetail.dart';
 import 'package:com.snowlive/viewmodel/friend/vm_friendList.dart';
@@ -33,7 +34,7 @@ class _ReceiveFriendRequestViewState extends State<ReceiveFriendRequestView> {
             return Column(
               children: [
                 Container(
-                  height: 80,
+                  height: 72,
                   child: Center(
                     child: ListTile(
                       contentPadding: EdgeInsets.symmetric(horizontal: 0),
@@ -51,52 +52,42 @@ class _ReceiveFriendRequestViewState extends State<ReceiveFriendRequestView> {
                         },
                         child: Container(
                           width: 56,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Stack(
-                                  fit: StackFit.loose,
-                                  children: [
-                                    Container(
-                                      width: 40,
-                                      height: 40,
-                                      decoration: BoxDecoration(
-                                          color: Color(0xFFDFECFF),
-                                          borderRadius: BorderRadius.circular(50)
-                                      ),
-                                      alignment: Alignment.centerLeft,
-                                      child: ExtendedImage.network(
-                                        '${friend.friendUserInfo.profileImageUrlUser}',
-                                        enableMemoryCache: true,
-                                        shape: BoxShape.circle,
-                                        borderRadius: BorderRadius.circular(8),
-                                        width: 40,
-                                        height: 40,
-                                        fit: BoxFit.cover,
-                                        loadStateChanged: (ExtendedImageState state) {
-                                          switch (state.extendedImageLoadState) {
-                                            case LoadState.loading:
-                                              return SizedBox.shrink();
-                                            case LoadState.completed:
-                                              return state.completedWidget;
-                                            case LoadState.failed:
-                                              return ExtendedImage.asset(
-                                                'assets/imgs/profile/img_profile_default_circle.png',
-                                                shape: BoxShape.circle,
-                                                borderRadius: BorderRadius.circular(20),
-                                                width: 24,
-                                                height: 24,
-                                                fit: BoxFit.cover,
-                                              ); // 예시로 에러 아이콘을 반환하고 있습니다.
-                                            default:
-                                              return null;
-                                          }
-                                        },
-                                      ),
-                                    ),
-                                  ]),
-                            ],
+                          child: Container(
+                            width: 40,
+                            height: 40,
+                            decoration: BoxDecoration(
+                                color: Color(0xFFDFECFF),
+                                borderRadius: BorderRadius.circular(50)
+                            ),
+                            alignment: Alignment.centerLeft,
+                            child: ExtendedImage.network(
+                              '${friend.friendUserInfo.profileImageUrlUser}',
+                              enableMemoryCache: true,
+                              shape: BoxShape.circle,
+                              borderRadius: BorderRadius.circular(8),
+                              width: 40,
+                              height: 40,
+                              fit: BoxFit.cover,
+                              loadStateChanged: (ExtendedImageState state) {
+                                switch (state.extendedImageLoadState) {
+                                  case LoadState.loading:
+                                    return SizedBox.shrink();
+                                  case LoadState.completed:
+                                    return state.completedWidget;
+                                  case LoadState.failed:
+                                    return ExtendedImage.asset(
+                                      'assets/imgs/profile/img_profile_default_circle.png',
+                                      shape: BoxShape.circle,
+                                      borderRadius: BorderRadius.circular(20),
+                                      width: 24,
+                                      height: 24,
+                                      fit: BoxFit.cover,
+                                    ); // 예시로 에러 아이콘을 반환하고 있습니다.
+                                  default:
+                                    return null;
+                                }
+                              },
+                            ),
                           ),
                         ),
                       )
@@ -113,56 +104,30 @@ class _ReceiveFriendRequestViewState extends State<ReceiveFriendRequestView> {
                         },
                         child: Container(
                           width: 56,
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Stack(
-                                fit: StackFit.loose,
-                                children: [
-                                  Container(
-                                    alignment: Alignment.centerLeft,
-                                    child: ExtendedImage.asset('assets/imgs/profile/img_profile_default_circle.png',
-                                      enableMemoryCache:
-                                      true,
-                                      shape: BoxShape.circle,
-                                      borderRadius:
-                                      BorderRadius.circular(8),
-                                      width: 40,
-                                      height: 40,
-                                      fit: BoxFit.cover,
-                                    ),
-                                  ),
-                                  (friend.friendUserInfo.withinBoundary == true
-                                      && friend.friendUserInfo.revealWb == true)
-                                      ? Positioned(
-                                    child: Image.asset(
-                                      'assets/imgs/icons/icon_badge_live.png',
-                                      width: 32,
-                                    ),
-                                    right: 0,
-                                    bottom: 0,
-                                  )
-                                      : Container()
-                                ],
-                              ),
-                            ],
+                          child: Container(
+                            alignment: Alignment.centerLeft,
+                            child: ExtendedImage.asset('assets/imgs/profile/img_profile_default_circle.png',
+                              enableMemoryCache:
+                              true,
+                              shape: BoxShape.circle,
+                              borderRadius:
+                              BorderRadius.circular(8),
+                              width: 40,
+                              height: 40,
+                              fit: BoxFit.cover,
+                            ),
                           ),
                         ),
                       ),
-                      title: Transform.translate(
-                        offset: Offset(-20, 0),
-                        child: Text(
-                          friend.friendUserInfo.displayName,
-                          style: TextStyle(
-                            fontWeight: FontWeight.normal,
-                            fontSize: 16,
-                            color: Color(0xFF111111),
-                          ),
+                      title: Text(
+                        friend.friendUserInfo.displayName,
+                        style: SDSTextStyle.regular.copyWith(
+                          fontSize: 15,
+                          color: SDSColor.gray900,
                         ),
                       ),
                       trailing: Container(
-                        width: _size.width * 0.5,
+                        width: 140,
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
@@ -257,13 +222,18 @@ class _ReceiveFriendRequestViewState extends State<ReceiveFriendRequestView> {
                                         ),
                                       );
                                     });
-                              }, child: Text('수락', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Color(0xFFFFFFFF)),),
+                              }, child: Text('수락',
+                              style: SDSTextStyle.bold.copyWith(fontSize: 13, color: SDSColor.gray900),),
                               style: ElevatedButton.styleFrom(
-                                minimumSize: Size(58, 32),
-                                backgroundColor: Color(0xFF3D83ED),
+                                padding: EdgeInsets.symmetric(horizontal: 14, vertical: 3),
+                                minimumSize: Size(36, 32),
+                                backgroundColor: SDSColor.snowliveWhite,
+                                side: BorderSide(
+                                  color: SDSColor.gray200
+                                ),
                                 elevation: 0,
                                 shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(8)),
+                                    borderRadius: BorderRadius.circular(100)),
                               ),),
                             SizedBox(width: 6,),
                             ElevatedButton(
@@ -369,16 +339,18 @@ class _ReceiveFriendRequestViewState extends State<ReceiveFriendRequestView> {
                                         ),
                                       );
                                     });
-                              }, child: Text('거절', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Color(0xFF949494)),),
+                              }, child: Text('거절',
+                              style: SDSTextStyle.bold.copyWith(fontSize: 13, color: SDSColor.gray900),),
                               style: ElevatedButton.styleFrom(
-                                  minimumSize: Size(58, 32),
-                                  backgroundColor: Color(0xFFFFFFFF),
-                                  elevation: 0,
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(8)),
-                                  side: BorderSide(
-                                      color: Color(0xFFDEDEDE)
-                                  )
+                                padding: EdgeInsets.symmetric(horizontal: 14, vertical: 3),
+                                minimumSize: Size(36, 32),
+                                backgroundColor: SDSColor.snowliveWhite,
+                                side: BorderSide(
+                                    color: SDSColor.gray200
+                                ),
+                                elevation: 0,
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(100)),
                               ),),
                           ],
                         ),
