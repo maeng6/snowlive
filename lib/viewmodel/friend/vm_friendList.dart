@@ -10,6 +10,7 @@ import 'package:get/get.dart';
 
 class FriendListViewModel extends GetxController {
   var isLoading = true.obs;
+  var _searchFriendSuccess = false.obs;
   var _friendList = <FriendListModel>[].obs;
   var _friendsRequestList = <RequestFriendList>[].obs;
   var _myRequestList = <RequestFriendList>[].obs;
@@ -24,6 +25,7 @@ class FriendListViewModel extends GetxController {
   List<RequestFriendList> get myRequestList => _myRequestList;
   List<UserBlockList> get blockUserList => _blockUserList;
   SearchFriend get searchFriend => _searchFriend.value;
+  bool get searchFriendSuccess => _searchFriendSuccess.value;
 
   UserViewModel _userViewModel = Get.find<UserViewModel>();
 
@@ -119,12 +121,15 @@ class FriendListViewModel extends GetxController {
 
         // 여기서 _blockUserList 대신 적절한 상태 변수에 searchFriend 할당
         _searchFriend.value = SearchFriend.fromJson(responseData);
+        _searchFriendSuccess(true);
         print(_searchFriend.value.displayName);
       } else {
         print('Failed to load data: ${response.error}');
+        _searchFriendSuccess(false);
       }
     } catch (e) {
       print('Error fetching data: $e');
+      _searchFriendSuccess(false);
     }
   }
 

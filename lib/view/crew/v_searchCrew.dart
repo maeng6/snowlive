@@ -97,14 +97,12 @@ class _SearchCrewViewState extends State<SearchCrewView> {
                           ),
                           child: TextFormField(
                             onFieldSubmitted: (val) async {
-                              if (val.isEmpty) {
-                                _searchCrewViewModel.showRecentSearch.value = true;  // 검색어 없을 때 최근 검색어 노출
-                              } else {
+                              if (val.isNotEmpty) {
                                 CustomFullScreenDialog.showDialog();
                                 _searchCrewViewModel.showRecentSearch.value = false;  // 검색 결과 표시
                                 await _searchCrewViewModel.searchCrews(val);
                                 await _searchCrewViewModel.saveRecentSearch(val);
-                                CustomFullScreenDialog.cancelDialog();
+                                CustomFullScreenDialog.cancelDialog();                              } else {
                               }
                             },
                             autofocus: true,

@@ -329,35 +329,33 @@ class FriendListView extends StatelessWidget {
                       SizedBox(height: 6),
                       Center(
                         child: Text(
-                          '등록된 친구가 없습니다',
-                          style: SDSTextStyle.regular.copyWith(fontSize: 14, color: SDSColor.gray500),
-                        ),
-                      ),
-                      Center(
-                        child: Text(
                           '친구를 검색해 추가해 보세요',
                           style: SDSTextStyle.regular.copyWith(fontSize: 14, color: SDSColor.gray500),
                         ),
                       ),
                       SizedBox(height: 12),
                       Center(
-                        child: OutlinedButton(
-                          onPressed: () async {
-                            await _friendListViewModel.resetSearchFriend();
-                            Get.toNamed(AppRoutes.searchFriend);
-                          },
-                          child: Text(
-                            '친구 추가하기',
-                            style: SDSTextStyle.bold.copyWith(
-                              color: SDSColor.gray900,
-                              fontSize: 14,
+                        child: Container(
+                          width: 100,
+                          height: 36,
+                          child: OutlinedButton(
+                            onPressed: () async {
+                              await _friendListViewModel.resetSearchFriend();
+                              Get.toNamed(AppRoutes.searchFriend);
+                            },
+                            child: Text(
+                              '친구 추가하기',
+                              style: SDSTextStyle.bold.copyWith(
+                                color: SDSColor.gray900,
+                                fontSize: 14,
+                              ),
                             ),
-                          ),
-                          style: OutlinedButton.styleFrom(
-                            padding: EdgeInsets.symmetric(horizontal: 6, vertical: 3),
-                            side: BorderSide(width: 1, color: SDSColor.gray200),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(40),
+                            style: OutlinedButton.styleFrom(
+                              padding: EdgeInsets.symmetric(horizontal: 6, vertical: 3),
+                              side: BorderSide(width: 1, color: SDSColor.gray200),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(40),
+                              ),
                             ),
                           ),
                         ),

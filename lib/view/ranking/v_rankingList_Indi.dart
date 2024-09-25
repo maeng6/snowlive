@@ -33,7 +33,7 @@ class RankingIndiView extends StatelessWidget {
         child: Stack(
           children: [
             (_rankingListViewModel.rankingListIndivList_total!.length != 0)
-            ? RefreshIndicator(
+                ? RefreshIndicator(
               onRefresh: () async {
                 //리프레쉬처리
               },
@@ -61,24 +61,24 @@ class RankingIndiView extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
                               if(_rankingListViewModel.resortOrTotal=='전체스키장' && _rankingListViewModel.dayOrTotal=='누적')
-                              Container(
-                                height: 76,
-                                width: 76,
-                                decoration: BoxDecoration(
-                                  color: Color(0xFFF0F6FF),
-                                  borderRadius: BorderRadius.circular(16),
-                                ),
-                                padding: EdgeInsets.only(top: 18, bottom: 14, left: 14, right: 14),
-                                child: Transform.translate(
-                                  offset: Offset(0, 0),
-                                  child: ExtendedImage.network(
-                                    '${_rankingListViewModel.rankingListIndivMy_view!.overallTierIconUrl
-                                        ??'https://i.esdrop.com/d/f/yytYSNBROy/6rPYflzCCZ.png'}',
-                                    enableMemoryCache: true,
-                                    fit: BoxFit.cover,
+                                Container(
+                                  height: 76,
+                                  width: 76,
+                                  decoration: BoxDecoration(
+                                    color: Color(0xFFF0F6FF),
+                                    borderRadius: BorderRadius.circular(16),
+                                  ),
+                                  padding: EdgeInsets.only(top: 18, bottom: 14, left: 14, right: 14),
+                                  child: Transform.translate(
+                                    offset: Offset(0, 0),
+                                    child: ExtendedImage.network(
+                                      '${_rankingListViewModel.rankingListIndivMy_view!.overallTierIconUrl
+                                          ??'https://i.esdrop.com/d/f/yytYSNBROy/6rPYflzCCZ.png'}',
+                                      enableMemoryCache: true,
+                                      fit: BoxFit.cover,
+                                    ),
                                   ),
                                 ),
-                              ),
                               Container(
                                 width: 10,
                               ),
@@ -97,8 +97,8 @@ class RankingIndiView extends StatelessWidget {
                                         children: [
                                           Text(
                                             (_rankingListViewModel.resortOrTotal == '개별스키장')
-                                              ? '${_rankingListViewModel.rankingListIndivMy_view!.resortTotalScore??'-'}'
-                                              : '${_rankingListViewModel.rankingListIndivMy_view!.overallTotalScore??'-'}',
+                                                ? '${_rankingListViewModel.rankingListIndivMy_view!.resortTotalScore??'-'}'
+                                                : '${_rankingListViewModel.rankingListIndivMy_view!.overallTotalScore??'-'}',
                                             style: SDSTextStyle.bold.copyWith(
                                               color: Color(0xFF111111),
                                               fontSize: 15,
@@ -544,7 +544,7 @@ class RankingIndiView extends StatelessWidget {
                                                     color: (_rankingListViewModel.resortOrTotal != '전체스키장') ? Color(0xFFFFFFFF) : Color(0xFF111111)))
                                         ),
                                         Positioned(
-                                          top: 16,
+                                          top: 8,
                                           right: 10,
                                           child: GestureDetector(
                                             onTap: () async {
@@ -856,12 +856,13 @@ class RankingIndiView extends StatelessWidget {
                                                     );
                                                   });
                                             },
-                                            child: (_rankingListViewModel.resortOrTotal != '전체스키장') ? ExtendedImage.asset(
+                                            child: (_rankingListViewModel.resortOrTotal != '전체스키장')
+                                                ? ExtendedImage.asset(
                                               'assets/imgs/icons/icon_check_round.png',
                                               fit: BoxFit.cover,
                                               width: 16,
-                                              height: 16,
-                                            ) : ExtendedImage.asset(
+                                              height: 16,)
+                                                : ExtendedImage.asset(
                                               'assets/imgs/icons/icon_check_round_black.png',
                                               fit: BoxFit.cover,
                                               width: 16,
@@ -881,9 +882,16 @@ class RankingIndiView extends StatelessWidget {
                       SizedBox(height: 16),
                       //여기 높이 처리해야함. 지금 500으로 박혀있음. fleamarketList랑 똑같이해보려고했는데 실패
                       (_rankingListViewModel.rankingListIndivList_view!.length != 0)
-                          ? Container(
-                        height: 300,
-                        child: Scrollbar(
+                          ? ConstrainedBox(
+                        constraints: BoxConstraints(
+                          minHeight: _size.height, // 리스트가 하나여도 최소 높이를 설정
+                          maxHeight: _size.height, // 최대 높이 설정
+                        ),
+                        child: RefreshIndicator(
+                          onRefresh: () async{
+                            //당겨서 새로고침
+                          },
+                          child: Scrollbar(
                             controller: _rankingListViewModel.scrollController_indiv,
                             child: ListView.builder(
                               controller:  _rankingListViewModel.scrollController_indiv,
@@ -912,8 +920,8 @@ class RankingIndiView extends StatelessWidget {
                                                   child:
                                                   AutoSizeText(
                                                     (_rankingListViewModel.resortOrTotal=='개별스키장')
-                                                    ?'${document.resortRank??''}'
-                                                    :'${document.overallRank??''}',
+                                                        ?'${document.resortRank??''}'
+                                                        :'${document.overallRank??''}',
                                                     style: SDSTextStyle.bold.copyWith(
                                                         fontSize: 14,
                                                         color: Color(0xFF111111)
@@ -1013,12 +1021,12 @@ class RankingIndiView extends StatelessWidget {
                                             Row(
                                               children: [
                                                 Text(
-                                                      document.resortNickname!,
-                                                      style: SDSTextStyle.regular.copyWith(
-                                                          fontSize: 12,
-                                                          color: Color(0xFF949494)
-                                                      ),
-                                                    ),
+                                                  document.resortNickname!,
+                                                  style: SDSTextStyle.regular.copyWith(
+                                                      fontSize: 12,
+                                                      color: Color(0xFF949494)
+                                                  ),
+                                                ),
 
                                                 if(document.crewName != null)
                                                   Row(
@@ -1050,23 +1058,23 @@ class RankingIndiView extends StatelessWidget {
                                       Row(
                                         children: [
 
-                                            Row(
-                                              children: [
-                                                if(_rankingListViewModel.resortOrTotal == '개별스키장' && document.resortTotalScore != null)
-                                                  Text('${document.resortTotalScore!.toInt()}점',
-                                                    style: SDSTextStyle.regular.copyWith(
-                                                      color: Color(0xFF111111),
-                                                      fontSize: 16,
-                                                    ),
+                                          Row(
+                                            children: [
+                                              if(_rankingListViewModel.resortOrTotal == '개별스키장' && document.resortTotalScore != null)
+                                                Text('${document.resortTotalScore!.toInt()}점',
+                                                  style: SDSTextStyle.regular.copyWith(
+                                                    color: Color(0xFF111111),
+                                                    fontSize: 16,
                                                   ),
-                                                if(_rankingListViewModel.resortOrTotal == '전체스키장' && document.overallTotalScore != null)
-                                                  Text('${document.overallTotalScore!.toInt()}점',
-                                                    style: SDSTextStyle.regular.copyWith(
-                                                      color: Color(0xFF111111),
-                                                      fontSize: 16,
-                                                    ),
+                                                ),
+                                              if(_rankingListViewModel.resortOrTotal == '전체스키장' && document.overallTotalScore != null)
+                                                Text('${document.overallTotalScore!.toInt()}점',
+                                                  style: SDSTextStyle.regular.copyWith(
+                                                    color: Color(0xFF111111),
+                                                    fontSize: 16,
                                                   ),
-                                                if(_rankingListViewModel.resortOrTotal=='전체스키장' && _rankingListViewModel.dayOrTotal=='누적')
+                                                ),
+                                              if(_rankingListViewModel.resortOrTotal=='전체스키장' && _rankingListViewModel.dayOrTotal=='누적')
                                                 Transform.translate(
                                                   offset: Offset(6, 1),
                                                   child: ExtendedImage.network(
@@ -1076,8 +1084,8 @@ class RankingIndiView extends StatelessWidget {
                                                     width: 32,
                                                   ),
                                                 ),
-                                              ],
-                                            ),
+                                            ],
+                                          ),
                                         ],
                                       ),
 
@@ -1086,9 +1094,10 @@ class RankingIndiView extends StatelessWidget {
 
                                 );
                               },
-                              padding: EdgeInsets.only(bottom: 80),
+                              padding: EdgeInsets.only(bottom: _size.height * 0.45),
                             ),
                           ),
+                        ),
                       )
                           : Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
@@ -1133,7 +1142,7 @@ class RankingIndiView extends StatelessWidget {
                 ),
               ),
             )
-            :Column(
+                :Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
