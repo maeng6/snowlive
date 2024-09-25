@@ -159,7 +159,7 @@ class FleamarketDetailViewModel extends GetxController {
         url: url,
       );
       if (response.success) {
-        final commentResponse = CommentResponse.fromJson(response.data!);
+        final commentResponse = CommentResponse_flea.fromJson(response.data!);
         await addViewerFleamarket(fleamarketId: fleaId, userId: userId);
 
         if (url == null) {
@@ -332,11 +332,16 @@ class FleamarketDetailViewModel extends GetxController {
 
   Future<void> uploadFleamarketComments(body) async {
     ApiResponse response = await FleamarketAPI().createComment(body);
-    if(response.success)
+    if(response.success) {
+      final CommentResponse_flea commentResponse_flea = CommentResponse_flea
+          .fromJson_comment(response.data!);
+      _commentsList.value = commentResponse_flea.results ?? [];
       // _scrollController.jumpTo(0);
       print('글 업로드 완료');
-    if(!response.success)
+    }
+    else {
       Get.snackbar('Error', '업로드 실패');
+    }
   }
 
   Future<void> updateFleamarketComments({required commentID, required body}) async {

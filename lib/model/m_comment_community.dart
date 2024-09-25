@@ -57,7 +57,6 @@ class CommentModel_community {
     content = json['content'];
     userId = json['user_id'];
     userInfo = UserInfo.fromJson(json['user_info']);
-
     updateTime = json['update_time'];
     uploadTime = json['upload_time'];
     if (json['replies'] != null) {
@@ -66,6 +65,7 @@ class CommentModel_community {
           .toList();
     }
   }
+
 }
 
 class Reply {

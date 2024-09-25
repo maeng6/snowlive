@@ -1256,9 +1256,9 @@ class _FleaMarketDetailViewState extends State<FleaMarketDetailView> {
                                     child:
                                     (_fleamarketDetailViewModel.isLoading_indicator==true)
                                         ? Container(
-                                          height: 100,
+                                          height: 150,
                                           child: Column(
-                                            mainAxisAlignment: MainAxisAlignment.center,  // Column을 가운데로 정렬
+                                            mainAxisAlignment: MainAxisAlignment.start,
                                             children: [
                                               CircularProgressIndicator(
                                                 strokeWidth: 4.0
@@ -2001,17 +2001,9 @@ class _FleaMarketDetailViewState extends State<FleaMarketDetailView> {
                                             "user_id": _userViewModel.user.user_id,
                                             "secret": "${_fleamarketDetailViewModel.isSecret}"
                                           });
-                                          await _fleamarketDetailViewModel.fetchFleamarketComments(
-                                              fleaId: _fleamarketDetailViewModel.fleamarketDetail.fleaId!,
-                                              userId: _userViewModel.user.user_id,
-                                            isLoading_indi: true,
-                                          );
                                           _fleamarketDetailViewModel.textEditingController.clear();
                                           FocusScope.of(context).unfocus();
-                                          _scrollController.jumpTo(
-                                            _scrollController.position.maxScrollExtent,
-                                          );
-
+                                          _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
                                           CustomFullScreenDialog.cancelDialog();
                                         },
                                         icon: (_fleamarketDetailViewModel.isCommentButtonEnabled.value == false)

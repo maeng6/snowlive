@@ -181,7 +181,7 @@ class FleamarketCommentDetailViewModel extends GetxController {
   Future<void> uploadFleamarketReply(body) async {
     ApiResponse response = await FleamarketAPI().createReply(body);
     if(response.success)
-      // _scrollController.jumpTo(0);
+      _commentModel_flea.value = CommentModel_flea.fromJson(response.data!);
       print('답글 업로드 완료');
     if(!response.success)
       Get.snackbar('Error', '답글 업로드 실패');

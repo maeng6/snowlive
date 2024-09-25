@@ -807,9 +807,9 @@ class CommunityBulletinDetailView extends StatelessWidget {
                                             ),
                                             (_communityDetailViewModel.isLoading_indicator==true)
                                                 ? Container(
-                                              height: 100,
+                                              height: 150,
                                               child: Column(
-                                                mainAxisAlignment: MainAxisAlignment.center,  // Column을 가운데로 정렬
+                                                mainAxisAlignment: MainAxisAlignment.start,  // Column을 가운데로 정렬
                                                 children: [
                                                   Center(
                                                     child: CircularProgressIndicator(

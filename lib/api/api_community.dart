@@ -200,7 +200,7 @@ class CommunityAPI {
   // 답글 생성
   Future<ApiResponse> createReply(Map<String, dynamic> body) async {
     final response = await http.post(
-      Uri.parse('$baseUrl/replies/'),
+      Uri.parse('$baseUrl/replies/create/'),
       body: json.encode(body),
       headers: {'Content-Type': 'application/json'},
     );

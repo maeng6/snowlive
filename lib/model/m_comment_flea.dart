@@ -1,12 +1,12 @@
-class CommentResponse {
+class CommentResponse_flea {
   int? count;
   String? next;
   String? previous;
   List<CommentModel_flea>? results;
 
-  CommentResponse({this.count, this.next, this.previous, this.results});
+  CommentResponse_flea({this.count, this.next, this.previous, this.results});
 
-  CommentResponse.fromJson(Map<String, dynamic> json) {
+  CommentResponse_flea.fromJson(Map<String, dynamic> json) {
     count = json['count'];
     next = json['next'];
     previous = json['previous'];
@@ -16,6 +16,19 @@ class CommentResponse {
           .toList();
     }
   }
+
+  CommentResponse_flea.fromJson_comment(var commentList) {
+    count = 0;
+    next = '';
+    previous = '';
+    results =  (commentList as List)
+          .map((i) => CommentModel_flea.fromJson(i))
+          .toList();
+
+  }
+
+
+
 }
 
 class CommentModel_flea {
