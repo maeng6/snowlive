@@ -147,7 +147,7 @@ class FleaMarketListView_total extends StatelessWidget {
                 padding: const EdgeInsets.only(top: 12),
                 child: Column(
                   children: [
-                    //TODO: 필터
+                    //필터
                     Padding(
                       padding: EdgeInsets.only(bottom: 16),
                       child: Row(
@@ -1595,8 +1595,24 @@ class FleaMarketListView_total extends StatelessWidget {
                         ],
                       ),
                     ),
-                    //TODO: 리스트
-                    Expanded(
+                    //리스트
+                    (_fleamarketListViewModel.isLoadingList_total==true)
+                        ? Container(
+                      height: 150,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Center(
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              backgroundColor: SDSColor.snowliveWhite,
+                              color: SDSColor.snowliveBlue,
+                            ),
+                          ),
+                        ],
+                      ),
+                    )
+                    :Expanded(
                         child: (_fleamarketListViewModel.fleamarketListTotal.length == 0)
                             ? Transform.translate(
                           offset: Offset(0, -40),

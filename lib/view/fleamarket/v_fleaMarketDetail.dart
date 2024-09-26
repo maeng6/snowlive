@@ -106,7 +106,7 @@ class _FleaMarketDetailViewState extends State<FleaMarketDetailView> {
                       ? isAppBarCollapsed ? SDSColor.gray900 : SDSColor.snowliveWhite
                   : SDSColor.gray900,
                 ),
-                onTap: () {
+                onTap: () async{
                   Get.back();
                 },
               ),
@@ -125,11 +125,8 @@ class _FleaMarketDetailViewState extends State<FleaMarketDetailView> {
                             "user_id": _userViewModel.user.user_id
                           }
                       );
-                      await _fleamarketListViewModel.fetchFleamarketData_favorite(userId: _userViewModel.user.user_id, favorite_list: true);
-                      await _fleamarketListViewModel.fetchFleamarketData_total(userId: _userViewModel.user.user_id);
-                      await _fleamarketListViewModel.fetchFleamarketData_ski(userId: _userViewModel.user.user_id, categoryMain:'스키');
-                      await _fleamarketListViewModel.fetchFleamarketData_board(userId: _userViewModel.user.user_id, categoryMain:'스노보드');
-                    },
+                      await _fleamarketListViewModel.fetchAllFleamarket_afterFavorite();
+                      },
                     child:Image.asset(
                       'assets/imgs/icons/icon_flea_appbar_scrap.png',
                       scale: 4,
@@ -155,12 +152,8 @@ class _FleaMarketDetailViewState extends State<FleaMarketDetailView> {
                             "user_id": _userViewModel.user.user_id
                           }
                       );
-
-                      await _fleamarketListViewModel.fetchFleamarketData_favorite(userId: _userViewModel.user.user_id, favorite_list: true);
-                      await _fleamarketListViewModel.fetchFleamarketData_total(userId: _userViewModel.user.user_id);
-                      await _fleamarketListViewModel.fetchFleamarketData_ski(userId: _userViewModel.user.user_id, categoryMain:'스키');
-                      await _fleamarketListViewModel.fetchFleamarketData_board(userId: _userViewModel.user.user_id, categoryMain:'스노보드');
-                    },
+                      await _fleamarketListViewModel.fetchAllFleamarket_afterFavorite();
+                      },
                     child: Image.asset(
                       'assets/imgs/icons/icon_flea_appbar_scrap_on.png',
                       scale: 4,
@@ -1261,7 +1254,9 @@ class _FleaMarketDetailViewState extends State<FleaMarketDetailView> {
                                             mainAxisAlignment: MainAxisAlignment.start,
                                             children: [
                                               CircularProgressIndicator(
-                                                strokeWidth: 4.0
+                                                strokeWidth: 2,
+                                                backgroundColor: SDSColor.snowliveWhite,
+                                                color: SDSColor.snowliveBlue,
                                               ),
                                             ],
                                           ),

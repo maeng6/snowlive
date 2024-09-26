@@ -133,7 +133,28 @@ class CommunityBulletinTotalListView extends StatelessWidget {
             ],
           ),
           backgroundColor: Colors.white,
-          body: RefreshIndicator(
+          body:
+          (_communityBulletinListViewModel.isLoadingList_total==true)
+              ? Container(
+            height: 150,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Center(
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    backgroundColor: SDSColor.snowliveWhite,
+                    color: SDSColor.snowliveBlue,
+                  ),
+                ),
+              ],
+            ),
+          )
+              : RefreshIndicator(
+            strokeWidth: 2,
+            edgeOffset: 20,
+            backgroundColor: SDSColor.snowliveWhite,
+            color: SDSColor.snowliveBlue,
             onRefresh: _communityBulletinListViewModel.onRefresh_bulletin_total,
             child: SingleChildScrollView(
               physics: AlwaysScrollableScrollPhysics(),
@@ -184,10 +205,11 @@ class CommunityBulletinTotalListView extends StatelessWidget {
                               onTap: () async {
                                 _communityDetailViewModel.fetchCommunityDetailFromList(community: _communityBulletinListViewModel.communityList_total[index]);
                                 Get.toNamed(AppRoutes.bulletinDetail);
-                                await _communityDetailViewModel.fetchCommunityComments(
-                                    communityId: _communityBulletinListViewModel.communityList_total[index].communityId!,
-                                    userId: _userViewModel.user.user_id,
-                                    isLoading_indi: true);
+                                await _communityDetailViewModel.addViewerCommunity(
+                                    _communityDetailViewModel.communityDetail.communityId!,
+                                    {
+                                  "user_id":_userViewModel.user.user_id.toString()
+                                });
                               },
                               child: Obx(() => Column(
                                 children: [

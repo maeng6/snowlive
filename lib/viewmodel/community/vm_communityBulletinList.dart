@@ -40,6 +40,11 @@ class CommunityBulletinListViewModel extends GetxController {
   RxBool _isVisible_room = false.obs;
   RxBool _isVisible_crew = false.obs;
 
+  RxBool _isLoadingList_total = false.obs;
+  RxBool _isLoadingList_free = false.obs;
+  RxBool _isLoadingList_room = false.obs;
+  RxBool _isLoadingList_crew = false.obs;
+
   String get nextPageUrlTotal => _nextPageUrl_total.value;
   String get nextPageUrlFree => _nextPageUrl_free.value;
   String get nextPageUrlRoom => _nextPageUrl_room.value;
@@ -60,6 +65,11 @@ class CommunityBulletinListViewModel extends GetxController {
   bool get isVisible_room  => _isVisible_room .value;
   bool get isVisible_crew  => _isVisible_crew .value;
 
+  bool get isLoadingList_total => _isLoadingList_total .value;
+  bool get isLoadingList_free  => _isLoadingList_free .value;
+  bool get isLoadingList_room  => _isLoadingList_room .value;
+  bool get isLoadingList_crew  => _isLoadingList_crew .value;
+
   String get tapName => _tapName.value;
   String get chipName => _chipName.value;
 
@@ -73,11 +83,7 @@ class CommunityBulletinListViewModel extends GetxController {
   @override
   void onInit() async {
     super.onInit();
-    await fetchCommunityList_total(userId: _userViewModel.user.user_id,categoryMain: '게시판');
-    await fetchCommunityList_free(userId: _userViewModel.user.user_id, categoryMain:'게시판', categorySub: Community_Category_sub_bulletin.free.korean);
-    await fetchCommunityList_room(userId: _userViewModel.user.user_id, categoryMain:'게시판',categorySub: Community_Category_sub_bulletin.room.korean);
-    await fetchCommunityList_crew(userId: _userViewModel.user.user_id, categoryMain:'게시판',categorySub: Community_Category_sub_bulletin.crew.korean);
-
+    await fetchAllCommunity();
     scrollController_total = ScrollController()
       ..addListener(_scrollListener_total);
     scrollController_free = ScrollController()
@@ -87,6 +93,21 @@ class CommunityBulletinListViewModel extends GetxController {
     scrollController_crew = ScrollController()
       ..addListener(_scrollListener_crew);
 
+  }
+
+  Future<void> fetchAllCommunity() async{
+    _isLoadingList_total.value = true;
+    _isLoadingList_free.value = true;
+    _isLoadingList_room.value = true;
+    _isLoadingList_crew.value = true;
+    await fetchCommunityList_total(userId: _userViewModel.user.user_id,categoryMain: '게시판');
+    _isLoadingList_total.value = false;
+    await fetchCommunityList_free(userId: _userViewModel.user.user_id, categoryMain:'게시판', categorySub: Community_Category_sub_bulletin.free.korean);
+    _isLoadingList_free.value = false;
+    await fetchCommunityList_room(userId: _userViewModel.user.user_id, categoryMain:'게시판',categorySub: Community_Category_sub_bulletin.room.korean);
+    _isLoadingList_room.value = false;
+    await fetchCommunityList_crew(userId: _userViewModel.user.user_id, categoryMain:'게시판',categorySub: Community_Category_sub_bulletin.crew.korean);
+    _isLoadingList_crew.value = false;
   }
 
   Future<void> _scrollListener_total() async {
@@ -176,7 +197,6 @@ class CommunityBulletinListViewModel extends GetxController {
     int? userId,
     String? url,  // URL을 추가
   }) async {
-    isLoading.value = true;
     try {
       final response = await CommunityAPI().fetchCommunityList(
         categoryMain: categoryMain,
@@ -209,7 +229,7 @@ class CommunityBulletinListViewModel extends GetxController {
     } catch (e) {
       print('Error fetching community list: $e');
     } finally {
-      isLoading.value = false;
+      _isLoadingList_total.value = false;
     }
   }
 
@@ -222,7 +242,7 @@ class CommunityBulletinListViewModel extends GetxController {
     int? userId,
     String? url,  // URL을 추가
   }) async {
-    isLoading.value = true;
+    _isLoadingList_free.value = true;
     try {
       final response = await CommunityAPI().fetchCommunityList(
         categoryMain: categoryMain,
@@ -253,7 +273,7 @@ class CommunityBulletinListViewModel extends GetxController {
     } catch (e) {
       print('Error fetching community list: $e');
     } finally {
-      isLoading.value = false;
+      _isLoadingList_free.value = false;
     }
   }
 
@@ -266,7 +286,7 @@ class CommunityBulletinListViewModel extends GetxController {
     int? userId,
     String? url,  // URL을 추가
   }) async {
-    isLoading.value = true;
+    _isLoadingList_room.value = true;
     try {
       final response = await CommunityAPI().fetchCommunityList(
         categoryMain: categoryMain,
@@ -297,7 +317,7 @@ class CommunityBulletinListViewModel extends GetxController {
     } catch (e) {
       print('Error fetching community list: $e');
     } finally {
-      isLoading.value = false;
+      _isLoadingList_room.value = false;
     }
   }
 
@@ -310,7 +330,7 @@ class CommunityBulletinListViewModel extends GetxController {
     int? userId,
     String? url,  // URL을 추가
   }) async {
-    isLoading.value = true;
+    _isLoadingList_crew.value = true;
     try {
       final response = await CommunityAPI().fetchCommunityList(
         categoryMain: categoryMain,
@@ -341,7 +361,7 @@ class CommunityBulletinListViewModel extends GetxController {
     } catch (e) {
       print('Error fetching community list: $e');
     } finally {
-      isLoading.value = false;
+      _isLoadingList_crew.value = false;
     }
   }
 

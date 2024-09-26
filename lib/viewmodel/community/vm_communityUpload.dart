@@ -24,6 +24,8 @@ class CommunityUploadViewModel extends GetxController {
   Rx<GlobalKey<FormState>> _formKey = GlobalKey<FormState>().obs;
   ImageController imageController = Get.put(ImageController());
 
+  RxBool _isTitleWritten = false.obs;
+
   String get selectedCategoryMain => _selectedCategoryMain.value;
   String get selectedCategorySub => _selectedCategorySub.value;
   int get pk => _pk.value;
@@ -33,6 +35,8 @@ class CommunityUploadViewModel extends GetxController {
   FocusNode get focusNode => _focusNode.value;
   ScrollController get scrollController => _scrollController.value;
   GlobalKey<FormState> get formKey => _formKey.value;
+
+  bool get isTitleWritten => _isTitleWritten.value;
 
   @override
   void onInit() {
@@ -146,6 +150,11 @@ class CommunityUploadViewModel extends GetxController {
     // 이미지가 없으면 null 반환
     return null;
   }
+
+  void changeTitleWritten(bool boolean) {
+    _isTitleWritten.value = boolean;
+  }
+
 
 
 

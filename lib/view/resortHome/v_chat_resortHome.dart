@@ -9,6 +9,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class ChatScreen extends StatelessWidget {
   final ChatViewModel _chatViewModel = Get.find<ChatViewModel>();
   final ScrollController _scrollController = ScrollController();
+  FocusNode textFocus = FocusNode();
 
   void _scrollToBottom() {
     if (_scrollController.hasClients) {
@@ -27,6 +28,7 @@ class ChatScreen extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         FocusScope.of(context).unfocus();
+        textFocus.unfocus();
       },
       child: Scaffold(
         backgroundColor: SDSColor.snowliveWhite,
@@ -111,7 +113,9 @@ class ChatScreen extends StatelessWidget {
                                                       ),
                                                       onTap: () async{
                                                         Navigator.pop(context);
-                                                        await _chatViewModel.reportMessage(chatDoc['chatId']);                                                        print(chatDoc['chatId']);
+                                                        await _chatViewModel.reportMessage(chatDoc['chatId']);
+                                                        FocusScope.of(context).unfocus();
+                                                        textFocus.unfocus();
                                                       },
                                                     ),
                                                   ),
@@ -141,11 +145,14 @@ class ChatScreen extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: TextFormField(
+                    focusNode: textFocus,
                     controller: _chatViewModel.chatController,
                     cursorColor: SDSColor.snowliveBlue,
                     cursorHeight: 16,
                     cursorWidth: 2,
                     style: SDSTextStyle.regular.copyWith(fontSize: 15),
+                    textInputAction: TextInputAction.newline,
+                    maxLines: null,
                     decoration: InputDecoration(
                       errorMaxLines: 2,
                       errorStyle: SDSTextStyle.regular.copyWith(fontSize: 12, color: SDSColor.red),
@@ -194,12 +201,12 @@ class ChatScreen extends StatelessWidget {
                             : null,
                       ),
                     ),
-                    onFieldSubmitted: (value) {
-                      _chatViewModel.sendMessage(_chatViewModel.chatController.text);
-                      _chatViewModel.chatController.clear();
-                      _chatViewModel.isButtonEnabled.value = false;
-                      _scrollToBottom();
-                    },
+                    // onFieldSubmitted: (value) {
+                    //   _chatViewModel.sendMessage(_chatViewModel.chatController.text);
+                    //   _chatViewModel.chatController.clear();
+                    //   _chatViewModel.isButtonEnabled.value = false;
+                    //   _scrollToBottom();
+                    // },
                   ),
                 ),
               ],

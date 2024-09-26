@@ -1582,6 +1582,23 @@ class FleaMarketListView_board extends StatelessWidget {
                     ),
                   ),
                   //TODO: 리스트
+                  (_fleamarketListViewModel.isLoadingList_board==true)
+                      ? Container(
+                    height: 150,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Center(
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            backgroundColor: SDSColor.snowliveWhite,
+                            color: SDSColor.snowliveBlue,
+                          ),
+                        ),
+                      ],
+                    ),
+                  )
+                      :
                   Expanded(
                       child: (_fleamarketListViewModel.fleamarketListBoard.length == 0)
                           ? Transform.translate(

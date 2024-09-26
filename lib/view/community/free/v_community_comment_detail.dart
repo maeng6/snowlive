@@ -97,7 +97,9 @@ class CommunityCommentDetailView extends StatelessWidget {
                                             borderRadius: BorderRadius.circular(50)
                                         ),
                                         child: ExtendedImage.network(
-                                        '${_communityCommentDetailViewModel.commentModel_community.userInfo!.profileImageUrlUser}',
+                                          (_communityCommentDetailViewModel.commentModel_community.userInfo!.profileImageUrlUser!=null)
+                                        ?'${_communityCommentDetailViewModel.commentModel_community.userInfo!.profileImageUrlUser}'
+                                          : '${profileImgUrlList[0].default_round}',
                                           cache: true,
                                           shape: BoxShape.circle,
                                           borderRadius:

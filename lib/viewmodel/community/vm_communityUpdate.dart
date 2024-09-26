@@ -27,6 +27,7 @@ class CommunityUpdateViewModel extends GetxController {
   RxBool _isCategorySelected = true.obs;
   Rx<GlobalKey<FormState>> _formKey = GlobalKey<FormState>().obs;
   Rx<ScrollController> _scrollController = ScrollController().obs;
+  RxBool _isTitleWritten = false.obs;
 
   String get selectedCategoryMain => _selectedCategoryMain.value;
   String get selectedCategorySub => _selectedCategorySub.value;
@@ -36,6 +37,7 @@ class CommunityUpdateViewModel extends GetxController {
   bool get isReadOnly => _isReadOnly.value;
   FocusNode get focusNode => _focusNode.value;
   ScrollController get scrollController => _scrollController.value;
+  bool get isTitleWritten => _isTitleWritten.value;
 
   Future<void> fetchCommunityUpdateData({
     required String textEditingController_title,
@@ -141,6 +143,11 @@ class CommunityUpdateViewModel extends GetxController {
     // 이미지가 없으면 null 반환
     return null;
   }
+
+  void changeTitleWritten(bool boolean) {
+    _isTitleWritten.value = boolean;
+  }
+
 
 
 
