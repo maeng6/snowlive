@@ -14,6 +14,8 @@ class SearchFriendView extends StatelessWidget {
   final FriendListViewModel _friendListViewModel = Get.find<FriendListViewModel>();
   final FriendDetailViewModel _friendDetailViewModel = Get.find<FriendDetailViewModel>();
   final UserViewModel _userViewModel = Get.find<UserViewModel>();
+  FocusNode textFocus = FocusNode();
+
 
   @override
   Widget build(BuildContext context) {
@@ -22,6 +24,7 @@ class SearchFriendView extends StatelessWidget {
 
     return GestureDetector(
       onTap: () {
+        textFocus.unfocus();
         FocusScope.of(context).unfocus();
       },
       child: Container(
@@ -87,6 +90,7 @@ class SearchFriendView extends StatelessWidget {
                                             borderRadius: BorderRadius.circular(6),
                                           ),
                                           child: TextFormField(
+                                            focusNode: textFocus,
                                             onFieldSubmitted: (val) async {
 
                                               if(val.isNotEmpty){
@@ -96,7 +100,6 @@ class SearchFriendView extends StatelessWidget {
                                               }
 
                                             },
-                                            autofocus: true,
                                             textAlignVertical: TextAlignVertical.center,
                                             cursorColor: SDSColor.snowliveBlue,
                                             cursorHeight: 16,
@@ -336,6 +339,7 @@ class SearchFriendView extends StatelessWidget {
                                         height: 36,
                                         child: ElevatedButton(
                                           onPressed: () async {
+                                            textFocus.unfocus();
                                             CustomFullScreenDialog.showDialog();
                                             await _friendDetailViewModel.fetchFriendDetailInfo(
                                               userId: _userViewModel.user.user_id,
@@ -374,7 +378,9 @@ class SearchFriendView extends StatelessWidget {
                         ],
                       ),
                     ),
-                    (_friendListViewModel.searchFriend.userId != _userViewModel.user.user_id && _friendListViewModel.searchFriendSuccess == true)
+                    (_friendListViewModel.searchFriend.userId != _userViewModel.user.user_id
+                        && _friendListViewModel.searchFriend.userId != null
+                    )
                         ? Positioned(
                       bottom: 0,
                       left: 0,
@@ -384,6 +390,7 @@ class SearchFriendView extends StatelessWidget {
                         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
                         child: ElevatedButton(
                           onPressed: () async {
+                            textFocus.unfocus();
                             Get.dialog(
                                 AlertDialog(
                                   backgroundColor: SDSColor.snowliveWhite,

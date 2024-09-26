@@ -84,106 +84,115 @@ class RankingCrewView extends StatelessWidget {
                             child: Obx(() => Padding(
                               padding: const EdgeInsets.only(top: 10, bottom: 8),
                               child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.start, // Adjust as necessary
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
-                                  Column(
-                                    children: [
-                                      //크루로고이미지
-                                      Container(
-                                        height: 76,
-                                        width: 76,
-                                        decoration: BoxDecoration(
-                                          color: Color(0xFFF0F6FF),
-                                          borderRadius: BorderRadius.circular(16),
-                                        ),
-                                        padding: EdgeInsets.all(20),
-                                        child: Transform.translate(
-                                          offset: Offset(0, 0),
-                                          child: ExtendedImage.network(
-                                            '${_rankingListViewModel.rankingListCrewMy_view!.crewLogoUrl
-                                                ?? crewDefaultLogoUrl['${_rankingListViewModel.rankingListCrewMy_view!.color}']}',
-                                            enableMemoryCache: true,
-                                            cacheWidth: 300,
-                                            shape: BoxShape.rectangle,
-                                            borderRadius: BorderRadius.circular(4),
-                                            fit: BoxFit.cover,
+                                  Flexible(
+                                    flex: 3, // Adjust the flex ratio for the logo container
+                                    child: Column(
+                                      children: [
+                                        Container(
+                                          decoration: BoxDecoration(
+                                            color: Color(0xFFF0F6FF),
+                                            borderRadius: BorderRadius.circular(16),
+                                          ),
+                                          padding: EdgeInsets.all(20),
+                                          child: Transform.translate(
+                                            offset: Offset(0, 0),
+                                            child: ExtendedImage.network(
+                                              '${_rankingListViewModel.rankingListCrewMy_view!.crewLogoUrl
+                                                  ?? crewDefaultLogoUrl['${_rankingListViewModel.rankingListCrewMy_view!.color}']}',
+                                              enableMemoryCache: true,
+                                              cacheWidth: 300,
+                                              shape: BoxShape.rectangle,
+                                              borderRadius: BorderRadius.circular(4),
+                                              fit: BoxFit.cover,
+                                            ),
                                           ),
                                         ),
-                                      ),
-                                      //크루네임
-                                      Padding(
-                                        padding: const EdgeInsets.only(top: 5),
-                                        child: Text(_rankingListViewModel.rankingListCrewMy_view!.crewName??'',
-                                          maxLines: 1,
-                                          overflow: TextOverflow.ellipsis,
-                                          style: SDSTextStyle.regular.copyWith(
+                                        Padding(
+                                          padding: const EdgeInsets.only(top: 5),
+                                          child: Text(
+                                            _rankingListViewModel.rankingListCrewMy_view!.crewName ?? '',
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: SDSTextStyle.regular.copyWith(
                                               fontSize: 14,
-                                              color: Color(0xFF111111)
+                                              color: Color(0xFF111111),
+                                            ),
                                           ),
                                         ),
-                                      ),
-                                    ],
+                                      ],
+                                    ),
                                   ),
                                   Container(
-                                    width: 10,
+                                    width: 10, // Spacer between the two containers
                                   ),
-                                  Expanded(
+                                  Flexible(
+                                    flex: 9, // Adjust the flex ratio for the score/ranking container
                                     child: Container(
-                                      height: 100,
                                       decoration: BoxDecoration(
                                         color: Color(0xFFF5F2F7),
                                         borderRadius: BorderRadius.circular(16),
                                       ),
                                       padding: EdgeInsets.symmetric(horizontal: 6, vertical: 19),
-                                      child: Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                         children: [
-                                          Column(
+                                          Text(_rankingListViewModel.myBox_title),
+                                          SizedBox(height: 5),
+                                          Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                             children: [
-                                              Text(
-                                                (_rankingListViewModel.resortOrTotal == '개별스키장')
-                                                    ? '${_rankingListViewModel.rankingListCrewMy_view!.resortTotalScore??'-'}'
-                                                    : '${_rankingListViewModel.rankingListCrewMy_view!.overallTotalScore??'-'}',
-                                                style: SDSTextStyle.bold.copyWith(
-                                                  color: Color(0xFF111111),
-                                                  fontSize: 15,
-                                                ),
-                                              ),
-                                              Padding(
-                                                padding: const EdgeInsets.only(top: 3),
-                                                child: Text(_rankingListViewModel.myBox_score,
-                                                  style: SDSTextStyle.regular.copyWith(
-                                                    color: Color(0xFF111111).withOpacity(0.5),
-                                                    fontSize: 13,
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                          buildVerticalDivider_ranking_indi_Screen(),
-                                          Container(
-                                            child: Column(
-                                              children: [
-                                                Text((_rankingListViewModel.resortOrTotal == '개별스키장')
-                                                    ? '${_rankingListViewModel.rankingListCrewMy_view!.resortRank??'-'}'
-                                                    : '${_rankingListViewModel.rankingListCrewMy_view!.overallRank??'-'}',
-                                                  style: SDSTextStyle.bold.copyWith(
-                                                    color: Color(0xFF111111),
-                                                    fontSize: 15,
-                                                  ),
-                                                ),
-                                                Padding(
-                                                  padding: const EdgeInsets.only(top: 3),
-                                                  child: Text(_rankingListViewModel.myBox_ranking,
-                                                    style: SDSTextStyle.regular.copyWith(
-                                                      color: Color(0xFF111111).withOpacity(0.5),
-                                                      fontSize: 13,
+                                              Column(
+                                                children: [
+                                                  Text(
+                                                    (_rankingListViewModel.resortOrTotal == '개별스키장')
+                                                        ? '${_rankingListViewModel.rankingListCrewMy_view!.resortTotalScore ?? '-'}'
+                                                        : '${_rankingListViewModel.rankingListCrewMy_view!.overallTotalScore ?? '-'}',
+                                                    style: SDSTextStyle.bold.copyWith(
+                                                      color: Color(0xFF111111),
+                                                      fontSize: 15,
                                                     ),
                                                   ),
-                                                ),
-                                              ],
-                                            ),
+                                                  Padding(
+                                                    padding: const EdgeInsets.only(top: 3),
+                                                    child: Text(
+                                                      _rankingListViewModel.myBox_score,
+                                                      style: SDSTextStyle.regular.copyWith(
+                                                        color: Color(0xFF111111).withOpacity(0.5),
+                                                        fontSize: 13,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                              buildVerticalDivider_ranking_indi_Screen(),
+                                              Column(
+                                                children: [
+                                                  Text(
+                                                    (_rankingListViewModel.resortOrTotal == '개별스키장')
+                                                        ? '${_rankingListViewModel.rankingListCrewMy_view!.resortRank ?? '-'}'
+                                                        : '${_rankingListViewModel.rankingListCrewMy_view!.overallRank ?? '-'}',
+                                                    style: SDSTextStyle.bold.copyWith(
+                                                      color: Color(0xFF111111),
+                                                      fontSize: 15,
+                                                    ),
+                                                  ),
+                                                  Padding(
+                                                    padding: const EdgeInsets.only(top: 3),
+                                                    child: Text(
+                                                      _rankingListViewModel.myBox_ranking,
+                                                      style: SDSTextStyle.regular.copyWith(
+                                                        color: Color(0xFF111111).withOpacity(0.5),
+                                                        fontSize: 13,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ],
                                           ),
                                         ],
                                       ),
@@ -192,6 +201,7 @@ class RankingCrewView extends StatelessWidget {
                                 ],
                               ),
                             )
+
                             ),
                           ),
                         //필터

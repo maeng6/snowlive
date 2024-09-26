@@ -130,6 +130,7 @@ class FriendListView extends StatelessWidget {
               child: GestureDetector(
                 onTap: () async {
                   await _friendListViewModel.resetSearchFriend();
+                  _friendListViewModel.setSearchFriendSuccess(false);
                   Get.toNamed(AppRoutes.searchFriend);
                 },
                 child: Padding(
@@ -184,87 +185,87 @@ class FriendListView extends StatelessWidget {
                       children: [
                         (_userViewModel.user.profile_image_url_user != '')
                             ? Stack(
-                              children: [
-                                Container(
-                                  width: 56,
-                                  height: 56,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(100),
-                                    border: (_userViewModel.user.within_boundary == true &&
-                                        _userViewModel.user.reveal_wb == true)
-                                        ? Border.all(
-                                      color: SDSColor.snowliveBlue,
-                                      width: 2,
-                                    )
-                                        : Border.all(
-                                      color: SDSColor.gray100,
-                                      width: 1,
-                                    ),
-                                  ),
-                                  child: ExtendedImage.network(
+                          children: [
+                            Container(
+                              width: 56,
+                              height: 56,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(100),
+                                border: (_userViewModel.user.within_boundary == true &&
+                                    _userViewModel.user.reveal_wb == true)
+                                    ? Border.all(
+                                  color: SDSColor.snowliveBlue,
+                                  width: 2,
+                                )
+                                    : Border.all(
+                                  color: SDSColor.gray100,
+                                  width: 1,
+                                ),
+                              ),
+                              child: ExtendedImage.network(
                                 _userViewModel.user.profile_image_url_user,
                                 shape: BoxShape.circle,
                                 width: 56,
                                 height: 56,
                                 fit: BoxFit.cover,
+                              ),
+                            ),
+                            if (_userViewModel.user.within_boundary == true &&
+                                _userViewModel.user.reveal_wb == true)
+                              Positioned(
+                                right: 0,
+                                bottom: 0,
+                                left: 0,
+                                child: Center(
+                                  child: Image.asset(
+                                    'assets/imgs/icons/icon_badge_live.png',
+                                    width: 34,
                                   ),
                                 ),
-                                if (_userViewModel.user.within_boundary == true &&
-                                    _userViewModel.user.reveal_wb == true)
-                                  Positioned(
-                                    right: 0,
-                                    bottom: 0,
-                                    left: 0,
-                                    child: Center(
-                                      child: Image.asset(
-                                        'assets/imgs/icons/icon_badge_live.png',
-                                        width: 34,
-                                      ),
-                                    ),
-                                  ),
-                              ],
-                            )
+                              ),
+                          ],
+                        )
                             : Stack(
-                              children: [
-                                Container(
-                                  width: 56,
-                                  height: 56,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(100),
-                                    border: (_userViewModel.user.within_boundary == true &&
-                                        _userViewModel.user.reveal_wb == true)
-                                        ? Border.all(
-                                      color: SDSColor.snowliveBlue,
-                                      width: 2,
-                                    )
-                                        : Border.all(
-                                      color: SDSColor.gray100,
-                                      width: 1,
-                                    ),
-                                  ),
-                                  child: ExtendedImage.asset(
+                          children: [
+                            Container(
+                              width: 56,
+                              height: 56,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(100),
+                                border: (_userViewModel.user.within_boundary == true &&
+                                    _userViewModel.user.reveal_wb == true)
+                                    ? Border.all(
+                                  color: SDSColor.snowliveBlue,
+                                  width: 2,
+                                )
+                                    : Border.all(
+                                  color: SDSColor.gray100,
+                                  width: 1,
+                                ),
+                              ),
+                              child: ExtendedImage.asset(
                                 'assets/imgs/profile/img_profile_default_circle.png',
                                 shape: BoxShape.circle,
                                 width: 56,
                                 height: 56,
                                 fit: BoxFit.cover,
+                              ),
+                            ),
+                            if (_userViewModel.user.within_boundary == true &&
+                                _userViewModel.user.reveal_wb == true)
+                              Positioned(
+                                right: 0,
+                                bottom: 0,
+                                left: 0,
+                                child: Center(
+                                  child: Image.asset(
+                                    'assets/imgs/icons/icon_badge_live.png',
+                                    width: 34,
                                   ),
                                 ),
-                                if (_userViewModel.user.within_boundary == true &&
-                                    _userViewModel.user.reveal_wb == true)
-                                  Positioned(
-                                    right: 0,
-                                    bottom: 0,
-                                    left: 0,
-                                    child: Center(
-                                      child: Image.asset(
-                                        'assets/imgs/icons/icon_badge_live.png',
-                                        width: 34,
-                                      ),
-                                    ),
-                                  ),
-                              ],
-                            ),
+                              ),
+                          ],
+                        ),
                         Padding(
                           padding: const EdgeInsets.only(left: 10),
                           child: Container(
@@ -403,87 +404,87 @@ class FriendListView extends StatelessWidget {
                                     children: [
                                       (friend.friendInfo.profileImageUrlUser.isNotEmpty)
                                           ? Stack(
-                                            children: [
-                                              Container(
-                                                width: 48,
-                                                height: 48,
-                                                decoration: BoxDecoration(
-                                                  borderRadius: BorderRadius.circular(100),
-                                                  border: (friend.friendInfo.withinBoundary == true &&
-                                                      friend.friendInfo.revealWb == true)
-                                                      ? Border.all(
-                                                    color: SDSColor.snowliveBlue,
-                                                    width: 2,
-                                                  )
-                                                      : Border.all(
-                                                    color: SDSColor.gray100,
-                                                    width: 1,
-                                                  ),
-                                                ),
-                                                child: ExtendedImage.network(
+                                        children: [
+                                          Container(
+                                            width: 48,
+                                            height: 48,
+                                            decoration: BoxDecoration(
+                                              borderRadius: BorderRadius.circular(100),
+                                              border: (friend.friendInfo.withinBoundary == true &&
+                                                  friend.friendInfo.revealWb == true)
+                                                  ? Border.all(
+                                                color: SDSColor.snowliveBlue,
+                                                width: 2,
+                                              )
+                                                  : Border.all(
+                                                color: SDSColor.gray100,
+                                                width: 1,
+                                              ),
+                                            ),
+                                            child: ExtendedImage.network(
                                               friend.friendInfo.profileImageUrlUser,
                                               shape: BoxShape.circle,
                                               width: 48,
                                               height: 48,
                                               fit: BoxFit.cover,
+                                            ),
+                                          ),
+                                          if (friend.friendInfo.withinBoundary == true &&
+                                              friend.friendInfo.revealWb == true)
+                                            Positioned(
+                                              right: 0,
+                                              bottom: 0,
+                                              left: 0,
+                                              child: Center(
+                                                child: Image.asset(
+                                                  'assets/imgs/icons/icon_badge_live.png',
+                                                  width: 34,
                                                 ),
                                               ),
-                                              if (friend.friendInfo.withinBoundary == true &&
-                                                  friend.friendInfo.revealWb == true)
-                                                Positioned(
-                                                  right: 0,
-                                                  bottom: 0,
-                                                  left: 0,
-                                                  child: Center(
-                                                    child: Image.asset(
-                                                      'assets/imgs/icons/icon_badge_live.png',
-                                                      width: 34,
-                                                    ),
-                                                  ),
-                                                ),
-                                            ],
-                                          )
+                                            ),
+                                        ],
+                                      )
                                           : Stack(
-                                            children: [
-                                              Container(
-                                                width: 48,
-                                                height: 48,
-                                                decoration: BoxDecoration(
-                                                  borderRadius: BorderRadius.circular(100),
-                                                  border: (friend.friendInfo.withinBoundary == true &&
-                                                      friend.friendInfo.revealWb == true)
-                                                      ? Border.all(
-                                                    color: SDSColor.snowliveBlue,
-                                                    width: 2,
-                                                  )
-                                                      : Border.all(
-                                                    color: SDSColor.gray100,
-                                                    width: 1,
-                                                  ),
-                                                ),
-                                                child: ExtendedImage.asset(
+                                        children: [
+                                          Container(
+                                            width: 48,
+                                            height: 48,
+                                            decoration: BoxDecoration(
+                                              borderRadius: BorderRadius.circular(100),
+                                              border: (friend.friendInfo.withinBoundary == true &&
+                                                  friend.friendInfo.revealWb == true)
+                                                  ? Border.all(
+                                                color: SDSColor.snowliveBlue,
+                                                width: 2,
+                                              )
+                                                  : Border.all(
+                                                color: SDSColor.gray100,
+                                                width: 1,
+                                              ),
+                                            ),
+                                            child: ExtendedImage.asset(
                                               'assets/imgs/profile/img_profile_default_circle.png',
                                               shape: BoxShape.circle,
                                               width: 48,
                                               height: 48,
                                               fit: BoxFit.cover,
+                                            ),
+                                          ),
+                                          if (friend.friendInfo.withinBoundary == true &&
+                                              friend.friendInfo.revealWb == true)
+                                            Positioned(
+                                              right: 0,
+                                              bottom: 0,
+                                              left: 0,
+                                              child: Center(
+                                                child: Image.asset(
+                                                  'assets/imgs/icons/icon_badge_live.png',
+                                                  width: 34,
                                                 ),
                                               ),
-                                              if (friend.friendInfo.withinBoundary == true &&
-                                                  friend.friendInfo.revealWb == true)
-                                                Positioned(
-                                                  right: 0,
-                                                  bottom: 0,
-                                                  left: 0,
-                                                  child: Center(
-                                                    child: Image.asset(
-                                                      'assets/imgs/icons/icon_badge_live.png',
-                                                      width: 34,
-                                                    ),
-                                                  ),
-                                                ),
-                                            ],
-                                          ),
+                                            ),
+                                        ],
+                                      ),
                                       Padding(
                                         padding: const EdgeInsets.only(left: 10),
                                         child: Container(

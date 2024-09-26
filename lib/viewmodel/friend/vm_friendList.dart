@@ -138,7 +138,9 @@ class FriendListViewModel extends GetxController {
   }
 
 
-
+  void setSearchFriendSuccess(bool value) {
+    _searchFriendSuccess.value = value;
+  }
 
 
 }

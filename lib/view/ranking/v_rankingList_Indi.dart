@@ -75,88 +75,94 @@ class RankingIndiView extends StatelessWidget {
                         child: Obx(() => Padding(
                           padding: const EdgeInsets.only(top: 10, bottom: 8),
                           child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.start, // Adjust the alignment as needed
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
-                              if(_rankingListViewModel.resortOrTotal=='전체스키장' && _rankingListViewModel.dayOrTotal=='누적')
-                                Container(
-                                  height: 76,
-                                  width: 76,
-                                  decoration: BoxDecoration(
-                                    color: Color(0xFFF0F6FF),
-                                    borderRadius: BorderRadius.circular(16),
-                                  ),
-                                  padding: EdgeInsets.all(18),
-                                  child: Transform.translate(
-                                    offset: Offset(0, 0),
-                                    child: ExtendedImage.network(
-                                      '${_rankingListViewModel.rankingListIndivMy_view!.overallTierIconUrl
-                                          ??'https://i.esdrop.com/d/f/yytYSNBROy/6rPYflzCCZ.png'}',
-                                      enableMemoryCache: true,
-                                      fit: BoxFit.cover,
+                              if (_rankingListViewModel.resortOrTotal == '전체스키장' && _rankingListViewModel.dayOrTotal == '누적')
+                                Flexible(
+                                  flex: 3, // Adjust the flex ratio as needed
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      color: Color(0xFFF0F6FF),
+                                      borderRadius: BorderRadius.circular(16),
+                                    ),
+                                    padding: EdgeInsets.all(18),
+                                    child: Transform.translate(
+                                      offset: Offset(0, 0),
+                                      child: ExtendedImage.network(
+                                        '${_rankingListViewModel.rankingListIndivMy_view?.overallTierIconUrl ?? '등급 없음'}',
+                                        enableMemoryCache: true,
+                                        fit: BoxFit.cover,
+                                      ),
                                     ),
                                   ),
                                 ),
-                              Container(
-                                width: 10,
-                              ),
-                              Expanded(
+                              SizedBox(width: 10), // Spacer between the two containers
+                              Flexible(
+                                flex: 7, // Adjust the flex ratio as needed
                                 child: Container(
-                                  height: 100,
                                   decoration: BoxDecoration(
                                     color: Color(0xFFF5F2F7),
                                     borderRadius: BorderRadius.circular(16),
                                   ),
                                   padding: EdgeInsets.symmetric(horizontal: 6, vertical: 19),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
-                                      Column(
+                                      Text(_rankingListViewModel.myBox_title),
+                                      SizedBox(height: 5),
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                         children: [
-                                          Text(
-                                            (_rankingListViewModel.resortOrTotal == '개별스키장')
-                                                ? '${_rankingListViewModel.rankingListIndivMy_view!.resortTotalScore??'-'}'
-                                                : '${_rankingListViewModel.rankingListIndivMy_view!.overallTotalScore??'-'}',
-                                            style: SDSTextStyle.bold.copyWith(
-                                              color: Color(0xFF111111),
-                                              fontSize: 15,
-                                            ),
-                                          ),
-                                          Padding(
-                                            padding: const EdgeInsets.only(top: 3),
-                                            child: Text(_rankingListViewModel.myBox_score,
-                                              style: SDSTextStyle.regular.copyWith(
-                                                color: Color(0xFF111111).withOpacity(0.5),
-                                                fontSize: 13,
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      buildVerticalDivider_ranking_indi_Screen(),
-                                      Container(
-                                        child: Column(
-                                          children: [
-                                            Text(
-                                              (_rankingListViewModel.resortOrTotal == '개별스키장')
-                                                  ? '${_rankingListViewModel.rankingListIndivMy_view!.resortRank??'-'}'
-                                                  : '${_rankingListViewModel.rankingListIndivMy_view!.overallRank??'-'}',
-                                              style: SDSTextStyle.bold.copyWith(
-                                                color: Color(0xFF111111),
-                                                fontSize: 15,
-                                              ),
-                                            ),
-                                            Padding(
-                                              padding: const EdgeInsets.only(top: 3),
-                                              child: Text(_rankingListViewModel.myBox_ranking,
-                                                style: SDSTextStyle.regular.copyWith(
-                                                  color: Color(0xFF111111).withOpacity(0.5),
-                                                  fontSize: 13,
+                                          Column(
+                                            children: [
+                                              Text(
+                                                (_rankingListViewModel.resortOrTotal == '개별스키장')
+                                                    ? '${_rankingListViewModel.rankingListIndivMy_view?.resortTotalScore ?? '-'}'
+                                                    : '${_rankingListViewModel.rankingListIndivMy_view?.overallTotalScore ?? '-'}',
+                                                style: SDSTextStyle.bold.copyWith(
+                                                  color: Color(0xFF111111),
+                                                  fontSize: 15,
                                                 ),
                                               ),
-                                            ),
-                                          ],
-                                        ),
+                                              Padding(
+                                                padding: const EdgeInsets.only(top: 3),
+                                                child: Text(
+                                                  _rankingListViewModel.myBox_score,
+                                                  style: SDSTextStyle.regular.copyWith(
+                                                    color: Color(0xFF111111).withOpacity(0.5),
+                                                    fontSize: 13,
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          buildVerticalDivider_ranking_indi_Screen(),
+                                          Column(
+                                            children: [
+                                              Text(
+                                                (_rankingListViewModel.resortOrTotal == '개별스키장')
+                                                    ? '${_rankingListViewModel.rankingListIndivMy_view?.resortRank ?? '-'}'
+                                                    : '${_rankingListViewModel.rankingListIndivMy_view?.overallRank ?? '-'}',
+                                                style: SDSTextStyle.bold.copyWith(
+                                                  color: Color(0xFF111111),
+                                                  fontSize: 15,
+                                                ),
+                                              ),
+                                              Padding(
+                                                padding: const EdgeInsets.only(top: 3),
+                                                child: Text(
+                                                  _rankingListViewModel.myBox_ranking,
+                                                  style: SDSTextStyle.regular.copyWith(
+                                                    color: Color(0xFF111111).withOpacity(0.5),
+                                                    fontSize: 13,
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
                                       ),
                                     ],
                                   ),
@@ -165,6 +171,7 @@ class RankingIndiView extends StatelessWidget {
                             ],
                           ),
                         )
+
                         ),
                       ),
                       //필터

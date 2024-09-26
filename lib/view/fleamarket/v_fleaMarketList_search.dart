@@ -17,6 +17,7 @@ class FleaMarketListView_search extends StatelessWidget {
   final UserViewModel _userViewModel = Get.find<UserViewModel>();
   final FleamarketSearchViewModel _fleamarketSearchViewModel = Get.find<FleamarketSearchViewModel>();
   final FleamarketDetailViewModel _fleamarketDetailViewModel = Get.find<FleamarketDetailViewModel>();
+  FocusNode textFocus = FocusNode();
 
   @override
   Widget build(BuildContext context) {
@@ -24,6 +25,7 @@ class FleaMarketListView_search extends StatelessWidget {
 
     return GestureDetector(
       onTap: () {
+        textFocus.unfocus();
         FocusScope.of(context).unfocus();
       },
       child: Scaffold(
@@ -78,6 +80,7 @@ class FleaMarketListView_search extends StatelessWidget {
                                   borderRadius: BorderRadius.circular(6),
                                 ),
                                 child: TextFormField(
+                                  focusNode: textFocus,
                                   onFieldSubmitted: (val) async {
                                     if (val.isNotEmpty) {
                                       _fleamarketSearchViewModel.showRecentSearch.value = false;
@@ -88,12 +91,10 @@ class FleaMarketListView_search extends StatelessWidget {
                                       await _fleamarketSearchViewModel.saveRecentSearch(_fleamarketSearchViewModel.textEditingController.text);
                                     }
                                   },
-                                  autofocus: true,
                                   textAlignVertical: TextAlignVertical.center,
                                   cursorColor: SDSColor.snowliveBlue,
                                   cursorHeight: 16,
                                   cursorWidth: 2,
-                                  autovalidateMode: AutovalidateMode.onUserInteraction,
                                   style: SDSTextStyle.regular.copyWith(fontSize: 14),
                                   controller: _fleamarketSearchViewModel.textEditingController,
                                   decoration: InputDecoration(
@@ -157,6 +158,7 @@ class FleaMarketListView_search extends StatelessWidget {
                             Expanded(child: SizedBox()),
                             GestureDetector(
                               onTap: () async {
+                                textFocus.unfocus();
                                 await _fleamarketSearchViewModel.deleteAllRecentSearches();
                               },
                               child: Text(
@@ -191,6 +193,7 @@ class FleaMarketListView_search extends StatelessWidget {
                                 String recentSearch = _fleamarketSearchViewModel.recentSearches[index];
                                 return GestureDetector(
                                   onTap: () async {
+                                    textFocus.unfocus();
                                     CustomFullScreenDialog.showDialog();
                                     _fleamarketSearchViewModel.textEditingController.text = recentSearch;
                                     _fleamarketSearchViewModel.showRecentSearch.value = false;
@@ -252,6 +255,7 @@ class FleaMarketListView_search extends StatelessWidget {
 
                                   return GestureDetector(
                                     onTap: () async {
+                                      textFocus.unfocus();
                                       _fleamarketDetailViewModel.fetchFleamarketDetailFromList(
                                           fleamarketResponse: _fleamarketSearchViewModel.fleamarketListSearch[index]);
                                       Get.toNamed(AppRoutes.fleamarketDetail);
