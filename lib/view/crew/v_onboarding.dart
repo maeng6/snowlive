@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:com.snowlive/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/routes/routes.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewApply.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_searchCrew.dart';
@@ -18,125 +19,113 @@ class OnBoardingCrewMainView extends StatelessWidget {
   void _showBottomModal(BuildContext context) {
     showModalBottomSheet(
       context: context,
+      backgroundColor: SDSColor.snowliveWhite,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(
-          top: Radius.circular(25.0),
-        ),
+        borderRadius: BorderRadius.only(topLeft: Radius.circular(16), topRight: Radius.circular(16)),
       ),
-      builder: (context) => Container(
-        height: MediaQuery.of(context).size.height * 0.3,
-        child: Padding(
-          padding: EdgeInsets.only(
-            left: 16,
-            right: 16,
-            bottom: MediaQuery.of(context).viewInsets.bottom + 16,
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(
-                width: 50,
-                height: 5,
-                margin: EdgeInsets.only(top: 8, bottom: 16),
-                decoration: BoxDecoration(
-                  color: Colors.grey,
-                  borderRadius: BorderRadius.circular(10),
-                ),
-              ),
-              SizedBox(height: 10),
-              Text(
-                '라이브크루 시작하기 ',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              SizedBox(height: 15),
-              Text(
-                '이미 존재하는 라이브크루에 참여하시려면 가입하기를,',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: Color(0xff949494),
-                  fontSize: 14,
-                ),
-              ),
-              SizedBox(height: 3),
-              Text(
-                '새로운 라이브크루를 만드시려면 생성하기를 선택해 주세요.',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: Color(0xff949494),
-                  fontSize: 14,
-                ),
-              ),
-              SizedBox(height: 30),
-              Row(
-                children: [
-                  Expanded(
-                    child: ElevatedButton(
-                      onPressed: () async {
-                        Get.toNamed(AppRoutes.setCrewNameAndResort);
-                      },
-                      child: Text(
-                        '만들기',
-                        style: TextStyle(
-                          color: Color(0xFFFFFFFF),
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
-                        ),
-                      ),
-                      style: TextButton.styleFrom(
-                        shape: const RoundedRectangleBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(6)),
-                        ),
-                        elevation: 0,
-                        splashFactory: InkRipple.splashFactory,
-                        minimumSize: Size(100, 56),
-                        backgroundColor: Color(0xff7C899D),
-                      ),
+      builder: (context) => SafeArea(
+        child: Container(
+          height: 223,
+          child: Padding(
+            padding: EdgeInsets.only(bottom: 20, right: 20, left: 20, top: 12),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 20),
+                  child: Container(
+                    height: 4,
+                    width: 36,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      color: SDSColor.gray200,
                     ),
                   ),
-                  SizedBox(width: 8),
-                  Expanded(
-                    child: ElevatedButton(
-                      onPressed: () async {
-                        Navigator.pop(context);
-                        CustomFullScreenDialog.showDialog();
-                        await _crewApplyViewModel.fetchCrewApplyListUser(_userViewModel.user.user_id);
-                        print(_crewApplyViewModel.crewApplyList);
-                        if(_crewApplyViewModel.crewApplyList.isNotEmpty){
-                          CustomFullScreenDialog.cancelDialog();
-                          Get.toNamed(AppRoutes.crewApplicationUser);
-                        } else{
-                          _searchCrewViewModel.textEditingController.clear();
-                          _searchCrewViewModel.crewList.clear();
-                          _searchCrewViewModel.showRecentSearch.value = true;
-                          CustomFullScreenDialog.cancelDialog();
-                          Get.toNamed(AppRoutes.searchCrew);
-                        }
-                      },
-                      child: Text(
-                        '가입하기',
-                        style: TextStyle(
-                          color: Color(0xFFFFFFFF),
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
+                ),
+                Text(
+                  '라이브크루 시작하기 ',
+                  style: SDSTextStyle.bold.copyWith(fontSize: 16, color: SDSColor.gray900),
+                ),
+                SizedBox(height: 8),
+                Text(
+                  '이미 존재하는 라이브크루에 참여하시려면 가입하기를,',
+                  textAlign: TextAlign.center,
+                  style: SDSTextStyle.regular.copyWith(fontSize: 14, color: SDSColor.gray500),
+                ),
+                Text(
+                  '새로운 라이브크루를 만드시려면 생성하기를 선택해 주세요.',
+                  textAlign: TextAlign.center,
+                  style: SDSTextStyle.regular.copyWith(fontSize: 14, color: SDSColor.gray500),
+                ),
+                SizedBox(height: 40),
+                Row(
+                  children: [
+                    Expanded(
+                      child: ElevatedButton(
+                        onPressed: () async {
+                          Get.toNamed(AppRoutes.setCrewNameAndResort);
+                        },
+                        child: Text(
+                          '만들기',
+                          style: TextStyle(
+                            color: Color(0xFFFFFFFF),
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                          ),
                         ),
-                      ),
-                      style: TextButton.styleFrom(
-                        shape: const RoundedRectangleBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(6)),
+                        style: TextButton.styleFrom(
+                          shape: const RoundedRectangleBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(6)),
+                          ),
+                          elevation: 0,
+                          splashFactory: InkRipple.splashFactory,
+                          minimumSize: Size(100, 56),
+                          backgroundColor: Color(0xff7C899D),
                         ),
-                        elevation: 0,
-                        splashFactory: InkRipple.splashFactory,
-                        minimumSize: Size(100, 56),
-                        backgroundColor: Color(0xFF3D83ED),
                       ),
                     ),
-                  ),
-                ],
-              ),
-            ],
+                    SizedBox(width: 8),
+                    Expanded(
+                      child: ElevatedButton(
+                        onPressed: () async {
+                          Navigator.pop(context);
+                          CustomFullScreenDialog.showDialog();
+                          await _crewApplyViewModel.fetchCrewApplyListUser(_userViewModel.user.user_id);
+                          print(_crewApplyViewModel.crewApplyList);
+                          if(_crewApplyViewModel.crewApplyList.isNotEmpty){
+                            CustomFullScreenDialog.cancelDialog();
+                            Get.toNamed(AppRoutes.crewApplicationUser);
+                          } else{
+                            _searchCrewViewModel.textEditingController.clear();
+                            _searchCrewViewModel.crewList.clear();
+                            _searchCrewViewModel.showRecentSearch.value = true;
+                            CustomFullScreenDialog.cancelDialog();
+                            Get.toNamed(AppRoutes.searchCrew);
+                          }
+                        },
+                        child: Text(
+                          '가입하기',
+                          style: TextStyle(
+                            color: Color(0xFFFFFFFF),
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                          ),
+                        ),
+                        style: TextButton.styleFrom(
+                          shape: const RoundedRectangleBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(6)),
+                          ),
+                          elevation: 0,
+                          splashFactory: InkRipple.splashFactory,
+                          minimumSize: Size(100, 56),
+                          backgroundColor: Color(0xFF3D83ED),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -196,55 +185,55 @@ class OnBoardingCrewMainView extends StatelessWidget {
           ),
           body: SingleChildScrollView(
             child: Container(
-              height: _size.height - _statusBarSize - 20,
+              height: _size.height - _statusBarSize - 44,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Center(
-                    child: Column(
-                      children: [
-                        Image.asset(
-                          'assets/imgs/liveCrew/img_liveCrew_title_onboarding.png',
-                          scale: 1,
-                          width: 100,
-                        ),
-                        SizedBox(height: 30),
-                        Text(
-                          '또 하나의 즐거움',
-                          style: TextStyle(
-                              fontSize: 26, fontWeight: FontWeight.bold),
-                        ),
-                        Text(
-                          '라이브크루와 함께해요',
-                          style: TextStyle(
-                              fontSize: 26, fontWeight: FontWeight.bold),
-                        ),
-                        SizedBox(height: 12),
-                        Text(
-                          '라이브크루를 통해 다양한 사람들과 교류하며',
-                          style: TextStyle(
-                            color: Color(0xff949494),
-                            fontSize: 14,
+                    child: Padding(
+                      padding: EdgeInsets.only(top: 64),
+                      child: Column(
+                        children: [
+                          Image.asset(
+                            'assets/imgs/liveCrew/img_liveCrew_title_onboarding.png',
+                            scale: 1,
+                            width: 80,
                           ),
-                        ),
-                        SizedBox(
-                          height: 2,
-                        ),
-                        Text(
-                          '더욱 특별한 경험을 만들어보세요.',
-                          style: TextStyle(
-                            color: Color(0xff949494),
-                            fontSize: 14,
+                          SizedBox(height: 10),
+                          Text(
+                            '또 하나의 즐거움',
+                            style: SDSTextStyle.bold.copyWith(
+                                fontSize: 26,
+                                color: SDSColor.gray900),
                           ),
-                        ),
-                        SizedBox(height: 50),
-                        Image.asset(
-                          'assets/imgs/liveCrew/img_liveCrew_image_onboarding.png',
-                          scale: 1,
-                          width: 400,
-                        ),
-                      ],
+                          Text(
+                            '라이브크루와 함께해요',
+                            style: SDSTextStyle.bold.copyWith(
+                                fontSize: 26,
+                                color: SDSColor.gray900),
+                          ),
+                          SizedBox(height: 10),
+                          Text(
+                            '라이브크루를 통해 다양한 사람들과 교류하며',
+                            style: SDSTextStyle.regular.copyWith(
+                                fontSize: 14,
+                                color: SDSColor.gray500),
+                          ),
+                          Text(
+                            '더욱 특별한 경험을 만들어보세요.',
+                            style: SDSTextStyle.regular.copyWith(
+                                fontSize: 14,
+                                color: SDSColor.gray500),
+                          ),
+                          SizedBox(height: 20),
+                          Image.asset(
+                            'assets/imgs/imgs/img_livecrew_1.png',
+                            scale: 1,
+                            width: _size.width - 32,
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ],
@@ -253,7 +242,7 @@ class OnBoardingCrewMainView extends StatelessWidget {
           ),
         ),
         Positioned(
-          bottom: MediaQuery.of(context).viewInsets.bottom,
+          bottom: 0,
           right: 0,
           left: 0,
           child: SafeArea(
@@ -275,7 +264,7 @@ class OnBoardingCrewMainView extends StatelessWidget {
                   ),
                   elevation: 0,
                   splashFactory: InkRipple.splashFactory,
-                  minimumSize: Size(200, 56),
+                  minimumSize: Size(200, 48),
                   backgroundColor: Color(0xff3D83ED),
                 ),
               ),

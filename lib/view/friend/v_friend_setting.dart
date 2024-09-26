@@ -1,3 +1,4 @@
+import 'package:com.snowlive/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/routes/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -23,6 +24,11 @@ class FriendSettingView extends StatelessWidget {
           },
         ),
         backgroundColor: Colors.white,
+        elevation: 0.0,
+        titleSpacing: 0,
+        centerTitle: true,
+        toolbarHeight: 44,
+
       ),
       body: ListView(
         children: [
@@ -35,10 +41,9 @@ class FriendSettingView extends StatelessWidget {
             },
             title: Text(
               '차단목록',
-              style: TextStyle(
-                  fontWeight: FontWeight.bold,
+              style: SDSTextStyle.bold.copyWith(
                   fontSize: 15,
-                  color: Color(0xFF111111)),
+                  color: SDSColor.gray900),
             ),
             trailing: Image.asset(
               'assets/imgs/icons/icon_arrow_g.png',

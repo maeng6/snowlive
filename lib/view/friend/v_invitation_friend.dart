@@ -74,7 +74,7 @@ class _InvitationFriendViewState extends State<InvitationFriendView> {
               child: Container(
                 width: _size.width,
                 height: 1,
-                color: SDSColor.gray200,
+                color: SDSColor.gray100,
               ),
             ),
             Padding(
@@ -92,7 +92,7 @@ class _InvitationFriendViewState extends State<InvitationFriendView> {
                               height: 40,
                               child: ElevatedButton(
                                 child: Text(
-                                  '요청받은 목록',
+                                  '받은 요청',
                                   style: TextStyle(
                                       color: (isTap[0])
                                           ? SDSColor.gray900
@@ -126,7 +126,7 @@ class _InvitationFriendViewState extends State<InvitationFriendView> {
                             ),
                           ),
                           Container(
-                            width: 98,
+                            width: 90,
                             height: 3,
                             color:
                             (isTap[0]) ? Color(0xFF111111) : Colors.transparent,
@@ -142,7 +142,7 @@ class _InvitationFriendViewState extends State<InvitationFriendView> {
                               height: 40,
                               child: ElevatedButton(
                                 child: Text(
-                                  '요청중인 목록',
+                                  '보낸 요청',
                                   style: TextStyle(
                                       color: (isTap[1])
                                           ? SDSColor.gray900
@@ -178,7 +178,7 @@ class _InvitationFriendViewState extends State<InvitationFriendView> {
                             ),
                           ),
                           Container(
-                            width: 98,
+                            width: 90,
                             height: 3,
                             color:
                             (isTap[1]) ? Color(0xFF111111) : Colors.transparent,

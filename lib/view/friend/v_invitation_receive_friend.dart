@@ -36,7 +36,7 @@ class _ReceiveFriendRequestViewState extends State<ReceiveFriendRequestView> {
               child: Column(
                 children: [
                   Container(
-                    height: 56,
+                    height: 44,
                     child: Center(
                       child: ListTile(
                         contentPadding: EdgeInsets.symmetric(horizontal: 0),
@@ -121,11 +121,14 @@ class _ReceiveFriendRequestViewState extends State<ReceiveFriendRequestView> {
                             ),
                           ),
                         ),
-                        title: Text(
-                          friend.friendUserInfo.displayName,
-                          style: SDSTextStyle.regular.copyWith(
-                            fontSize: 15,
-                            color: SDSColor.gray900,
+                        title: Transform.translate(
+                          offset: Offset(-20,0),
+                          child: Text(
+                            friend.friendUserInfo.displayName,
+                            style: SDSTextStyle.regular.copyWith(
+                              fontSize: 15,
+                              color: SDSColor.gray900,
+                            ),
                           ),
                         ),
                         trailing: Container(
@@ -135,63 +138,62 @@ class _ReceiveFriendRequestViewState extends State<ReceiveFriendRequestView> {
                             children: [
                               ElevatedButton(
                                 onPressed: (){
-                                  showModalBottomSheet(
-                                      context: context,
-                                      builder: (context) {
-                                        return Container(
-                                          color: Colors.white,
-                                          height: 180,
-                                          child: Padding(
-                                            padding: const EdgeInsets.symmetric(
-                                                horizontal: 20.0),
-                                            child: Column(
-                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                              mainAxisAlignment: MainAxisAlignment.start,
+                                  Get.dialog(
+                                      AlertDialog(
+                                        backgroundColor: SDSColor.snowliveWhite,
+                                        contentPadding: EdgeInsets.only(bottom: 0, left: 28, right: 28, top: 36),
+                                        elevation: 0,
+                                        shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(16)),
+                                        buttonPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+                                        content: Container(
+                                          height: 40,
+                                          child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.center,
+                                            children: [
+                                              Text(
+                                                '친구로 등록하시겠어요?',
+                                                textAlign: TextAlign.center,
+                                                style: SDSTextStyle.bold.copyWith(
+                                                    color: SDSColor.gray900,
+                                                    fontSize: 16
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        actions: [
+                                          Padding(
+                                            padding: EdgeInsets.only(top: 10, left: 16, right: 16),
+                                            child: Row(
                                               children: [
-                                                SizedBox(
-                                                  height: 30,
-                                                ),
-                                                Text(
-                                                  '친구로 등록하시겠습니까?',
-                                                  style: TextStyle(
-                                                      fontSize: 18,
-                                                      fontWeight: FontWeight.bold,
-                                                      color: Color(0xFF111111)),
-                                                ),
-                                                SizedBox(
-                                                  height: 30,
-                                                ),
-                                                Row(
-                                                  mainAxisAlignment:
-                                                  MainAxisAlignment.spaceEvenly,
-                                                  children: [
-                                                    Expanded(
-                                                      child: ElevatedButton(
+                                                Expanded(
+                                                  child: Container(
+                                                    child: TextButton(
                                                         onPressed: () {
                                                           Navigator.pop(context);
                                                         },
-                                                        child: Text(
-                                                          '취소',
-                                                          style: TextStyle(
-                                                              color: Colors.white,
-                                                              fontSize: 15,
-                                                              fontWeight: FontWeight.bold),
-                                                        ),
                                                         style: TextButton.styleFrom(
-                                                            splashFactory: InkRipple
-                                                                .splashFactory,
-                                                            elevation: 0,
-                                                            minimumSize: Size(100, 56),
-                                                            backgroundColor: Color(0xff555555),
-                                                            padding: EdgeInsets.symmetric(horizontal: 0)),
-                                                      ),
+                                                          backgroundColor: Colors.transparent, // 배경색 투명
+                                                          splashFactory: NoSplash.splashFactory, // 터치 시 효과 제거
+                                                        ),
+                                                        child: Text('취소',
+                                                          style: SDSTextStyle.bold.copyWith(
+                                                            fontSize: 17,
+                                                            color: SDSColor.gray500,
+                                                          ),
+                                                        )
                                                     ),
-                                                    SizedBox(
-                                                      width: 10,
-                                                    ),
-                                                    Expanded(
-                                                      child: ElevatedButton(
+                                                  ),
+                                                ),
+                                                SizedBox(
+                                                  width: 10,
+                                                ),
+                                                Expanded(
+                                                  child: Container(
+                                                    child: TextButton(
                                                         onPressed: () async {
+
                                                           Navigator.pop(context);
                                                           await _friendDetailViewModel.acceptFriend(
                                                               {
@@ -201,30 +203,27 @@ class _ReceiveFriendRequestViewState extends State<ReceiveFriendRequestView> {
                                                           await _friendListViewModel.fetchFriendRequestList(_userViewModel.user.user_id);
 
                                                         },
-                                                        child: Text(
-                                                          '확인',
-                                                          style: TextStyle(
-                                                              color: Colors.white,
-                                                              fontSize: 15,
-                                                              fontWeight:
-                                                              FontWeight.bold),
-                                                        ),
                                                         style: TextButton.styleFrom(
-                                                            splashFactory: InkRipple.splashFactory,
-                                                            elevation: 0,
-                                                            minimumSize: Size(100, 56),
-                                                            backgroundColor: Color(0xff2C97FB),
-                                                            padding: EdgeInsets.symmetric(horizontal: 0)),
-                                                      ),
-                                                    ),
-                                                  ],
+                                                          backgroundColor: Colors.transparent, // 배경색 투명
+                                                          splashFactory: NoSplash.splashFactory, // 터치 시 효과 제거
+                                                        ),
+                                                        child: Text('수락하기',
+                                                          style: SDSTextStyle.bold.copyWith(
+                                                            fontSize: 17,
+                                                            color: SDSColor.snowliveBlue,
+                                                          ),
+                                                        )),
+                                                  ),
                                                 )
                                               ],
+                                              mainAxisAlignment: MainAxisAlignment.center,
                                             ),
-                                          ),
-                                        );
-                                      });
-                                }, child: Text('수락',
+                                          )
+                                        ],
+                                      )
+                                  );
+                                },
+                                child: Text('수락',
                                 style: SDSTextStyle.bold.copyWith(fontSize: 13, color: SDSColor.gray900),),
                                 style: ElevatedButton.styleFrom(
                                   padding: EdgeInsets.symmetric(horizontal: 14, vertical: 3),
@@ -240,70 +239,63 @@ class _ReceiveFriendRequestViewState extends State<ReceiveFriendRequestView> {
                               SizedBox(width: 6,),
                               ElevatedButton(
                                 onPressed: (){
-                                  showModalBottomSheet(
-                                      context: context,
-                                      builder: (context) {
-                                        return Container(
-                                          color: Colors.white,
-                                          height: 180,
-                                          child: Padding(
-                                            padding: const EdgeInsets.symmetric(
-                                                horizontal: 20.0),
-                                            child: Column(
-                                              crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                              mainAxisAlignment:
-                                              MainAxisAlignment.start,
+
+                                  Get.dialog(
+                                      AlertDialog(
+                                        backgroundColor: SDSColor.snowliveWhite,
+                                        contentPadding: EdgeInsets.only(bottom: 0, left: 28, right: 28, top: 36),
+                                        elevation: 0,
+                                        shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(16)),
+                                        buttonPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+                                        content: Container(
+                                          height: 40,
+                                          child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.center,
+                                            children: [
+                                              Text(
+                                                '친구 요청을 거절하시겠어요?',
+                                                textAlign: TextAlign.center,
+                                                style: SDSTextStyle.bold.copyWith(
+                                                    color: SDSColor.gray900,
+                                                    fontSize: 16
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        actions: [
+                                          Padding(
+                                            padding: EdgeInsets.only(top: 10, left: 16, right: 16),
+                                            child: Row(
                                               children: [
-                                                SizedBox(
-                                                  height: 30,
-                                                ),
-                                                Text(
-                                                  '요청을 거절하시겠습니까?',
-                                                  style: TextStyle(
-                                                      fontSize: 18,
-                                                      fontWeight: FontWeight.bold,
-                                                      color: Color(0xFF111111)),
-                                                ),
-                                                SizedBox(
-                                                  height: 30,
-                                                ),
-                                                Row(
-                                                  mainAxisAlignment:
-                                                  MainAxisAlignment.spaceEvenly,
-                                                  children: [
-                                                    Expanded(
-                                                      child: ElevatedButton(
+                                                Expanded(
+                                                  child: Container(
+                                                    child: TextButton(
                                                         onPressed: () {
                                                           Navigator.pop(context);
                                                         },
-                                                        child: Text(
-                                                          '취소',
-                                                          style: TextStyle(
-                                                              color: Colors.white,
-                                                              fontSize: 15,
-                                                              fontWeight:
-                                                              FontWeight.bold),
-                                                        ),
                                                         style: TextButton.styleFrom(
-                                                            splashFactory: InkRipple
-                                                                .splashFactory,
-                                                            elevation: 0,
-                                                            minimumSize:
-                                                            Size(100, 56),
-                                                            backgroundColor:
-                                                            Color(0xff555555),
-                                                            padding:
-                                                            EdgeInsets.symmetric(
-                                                                horizontal: 0)),
-                                                      ),
+                                                          backgroundColor: Colors.transparent, // 배경색 투명
+                                                          splashFactory: NoSplash.splashFactory, // 터치 시 효과 제거
+                                                        ),
+                                                        child: Text('취소',
+                                                          style: SDSTextStyle.bold.copyWith(
+                                                            fontSize: 17,
+                                                            color: SDSColor.gray500,
+                                                          ),
+                                                        )
                                                     ),
-                                                    SizedBox(
-                                                      width: 10,
-                                                    ),
-                                                    Expanded(
-                                                      child: ElevatedButton(
+                                                  ),
+                                                ),
+                                                SizedBox(
+                                                  width: 10,
+                                                ),
+                                                Expanded(
+                                                  child: Container(
+                                                    child: TextButton(
                                                         onPressed: () async {
+
                                                           Navigator.pop(context);
                                                           await _friendListViewModel.deleteFriend(
                                                               {
@@ -313,34 +305,26 @@ class _ReceiveFriendRequestViewState extends State<ReceiveFriendRequestView> {
                                                           await _friendListViewModel.fetchFriendRequestList(_userViewModel.user.user_id);
 
                                                         },
-                                                        child: Text(
-                                                          '확인',
-                                                          style: TextStyle(
-                                                              color: Colors.white,
-                                                              fontSize: 15,
-                                                              fontWeight:
-                                                              FontWeight.bold),
-                                                        ),
                                                         style: TextButton.styleFrom(
-                                                            splashFactory: InkRipple
-                                                                .splashFactory,
-                                                            elevation: 0,
-                                                            minimumSize:
-                                                            Size(100, 56),
-                                                            backgroundColor:
-                                                            Color(0xff2C97FB),
-                                                            padding:
-                                                            EdgeInsets.symmetric(
-                                                                horizontal: 0)),
-                                                      ),
-                                                    ),
-                                                  ],
+                                                          backgroundColor: Colors.transparent, // 배경색 투명
+                                                          splashFactory: NoSplash.splashFactory, // 터치 시 효과 제거
+                                                        ),
+                                                        child: Text('거절하기',
+                                                          style: SDSTextStyle.bold.copyWith(
+                                                            fontSize: 17,
+                                                            color: SDSColor.red,
+                                                          ),
+                                                        )),
+                                                  ),
                                                 )
                                               ],
+                                              mainAxisAlignment: MainAxisAlignment.center,
                                             ),
-                                          ),
-                                        );
-                                      });
+                                          )
+                                        ],
+                                      )
+                                  );
+
                                 }, child: Text('거절',
                                 style: SDSTextStyle.bold.copyWith(fontSize: 13, color: SDSColor.gray900),),
                                 style: ElevatedButton.styleFrom(

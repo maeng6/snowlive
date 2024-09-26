@@ -58,19 +58,22 @@ class FriendListView extends StatelessWidget {
                   ),
                 ),
                 Positioned(
-                  top: 6,
-                  right: 0,
+                  top: 4,
+                  right: 4,
                   child: Container(
-                    padding: EdgeInsets.symmetric(horizontal: 3, vertical: 2),
+                    width: 20,
+                    height: 20,
                     decoration: BoxDecoration(
-                      color: SDSColor.snowliveBlue,
-                      borderRadius: BorderRadius.circular(6),
+                      color: SDSColor.red,
+                      borderRadius: BorderRadius.circular(20),
                     ),
-                    child: Text(
-                      'NEW',
-                      style: SDSTextStyle.bold.copyWith(
-                        fontSize: 10,
-                        color: SDSColor.snowliveWhite,
+                    child: Center(
+                      child: Text(
+                        'N',
+                        style: SDSTextStyle.bold.copyWith(
+                          fontSize: 12,
+                          color: SDSColor.snowliveWhite,
+                        ),
                       ),
                     ),
                   ),
