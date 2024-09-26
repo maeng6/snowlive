@@ -31,7 +31,7 @@ class SetCrewImageAndColorView extends StatelessWidget {
           backgroundColor: Colors.white,
           extendBodyBehindAppBar: true,
           appBar: PreferredSize(
-            preferredSize: Size.fromHeight(58),
+            preferredSize: Size.fromHeight(44),
             child: AppBar(
               leading: GestureDetector(
                 child: Image.asset(
@@ -46,6 +46,7 @@ class SetCrewImageAndColorView extends StatelessWidget {
                 },
               ),
               backgroundColor: Colors.white,
+              surfaceTintColor: Colors.transparent,
               elevation: 0.0,
               centerTitle: false,
               titleSpacing: 0,
@@ -54,7 +55,7 @@ class SetCrewImageAndColorView extends StatelessWidget {
           body: SingleChildScrollView(
             child: Padding(
               padding: EdgeInsets.only(
-                top: _statusBarSize + 58,
+                top: _statusBarSize + 54,
                 left: 16,
                 right: 16,
                 bottom: _statusBarSize,
@@ -64,14 +65,20 @@ class SetCrewImageAndColorView extends StatelessWidget {
                 children: [
                   Text(
                     '라이브크루 이미지와 대표 색상을\n설정해주세요.',
-                    style: TextStyle(fontSize: 23, fontWeight: FontWeight.bold, height: 1.3),
+                    style: SDSTextStyle.bold.copyWith(
+                        fontSize: 22,
+                        color: SDSColor.gray900
+                    ),
                   ),
                   SizedBox(height: 8),
                   Text(
                     '이미지와 대표 색상은 크루 설정에서 변경할 수 있어요.',
-                    style: TextStyle(color: Color(0xff949494), fontSize: 13, height: 1.5),
+                    style: SDSTextStyle.regular.copyWith(
+                      color: SDSColor.gray500,
+                      fontSize: 14,
+                    ),
                   ),
-                  SizedBox(height: _size.height * 0.1),
+                  SizedBox(height: 40),
                   Center(
                     child: Obx(
                           () => Container(
@@ -79,67 +86,61 @@ class SetCrewImageAndColorView extends StatelessWidget {
                         height: 150,
                         decoration: BoxDecoration(
                           color: _setCrewViewModel.currentColorBackground.value,
-                          borderRadius: BorderRadius.circular(30),
+                          borderRadius: BorderRadius.circular(40),
                         ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(10.0), // 이미지와 배경 사이 간격
-                          child:
-                          (_setCrewViewModel.croppedFile != null)
-                              ?Stack(
-                            children: [
-                              Center(
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(20),
-                                  child: ExtendedImage.file(
-                                    File(_setCrewViewModel.croppedFile!.path),
-                                    fit: BoxFit.cover, // 배경을 모두 채우도록 설정
-                                    cacheRawData: true,
-                                    enableLoadState: true,
-                                    width: 80, // 배경 안에 들어가도록 크기 조정
-                                    height: 80,
-                                  ),
+                        child: (_setCrewViewModel.croppedFile != null)
+                            ? Stack(
+                          children: [
+                            Center(
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(16),
+                                child: ExtendedImage.file(
+                                  File(_setCrewViewModel.croppedFile!.path),
+                                  fit: BoxFit.cover, // 배경을 모두 채우도록 설정
+                                  cacheRawData: true,
+                                  enableLoadState: true,
+                                  width: 80, // 배경 안에 들어가도록 크기 조정
+                                  height: 80,
                                 ),
-                              ),
-                              Positioned(
-                                top: 20,
-                                right: 20,
-                                child: GestureDetector(
-                                  onTap: () {
-                                    _setCrewViewModel.resetImage();
-                                  },
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      color: SDSColor.snowliveBlack.withOpacity(0.7),
-                                      shape: BoxShape.circle,
-                                    ),
-                                    child: Icon(
-                                      Icons.close,
-                                      color: SDSColor.snowliveWhite,
-                                      size: 20,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          )
-                              :Center(
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(20),
-                              child: ExtendedImage.network(
-                                '${crewDefaultLogoUrl['${_setCrewViewModel.colorToHex(_setCrewViewModel.currentColor.value)}']}',
-                                enableMemoryCache: true,
-                                shape: BoxShape.rectangle,
-                                borderRadius: BorderRadius.circular(10),
-                                width: 80,
-                                height: 80,
-                                fit: BoxFit.cover,
-                                cacheRawData: true,
-                                enableLoadState: true,
                               ),
                             ),
+                            Positioned(
+                              top: 20,
+                              right: 20,
+                              child: GestureDetector(
+                                onTap: () {
+                                  _setCrewViewModel.resetImage();
+                                },
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    color: SDSColor.snowliveBlack.withOpacity(0.7),
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: Icon(
+                                    Icons.close,
+                                    color: SDSColor.snowliveWhite,
+                                    size: 20,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        )
+                            :Center(
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(16),
+                            child: ExtendedImage.network(
+                              '${crewDefaultLogoUrl['${_setCrewViewModel.colorToHex(_setCrewViewModel.currentColor.value)}']}',
+                              enableMemoryCache: true,
+                              shape: BoxShape.rectangle,
+                              borderRadius: BorderRadius.circular(16),
+                              width: 80,
+                              height: 80,
+                              fit: BoxFit.cover,
+                              cacheRawData: true,
+                              enableLoadState: true,
+                            ),
                           ),
-
-
                         ),
                       ),
                     ),

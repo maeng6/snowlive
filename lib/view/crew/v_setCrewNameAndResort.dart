@@ -22,16 +22,22 @@ class SetCrewNameAndResortView extends StatelessWidget {
         backgroundColor: Colors.white,
         extendBodyBehindAppBar: true,
         appBar: PreferredSize(
-          preferredSize: Size.fromHeight(58),
+          preferredSize: Size.fromHeight(44),
           child: AppBar(
             leading: GestureDetector(
-              child: Icon(Icons.arrow_back),
+              child: Image.asset(
+                'assets/imgs/icons/icon_snowLive_back.png',
+                scale: 4,
+                width: 26,
+                height: 26,
+              ),
               onTap: () {
                 _setCrewViewModel.resetAll();
                 Navigator.pop(context);
               },
             ),
             backgroundColor: Colors.white,
+            surfaceTintColor: Colors.transparent,
             elevation: 0.0,
             centerTitle: false,
             titleSpacing: 0,
@@ -39,7 +45,7 @@ class SetCrewNameAndResortView extends StatelessWidget {
         ),
         body: Padding(
           padding: EdgeInsets.only(
-            top: _statusBarSize + 58,
+            top: _statusBarSize + 54,
             left: 16,
             right: 16,
             bottom: MediaQuery.of(context).padding.bottom,
@@ -49,58 +55,117 @@ class SetCrewNameAndResortView extends StatelessWidget {
             children: [
               Text(
                 '라이브크루 정보를 입력해 주세요.',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  height: 1.3,
+                style: SDSTextStyle.bold.copyWith(
+                  fontSize: 22,
+                  color: SDSColor.gray900
                 ),
               ),
               SizedBox(height: 8),
               Text(
                 '라이브크루 생성을 위해 아래 정보를 입력해 주세요.',
-                style: TextStyle(
-                  color: Color(0xff949494),
-                  fontSize: 13,
-                  height: 1.5,
+                style: SDSTextStyle.regular.copyWith(
+                  color: SDSColor.gray500,
+                  fontSize: 14,
                 ),
               ),
-              SizedBox(height: 30),
-              Text(
-                '크루명',
-                style: TextStyle(
-                  color: Color(0xff111111),
-                  fontSize: 13,
-                  height: 1.5,
+              SizedBox(height: 40),
+              Padding(
+                padding: const EdgeInsets.only(left: 4),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('크루명', style: SDSTextStyle.regular.copyWith(
+                        fontSize: 12,
+                        color: SDSColor.gray900
+                    ),),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 2, top: 2),
+                      child: Container(
+                        width: 4,
+                        height: 4,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: SDSColor.red,
+                        ),
+                      ),
+                    )
+                  ],
                 ),
               ),
-              SizedBox(height: 10),
+              SizedBox(height: 8),
               Form(
                 key: _setCrewViewModel.formKey,
                 child: Stack(
                   children: [
-                    TextFormField(
-                      controller: _setCrewViewModel.textEditingController,
-                      inputFormatters: [
-                        FilteringTextInputFormatter.allow(
-                          RegExp("[a-zA-Z0-9ㄱ-ㅎㅏ-ㅣ가-힣]"),
-                        ),
-                      ],
-                      decoration: InputDecoration(
-                        hintText: '이름을 입력해 주세요(최대 10자 이내)',
-                        filled: true,
-                        fillColor: Color(0xFFEFEFEF),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(6),
-                          borderSide: BorderSide.none,
-                        ),
+                    Container(
+                      height: 93,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          TextFormField(
+                            textAlignVertical: TextAlignVertical.center,
+                            cursorColor: SDSColor.snowliveBlue,
+                            cursorHeight: 16,
+                            cursorWidth: 2,
+                            autovalidateMode: AutovalidateMode.onUserInteraction,
+                            style: SDSTextStyle.regular.copyWith(fontSize: 15),
+                            strutStyle: StrutStyle(fontSize: 14, leading: 0),
+                            inputFormatters: [
+                              FilteringTextInputFormatter.allow(
+                                RegExp("[a-zA-Z0-9ㄱ-ㅎㅏ-ㅣ가-힣]"),
+                              ),
+                            ],
+                            controller: _setCrewViewModel.textEditingController,
+                            decoration: InputDecoration(
+                              floatingLabelBehavior: FloatingLabelBehavior.never,
+                              errorMaxLines: 2,
+                              errorStyle: SDSTextStyle.regular.copyWith(fontSize: 12, color: SDSColor.red),
+                              labelStyle: SDSTextStyle.regular.copyWith(color: SDSColor.gray400, fontSize: 14),
+                              hintStyle: SDSTextStyle.regular.copyWith(color: SDSColor.gray400, fontSize: 14),
+                              hintText: '크루 이름을 입력해 주세요(최대 10자 이내)',
+                              contentPadding: EdgeInsets.only(top: 10, bottom: 10, left: 12, right: 50),
+                              filled: true,
+                              fillColor: SDSColor.gray50,
+                              hoverColor: SDSColor.snowliveBlue,
+                              focusColor: SDSColor.snowliveBlue,
+                              border: OutlineInputBorder(
+                                borderSide: BorderSide(color: SDSColor.gray50),
+                                borderRadius: BorderRadius.circular(6),
+                              ),
+                              errorBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: SDSColor.red, strokeAlign: BorderSide.strokeAlignInside, width: 1.5),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: SDSColor.snowliveBlue, strokeAlign: BorderSide.strokeAlignInside, width: 1.5),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.transparent),
+                                borderRadius: BorderRadius.circular(6),
+                              ),
+                            ),
+                            validator: (val) => _setCrewViewModel.validateCrewName(val),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.only(left: 4, top: 4),
+                            child: Text('크루명은 최초 설정 후 수정 불가합니다.',
+                              style: SDSTextStyle.regular.copyWith(
+                                fontSize: 12,
+                                color: SDSColor.gray500,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
-                      validator: (val) => _setCrewViewModel.validateCrewName(val),
                     ),
                     Positioned(
                       right: 0,
-                      top: 0,
-                      bottom: 0,
+                      top: 1,
                       child: TextButton(
+                        style: ButtonStyle(
+                          surfaceTintColor: WidgetStateColor.transparent,
+                          backgroundColor: WidgetStateColor.transparent,
+                          overlayColor: WidgetStateColor.transparent,
+                        ),
                         onPressed: (_setCrewViewModel.crewName.isNotEmpty && !_setCrewViewModel.isCrewNameChecked)
                             ? () async {
                           CustomFullScreenDialog.showDialog();
@@ -110,7 +175,7 @@ class SetCrewNameAndResortView extends StatelessWidget {
                               '이미 존재하는 크루명입니다',
                               '다른 크루명을 입력해 주세요',
                               margin: EdgeInsets.only(right: 20, left: 20, bottom: 12),
-                              snackPosition: SnackPosition.TOP,
+                              snackPosition: SnackPosition.BOTTOM,
                               backgroundColor: SDSColor.snowliveWhite.withOpacity(0.2),
                               colorText: SDSColor.snowliveBlack,
                               duration: Duration(milliseconds: 3000),
@@ -133,22 +198,28 @@ class SetCrewNameAndResortView extends StatelessWidget {
                   ],
                 ),
               ),
-              SizedBox(height: 5),
-              Text(
-                '크루명은 최초 설정 후 수정 불가합니다.',
-                style: TextStyle(
-                  color: Color(0xff949494),
-                  fontSize: 13,
-                  height: 1.5,
-                ),
-              ),
-              SizedBox(height: 30),
-              Text(
-                '베이스 스키장',
-                style: TextStyle(
-                  color: Color(0xff111111),
-                  fontSize: 13,
-                  height: 1.5,
+
+              Padding(
+                padding: const EdgeInsets.only(top: 12, left: 4),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('베이스 스키장', style: SDSTextStyle.regular.copyWith(
+                        fontSize: 13,
+                        color: SDSColor.gray900
+                    ),),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 2, top: 2),
+                      child: Container(
+                        width: 4,
+                        height: 4,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: SDSColor.red,
+                        ),
+                      ),
+                    )
+                  ],
                 ),
               ),
               SizedBox(height: 8),
@@ -199,13 +270,13 @@ class SetCrewNameAndResortView extends StatelessWidget {
                   )),
                 ),
               ),
-              SizedBox(height: 5),
-              Text(
-                '베이스 스키장은 최초 설정 후 수정 불가합니다.',
-                style: TextStyle(
-                  color: Color(0xff949494),
-                  fontSize: 13,
-                  height: 1.5,
+              Padding(
+                padding: EdgeInsets.only(left: 4, top: 4),
+                child: Text('베이스 스키장은 최초 설정 후 수정 불가합니다.',
+                  style: SDSTextStyle.regular.copyWith(
+                    fontSize: 12,
+                    color: SDSColor.gray500,
+                  ),
                 ),
               ),
             ],
@@ -236,10 +307,11 @@ class SetCrewNameAndResortView extends StatelessWidget {
                 backgroundColor: _setCrewViewModel.isNextButtonEnabled.value
                     ? SDSColor.snowliveBlue
                     : SDSColor.gray300,
-                minimumSize: Size(double.infinity, 56),
+                minimumSize: Size(double.infinity, 48),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(6),
                 ),
+                elevation: 0
               ),
             );
           }),
