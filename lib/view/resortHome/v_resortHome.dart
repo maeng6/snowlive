@@ -287,6 +287,18 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                             await _resortHomeViewModel.startBackgroundLocationService(user_id: _userViewModel.user.user_id);
                             await _userViewModel.updateUserModel_api(_userViewModel.user.user_id);
                             CustomFullScreenDialog.cancelDialog();
+
+                            if(_userViewModel.user.within_boundary == false){
+                              Get.snackbar(
+                                '라이브 불가 지역입니다',
+                                '스키장 내에서만 라이브가 활성화됩니다.',
+                                margin: EdgeInsets.only(right: 20, left: 20, bottom: 12),
+                                snackPosition: SnackPosition.TOP,
+                                backgroundColor: SDSColor.snowliveWhite.withOpacity(0.2),
+                                colorText: SDSColor.snowliveBlack,
+                                duration: Duration(milliseconds: 3000),
+                              );
+                            }
                           }
                         },
                         elevation: 0,
@@ -295,9 +307,9 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                             : Image.asset('assets/imgs/icons/icon_live_off.png', width: 40),
                         label: (_userViewModel.user.within_boundary == true)
                             ? Text(
-                            (_resortHomeViewModel.resort_info['fullname'] != null)
-                          ? '${_resortHomeViewModel.resortHomeModel.todayTotalScore.toInt()}점 획득'
-                          : '라이브를 다시 시작해주세요',
+                          (_resortHomeViewModel.resort_info['fullname'] != null)
+                              ? '${_resortHomeViewModel.resortHomeModel.todayTotalScore.toInt()}점 획득'
+                              : '라이브를 다시 시작해주세요',
                           style: SDSTextStyle.extraBold.copyWith(
                             fontSize: 16,
                             letterSpacing: -0.1,
@@ -414,7 +426,7 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                         builder: (context) {
                           return Obx(() => DraggableScrollableSheet(
                             initialChildSize:
-                                (_resortHomeViewModel.bestFriendList.length > 4)
+                            (_resortHomeViewModel.bestFriendList.length > 4)
                                 ? 0.64
                                 : 0.44,
                             minChildSize: 0.44,
@@ -792,7 +804,7 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                                         ],
                                       ),
                                       GestureDetector(
-                                          onTap: (){
+                                        onTap: (){
                                           _resortHomeViewModel.toggleExpandWeatherInfo();
                                         },
                                         child: Padding(
@@ -834,19 +846,19 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                                               Padding(
                                                 padding: const EdgeInsets.only(right: 6),
                                                 child: Obx(() => (_resortHomeViewModel.isLoading_weather == true)
-                                                      ? Text(' ',
+                                                    ? Text(' ',
+                                                  style: GoogleFonts.bebasNeue(
+                                                      fontSize: 44,
+                                                      color: Colors.white),
+                                                )
+                                                    : Padding(
+                                                  padding: const EdgeInsets.only(bottom: 4, left: 2),
+                                                  child: Text('\u00B0',
                                                     style: GoogleFonts.bebasNeue(
-                                                        fontSize: 44,
+                                                        fontSize: 36,
                                                         color: Colors.white),
-                                                  )
-                                                      : Padding(
-                                                    padding: const EdgeInsets.only(bottom: 4, left: 2),
-                                                    child: Text('\u00B0',
-                                                      style: GoogleFonts.bebasNeue(
-                                                          fontSize: 36,
-                                                          color: Colors.white),
-                                                    ),
                                                   ),
+                                                ),
                                                 ),
                                               ),
                                               Stack(
@@ -854,7 +866,7 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                                                   Container(
                                                     height: 40,
                                                     width: 40,
-                                                      color: Colors.transparent,
+                                                    color: Colors.transparent,
                                                   ),
                                                   (_resortHomeViewModel.isWeatherInfoExpanded == false)
                                                       ? Positioned(
@@ -1267,14 +1279,14 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                                                     width: 18,
                                                     height: 18,
                                                   )
-                                                  : Image.asset(
+                                                      : Image.asset(
                                                     'assets/imgs/icons/icon_pin_inactive리.png',
                                                     width: 18,
                                                     height: 18,
                                                   ),
                                                 ),
                                                 (_resortHomeViewModel.resort_info['fullname'] != null)
-                                                ? Row(
+                                                    ? Row(
                                                   children: [
                                                     Text('지금 ',
                                                       style: SDSTextStyle.regular.copyWith(
@@ -1296,7 +1308,7 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                                                     ),
                                                   ],
                                                 )
-                                                :Text('라이브 지역을 확인할 수 없어요',
+                                                    :Text('라이브 지역을 확인할 수 없어요',
                                                   style: SDSTextStyle.regular.copyWith(
                                                       fontSize: 13,
                                                       color: SDSColor.gray500

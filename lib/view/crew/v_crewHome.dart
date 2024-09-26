@@ -12,6 +12,7 @@ import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 import 'package:com.snowlive/widget/w_verticalDivider.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -418,6 +419,7 @@ class CrewHomeView extends StatelessWidget {
                                 Expanded(
                                   child: GestureDetector(
                                     onTap: () {
+                                      HapticFeedback.lightImpact();
                                       _crewDetailViewModel.toggleGraph();
                                     },
                                     child: Container(
@@ -446,6 +448,7 @@ class CrewHomeView extends StatelessWidget {
                                 Expanded(
                                   child: GestureDetector(
                                     onTap: () {
+                                      HapticFeedback.lightImpact();
                                       _crewDetailViewModel.toggleGraph();
                                     },
                                     child: Container(

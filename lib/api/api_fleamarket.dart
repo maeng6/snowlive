@@ -206,13 +206,12 @@ class FleamarketAPI {
 
   Future<ApiResponse> createComment(Map<String, dynamic> body) async {
     final response = await http.post(
-      Uri.parse('$baseUrl/comments/'),
+      Uri.parse('$baseUrl/comments/create/'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode(body),
     );
     if(response.statusCode==201){
-      final data = json.decode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
-      return ApiResponse.success(data);
+      return ApiResponse.success(json.decode(utf8.decode(response.bodyBytes)));
     } else{
       final data = json.decode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
       return ApiResponse.error(data);
@@ -283,7 +282,7 @@ class FleamarketAPI {
 
   Future<ApiResponse> createReply(Map<String, dynamic> body) async {
     final response = await http.post(
-      Uri.parse('$baseUrl/replies/'),
+      Uri.parse('$baseUrl/replies/create/'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode(body),
     );

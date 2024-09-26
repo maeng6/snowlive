@@ -196,7 +196,6 @@ class ResortHomeViewModel extends GetxController {
     }
     else {
       CustomFullScreenDialog.cancelDialog();
-      Get.snackbar('Error', '라이브off 실패');
     }
     isLoading(false);
   }
@@ -212,10 +211,14 @@ class ResortHomeViewModel extends GetxController {
         _respawn_point.value = List<Map<String, dynamic>>.from(response.data['respawn_point']);
         return response;
       } else {
+        await stopForegroundLocationService();
+        await stopBackgroundLocationService();
         CustomFullScreenDialog.cancelDialog();
         return response;
       }
     } catch (e) {
+      await stopForegroundLocationService();
+      await stopBackgroundLocationService();
       CustomFullScreenDialog.cancelDialog();
       print('Error in liveOn: $e'); // 예외 발생 시 출력
       return ApiResponse.error('An error occurred: $e'); // 에러 응답 반환
@@ -299,34 +302,23 @@ class ResortHomeViewModel extends GetxController {
               }
             });
           } else {
-            CustomFullScreenDialog.cancelDialog();
             await stopForegroundLocationService();
             await stopBackgroundLocationService();
             await liveOff({"user_id": user_id}, user_id);
+            CustomFullScreenDialog.cancelDialog();
           }
         } catch (e, stackTrace) {
+          await stopForegroundLocationService();
+          await stopBackgroundLocationService();
           CustomFullScreenDialog.cancelDialog();
           print('위치 서비스 오류: $e');
           print('Stack trace: $stackTrace');
         }
       });
     } else {
-      CustomFullScreenDialog.cancelDialog();
       await stopForegroundLocationService();
       await stopBackgroundLocationService();
-      _isSnackbarShown.value = true;
-      Get.snackbar(
-        '라이브 불가 지역입니다',
-        '스키장 내에서만 라이브가 활성화됩니다.',
-        margin: EdgeInsets.only(right: 20, left: 20, bottom: 12),
-        snackPosition: SnackPosition.TOP,
-        backgroundColor: SDSColor.snowliveWhite,
-        colorText: SDSColor.snowliveBlack,
-        duration: Duration(milliseconds: 5000),
-      );
-      Future.delayed(Duration(milliseconds: 4500), () {
-        _isSnackbarShown.value = false;
-      });
+      CustomFullScreenDialog.cancelDialog();
       print('라이브 불가 지역');
     }
   }
@@ -405,36 +397,22 @@ class ResortHomeViewModel extends GetxController {
             }
           });
         } else {
-          CustomFullScreenDialog.cancelDialog();
           await stopForegroundLocationService();
           await stopBackgroundLocationService();
           await liveOff({"user_id": user_id}, user_id);
-          Get.snackbar(
-            '라이브 불가 지역입니다',
-            '스키장 내에서만 라이브가 활성화됩니다.',
-            margin: EdgeInsets.only(right: 20, left: 20, bottom: 12),
-            snackPosition: SnackPosition.TOP,
-            backgroundColor: SDSColor.snowliveWhite,
-            colorText: SDSColor.snowliveBlack,
-            duration: Duration(milliseconds: 5000),
-          );
+          CustomFullScreenDialog.cancelDialog();
         }
       } catch (e, stackTrace) {
+        await stopForegroundLocationService();
+        await stopBackgroundLocationService();
         CustomFullScreenDialog.cancelDialog();
-        Get.snackbar(
-          '위치서비스 오류',
-          '잠시후에 다시 시도해 주세요.',
-          margin: EdgeInsets.only(right: 20, left: 20, bottom: 12),
-          snackPosition: SnackPosition.TOP,
-          backgroundColor: SDSColor.snowliveWhite,
-          colorText: SDSColor.snowliveBlack,
-          duration: Duration(milliseconds: 5000),
-        );
         print('위치 서비스 오류: $e');
         print('Stack trace: $stackTrace');
       }
 
-    }, (bg.LocationError error) {
+    }, (bg.LocationError error) async{
+      await stopForegroundLocationService();
+      await stopBackgroundLocationService();
       CustomFullScreenDialog.cancelDialog();
       print('[onLocation] ERROR: $error 리조트 구역 벗어남');
     });

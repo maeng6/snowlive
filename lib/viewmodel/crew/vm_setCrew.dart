@@ -6,6 +6,7 @@ import 'package:com.snowlive/routes/routes.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewDetail.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewMemberList.dart';
 import 'package:com.snowlive/viewmodel/friend/vm_friendDetail.dart';
+import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
@@ -77,19 +78,18 @@ class SetCrewViewModel extends GetxController {
   Future<void> checkCrewName() async {
     if (crewName.isNotEmpty) {
       try {
-        isLoading.value = true;
         var response = await CrewAPI().checkCrewName(crewName);
         if (response.success) {
           _isCrewNameChecked.value = true; // 중복 체크 성공
+          CustomFullScreenDialog.cancelDialog();
         } else {
           _isCrewNameChecked.value = false; // 중복 체크 실패
-          Get.snackbar('오류', '이미 존재하는 크루명입니다.');
+          CustomFullScreenDialog.cancelDialog();
         }
       } catch (e) {
         _isCrewNameChecked.value = false;
-        Get.snackbar('오류', '크루명 확인 중 오류가 발생했습니다.');
+        CustomFullScreenDialog.cancelDialog();
       } finally {
-        isLoading.value = false;
         updateNextButtonState(); // 중복 체크 후 다음 버튼 활성화 상태 업데이트
       }
     }

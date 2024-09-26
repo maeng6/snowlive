@@ -151,7 +151,7 @@ class CommunityCommentDetailViewModel extends GetxController {
   Future<void> uploadCommunityReply(body) async {
     ApiResponse response = await CommunityAPI().createReply(body);
     if(response.success)
-      // _scrollController.jumpTo(0);
+      _commentModel_community.value = CommentModel_community.fromJson(response.data!);
       print('답글 업로드 완료');
     if(!response.success)
       Get.snackbar('Error', '답글 업로드 실패');

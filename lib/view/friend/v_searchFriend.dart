@@ -88,9 +88,13 @@ class SearchFriendView extends StatelessWidget {
                                           ),
                                           child: TextFormField(
                                             onFieldSubmitted: (val) async {
-                                              await _friendListViewModel.searchUser(
-                                                  _friendListViewModel.textEditingController.text);
-                                              _friendListViewModel.textEditingController.clear();
+
+                                              if(val.isNotEmpty){
+                                                await _friendListViewModel.searchUser(
+                                                    _friendListViewModel.textEditingController.text);
+                                                _friendListViewModel.textEditingController.clear();
+                                              }
+
                                             },
                                             autofocus: true,
                                             textAlignVertical: TextAlignVertical.center,
@@ -146,7 +150,7 @@ class SearchFriendView extends StatelessWidget {
                                 Obx(() {
                                   // 처음 진입 후 검색 시도 전 처리
                                   if(_friendListViewModel.searchFriendSuccess == false) {
-                                  // 검색된 친구 데이터가 없을 때 처리
+                                    // 검색된 친구 데이터가 없을 때 처리
                                     return Container(
                                       height: _size.height - 300,
                                       child: Center(
@@ -172,41 +176,41 @@ class SearchFriendView extends StatelessWidget {
                                         ),
                                       ),
                                     ); } else {
-                                  if (_friendListViewModel.searchFriend.userId == null) {
-                                    return Container(
-                                      height: _size.height - 300,
-                                      child: Center(
-                                        child: Column(
-                                          mainAxisAlignment: MainAxisAlignment.center,
-                                          crossAxisAlignment: CrossAxisAlignment.center,
-                                          children: [
-                                            Image.asset(
-                                              'assets/imgs/icons/icon_nodata.png',
-                                              scale: 4,
-                                              width: 73,
-                                              height: 73,
-                                            ),
-                                            SizedBox(
-                                              height: 6,
-                                            ),
-                                            Text('친구 검색 결과가 없습니다.',
-                                              style: SDSTextStyle.regular.copyWith(
-                                                  fontSize: 14,
-                                                  color: SDSColor.gray600
+                                    if (_friendListViewModel.searchFriend.userId == null) {
+                                      return Container(
+                                        height: _size.height - 300,
+                                        child: Center(
+                                          child: Column(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            crossAxisAlignment: CrossAxisAlignment.center,
+                                            children: [
+                                              Image.asset(
+                                                'assets/imgs/icons/icon_nodata.png',
+                                                scale: 4,
+                                                width: 73,
+                                                height: 73,
                                               ),
-                                            ),
-                                            Text('닉네임 전체를 정확히 입력해 주세요.',
-                                              style: SDSTextStyle.regular.copyWith(
-                                                  fontSize: 14,
-                                                  color: SDSColor.gray600
+                                              SizedBox(
+                                                height: 6,
                                               ),
-                                            )
+                                              Text('친구 검색 결과가 없습니다.',
+                                                style: SDSTextStyle.regular.copyWith(
+                                                    fontSize: 14,
+                                                    color: SDSColor.gray600
+                                                ),
+                                              ),
+                                              Text('닉네임 전체를 정확히 입력해 주세요.',
+                                                style: SDSTextStyle.regular.copyWith(
+                                                    fontSize: 14,
+                                                    color: SDSColor.gray600
+                                                ),
+                                              )
 
-                                          ],
+                                            ],
+                                          ),
                                         ),
-                                      ),
-                                    );
-                                  } }
+                                      );
+                                    } }
                                   // 검색된 친구 데이터가 있을 때 프로필 카드 및 버튼 표시
                                   return Column(
                                     children: [
@@ -214,17 +218,17 @@ class SearchFriendView extends StatelessWidget {
                                         width: 280,
                                         height: 340,
                                         decoration: BoxDecoration(
-                                          image: DecorationImage(
-                                            image: AssetImage(
-                                                'assets/imgs/profile/img_friend_profileCard.png'), // 이미지 경로
-                                            fit: BoxFit.fill,
-                                          ),
-                                          borderRadius: BorderRadius.circular(20),
-                                          border: Border.all(
-                                            style: BorderStyle.solid,
-                                            width: 4,
-                                            color: SDSColor.blue100
-                                          )
+                                            image: DecorationImage(
+                                              image: AssetImage(
+                                                  'assets/imgs/profile/img_friend_profileCard.png'), // 이미지 경로
+                                              fit: BoxFit.fill,
+                                            ),
+                                            borderRadius: BorderRadius.circular(20),
+                                            border: Border.all(
+                                                style: BorderStyle.solid,
+                                                width: 4,
+                                                color: SDSColor.blue100
+                                            )
                                         ),
                                         child: Column(
                                           children: [
@@ -285,10 +289,10 @@ class SearchFriendView extends StatelessWidget {
                                             ),
                                             SizedBox(height: 10),
                                             Text(_friendListViewModel.searchFriend.displayName ?? '',
-                                            style: SDSTextStyle.bold.copyWith(
-                                              fontSize: 18,
-                                              color: SDSColor.gray900
-                                            ),),
+                                              style: SDSTextStyle.bold.copyWith(
+                                                  fontSize: 18,
+                                                  color: SDSColor.gray900
+                                              ),),
                                             Text(
                                               _friendListViewModel.searchFriend.crewName ?? '개인',
                                               style: SDSTextStyle.regular.copyWith(
@@ -349,7 +353,7 @@ class SearchFriendView extends StatelessWidget {
                                           style: TextButton.styleFrom(
                                             padding: EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                                             side:BorderSide(
-                                              color: SDSColor.gray200
+                                                color: SDSColor.gray200
                                             ),
                                             shape: RoundedRectangleBorder(
                                               borderRadius: BorderRadius.all(Radius.circular(6)),
@@ -371,114 +375,114 @@ class SearchFriendView extends StatelessWidget {
                       ),
                     ),
                     (_friendListViewModel.searchFriend.userId != _userViewModel.user.user_id && _friendListViewModel.searchFriendSuccess == true)
-                     ? Positioned(
-                        bottom: 0,
-                        left: 0,
-                        right: 0,
-                        child: Container(
-                          color: SDSColor.snowliveWhite,
-                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-                          child: ElevatedButton(
-                            onPressed: () async {
-                              Get.dialog(
-                                  AlertDialog(
-                                    backgroundColor: SDSColor.snowliveWhite,
-                                    contentPadding: EdgeInsets.only(bottom: 0, left: 28, right: 28, top: 36),
-                                    elevation: 0,
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(16)),
-                                    buttonPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
-                                    content: Container(
-                                      height: 40,
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.center,
+                        ? Positioned(
+                      bottom: 0,
+                      left: 0,
+                      right: 0,
+                      child: Container(
+                        color: SDSColor.snowliveWhite,
+                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                        child: ElevatedButton(
+                          onPressed: () async {
+                            Get.dialog(
+                                AlertDialog(
+                                  backgroundColor: SDSColor.snowliveWhite,
+                                  contentPadding: EdgeInsets.only(bottom: 0, left: 28, right: 28, top: 36),
+                                  elevation: 0,
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(16)),
+                                  buttonPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+                                  content: Container(
+                                    height: 40,
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          '친구등록 요청을 보내시겠습니까?',
+                                          style: SDSTextStyle.bold.copyWith(
+                                              fontSize: 15,
+                                              color: SDSColor.gray900),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  actions: [
+                                    Padding(
+                                      padding: EdgeInsets.only(top: 10, left: 16, right: 16),
+                                      child: Row(
                                         children: [
-                                          Text(
-                                            '친구등록 요청을 보내시겠습니까?',
-                                            style: SDSTextStyle.bold.copyWith(
-                                                fontSize: 15,
-                                                color: SDSColor.gray900),
+                                          Expanded(
+                                            child: Container(
+                                              child: TextButton(
+                                                  onPressed: () async {
+                                                    Navigator.pop(context);
+                                                  },
+                                                  style: TextButton.styleFrom(
+                                                    backgroundColor: Colors.transparent, // 배경색 투명
+                                                    splashFactory: NoSplash.splashFactory, // 터치 시 효과 제거
+                                                  ),
+                                                  child: Text('취소',
+                                                    style: SDSTextStyle.bold.copyWith(
+                                                      fontSize: 17,
+                                                      color: SDSColor.gray500,
+                                                    ),
+                                                  )
+                                              ),
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            width: 10,
+                                          ),
+                                          Expanded(
+                                            child: Container(
+                                              child: TextButton(
+                                                  onPressed: () async {
+                                                    Navigator.pop(context);
+                                                    CustomFullScreenDialog.showDialog();
+                                                    await _friendDetailViewModel.sendFriendRequest({
+                                                      "user_id": _userViewModel.user.user_id,    //필수 - 신청자 (나)
+                                                      "friend_user_id": _friendDetailViewModel.friendDetailModel.friendUserInfo.userId    //필수 - 신청받는사람
+                                                    });
+                                                    CustomFullScreenDialog.cancelDialog();
+                                                  },
+                                                  style: TextButton.styleFrom(
+                                                    backgroundColor: Colors.transparent, // 배경색 투명
+                                                    splashFactory: NoSplash.splashFactory, // 터치 시 효과 제거
+                                                  ),
+                                                  child: Text('요청하기',
+                                                    style: SDSTextStyle.bold.copyWith(
+                                                      fontSize: 17,
+                                                      color: SDSColor.snowliveBlue,
+                                                    ),
+                                                  )
+                                              ),
+                                            ),
                                           ),
                                         ],
+                                        mainAxisAlignment: MainAxisAlignment.end,
                                       ),
-                                    ),
-                                    actions: [
-                                      Padding(
-                                        padding: EdgeInsets.only(top: 10, left: 16, right: 16),
-                                        child: Row(
-                                          children: [
-                                            Expanded(
-                                              child: Container(
-                                                child: TextButton(
-                                                    onPressed: () async {
-                                                      Navigator.pop(context);
-                                                    },
-                                                    style: TextButton.styleFrom(
-                                                      backgroundColor: Colors.transparent, // 배경색 투명
-                                                      splashFactory: NoSplash.splashFactory, // 터치 시 효과 제거
-                                                    ),
-                                                    child: Text('취소',
-                                                      style: SDSTextStyle.bold.copyWith(
-                                                        fontSize: 17,
-                                                        color: SDSColor.gray500,
-                                                      ),
-                                                    )
-                                                ),
-                                              ),
-                                            ),
-                                            SizedBox(
-                                              width: 10,
-                                            ),
-                                            Expanded(
-                                              child: Container(
-                                                child: TextButton(
-                                                    onPressed: () async {
-                                                      Navigator.pop(context);
-                                                      CustomFullScreenDialog.showDialog();
-                                                      await _friendDetailViewModel.sendFriendRequest({
-                                                        "user_id": _userViewModel.user.user_id,    //필수 - 신청자 (나)
-                                                        "friend_user_id": _friendDetailViewModel.friendDetailModel.friendUserInfo.userId    //필수 - 신청받는사람
-                                                      });
-                                                      CustomFullScreenDialog.cancelDialog();
-                                                    },
-                                                    style: TextButton.styleFrom(
-                                                      backgroundColor: Colors.transparent, // 배경색 투명
-                                                      splashFactory: NoSplash.splashFactory, // 터치 시 효과 제거
-                                                    ),
-                                                    child: Text('요청하기',
-                                                      style: SDSTextStyle.bold.copyWith(
-                                                        fontSize: 17,
-                                                        color: SDSColor.snowliveBlue,
-                                                      ),
-                                                    )
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                          mainAxisAlignment: MainAxisAlignment.end,
-                                        ),
-                                      )
-                                    ],
-                                  ));
-                            },
-                            child: Text(
-                              '친구 요청하기',
-                              style: SDSTextStyle.bold.copyWith(
-                                  color: SDSColor.snowliveWhite, fontSize: 16),
+                                    )
+                                  ],
+                                ));
+                          },
+                          child: Text(
+                            '친구 요청하기',
+                            style: SDSTextStyle.bold.copyWith(
+                                color: SDSColor.snowliveWhite, fontSize: 16),
+                          ),
+                          style: TextButton.styleFrom(
+                            shape: const RoundedRectangleBorder(
+                              borderRadius: BorderRadius.all(Radius.circular(6)),
                             ),
-                            style: TextButton.styleFrom(
-                              shape: const RoundedRectangleBorder(
-                                borderRadius: BorderRadius.all(Radius.circular(6)),
-                              ),
-                              elevation: 0,
-                              splashFactory: InkRipple.splashFactory,
-                              minimumSize: Size(double.infinity, 48),
-                              backgroundColor: SDSColor.snowliveBlue,
-                            ),
+                            elevation: 0,
+                            splashFactory: InkRipple.splashFactory,
+                            minimumSize: Size(double.infinity, 48),
+                            backgroundColor: SDSColor.snowliveBlue,
                           ),
                         ),
-                      )
-                    : Container(),
+                      ),
+                    )
+                        : Container(),
                   ],
                 )),
               ),

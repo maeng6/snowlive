@@ -74,6 +74,7 @@ class CommunityCommentDetailView extends StatelessWidget {
                 children: [
                   Expanded(
                     child: SingleChildScrollView(
+                      controller: _communityCommentDetailViewModel.scrollController,
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 16),
                         child: Container(
@@ -751,7 +752,7 @@ class CommunityCommentDetailView extends StatelessWidget {
                           color: Colors.white,
                           child: Padding(
                             padding: EdgeInsets.only(top: 12, left: 12, right: 12, bottom: 12),
-                            child: Row(
+                            child: Obx(()=>Row(
                               children: [
                                 Expanded(
                                   child: TextFormField(
@@ -767,36 +768,28 @@ class CommunityCommentDetailView extends StatelessWidget {
                                     autocorrect: false,
                                     textInputAction: TextInputAction.newline,
                                     decoration: InputDecoration(
-                                      floatingLabelBehavior: FloatingLabelBehavior.never,
-                                      errorMaxLines: 2,
-                                      errorStyle: SDSTextStyle.regular.copyWith(fontSize: 12, color: SDSColor.red),
-                                      labelStyle: SDSTextStyle.regular.copyWith(color: SDSColor.gray400, fontSize: 14),
-                                      hintStyle: SDSTextStyle.regular.copyWith(color: SDSColor.gray400, fontSize: 14),
                                       suffixIcon: IconButton(
                                         splashColor: Colors.transparent,
                                         onPressed: () async {
-                                          CustomFullScreenDialog.showDialog();
                                           if (_communityCommentDetailViewModel.textEditingController.text.trim().isEmpty) {
                                             return;
                                           }
+                                          CustomFullScreenDialog.showDialog();
                                           await _communityCommentDetailViewModel.uploadCommunityReply({
                                             "comment_id": _communityCommentDetailViewModel.commentModel_community.commentId.toString(),
                                             "content": _communityCommentDetailViewModel.textEditingController.text,
                                             "user_id": _userViewModel.user.user_id.toString()
                                           });
-                                          await _communityCommentDetailViewModel.fetchCommunityCommentDetail(
-                                              commentId: _communityCommentDetailViewModel.commentModel_community.commentId!
-                                          );
-                                          FocusScope.of(context).unfocus();
                                           _communityCommentDetailViewModel.textEditingController.clear();
+                                          _communityCommentDetailViewModel.scrollController.jumpTo(
+                                            _communityCommentDetailViewModel.scrollController.position.maxScrollExtent,
+                                          );
                                           CustomFullScreenDialog.cancelDialog();
                                           await _communityDetailViewModel.fetchCommunityComments(
-                                              communityId: _communityDetailViewModel.communityDetail.communityId!,
+                                              communityId: _communityCommentDetailViewModel.commentModel_community.communityId!,
                                               userId: _userViewModel.user.user_id,
                                               isLoading_indi: true);
                                           await _communityBulletinListViewModel.fetchCommunityList_total(userId: _userViewModel.user.user_id,categoryMain: '게시판');
-
-
                                         },
                                         icon: (_communityCommentDetailViewModel.isCommentButtonEnabled.value == false)
                                             ? Image.asset(
@@ -810,6 +803,11 @@ class CommunityCommentDetailView extends StatelessWidget {
                                           height: 27,
                                         ),
                                       ),
+                                      floatingLabelBehavior: FloatingLabelBehavior.never,
+                                      errorMaxLines: 2,
+                                      errorStyle: SDSTextStyle.regular.copyWith(fontSize: 12, color: SDSColor.red),
+                                      labelStyle: SDSTextStyle.regular.copyWith(color: SDSColor.gray400, fontSize: 14),
+                                      hintStyle: SDSTextStyle.regular.copyWith(color: SDSColor.gray400, fontSize: 14),
                                       hintText: '답글을 입력하세요',
                                       contentPadding: EdgeInsets.only(top: 10, bottom: 10, left: 12, right: 50),
                                       fillColor: SDSColor.gray50,
@@ -837,7 +835,7 @@ class CommunityCommentDetailView extends StatelessWidget {
                                   ),
                                 ),
                               ],
-                            ),
+                            )),
                           ),
                         ),
                         Positioned(

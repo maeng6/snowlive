@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:com.snowlive/util/util_1.dart';
+import 'package:com.snowlive/viewmodel/fleamarket/vm_fleamarketDetail.dart';
+import 'package:com.snowlive/viewmodel/fleamarket/vm_fleamarketList.dart';
 import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
@@ -14,6 +16,8 @@ import '../../viewmodel/vm_user.dart';
 class FleamarketCommentDetailView extends StatelessWidget {
 
   final FleamarketCommentDetailViewModel _fleamarketCommentDetailViewModel = Get.find<FleamarketCommentDetailViewModel>();
+  final FleamarketDetailViewModel _fleamarketDetailViewModel = Get.find<FleamarketDetailViewModel>();
+  final FleamarketListViewModel _fleamarketListViewModel = Get.find<FleamarketListViewModel>();
   final UserViewModel _userViewModel = Get.find<UserViewModel>();
   @override
   Widget build(BuildContext context) {
@@ -71,6 +75,7 @@ class FleamarketCommentDetailView extends StatelessWidget {
                 children: [
                   Expanded(
                     child: SingleChildScrollView(
+                      controller: _fleamarketCommentDetailViewModel.scrollController,
                       child: Padding(
                         padding: EdgeInsets.symmetric(horizontal: 16),
                         child: Container(
@@ -870,22 +875,27 @@ class FleamarketCommentDetailView extends StatelessWidget {
                                       suffixIcon: IconButton(
                                         splashColor: Colors.transparent,
                                         onPressed: () async {
-                                          CustomFullScreenDialog.showDialog();
                                           if (_fleamarketCommentDetailViewModel.textEditingController.text.trim().isEmpty) {
                                             return;
                                           }
+                                          CustomFullScreenDialog.showDialog();
                                           await _fleamarketCommentDetailViewModel.uploadFleamarketReply({
                                             "comment_id": _fleamarketCommentDetailViewModel.commentModel_flea.commentId.toString(),
                                             "content": _fleamarketCommentDetailViewModel.textEditingController.text,
                                             "user_id": _userViewModel.user.user_id.toString(),
                                             "secret": _fleamarketCommentDetailViewModel.isSecret
                                           });
-                                          await _fleamarketCommentDetailViewModel.fetchFleamarketCommentDetail(
-                                              commentId: _fleamarketCommentDetailViewModel.commentModel_flea.commentId!
-                                          );
                                           FocusScope.of(context).unfocus();
                                           _fleamarketCommentDetailViewModel.textEditingController.clear();
+                                          _fleamarketCommentDetailViewModel.scrollController.jumpTo(
+                                              _fleamarketCommentDetailViewModel.scrollController.position.maxScrollExtent);
                                           CustomFullScreenDialog.cancelDialog();
+                                          await _fleamarketDetailViewModel.fetchFleamarketComments(
+                                              fleaId: _fleamarketDetailViewModel.fleamarketDetail.fleaId!,
+                                              userId: _userViewModel.user.user_id,
+                                              isLoading_indi: true
+                                          );
+                                          await _fleamarketListViewModel.fetchFleamarketData_total(userId: _userViewModel.user.user_id);
                                         },
                                         icon: (_fleamarketCommentDetailViewModel.isCommentButtonEnabled.value == false)
                                             ? Image.asset(

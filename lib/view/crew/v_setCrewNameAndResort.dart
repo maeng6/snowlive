@@ -105,9 +105,16 @@ class SetCrewNameAndResortView extends StatelessWidget {
                             ? () async {
                           CustomFullScreenDialog.showDialog();
                           await _setCrewViewModel.checkCrewName();
-                          CustomFullScreenDialog.cancelDialog();
-                          FocusScope.of(context).unfocus();
                           if (!_setCrewViewModel.isCrewNameChecked) {
+                            Get.snackbar(
+                              '이미 존재하는 크루명입니다',
+                              '다른 크루명을 입력해 주세요',
+                              margin: EdgeInsets.only(right: 20, left: 20, bottom: 12),
+                              snackPosition: SnackPosition.TOP,
+                              backgroundColor: SDSColor.snowliveWhite.withOpacity(0.2),
+                              colorText: SDSColor.snowliveBlack,
+                              duration: Duration(milliseconds: 3000),
+                            );
                             print('이미 존재하는 크루명입니다');
                           }
                         }
