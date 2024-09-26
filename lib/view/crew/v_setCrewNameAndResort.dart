@@ -43,243 +43,245 @@ class SetCrewNameAndResortView extends StatelessWidget {
             titleSpacing: 0,
           ),
         ),
-        body: Padding(
-          padding: EdgeInsets.only(
-            top: _statusBarSize + 54,
-            left: 16,
-            right: 16,
-            bottom: MediaQuery.of(context).padding.bottom,
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                '라이브크루 정보를 입력해 주세요.',
-                style: SDSTextStyle.bold.copyWith(
-                  fontSize: 22,
-                  color: SDSColor.gray900
-                ),
-              ),
-              SizedBox(height: 8),
-              Text(
-                '라이브크루 생성을 위해 아래 정보를 입력해 주세요.',
-                style: SDSTextStyle.regular.copyWith(
-                  color: SDSColor.gray500,
-                  fontSize: 14,
-                ),
-              ),
-              SizedBox(height: 40),
-              Padding(
-                padding: const EdgeInsets.only(left: 4),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text('크루명', style: SDSTextStyle.regular.copyWith(
-                        fontSize: 12,
-                        color: SDSColor.gray900
-                    ),),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 2, top: 2),
-                      child: Container(
-                        width: 4,
-                        height: 4,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          color: SDSColor.red,
-                        ),
-                      ),
-                    )
-                  ],
-                ),
-              ),
-              SizedBox(height: 8),
-              Form(
-                key: _setCrewViewModel.formKey,
-                child: Stack(
-                  children: [
-                    Container(
-                      height: 93,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          TextFormField(
-                            textAlignVertical: TextAlignVertical.center,
-                            cursorColor: SDSColor.snowliveBlue,
-                            cursorHeight: 16,
-                            cursorWidth: 2,
-                            autovalidateMode: AutovalidateMode.onUserInteraction,
-                            style: SDSTextStyle.regular.copyWith(fontSize: 15),
-                            strutStyle: StrutStyle(fontSize: 14, leading: 0),
-                            inputFormatters: [
-                              FilteringTextInputFormatter.allow(
-                                RegExp("[a-zA-Z0-9ㄱ-ㅎㅏ-ㅣ가-힣]"),
-                              ),
-                            ],
-                            controller: _setCrewViewModel.textEditingController,
-                            decoration: InputDecoration(
-                              floatingLabelBehavior: FloatingLabelBehavior.never,
-                              errorMaxLines: 2,
-                              errorStyle: SDSTextStyle.regular.copyWith(fontSize: 12, color: SDSColor.red),
-                              labelStyle: SDSTextStyle.regular.copyWith(color: SDSColor.gray400, fontSize: 14),
-                              hintStyle: SDSTextStyle.regular.copyWith(color: SDSColor.gray400, fontSize: 14),
-                              hintText: '크루 이름을 입력해 주세요(최대 10자 이내)',
-                              contentPadding: EdgeInsets.only(top: 10, bottom: 10, left: 12, right: 50),
-                              filled: true,
-                              fillColor: SDSColor.gray50,
-                              hoverColor: SDSColor.snowliveBlue,
-                              focusColor: SDSColor.snowliveBlue,
-                              border: OutlineInputBorder(
-                                borderSide: BorderSide(color: SDSColor.gray50),
-                                borderRadius: BorderRadius.circular(6),
-                              ),
-                              errorBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: SDSColor.red, strokeAlign: BorderSide.strokeAlignInside, width: 1.5),
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: SDSColor.snowliveBlue, strokeAlign: BorderSide.strokeAlignInside, width: 1.5),
-                              ),
-                              enabledBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: Colors.transparent),
-                                borderRadius: BorderRadius.circular(6),
-                              ),
-                            ),
-                            validator: (val) => _setCrewViewModel.validateCrewName(val),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.only(left: 4, top: 4),
-                            child: Text('크루명은 최초 설정 후 수정 불가합니다.',
-                              style: SDSTextStyle.regular.copyWith(
-                                fontSize: 12,
-                                color: SDSColor.gray500,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Positioned(
-                      right: 0,
-                      top: 1,
-                      child: TextButton(
-                        style: ButtonStyle(
-                          surfaceTintColor: WidgetStateColor.transparent,
-                          backgroundColor: WidgetStateColor.transparent,
-                          overlayColor: WidgetStateColor.transparent,
-                        ),
-                        onPressed: (_setCrewViewModel.crewName.isNotEmpty && !_setCrewViewModel.isCrewNameChecked)
-                            ? () async {
-                          CustomFullScreenDialog.showDialog();
-                          await _setCrewViewModel.checkCrewName();
-                          if (!_setCrewViewModel.isCrewNameChecked) {
-                            Get.snackbar(
-                              '이미 존재하는 크루명입니다',
-                              '다른 크루명을 입력해 주세요',
-                              margin: EdgeInsets.only(right: 20, left: 20, bottom: 12),
-                              snackPosition: SnackPosition.BOTTOM,
-                              backgroundColor: SDSColor.snowliveWhite.withOpacity(0.2),
-                              colorText: SDSColor.snowliveBlack,
-                              duration: Duration(milliseconds: 3000),
-                            );
-                            print('이미 존재하는 크루명입니다');
-                          }
-                        }
-                            : null,
-                        child: Obx(() => Text(
-                          _setCrewViewModel.isCrewNameChecked ? '검사완료' : '중복검사',
-                          style: TextStyle(
-                            color: (_setCrewViewModel.crewName.isNotEmpty && !_setCrewViewModel.isCrewNameChecked)
-                                ? SDSColor.snowliveBlue
-                                : SDSColor.gray400,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        )),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-
-              Padding(
-                padding: const EdgeInsets.only(top: 12, left: 4),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text('베이스 스키장', style: SDSTextStyle.regular.copyWith(
-                        fontSize: 13,
-                        color: SDSColor.gray900
-                    ),),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 2, top: 2),
-                      child: Container(
-                        width: 4,
-                        height: 4,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          color: SDSColor.red,
-                        ),
-                      ),
-                    )
-                  ],
-                ),
-              ),
-              SizedBox(height: 8),
-              GestureDetector(
-                onTap: () async {
-                  int? selectedIndex = await showModalBottomSheet<int>(
-                    constraints: BoxConstraints(
-                      maxHeight: _size.height - _statusBarSize - 44,
-                    ),
-                    backgroundColor: Colors.transparent,
-                    context: context,
-                    isScrollControlled: true,
-                    enableDrag: true,
-                    isDismissible: true,
-                    builder: (context) => FavoriteResortWidget(),
-                  );
-                  if (selectedIndex != null) {
-                    _setCrewViewModel.selectResort(selectedIndex);
-                  }
-                },
-                child: Container(
-                  height: 48,
-                  decoration: BoxDecoration(
-                    color: SDSColor.gray50,
-                    borderRadius: BorderRadius.circular(6),
+        body: SafeArea(
+          child: Padding(
+            padding: EdgeInsets.only(
+              top: 10,
+              left: 16,
+              right: 16,
+              bottom: MediaQuery.of(context).padding.bottom,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  '라이브크루 정보를 입력해 주세요.',
+                  style: SDSTextStyle.bold.copyWith(
+                    fontSize: 22,
+                    color: SDSColor.gray900
                   ),
-                  padding: EdgeInsets.symmetric(horizontal: 12),
-                  child: Obx(() => Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                ),
+                SizedBox(height: 8),
+                Text(
+                  '라이브크루 생성을 위해 아래 정보를 입력해 주세요.',
+                  style: SDSTextStyle.regular.copyWith(
+                    color: SDSColor.gray500,
+                    fontSize: 14,
+                  ),
+                ),
+                SizedBox(height: 40),
+                Padding(
+                  padding: const EdgeInsets.only(left: 4),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        _setCrewViewModel.selectedResortName.isEmpty
-                            ? '자주가는 스키장 선택'
-                            : _setCrewViewModel.selectedResortName,
-                        style: SDSTextStyle.regular.copyWith(
-                          color: _setCrewViewModel.selectedResortName.isEmpty
-                              ? SDSColor.gray400
-                              : SDSColor.gray900,
-                          fontSize: 14,
+                      Text('크루명', style: SDSTextStyle.regular.copyWith(
+                          fontSize: 12,
+                          color: SDSColor.gray900
+                      ),),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 2, top: 2),
+                        child: Container(
+                          width: 4,
+                          height: 4,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            color: SDSColor.red,
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+                SizedBox(height: 8),
+                Form(
+                  key: _setCrewViewModel.formKey,
+                  child: Stack(
+                    children: [
+                      Container(
+                        height: 93,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            TextFormField(
+                              textAlignVertical: TextAlignVertical.center,
+                              cursorColor: SDSColor.snowliveBlue,
+                              cursorHeight: 16,
+                              cursorWidth: 2,
+                              autovalidateMode: AutovalidateMode.onUserInteraction,
+                              style: SDSTextStyle.regular.copyWith(fontSize: 15),
+                              strutStyle: StrutStyle(fontSize: 14, leading: 0),
+                              inputFormatters: [
+                                FilteringTextInputFormatter.allow(
+                                  RegExp("[a-zA-Z0-9ㄱ-ㅎㅏ-ㅣ가-힣]"),
+                                ),
+                              ],
+                              controller: _setCrewViewModel.textEditingController,
+                              decoration: InputDecoration(
+                                floatingLabelBehavior: FloatingLabelBehavior.never,
+                                errorMaxLines: 2,
+                                errorStyle: SDSTextStyle.regular.copyWith(fontSize: 12, color: SDSColor.red),
+                                labelStyle: SDSTextStyle.regular.copyWith(color: SDSColor.gray400, fontSize: 14),
+                                hintStyle: SDSTextStyle.regular.copyWith(color: SDSColor.gray400, fontSize: 14),
+                                hintText: '크루 이름을 입력해 주세요(최대 10자 이내)',
+                                contentPadding: EdgeInsets.only(top: 10, bottom: 10, left: 12, right: 50),
+                                filled: true,
+                                fillColor: SDSColor.gray50,
+                                hoverColor: SDSColor.snowliveBlue,
+                                focusColor: SDSColor.snowliveBlue,
+                                border: OutlineInputBorder(
+                                  borderSide: BorderSide(color: SDSColor.gray50),
+                                  borderRadius: BorderRadius.circular(6),
+                                ),
+                                errorBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(color: SDSColor.red, strokeAlign: BorderSide.strokeAlignInside, width: 1.5),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(color: SDSColor.snowliveBlue, strokeAlign: BorderSide.strokeAlignInside, width: 1.5),
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.transparent),
+                                  borderRadius: BorderRadius.circular(6),
+                                ),
+                              ),
+                              validator: (val) => _setCrewViewModel.validateCrewName(val),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.only(left: 4, top: 4),
+                              child: Text('크루명은 최초 설정 후 수정 불가합니다.',
+                                style: SDSTextStyle.regular.copyWith(
+                                  fontSize: 12,
+                                  color: SDSColor.gray500,
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
-                      ExtendedImage.asset(
-                        'assets/imgs/icons/icon_dropdown.png',
-                        fit: BoxFit.cover,
-                        width: 20,
+                      Positioned(
+                        right: 0,
+                        top: 1,
+                        child: TextButton(
+                          style: ButtonStyle(
+                            surfaceTintColor: WidgetStateColor.transparent,
+                            backgroundColor: WidgetStateColor.transparent,
+                            overlayColor: WidgetStateColor.transparent,
+                          ),
+                          onPressed: (_setCrewViewModel.crewName.isNotEmpty && !_setCrewViewModel.isCrewNameChecked)
+                              ? () async {
+                            CustomFullScreenDialog.showDialog();
+                            await _setCrewViewModel.checkCrewName();
+                            if (!_setCrewViewModel.isCrewNameChecked) {
+                              Get.snackbar(
+                                '이미 존재하는 크루명입니다',
+                                '다른 크루명을 입력해 주세요',
+                                margin: EdgeInsets.only(right: 20, left: 20, bottom: 12),
+                                snackPosition: SnackPosition.BOTTOM,
+                                backgroundColor: SDSColor.snowliveWhite.withOpacity(0.2),
+                                colorText: SDSColor.snowliveBlack,
+                                duration: Duration(milliseconds: 3000),
+                              );
+                              print('이미 존재하는 크루명입니다');
+                            }
+                          }
+                              : null,
+                          child: Obx(() => Text(
+                            _setCrewViewModel.isCrewNameChecked ? '검사완료' : '중복검사',
+                            style: TextStyle(
+                              color: (_setCrewViewModel.crewName.isNotEmpty && !_setCrewViewModel.isCrewNameChecked)
+                                  ? SDSColor.snowliveBlue
+                                  : SDSColor.gray400,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          )),
+                        ),
                       ),
                     ],
-                  )),
-                ),
-              ),
-              Padding(
-                padding: EdgeInsets.only(left: 4, top: 4),
-                child: Text('베이스 스키장은 최초 설정 후 수정 불가합니다.',
-                  style: SDSTextStyle.regular.copyWith(
-                    fontSize: 12,
-                    color: SDSColor.gray500,
                   ),
                 ),
-              ),
-            ],
+
+                Padding(
+                  padding: const EdgeInsets.only(top: 12, left: 4),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('베이스 스키장', style: SDSTextStyle.regular.copyWith(
+                          fontSize: 13,
+                          color: SDSColor.gray900
+                      ),),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 2, top: 2),
+                        child: Container(
+                          width: 4,
+                          height: 4,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            color: SDSColor.red,
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+                SizedBox(height: 8),
+                GestureDetector(
+                  onTap: () async {
+                    int? selectedIndex = await showModalBottomSheet<int>(
+                      constraints: BoxConstraints(
+                        maxHeight: _size.height - _statusBarSize - 44,
+                      ),
+                      backgroundColor: Colors.transparent,
+                      context: context,
+                      isScrollControlled: true,
+                      enableDrag: true,
+                      isDismissible: true,
+                      builder: (context) => FavoriteResortWidget(),
+                    );
+                    if (selectedIndex != null) {
+                      _setCrewViewModel.selectResort(selectedIndex);
+                    }
+                  },
+                  child: Container(
+                    height: 48,
+                    decoration: BoxDecoration(
+                      color: SDSColor.gray50,
+                      borderRadius: BorderRadius.circular(6),
+                    ),
+                    padding: EdgeInsets.symmetric(horizontal: 12),
+                    child: Obx(() => Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          _setCrewViewModel.selectedResortName.isEmpty
+                              ? '자주가는 스키장 선택'
+                              : _setCrewViewModel.selectedResortName,
+                          style: SDSTextStyle.regular.copyWith(
+                            color: _setCrewViewModel.selectedResortName.isEmpty
+                                ? SDSColor.gray400
+                                : SDSColor.gray900,
+                            fontSize: 14,
+                          ),
+                        ),
+                        ExtendedImage.asset(
+                          'assets/imgs/icons/icon_dropdown.png',
+                          fit: BoxFit.cover,
+                          width: 20,
+                        ),
+                      ],
+                    )),
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(left: 4, top: 4),
+                  child: Text('베이스 스키장은 최초 설정 후 수정 불가합니다.',
+                    style: SDSTextStyle.regular.copyWith(
+                      fontSize: 12,
+                      color: SDSColor.gray500,
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
         bottomNavigationBar: Padding(
