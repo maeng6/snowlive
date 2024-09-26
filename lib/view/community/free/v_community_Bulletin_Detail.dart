@@ -515,6 +515,10 @@ class CommunityBulletinDetailView extends StatelessWidget {
                     child: Container(
                       height: _size.height - MediaQuery.of(context).viewPadding.top - 58 - MediaQuery.of(context).viewPadding.bottom - 88,
                       child: RefreshIndicator(
+                        strokeWidth: 2,
+                        edgeOffset: 20,
+                        backgroundColor: SDSColor.snowliveWhite,
+                        color: SDSColor.snowliveBlue,
                         onRefresh: () async{
                           await _communityDetailViewModel.fetchCommunityDetail(
                               _communityDetailViewModel.communityDetail.communityId!,
@@ -522,6 +526,7 @@ class CommunityBulletinDetailView extends StatelessWidget {
                           );
                         },
                         child: SingleChildScrollView(
+                          physics: AlwaysScrollableScrollPhysics(),
                           controller: _communityDetailViewModel.scrollController,
                           child: Column(
                             children: [

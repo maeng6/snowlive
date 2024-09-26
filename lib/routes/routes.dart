@@ -1,6 +1,6 @@
 import 'package:com.snowlive/view/community/free/v_community_Bulletin_Detail.dart';
-import 'package:com.snowlive/view/community/free/v_community_bulletin_Upload.dart';
-import 'package:com.snowlive/view/community/free/v_community_bulletin_update.dart';
+import 'package:com.snowlive/view/community/free/v_community_Upload.dart';
+import 'package:com.snowlive/view/community/free/v_community_update.dart';
 import 'package:com.snowlive/view/community/free/v_community_comment_detail.dart';
 import 'package:com.snowlive/view/community/v_community_main.dart';
 import 'package:com.snowlive/view/crew/v_crewApplication_crew.dart';
@@ -205,7 +205,7 @@ class AppRoutes {
     ),
     GetPage(
       name: bulletinUpload,
-      page: () => CommunityFreeUpload(),
+      page: () => CommunityBulletinUpload(),
       binding: BulletinUploadBinding(),
     ),
     GetPage(

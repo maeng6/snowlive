@@ -5,9 +5,9 @@ import 'package:com.snowlive/viewmodel/community/vm_communityUpload.dart';
 import 'package:com.snowlive/viewmodel/vm_user.dart';
 import 'package:com.snowlive/widget/w_bulletin_quill_toolbar.dart';
 import 'package:com.snowlive/widget/w_category_main_commu_bulletin.dart';
+import 'package:com.snowlive/widget/w_category_main_commu_event.dart';
 import 'package:com.snowlive/widget/w_category_sub_commu_bulletin_room.dart';
 import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
-import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_quill/flutter_quill.dart';
@@ -15,7 +15,7 @@ import 'package:get/get.dart';
 
 import '../../../widget/w_community_Free_Quill_editor.dart';
 
-class CommunityFreeUpload extends StatelessWidget {
+class CommunityBulletinUpload extends StatelessWidget {
 
   final UserViewModel _userViewModel = Get.find<UserViewModel>();
   final CommunityUploadViewModel _communityUploadViewModel = Get.find<CommunityUploadViewModel>();
@@ -189,7 +189,9 @@ class CommunityFreeUpload extends StatelessWidget {
                                           ),
                                         ),
                                         SizedBox(height: 8),
-                                        Obx(() => Row(
+                                        Obx(() =>
+                                        (_communityBulletinListViewModel.tapName == '게시판')
+                                            ?Row(
                                           children: [
                                             Column(
                                               children: [
@@ -291,7 +293,60 @@ class CommunityFreeUpload extends StatelessWidget {
                                             : Container(),
 
                                           ],
-                                        )),
+                                        )
+                                            :Row(
+                                          children: [
+                                            Column(
+                                              children: [
+                                                GestureDetector(
+                                                  onTap: () async {
+                                                    selectedCategory_main = await showModalBottomSheet<String>(
+                                                      constraints: BoxConstraints(
+                                                        maxHeight: 360,
+                                                      ),
+                                                      backgroundColor: Colors.transparent,
+                                                      context: context,
+                                                      isScrollControlled: true,
+                                                      builder: (context) => CategoryMainCommuEventWidget(),
+                                                    );
+                                                    if(_communityUploadViewModel.isCategorySelected==true)
+                                                      _communityUploadViewModel.resetCategorySub();
+                                                    if(selectedCategory_main != null)
+                                                      _communityUploadViewModel.selectCategoryMain(selectedCategory_main!);
+                                                    _communityUploadViewModel.setIsSelectedCategoryFalse();
+                                                  },
+                                                  child: Container(
+                                                    width: _size.width - 32,
+                                                    height: 48,
+                                                    decoration: BoxDecoration(
+                                                      color: SDSColor.gray50,
+                                                      borderRadius: BorderRadius.circular(6),
+                                                    ),
+                                                    padding: EdgeInsets.symmetric(horizontal: 12),
+                                                    child: Obx(()=>Row(
+                                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                      children: [
+                                                        Text(_communityUploadViewModel.selectedCategoryMain,
+                                                          style: SDSTextStyle.regular.copyWith(
+                                                            color: _communityUploadViewModel.selectedCategoryMain == '상위 카테고리' ? SDSColor.gray400 : SDSColor.gray900,
+                                                            fontSize: 14,
+                                                          ),
+                                                        ),
+                                                        Image.asset(
+                                                          'assets/imgs/icons/icon_dropdown.png',
+                                                          fit: BoxFit.cover,
+                                                          width: 20,
+                                                        ),
+                                                      ],
+                                                    )),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+
+                                          ],
+                                        )
+                                        ),
                                       ],
                                     ),
                                   ),
@@ -356,8 +411,11 @@ class CommunityFreeUpload extends StatelessWidget {
 
                                 CustomFullScreenDialog.showDialog();
                                   await _communityUploadViewModel.createCommunityPost({
-                                    "user_id": _userViewModel.user.user_id.toString(),                 // 필수 - 유저 ID
-                                    "category_main": "게시판",    // 필수 - 메인 카테고리
+                                    "user_id": _userViewModel.user.user_id.toString(), // 필수 - 유저 ID
+                                    "category_main":
+                                    (_communityBulletinListViewModel.tapName=='게시판')
+                                    ? "게시판"
+                                    : "이벤트",    // 필수 - 메인 카테고리
                                     "category_sub": "${_communityUploadViewModel.selectedCategoryMain}",     // 필수 - 서브 카테고리
                                     "category_sub2": "${_communityUploadViewModel.selectedCategorySub}",     // 선택 - 시즌방서브카테고리
                                     "title": "${_communityUploadViewModel.textEditingController_title.text}",     // 필수 - 제목
@@ -383,7 +441,7 @@ class CommunityFreeUpload extends StatelessWidget {
 
                                   CustomFullScreenDialog.cancelDialog();
                                   Navigator.pop(context);
-                                  await _communityBulletinListViewModel.fetchAllCommunity();
+                                  await _communityBulletinListViewModel.fetchEventCommunity();
                                 }
 
 

@@ -143,6 +143,7 @@ class BulletinUploadBinding extends Bindings {
   }
 }
 
+
 class BulletinDetailBinding extends Bindings {
   @override
   void dependencies() {

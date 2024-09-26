@@ -1,5 +1,9 @@
 import 'package:com.snowlive/data/snowliveDesignStyle.dart';
+import 'package:com.snowlive/view/community/free/v_community_Bulletin_Total_Crew.dart';
+import 'package:com.snowlive/view/community/free/v_community_Bulletin_Total_Event.dart';
+import 'package:com.snowlive/view/community/free/v_community_Bulletin_Total_Free.dart';
 import 'package:com.snowlive/view/community/free/v_community_Bulletin_Total_List.dart';
+import 'package:com.snowlive/view/community/free/v_community_Bulletin_Total_Room.dart';
 import 'package:com.snowlive/viewmodel/community/vm_communityBulletinList.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -34,7 +38,7 @@ class CommunityMainView extends StatelessWidget {
         ),
         body:
         SafeArea(
-          child: Stack(
+          child: Obx(()=>Stack(
             children: [
               Positioned(
                 top: 44,
@@ -145,6 +149,7 @@ class CommunityMainView extends StatelessWidget {
                       ],
                     ),
                   ),
+                  if(_communityBulletinListViewModel.tapName=='게시판')
                   Padding(
                     padding: const EdgeInsets.only(top: 16, bottom: 16, left: 0),
                     child: Container(
@@ -264,12 +269,21 @@ class CommunityMainView extends StatelessWidget {
                   if(_communityBulletinListViewModel.tapName=='게시판'
                   && _communityBulletinListViewModel.chipName == Community_Category_sub_bulletin.total.korean)
                     Expanded(child: CommunityBulletinTotalListView()),
-                  // if(_communityListViewModel.tapName=='행사·클리닉')
-                    // Expanded(child: BulletinEventListView()),
+                  if(_communityBulletinListViewModel.tapName=='게시판'
+                      && _communityBulletinListViewModel.chipName == Community_Category_sub_bulletin.free.korean)
+                    Expanded(child: CommunityBulletinFreeListView()),
+                  if(_communityBulletinListViewModel.tapName=='게시판'
+                      && _communityBulletinListViewModel.chipName == Community_Category_sub_bulletin.room.korean)
+                    Expanded(child: CommunityBulletinRoomListView()),
+                  if(_communityBulletinListViewModel.tapName=='게시판'
+                      && _communityBulletinListViewModel.chipName == Community_Category_sub_bulletin.crew.korean)
+                    Expanded(child: CommunityBulletinCrewListView()),
+                  if(_communityBulletinListViewModel.tapName=='행사·클리닉')
+                    Expanded(child: CommunityBulletinEventListView()),
                 ],
               ),
             ],
-          ),
+          )),
         )
 
 
