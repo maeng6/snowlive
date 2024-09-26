@@ -31,7 +31,7 @@ class CommunityBulletinUpdateView extends StatelessWidget {
     String? selectedCategory_main;
     String? selectedCategory_sub;
 
-    return Container(
+    return Obx(()=>Container(
       color: Colors.white,
       child: SafeArea(
         top: false,
@@ -149,13 +149,20 @@ class CommunityBulletinUpdateView extends StatelessWidget {
                                         ),
                                       ),
                                       validator: (val) {
-                                        if (val!.length <= 50 && val.length >= 1) {
-                                          return null;
-                                        } else if (val.length == 0) {
-                                          return '글 제목을 입력해주세요.';
+                                        WidgetsBinding.instance.addPostFrameCallback((_) {
+                                        if (val!.length <= 30 && val.length >= 1) {
+                                          _communityUpdateViewModel.changeTitleWritten(true);
                                         } else {
-                                          return '최대 입력 가능한 글자 수를 초과했습니다.';
+                                          _communityUpdateViewModel.changeTitleWritten(false);
                                         }
+                                      });
+                                      if (val!.length <= 30 && val.length >= 1) {
+                                        return null;
+                                      } else if (val.length == 0) {
+                                        return '글 제목을 입력해주세요.';
+                                      } else {
+                                        return '최대 입력 가능한 글자 수를 초과했습니다.';
+                                      }
                                       },
                                     ),
                                     Padding(
@@ -295,26 +302,10 @@ class CommunityBulletinUpdateView extends StatelessWidget {
                                   children: [
                                     Padding(
                                       padding: const EdgeInsets.only(top: 32, left: 4),
-                                      child: Row(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Text('상세 설명', style: SDSTextStyle.regular.copyWith(
-                                              fontSize: 13,
-                                              color: SDSColor.gray900
-                                          ),),
-                                          Padding(
-                                            padding: const EdgeInsets.only(left: 2, top: 2),
-                                            child: Container(
-                                              width: 4,
-                                              height: 4,
-                                              decoration: BoxDecoration(
-                                                borderRadius: BorderRadius.circular(10),
-                                                color: SDSColor.red,
-                                              ),
-                                            ),
-                                          )
-                                        ],
-                                      ),
+                                      child: Text('상세 설명', style: SDSTextStyle.regular.copyWith(
+                                          fontSize: 13,
+                                          color: SDSColor.gray900
+                                      ),),
                                     ),
                                     SizedBox(height: 8),
                                     if (!_communityUpdateViewModel.isReadOnly)
@@ -357,12 +348,12 @@ class CommunityBulletinUpdateView extends StatelessWidget {
                         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
                         child: ElevatedButton(
                           onPressed: () async {
-                            CustomFullScreenDialog.showDialog();
-                            if(_communityUpdateViewModel.textEditingController_title.text != ''
+                            if(_communityUpdateViewModel.isTitleWritten == true
                                 && _communityUpdateViewModel.selectedCategoryMain != '상위 카테고리'
                                 && (_communityUpdateViewModel.selectedCategoryMain != '시즌방' || (_communityUpdateViewModel.selectedCategoryMain == '시즌방'&&_communityUpdateViewModel.selectedCategorySub != '하위 카테고리'))
-                                && _communityUpdateViewModel.quillController.document != ''){
+                                ){
 
+                            CustomFullScreenDialog.showDialog();
                               await _communityUpdateViewModel.updateCommunityPost(
                                   _communityDetailViewModel.communityDetail.communityId,
                                   {
@@ -389,11 +380,12 @@ class CommunityBulletinUpdateView extends StatelessWidget {
                                     "thumb_img_url": _communityUpdateViewModel.findFirstInsertedImage(_communityUpdateViewModel.quillController.document.toDelta().toList()),
                                     "description" : jsonString
                                   });
-                            }
                             await _communityDetailViewModel.fetchCommunityDetail(_communityDetailViewModel.communityDetail.communityId!,_userViewModel.user.user_id);
-                            Navigator.pop(context);
-                            await _communityBulletinListViewModel.fetchCommunityList_total(userId: _userViewModel.user.user_id,categoryMain: '게시판');
                             CustomFullScreenDialog.cancelDialog();
+                            Navigator.pop(context);
+                            await _communityBulletinListViewModel.fetchAllCommunity();
+                            }
+
                           },
                           style: TextButton.styleFrom(
                             shape: const RoundedRectangleBorder(
@@ -402,11 +394,23 @@ class CommunityBulletinUpdateView extends StatelessWidget {
                             elevation: 0,
                             splashFactory: InkRipple.splashFactory,
                             minimumSize: Size(double.infinity, 48),
-                            backgroundColor: SDSColor.snowliveBlue,
+                            backgroundColor:
+                            (_communityUpdateViewModel.isTitleWritten == true
+                                && _communityUpdateViewModel.selectedCategoryMain != '상위 카테고리'
+                                && (_communityUpdateViewModel.selectedCategoryMain != '시즌방' || (_communityUpdateViewModel.selectedCategoryMain == '시즌방'&&_communityUpdateViewModel.selectedCategorySub != '하위 카테고리'))
+                            )
+                            ?SDSColor.snowliveBlue
+                            :SDSColor.gray200,
                           ),
                           child: Text('수정 완료',
                             style: SDSTextStyle.bold.copyWith(
-                                color: SDSColor.snowliveWhite,
+                                color:
+                                (_communityUpdateViewModel.isTitleWritten == true
+                                    && _communityUpdateViewModel.selectedCategoryMain != '상위 카테고리'
+                                    && (_communityUpdateViewModel.selectedCategoryMain != '시즌방' || (_communityUpdateViewModel.selectedCategoryMain == '시즌방'&&_communityUpdateViewModel.selectedCategorySub != '하위 카테고리'))
+                                )
+                                ?SDSColor.snowliveWhite
+                                :SDSColor.gray400,
                                 fontSize: 16),
                           ),
                         ),
@@ -417,6 +421,6 @@ class CommunityBulletinUpdateView extends StatelessWidget {
           ),
         ),
       ),
-    );
+    ));
   }
 }

@@ -31,7 +31,7 @@ class CommunityFreeUpload extends StatelessWidget {
 
 
 
-    return Container(
+    return Obx(()=>Container(
           color: Colors.white,
           child: SafeArea(
             top: false,
@@ -125,7 +125,7 @@ class CommunityFreeUpload extends StatelessWidget {
                                               errorStyle: SDSTextStyle.regular.copyWith(fontSize: 12, color: SDSColor.red),
                                               labelStyle: SDSTextStyle.regular.copyWith(color: SDSColor.gray400, fontSize: 14),
                                               hintStyle: SDSTextStyle.regular.copyWith(color: SDSColor.gray400, fontSize: 14),
-                                              hintText: '글 제목을 입력해 주세요. (최대 50자)',
+                                              hintText: '글 제목을 입력해 주세요. (최대 30자)',
                                               labelText: '글 제목',
                                               contentPadding: EdgeInsets.only(
                                                   top: 10, bottom: 10, left: 12, right: 12),
@@ -149,7 +149,14 @@ class CommunityFreeUpload extends StatelessWidget {
                                             ),
                                           ),
                                           validator: (val) {
-                                            if (val!.length <= 50 && val.length >= 1) {
+                                            WidgetsBinding.instance.addPostFrameCallback((_) {
+                                              if (val!.length <= 30 && val.length >= 1) {
+                                                _communityUploadViewModel.changeTitleWritten(true);
+                                              } else {
+                                                _communityUploadViewModel.changeTitleWritten(false);
+                                              }
+                                            });
+                                            if (val!.length <= 30 && val.length >= 1) {
                                               return null;
                                             } else if (val.length == 0) {
                                               return '글 제목을 입력해주세요.';
@@ -295,26 +302,10 @@ class CommunityFreeUpload extends StatelessWidget {
                                       children: [
                                         Padding(
                                           padding: const EdgeInsets.only(top: 32, left: 4),
-                                          child: Row(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: [
-                                              Text('상세 설명', style: SDSTextStyle.regular.copyWith(
-                                                  fontSize: 13,
-                                                  color: SDSColor.gray900
-                                              ),),
-                                              Padding(
-                                                padding: const EdgeInsets.only(left: 2, top: 2),
-                                                child: Container(
-                                                  width: 4,
-                                                  height: 4,
-                                                  decoration: BoxDecoration(
-                                                    borderRadius: BorderRadius.circular(10),
-                                                    color: SDSColor.red,
-                                                  ),
-                                                ),
-                                              )
-                                            ],
-                                          ),
+                                          child: Text('상세 설명', style: SDSTextStyle.regular.copyWith(
+                                              fontSize: 13,
+                                              color: SDSColor.gray900
+                                          ),),
                                         ),
                                         SizedBox(height: 8),
                                         if (!_communityUploadViewModel.isReadOnly)
@@ -357,13 +348,13 @@ class CommunityFreeUpload extends StatelessWidget {
                             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
                             child: ElevatedButton(
                               onPressed: () async {
-                                CustomFullScreenDialog.showDialog();
 
-                                if(_communityUploadViewModel.textEditingController_title.text != ''
+                                if(_communityUploadViewModel.isTitleWritten == true
                                     && _communityUploadViewModel.selectedCategoryMain != '상위 카테고리'
                                     && (_communityUploadViewModel.selectedCategoryMain != '시즌방' || (_communityUploadViewModel.selectedCategoryMain == '시즌방'&&_communityUploadViewModel.selectedCategorySub != '하위 카테고리'))
-                                    && _communityUploadViewModel.quillController.document != ''){
+                                   ){
 
+                                CustomFullScreenDialog.showDialog();
                                   await _communityUploadViewModel.createCommunityPost({
                                     "user_id": _userViewModel.user.user_id.toString(),                 // 필수 - 유저 ID
                                     "category_main": "게시판",    // 필수 - 메인 카테고리
@@ -389,10 +380,12 @@ class CommunityFreeUpload extends StatelessWidget {
                                         "thumb_img_url": _communityUploadViewModel.findFirstInsertedImage(_communityUploadViewModel.quillController.document.toDelta().toList()),
                                         "description" : jsonString
                                       });
+
+                                  CustomFullScreenDialog.cancelDialog();
+                                  Navigator.pop(context);
+                                  await _communityBulletinListViewModel.fetchAllCommunity();
                                 }
-                                CustomFullScreenDialog.cancelDialog();
-                                Navigator.pop(context);
-                                await _communityBulletinListViewModel.fetchCommunityList_total(userId: _userViewModel.user.user_id,categoryMain: '게시판');
+
 
                               },
                               style: TextButton.styleFrom(
@@ -402,13 +395,28 @@ class CommunityFreeUpload extends StatelessWidget {
                                 elevation: 0,
                                 splashFactory: InkRipple.splashFactory,
                                 minimumSize: Size(double.infinity, 48),
-                                backgroundColor: SDSColor.snowliveBlue,
+                                backgroundColor:
+                                (_communityUploadViewModel.isTitleWritten == true
+                                    && _communityUploadViewModel.selectedCategoryMain != '상위 카테고리'
+                                    && (_communityUploadViewModel.selectedCategoryMain != '시즌방' || (_communityUploadViewModel.selectedCategoryMain == '시즌방'&&_communityUploadViewModel.selectedCategorySub != '하위 카테고리'))
+                                   )
+                                    ? SDSColor.snowliveBlue
+                                    : SDSColor.gray200,
                               ),
-                              child: Text('작성 완료',
+                              child:
+
+                               Text('작성 완료',
                                 style: SDSTextStyle.bold.copyWith(
-                                    color: SDSColor.snowliveWhite,
+                                    color:
+                                    (_communityUploadViewModel.isTitleWritten == true
+                                        && _communityUploadViewModel.selectedCategoryMain != '상위 카테고리'
+                                        && (_communityUploadViewModel.selectedCategoryMain != '시즌방' || (_communityUploadViewModel.selectedCategoryMain == '시즌방'&&_communityUploadViewModel.selectedCategorySub != '하위 카테고리'))
+                                        )
+                                    ? SDSColor.snowliveWhite
+                                    : SDSColor.gray400,
                                     fontSize: 16),
-                              ),
+                              )
+
                             ),
                           ))
                     ],
@@ -417,6 +425,6 @@ class CommunityFreeUpload extends StatelessWidget {
               ),
             ),
           ),
-        );
+        ));
   }
 }

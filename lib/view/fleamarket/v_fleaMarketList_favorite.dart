@@ -145,6 +145,23 @@ class FleaMarketListView_favorite extends StatelessWidget {
               child: Column(
                 children: [
                   //TODO: 리스트
+                  (_fleamarketListViewModel.isLoadingList_favorite==true)
+                      ? Container(
+                    height: 150,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Center(
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            backgroundColor: SDSColor.snowliveWhite,
+                            color: SDSColor.snowliveBlue,
+                          ),
+                        ),
+                      ],
+                    ),
+                  )
+                      :
                   Expanded(
                       child: (_fleamarketListViewModel.fleamarketListFavorite.length == 0)
                           ? Transform.translate(

@@ -1193,13 +1193,7 @@ class FleamarketUpdateView extends StatelessWidget {
                                 fleamarketId: _fleamarketDetailViewModel.fleamarketDetail.fleaId!,
                                 userId: _userViewModel.user.user_id
                             );
-                            await _fleamarketListViewModel.fetchFleamarketData_total(userId: _userViewModel.user.user_id);
-                            if(_fleamarketUpdateViewModel.selectedCategoryMain == '스키')
-                              await _fleamarketListViewModel.fetchFleamarketData_ski(userId: _userViewModel.user.user_id, categoryMain:'스키');
-                            if(_fleamarketUpdateViewModel.selectedCategoryMain == '스노보드')
-                              await _fleamarketListViewModel.fetchFleamarketData_board(userId: _userViewModel.user.user_id, categoryMain:'스노보드');
-                            await _fleamarketListViewModel.fetchFleamarketData_my(userId: _userViewModel.user.user_id, myflea: true);
-
+                            await _fleamarketListViewModel.fetchAllFleamarket();
                           }
 
 

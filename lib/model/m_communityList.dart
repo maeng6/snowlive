@@ -39,6 +39,7 @@ class Community {
   int? viewsCount;
   UserInfo? userInfo;
   int? commentCount;
+  List<dynamic>? commentList;
 
   Community({
     this.communityId,
@@ -55,6 +56,7 @@ class Community {
     this.viewsCount,
     this.userInfo,
     this.commentCount,
+    this.commentList,
   });
 
   Community.fromJson(Map<String, dynamic> json) {
@@ -79,6 +81,9 @@ class Community {
     viewsCount = json['views_count'];
     userInfo = UserInfo.fromJson(json['user_info']);
     commentCount = json['comment_count'];
+    commentList = (json['comments']??[] as List)
+        .map((i) => CommentModel_community.fromJson(i))
+        .toList();
   }
 }
 
@@ -113,5 +118,110 @@ class UserInfo {
     profileImageUrlUser = json['profile_image_url_user'];
     resortNickname = json['resort_nickname'];
     crewName = json['crew_name'];
+  }
+
+  UserInfo.fromJson_model(UserInfo userInfo) {
+    userId = userInfo.userId;
+    displayName = userInfo.displayName;
+    profileImageUrlUser = userInfo.profileImageUrlUser;
+    resortNickname = userInfo.resortNickname;
+    crewName = userInfo.crewName;
+  }
+}
+
+class CommentModel_community {
+  int? commentId;
+  int? communityId;
+  String? content;
+  int? userId;
+  UserInfo? userInfo;
+  String? updateTime;
+  String? uploadTime;
+  List<dynamic>? replies;
+
+  CommentModel_community({
+    this.commentId,
+    this.communityId,
+    this.content,
+    this.userId,
+    this.userInfo,
+    this.updateTime,
+    this.uploadTime,
+    this.replies,
+  });
+
+  CommentModel_community.fromJson(Map<String, dynamic> json) {
+    commentId = json['comment_id'];
+    communityId = json['community_id'];
+    content = json['content'];
+    userId = json['user_id'];
+    userInfo = UserInfo.fromJson(json['user_info']);
+    updateTime = json['update_time'];
+    uploadTime = json['upload_time'];
+    if (json['replies'] != null) {
+      replies = (json['replies']??[] as List)
+          .map((i) => Reply.fromJson(i))
+          .toList();
+    }
+  }
+
+  CommentModel_community.fromJson_model(CommentModel_community commentModel_community) {
+    commentId = commentModel_community.commentId;
+    communityId = commentModel_community.communityId;
+    content = commentModel_community.content;
+    userId = commentModel_community.userId;
+    userInfo = UserInfo.fromJson_model(commentModel_community.userInfo!);
+    updateTime = commentModel_community.updateTime;
+    uploadTime = commentModel_community.uploadTime;
+    if (commentModel_community.replies != null) {
+      replies = (commentModel_community.replies??[] as List)
+          .map((i) => Reply.fromJson_model(i))
+          .toList();
+    }
+  }
+
+}
+
+class Reply {
+  int? replyId;
+  String? content;
+  int? userId;
+  UserInfo? userInfo;
+  String? updateTime;
+  String? uploadTime;
+  int? commentId;
+
+  Reply({
+    this.replyId,
+    this.content,
+    this.userId,
+    this.userInfo,
+    this.updateTime,
+    this.uploadTime,
+    this.commentId,
+  });
+
+  Reply.fromJson(Map<String, dynamic> json) {
+    replyId = json['reply_id'];
+    content = json['content'];
+    userId = json['user_id'];
+    userInfo = json['user_info'] != null
+        ? UserInfo.fromJson(json['user_info'])
+        : null;
+    updateTime = json['update_time'];
+    uploadTime = json['upload_time'];
+    commentId = json['comment_id'];
+  }
+
+  Reply.fromJson_model(Reply reply) {
+    replyId = reply.replyId;
+    content = reply.content;
+    userId = reply.userId;
+    userInfo = reply.userInfo != null
+        ? UserInfo.fromJson_model(reply.userInfo!)
+        : null;
+    updateTime = reply.updateTime;
+    uploadTime = reply.uploadTime;
+    commentId = reply.commentId;
   }
 }

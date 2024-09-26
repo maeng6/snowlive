@@ -75,17 +75,11 @@ class RankingCrewView extends StatelessWidget {
                                       Container(
                                         height: 76,
                                         width: 76,
-                                        decoration: const BoxDecoration(
-                                          boxShadow: [
-                                            BoxShadow(
-                                              color: Colors.black12,
-                                              spreadRadius: 0,
-                                              blurRadius: 16,
-                                              offset: Offset(0, 2),
-                                            ),
-                                          ],
+                                        decoration: BoxDecoration(
+                                          color: Color(0xFFF0F6FF),
+                                          borderRadius: BorderRadius.circular(16),
                                         ),
-                                        padding: EdgeInsets.only(top: 18, bottom: 14, left: 14, right: 14),
+                                        padding: EdgeInsets.all(20),
                                         child: Transform.translate(
                                           offset: Offset(0, 0),
                                           child: ExtendedImage.network(
@@ -94,16 +88,21 @@ class RankingCrewView extends StatelessWidget {
                                             enableMemoryCache: true,
                                             cacheWidth: 300,
                                             shape: BoxShape.rectangle,
-                                            borderRadius: BorderRadius.circular(10),
+                                            borderRadius: BorderRadius.circular(4),
                                             fit: BoxFit.cover,
                                           ),
                                         ),
                                       ),
                                       //크루네임
-                                      Text(_rankingListViewModel.rankingListCrewMy_view!.crewName??'',
-                                        style: SDSTextStyle.regular.copyWith(
-                                            fontSize: 14,
-                                            color: Color(0xFF111111)
+                                      Padding(
+                                        padding: const EdgeInsets.only(top: 5),
+                                        child: Text(_rankingListViewModel.rankingListCrewMy_view!.crewName??'',
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: SDSTextStyle.regular.copyWith(
+                                              fontSize: 14,
+                                              color: Color(0xFF111111)
+                                          ),
                                         ),
                                       ),
                                     ],
@@ -168,7 +167,6 @@ class RankingCrewView extends StatelessWidget {
                                               ],
                                             ),
                                           ),
-                                          buildVerticalDivider_ranking_indi_Screen(),
                                         ],
                                       ),
                                     ),
@@ -201,7 +199,7 @@ class RankingCrewView extends StatelessWidget {
                                               },
                                               style: ElevatedButton.styleFrom(
                                                   padding: EdgeInsets.only(
-                                                      right: 32, left: 12, top: 3, bottom: 2),
+                                                      right: 12, left: 12, top: 2, bottom: 2),
                                                   side: BorderSide(
                                                     width: 1,
                                                     color: (_rankingListViewModel.resortOrTotal == '전체스키장') ? SDSColor.gray900 : SDSColor.gray100,
@@ -1041,7 +1039,7 @@ class RankingCrewView extends StatelessWidget {
                                                 ),
                                                 SizedBox(height: 2),
                                                 Container(
-                                                  width: _size.width - 230,
+                                                  width: _size.width - 200,
                                                   child: Row(
                                                     children: [
                                                       Text(
@@ -1057,13 +1055,17 @@ class RankingCrewView extends StatelessWidget {
                                                             color: Color(0xFF949494)
                                                         ),
                                                       ),
-                                                      Text(
-                                                        maxLines: 1,
-                                                        overflow: TextOverflow.ellipsis,
-                                                        document.description!,
-                                                        style: SDSTextStyle.regular.copyWith(
-                                                            fontSize: 12,
-                                                            color: Color(0xFF949494)
+                                                      Expanded(
+                                                        child: Container(
+                                                          child: Text(
+                                                            maxLines: 1,
+                                                            overflow: TextOverflow.ellipsis,
+                                                            document.description!,
+                                                            style: SDSTextStyle.regular.copyWith(
+                                                                fontSize: 12,
+                                                                color: Color(0xFF949494)
+                                                            ),
+                                                          ),
                                                         ),
                                                       ),
                                                     ],

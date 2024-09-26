@@ -1224,13 +1224,7 @@ class FleamarketUploadView extends StatelessWidget {
                             );
                             CustomFullScreenDialog.cancelDialog();
                             Get.back();
-                            await _fleamarketListViewModel.fetchFleamarketData_total(userId: _userViewModel.user.user_id);
-                            if(_fleamarketUploadViewModel.selectedCategoryMain == '스키')
-                              await _fleamarketListViewModel.fetchFleamarketData_ski(userId: _userViewModel.user.user_id, categoryMain:'스키');
-                            if(_fleamarketUploadViewModel.selectedCategoryMain == '스노보드')
-                              await _fleamarketListViewModel.fetchFleamarketData_board(userId: _userViewModel.user.user_id, categoryMain:'스노보드');
-                            await _fleamarketListViewModel.fetchFleamarketData_my(userId: _userViewModel.user.user_id, myflea: true);
-
+                            await _fleamarketListViewModel.fetchAllFleamarket();
                           }
 
 

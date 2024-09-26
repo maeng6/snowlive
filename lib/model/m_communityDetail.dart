@@ -17,6 +17,7 @@ class CommunityDetailModel {
   int? viewsCount;
   UserInfo? userInfo;
   int? commentCount;
+  List<dynamic>? commentList;
 
   CommunityDetailModel({
     this.communityId,
@@ -33,6 +34,7 @@ class CommunityDetailModel {
     this.viewsCount,
     this.userInfo,
     this.commentCount,
+    this.commentList,
   });
 
   CommunityDetailModel.fromCommunityModel(Community community) {
@@ -50,6 +52,7 @@ class CommunityDetailModel {
     viewsCount = community.viewsCount;
     userInfo = community.userInfo;
     commentCount = community.commentCount;
+    commentList = community.commentList;
   }
 
   CommunityDetailModel.fromJson(Map<String, dynamic> json) {
@@ -81,6 +84,9 @@ class CommunityDetailModel {
     viewsCount = json['views_count'];
     userInfo = UserInfo.fromJson(json['user_info']);
     commentCount = json['comment_count'];
+    commentList = (json['comments']??[] as List)
+        .map((i) => CommentModel_community.fromJson(i))
+        .toList();
   }
 }
 

@@ -1,6 +1,7 @@
 import 'package:com.snowlive/api/ApiResponse.dart';
 import 'package:com.snowlive/api/api_community.dart';
 import 'package:com.snowlive/model/m_comment_community.dart';
+import 'package:com.snowlive/model/m_communityList.dart';
 import 'package:com.snowlive/util/util_1.dart';
 import 'package:com.snowlive/viewmodel/vm_user.dart';
 import 'package:flutter/material.dart';
@@ -69,6 +70,21 @@ class CommunityCommentDetailViewModel extends GetxController {
       isLoading(false);
     }
   }
+
+  Future<void> fetchCommunityCommentDetailFromModel({
+    required CommentModel_community commentModel_community
+  }) async {
+    try {
+        _commentModel_community.value = CommentModel_community.fromJson_model(commentModel_community);
+        _time.value = GetDatetime().getAgoString(_commentModel_community.value.uploadTime!);
+        print("댓글 디테일 패치 완료");
+    } catch (e) {
+      print('Error fetching data: $e');
+    } finally {
+      isLoading(false);
+    }
+  }
+
 
   Future<void> reportComment({required int userId, required int commentId}) async {
     isLoading(true);

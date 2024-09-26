@@ -8,7 +8,11 @@ import 'package:get/get_rx/get_rx.dart';
 
 class FleamarketListViewModel extends GetxController {
 
-  var isLoading = true.obs;
+  RxBool _isLoadingList_total = false.obs;
+  RxBool _isLoadingList_ski = false.obs;
+  RxBool _isLoadingList_board = false.obs;
+  RxBool _isLoadingList_my = false.obs;
+  RxBool _isLoadingList_favorite = false.obs;
   var _fleamarketList_total = <Fleamarket>[].obs;
   var _fleamarketList_ski = <Fleamarket>[].obs;
   var _fleamarketList_board = <Fleamarket>[].obs;
@@ -60,16 +64,25 @@ class FleamarketListViewModel extends GetxController {
   String get previousPageUrlBoard => _previousPageUrl_board.value;
   String get previousPageUrlMy => _previousPageUrl_my.value;
   String get previousPageUrlFavorite => _previousPageUrl_favorite.value;
+
   bool get showAddButton_total => _showAddButton_total.value;
   bool get showAddButton_ski => _showAddButton_ski.value;
   bool get showAddButton_board => _showAddButton_board.value;
   bool get showAddButton_favorite => _showAddButton_favorite.value;
   bool get showAddButton_my => _showAddButton_my.value;
+
   bool get isVisible_total  => _isVisible_total .value;
   bool get isVisible_ski  => _isVisible_ski .value;
   bool get isVisible_board  => _isVisible_board .value;
   bool get isVisible_favorite  => _isVisible_favorite .value;
   bool get isVisible_my  => _isVisible_my .value;
+
+  bool get isLoadingList_total  => _isLoadingList_total .value;
+  bool get isLoadingList_ski  => _isLoadingList_ski .value;
+  bool get isLoadingList_board  => _isLoadingList_board .value;
+  bool get isLoadingList_my  => _isLoadingList_my .value;
+  bool get isLoadingList_favorite  => _isLoadingList_favorite .value;
+
   String get tapName => _tapName.value;
 
   String get selectedCategory_sub_total => _selectedCategory_sub_total.value;
@@ -93,11 +106,8 @@ class FleamarketListViewModel extends GetxController {
   @override
   void onInit() async {
     super.onInit();
-    await fetchFleamarketData_total(userId: _userViewModel.user.user_id);
-    await fetchFleamarketData_ski(userId: _userViewModel.user.user_id, categoryMain:'스키');
-    await fetchFleamarketData_board(userId: _userViewModel.user.user_id, categoryMain:'스노보드');
-    await fetchFleamarketData_my(userId: _userViewModel.user.user_id, myflea: true);
-    await fetchFleamarketData_favorite(userId: _userViewModel.user.user_id, favorite_list: true);
+
+    await fetchAllFleamarket();
 
     scrollController_total = ScrollController()
       ..addListener(_scrollListener_total);
@@ -109,6 +119,43 @@ class FleamarketListViewModel extends GetxController {
       ..addListener(_scrollListener_favorite);
     scrollController_my = ScrollController()
       ..addListener(_scrollListener_my);
+
+  }
+
+  Future<void> fetchAllFleamarket() async{
+    _isLoadingList_total.value = true;
+    _isLoadingList_ski.value = true;
+    _isLoadingList_board.value = true;
+    _isLoadingList_my.value = true;
+    _isLoadingList_favorite.value = true;
+    await fetchFleamarketData_total(userId: _userViewModel.user.user_id);
+    _isLoadingList_total.value = false;
+    await fetchFleamarketData_ski(userId: _userViewModel.user.user_id, categoryMain:'스키');
+    _isLoadingList_ski.value = false;
+    await fetchFleamarketData_board(userId: _userViewModel.user.user_id, categoryMain:'스노보드');
+    _isLoadingList_board.value = false;
+    await fetchFleamarketData_my(userId: _userViewModel.user.user_id, myflea: true);
+    _isLoadingList_my.value = false;
+    await fetchFleamarketData_favorite(userId: _userViewModel.user.user_id, favorite_list: true);
+    _isLoadingList_favorite.value = false;
+  }
+
+  Future<void> fetchAllFleamarket_afterFavorite() async{
+    _isLoadingList_favorite.value = true;
+    _isLoadingList_total.value = true;
+    _isLoadingList_ski.value = true;
+    _isLoadingList_board.value = true;
+    _isLoadingList_my.value = true;
+    await fetchFleamarketData_favorite(userId: _userViewModel.user.user_id, favorite_list: true);
+    _isLoadingList_favorite.value = false;
+    await fetchFleamarketData_total(userId: _userViewModel.user.user_id);
+    _isLoadingList_total.value = false;
+    await fetchFleamarketData_ski(userId: _userViewModel.user.user_id, categoryMain:'스키');
+    _isLoadingList_ski.value = false;
+    await fetchFleamarketData_board(userId: _userViewModel.user.user_id, categoryMain:'스노보드');
+    _isLoadingList_board.value = false;
+    await fetchFleamarketData_my(userId: _userViewModel.user.user_id, myflea: true);
+    _isLoadingList_my.value = false;
 
   }
 
@@ -218,7 +265,6 @@ class FleamarketListViewModel extends GetxController {
     bool? myflea,
     String? url,
   }) async {
-    isLoading(true);
 
     try {
 
@@ -255,7 +301,6 @@ class FleamarketListViewModel extends GetxController {
     } catch (e) {
       print('Error fetching data: $e');
     } finally {
-      isLoading(false);
     }
   }
 
@@ -269,7 +314,6 @@ class FleamarketListViewModel extends GetxController {
     bool? myflea,
     String? url,
   }) async {
-    isLoading(true);
 
     try {
       final response = await _fleamarketAPI.fetchFleamarketList(
@@ -303,7 +347,6 @@ class FleamarketListViewModel extends GetxController {
     } catch (e) {
       print('Error fetching data: $e');
     } finally {
-      isLoading(false);
     }
     //_scrollController.jumpTo(0);
   }
@@ -318,7 +361,6 @@ class FleamarketListViewModel extends GetxController {
     bool? myflea,
     String? url,
   }) async {
-    isLoading(true);
 
     try {
       final response = await _fleamarketAPI.fetchFleamarketList(
@@ -352,7 +394,6 @@ class FleamarketListViewModel extends GetxController {
     } catch (e) {
       print('Error fetching data: $e');
     } finally {
-      isLoading(false);
     }
     //_scrollController.jumpTo(0);
   }
@@ -367,7 +408,6 @@ class FleamarketListViewModel extends GetxController {
     bool? myflea,
     String? url,
   }) async {
-    isLoading(true);
 
     try {
       final response = await _fleamarketAPI.fetchFleamarketList(
@@ -401,7 +441,6 @@ class FleamarketListViewModel extends GetxController {
     } catch (e) {
       print('Error fetching data: $e');
     } finally {
-      isLoading(false);
     }
     //_scrollController.jumpTo(0);
   }
@@ -416,7 +455,6 @@ class FleamarketListViewModel extends GetxController {
     bool? myflea = true,
     String? url,
   }) async {
-    isLoading(true);
 
     try {
       final response = await _fleamarketAPI.fetchFleamarketList(
@@ -450,7 +488,6 @@ class FleamarketListViewModel extends GetxController {
     } catch (e) {
       print('Error fetching data: $e');
     } finally {
-      isLoading(false);
     }
   }
 

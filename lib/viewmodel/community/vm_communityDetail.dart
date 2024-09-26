@@ -11,7 +11,6 @@ class CommunityDetailViewModel extends GetxController {
   var isLoading = true.obs;
   var _communityDetail = CommunityDetailModel().obs;
   var repliesList = <Reply>[].obs; // 답글 목록
-  var _commentsList = <CommentModel_community>[].obs;// 댓글 목록
   var _nextPageUrl_comments = ''.obs;
   var _previousPageUrl_comments = ''.obs;
   RxString _time = ''.obs;
@@ -27,7 +26,6 @@ class CommunityDetailViewModel extends GetxController {
 
   CommunityDetailModel get communityDetail => _communityDetail.value;
   String get time => _time.value;
-  List<CommentModel_community> get commentsList => _commentsList;
   String get nextPageUrl_comments => _nextPageUrl_comments.value;
   String get previousPageUrl_comments => _previousPageUrl_comments.value;
   ScrollController get scrollController => _scrollController;
@@ -194,7 +192,7 @@ class CommunityDetailViewModel extends GetxController {
 
       if (response.success) {
         final CommentResponseCommunity commentResponse = CommentResponseCommunity.fromJson_comment(response.data!);
-        _commentsList.value = commentResponse.results??[];
+        _communityDetail.value.commentList = commentResponse.results??[];
         print('Comment created successfully');
       } else {
         print('Failed to create comment: ${response.error}');
@@ -207,7 +205,7 @@ class CommunityDetailViewModel extends GetxController {
   }
 
 
-  // 댓글 목록 불러오기
+  //댓글 목록 불러오기
   Future<void> fetchCommunityComments({
     required int communityId,
     required int userId,
@@ -224,13 +222,11 @@ class CommunityDetailViewModel extends GetxController {
 
       if (response.success) {
         final CommentResponseCommunity commentResponse = CommentResponseCommunity.fromJson(response.data!);
-        await addViewerCommunity(communityId, {
-          "user_id":userId.toString()
-        });
+
         if (url == null) {
-          _commentsList.value = commentResponse.results ?? [];
+          _communityDetail.value.commentList = commentResponse.results ?? [];
         } else {
-          _commentsList.addAll(commentResponse.results ?? []);
+          _communityDetail.value.commentList!.addAll(commentResponse.results ?? []);
         }
         _nextPageUrl_comments.value = commentResponse.next ?? '';
         _previousPageUrl_comments.value = commentResponse.previous ?? '';
@@ -245,6 +241,7 @@ class CommunityDetailViewModel extends GetxController {
   }
 
   // 댓글 수정하기
+
   Future<void> updateComment(int commentId, Map<String, dynamic> updateData) async {
     isLoading.value = true;
     try {
@@ -270,7 +267,7 @@ class CommunityDetailViewModel extends GetxController {
 
       if (response.success) {
         print('Comment deleted successfully');
-        commentsList.removeWhere((comment) => comment.commentId == commentId);
+        _communityDetail.value.commentList!.removeWhere((comment) => comment.commentId == commentId);
       } else {
         print('Failed to delete comment: ${response.error}');
       }

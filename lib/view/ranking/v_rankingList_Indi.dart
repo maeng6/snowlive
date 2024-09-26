@@ -68,7 +68,7 @@ class RankingIndiView extends StatelessWidget {
                                     color: Color(0xFFF0F6FF),
                                     borderRadius: BorderRadius.circular(16),
                                   ),
-                                  padding: EdgeInsets.only(top: 18, bottom: 14, left: 14, right: 14),
+                                  padding: EdgeInsets.all(18),
                                   child: Transform.translate(
                                     offset: Offset(0, 0),
                                     child: ExtendedImage.network(
@@ -140,7 +140,6 @@ class RankingIndiView extends StatelessWidget {
                                           ],
                                         ),
                                       ),
-                                      buildVerticalDivider_ranking_indi_Screen(),
                                     ],
                                   ),
                                 ),
@@ -173,7 +172,7 @@ class RankingIndiView extends StatelessWidget {
                                             },
                                             style: ElevatedButton.styleFrom(
                                                 padding: EdgeInsets.only(
-                                                    right: 32, left: 12, top: 3, bottom: 2),
+                                                    right: 12, left: 12, top: 2, bottom: 2),
                                                 side: BorderSide(
                                                   width: 1,
                                                   color: (_rankingListViewModel.resortOrTotal == '전체스키장') ? SDSColor.gray900 : SDSColor.gray100,
@@ -880,7 +879,6 @@ class RankingIndiView extends StatelessWidget {
                         ),
                       ),
                       SizedBox(height: 16),
-                      //여기 높이 처리해야함. 지금 500으로 박혀있음. fleamarketList랑 똑같이해보려고했는데 실패
                       (_rankingListViewModel.rankingListIndivList_view!.length != 0)
                           ? ConstrainedBox(
                         constraints: BoxConstraints(
