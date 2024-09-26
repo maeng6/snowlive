@@ -32,6 +32,24 @@ class RankingIndiView extends StatelessWidget {
         bottom: true,
         child: Stack(
           children: [
+            (_rankingListViewModel.isLoadingRankingListIndiv_total==true
+                && _rankingListViewModel.isLoadingRankingListIndiv_total_daily==true)
+                ? Container(
+              height: 150,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Center(
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                      backgroundColor: SDSColor.snowliveWhite,
+                      color: SDSColor.snowliveBlue,
+                    ),
+                  ),
+                ],
+              ),
+            )
+                :
             (_rankingListViewModel.rankingListIndivList_total!.length != 0)
                 ? RefreshIndicator(
               onRefresh: () async {
@@ -879,6 +897,7 @@ class RankingIndiView extends StatelessWidget {
                         ),
                       ),
                       SizedBox(height: 16),
+
                       (_rankingListViewModel.rankingListIndivList_view!.length != 0)
                           ? ConstrainedBox(
                         constraints: BoxConstraints(

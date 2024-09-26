@@ -5,6 +5,7 @@ import 'package:com.snowlive/model/m_resortModel.dart';
 import 'package:com.snowlive/viewmodel/vm_user.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
+import 'package:get/get_rx/src/rx_types/rx_types.dart';
 
 class RankingListViewModel extends GetxController {
   var isLoading = false.obs;
@@ -36,8 +37,16 @@ class RankingListViewModel extends GetxController {
   var _rankingListCrewMy_resort = RankingListCrewModel().myCrewRankingInfo.obs;
   var _rankingListCrewList_resort_daily = <CrewRanking>[].obs;
   var _rankingListCrewMy_resort_daily = RankingListCrewModel().myCrewRankingInfo.obs;
-
-
+  
+  RxBool _isLoadingRankingListCrewList_total = false.obs;
+  RxBool _isLoadingRankingListIndiv_total = false.obs;
+  RxBool _isLoadingRankingListCrewList_total_daily = false.obs;
+  RxBool _isLoadingRankingListIndiv_total_daily = false.obs;
+  RxBool _isLoadingRankingListCrewList_resort = false.obs;
+  RxBool _isLoadingRankingListIndiv_resort = false.obs;
+  RxBool _isLoadingRankingListCrewList_resort_daily = false.obs;
+  RxBool _isLoadingRankingListIndiv_resort_daily = false.obs;
+  
   RxString _tapName = '크루랭킹'.obs;
   RxString _dayOrTotal = '누적'.obs;
   RxString _resortOrTotal = '전체스키장'.obs;
@@ -97,6 +106,15 @@ class RankingListViewModel extends GetxController {
   String get nextPageUrl_crew_resort => _nextPageUrl_crew_resort.value;
   String get nextPageUrl_crew_total_daily => _nextPageUrl_crew_total_daily.value;
   String get nextPageUrl_crew_resort_daily => _nextPageUrl_crew_resort_daily.value;
+  
+  bool get isLoadingRankingListCrewList_total => _isLoadingRankingListCrewList_total.value;
+  bool get isLoadingRankingListIndiv_total => _isLoadingRankingListIndiv_total.value;
+  bool get isLoadingRankingListCrewList_total_daily => _isLoadingRankingListCrewList_total_daily.value;
+  bool get isLoadingRankingListIndiv_total_daily => _isLoadingRankingListIndiv_total_daily.value;
+  bool get isLoadingRankingListCrewList_resort => _isLoadingRankingListCrewList_resort.value;
+  bool get isLoadingRankingListIndiv_resort => _isLoadingRankingListIndiv_resort.value;
+  bool get isLoadingRankingListCrewList_resort_daily => _isLoadingRankingListCrewList_resort_daily.value;
+  bool get isLoadingRankingListIndiv_resort_daily => _isLoadingRankingListIndiv_resort_daily.value;
 
   ScrollController scrollController_indiv = ScrollController();
   ScrollController scrollController_crew = ScrollController();
@@ -104,31 +122,55 @@ class RankingListViewModel extends GetxController {
   @override
   void onInit() async{
     super.onInit();
-
-
-    await fetchRankingDataCrew_total(userId: _userViewModel.user.user_id);
-    _rankingListCrewList_view.value =_rankingListCrewList_total;
-    _rankingListCrewMy_view.value = _rankingListCrewMy_total.value;
-    await fetchRankingDataCrew_total_daily(userId: _userViewModel.user.user_id,daily: true);
-
-    await fetchRankingDataIndiv_total(userId: _userViewModel.user.user_id);
-    _rankingListIndivList_view.value =_rankingListIndivList_total;
-    _rankingListIndivMy_view.value = _rankingListIndivMy_total.value;
-
-    await fetchRankingDataIndiv_total_daily(userId: _userViewModel.user.user_id,daily: true);
-
-    await fetchRankingDataIndiv_resort_daily(userId: _userViewModel.user.user_id, resortId: _userViewModel.user.favorite_resort,daily: true);
-    await fetchRankingDataIndiv_resort(userId: _userViewModel.user.user_id, resortId: _userViewModel.user.favorite_resort);
-
-    await fetchRankingDataCrew_resort_daily(userId: _userViewModel.user.user_id,resortId: _userViewModel.user.favorite_resort,daily: true);
-    await fetchRankingDataCrew_resort(userId: _userViewModel.user.user_id,resortId: _userViewModel.user.favorite_resort);
-
+    
+    await fetchAllRankingCrew();
 
     scrollController_indiv = ScrollController()
       ..addListener(_scrollListener_indiv);
 
     scrollController_crew = ScrollController()
       ..addListener(_scrollListener_crew);
+
+  }
+  
+  Future<void> fetchAllRankingCrew() async{
+    _isLoadingRankingListCrewList_total.value = true;
+    _isLoadingRankingListCrewList_total_daily.value = true;
+    _isLoadingRankingListIndiv_total.value = true;
+    _isLoadingRankingListIndiv_total_daily.value = true;
+    _isLoadingRankingListCrewList_resort.value = true;
+    _isLoadingRankingListCrewList_resort_daily.value = true;
+    _isLoadingRankingListIndiv_resort.value = true;
+    _isLoadingRankingListIndiv_resort_daily.value = true;
+    
+    await fetchRankingDataCrew_total(userId: _userViewModel.user.user_id);
+    _rankingListCrewList_view.value =_rankingListCrewList_total;
+    _rankingListCrewMy_view.value = _rankingListCrewMy_total.value;
+    _isLoadingRankingListCrewList_total.value = false;
+    await fetchRankingDataCrew_total_daily(userId: _userViewModel.user.user_id,daily: true);
+    _isLoadingRankingListCrewList_total_daily.value = false;
+
+    await fetchRankingDataIndiv_total(userId: _userViewModel.user.user_id);
+    _rankingListIndivList_view.value =_rankingListIndivList_total;
+    _rankingListIndivMy_view.value = _rankingListIndivMy_total.value;
+    _isLoadingRankingListIndiv_total.value = false;
+
+    await fetchRankingDataIndiv_total_daily(userId: _userViewModel.user.user_id,daily: true);
+    _isLoadingRankingListIndiv_total_daily.value = false;
+
+    await fetchRankingDataCrew_resort(userId: _userViewModel.user.user_id,resortId: _userViewModel.user.favorite_resort);
+    _isLoadingRankingListCrewList_resort.value = true;
+
+    await fetchRankingDataCrew_resort_daily(userId: _userViewModel.user.user_id,resortId: _userViewModel.user.favorite_resort,daily: true);
+    _isLoadingRankingListCrewList_resort_daily.value = true;
+
+    await fetchRankingDataIndiv_resort(userId: _userViewModel.user.user_id, resortId: _userViewModel.user.favorite_resort);
+    _isLoadingRankingListIndiv_resort.value = true;
+
+    await fetchRankingDataIndiv_resort_daily(userId: _userViewModel.user.user_id, resortId: _userViewModel.user.favorite_resort,daily: true);
+    _isLoadingRankingListIndiv_resort_daily.value = true;
+
+
 
   }
 
@@ -485,6 +527,7 @@ class RankingListViewModel extends GetxController {
         season: season,
         url: url,
       );
+
 
       if (response.success) {
         final rankingListIndivResponse = RankingListIndivResponse.fromJson(response.data!);

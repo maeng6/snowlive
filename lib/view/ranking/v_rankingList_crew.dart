@@ -38,6 +38,24 @@ class RankingCrewView extends StatelessWidget {
         bottom: true,
         child: Stack(
           children: [
+            (_rankingListViewModel.isLoadingRankingListCrewList_total==true
+                && _rankingListViewModel.isLoadingRankingListCrewList_total_daily==true)
+                ? Container(
+              height: 150,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Center(
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                      backgroundColor: SDSColor.snowliveWhite,
+                      color: SDSColor.snowliveBlue,
+                    ),
+                  ),
+                ],
+              ),
+            )
+                :
             (_rankingListViewModel.rankingListCrewList_total!.length != 0 )
                 ? RefreshIndicator(
                 onRefresh: () async {
@@ -917,6 +935,7 @@ class RankingCrewView extends StatelessWidget {
                           ),
                         ),
                         SizedBox(height: 16),
+
                         //여기 높이 처리해야함. 지금 500으로 박혀있음. fleamarketList랑 똑같이해보려고했는데 실패
                         (_rankingListViewModel.rankingListCrewList_view!.length != 0 )
                             ? ConstrainedBox(
@@ -1060,7 +1079,7 @@ class RankingCrewView extends StatelessWidget {
                                                           child: Text(
                                                             maxLines: 1,
                                                             overflow: TextOverflow.ellipsis,
-                                                            document.description!,
+                                                            document.description??'',
                                                             style: SDSTextStyle.regular.copyWith(
                                                                 fontSize: 12,
                                                                 color: Color(0xFF949494)
