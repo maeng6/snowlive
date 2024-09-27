@@ -16,6 +16,10 @@ class CrewApplicationCrewView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    Size _size = MediaQuery.of(context).size;
+    final double _statusBarSize = MediaQuery.of(context).padding.top;
+
     return GestureDetector(
       onTap: () {
         FocusScope.of(context).unfocus();
@@ -29,6 +33,7 @@ class CrewApplicationCrewView extends StatelessWidget {
             backgroundColor: SDSColor.snowliveWhite,
             appBar: AppBar(
               backgroundColor: SDSColor.snowliveWhite,
+              surfaceTintColor: Colors.transparent,
               leading: GestureDetector(
                 child: Image.asset(
                   'assets/imgs/icons/icon_snowLive_back.png',
@@ -48,11 +53,13 @@ class CrewApplicationCrewView extends StatelessWidget {
                 ),
               ),
               elevation: 0,
+              toolbarHeight: 44,
             ),
             body: Obx(() {
               return Column(
                 children: [
-                  Expanded(
+                  (_crewApplyViewModel.crewApplyList.isNotEmpty)
+                  ? Expanded(
                     child: ListView(
                       children: _crewApplyViewModel.crewApplyList.map((user) {
                         // 유저 정보 가져오기
@@ -70,7 +77,7 @@ class CrewApplicationCrewView extends StatelessWidget {
                         };
 
                         return Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                           child: Row(
                             children: [
                               // 프로필 이미지
@@ -87,16 +94,6 @@ class CrewApplicationCrewView extends StatelessWidget {
                                     Get.toNamed(AppRoutes.friendDetail);
                                   },
                                   child: Container(
-                                    decoration: const BoxDecoration(
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Colors.black12,
-                                          spreadRadius: 0,
-                                          blurRadius: 16,
-                                          offset: Offset(0, 2),
-                                        ),
-                                      ],
-                                    ),
                                     width: 40,
                                     height: 40,
                                     child: ExtendedImage.network(
@@ -131,7 +128,7 @@ class CrewApplicationCrewView extends StatelessWidget {
                                     fit: BoxFit.cover,
                                   ),
                                 ),
-                              SizedBox(width: 16),
+                              SizedBox(width: 12),
                               // 유저명 및 부가 정보
                               Expanded(
                                 child: Column(
@@ -139,9 +136,9 @@ class CrewApplicationCrewView extends StatelessWidget {
                                   children: [
                                     Text(
                                       userInfo['displayName']!,
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 14,
+                                      style: SDSTextStyle.regular.copyWith(
+                                        fontSize: 15,
+                                        color: SDSColor.gray900
                                       ),
                                       overflow: TextOverflow.ellipsis,
                                       maxLines: 1,
@@ -156,91 +153,117 @@ class CrewApplicationCrewView extends StatelessWidget {
                                     context: context,
                                     builder: (BuildContext context) {
                                       return AlertDialog(
+                                        backgroundColor: SDSColor.snowliveWhite,
+                                        contentPadding: EdgeInsets.only(bottom: 0, left: 28, right: 28, top: 36),
+                                        elevation: 0,
                                         shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(20),
+                                            borderRadius: BorderRadius.circular(16)),
+                                        buttonPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+
+                                        content: Container(
+                                          height: 80,
+                                          child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.center,
+                                            children: [
+                                              Text(
+                                                '가입 신청을 승인하시겠어요?',
+                                                textAlign: TextAlign.center,
+                                                style: SDSTextStyle.bold.copyWith(
+                                                    color: SDSColor.gray900,
+                                                    fontSize: 16
+                                                ),
+                                              ),
+                                              SizedBox(
+                                                height: 6,
+                                              ),
+                                              Text(
+                                                '가입 신청을 승인하시면 승인 즉시 가입됩니다.',
+                                                textAlign: TextAlign.center,
+                                                style: SDSTextStyle.regular.copyWith(
+                                                  color: SDSColor.gray500,
+                                                  fontSize: 14,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
                                         ),
-                                        title: Text('가입 신청을 승인하시겠어요?',
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 16
-                                            ),
-                                            textAlign: TextAlign.center
-                                        ),
-                                        content: Text('가입 신청을 승인하시면\n승인 즉시 가입됩니다',
-                                            style: TextStyle(
-                                                fontSize: 14,
-                                                color: SDSColor.gray600
-                                            ),
-                                            textAlign: TextAlign.center
-                                        ),
+
                                         actions: [
-                                          ElevatedButton(
-                                            onPressed: () async {
-                                              Navigator.of(context).pop();
-                                              CustomFullScreenDialog.showDialog();
-                                              await _crewApplyViewModel.approveCrewApplication(
-                                                  user.applicantUserId!, user.crewId!
-                                              );
-                                              _crewApplyViewModel.crewApplyList.remove(user); // 개별 항목만 삭제
-                                              CustomFullScreenDialog.cancelDialog();
-                                            },
-                                            child: Text('신청 승인하기',
-                                              style: TextStyle(
-                                                  color: SDSColor.snowliveWhite,
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 16
-                                              ),
-                                            ),
-                                            style: ElevatedButton.styleFrom(
-                                              elevation: 0,
-                                              backgroundColor: SDSColor.snowliveBlue, // 신청 승인 버튼 색상
-                                              minimumSize: Size(double.infinity, 48), // 버튼 크기
-                                              shape: RoundedRectangleBorder(
-                                                borderRadius: BorderRadius.circular(8),
-                                              ),
+                                          Padding(
+                                            padding: EdgeInsets.only(top: 10, left: 16, right: 16),
+                                            child: Row(
+                                              children: [
+                                                Expanded(
+                                                  child: Container(
+                                                    child: TextButton(
+                                                      onPressed: () {
+                                                        Navigator.of(context).pop(); // 팝업 닫기
+                                                      },
+                                                      child: Text('돌아가기',
+                                                        style: TextStyle(
+                                                          color: SDSColor.gray500,
+                                                          fontWeight: FontWeight.bold,
+                                                          fontSize: 16,
+                                                        ),
+                                                      ),
+                                                      style: TextButton.styleFrom(
+                                                        backgroundColor: Colors.transparent, // 배경색 투명
+                                                        splashFactory: NoSplash.splashFactory, // 터치 시 효과 제거
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                                SizedBox(
+                                                  width: 10,
+                                                ),
+                                                Expanded(
+                                                  child: Container(
+                                                    child: TextButton(
+                                                      onPressed: () async {
+                                                        Navigator.of(context).pop();
+                                                        CustomFullScreenDialog.showDialog();
+                                                        await _crewApplyViewModel.approveCrewApplication(
+                                                            user.applicantUserId!, user.crewId!
+                                                        );
+                                                        _crewApplyViewModel.crewApplyList.remove(user); // 개별 항목만 삭제
+                                                        CustomFullScreenDialog.cancelDialog();
+                                                      },
+                                                      child: Text('수락하기',
+                                                        style: TextStyle(
+                                                          color: SDSColor.snowliveBlack,
+                                                          fontWeight: FontWeight.bold,
+                                                          fontSize: 16,
+                                                        ),
+                                                      ),
+                                                      style: TextButton.styleFrom(
+                                                        backgroundColor: Colors.transparent, // 배경색 투명
+                                                        splashFactory: NoSplash.splashFactory, // 터치 시 효과 제거
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
                                             ),
                                           ),
-                                          ElevatedButton(
-                                            onPressed: () {
-                                              Navigator.of(context).pop(); // 팝업 닫기
-                                            },
-                                            child: Text('돌아가기',
-                                              style: TextStyle(
-                                                  color: SDSColor.snowliveBlack,
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 16
-                                              ),
-                                            ),
-                                            style: ElevatedButton.styleFrom(
-                                              backgroundColor: Colors.transparent,
-                                              elevation: 0,
-                                              minimumSize: Size(double.infinity, 48), // 버튼 크기
-                                              shape: RoundedRectangleBorder(
-                                                borderRadius: BorderRadius.circular(8),
-                                              ),
-                                            ),
-                                          ),
+
                                         ],
                                       );
                                     },
                                   );
                                 },
-                                style: TextButton.styleFrom(
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(20),
-                                    side: BorderSide(
-                                      color: SDSColor.gray300, // 테두리 색상 설정
-                                      width: 1.0, // 테두리 두께 설정
-                                    ),
+                                style: ElevatedButton.styleFrom(
+                                  padding: EdgeInsets.symmetric(horizontal: 14, vertical: 3),
+                                  minimumSize: Size(36, 32),
+                                  backgroundColor: SDSColor.snowliveWhite,
+                                  side: BorderSide(
+                                      color: SDSColor.gray200
                                   ),
-                                  minimumSize: Size(41, 28),
+                                  elevation: 0,
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(100)),
                                 ),
-                                child: Text('승인',
-                                    style: TextStyle(
-                                      color: SDSColor.snowliveBlack,
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.bold,
-                                    )),
+                                child: Text('수락하기',
+                                  style: SDSTextStyle.bold.copyWith(fontSize: 13, color: SDSColor.gray900),),
                               ),
                               SizedBox(width: 5),
                               // 거절 버튼
@@ -250,98 +273,153 @@ class CrewApplicationCrewView extends StatelessWidget {
                                     context: context,
                                     builder: (BuildContext context) {
                                       return AlertDialog(
+                                        backgroundColor: SDSColor.snowliveWhite,
+                                        contentPadding: EdgeInsets.only(bottom: 0, left: 28, right: 28, top: 36),
+                                        elevation: 0,
                                         shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(20),
-                                        ),
-                                        title: Text('가입 신청을 거절하시겠어요?',
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 16
-                                            ),
-                                            textAlign: TextAlign.center
-                                        ),
-                                        content: Text('가입신청을 거절하시면\n신청자의 목록에서도 삭제됩니다.',
-                                            style: TextStyle(
-                                                fontSize: 14,
-                                                color: SDSColor.gray600
-                                            ),
-                                            textAlign: TextAlign.center
+                                            borderRadius: BorderRadius.circular(16)),
+                                        buttonPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+                                        content: Container(
+                                          height: 80,
+                                          child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.center,
+                                            children: [
+                                              Text(
+                                                '가입 신청을 거절하시겠어요?',
+                                                textAlign: TextAlign.center,
+                                                style: SDSTextStyle.bold.copyWith(
+                                                    color: SDSColor.gray900,
+                                                    fontSize: 16
+                                                ),
+                                              ),
+                                              SizedBox(
+                                                height: 6,
+                                              ),
+                                              Text(
+                                                '가입신청을 거절하시면 신청자의 목록에서도 삭제됩니다.',
+                                                textAlign: TextAlign.center,
+                                                style: SDSTextStyle.regular.copyWith(
+                                                  color: SDSColor.gray500,
+                                                  fontSize: 14,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
                                         ),
                                         actions: [
-                                          ElevatedButton(
-                                            onPressed: () async {
-                                              Navigator.pop(context);
-                                              CustomFullScreenDialog.showDialog();
-                                              await _crewApplyViewModel.deleteCrewApplication(
-                                                user.applicantUserId!,
-                                                user.crewId!,
-                                                _userViewModel.user.user_id,
-                                              );
-                                              _crewApplyViewModel.crewApplyList.remove(user); // 개별 항목만 삭제
-                                              CustomFullScreenDialog.cancelDialog();
-                                            },
-                                            child: Text('신청 거절하기',
-                                              style: TextStyle(
-                                                  color: SDSColor.snowliveWhite,
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 16
-                                              ),
-                                            ),
-                                            style: ElevatedButton.styleFrom(
-                                              elevation: 0,
-                                              backgroundColor: SDSColor.snowliveBlue, // 신청 거절 버튼 색상
-                                              minimumSize: Size(double.infinity, 48), // 버튼 크기
-                                              shape: RoundedRectangleBorder(
-                                                borderRadius: BorderRadius.circular(8),
-                                              ),
+                                          Padding(
+                                            padding: EdgeInsets.only(top: 10, left: 16, right: 16),
+                                            child: Row(
+                                              children: [
+                                                Expanded(
+                                                  child: Container(
+                                                    child: TextButton(
+                                                      onPressed: () {
+                                                        Navigator.of(context).pop(); // 팝업 닫기
+                                                      },
+                                                      child: Text('돌아가기',
+                                                        style: TextStyle(
+                                                          color: SDSColor.gray500,
+                                                          fontWeight: FontWeight.bold,
+                                                          fontSize: 16,
+                                                        ),
+                                                      ),
+                                                      style: TextButton.styleFrom(
+                                                        backgroundColor: Colors.transparent, // 배경색 투명
+                                                        splashFactory: NoSplash.splashFactory, // 터치 시 효과 제거
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                                SizedBox(
+                                                  width: 10,
+                                                ),
+                                                Expanded(
+                                                  child: Container(
+                                                    child: TextButton(
+                                                      onPressed: () async {
+                                                        Navigator.pop(context);
+                                                        CustomFullScreenDialog.showDialog();
+                                                        await _crewApplyViewModel.deleteCrewApplication(
+                                                          user.applicantUserId!,
+                                                          user.crewId!,
+                                                          _userViewModel.user.user_id,
+                                                        );
+                                                        _crewApplyViewModel.crewApplyList.remove(user); // 개별 항목만 삭제
+                                                        CustomFullScreenDialog.cancelDialog();
+                                                      },
+                                                      child: Text('거절하기',
+                                                        style: TextStyle(
+                                                          color: SDSColor.snowliveBlack,
+                                                          fontWeight: FontWeight.bold,
+                                                          fontSize: 16,
+                                                        ),
+                                                      ),
+                                                      style: TextButton.styleFrom(
+                                                        backgroundColor: Colors.transparent, // 배경색 투명
+                                                        splashFactory: NoSplash.splashFactory, // 터치 시 효과 제거
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
                                             ),
                                           ),
-                                          ElevatedButton(
-                                            onPressed: () {
-                                              Navigator.of(context).pop(); // 팝업 닫기
-                                            },
-                                            child: Text('돌아가기',
-                                              style: TextStyle(
-                                                  color: SDSColor.snowliveBlack,
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 16
-                                              ),
-                                            ),
-                                            style: ElevatedButton.styleFrom(
-                                              backgroundColor: Colors.transparent,
-                                              elevation: 0,
-                                              minimumSize: Size(double.infinity, 48), // 버튼 크기
-                                              shape: RoundedRectangleBorder(
-                                                borderRadius: BorderRadius.circular(8),
-                                              ),
-                                            ),
-                                          ),
+
                                         ],
                                       );
                                     },
                                   );
                                 },
-                                style: TextButton.styleFrom(
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(20),
-                                    side: BorderSide(
-                                      color: SDSColor.gray300, // 테두리 색상 설정
-                                      width: 1.0, // 테두리 두께 설정
-                                    ),
+                                style: ElevatedButton.styleFrom(
+                                  padding: EdgeInsets.symmetric(horizontal: 14, vertical: 3),
+                                  minimumSize: Size(36, 32),
+                                  backgroundColor: SDSColor.snowliveWhite,
+                                  side: BorderSide(
+                                      color: SDSColor.gray200
                                   ),
-                                  minimumSize: Size(41, 28),
+                                  elevation: 0,
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(100)),
                                 ),
                                 child: Text('거절',
-                                    style: TextStyle(
-                                      color: SDSColor.snowliveBlack,
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.bold,
-                                    )),
+                                  style: SDSTextStyle.bold.copyWith(fontSize: 13, color: SDSColor.gray900),
+                                ),
                               ),
                             ],
                           ),
                         );
+
+
                       }).toList(),
+                    ),
+                  )
+                  : Container(
+                    height: _size.height - _statusBarSize - 44,
+                    child: Padding(
+                      padding: EdgeInsets.only(bottom: 50),
+                      child: Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Image.asset(
+                              'assets/imgs/icons/icon_nodata.png',
+                              scale: 4,
+                              width: 73,
+                              height: 73,
+                            ),
+                            SizedBox(
+                              height: 6,
+                            ),
+                            Text('가입 신청한 사람이 없어요',
+                              style: SDSTextStyle.regular.copyWith(
+                                  fontSize: 14,
+                                  color: SDSColor.gray700
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
                   ),
                 ],

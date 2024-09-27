@@ -351,22 +351,36 @@ class SetCrewImageAndColorView extends StatelessWidget {
                       context: context,
                       builder: (BuildContext context) {
                         return AlertDialog(
+                          backgroundColor: SDSColor.snowliveWhite,
+                          contentPadding: EdgeInsets.only(bottom: 0, left: 28, right: 28, top: 36),
+                          elevation: 0,
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20),
+                            borderRadius: BorderRadius.circular(16),
                           ),
-                          title: Text('현재 가입 신청중인 크루가 있어요',
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 16
-                              ),
-                              textAlign: TextAlign.center
-                          ),
-                          content: Text('크루를 생성하시면\n자동으로 신청이 취소됩니다',
-                              style: TextStyle(
-                                  fontSize: 14,
-                                  color: SDSColor.gray600
-                              ),
-                              textAlign: TextAlign.center
+                          buttonPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+                          content: Container(
+                            height: 100,
+                            child: Column(
+                              children: [
+                                Text('현재 가입 신청중인 크루가 있어요',
+                                  textAlign: TextAlign.center,
+                                  style: SDSTextStyle.bold.copyWith(
+                                      color: SDSColor.gray900,
+                                      fontSize: 16
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: 6,
+                                ),
+                                Text('크루를 생성하시면 자동으로 신청이 취소됩니다',
+                                  textAlign: TextAlign.center,
+                                  style: SDSTextStyle.regular.copyWith(
+                                    color: SDSColor.gray500,
+                                    fontSize: 14,
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                           actions: [
                             ElevatedButton(
@@ -385,9 +399,8 @@ class SetCrewImageAndColorView extends StatelessWidget {
                                 Get.toNamed(AppRoutes.crewMain);
                               },
                               child: Text('크루 생성하기',
-                                style: TextStyle(
+                                style: SDSTextStyle.bold.copyWith(
                                     color: SDSColor.snowliveWhite,
-                                    fontWeight: FontWeight.bold,
                                     fontSize: 16
                                 ),
                               ),
@@ -400,14 +413,16 @@ class SetCrewImageAndColorView extends StatelessWidget {
                                 ),
                               ),
                             ),
+                            SizedBox(
+                              height: 6,
+                            ),
                             ElevatedButton(
                               onPressed: () {
                                 Navigator.of(context).pop(); // 팝업 닫기
                               },
                               child: Text('돌아가기',
-                                style: TextStyle(
+                                style: SDSTextStyle.bold.copyWith(
                                     color: SDSColor.snowliveBlack,
-                                    fontWeight: FontWeight.bold,
                                     fontSize: 16
                                 ),
                               ),
