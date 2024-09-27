@@ -1,9 +1,11 @@
 import 'package:com.snowlive/data/imgaUrls/Data_url_image.dart';
 import 'package:com.snowlive/data/snowliveDesignStyle.dart';
+import 'package:com.snowlive/routes/routes.dart';
 import 'package:com.snowlive/util/util_1.dart';
 import 'package:com.snowlive/viewmodel/community/vm_communityBulletinList.dart';
 import 'package:com.snowlive/viewmodel/community/vm_communityCommentDetail.dart';
 import 'package:com.snowlive/viewmodel/community/vm_communityDetail.dart';
+import 'package:com.snowlive/viewmodel/friend/vm_friendDetail.dart';
 import 'package:com.snowlive/viewmodel/vm_user.dart';
 import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 import 'package:extended_image/extended_image.dart';
@@ -17,6 +19,7 @@ class CommunityCommentDetailView extends StatelessWidget {
   final CommunityDetailViewModel _communityDetailViewModel = Get.find<CommunityDetailViewModel>();
   final UserViewModel _userViewModel = Get.find<UserViewModel>();
   final CommunityBulletinListViewModel _communityBulletinListViewModel = Get.find<CommunityBulletinListViewModel>();
+  final FriendDetailViewModel _friendDetailViewModel = Get.find<FriendDetailViewModel>();
 
   @override
   Widget build(BuildContext context) {
@@ -86,7 +89,12 @@ class CommunityCommentDetailView extends StatelessWidget {
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
                                     GestureDetector(
-                                      onTap: () {
+                                      onTap: () async{
+                                        Get.toNamed(AppRoutes.friendDetail);
+                                        await _friendDetailViewModel.fetchFriendDetailInfo(
+                                            userId: _userViewModel.user.user_id,
+                                            friendUserId: _communityCommentDetailViewModel.commentModel_community.userInfo!.userId!,
+                                            season: _friendDetailViewModel.seasonDate);
                                       },
                                       child:
                                       Container(
@@ -232,6 +240,11 @@ class CommunityCommentDetailView extends StatelessWidget {
                                                       if (profileUrl != "")
                                                         GestureDetector(
                                                           onTap: () async{
+                                                            Get.toNamed(AppRoutes.friendDetail);
+                                                            await _friendDetailViewModel.fetchFriendDetailInfo(
+                                                                userId: _userViewModel.user.user_id,
+                                                                friendUserId: user_id_reply!,
+                                                                season: _friendDetailViewModel.seasonDate);
                                                           },
                                                           child: Container(
                                                             width: 26,
@@ -276,6 +289,11 @@ class CommunityCommentDetailView extends StatelessWidget {
                                                           child: GestureDetector(
                                                             onTap: () async{
 
+                                                              Get.toNamed(AppRoutes.friendDetail);
+                                                              await _friendDetailViewModel.fetchFriendDetailInfo(
+                                                                  userId: _userViewModel.user.user_id,
+                                                                  friendUserId: user_id_reply!,
+                                                                  season: _friendDetailViewModel.seasonDate);
                                                             },
                                                             child: ExtendedImage.network(
                                                               '${profileImgUrlList[0].default_round}',

@@ -32,6 +32,7 @@ final ref = FirebaseFirestore.instance;
 class ResortHomeViewModel extends GetxController {
   var _resortHomeModel = ResortHomeModel().obs;
   var isLoading = true.obs;
+  var isLoading_bestFriend = true.obs;
   var isLoading_weather = true.obs;
   final Lock _lock = Lock();
   RxString _rankingGuideUrl_ios = ''.obs;
@@ -79,6 +80,7 @@ class ResortHomeViewModel extends GetxController {
   void onInit() async{
     super.onInit();
     final UserViewModel _userViewModel = Get.find<UserViewModel>();
+    await fetchBestFriendList(user_id: _userViewModel.user.user_id);
     await getRankingGuideUrl();
     await fetchResortHome(_userViewModel.user.user_id!);
     await fetchWeatherModel();
@@ -114,7 +116,7 @@ class ResortHomeViewModel extends GetxController {
 
 
   Future<void> fetchBestFriendList({required int user_id}) async {
-    isLoading(true);
+    isLoading_bestFriend(true);
     ApiResponse response = await FriendAPI().fetchFriendList(userId: user_id, bestFriend: true);
 
     if (response.success) {
@@ -144,7 +146,7 @@ class ResortHomeViewModel extends GetxController {
       print('친구없는놈');
     }
 
-    isLoading(false);
+    isLoading_bestFriend(false);
   }
 
 

@@ -6,6 +6,7 @@ import 'package:com.snowlive/viewmodel/vm_user.dart';
 import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
 class FriendListView extends StatelessWidget {
@@ -165,19 +166,34 @@ class FriendListView extends StatelessWidget {
               ),
             ),
             SizedBox(height: 14),
+            (_friendListViewModel.isLoading == true)
+                ? Container(
+              height: 150,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Center(
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                      backgroundColor: SDSColor.snowliveWhite,
+                      color: SDSColor.snowliveBlue,
+                    ),
+                  ),
+                ],
+              ),
+            )
+                :
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 GestureDetector(
                   onTap: () async{
-                    CustomFullScreenDialog.showDialog();
+                    Get.toNamed(AppRoutes.friendDetail);
                     await _friendDetailViewModel.fetchFriendDetailInfo(
                       userId: _userViewModel.user.user_id,
                       friendUserId: _userViewModel.user.user_id,
                       season: _friendDetailViewModel.seasonDate,
                     );
-                    CustomFullScreenDialog.cancelDialog();
-                    Get.toNamed(AppRoutes.friendDetail);
                   },
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -388,14 +404,12 @@ class FriendListView extends StatelessWidget {
                             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
                             child: GestureDetector(
                               onTap: () async {
-                                CustomFullScreenDialog.showDialog();
+                                Get.toNamed(AppRoutes.friendDetail);
                                 await _friendDetailViewModel.fetchFriendDetailInfo(
                                   userId: _userViewModel.user.user_id,
                                   friendUserId: friend.friendInfo.userId,
                                   season: _friendDetailViewModel.seasonDate,
                                 );
-                                CustomFullScreenDialog.cancelDialog();
-                                Get.toNamed(AppRoutes.friendDetail);
                               },
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -525,10 +539,11 @@ class FriendListView extends StatelessWidget {
                                       children: [
                                         GestureDetector(
                                           onTap: () async {
+                                            HapticFeedback.lightImpact();
                                             await _friendDetailViewModel.toggleBestFriend(
                                               {"friend_id": friend.friendId},
                                             );
-                                            await _friendListViewModel.fetchFriendList();
+                                            await _friendListViewModel.fetchFriendList_afterBest();
                                           },
                                           child: Image.asset(
                                             'assets/imgs/icons/icon_profile_bestfriend_on.png',
@@ -668,10 +683,11 @@ class FriendListView extends StatelessWidget {
                                       children: [
                                         GestureDetector(
                                           onTap: () async {
+                                            HapticFeedback.lightImpact();
                                             await _friendDetailViewModel.toggleBestFriend(
                                               {"friend_id": friend.friendId},
                                             );
-                                            await _friendListViewModel.fetchFriendList();
+                                            await _friendListViewModel.fetchFriendList_afterBest();
                                           },
                                           child: Image.asset(
                                             'assets/imgs/icons/icon_profile_bestfriend_off.png',

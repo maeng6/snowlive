@@ -43,14 +43,12 @@ class _SendFriendRequestViewState extends State<SendFriendRequestView> {
                     leading:  (friend.friendUserInfo.profileImageUrlUser.isNotEmpty)
                         ? GestureDetector(
                       onTap: () async{
-                        CustomFullScreenDialog.showDialog();
+                        Get.toNamed(AppRoutes.friendDetail);
                         await _friendDetailViewModel.fetchFriendDetailInfo(
                           userId: _userViewModel.user.user_id,
                           friendUserId: friend.friendUserId,
                           season: _friendDetailViewModel.seasonDate,
                         );
-                        CustomFullScreenDialog.cancelDialog();
-                        Get.toNamed(AppRoutes.friendDetail);
                       },
                       child: Container(
                         width: 56,
@@ -95,14 +93,12 @@ class _SendFriendRequestViewState extends State<SendFriendRequestView> {
                     )
                         : GestureDetector(
                       onTap: () async{
-                        CustomFullScreenDialog.showDialog();
+                        Get.toNamed(AppRoutes.friendDetail);
                         await _friendDetailViewModel.fetchFriendDetailInfo(
                           userId: _userViewModel.user.user_id,
                           friendUserId: friend.friendUserId,
                           season: _friendDetailViewModel.seasonDate,
                         );
-                        CustomFullScreenDialog.cancelDialog();
-                        Get.toNamed(AppRoutes.friendDetail);
                       },
                       child: Container(
                         width: 56,

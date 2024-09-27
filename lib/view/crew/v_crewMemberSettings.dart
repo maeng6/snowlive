@@ -306,14 +306,12 @@ class CrewMemberSettingsView extends StatelessWidget {
                                     highlightColor: Colors.transparent,
                                     splashColor: Colors.transparent,
                                     onTap: () async {
-                                      CustomFullScreenDialog.showDialog();
+                                      Get.toNamed(AppRoutes.friendDetail);
                                       await _friendDetailViewModel.fetchFriendDetailInfo(
                                         userId: _userViewModel.user.user_id,
                                         friendUserId: _crewMemberListViewModel.crewMembersList[index].userInfo!.userId!,
                                         season: _friendDetailViewModel.seasonDate,
                                       );
-                                      CustomFullScreenDialog.cancelDialog();
-                                      Get.toNamed(AppRoutes.friendDetail);
                                     },
                                     child: Container(
                                       width: _size.width,

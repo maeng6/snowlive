@@ -102,7 +102,7 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
     return WillPopScope(
         onWillPop: () {
           return Future(() => false);
-        },//
+        },
         child: Obx(()=>Scaffold(
           floatingActionButton:
           SizedBox(
@@ -412,9 +412,7 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                   child: IconButton(
                     highlightColor: Colors.transparent,
                     onPressed: () async{
-                      CustomFullScreenDialog.showDialog();
-                      await _resortHomeViewModel.fetchBestFriendList(user_id: _userViewModel.user.user_id);
-                      CustomFullScreenDialog.cancelDialog();
+
                       showModalBottomSheet(
                         context: context,
                         shape: RoundedRectangleBorder(
@@ -461,7 +459,38 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                                           style: SDSTextStyle.bold.copyWith(fontSize: 16, color: SDSColor.gray900),
                                         ),
                                       ),
-                                      SizedBox(height: 24),
+                                      TextButton(
+                                          onPressed: () async{
+                                            await _resortHomeViewModel.fetchBestFriendList(user_id: _userViewModel.user.user_id);
+                                          },
+                                          style: TextButton.styleFrom(
+                                            backgroundColor: Colors.transparent, // 배경색 투명
+                                            splashFactory: NoSplash.splashFactory, // 터치 시 효과 제거
+                                          ),
+                                          child: Text('새로고침',
+                                            style: SDSTextStyle.bold.copyWith(
+                                              fontSize: 12,
+                                              color: SDSColor.snowliveBlue,
+                                            ),
+                                          )
+                                      ),
+                                      (_resortHomeViewModel.isLoading_bestFriend == true)
+                                          ? Container(
+                                        height: 150,
+                                        child: Column(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          children: [
+                                            Center(
+                                              child: CircularProgressIndicator(
+                                                strokeWidth: 2,
+                                                backgroundColor: SDSColor.snowliveWhite,
+                                                color: SDSColor.snowliveBlue,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      )
+                                          :
                                       Expanded(
                                         child: _resortHomeViewModel.bestFriendList.isEmpty
                                             ? Center(
@@ -486,14 +515,12 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                                               return GestureDetector(
                                                 onTap: () async {
                                                   Navigator.pop(context);
-                                                  CustomFullScreenDialog.showDialog();
+                                                  Get.toNamed(AppRoutes.friendDetail);
                                                   await _friendDetailViewModel.fetchFriendDetailInfo(
                                                     userId: _userViewModel.user.user_id,
                                                     friendUserId: BFdoc.friendInfo.userId,
                                                     season: _friendDetailViewModel.seasonDate,
                                                   );
-                                                  CustomFullScreenDialog.cancelDialog();
-                                                  Get.toNamed(AppRoutes.friendDetail);
                                                 },
                                                 child: Container(
                                                   width: (_size.width - 40) / 4, // 화면 너비를 4등분
@@ -618,8 +645,6 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                                               );
                                             }),
                                       ),
-
-
                                       SafeArea(
                                         child: Container(
                                           color: SDSColor.snowliveWhite,
@@ -648,6 +673,7 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                                           ),
                                         ),
                                       ),
+
                                     ],
                                   ),)
                               );

@@ -781,13 +781,11 @@ class _FleaMarketDetailViewState extends State<FleaMarketDetailView> {
                                                       if (_fleamarketDetailViewModel.fleamarketDetail.userInfo!.profileImageUrlUser!.isEmpty)
                                                         GestureDetector(
                                                           onTap: () async{
-                                                            CustomFullScreenDialog.showDialog();
+                                                            Get.toNamed(AppRoutes.friendDetail);
                                                             await _friendDetailViewModel.fetchFriendDetailInfo(
                                                                 userId: _userViewModel.user.user_id,
                                                                 friendUserId:_fleamarketDetailViewModel.fleamarketDetail.userInfo!.userId!,
                                                                 season: _friendDetailViewModel.seasonDate);
-                                                            CustomFullScreenDialog.cancelDialog();
-                                                            Get.toNamed(AppRoutes.friendDetail);
                                                           },
                                                           child: ExtendedImage.asset(
                                                             'assets/imgs/profile/img_profile_default_circle.png',
@@ -801,13 +799,11 @@ class _FleaMarketDetailViewState extends State<FleaMarketDetailView> {
                                                       if (_fleamarketDetailViewModel.fleamarketDetail.userInfo!.profileImageUrlUser!.isNotEmpty)
                                                         GestureDetector(
                                                           onTap: () async{
-                                                            CustomFullScreenDialog.showDialog();
+                                                            Get.toNamed(AppRoutes.friendDetail);
                                                             await _friendDetailViewModel.fetchFriendDetailInfo(
                                                                 userId: _userViewModel.user.user_id,
                                                                 friendUserId:_fleamarketDetailViewModel.fleamarketDetail.userInfo!.userId!,
                                                                 season: _friendDetailViewModel.seasonDate);
-                                                            CustomFullScreenDialog.cancelDialog();
-                                                            Get.toNamed(AppRoutes.friendDetail);
                                                           },
                                                           child: Container(
                                                             width: 32,
@@ -1317,13 +1313,11 @@ class _FleaMarketDetailViewState extends State<FleaMarketDetailView> {
                                                                 if (document_comment.userInfo!.profileImageUrlUser != "")
                                                                   GestureDetector(
                                                                     onTap: () async {
-                                                                      CustomFullScreenDialog.showDialog();
+                                                                      Get.toNamed(AppRoutes.friendDetail);
                                                                       await _friendDetailViewModel.fetchFriendDetailInfo(
                                                                           userId: _userViewModel.user.user_id,
                                                                           friendUserId: document_comment.userInfo!.userId!,
                                                                           season: _friendDetailViewModel.seasonDate);
-                                                                      CustomFullScreenDialog.cancelDialog();
-                                                                      Get.toNamed(AppRoutes.friendDetail);
                                                                     },
                                                                     child: Container(
                                                                       width: 32,
@@ -1346,13 +1340,11 @@ class _FleaMarketDetailViewState extends State<FleaMarketDetailView> {
                                                                 if (document_comment.userInfo!.profileImageUrlUser == "")
                                                                   GestureDetector(
                                                                     onTap: () async {
-                                                                      CustomFullScreenDialog.showDialog();
+                                                                      Get.toNamed(AppRoutes.friendDetail);
                                                                       await _friendDetailViewModel.fetchFriendDetailInfo(
                                                                           userId: _userViewModel.user.user_id,
                                                                           friendUserId: document_comment.userInfo!.userId!,
                                                                           season: _friendDetailViewModel.seasonDate);
-                                                                      CustomFullScreenDialog.cancelDialog();
-                                                                      Get.toNamed(AppRoutes.friendDetail);
                                                                     },
                                                                     child: ExtendedImage.network(
                                                                       '${profileImgUrlList[0].default_round}',

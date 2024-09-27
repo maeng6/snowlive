@@ -60,14 +60,12 @@ class MoreTabMainView extends StatelessWidget {
               ),
               Obx(() => GestureDetector(
                 onTap: () async{
-                  CustomFullScreenDialog.showDialog();
+                  Get.toNamed(AppRoutes.friendDetail);
                   await _friendDetailViewModel.fetchFriendDetailInfo(
                     userId: _userViewModel.user.user_id,
                     friendUserId: _userViewModel.user.user_id,
                     season: _friendDetailViewModel.seasonDate,
                   );
-                  CustomFullScreenDialog.cancelDialog();
-                  Get.toNamed(AppRoutes.friendDetail);
                 },
                 child: Padding(
                   padding: EdgeInsets.symmetric(horizontal: 16),
@@ -159,12 +157,10 @@ class MoreTabMainView extends StatelessWidget {
                       children: [
                         GestureDetector(
                           onTap: () async{
-                            CustomFullScreenDialog.showDialog();
+                            Get.toNamed(AppRoutes.friendList);
                             await _friendListViewModel.fetchFriendList();
                             await _friendListViewModel.fetchFriendRequestList(_userViewModel.user.user_id);
                             await _friendListViewModel.fetchBlockUserList();
-                            CustomFullScreenDialog.cancelDialog();
-                            Get.toNamed(AppRoutes.friendList);
                           },
                           child: Column(
                             children: [
