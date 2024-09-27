@@ -1,4 +1,7 @@
+import 'package:com.snowlive/model/m_comment_flea.dart';
 import 'package:com.snowlive/model/m_fleamarket.dart';
+
+import 'm_communityList.dart';
 
 class FleamarketDetailResponse {
   FleamarketDetailModel? fleamarketDetail;
@@ -35,6 +38,7 @@ class FleamarketDetailModel {
   bool? block;
   bool? isFavorite;
   String? status;
+  List<dynamic>? commentList;
 
   FleamarketDetailModel({
     this.fleaId,
@@ -59,6 +63,7 @@ class FleamarketDetailModel {
     this.block,
     this.isFavorite,
     this.status,
+    this.commentList
   });
 
   FleamarketDetailModel.fromJson(Map<String, dynamic> json) {
@@ -82,7 +87,9 @@ class FleamarketDetailModel {
     block = json['block'];
     status = json['status'];
     isFavorite = json['isFavorite'];
-
+    commentList = (json['comments']??[] as List)
+        .map((i) => CommentModel_flea.fromJson(i))
+        .toList();
     if (json['photos'] != null) {
       photos = [];
       json['photos'].forEach((v) {
@@ -93,6 +100,8 @@ class FleamarketDetailModel {
     userInfo = json['user_info'] != null
         ? UserInfo.fromJson(json['user_info'])
         : null;
+
+
   }
 
   FleamarketDetailModel.fromFleamarketModel(Fleamarket fleamarket) {
@@ -113,6 +122,7 @@ class FleamarketDetailModel {
     favoriteCount = fleamarket.favoriteCount;
     viewsCount = fleamarket.viewsCount;
     commentCount = fleamarket.commentCount;
+    commentList = fleamarket.commentList;
     block = fleamarket.block;
     status = fleamarket.status;
     isFavorite = fleamarket.isFavorite;

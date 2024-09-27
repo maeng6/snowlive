@@ -791,7 +791,7 @@ class CommunityCommentDetailView extends StatelessWidget {
                                               communityId: _communityCommentDetailViewModel.commentModel_community.communityId!,
                                               userId: _userViewModel.user.user_id,
                                               isLoading_indi: true);
-                                          await _communityBulletinListViewModel.fetchCommunityList_total(userId: _userViewModel.user.user_id,categoryMain: '게시판');
+                                          await _communityBulletinListViewModel.fetchAllCommunity();
                                         },
                                         icon: (_communityCommentDetailViewModel.isCommentButtonEnabled.value == false)
                                             ? Image.asset(

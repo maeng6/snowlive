@@ -1193,7 +1193,7 @@ class FleamarketUpdateView extends StatelessWidget {
                                 fleamarketId: _fleamarketDetailViewModel.fleamarketDetail.fleaId!,
                                 userId: _userViewModel.user.user_id
                             );
-                            await _fleamarketListViewModel.fetchAllFleamarket();
+                            await _fleamarketListViewModel.fetchAllFleamarket_afterUpload();
                           }
 
 

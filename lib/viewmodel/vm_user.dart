@@ -19,7 +19,6 @@ class UserViewModel extends GetxController {
 
       _user.value = UserModel.fromJson(response.data);
 
-      print('updateUserModel_api 완료');
     }else {
       print('데이터 로딩 실패');
     }

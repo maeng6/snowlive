@@ -156,7 +156,24 @@ class FleamarketListViewModel extends GetxController {
     _isLoadingList_board.value = false;
     await fetchFleamarketData_my(userId: _userViewModel.user.user_id, myflea: true);
     _isLoadingList_my.value = false;
+  }
 
+  Future<void> fetchAllFleamarket_afterUpload() async{
+    _isLoadingList_total.value = true;
+    _isLoadingList_ski.value = true;
+    _isLoadingList_board.value = true;
+    _isLoadingList_my.value = true;
+    _isLoadingList_favorite.value = true;
+    await fetchFleamarketData_total(userId: _userViewModel.user.user_id);
+    _isLoadingList_total.value = false;
+    await fetchFleamarketData_my(userId: _userViewModel.user.user_id, myflea: true);
+    _isLoadingList_my.value = false;
+    await fetchFleamarketData_ski(userId: _userViewModel.user.user_id, categoryMain:'스키');
+    _isLoadingList_ski.value = false;
+    await fetchFleamarketData_board(userId: _userViewModel.user.user_id, categoryMain:'스노보드');
+    _isLoadingList_board.value = false;
+    await fetchFleamarketData_favorite(userId: _userViewModel.user.user_id, favorite_list: true);
+    _isLoadingList_favorite.value = false;
   }
 
   Future<void> _scrollListener_total() async {

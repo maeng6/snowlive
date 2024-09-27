@@ -1641,10 +1641,7 @@ class FleaMarketListView_board extends StatelessWidget {
                                 onTap: () async {
                                   _fleamarketDetailViewModel.fetchFleamarketDetailFromList(fleamarketResponse: _fleamarketListViewModel.fleamarketListBoard[index]);
                                   Get.toNamed(AppRoutes.fleamarketDetail);
-                                  await _fleamarketDetailViewModel.fetchFleamarketComments(
-                                      fleaId: _fleamarketListViewModel.fleamarketListBoard[index].fleaId!,
-                                      userId: _userViewModel.user.user_id,
-                                      isLoading_indi: true);
+                                  await _fleamarketDetailViewModel.addViewerFleamarket(fleamarketId: data.fleaId!, userId: _userViewModel.user.user_id);
                                 },
                                 child: Column(
                                   children: [

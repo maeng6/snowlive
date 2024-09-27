@@ -1,3 +1,6 @@
+import 'm_communityList.dart';
+import 'm_fleamarket.dart';
+
 class CommentResponse_flea {
   int? count;
   String? next;
@@ -69,6 +72,22 @@ class CommentModel_flea {
           .toList();
     }
   }
+
+  CommentModel_flea.fromJson_model(CommentModel_flea commentModel_flea) {
+    commentId = commentModel_flea.commentId;
+    fleaId = commentModel_flea.fleaId;
+    content = commentModel_flea.content;
+    userId = commentModel_flea.userId;
+    userInfo = UserInfo.fromJson_model(commentModel_flea.userInfo!);
+    updateTime = commentModel_flea.updateTime;
+    uploadTime = commentModel_flea.uploadTime;
+    secret = commentModel_flea.secret;
+    if (commentModel_flea.replies != null) {
+      replies = (commentModel_flea.replies as List)
+          .map((i) => Reply.fromJson_model(i))
+          .toList();
+    }
+  }
 }
 
 class Reply {
@@ -104,18 +123,19 @@ class Reply {
     commentId = json['comment_id'];
     secret = json['secret'];
   }
-}
 
-class UserInfo {
-  int? userId;
-  String? displayName;
-  String? profileImageUrlUser;
-
-  UserInfo({this.userId, this.displayName, this.profileImageUrlUser});
-
-  UserInfo.fromJson(Map<String, dynamic> json) {
-    userId = json['user_id'];
-    displayName = json['display_name'];
-    profileImageUrlUser = json['profile_image_url_user'];
+  Reply.fromJson_model(Reply reply) {
+    replyId = reply.replyId;
+    content = reply.content;
+    userId = reply.userId;
+    userInfo = reply.userInfo != null
+        ? UserInfo.fromJson_model(reply.userInfo!)
+        : null;
+    updateTime = reply.updateTime;
+    uploadTime = reply.uploadTime;
+    commentId = reply.commentId;
+    secret = reply.secret;
   }
+
 }
+

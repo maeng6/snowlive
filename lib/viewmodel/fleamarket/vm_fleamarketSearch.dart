@@ -9,7 +9,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class FleamarketSearchViewModel extends GetxController {
 
-  var isLoading = true.obs;
+  ScrollController _scrollController = ScrollController();
+  var isLoading = false.obs;
   final TextEditingController textEditingController = TextEditingController();
   final formKey = GlobalKey<FormState>();
   UserViewModel _userViewModel = Get.find<UserViewModel>();
@@ -39,7 +40,7 @@ class FleamarketSearchViewModel extends GetxController {
   bool get isSearching => _isSearching.value;
 
 
-  ScrollController _scrollController = ScrollController();
+
 
   final FleamarketAPI _fleamarketAPI = FleamarketAPI();
 
@@ -58,7 +59,7 @@ class FleamarketSearchViewModel extends GetxController {
     if (_scrollController.position.pixels == _scrollController.position.maxScrollExtent) {
       print('다음목록 로딩 시작');
       if (_nextPageUrl_total.value.isNotEmpty) {
-        await fetchFleamarketData_total(
+        await fetchFleamarketData_search(
             userId: _userViewModel.user.user_id,
             url: _nextPageUrl_total.value
         ); // 추가 데이터 로딩
@@ -66,7 +67,7 @@ class FleamarketSearchViewModel extends GetxController {
     }
   }
 
-  Future<void> fetchFleamarketData_total({
+  Future<void> fetchFleamarketData_search({
     required int userId,
     String? categoryMain,
     String? categorySub,
@@ -118,7 +119,7 @@ class FleamarketSearchViewModel extends GetxController {
 
   Future<void> fetchNextPage_total() async{
     if (_nextPageUrl_total.value.isNotEmpty) {
-      await fetchFleamarketData_total(
+      await fetchFleamarketData_search(
           userId: _userViewModel.user.user_id,
           url: _nextPageUrl_total.value
       );
@@ -128,7 +129,7 @@ class FleamarketSearchViewModel extends GetxController {
 
   Future<void> fetchPreviousPage_total() async{
     if (_previousPageUrl_total.value.isNotEmpty) {
-      await fetchFleamarketData_total(
+      await fetchFleamarketData_search(
           userId: _userViewModel.user.user_id,
           url: _previousPageUrl_total.value
       );

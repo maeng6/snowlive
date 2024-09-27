@@ -28,7 +28,7 @@ class FleaMarketListView_search extends StatelessWidget {
         textFocus.unfocus();
         FocusScope.of(context).unfocus();
       },
-      child: Scaffold(
+      child: Obx(()=>Scaffold(
         backgroundColor: Colors.white,
         appBar: PreferredSize(
           preferredSize: Size.fromHeight(44),
@@ -84,7 +84,7 @@ class FleaMarketListView_search extends StatelessWidget {
                                   onFieldSubmitted: (val) async {
                                     if (val.isNotEmpty) {
                                       _fleamarketSearchViewModel.showRecentSearch.value = false;
-                                      await _fleamarketSearchViewModel.fetchFleamarketData_total(
+                                      await _fleamarketSearchViewModel.fetchFleamarketData_search(
                                         userId: _userViewModel.user.user_id,
                                         search_query: _fleamarketSearchViewModel.textEditingController.text,
                                       );
@@ -178,7 +178,23 @@ class FleaMarketListView_search extends StatelessWidget {
                 ),
               ),
               SizedBox(height: 20),
-              Expanded(
+              (_fleamarketSearchViewModel.isLoading ==true)
+                  ? Container(
+                height: 150,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Center(
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        backgroundColor: SDSColor.snowliveWhite,
+                        color: SDSColor.snowliveBlue,
+                      ),
+                    ),
+                  ],
+                ),
+              )
+                  :Expanded(
                 child: Obx(
                       () => SingleChildScrollView(
                     child: Column(
@@ -194,14 +210,12 @@ class FleaMarketListView_search extends StatelessWidget {
                                 return GestureDetector(
                                   onTap: () async {
                                     textFocus.unfocus();
-                                    CustomFullScreenDialog.showDialog();
                                     _fleamarketSearchViewModel.textEditingController.text = recentSearch;
                                     _fleamarketSearchViewModel.showRecentSearch.value = false;
-                                    await _fleamarketSearchViewModel.fetchFleamarketData_total(
+                                    await _fleamarketSearchViewModel.fetchFleamarketData_search(
                                       userId: _userViewModel.user.user_id,
                                       search_query: recentSearch,
                                     );
-                                    CustomFullScreenDialog.cancelDialog();
                                     await _fleamarketSearchViewModel.saveRecentSearch(recentSearch);
                                   },
                                   child: Row(
@@ -259,11 +273,7 @@ class FleaMarketListView_search extends StatelessWidget {
                                       _fleamarketDetailViewModel.fetchFleamarketDetailFromList(
                                           fleamarketResponse: _fleamarketSearchViewModel.fleamarketListSearch[index]);
                                       Get.toNamed(AppRoutes.fleamarketDetail);
-                                      await _fleamarketDetailViewModel.fetchFleamarketComments(
-                                        fleaId: _fleamarketSearchViewModel.fleamarketListSearch[index].fleaId!,
-                                        userId: _userViewModel.user.user_id,
-                                        isLoading_indi: true,
-                                      );
+                                      await _fleamarketDetailViewModel.addViewerFleamarket(fleamarketId: data.fleaId!, userId: _userViewModel.user.user_id);
                                     },
                                     child: Padding(
                                       padding: EdgeInsets.symmetric(horizontal: 16),
@@ -349,6 +359,112 @@ class FleaMarketListView_search extends StatelessWidget {
                                                             ],
                                                           ),
                                                         ),
+                                                        //TODO: 조회수, 찜수, 댓글수
+                                                        Row(
+                                                          children: [
+                                                            //TODO: 조회수
+                                                            if(data.viewsCount!.toInt() != 0)
+                                                              Row(
+                                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                                children: [
+                                                                  Container(
+                                                                    width: 16,
+                                                                    height: 16,
+                                                                    decoration: BoxDecoration(
+                                                                      shape: BoxShape.rectangle,
+                                                                      borderRadius: BorderRadius.circular(8),
+                                                                      image: DecorationImage(
+                                                                        image: AssetImage('assets/imgs/icons/icon_list_view.png'),
+                                                                        fit: BoxFit.cover,
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                  SizedBox(width: 2,),
+                                                                  Text(
+                                                                      '${data.viewsCount}',
+                                                                      style: SDSTextStyle.regular.copyWith(
+                                                                        fontSize: 13,
+                                                                        color: SDSColor.gray500,
+                                                                      )
+                                                                  )
+                                                                ],
+                                                              ),
+                                                            //TODO: 찜수
+                                                            if(data.favoriteCount!.toInt() != 0)
+                                                              Padding(
+                                                                padding: const EdgeInsets.only(left: 6),
+                                                                child: Row(
+                                                                  mainAxisAlignment: MainAxisAlignment.center,
+                                                                  children: [
+                                                                    (data.isFavorite == false)
+                                                                        ? Container(
+                                                                      width: 16,
+                                                                      height: 16,
+                                                                      decoration: BoxDecoration(
+                                                                        shape: BoxShape.rectangle,
+                                                                        borderRadius: BorderRadius.circular(8),
+                                                                        image: DecorationImage(
+                                                                          image: AssetImage('assets/imgs/icons/icon_list_scrap.png'),
+                                                                          fit: BoxFit.cover,
+                                                                        ),
+                                                                      ),
+                                                                    )
+                                                                        : Container(
+                                                                      width: 16,
+                                                                      height: 16,
+                                                                      decoration: BoxDecoration(
+                                                                        shape: BoxShape.rectangle,
+                                                                        borderRadius: BorderRadius.circular(8),
+                                                                        image: DecorationImage(
+                                                                          image: AssetImage('assets/imgs/icons/icon_list_scrap_my.png'),
+                                                                          fit: BoxFit.cover,
+                                                                        ),
+                                                                      ),
+                                                                    )
+                                                                    ,
+                                                                    SizedBox(width: 2,),
+                                                                    Text(
+                                                                        '${data.favoriteCount.toString()}',
+                                                                        style: SDSTextStyle.regular.copyWith(
+                                                                          fontSize: 13,
+                                                                          color: SDSColor.gray500,
+                                                                        )
+                                                                    )
+                                                                  ],
+                                                                ),
+                                                              ),
+                                                            //TODO: 댓글수
+                                                            if(data.commentCount!.toInt() != 0)
+                                                              Padding(
+                                                                padding: const EdgeInsets.only(left: 6),
+                                                                child: Row(
+                                                                  mainAxisAlignment: MainAxisAlignment.center,
+                                                                  children: [
+                                                                    Container(
+                                                                      width: 16,
+                                                                      height: 16,
+                                                                      decoration: BoxDecoration(
+                                                                        shape: BoxShape.rectangle,
+                                                                        borderRadius: BorderRadius.circular(8),
+                                                                        image: DecorationImage(
+                                                                          image: AssetImage('assets/imgs/icons/icon_list_reply.png'),
+                                                                          fit: BoxFit.cover,
+                                                                        ),
+                                                                      ),
+                                                                    ),
+                                                                    SizedBox(width: 2,),
+                                                                    Text(
+                                                                        '${data.commentCount.toString()}',
+                                                                        style: SDSTextStyle.regular.copyWith(
+                                                                          fontSize: 13,
+                                                                          color: SDSColor.gray500,
+                                                                        )
+                                                                    )
+                                                                  ],
+                                                                ),
+                                                              ),
+                                                          ],
+                                                        ),
                                                       ],
                                                     ),
                                                   ],
@@ -370,6 +486,15 @@ class FleaMarketListView_search extends StatelessWidget {
                               ),
                             ),
                           ),
+                        if (_fleamarketSearchViewModel.fleamarketListSearch.isEmpty
+                            && _fleamarketSearchViewModel.showRecentSearch.value == false)
+                          ConstrainedBox(
+                            constraints: BoxConstraints(minHeight: _size.height),
+                            child: Scrollbar(
+                              controller: _fleamarketSearchViewModel.scrollController,
+                              child: Container(child: Text('검색 결과가 없습니다.'),)
+                            ),
+                          ),
                       ],
                     ),
                   ),
@@ -378,7 +503,7 @@ class FleaMarketListView_search extends StatelessWidget {
             ],
           ),
         ),
-      ),
+      )),
     );
   }
 }
