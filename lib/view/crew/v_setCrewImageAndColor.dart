@@ -205,9 +205,8 @@ class SetCrewImageAndColorView extends StatelessWidget {
                                                       },
                                                       child: Text(
                                                         '사진 촬영',
-                                                        style: TextStyle(
-                                                          color: Color(0xFFFFFFFF),
-                                                          fontWeight: FontWeight.bold,
+                                                        style: SDSTextStyle.bold.copyWith(
+                                                          color: SDSColor.snowliveWhite,
                                                           fontSize: 16,
                                                         ),
                                                       ),
@@ -231,9 +230,8 @@ class SetCrewImageAndColorView extends StatelessWidget {
                                                       },
                                                       child: Text(
                                                         '앨범에서 선택',
-                                                        style: TextStyle(
-                                                          color: Color(0xFFFFFFFF),
-                                                          fontWeight: FontWeight.bold,
+                                                        style: SDSTextStyle.bold.copyWith(
+                                                          color: SDSColor.snowliveWhite,
                                                           fontSize: 16,
                                                         ),
                                                       ),
@@ -244,7 +242,7 @@ class SetCrewImageAndColorView extends StatelessWidget {
                                                         elevation: 0,
                                                         splashFactory: InkRipple.splashFactory,
                                                         minimumSize: Size(100, 56),
-                                                        backgroundColor: Color(0xFF3D83ED),
+                                                        backgroundColor: SDSColor.snowliveBlue,
                                                       ),
                                                     ),
                                                   ),

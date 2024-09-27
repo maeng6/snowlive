@@ -1,3 +1,4 @@
+import 'package:com.snowlive/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/routes/routes.dart';
 import 'package:com.snowlive/view/crew/v_crewHome.dart';
 import 'package:com.snowlive/view/crew/v_crewMember.dart';
@@ -29,76 +30,89 @@ class CrewMainView extends StatelessWidget {
       backgroundColor: Colors.white,
       extendBodyBehindAppBar: true,
       appBar: PreferredSize(
-        preferredSize: Size.fromHeight(58),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            AppBar(
-              actions: [
-                IconButton(
-                    onPressed: () {
-                      _searchCrewViewModel.textEditingController.clear();
-                      _searchCrewViewModel.crewList.clear();
-                      _searchCrewViewModel.showRecentSearch.value = true;
-                      Get.toNamed(AppRoutes.searchCrew);
-                    },
-                    icon: Icon(Icons.search,
-                      size: 26,
-                    )
-                ),
-                if(_userViewModel.user.crew_id == _crewDetailViewModel.crewDetailInfo.crewId)
-                  Padding(
-                    padding: EdgeInsets.only(right: 5),
-                    child: IconButton(
-                      onPressed: () {
-                        Get.toNamed(AppRoutes.crewSetting);
-                      },
-                      icon: Image.asset(
-                        'assets/imgs/icons/icon_settings.png',
-                        scale: 4,
-                        width: 26,
-                        height: 26,
-                      ),
-                    ),
-                  )
-              ],
-              leading: GestureDetector(
-                child: Image.asset(
-                  'assets/imgs/icons/icon_snowLive_back.png',
+        preferredSize: Size.fromHeight(44),
+        child: AppBar(
+          actions: [
+            IconButton(
+                onPressed: () {
+                  _searchCrewViewModel.textEditingController.clear();
+                  _searchCrewViewModel.crewList.clear();
+                  _searchCrewViewModel.showRecentSearch.value = true;
+                  Get.toNamed(AppRoutes.searchCrew);
+                },
+                icon: Image.asset(
+                  'assets/imgs/icons/icon_appBar_search.png',
                   scale: 4,
                   width: 26,
                   height: 26,
                 ),
-                onTap: () async {
-                  Get.back();
-                },
-              ),
-              centerTitle: true,
-              title: Text(
-                '라이브크루',
-                style: TextStyle(
-                  color: Color(0xFF111111),
-                  fontWeight: FontWeight.bold,
-                  fontSize: 18,
-                ),
-              ),
-              backgroundColor: Colors.white,
-              elevation: 0.0,
             ),
+            if(_userViewModel.user.crew_id == _crewDetailViewModel.crewDetailInfo.crewId)
+              Padding(
+                padding: EdgeInsets.only(right: 5),
+                child: IconButton(
+                  onPressed: () {
+                    Get.toNamed(AppRoutes.crewSetting);
+                  },
+                  icon: Image.asset(
+                    'assets/imgs/icons/icon_settings.png',
+                    scale: 4,
+                    width: 26,
+                    height: 26,
+                  ),
+                ),
+              )
           ],
+          leading: GestureDetector(
+            child: Image.asset(
+              'assets/imgs/icons/icon_snowLive_back.png',
+              scale: 4,
+              width: 26,
+              height: 26,
+            ),
+            onTap: () async {
+              Get.back();
+            },
+          ),
+          centerTitle: true,
+          title: Text(
+            '라이브크루',
+            style: SDSTextStyle.extraBold.copyWith(
+                color: SDSColor.gray900,
+                fontSize: 18),
+          ),
+          backgroundColor: SDSColor.snowliveWhite,
+          foregroundColor: SDSColor.snowliveWhite,
+          surfaceTintColor: SDSColor.snowliveWhite,
+          elevation: 0.0,
         ),
       ),
       body: SafeArea(
         child: Column(
           children: [
-            Container(
-              color: Colors.transparent,
-              child: Row(
-                children: [
-                  _buildTabButton('홈', '홈'),
-                  _buildTabButton('멤버', '멤버'),
-                ],
-              ),
+            Stack(
+              children: [
+                Positioned(
+                  bottom: 0,
+                  child: Container(
+                    width: _size.width,
+                    height: 1,
+                    color: SDSColor.gray100,
+                  ),
+                ),
+                Container(
+                  color: Colors.transparent,
+                  child: Padding(
+                    padding: EdgeInsets.only(left: 20, right: 20),
+                    child: Row(
+                      children: [
+                        _buildTabButton('홈', '홈'),
+                        _buildTabButton('멤버', '멤버'),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
             ),
             Expanded(
               child: Obx(
@@ -123,8 +137,8 @@ class CrewMainView extends StatelessWidget {
         bool isSelected = _crewMainViewModel.currentTab.value == tabName;
         return Column(
           children: [
-            Padding(
-              padding: const EdgeInsets.only(bottom: 2),
+            Container(
+              height: 40,
               child: ElevatedButton(
                 onPressed: () {
                   HapticFeedback.lightImpact();
@@ -132,21 +146,25 @@ class CrewMainView extends StatelessWidget {
                 },
                 child: Text(
                   title,
-                  style: TextStyle(
-                    color: isSelected ? Color(0xFF111111) : Color(0xFFc8c8c8),
+                  style: SDSTextStyle.bold.copyWith(
+                    color: isSelected ? SDSColor.gray900 : SDSColor.gray400,
                     fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-                    fontSize: 16,
+                    fontSize: 15,
                   ),
                 ),
                 style: ElevatedButton.styleFrom(
                   minimumSize: Size(40, 40),
-                  backgroundColor: Color(0xFFFFFFFF),
+                  backgroundColor: SDSColor.snowliveWhite,
+                  surfaceTintColor: Colors.transparent,
+                  overlayColor: Colors.transparent,
+                  shadowColor: Colors.transparent,
                   elevation: 0,
                 ),
               ),
             ),
             Container(
               height: 3,
+              width: 72,
               color: isSelected ? Color(0xFF111111) : Colors.transparent,
             ),
           ],

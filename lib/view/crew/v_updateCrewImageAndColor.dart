@@ -30,7 +30,7 @@ class UpdateCrewImageAndColorView extends StatelessWidget {
           backgroundColor: Colors.white,
           extendBodyBehindAppBar: true,
           appBar: PreferredSize(
-            preferredSize: Size.fromHeight(58),
+            preferredSize: Size.fromHeight(44),
             child: AppBar(
               leading: GestureDetector(
                 child: Image.asset(
@@ -45,244 +45,294 @@ class UpdateCrewImageAndColorView extends StatelessWidget {
                 },
               ),
               backgroundColor: Colors.white,
+              surfaceTintColor: Colors.transparent,
               elevation: 0.0,
               centerTitle: false,
               titleSpacing: 0,
             ),
           ),
           body: SingleChildScrollView(
-            child: Padding(
-              padding: EdgeInsets.only(
-                top: _statusBarSize + 58,
-                left: 16,
-                right: 16,
-                bottom: _statusBarSize,
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    '라이브크루 이미지와 대표 색상을\n설정해주세요.',
-                    style: TextStyle(fontSize: 23, fontWeight: FontWeight.bold, height: 1.3),
-                  ),
-                  SizedBox(height: 8),
-                  Text(
-                    '이미지와 대표 색상은 크루 설정에서 변경할 수 있어요.',
-                    style: TextStyle(color: Color(0xff949494), fontSize: 13, height: 1.5),
-                  ),
-                  SizedBox(height: _size.height * 0.1),
-                  Center(
-                    child: Obx(
-                          () => Container(
-                        width: 150,
-                        height: 150,
-                        decoration: BoxDecoration(
-                          color: _setCrewViewModel.currentColorBackground.value,
-                          borderRadius: BorderRadius.circular(30),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(10.0), // 이미지와 배경 사이 간격
-                          child:
-                          (_setCrewViewModel.croppedFile != null)
-                              ?Stack(
-                            children: [
-                              Center(
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(20),
-                                  child: ExtendedImage.file(
-                                    File(_setCrewViewModel.croppedFile!.path),
-                                    fit: BoxFit.cover, // 배경을 모두 채우도록 설정
-                                    cacheRawData: true,
-                                    enableLoadState: true,
-                                    width: 80, // 배경 안에 들어가도록 크기 조정
-                                    height: 80,
-                                  ),
-                                ),
-                              ),
-                              Positioned(
-                                top: 20,
-                                right: 20,
-                                child: GestureDetector(
-                                  onTap: () {
-                                    _setCrewViewModel.resetImage();
-                                  },
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      color: SDSColor.snowliveBlack.withOpacity(0.7),
-                                      shape: BoxShape.circle,
-                                    ),
-                                    child: Icon(
-                                      Icons.close,
-                                      color: SDSColor.snowliveWhite,
-                                      size: 20,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          )
-                              :Center(
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(20),
-                              child:
-                              ExtendedImage.network(
-                                '${crewDefaultLogoUrl['${_setCrewViewModel.colorToHex(_setCrewViewModel.currentColor.value)}']}',
-                                enableMemoryCache: true,
-                                shape: BoxShape.rectangle,
-                                borderRadius: BorderRadius.circular(10),
-                                width: 80,
-                                height: 80,
-                                fit: BoxFit.cover,
-                                cacheRawData: true,
-                                enableLoadState: true,
-                              )
-                            ),
-                          ),
-
-
-                        ),
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: 20),
-                  Center(
-                    child: TextButton(
-                      onPressed: () {
-                        showModalBottomSheet(
-                          context: context,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-                          ),
-                          builder: (context) => SafeArea(
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Container(
-                                  width: 40,
-                                  height: 4,
-                                  margin: EdgeInsets.only(top: 8, bottom: 16),
-                                  decoration: BoxDecoration(
-                                    color: Colors.grey,
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                ),
-                                Text('이미지 업로드 방법', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-                                SizedBox(height: 16),
-                                Text(
-                                  '이미지를 등록하지 않으면 기본 이미지로 설정됩니다.',
-                                  style: TextStyle(fontSize: 13, color: Color(0xFF949494)),
-                                ),
-                                SizedBox(height: 30),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                  children: [
-                                    ElevatedButton(
-                                      onPressed: () async {
-                                        Navigator.pop(context);
-                                        _setCrewViewModel.uploadImage(ImageSource.camera);
-                                      },
-                                      child: Text(
-                                        '사진 촬영',
-                                        style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
-                                      ),
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor: SDSColor.gray700,
-                                        minimumSize: Size(160, 45),
-                                      ),
-                                    ),
-                                    ElevatedButton(
-                                      onPressed: () async {
-                                        Navigator.pop(context);
-                                        _setCrewViewModel.uploadImage(ImageSource.gallery);
-                                      },
-                                      child: Text(
-                                        '앨범에서 선택',
-                                        style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
-                                      ),
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor: SDSColor.snowliveBlue,
-                                        minimumSize: Size(160, 45),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
-                        );
-                      },
-                      child: Text(
-                        '이미지 직접 등록',
-                        style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
-                      ),
-                      style: TextButton.styleFrom(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20),
-                          side: BorderSide(color: Colors.grey),
-                        ),
-                        backgroundColor: Colors.transparent,
-                        padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-                      ).copyWith(
-                        overlayColor: MaterialStateProperty.all(Colors.transparent),
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: 40),
-                  Center(
-                    child: Text(
-                      '크루 대표 색상 선택하기',
-                      style: TextStyle(color: Color(0xff111111), fontSize: 13, height: 1.5),
-                    ),
-                  ),
-                  SizedBox(height: 15),
-                  Center(
-                    child: Container(
-                      height: 120,
-                      width: 240,
-                      child: Column(
+            child: SafeArea(
+              child: Padding(
+                padding: EdgeInsets.only(
+                  top: 10,
+                  left: 16,
+                  right: 16,
+                ),
+                child: Container(
+                  height: _size.height - 180,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: crewColorList.sublist(0, 5).map((color) {
-                              return GestureDetector(
-                                onTap: () {
-                                  _setCrewViewModel.selectColor(color!);
-                                },
-                                child: Container(
-                                  height: 32,
-                                  width: 32,
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: color,
-                                  ),
-                                ),
-                              );
-                            }).toList(),
+                          Text(
+                            '라이브크루 이미지와 대표 색상을\n설정해주세요.',
+                            style: SDSTextStyle.bold.copyWith(
+                                fontSize: 22,
+                                color: SDSColor.gray900
+                            ),
                           ),
-                          SizedBox(height: 10),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: crewColorList.sublist(5).map((color) {
-                              return GestureDetector(
-                                onTap: () {
-                                  _setCrewViewModel.selectColor(color!);
-                                },
-                                child: Container(
-                                  height: 32,
-                                  width: 32,
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: color,
-                                  ),
-                                ),
-                              );
-                            }).toList(),
+                          SizedBox(height: 8),
+                          Text(
+                            '이미지와 대표 색상은 크루 설정에서 변경할 수 있어요.',
+                            style: SDSTextStyle.regular.copyWith(
+                              color: SDSColor.gray500,
+                              fontSize: 14,
+                            ),
                           ),
                         ],
                       ),
-                    ),
+                      Padding(
+                        padding: EdgeInsets.only(top: 10),
+                        child: Center(
+                          child: Column(
+                            children: [
+                              Obx(
+                                    () => Container(
+                                  width: 150,
+                                  height: 150,
+                                  decoration: BoxDecoration(
+                                    color: _setCrewViewModel.currentColorBackground.value,
+                                    borderRadius: BorderRadius.circular(30),
+                                  ),
+                                  child: (_setCrewViewModel.croppedFile != null)
+                                      ? Stack(
+                                    children: [
+                                      Center(
+                                        child: ClipRRect(
+                                          borderRadius: BorderRadius.circular(16),
+                                          child: ExtendedImage.file(
+                                            File(_setCrewViewModel.croppedFile!.path),
+                                            fit: BoxFit.cover, // 배경을 모두 채우도록 설정
+                                            cacheRawData: true,
+                                            enableLoadState: true,
+                                            width: 80, // 배경 안에 들어가도록 크기 조정
+                                            height: 80,
+                                          ),
+                                        ),
+                                      ),
+                                      Positioned(
+                                        top: 24,
+                                        right: 24,
+                                        child: GestureDetector(
+                                          onTap: () {
+                                            _setCrewViewModel.resetImage();
+                                          },
+                                          child: Container(
+                                            padding: EdgeInsets.all(3),
+                                            decoration: BoxDecoration(
+                                              color: SDSColor.snowliveBlack.withOpacity(0.7),
+                                              shape: BoxShape.circle,
+                                            ),
+                                            child: Icon(
+                                              Icons.close,
+                                              color: SDSColor.snowliveWhite,
+                                              size: 20,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  )
+                                      :Center(
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(16),
+                                      child:
+                                      ExtendedImage.network(
+                                        '${crewDefaultLogoUrl['${_setCrewViewModel.colorToHex(_setCrewViewModel.currentColor.value)}']}',
+                                        enableMemoryCache: true,
+                                        shape: BoxShape.rectangle,
+                                        borderRadius: BorderRadius.circular(16),
+                                        width: 80,
+                                        height: 80,
+                                        fit: BoxFit.cover,
+                                        cacheRawData: true,
+                                        enableLoadState: true,
+                                      )
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              SizedBox(height: 12),
+                              TextButton(
+                                onPressed: () {
+                                  showModalBottomSheet(
+                                    context: context,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+                                    ),
+                                    builder: (context) => SafeArea(
+                                      child: Container(
+                                        height: 203,
+                                        child: Padding(
+                                          padding: EdgeInsets.only(bottom: 20, right: 20, left: 20, top: 12),
+                                          child: Column(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              Padding(
+                                                padding: const EdgeInsets.only(bottom: 20),
+                                                child: Container(
+                                                  height: 4,
+                                                  width: 36,
+                                                  decoration: BoxDecoration(
+                                                    borderRadius: BorderRadius.circular(10),
+                                                    color: SDSColor.gray200,
+                                                  ),
+                                                ),
+                                              ),
+                                              Text('이미지 업로드 방법',
+                                                style: SDSTextStyle.bold.copyWith(fontSize: 16, color: SDSColor.gray900),
+                                              ),
+                                              SizedBox(height: 8),
+                                              Text(
+                                                '이미지를 등록하지 않으면 기본 이미지로 설정됩니다.',
+                                                textAlign: TextAlign.center,
+                                                style: SDSTextStyle.regular.copyWith(fontSize: 14, color: SDSColor.gray500),
+                                              ),
+                                              SizedBox(height: 40),
+                                              Row(
+                                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                                children: [
+                                                  Expanded(
+                                                    child: ElevatedButton(
+                                                      onPressed: () async {
+                                                        Navigator.pop(context);
+                                                        _setCrewViewModel.uploadImage(ImageSource.camera);
+                                                      },
+                                                      child: Text(
+                                                        '사진 촬영',
+                                                        style: SDSTextStyle.bold.copyWith(
+                                                          color: SDSColor.snowliveWhite,
+                                                          fontSize: 16,
+                                                        ),
+                                                      ),
+                                                      style: TextButton.styleFrom(
+                                                        shape: const RoundedRectangleBorder(
+                                                          borderRadius: BorderRadius.all(Radius.circular(6)),
+                                                        ),
+                                                        elevation: 0,
+                                                        splashFactory: InkRipple.splashFactory,
+                                                        minimumSize: Size(100, 56),
+                                                        backgroundColor: Color(0xff7C899D),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  SizedBox(width: 8),
+                                                  Expanded(
+                                                    child: ElevatedButton(
+                                                      onPressed: () async {
+                                                        Navigator.pop(context);
+                                                        _setCrewViewModel.uploadImage(ImageSource.gallery);
+                                                      },
+                                                      child: Text(
+                                                        '앨범에서 선택',
+                                                        style: SDSTextStyle.bold.copyWith(
+                                                          color: SDSColor.snowliveWhite,
+                                                          fontSize: 16,
+                                                        ),
+                                                      ),
+                                                      style: TextButton.styleFrom(
+                                                        shape: const RoundedRectangleBorder(
+                                                          borderRadius: BorderRadius.all(Radius.circular(6)),
+                                                        ),
+                                                        elevation: 0,
+                                                        splashFactory: InkRipple.splashFactory,
+                                                        minimumSize: Size(100, 56),
+                                                        backgroundColor: SDSColor.snowliveBlue,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                },
+                                child: Text(
+                                  '이미지 직접 등록',
+                                  style: SDSTextStyle.bold.copyWith(fontSize: 13, color: SDSColor.gray900),),
+                                style: ElevatedButton.styleFrom(
+                                  padding: EdgeInsets.symmetric(horizontal: 14, vertical: 3),
+                                  minimumSize: Size(36, 32),
+                                  backgroundColor: SDSColor.snowliveWhite,
+                                  side: BorderSide(
+                                      color: SDSColor.gray200
+                                  ),
+                                  elevation: 0,
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(100)),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              '크루 대표 색상 선택하기',
+                              style: SDSTextStyle.regular.copyWith(color: SDSColor.gray500, fontSize: 13),
+                            ),
+                            SizedBox(height: 12),
+                            Container(
+                              width: 220,
+                              child: Column(
+                                children: [
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: crewColorList.sublist(0, 5).map((color) {
+                                      return GestureDetector(
+                                        onTap: () {
+                                          _setCrewViewModel.selectColor(color!);
+                                        },
+                                        child: Container(
+                                          height: 24,
+                                          width: 24,
+                                          decoration: BoxDecoration(
+                                            shape: BoxShape.circle,
+                                            color: color,
+                                          ),
+                                        ),
+                                      );
+                                    }).toList(),
+                                  ),
+                                  SizedBox(height: 16),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: crewColorList.sublist(5).map((color) {
+                                      return GestureDetector(
+                                        onTap: () {
+                                          _setCrewViewModel.selectColor(color!);
+                                        },
+                                        child: Container(
+                                          height: 24,
+                                          width: 24,
+                                          decoration: BoxDecoration(
+                                            shape: BoxShape.circle,
+                                            color: color,
+                                          ),
+                                        ),
+                                      );
+                                    }).toList(),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+
+                    ],
                   ),
-                ],
+                ),
               ),
             ),
           ),
@@ -303,14 +353,14 @@ class UpdateCrewImageAndColorView extends StatelessWidget {
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(20),
                         ),
-                        title: Text('이대로 변경하시겠습니까?',
+                        title: Text('변경사항을 저장하시겠어요?',
                             style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 fontSize: 16
                             ),
                             textAlign: TextAlign.center
                         ),
-                        content: Text('선택하신 이미지와 대표 색상으로 변경됩니다',
+                        content: Text('선택하신 이미지와 대표 색상으로 설정이 변경됩니다',
                             style: TextStyle(
                                 fontSize: 14,
                                 color: SDSColor.gray600
@@ -328,7 +378,7 @@ class UpdateCrewImageAndColorView extends StatelessWidget {
                               Navigator.of(context).pop();
                               Get.back();
                             },
-                            child: Text('크루 이미지 및 대표 색상 수정',
+                            child: Text('수정하기',
                               style: TextStyle(
                                   color: SDSColor.snowliveWhite,
                                   fontWeight: FontWeight.bold,
@@ -380,7 +430,7 @@ class UpdateCrewImageAndColorView extends StatelessWidget {
                   ),
                   elevation: 0,
                   splashFactory: InkRipple.splashFactory,
-                  minimumSize: Size(double.infinity, 56),
+                  minimumSize: Size(double.infinity, 48),
                   backgroundColor: _setCrewViewModel.currentColor.value,
                 ),
               )),

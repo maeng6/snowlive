@@ -20,8 +20,11 @@ class CrewSettingView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: SDSColor.snowliveWhite,
       appBar: AppBar(
         backgroundColor: SDSColor.snowliveWhite,
+        foregroundColor: SDSColor.snowliveWhite,
+        surfaceTintColor: SDSColor.snowliveWhite,
         leading: GestureDetector(
           child: Image.asset(
             'assets/imgs/icons/icon_snowLive_back.png',
@@ -41,6 +44,7 @@ class CrewSettingView extends StatelessWidget {
           ),
         ),
         elevation: 0,
+        toolbarHeight: 44,
       ),
       body: Obx(()=> ListView(
         children: [
@@ -217,17 +221,16 @@ class CrewSettingView extends StatelessWidget {
   // 설정 섹션을 생성하는 함수
   Widget _buildSettingsSection(String title, List<Widget> items) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 10),
+      padding: EdgeInsets.only(top: 20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
+            padding: EdgeInsets.only(left: 16, right: 16, bottom: 10),
             child: Text(title,
-                style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.bold,
-                    color: SDSColor.gray500
+                style: SDSTextStyle.bold.copyWith(
+                    fontSize: 13,
+                    color: SDSColor.gray400
                 )),
           ),
           ...items,
@@ -239,17 +242,16 @@ class CrewSettingView extends StatelessWidget {
   // 각 설정 아이템을 생성하는 함수
   Widget _buildSettingsItem(String title, {required Function() onTap,}) {
     return ListTile(
+      contentPadding: EdgeInsets.only(right: 12, left: 16),
       title: Text(title,
-        style: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-            color: SDSColor.snowliveBlack
-        ),
+        style: SDSTextStyle.bold.copyWith(
+            fontSize: 15,
+            color: SDSColor.gray900),
       ),
-      trailing: Icon(
-        Icons.arrow_forward_ios,
-        size: 16,
-        color: SDSColor.gray500,
+      trailing: Image.asset(
+        'assets/imgs/icons/icon_arrow_g.png',
+        height: 24,
+        width: 24,
       ),
       onTap: onTap,
     );

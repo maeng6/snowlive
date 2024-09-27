@@ -48,6 +48,8 @@ class CrewDetailViewModel extends GetxController {
   // 각 크루의 ID에 대한 정보(로고, 이름, 디스크립션)를 저장할 맵
   var crewDetails = <int, Map<String, String>>{}.obs;
 
+  RxBool _isCrewIntroExpanded = false.obs;
+
 
   CrewDetailInfo get crewDetailInfo => crewDetailResponse.value.crewDetailInfo ?? CrewDetailInfo(); // Null-safe 처리
   SeasonRankingInfo get seasonRankingInfo => crewDetailResponse.value.seasonRankingInfo ?? SeasonRankingInfo(); // Null-safe 처리
@@ -73,6 +75,8 @@ class CrewDetailViewModel extends GetxController {
   Map<String, int> get timeInfo => seasonRankingInfo.timeCountInfo ?? {};
 
   String get selectedTabName => _selectedTabName.value;
+
+  bool get isCrewIntroExpanded => _isCrewIntroExpanded.value;
 
   @override
   void onInit() {
@@ -258,6 +262,10 @@ class CrewDetailViewModel extends GetxController {
       CustomFullScreenDialog.cancelDialog();
       return ApiResponse.error(json.decode(utf8.decode(response.bodyBytes)));
     }
+  }
+
+  void toggleExpandCrewIntro() async {
+    _isCrewIntroExpanded.value = !_isCrewIntroExpanded.value;
   }
 
 

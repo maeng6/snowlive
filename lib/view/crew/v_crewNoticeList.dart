@@ -15,6 +15,9 @@ class CrewNoticeListView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    Size _size = MediaQuery.of(context).size;
+
     return GestureDetector(
       onTap: () {
         FocusScope.of(context).unfocus(); // 키보드 닫기
@@ -22,7 +25,8 @@ class CrewNoticeListView extends StatelessWidget {
       child: Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(
-          backgroundColor: SDSColor.snowliveWhite,
+          backgroundColor: Colors.white,
+          surfaceTintColor: Colors.transparent,
           leading: GestureDetector(
             child: Image.asset(
               'assets/imgs/icons/icon_snowLive_back.png',
@@ -42,6 +46,7 @@ class CrewNoticeListView extends StatelessWidget {
             ),
           ),
           elevation: 0,
+          toolbarHeight: 44,
         ),
         body: Obx(() {
           if (_crewNoticeViewModel.isLoading.value) {
@@ -50,12 +55,34 @@ class CrewNoticeListView extends StatelessWidget {
 
           if (_crewNoticeViewModel.noticeList.isEmpty) {
             return Center(
-              child: Text('공지사항이 없습니다.'),
+              child: Padding(
+                padding: EdgeInsets.only(top: _size.height / 4),
+                child: Container(
+                  child: Column(
+                    children: [
+                      Image.asset(
+                        'assets/imgs/icons/icon_nodata.png',
+                        scale: 4,
+                        width: 64,
+                      ),
+                      SizedBox(
+                        height: 6,
+                      ),
+                      Text('공지사항이 없습니다.',
+                        style: SDSTextStyle.regular.copyWith(
+                            fontSize: 13,
+                            color: SDSColor.gray500
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
             );
           }
 
           return ListView.builder(
-            padding: EdgeInsets.all(16),
+            padding: EdgeInsets.only(left: 16, right: 16, top: 20, bottom: 40),
             itemCount: _crewNoticeViewModel.noticeList.length,
             itemBuilder: (context, index) {
               final notice = _crewNoticeViewModel.noticeList[index];
@@ -64,7 +91,7 @@ class CrewNoticeListView extends StatelessWidget {
               final isAuthor = notice.authorUserId == _userViewModel.user.user_id;
 
               return Padding(
-                padding: const EdgeInsets.only(bottom: 16),
+                padding: EdgeInsets.only(bottom: 16),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -74,9 +101,9 @@ class CrewNoticeListView extends StatelessWidget {
                         Expanded(
                           child: Text(
                             notice.notice ?? '공지 없음',
-                            style: TextStyle(
+                            style: SDSTextStyle.regular.copyWith(
                               fontSize: 15,
-                              color: SDSColor.snowliveBlack,
+                              color: SDSColor.gray900,
                             ),
                           ),
                         ),
@@ -113,7 +140,7 @@ class CrewNoticeListView extends StatelessWidget {
                                         children: [
                                           if (isCrewLeader && !isAuthor) ...[
                                             ListTile(
-                                              title: Center(child: Text('삭제',
+                                              title: Center(child: Text('공지사항 삭제하기',
                                                   style: TextStyle(
                                                       color: SDSColor.snowliveBlack,
                                                       fontWeight: FontWeight.bold
@@ -130,7 +157,7 @@ class CrewNoticeListView extends StatelessWidget {
                                               children: [
                                                 ListTile(
                                                   title: Center(
-                                                    child: Text('수정',
+                                                    child: Text('공지사항 수정하기',
                                                         style: TextStyle(
                                                             color: SDSColor.snowliveBlack,
                                                             fontWeight: FontWeight.bold
@@ -148,7 +175,7 @@ class CrewNoticeListView extends StatelessWidget {
                                                   },
                                                 ),
                                                 ListTile(
-                                                  title: Center(child: Text('삭제',
+                                                  title: Center(child: Text('공지사항 삭제하기',
                                                       style: TextStyle(
                                                           color: SDSColor.red,
                                                           fontWeight: FontWeight.bold
@@ -168,7 +195,11 @@ class CrewNoticeListView extends StatelessWidget {
                                 },
                               );
                             },
-                            child: Icon(Icons.more_vert, color: SDSColor.gray700),
+                            child: Icon(
+                              Icons.more_horiz,
+                              color: SDSColor.gray200,
+                              size: 20,
+                            ),
                           ),
                       ],
                     ),
@@ -178,8 +209,8 @@ class CrewNoticeListView extends StatelessWidget {
                         if (isLatest) ...[
                           // 최신 공지 배경 강조 스타일
                           Container(
-                            width: 50,  // 원하는 너비 설정
-                            height: 20, // 원하는 높이 설정
+                            width: 52,  // 원하는 너비 설정
+                            height: 22, // 원하는 높이 설정
                             padding: EdgeInsets.symmetric(horizontal: 4, vertical: 3),
                             decoration: BoxDecoration(
                               color: SDSColor.snowliveBlue,
@@ -188,20 +219,18 @@ class CrewNoticeListView extends StatelessWidget {
                             child: Center(
                               child: Text(
                                 '최신 공지',
-                                style: TextStyle(
+                                style: SDSTextStyle.bold.copyWith(
                                   color: SDSColor.snowliveWhite,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 10,
+                                  fontSize: 11,
                                 ),
                               ),
                             ),
                           ),
-                          SizedBox(height: 4),
                         ],
                         SizedBox(width: 8),
                         Text(
                           _crewNoticeViewModel.formatDateTime(notice.uploadTime!),
-                          style: TextStyle(
+                          style: SDSTextStyle.regular.copyWith(
                             fontSize: 12,
                             color: SDSColor.gray700,
                           ),
