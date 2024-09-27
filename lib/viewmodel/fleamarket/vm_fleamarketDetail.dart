@@ -160,7 +160,7 @@ class FleamarketDetailViewModel extends GetxController {
       );
       if (response.success) {
         final commentResponse = CommentResponse_flea.fromJson(response.data!);
-        await addViewerFleamarket(fleamarketId: fleaId, userId: userId);
+
 
         if (url == null) {
           _commentsList.value = commentResponse.results ?? [];
@@ -287,6 +287,8 @@ class FleamarketDetailViewModel extends GetxController {
 
       // 요청이 성공했는지 확인
       if (response.success) {
+        _fleamarketDetail.value = FleamarketDetailModel.fromJson(response.data!);
+        _time.value = GetDatetime().getAgoString(_fleamarketDetail.value.uploadTime!);
         print('상태 업데이트 완료');
       } else {
         Get.snackbar('Error', '상태 업데이트 실패');
@@ -333,9 +335,8 @@ class FleamarketDetailViewModel extends GetxController {
   Future<void> uploadFleamarketComments(body) async {
     ApiResponse response = await FleamarketAPI().createComment(body);
     if(response.success) {
-      final CommentResponse_flea commentResponse_flea = CommentResponse_flea
-          .fromJson_comment(response.data!);
-      _commentsList.value = commentResponse_flea.results ?? [];
+      final CommentResponse_flea commentResponse_flea = CommentResponse_flea.fromJson_comment(response.data!);
+      _fleamarketDetail.value.commentList = commentResponse_flea.results ?? [];
       // _scrollController.jumpTo(0);
       print('글 업로드 완료');
     }

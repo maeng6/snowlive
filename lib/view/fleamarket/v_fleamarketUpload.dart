@@ -1224,7 +1224,7 @@ class FleamarketUploadView extends StatelessWidget {
                             );
                             CustomFullScreenDialog.cancelDialog();
                             Get.back();
-                            await _fleamarketListViewModel.fetchAllFleamarket();
+                            await _fleamarketListViewModel.fetchAllFleamarket_afterUpload();
                           }
 
 

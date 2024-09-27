@@ -75,6 +75,21 @@ class FleamarketCommentDetailViewModel extends GetxController {
     }
   }
 
+  Future<void> fetchFleamarketCommentDetailFromModel({
+    required CommentModel_flea commentModel_flea
+  }) async {
+    isLoading(true);
+    try {
+        _commentModel_flea.value = CommentModel_flea.fromJson_model(commentModel_flea);
+        _time.value = GetDatetime().getAgoString(_commentModel_flea.value.uploadTime!);
+        print("댓글 디테일 패치 완료");
+    } catch (e) {
+      print('Error fetching data: $e');
+    } finally {
+      isLoading(false);
+    }
+  }
+
   Future<void> reportComment(Map<String, dynamic> body) async {
     // 로딩 상태를 true로 설정
     isLoading(true);

@@ -895,7 +895,7 @@ class FleamarketCommentDetailView extends StatelessWidget {
                                               userId: _userViewModel.user.user_id,
                                               isLoading_indi: true
                                           );
-                                          await _fleamarketListViewModel.fetchFleamarketData_total(userId: _userViewModel.user.user_id);
+                                          await _fleamarketListViewModel.fetchAllFleamarket();
                                         },
                                         icon: (_fleamarketCommentDetailViewModel.isCommentButtonEnabled.value == false)
                                             ? Image.asset(
