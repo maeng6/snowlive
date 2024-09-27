@@ -340,14 +340,12 @@ class SearchFriendView extends StatelessWidget {
                                         child: ElevatedButton(
                                           onPressed: () async {
                                             textFocus.unfocus();
-                                            CustomFullScreenDialog.showDialog();
+                                            Get.toNamed(AppRoutes.friendDetail);
                                             await _friendDetailViewModel.fetchFriendDetailInfo(
                                               userId: _userViewModel.user.user_id,
                                               friendUserId: _friendListViewModel.searchFriend.userId!,
                                               season: _friendDetailViewModel.seasonDate,
                                             );
-                                            CustomFullScreenDialog.cancelDialog();
-                                            Get.toNamed(AppRoutes.friendDetail);
                                           },
                                           child: Text(
                                             '프로필 보기',

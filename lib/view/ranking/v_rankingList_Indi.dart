@@ -64,13 +64,11 @@ class RankingIndiView extends StatelessWidget {
                       //마이인포 박스 - 점수와 랭킹없는경우 널처리해야함
                       GestureDetector(
                         onTap: () async{
-                          CustomFullScreenDialog.showDialog();
+                          Get.toNamed(AppRoutes.friendDetail);
                           await _friendDetailViewModel.fetchFriendDetailInfo(
                               userId: _userViewModel.user.user_id,
                               friendUserId:_userViewModel.user.user_id,
                               season: _friendDetailViewModel.seasonDate);
-                          CustomFullScreenDialog.cancelDialog();
-                          Get.toNamed(AppRoutes.friendDetail);
                         },
                         child: Obx(() => Padding(
                           padding: const EdgeInsets.only(top: 10, bottom: 8),
@@ -962,14 +960,12 @@ class RankingIndiView extends StatelessWidget {
                                       SizedBox(width: 8),
                                       GestureDetector(
                                         onTap: () async{
-                                          CustomFullScreenDialog.showDialog();
+                                          Get.toNamed(AppRoutes.friendDetail);
                                           await _friendDetailViewModel.fetchFriendDetailInfo(
                                             userId: _userViewModel.user.user_id,
                                             friendUserId: document.userId!,
                                             season: _friendDetailViewModel.seasonDate,
                                           );
-                                          CustomFullScreenDialog.cancelDialog();
-                                          Get.toNamed(AppRoutes.friendDetail);
                                         },
                                         child: Container(
                                           width: 32,

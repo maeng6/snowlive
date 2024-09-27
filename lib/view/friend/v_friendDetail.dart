@@ -98,7 +98,27 @@ class FriendDetailView extends StatelessWidget {
               userId: _userViewModel.user.user_id,
               friendUserId: _friendDetailViewModel.friendDetailModel.friendUserInfo.userId,
               season: _friendDetailViewModel.seasonDate),
-          child: Container(
+          child:
+          (_friendDetailViewModel.isLoading == true)
+              ? Center(
+                child: Container(
+                            height: 150,
+                            child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Center(
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                      backgroundColor: SDSColor.snowliveWhite,
+                      color: SDSColor.snowliveBlue,
+                    ),
+                  ),
+                ],
+                            ),
+                          ),
+              )
+              :
+          Container(
             color: Colors.white,
             child: SafeArea(
               child: Obx(()=> Stack(
@@ -1288,10 +1308,8 @@ class FriendDetailView extends StatelessWidget {
                                                                         if (document.authorInfo.profileImageUrlUser != "")
                                                                           GestureDetector(
                                                                             onTap: () async{
-                                                                              CustomFullScreenDialog.showDialog();
-                                                                              await _friendDetailViewModel.fetchFriendDetailInfo(userId: _userViewModel.user.user_id, friendUserId: document.authorInfo.userId, season: _friendDetailViewModel.seasonDate);
-                                                                              CustomFullScreenDialog.cancelDialog();
                                                                               Get.toNamed(AppRoutes.friendDetail);
+                                                                              await _friendDetailViewModel.fetchFriendDetailInfo(userId: _userViewModel.user.user_id, friendUserId: document.authorInfo.userId, season: _friendDetailViewModel.seasonDate);
                                                                             },
                                                                             child: Container(
                                                                               width: 24,
@@ -1334,10 +1352,8 @@ class FriendDetailView extends StatelessWidget {
                                                                         if (document.authorInfo.profileImageUrlUser == "")
                                                                           GestureDetector(
                                                                             onTap: () async{
-                                                                              CustomFullScreenDialog.showDialog();
-                                                                              await _friendDetailViewModel.fetchFriendDetailInfo(userId: _userViewModel.user.user_id, friendUserId: document.authorInfo.userId, season: _friendDetailViewModel.seasonDate);
-                                                                              CustomFullScreenDialog.cancelDialog();
                                                                               Get.toNamed(AppRoutes.friendDetail);
+                                                                              await _friendDetailViewModel.fetchFriendDetailInfo(userId: _userViewModel.user.user_id, friendUserId: document.authorInfo.userId, season: _friendDetailViewModel.seasonDate);
                                                                             },
                                                                             child: ExtendedImage.network(
                                                                               '${profileImgUrlList[0].default_round}',

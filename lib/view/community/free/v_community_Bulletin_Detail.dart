@@ -630,11 +630,11 @@ class CommunityBulletinDetailView extends StatelessWidget {
                                         ),
                                         GestureDetector(
                                           onTap: () async{
+                                            Get.toNamed(AppRoutes.friendDetail);
                                             await _friendDetailViewModel.fetchFriendDetailInfo(
                                                 userId: _userViewModel.user.user_id,
                                                 friendUserId:_communityDetailViewModel.communityDetail.userId!,
                                                 season: _friendDetailViewModel.seasonDate);
-                                            Get.toNamed(AppRoutes.friendDetail);
                                           },
                                           child: Padding(
                                             padding: const EdgeInsets.only(top: 16),
@@ -844,11 +844,11 @@ class CommunityBulletinDetailView extends StatelessWidget {
                                                               //댓글 프사 있는 경우
                                                                 GestureDetector(
                                                                   onTap: () async{
+                                                                    Get.toNamed(AppRoutes.friendDetail);
                                                                     await _friendDetailViewModel.fetchFriendDetailInfo(
                                                                         userId: _userViewModel.user.user_id,
-                                                                        friendUserId:_communityDetailViewModel.communityDetail.userId!,
+                                                                        friendUserId:comment.userId!,
                                                                         season: _friendDetailViewModel.seasonDate);
-                                                                    Get.toNamed(AppRoutes.friendDetail);
                                                                   },
                                                                   child: Padding(
                                                                     padding: const EdgeInsets.only(bottom: 8),
@@ -903,11 +903,11 @@ class CommunityBulletinDetailView extends StatelessWidget {
                                                               //댓글 프사 없는 경우
                                                                 GestureDetector(
                                                                   onTap: () async{
+                                                                    Get.toNamed(AppRoutes.friendDetail);
                                                                     await _friendDetailViewModel.fetchFriendDetailInfo(
                                                                         userId: _userViewModel.user.user_id,
-                                                                        friendUserId:_communityDetailViewModel.communityDetail.userId!,
+                                                                        friendUserId:comment.userId!,
                                                                         season: _friendDetailViewModel.seasonDate);
-                                                                    Get.toNamed(AppRoutes.friendDetail);
                                                                   },
                                                                   child: Padding(
                                                                     padding: const EdgeInsets.only(bottom: 8),

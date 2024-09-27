@@ -35,6 +35,25 @@ class FriendListViewModel extends GetxController {
   }
 
   Future<void> fetchFriendList() async {
+    isLoading(true);
+    try {
+      final response = await FriendAPI().fetchFriendList(userId: _userViewModel.user.user_id, bestFriend: false);
+
+      if (response.success && response.data != null) {
+        print('친구리스트 불러오기 성공 & 친구 1명 이상');
+        final friendListResponse = FriendListResponse.fromJson(response.data!);
+        _friendList.value = friendListResponse.friends!;
+      } else {
+        print('친구리스트 없을 경우');
+        _friendList.value = []; // 빈 리스트로 처리
+      }
+    } catch (e) {
+      print('Error fetching data: $e');
+    }
+    isLoading(false);
+  }
+
+  Future<void> fetchFriendList_afterBest() async {
     try {
       final response = await FriendAPI().fetchFriendList(userId: _userViewModel.user.user_id, bestFriend: false);
 
