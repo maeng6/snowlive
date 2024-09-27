@@ -250,7 +250,7 @@ class CrewNoticeListView extends StatelessWidget {
                             color: SDSColor.gray700,
                           ),
                         ),
-                        SizedBox(width: 4),
+                        SizedBox(width: 1),
                         Text(
                           _crewNoticeViewModel.getAuthorRole(notice.authorUserId!), // 작성자 역할
                           style: TextStyle(
@@ -260,7 +260,12 @@ class CrewNoticeListView extends StatelessWidget {
                         ),
                       ],
                     ),
-                    Divider(thickness: 1, color: SDSColor.gray100), // 항목 구분선
+                    
+                    Divider(
+                        thickness: 1,
+                        color: SDSColor.gray100,
+                      height: 40,
+                    ), // 항목 구분선
                   ],
                 ),
               );
