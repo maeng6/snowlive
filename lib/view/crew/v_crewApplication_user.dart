@@ -32,8 +32,9 @@ class CrewApplicationUserView extends StatelessWidget {
           child: Scaffold(
             backgroundColor: SDSColor.snowliveWhite,
             appBar: AppBar(
-              backgroundColor: Colors.white,
-              surfaceTintColor: Colors.transparent,
+              backgroundColor: SDSColor.snowliveWhite,
+              foregroundColor: SDSColor.snowliveWhite,
+              surfaceTintColor: SDSColor.snowliveWhite,
               leading: GestureDetector(
                 child: Image.asset(
                   'assets/imgs/icons/icon_snowLive_back.png',
@@ -91,18 +92,86 @@ class CrewApplicationUserView extends StatelessWidget {
                                   await _crewMemberListViewModel.fetchCrewMembers(crewId: crew.crewId!);
 
                                 },
-                                child: Row(
+                                child: Obx(() => Row(
                                   children: [
+                                    if (_crewDetailViewModel.crewLogoUrl!.isNotEmpty)
+                                      GestureDetector(
+                                        onTap: () async{
+                                          CustomFullScreenDialog.showDialog();
+                                          await _crewDetailViewModel.fetchCrewDetail(
+                                            crew.crewId!,
+                                            _friendDetailViewModel.seasonDate,
+                                          );
+                                          CustomFullScreenDialog.cancelDialog();
+                                          Get.toNamed(AppRoutes.crewMain);
+                                          await _crewMemberListViewModel.fetchCrewMembers(crewId: crew.crewId!);
+
+                                        },
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                              borderRadius: BorderRadius.circular(12),
+                                              border: Border.all(
+                                                  color: SDSColor.gray100
+                                              )
+                                          ),
+                                          width: 44,
+                                          height: 44,
+                                          child: ExtendedImage.network(
+                                            _crewDetailViewModel.crewLogoUrl!,
+                                            enableMemoryCache: true,
+                                            shape: BoxShape.rectangle,
+                                            borderRadius: BorderRadius.circular(10),
+                                            width: 44,
+                                            height: 44,
+                                            fit: BoxFit.cover,
+                                          ),
+                                        ),
+                                      ),
+                                    if (_crewDetailViewModel.crewLogoUrl!.isEmpty)
+                                      GestureDetector(
+                                        onTap: () async{
+                                          CustomFullScreenDialog.showDialog();
+                                          await _crewDetailViewModel.fetchCrewDetail(
+                                            crew.crewId!,
+                                            _friendDetailViewModel.seasonDate,
+                                          );
+                                          CustomFullScreenDialog.cancelDialog();
+                                          Get.toNamed(AppRoutes.crewMain);
+                                          await _crewMemberListViewModel.fetchCrewMembers(crewId: crew.crewId!);
+
+                                        },
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                              borderRadius: BorderRadius.circular(12),
+                                              border: Border.all(
+                                                  color: SDSColor.gray100
+                                              )
+                                          ),
+                                          width: 44,
+                                          height: 44,
+                                          child: ExtendedImage.network(
+                                            '${crewDefaultLogoUrl['${_crewDetailViewModel.color}']}',
+                                            enableMemoryCache: true,
+                                            shape: BoxShape.rectangle,
+                                            borderRadius: BorderRadius.circular(10),
+                                            width: 44,
+                                            height: 44,
+                                            fit: BoxFit.cover,
+                                          ),
+                                        ),
+                                      ),
+                                    SizedBox(width: 12),
                                     // 크루명 및 부가 정보
                                     Expanded(
                                       child: Column(
                                         crossAxisAlignment: CrossAxisAlignment.start,
+                                        mainAxisAlignment: MainAxisAlignment.center,
                                         children: [
                                           Text(
                                             crewInfo['name']!,
-                                            style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 14,
+                                            style: SDSTextStyle.regular.copyWith(
+                                              fontSize: 15,
+                                              color: SDSColor.gray900,
                                             ),
                                             overflow: TextOverflow.ellipsis,
                                             maxLines: 1,
@@ -110,9 +179,9 @@ class CrewApplicationUserView extends StatelessWidget {
                                           SizedBox(height: 1),
                                           Text(
                                             crewInfo['description']!,
-                                            style: TextStyle(
-                                              color: Colors.grey,
-                                              fontSize: 11,
+                                            style: SDSTextStyle.regular.copyWith(
+                                              fontSize: 13,
+                                              color: SDSColor.gray500,
                                             ),
                                             overflow: TextOverflow.ellipsis,
                                             maxLines: 1,
@@ -133,9 +202,8 @@ class CrewApplicationUserView extends StatelessWidget {
                                               shape: RoundedRectangleBorder(
                                                   borderRadius: BorderRadius.circular(16)),
                                               buttonPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
-
                                               content: Container(
-                                                height: 40,
+                                                height: 80,
                                                 child: Column(
                                                   crossAxisAlignment: CrossAxisAlignment.center,
                                                   children: [
@@ -147,66 +215,82 @@ class CrewApplicationUserView extends StatelessWidget {
                                                           fontSize: 16
                                                       ),
                                                     ),
+                                                    SizedBox(
+                                                      height: 6,
+                                                    ),
                                                     Text(
-                                                      '가입 신청을 취소하셔도 다음에 다시\n가입 신청을 하실 수 있어요.',
-                                                      style: TextStyle(fontSize: 14, color: SDSColor.gray600),
+                                                      '가입 신청을 취소하셔도 다음에 다시 가입 신청을 하실 수 있어요.',
                                                       textAlign: TextAlign.center,
+                                                      style: SDSTextStyle.regular.copyWith(
+                                                        color: SDSColor.gray500,
+                                                        fontSize: 14,
+                                                      ),
                                                     ),
                                                   ],
                                                 ),
                                               ),
                                               actions: [
-                                                ElevatedButton(
-                                                  onPressed: () async {
-                                                    Navigator.pop(context);
-                                                    CustomFullScreenDialog.showDialog();
-                                                    await _crewApplyViewModel.deleteCrewApplication(
-                                                      _userViewModel.user.user_id,
-                                                      crew.crewId!,
-                                                      _userViewModel.user.user_id,
-                                                    );
-                                                    _crewApplyViewModel.crewApplyList
-                                                        .removeWhere((item) => item.crewId == crew.crewId); // 삭제된 항목만 제거
-                                                    CustomFullScreenDialog.cancelDialog();
-                                                  },
-                                                  child: Text(
-                                                    '신청 취소하기',
-                                                    style: TextStyle(
-                                                      color: SDSColor.snowliveWhite,
-                                                      fontWeight: FontWeight.bold,
-                                                      fontSize: 16,
-                                                    ),
-                                                  ),
-                                                  style: ElevatedButton.styleFrom(
-                                                    elevation: 0,
-                                                    backgroundColor: SDSColor.snowliveBlue, // 신청 취소 버튼 색상
-                                                    minimumSize: Size(double.infinity, 48), // 버튼 크기
-                                                    shape: RoundedRectangleBorder(
-                                                      borderRadius: BorderRadius.circular(8),
-                                                    ),
+                                                Padding(
+                                                  padding: EdgeInsets.only(top: 10, left: 16, right: 16),
+                                                  child: Row(
+                                                    children: [
+                                                      Expanded(
+                                                        child: Container(
+                                                          child: TextButton(
+                                                            onPressed: () {
+                                                              Navigator.of(context).pop(); // 팝업 닫기
+                                                            },
+                                                            child: Text(
+                                                              '돌아가기',
+                                                              style: TextStyle(
+                                                                color: SDSColor.snowliveBlack,
+                                                                fontWeight: FontWeight.bold,
+                                                                fontSize: 16,
+                                                              ),
+                                                            ),
+                                                            style: TextButton.styleFrom(
+                                                              backgroundColor: Colors.transparent, // 배경색 투명
+                                                              splashFactory: NoSplash.splashFactory, // 터치 시 효과 제거
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      SizedBox(
+                                                        width: 10,
+                                                      ),
+                                                      Expanded(
+                                                        child: Container(
+                                                          child: TextButton(
+                                                            onPressed: () async {
+                                                              Navigator.pop(context);
+                                                              CustomFullScreenDialog.showDialog();
+                                                              await _crewApplyViewModel.deleteCrewApplication(
+                                                                _userViewModel.user.user_id,
+                                                                crew.crewId!,
+                                                                _userViewModel.user.user_id,
+                                                              );
+                                                              _crewApplyViewModel.crewApplyList.removeWhere((item) => item.crewId == crew.crewId); // 삭제된 항목만 제거
+                                                              CustomFullScreenDialog.cancelDialog();
+                                                            },
+                                                            child: Text(
+                                                              '신청 취소',
+                                                              style: TextStyle(
+                                                                color: SDSColor.gray500,
+                                                                fontWeight: FontWeight.bold,
+                                                                fontSize: 16,
+                                                              ),
+                                                            ),
+                                                            style: TextButton.styleFrom(
+                                                              backgroundColor: Colors.transparent, // 배경색 투명
+                                                              splashFactory: NoSplash.splashFactory, // 터치 시 효과 제거
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ],
                                                   ),
                                                 ),
-                                                ElevatedButton(
-                                                  onPressed: () {
-                                                    Navigator.of(context).pop(); // 팝업 닫기
-                                                  },
-                                                  child: Text(
-                                                    '돌아가기',
-                                                    style: TextStyle(
-                                                      color: SDSColor.snowliveBlack,
-                                                      fontWeight: FontWeight.bold,
-                                                      fontSize: 16,
-                                                    ),
-                                                  ),
-                                                  style: ElevatedButton.styleFrom(
-                                                    backgroundColor: Colors.transparent,
-                                                    elevation: 0,
-                                                    minimumSize: Size(double.infinity, 48), // 버튼 크기
-                                                    shape: RoundedRectangleBorder(
-                                                      borderRadius: BorderRadius.circular(8),
-                                                    ),
-                                                  ),
-                                                ),
+
                                               ],
                                             );
                                           },
@@ -229,7 +313,7 @@ class CrewApplicationUserView extends StatelessWidget {
                                       ),
                                     ),
                                   ],
-                                ),
+                                )),
                               ),
                             );
                           }).toList(),

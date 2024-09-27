@@ -259,7 +259,8 @@ class CrewMemberSettingsView extends StatelessWidget {
       child: Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(
-          backgroundColor: SDSColor.snowliveWhite,
+          backgroundColor: Colors.white,
+          surfaceTintColor: Colors.transparent,
           leading: GestureDetector(
             child: Image.asset(
               'assets/imgs/icons/icon_snowLive_back.png',
@@ -273,9 +274,10 @@ class CrewMemberSettingsView extends StatelessWidget {
           ),
           title: Text(
             '크루원 관리',
-            style: TextStyle(color: SDSColor.snowliveBlack, fontSize: 18),
+            style: SDSTextStyle.bold.copyWith(color: SDSColor.snowliveBlack, fontSize: 18),
           ),
           elevation: 0,
+          toolbarHeight: 44,
         ),
         body: SingleChildScrollView(
           child: Obx(
@@ -286,12 +288,11 @@ class CrewMemberSettingsView extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      SizedBox(height: 10),
                       Text(
                         '멤버 ${_crewMemberListViewModel.totalMemberCount}명',
-                        style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: SDSColor.snowliveBlack),
+                        style: SDSTextStyle.bold.copyWith(fontSize: 14, color: SDSColor.gray900),
                       ),
-                      SizedBox(height: 15),
+                      SizedBox(height: 20),
                       Container(
                         width: _size.width,
                         child: ListView.builder(
@@ -423,7 +424,7 @@ class CrewMemberSettingsView extends StatelessWidget {
                                                 ),
                                             ],
                                           ),
-                                          SizedBox(width: 15),
+                                          SizedBox(width: 12),
                                           Container(
                                             width: _size.width - 260,
                                             child: Column(
@@ -431,7 +432,10 @@ class CrewMemberSettingsView extends StatelessWidget {
                                               children: [
                                                 Text(
                                                   _crewMemberListViewModel.crewMembersList[index].userInfo!.displayName!,
-                                                  style: TextStyle(fontSize: 15, color: Color(0xFF111111)),
+                                                  style: SDSTextStyle.regular.copyWith(
+                                                    color: SDSColor.gray900,
+                                                    fontSize: 16,
+                                                  ),
                                                 ),
                                               ],
                                             ),
