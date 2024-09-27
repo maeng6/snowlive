@@ -32,7 +32,8 @@ class CrewApplicationUserView extends StatelessWidget {
           child: Scaffold(
             backgroundColor: SDSColor.snowliveWhite,
             appBar: AppBar(
-              backgroundColor: SDSColor.snowliveWhite,
+              backgroundColor: Colors.white,
+              surfaceTintColor: Colors.transparent,
               leading: GestureDetector(
                 child: Image.asset(
                   'assets/imgs/icons/icon_snowLive_back.png',
@@ -46,9 +47,13 @@ class CrewApplicationUserView extends StatelessWidget {
               ),
               title: Text(
                 '가입 신청한 크루',
-                style: TextStyle(color: SDSColor.snowliveBlack, fontSize: 18),
+                style: TextStyle(
+                    color: SDSColor.snowliveBlack,
+                    fontSize: 18
+                ),
               ),
               elevation: 0,
+              toolbarHeight: 44,
             ),
             body: Obx(() {
               var crewApplyList = _crewApplyViewModel.crewApplyList;
@@ -72,7 +77,6 @@ class CrewApplicationUserView extends StatelessWidget {
                               'name': '',
                               'description': ''
                             };
-
                             return Padding(
                               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                               child: GestureDetector(
@@ -123,21 +127,33 @@ class CrewApplicationUserView extends StatelessWidget {
                                           context: context,
                                           builder: (BuildContext context) {
                                             return AlertDialog(
+                                              backgroundColor: SDSColor.snowliveWhite,
+                                              contentPadding: EdgeInsets.only(bottom: 0, left: 28, right: 28, top: 36),
+                                              elevation: 0,
                                               shape: RoundedRectangleBorder(
-                                                borderRadius: BorderRadius.circular(20),
-                                              ),
-                                              title: Text(
-                                                '가입 신청을 취소하시겠어요?',
-                                                style: TextStyle(
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 16,
+                                                  borderRadius: BorderRadius.circular(16)),
+                                              buttonPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+
+                                              content: Container(
+                                                height: 40,
+                                                child: Column(
+                                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                                  children: [
+                                                    Text(
+                                                      '가입 신청을 취소하시겠어요?',
+                                                      textAlign: TextAlign.center,
+                                                      style: SDSTextStyle.bold.copyWith(
+                                                          color: SDSColor.gray900,
+                                                          fontSize: 16
+                                                      ),
+                                                    ),
+                                                    Text(
+                                                      '가입 신청을 취소하셔도 다음에 다시\n가입 신청을 하실 수 있어요.',
+                                                      style: TextStyle(fontSize: 14, color: SDSColor.gray600),
+                                                      textAlign: TextAlign.center,
+                                                    ),
+                                                  ],
                                                 ),
-                                                textAlign: TextAlign.center,
-                                              ),
-                                              content: Text(
-                                                '가입 신청을 취소하셔도 다음에 다시\n가입 신청을 하실 수 있어요.',
-                                                style: TextStyle(fontSize: 14, color: SDSColor.gray600),
-                                                textAlign: TextAlign.center,
                                               ),
                                               actions: [
                                                 ElevatedButton(
@@ -196,23 +212,20 @@ class CrewApplicationUserView extends StatelessWidget {
                                           },
                                         );
                                       },
-                                      style: TextButton.styleFrom(
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(20),
-                                          side: BorderSide(
-                                            color: SDSColor.gray300, // 테두리 색상 설정
-                                            width: 1.0, // 테두리 두께 설정
-                                          ),
+                                      style: ElevatedButton.styleFrom(
+                                        padding: EdgeInsets.symmetric(horizontal: 12, vertical: 3),
+                                        minimumSize: Size(36, 32),
+                                        backgroundColor: SDSColor.snowliveWhite,
+                                        side: BorderSide(
+                                            color: SDSColor.gray200
                                         ),
-                                        minimumSize: Size(41, 28),
+                                        elevation: 0,
+                                        shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(100)),
                                       ),
                                       child: Text(
                                         '신청취소',
-                                        style: TextStyle(
-                                          color: SDSColor.snowliveBlack,
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.bold,
-                                        ),
+                                        style: SDSTextStyle.bold.copyWith(fontSize: 13, color: SDSColor.gray900),
                                       ),
                                     ),
                                   ],
@@ -225,26 +238,30 @@ class CrewApplicationUserView extends StatelessWidget {
                     ),
                   ),
                   // 하단의 다른 크루 찾아보기 버튼
-                  Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: ElevatedButton(
-                      onPressed: () {
-                        Get.offNamed(AppRoutes.searchCrew);
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.blue, // 버튼 색상
-                        padding: EdgeInsets.symmetric(vertical: 16),
-                        minimumSize: Size(double.infinity, 48),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
+                  Container(
+                    color: SDSColor.snowliveWhite,
+                    child: Padding(
+                      padding: EdgeInsets.all(16.0),
+                      child: ElevatedButton(
+                        onPressed: () {
+                          Get.offNamed(AppRoutes.searchCrew);
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: SDSColor.snowliveBlue, // 버튼 색상
+                          padding: EdgeInsets.symmetric(vertical: 16),
+                          minimumSize: Size(double.infinity, 48),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(6),
+                          ),
+                            elevation: 0
                         ),
-                      ),
-                      child: Text(
-                        '다른 크루 찾아보기',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
+                        child: Text(
+                          '다른 크루 찾아보기',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                          ),
                         ),
                       ),
                     ),
