@@ -102,7 +102,7 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
     return WillPopScope(
         onWillPop: () {
           return Future(() => false);
-        },
+        },//
         child: Obx(()=>Scaffold(
           floatingActionButton:
           SizedBox(
