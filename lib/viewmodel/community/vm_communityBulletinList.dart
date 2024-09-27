@@ -128,7 +128,9 @@ class CommunityBulletinListViewModel extends GetxController {
     _isLoadingList_event.value = false;
   }
 
+
   Future<void> fetchEventCommunity() async{
+    _isLoadingList_event.value = true;
     await fetchCommunityList_event(userId: _userViewModel.user.user_id, categoryMain:'이벤트');
     _isLoadingList_event.value = false;
   }

@@ -6,10 +6,21 @@ import 'package:get/get.dart';
 import 'package:bubble/bubble.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class ChatScreen extends StatelessWidget {
+class ChatScreen extends StatefulWidget {
+  @override
+  _ChatScreenState createState() => _ChatScreenState();
+}
+
+class _ChatScreenState extends State<ChatScreen> {
   final ChatViewModel _chatViewModel = Get.find<ChatViewModel>();
   final ScrollController _scrollController = ScrollController();
   FocusNode textFocus = FocusNode();
+
+  @override
+  void dispose() {
+    textFocus.dispose(); // FocusNode 해제
+    super.dispose();
+  }
 
   void _scrollToBottom() {
     if (_scrollController.hasClients) {
@@ -67,8 +78,7 @@ class ChatScreen extends StatelessWidget {
                                   child: Text(chatDoc['text'],
                                       style: SDSTextStyle.regular.copyWith(
                                           fontSize: 15,
-                                          color: SDSColor.gray700
-                                      )),
+                                          color: SDSColor.gray700)),
                                 ),
                               ),
                               Padding(
@@ -81,53 +91,55 @@ class ChatScreen extends StatelessWidget {
                               ),
                               Spacer(),
                               GestureDetector(
-                                onTap: () => showModalBottomSheet(
-                                  enableDrag: false,
-                                  isScrollControlled: true,
-                                  backgroundColor: Colors.transparent,
-                                  context: context,
-                                  builder: (context) {
-                                    return SafeArea(
-                                      child: Padding(
-                                        padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 20),
-                                        child: Container(
-                                          margin: EdgeInsets.only(left: 16, right: 16, top: 16),
-                                          padding: EdgeInsets.all(16),
-                                          decoration: BoxDecoration(
-                                            color: Colors.white,
-                                            borderRadius: BorderRadius.circular(16),
-                                          ),
-                                          child: Wrap(
-                                            children: [
-                                              Column(
-                                                children: [
-                                                  GestureDetector(
-                                                    child: ListTile(
-                                                      contentPadding: EdgeInsets.zero,
-                                                      title: Center(
-                                                        child: Text(
-                                                          '신고하기',
-                                                          style: SDSTextStyle.bold.copyWith(
-                                                              fontSize: 15, color: SDSColor.gray900),
+                                onTap: () {
+                                  textFocus.unfocus();
+                                  showModalBottomSheet(
+                                    enableDrag: false,
+                                    isScrollControlled: true,
+                                    backgroundColor: Colors.transparent,
+                                    context: context,
+                                    builder: (context) {
+                                      return SafeArea(
+                                        child: Padding(
+                                          padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 20),
+                                          child: Container(
+                                            margin: EdgeInsets.only(left: 16, right: 16, top: 16),
+                                            padding: EdgeInsets.all(16),
+                                            decoration: BoxDecoration(
+                                              color: Colors.white,
+                                              borderRadius: BorderRadius.circular(16),
+                                            ),
+                                            child: Wrap(
+                                              children: [
+                                                Column(
+                                                  children: [
+                                                    GestureDetector(
+                                                      child: ListTile(
+                                                        contentPadding: EdgeInsets.zero,
+                                                        title: Center(
+                                                          child: Text(
+                                                            '신고하기',
+                                                            style: SDSTextStyle.bold.copyWith(
+                                                                fontSize: 15, color: SDSColor.gray900),
+                                                          ),
                                                         ),
+                                                        onTap: () async {
+                                                          Navigator.pop(context);
+                                                          await _chatViewModel.reportMessage(chatDoc['chatId']);
+                                                          FocusScope.of(context).unfocus();
+                                                          textFocus.unfocus();
+                                                        },
                                                       ),
-                                                      onTap: () async{
-                                                        Navigator.pop(context);
-                                                        await _chatViewModel.reportMessage(chatDoc['chatId']);
-                                                        FocusScope.of(context).unfocus();
-                                                        textFocus.unfocus();
-                                                      },
                                                     ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ],
+                                                  ],
+                                                ),
+                                              ],
+                                            ),
                                           ),
                                         ),
-                                      ),
-                                    );
-                                  },
-                                ),
+                                      );
+                                    },
+                                  );},
                                 child: Icon(
                                   Icons.more_vert,
                                   color: SDSColor.gray200,
@@ -201,12 +213,6 @@ class ChatScreen extends StatelessWidget {
                             : null,
                       ),
                     ),
-                    // onFieldSubmitted: (value) {
-                    //   _chatViewModel.sendMessage(_chatViewModel.chatController.text);
-                    //   _chatViewModel.chatController.clear();
-                    //   _chatViewModel.isButtonEnabled.value = false;
-                    //   _scrollToBottom();
-                    // },
                   ),
                 ),
               ],

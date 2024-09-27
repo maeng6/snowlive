@@ -959,180 +959,181 @@ class RankingCrewView extends StatelessWidget {
                             },
                             child: Scrollbar(
                               controller: _rankingListViewModel.scrollController_crew,
-                              child: ListView.builder(
-                                physics: AlwaysScrollableScrollPhysics(), // 하나여도 스크롤 가능
-                                controller: _rankingListViewModel.scrollController_crew,
-                                itemCount: _rankingListViewModel.rankingListCrewList_view!.length,
-                                itemBuilder: (context, index) {
-                                  final document = _rankingListViewModel.rankingListCrewList_view![index];
-                                  return Padding(
-                                    padding: const EdgeInsets.only(bottom: 8, left: 2, right: 2),
-                                    child: GestureDetector(
-                                      onTap: () async {
-                                        CustomFullScreenDialog.showDialog();
-                                        await _crewDetailViewModel.fetchCrewDetail(
-                                            document.crewId!,
-                                            _friendDetailViewModel.seasonDate
-                                        );
-                                        CustomFullScreenDialog.cancelDialog();
-                                        Get.toNamed(AppRoutes.crewMain);
-                                        await _crewMemberListViewModel.fetchCrewMembers(crewId: document.crewId!);
-                                      },
-                                      child: Row(
-                                        children: [
-                                          // 크루 랭킹 정보 표시
-                                          Container(
-                                            width: 24,
-                                            height: 40,
-                                            child: Row(
-                                              mainAxisAlignment: MainAxisAlignment.center,
-                                              children: [
-                                                if (index == 0) ...[
-                                                  Image.asset('assets/imgs/icons/icon_medal_1.png', width: 24),
-                                                ] else if (index == 1) ...[
-                                                  Image.asset('assets/imgs/icons/icon_medal_2.png', width: 24),
-                                                ] else if (index == 2) ...[
-                                                  Image.asset('assets/imgs/icons/icon_medal_3.png', width: 24),
-                                                ] else ...[
-                                                  Expanded(
-                                                    child: Center(
-                                                      child: AutoSizeText(
-                                                        (_rankingListViewModel.resortOrTotal=='개별스키장')
-                                                            ?'${document.resortRank??''}'
-                                                            :'${document.overallRank??''}',
-                                                        style: SDSTextStyle.bold.copyWith(
-                                                            fontSize: 14,
-                                                            color: Color(0xFF111111)
+                              child: Padding(
+                                padding: const EdgeInsets.only(bottom: 100.0),
+                                child: ListView.builder(
+                                  controller: _rankingListViewModel.scrollController_crew,
+                                  itemCount: _rankingListViewModel.rankingListCrewList_view!.length,
+                                  itemBuilder: (context, index) {
+                                    final document = _rankingListViewModel.rankingListCrewList_view![index];
+                                    return Padding(
+                                      padding: const EdgeInsets.only(bottom: 8, left: 2, right: 2),
+                                      child: GestureDetector(
+                                        onTap: () async {
+                                          CustomFullScreenDialog.showDialog();
+                                          await _crewDetailViewModel.fetchCrewDetail(
+                                              document.crewId!,
+                                              _friendDetailViewModel.seasonDate
+                                          );
+                                          CustomFullScreenDialog.cancelDialog();
+                                          Get.toNamed(AppRoutes.crewMain);
+                                          await _crewMemberListViewModel.fetchCrewMembers(crewId: document.crewId!);
+                                        },
+                                        child: Row(
+                                          children: [
+                                            // 크루 랭킹 정보 표시
+                                            Container(
+                                              width: 24,
+                                              height: 40,
+                                              child: Row(
+                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                children: [
+                                                  if (index == 0) ...[
+                                                    Image.asset('assets/imgs/icons/icon_medal_1.png', width: 24),
+                                                  ] else if (index == 1) ...[
+                                                    Image.asset('assets/imgs/icons/icon_medal_2.png', width: 24),
+                                                  ] else if (index == 2) ...[
+                                                    Image.asset('assets/imgs/icons/icon_medal_3.png', width: 24),
+                                                  ] else ...[
+                                                    Expanded(
+                                                      child: Center(
+                                                        child: AutoSizeText(
+                                                          (_rankingListViewModel.resortOrTotal=='개별스키장')
+                                                              ?'${document.resortRank??''}'
+                                                              :'${document.overallRank??''}',
+                                                          style: SDSTextStyle.bold.copyWith(
+                                                              fontSize: 14,
+                                                              color: Color(0xFF111111)
+                                                          ),
+                                                          maxLines: 1,
+                                                          minFontSize: 6,
                                                         ),
-                                                        maxLines: 1,
-                                                        minFontSize: 6,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ],
-                                              ],
-                                            ),
-                                          ),
-                                          // 크루 정보
-                                          SizedBox(width: 8),
-                                          Container(
-                                            width: 32,
-                                            height: 32,
-                                            decoration: const BoxDecoration(
-                                              boxShadow: [
-                                                BoxShadow(
-                                                  color: Colors.black12,
-                                                  spreadRadius: 0,
-                                                  blurRadius: 16,
-                                                  offset: Offset(0, 2),
-                                                ),
-                                              ],
-                                            ),
-                                            child: document.crewLogoUrl!.isNotEmpty
-                                                ? ExtendedImage.network(
-                                              document.crewLogoUrl!,
-                                              enableMemoryCache: true,
-                                              shape: BoxShape.rectangle,
-                                              borderRadius: BorderRadius.circular(10),
-                                              cacheHeight: 100,
-                                              width: 32,
-                                              height: 32,
-                                              fit: BoxFit.cover,
-                                            )
-                                                : ExtendedImage.network(
-                                              '${crewDefaultLogoUrl['${document.color}']}',
-                                              enableMemoryCache: true,
-                                              cacheHeight: 100,
-                                              shape: BoxShape.rectangle,
-                                              borderRadius: BorderRadius.circular(10),
-                                              width: 32,
-                                              height: 32,
-                                              fit: BoxFit.cover,
-                                            ),
-                                          ),
-                                          SizedBox(width: 10),
-                                          Container(
-                                            child: Column(
-                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                              mainAxisAlignment: MainAxisAlignment.center,
-                                              children: [
-                                                Row(
-                                                  children: [
-                                                    Text(document.crewName!,
-                                                      style: SDSTextStyle.regular.copyWith(
-                                                          fontSize: 14,
-                                                          color: Color(0xFF111111)
                                                       ),
                                                     ),
                                                   ],
-                                                ),
-                                                SizedBox(height: 2),
-                                                Container(
-                                                  width: _size.width - 200,
-                                                  child: Row(
+                                                ],
+                                              ),
+                                            ),
+                                            // 크루 정보
+                                            SizedBox(width: 8),
+                                            Container(
+                                              width: 32,
+                                              height: 32,
+                                              decoration: const BoxDecoration(
+                                                boxShadow: [
+                                                  BoxShadow(
+                                                    color: Colors.black12,
+                                                    spreadRadius: 0,
+                                                    blurRadius: 16,
+                                                    offset: Offset(0, 2),
+                                                  ),
+                                                ],
+                                              ),
+                                              child: document.crewLogoUrl!.isNotEmpty
+                                                  ? ExtendedImage.network(
+                                                document.crewLogoUrl!,
+                                                enableMemoryCache: true,
+                                                shape: BoxShape.rectangle,
+                                                borderRadius: BorderRadius.circular(10),
+                                                cacheHeight: 100,
+                                                width: 32,
+                                                height: 32,
+                                                fit: BoxFit.cover,
+                                              )
+                                                  : ExtendedImage.network(
+                                                '${crewDefaultLogoUrl['${document.color}']}',
+                                                enableMemoryCache: true,
+                                                cacheHeight: 100,
+                                                shape: BoxShape.rectangle,
+                                                borderRadius: BorderRadius.circular(10),
+                                                width: 32,
+                                                height: 32,
+                                                fit: BoxFit.cover,
+                                              ),
+                                            ),
+                                            SizedBox(width: 10),
+                                            Container(
+                                              child: Column(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                children: [
+                                                  Row(
                                                     children: [
-                                                      Text(
-                                                        document.baseResortNickname!,
+                                                      Text(document.crewName!,
                                                         style: SDSTextStyle.regular.copyWith(
-                                                            fontSize: 12,
-                                                            color: Color(0xFF949494)
-                                                        ),
-                                                      ),
-                                                      Text('·',
-                                                        style: SDSTextStyle.regular.copyWith(
-                                                            fontSize: 12,
-                                                            color: Color(0xFF949494)
-                                                        ),
-                                                      ),
-                                                      Expanded(
-                                                        child: Container(
-                                                          child: Text(
-                                                            maxLines: 1,
-                                                            overflow: TextOverflow.ellipsis,
-                                                            document.description??'',
-                                                            style: SDSTextStyle.regular.copyWith(
-                                                                fontSize: 12,
-                                                                color: Color(0xFF949494)
-                                                            ),
-                                                          ),
+                                                            fontSize: 14,
+                                                            color: Color(0xFF111111)
                                                         ),
                                                       ),
                                                     ],
                                                   ),
-                                                ),
+                                                  SizedBox(height: 2),
+                                                  Container(
+                                                    width: _size.width - 200,
+                                                    child: Row(
+                                                      children: [
+                                                        Text(
+                                                          document.baseResortNickname!,
+                                                          style: SDSTextStyle.regular.copyWith(
+                                                              fontSize: 12,
+                                                              color: Color(0xFF949494)
+                                                          ),
+                                                        ),
+                                                        Text('·',
+                                                          style: SDSTextStyle.regular.copyWith(
+                                                              fontSize: 12,
+                                                              color: Color(0xFF949494)
+                                                          ),
+                                                        ),
+                                                        Expanded(
+                                                          child: Container(
+                                                            child: Text(
+                                                              maxLines: 1,
+                                                              overflow: TextOverflow.ellipsis,
+                                                              document.description??'',
+                                                              style: SDSTextStyle.regular.copyWith(
+                                                                  fontSize: 12,
+                                                                  color: Color(0xFF949494)
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            Expanded(child: SizedBox()),
+                                            Row(
+                                              children: [
+                                                if (_rankingListViewModel.resortOrTotal == '개별스키장' && document.resortTotalScore != null)
+                                                  Text('${document.resortTotalScore!.toInt()}점',
+                                                    style: SDSTextStyle.regular.copyWith(
+                                                      color: Color(0xFF111111),
+                                                      fontSize: 16,
+                                                    ),
+                                                  ),
+                                                if (_rankingListViewModel.resortOrTotal == '전체스키장' && document.overallTotalScore != null)
+                                                  Text('${document.overallTotalScore!.toInt()}점',
+                                                    style: SDSTextStyle.regular.copyWith(
+                                                      color: Color(0xFF111111),
+                                                      fontSize: 16,
+                                                    ),
+                                                  )
                                               ],
                                             ),
-                                          ),
-                                          Expanded(child: SizedBox()),
-                                          Row(
-                                            children: [
-                                              if (_rankingListViewModel.resortOrTotal == '개별스키장' && document.resortTotalScore != null)
-                                                Text('${document.resortTotalScore!.toInt()}점',
-                                                  style: SDSTextStyle.regular.copyWith(
-                                                    color: Color(0xFF111111),
-                                                    fontSize: 16,
-                                                  ),
-                                                ),
-                                              if (_rankingListViewModel.resortOrTotal == '전체스키장' && document.overallTotalScore != null)
-                                                Text('${document.overallTotalScore!.toInt()}점',
-                                                  style: SDSTextStyle.regular.copyWith(
-                                                    color: Color(0xFF111111),
-                                                    fontSize: 16,
-                                                  ),
-                                                )
-                                            ],
-                                          ),
-                                        ],
+                                          ],
+                                        ),
                                       ),
-                                    ),
-                                  );
-                                },
-                                padding: EdgeInsets.only(bottom: _size.height * 0.45),
+                                    );
+                                  },
+                                  padding: EdgeInsets.only(bottom: _size.height * 0.45),
+                                ),
                               ),
                             ),
                           ),
                         )
-
                             : Column(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           mainAxisAlignment: MainAxisAlignment.center,

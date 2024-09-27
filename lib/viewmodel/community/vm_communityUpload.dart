@@ -3,6 +3,7 @@ import 'package:com.snowlive/api/api_community.dart';
 import 'package:com.snowlive/viewmodel/util/vm_imageController.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:get/get.dart';
 import 'package:get/get_rx/get_rx.dart';
 import 'package:flutter_quill/flutter_quill.dart' as quill;
@@ -112,11 +113,13 @@ class CommunityUploadViewModel extends GetxController {
 
         // Step 1: 이미지가 로컬에 저장되어 있는지 확인
         if (await io.File(localPath).exists()) {
+          // Step 2: 로컬 이미지를 압축
+          String compressedPath = await _compressImage(localPath);
 
-          // Step 2: 로컬에 저장된 이미지를 Firebase에 업로드
-          String downloadUrl = await _uploadImage(localPath, pk);
+          // Step 3: 압축된 이미지를 Firebase에 업로드
+          String downloadUrl = await _uploadImage(compressedPath, pk);
 
-          // Step 3: Delta 문서에서 로컬 이미지 경로를 Firebase URL로 대치
+          // Step 4: Delta 문서에서 로컬 이미지 경로를 Firebase URL로 대치
           op.value['image'] = downloadUrl;
         }
       }
@@ -137,6 +140,20 @@ class CommunityUploadViewModel extends GetxController {
     // Firebase Storage에서 다운로드 URL 가져오기
     String downloadUrl = await snapshot.ref.getDownloadURL();
     return downloadUrl;
+  }
+
+  Future<String> _compressImage(String filePath) async {
+    final compressedImage = await FlutterImageCompress.compressWithFile(
+      filePath,
+      format: CompressFormat.jpeg,  // JPEG 포맷으로 압축
+      quality: 85,  // 압축 품질 설정 (0에서 100)
+    );
+
+    // 압축된 이미지 파일을 새로운 경로에 저장
+    final compressedFile = io.File('${path.dirname(filePath)}/compressed_${path.basename(filePath)}');
+    await compressedFile.writeAsBytes(compressedImage!);
+
+    return compressedFile.path;  // 압축된 파일의 경로 반환
   }
 
   String? findFirstInsertedImage(ops) {

@@ -421,7 +421,7 @@ class CommunityBulletinUpload extends StatelessWidget {
                                     "title": "${_communityUploadViewModel.textEditingController_title.text}",     // 필수 - 제목
                                     "thumb_img_url": "",
                                     "description": jsonEncode([{
-                                      "insert": ""
+                                      "insert": "test"
                                     }])
                                   });
 
@@ -441,7 +441,9 @@ class CommunityBulletinUpload extends StatelessWidget {
 
                                   CustomFullScreenDialog.cancelDialog();
                                   Navigator.pop(context);
-                                  await _communityBulletinListViewModel.fetchEventCommunity();
+                                (_communityBulletinListViewModel.tapName=='게시판')
+                                  ? await _communityBulletinListViewModel.fetchAllCommunity()
+                                :await _communityBulletinListViewModel.fetchEventCommunity();
                                 }
 
 
