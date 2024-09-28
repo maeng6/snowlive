@@ -84,6 +84,7 @@ class Community {
     commentList = (json['comments']??[] as List)
         .map((i) => CommentModel_community.fromJson(i))
         .toList();
+
   }
 }
 

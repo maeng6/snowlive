@@ -3,6 +3,7 @@ import 'package:com.snowlive/api/api_community.dart';
 import 'package:com.snowlive/model/m_comment_community.dart';
 import 'package:com.snowlive/model/m_communityDetail.dart';
 import 'package:com.snowlive/util/util_1.dart';
+import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:flutter_quill/flutter_quill.dart' as quill;
@@ -164,23 +165,39 @@ class CommunityDetailViewModel extends GetxController {
 
   // 커뮤니티 신고하기
   Future<void> reportCommunity({required userId, required communityId}) async {
-    isLoading(true);
-    try {
+
       ApiResponse response = await CommunityAPI().reportCommunity({
-        "user_id" : userId.toString(),    //필수 - 신고자(나)
-        "community_id" : communityId.toString()    //필수 - 신고글id
+        "user_id" : userId,    //필수 - 신고자(나)
+        "community_id" : communityId    //필수 - 신고글id
       });
+      CustomFullScreenDialog.cancelDialog();
 
       if (response.success) {
-        print('Report 완료');
-      } else {
-        Get.snackbar('Error', '리포트 실패');
+        if(response.data['message']=='Report has been submitted.') {
+          Get.snackbar('신고 완료', '신고 내역이 접수되었습니다.');
+        }
+        if(response.data['message']=='You have already reported this community.'){
+          Get.snackbar('신고 중복', '이미 신고한 글입니다.');
+        }
       }
-    } catch (e) {
-      print('Error reporting fleamarket: $e');
-      Get.snackbar('Error', '리포트 중 오류 발생');
-    } finally {
-      isLoading(false);
+  }
+
+  // 댓글 신고하기
+  Future<void> reportComment({required userId, required commentId}) async {
+
+    ApiResponse response = await CommunityAPI().reportComment(
+      userId,
+      commentId
+    );
+    CustomFullScreenDialog.cancelDialog();
+
+    if (response.success) {
+      if(response.data['message']=='Comment has been reported.') {
+        Get.snackbar('신고 완료', '신고 내역이 접수되었습니다.');
+      }
+      if(response.data['message']=='You have already reported this comment.'){
+        Get.snackbar('신고 중복', '이미 신고한 글입니다.');
+      }
     }
   }
 

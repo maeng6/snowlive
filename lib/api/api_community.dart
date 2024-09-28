@@ -47,6 +47,7 @@ class CommunityAPI {
 
     final response = await http.get(uri);
 
+
     if (response.statusCode == 200) {
       final data = json.decode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
       return ApiResponse.success(data);
@@ -279,7 +280,9 @@ class CommunityAPI {
       headers: {'Content-Type': 'application/json'},
     );
 
-    if (response.statusCode == 201) {
+    print(response.body);
+
+    if (response.statusCode == 201 || response.statusCode == 400) {
       return ApiResponse.success(json.decode(utf8.decode(response.bodyBytes)));
     } else {
       return ApiResponse.error(json.decode(utf8.decode(response.bodyBytes)));
@@ -289,12 +292,12 @@ class CommunityAPI {
   // 댓글 신고
   Future<ApiResponse> reportComment(int userId, int commentId) async {
     final response = await http.post(
-      Uri.parse('$baseUrl/report/'),
+      Uri.parse('$baseUrl/comments/report/'),
       body: json.encode({'user_id': userId.toString(), 'comment_id': commentId.toString()}),
       headers: {'Content-Type': 'application/json'},
     );
 
-    if (response.statusCode == 201) {
+    if (response.statusCode == 201 || response.statusCode == 400) {
       return ApiResponse.success(json.decode(utf8.decode(response.bodyBytes)));
     } else {
       return ApiResponse.error(json.decode(utf8.decode(response.bodyBytes)));
@@ -304,12 +307,12 @@ class CommunityAPI {
   // 답글 신고
   Future<ApiResponse> reportReply({required int userId, required int replyId}) async {
     final response = await http.post(
-      Uri.parse('$baseUrl/report-reply/'),
+      Uri.parse('$baseUrl/replies/report/'),
       body: json.encode({'user_id': userId.toString(), 'reply_id': replyId.toString()}),
       headers: {'Content-Type': 'application/json'},
     );
-
-    if (response.statusCode == 201) {
+print(response.body);
+    if (response.statusCode == 201||response.statusCode == 400) {
       return ApiResponse.success(json.decode(utf8.decode(response.bodyBytes)));
     } else {
       return ApiResponse.error(json.decode(utf8.decode(response.bodyBytes)));

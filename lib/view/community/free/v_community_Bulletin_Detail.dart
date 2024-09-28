@@ -167,12 +167,13 @@ class CommunityBulletinDetailView extends StatelessWidget {
                                                           child: Container(
                                                             child: TextButton(
                                                                 onPressed: () async {
+                                                                  Navigator.pop(context);
+                                                                  Navigator.pop(context);
+                                                                  CustomFullScreenDialog.showDialog();
                                                                   await _communityDetailViewModel.reportCommunity(
-                                                                      userId:  _userViewModel.user.user_id,
-                                                                      communityId: _communityDetailViewModel.communityDetail.communityId
+                                                                      userId:  _userViewModel.user.user_id.toString(),
+                                                                      communityId: _communityDetailViewModel.communityDetail.communityId.toString()
                                                                   );
-                                                                  Navigator.pop(context);
-                                                                  Navigator.pop(context);
                                                                 },
                                                                 style: TextButton.styleFrom(
                                                                   backgroundColor: Colors.transparent, // 배경색 투명
@@ -277,19 +278,20 @@ class CommunityBulletinDetailView extends StatelessWidget {
                                                       child: Container(
                                                         child: TextButton(
                                                             onPressed: () async{
+                                                              Navigator.pop(context);
+                                                              Navigator.pop(context);
+                                                              CustomFullScreenDialog.showDialog();
                                                               await _userViewModel.block_user({
-                                                                "user_id": _userViewModel.user.user_id,
-                                                                "block_user_id": _communityDetailViewModel.communityDetail.communityId
+                                                                "user_id": _userViewModel.user.user_id.toString(),
+                                                                "block_user_id": _communityDetailViewModel.communityDetail.userId.toString()
                                                               });
-                                                              Navigator.pop(context);
-                                                              Navigator.pop(context);
-                                                              Navigator.pop(context);
+                                                              await _communityBulletinListViewModel.fetchAllCommunity();
                                                             },
                                                             style: TextButton.styleFrom(
                                                               backgroundColor: Colors.transparent, // 배경색 투명
                                                               splashFactory: NoSplash.splashFactory, // 터치 시 효과 제거
                                                             ),
-                                                            child: Text('확인',
+                                                            child: Text('숨기기',
                                                               style: SDSTextStyle.bold.copyWith(
                                                                 fontSize: 17,
                                                                 color: SDSColor.snowliveBlue,
@@ -1131,9 +1133,13 @@ class CommunityBulletinDetailView extends StatelessWidget {
                                                                                                         child: Container(
                                                                                                           child: TextButton(
                                                                                                               onPressed: () async {
-                                                                                                                await _communityDetailViewModel.reportCommunity(userId: _userViewModel.user.user_id, communityId: comment.commentId);
                                                                                                                 Navigator.pop(context);
                                                                                                                 Navigator.pop(context);
+                                                                                                                CustomFullScreenDialog.showDialog();
+                                                                                                                await _communityDetailViewModel.reportComment(
+                                                                                                                    userId:  _userViewModel.user.user_id,
+                                                                                                                    commentId:  comment.commentId);
+
                                                                                                               },
                                                                                                               style: TextButton.styleFrom(
                                                                                                                 backgroundColor: Colors.transparent, // 배경색 투명
@@ -1236,13 +1242,14 @@ class CommunityBulletinDetailView extends StatelessWidget {
                                                                                                         child: Container(
                                                                                                           child: TextButton(
                                                                                                               onPressed: () async{
+                                                                                                                Navigator.pop(context);
+                                                                                                                Navigator.pop(context);
+                                                                                                                CustomFullScreenDialog.showDialog();
                                                                                                                 await _userViewModel.block_user({
                                                                                                                   "user_id": _userViewModel.user.user_id,
                                                                                                                   "block_user_id": comment.userId
                                                                                                                 });
-                                                                                                                Navigator.pop(context);
-                                                                                                                Navigator.pop(context);
-                                                                                                                Navigator.pop(context);
+
                                                                                                               },
                                                                                                               style: TextButton.styleFrom(
                                                                                                                 backgroundColor: Colors.transparent, // 배경색 투명
@@ -1383,9 +1390,10 @@ class CommunityBulletinDetailView extends StatelessWidget {
                                                                                                         child: Container(
                                                                                                           child: TextButton(
                                                                                                               onPressed: () async {
+                                                                                                                Navigator.pop(context);
+                                                                                                                Navigator.pop(context);
                                                                                                                 CustomFullScreenDialog.showDialog();
                                                                                                                 await _communityDetailViewModel.deleteComment(comment.commentId!, _userViewModel.user.user_id);
-                                                                                                                Navigator.pop(context);
                                                                                                                 CustomFullScreenDialog.cancelDialog();
                                                                                                               },
                                                                                                               style: TextButton.styleFrom(

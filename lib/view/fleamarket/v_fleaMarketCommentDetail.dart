@@ -562,7 +562,7 @@ class FleamarketCommentDetailView extends StatelessWidget {
                                                                                           height: 6,
                                                                                         ),
                                                                                         Text(
-                                                                                          '차단해제는 [더보기 - 친구 - 설정 - 차단목록]에서 하실 수 있습니다.',
+                                                                                          '숨김해제는 [더보기 - 친구 - 설정 - 차단목록]에서 하실 수 있습니다.',
                                                                                           textAlign: TextAlign.center,
                                                                                           style: SDSTextStyle.regular.copyWith(
                                                                                             color: SDSColor.gray500,
