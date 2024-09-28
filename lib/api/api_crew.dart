@@ -111,7 +111,7 @@ class CrewAPI {
       body: json.encode(applicationData),
       headers: {'Content-Type': 'application/json'},
     );
-
+    print(response.body);
     if (response.statusCode == 201) {
       return ApiResponse.success(json.decode(utf8.decode(response.bodyBytes)));
     } else {

@@ -811,6 +811,13 @@ class CrewHomeView extends StatelessWidget {
                                           ),
                                         ),
                                         maxLength: 50, // 최대 100자 제한
+                                        validator: (val) {
+                                          if (val!.length <= 50) {
+                                            return null;
+                                          }  else {
+                                            return '최대 입력 가능한 글자 수를 초과했습니다.';
+                                          }
+                                        },
                                       ),
                                     ],
                                   ),
@@ -848,8 +855,7 @@ class CrewHomeView extends StatelessWidget {
                                       ),
                                       Expanded(
                                         child: ElevatedButton(
-                                          onPressed: _crewApplyViewModel.isSubmitButtonEnabled_crewHome.value
-                                              ? () async {
+                                          onPressed: () async {
                                             Navigator.pop(context);
                                             CustomFullScreenDialog.showDialog();
                                             await _crewApplyViewModel.applyForCrew(
@@ -859,8 +865,7 @@ class CrewHomeView extends StatelessWidget {
                                             );
                                             _crewApplyViewModel.textEditingController_crewHome.clear();
                                             _crewApplyViewModel.isSubmitButtonEnabled_crewHome.value = false;
-                                          }
-                                              : null, // 버튼 비활성화 시 null
+                                          },
                                           child: Text(
                                             '신청하기',
                                             style: SDSTextStyle.bold.copyWith(
@@ -874,9 +879,7 @@ class CrewHomeView extends StatelessWidget {
                                             splashFactory: InkRipple.splashFactory,
                                             elevation: 0,
                                             minimumSize: Size(100, 56),
-                                            backgroundColor: _crewApplyViewModel.isSubmitButtonEnabled_crewHome.value
-                                                ? SDSColor.snowliveBlue // 입력이 있을 때 버튼 활성화
-                                                : SDSColor.gray300, // 입력이 없을 때 버튼 비활성화
+                                            backgroundColor:  SDSColor.snowliveBlue // 입력이 있을 때 버튼 활성화
                                           ),
                                         ),
                                       ),

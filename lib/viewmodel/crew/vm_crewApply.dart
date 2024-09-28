@@ -18,7 +18,6 @@ class CrewApplyViewModel extends GetxController {
   var isLoading = false.obs;
   var isSubmitButtonEnabled = false.obs;
   var isSubmitButtonEnabled_crewHome = false.obs;
-
   RxBool _activeApplyCrewComment = false.obs;
   bool get activeApplyCrewComment => _activeApplyCrewComment.value;
 
@@ -29,15 +28,15 @@ class CrewApplyViewModel extends GetxController {
     try {
       // 서버에 전송할 데이터 구성
       final response = await CrewAPI().applyForCrew({
-        'crew_id': crewId,
-        'applicant_user_id': userId,
+        'crew_id': crewId.toString(),
+        'applicant_user_id': userId.toString(),
         'title': title
       });
 
-      if (response.success) {
-
-        await fetchCrewApplyListUser(userId);
         CustomFullScreenDialog.cancelDialog();
+
+      if (response.success) {
+        await fetchCrewApplyListUser(userId);
         Get.offNamed(AppRoutes.crewApplicationUser);
       } else {
         Get.back();
@@ -138,5 +137,6 @@ class CrewApplyViewModel extends GetxController {
   void toggleApplyCrewComment(bool active){
     _activeApplyCrewComment.value = active;
   }
+
 
 }
