@@ -156,6 +156,22 @@ class FriendDetailViewModel extends GetxController {
   }
 
 
+  Future<void> fetchFriendsTalkList_afterFriendTalk({required int userId, required int friendUserId}) async {
+
+    ApiResponse response_talk = await FriendDetailAPI().fetchFriendsTalkList(userId,friendUserId);
+    if (response_talk.success) {
+      // 리스트 형식으로 변환
+      List<FriendsTalk> talkList = (response_talk.data as List)
+          .map((item) => FriendsTalk.fromJson(item))
+          .toList();
+      _friendsTalk.value = talkList;
+    } else {
+      Get.snackbar('Error', '데이터 로딩 실패');
+    }
+
+  }
+
+
   Future<void> updateMyInfo(body) async {
     isLoading(true);
     ApiResponse response = await FriendDetailAPI().updateUser(body);
@@ -201,6 +217,7 @@ class FriendDetailViewModel extends GetxController {
   Future<void> sendFriendRequest(body) async {
     isLoading(true);
     ApiResponse response = await FriendAPI().addFriend(body);
+    CustomFullScreenDialog.cancelDialog();
     if(response.success)
       Get.snackbar('친구신청 성공', '상대방이 수락하면 친구로 등록됩니다.');
     if(!response.success)
@@ -209,13 +226,14 @@ class FriendDetailViewModel extends GetxController {
   }
 
   Future<void> acceptFriend(body) async {
-    isLoading(true);
+
     ApiResponse response = await FriendAPI().acceptFriend(body);
+    CustomFullScreenDialog.cancelDialog();
     if(response.success)
       Get.snackbar('친구수락 성공', '상대방에게도 내가 친구로 등록됩니다.');
     if(!response.success)
-      Get.snackbar('앗!', '${response.error['error']}');
-    isLoading(false);
+      Get.snackbar('앗!', '잠시후 다시 시도해주세요.');
+
   }
 
   Future<void> checkFriendRelationship(body) async {
@@ -271,7 +289,7 @@ class FriendDetailViewModel extends GetxController {
     if(response.success)
       print('방명록 삭제 완료');
     if(!response.success)
-      Get.snackbar('Error', '삭제 실패');
+      print('방명록 삭제 실패');
     isLoading(false);
   }
 
@@ -281,15 +299,11 @@ class FriendDetailViewModel extends GetxController {
 
     if (response.success) {
       if(response.data['message']=='Friends talk has been reported.') {
-        CustomFullScreenDialog.cancelDialog();
-        Get.snackbar('신고 완료', '신고 내역이 접수되었습니다.');
       }
       if(response.data['message']=='You have already reported this friends talk.'){
-        CustomFullScreenDialog.cancelDialog();
-        Get.snackbar('신고 중복', '이미 신고한 글입니다.');
       }
     }
-    isLoading(true);
+    isLoading(false);
   }
 
 

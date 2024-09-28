@@ -419,9 +419,9 @@ class CommunityBulletinUpload extends StatelessWidget {
                                     "category_sub": "${_communityUploadViewModel.selectedCategoryMain}",     // 필수 - 서브 카테고리
                                     "category_sub2": "${_communityUploadViewModel.selectedCategorySub}",     // 선택 - 시즌방서브카테고리
                                     "title": "${_communityUploadViewModel.textEditingController_title.text}",     // 필수 - 제목
-                                    "thumb_img_url": "",
+                                    "thumb_img_url": null,
                                     "description": jsonEncode([{
-                                      "insert": "test"
+                                      "insert": "test\n"
                                     }])
                                   });
 

@@ -94,9 +94,11 @@ class SearchFriendView extends StatelessWidget {
                                             onFieldSubmitted: (val) async {
 
                                               if(val.isNotEmpty){
+                                                CustomFullScreenDialog.showDialog();
                                                 await _friendListViewModel.searchUser(
                                                     _friendListViewModel.textEditingController.text);
                                                 _friendListViewModel.textEditingController.clear();
+                                                CustomFullScreenDialog.cancelDialog();
                                               }
 
                                             },
@@ -442,13 +444,14 @@ class SearchFriendView extends StatelessWidget {
                                             child: Container(
                                               child: TextButton(
                                                   onPressed: () async {
-                                                    Navigator.pop(context);
+                                                    Navigator.pop(context);;
                                                     CustomFullScreenDialog.showDialog();
+                                                    print(_userViewModel.user.user_id.toString());
+                                                    print(_friendDetailViewModel.friendDetailModel.friendUserInfo.userId.toString());
                                                     await _friendDetailViewModel.sendFriendRequest({
-                                                      "user_id": _userViewModel.user.user_id,    //필수 - 신청자 (나)
-                                                      "friend_user_id": _friendDetailViewModel.friendDetailModel.friendUserInfo.userId    //필수 - 신청받는사람
+                                                      "user_id": _userViewModel.user.user_id.toString(),    //필수 - 신청자 (나)
+                                                      "friend_user_id": _friendListViewModel.searchFriend.userId.toString()    //필수 - 신청받는사람
                                                     });
-                                                    CustomFullScreenDialog.cancelDialog();
                                                   },
                                                   style: TextButton.styleFrom(
                                                     backgroundColor: Colors.transparent, // 배경색 투명
