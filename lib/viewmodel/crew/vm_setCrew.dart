@@ -41,7 +41,7 @@ class SetCrewViewModel extends GetxController {
   Rx<XFile?> _imageFile = Rx<XFile?>(null);
   Rx<XFile?> _croppedFile = Rx<XFile?>(null);
   Rx<Color> currentColor = Color(0XFFEA4E4E).obs;
-  Rx<Color> currentColorBackground = Color(0XFFEA4E4E).obs;
+  Rx<Color> currentColorBackground = Color(0XFFEA4E4E).withOpacity(0.2).obs;
 
   String? profileImageUrl;
 
@@ -238,7 +238,7 @@ class SetCrewViewModel extends GetxController {
     _imageFile.value = null;
     _croppedFile.value = null;
     currentColor.value = Color(0XFFFFA835);
-    currentColorBackground.value = Color(0XFFFFA835);
+    currentColorBackground.value = Color(0XFFFFA835).withOpacity(0.2);
   }
 
   // 이미지와 색상 초기화
@@ -246,7 +246,7 @@ class SetCrewViewModel extends GetxController {
     _imageFile.value = null;
     _croppedFile.value = null;
     currentColor.value = Color(0XFFEA4E4E);
-    currentColorBackground.value = Color(0XFFEA4E4E);
+    currentColorBackground.value = Color(0XFFEA4E4E).withOpacity(0.2);
   }
 
   // 이미지와 초기화
