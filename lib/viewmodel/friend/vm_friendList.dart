@@ -5,11 +5,12 @@ import 'package:com.snowlive/model/m_blockUserList.dart';
 import 'package:com.snowlive/model/m_requestFriendList.dart';
 import 'package:com.snowlive/model/m_searchFriend.dart';
 import 'package:com.snowlive/viewmodel/vm_user.dart';
+import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 
 class FriendListViewModel extends GetxController {
-  var isLoading = true.obs;
+  var isLoading = false.obs;
   var _searchFriendSuccess = false.obs;
   var _friendList = <FriendListModel>[].obs;
   var _friendsRequestList = <RequestFriendList>[].obs;
@@ -35,6 +36,23 @@ class FriendListViewModel extends GetxController {
   }
 
   Future<void> fetchFriendList() async {
+    try {
+      final response = await FriendAPI().fetchFriendList(userId: _userViewModel.user.user_id, bestFriend: false);
+
+      if (response.success && response.data != null) {
+        print('친구리스트 불러오기 성공 & 친구 1명 이상');
+        final friendListResponse = FriendListResponse.fromJson(response.data!);
+        _friendList.value = friendListResponse.friends!;
+      } else {
+        print('친구리스트 없을 경우');
+        _friendList.value = []; // 빈 리스트로 처리
+      }
+    } catch (e) {
+      print('Error fetching data: $e');
+    }
+  }
+
+  Future<void> fetchFriendList_start() async {
     isLoading(true);
     try {
       final response = await FriendAPI().fetchFriendList(userId: _userViewModel.user.user_id, bestFriend: false);
@@ -52,6 +70,7 @@ class FriendListViewModel extends GetxController {
     }
     isLoading(false);
   }
+
 
   Future<void> fetchFriendList_afterBest() async {
     try {
@@ -82,6 +101,7 @@ class FriendListViewModel extends GetxController {
       if (response_friendsRequest.success) {
         final friendsRequestListResponse = RequestFriendListResponse.fromJson(response_friendsRequest.data!);
         _friendsRequestList.value = friendsRequestListResponse.requests ?? [];
+        print(_friendsRequestList);
       } else {
         print('Failed to load friendsRequest: ${response_friendsRequest.error}');
       }
@@ -115,12 +135,13 @@ class FriendListViewModel extends GetxController {
   }
 
   Future<void> deleteFriend(body) async {
-    isLoading(true);
+
     ApiResponse response = await FriendAPI().deleteFriend(body);
+    CustomFullScreenDialog.cancelDialog();
     if (response.success) {
     } else {
     }
-    isLoading(false);
+
   }
 
 

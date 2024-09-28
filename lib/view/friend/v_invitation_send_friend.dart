@@ -202,8 +202,8 @@ class _SendFriendRequestViewState extends State<SendFriendRequestView> {
                                               child: Container(
                                                 child: TextButton(
                                                     onPressed: () async {
-
                                                       Navigator.pop(context);
+                                                      CustomFullScreenDialog.showDialog();
                                                       await _friendListViewModel.deleteFriend(
                                                           {
                                                             "friend_id": friend.friendId    //필수 - 수락할 친구요청id(user_id 아님에 주의)

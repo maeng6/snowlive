@@ -11,7 +11,7 @@ class FriendAPI {
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode(body),
     );
-
+print(response.body);
     if (response.statusCode == 201) {
       final data = json.decode(utf8.decode(response.bodyBytes));
       return ApiResponse.success(data);
