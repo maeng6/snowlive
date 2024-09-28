@@ -70,7 +70,8 @@ class FriendDetailViewModel extends GetxController {
 
   RxBool _isEditing = false.obs;
   RxString _seasonDate = ''.obs;
-  var isLoading = true.obs;
+  var isLoading = false.obs;
+  var isLoadingFriendsTalk = false.obs;
   Rx<XFile?> _imageFile = Rx<XFile?>(null);
   Rx<XFile?> _croppedFile = Rx<XFile?>(null);
   RxBool _profileImage = false.obs;
@@ -127,21 +128,20 @@ class FriendDetailViewModel extends GetxController {
   Future<void> fetchFriendDetailInfo({required int userId, required int friendUserId, required String season}) async {
     isLoading(true);
     ApiResponse response = await FriendDetailAPI().fetchFriendDetail(userId,friendUserId,season);
-    ApiResponse response_talk = await FriendDetailAPI().fetchFriendsTalkList(userId,friendUserId);
-    if(response.success)
-      _friendDetailModel.value = response.data as FriendDetailModel;
-    // 리스트 형식으로 변환
-    List<FriendsTalk> talkList = (response_talk.data as List)
-        .map((item) => FriendsTalk.fromJson(item))
-        .toList();
-    _friendsTalk.value = talkList;
-    if(!response.success)
-      Get.snackbar('Error', '데이터 로딩 실패');
+    if(response.success) {
     isLoading(false);
+      _friendDetailModel.value = response.data as FriendDetailModel;
+      changeMainTab(0);
+      await fetchFriendsTalkList(userId: userId, friendUserId: friendUserId);
+    }
+    else {
+      Get.back();
+      Get.snackbar('Error', '데이터 로딩 실패');
+    }
   }
 
-  Future<void> fetchFriendsTalkList({required int userId, required int friendUserId}) async {
-    isLoading(true);
+  Future<void> fetchFriendsTalkList_refresh({required int userId, required int friendUserId}) async {
+
     ApiResponse response_talk = await FriendDetailAPI().fetchFriendsTalkList(userId,friendUserId);
     if (response_talk.success) {
       // 리스트 형식으로 변환
@@ -152,7 +152,21 @@ class FriendDetailViewModel extends GetxController {
     } else {
       Get.snackbar('Error', '데이터 로딩 실패');
     }
-    isLoading(false);
+  }
+
+  Future<void> fetchFriendsTalkList({required int userId, required int friendUserId}) async {
+    isLoadingFriendsTalk(true);
+    ApiResponse response_talk = await FriendDetailAPI().fetchFriendsTalkList(userId,friendUserId);
+    if (response_talk.success) {
+      // 리스트 형식으로 변환
+      List<FriendsTalk> talkList = (response_talk.data as List)
+          .map((item) => FriendsTalk.fromJson(item))
+          .toList();
+      _friendsTalk.value = talkList;
+    } else {
+      Get.snackbar('Error', '데이터 로딩 실패');
+    }
+    isLoadingFriendsTalk(false);
   }
 
 
@@ -237,18 +251,18 @@ class FriendDetailViewModel extends GetxController {
   }
 
   Future<void> checkFriendRelationship(body) async {
-    isLoading(true);
+
     ApiResponse response = await FriendAPI().checkFriendRelationship(body);
     if(response.success)
       _friend_id.value = response.data['friend_id'];
     if(!response.success)
       _friend_id.value = 0;
-      isLoading(false);
+
   }
 
   Future<void> toggleBestFriend(body) async {
-    print(body);
     ApiResponse response = await FriendAPI().toggleBestFriend(body);
+    CustomFullScreenDialog.cancelDialog();
 
     if(response.success) {
       _friendDetailModel.update((model) {
@@ -284,26 +298,28 @@ class FriendDetailViewModel extends GetxController {
   }
 
   Future<void> deleteFriendsTalk({required int userId, required int friendsTalkId}) async {
-    isLoading(true);
     ApiResponse response = await FriendDetailAPI().deleteFriendsTalk(userId,friendsTalkId);
+    CustomFullScreenDialog.cancelDialog();
     if(response.success)
       print('방명록 삭제 완료');
     if(!response.success)
       print('방명록 삭제 실패');
-    isLoading(false);
+
   }
 
   Future<void> reportFriendsTalk(body) async {
-    isLoading(true);
-    ApiResponse response = await FriendDetailAPI().reportFriendsTalk(body);
 
+    ApiResponse response = await FriendDetailAPI().reportFriendsTalk(body);
+    CustomFullScreenDialog.cancelDialog();
     if (response.success) {
       if(response.data['message']=='Friends talk has been reported.') {
+        Get.snackbar('신고 완료', '신고가 성공적으로 접수되었습니다.');
       }
       if(response.data['message']=='You have already reported this friends talk.'){
+        Get.snackbar('신고 중복', '이미 신고한 글입니다.');
       }
     }
-    isLoading(false);
+
   }
 
 
@@ -319,13 +335,13 @@ class FriendDetailViewModel extends GetxController {
   }
 
   Future<void> uploadFriendsTalk(body) async {
-    isLoading(true);
+
     ApiResponse response = await FriendDetailAPI().createOrUpdateFriendsTalk(body);
     if(response.success)
       print('글 업로드 완료');
     if(!response.success)
-      Get.snackbar('Error', '업로드 실패');
-    isLoading(false);
+      Get.snackbar('앗!', '잠시후 다시 시도해주세요.');
+
   }
 
   // 각 유저의의 상세 정보를 불러와 로고 URL, 이름 저장

@@ -4,6 +4,7 @@ import 'package:com.snowlive/model/m_comment_community.dart';
 import 'package:com.snowlive/model/m_communityList.dart';
 import 'package:com.snowlive/util/util_1.dart';
 import 'package:com.snowlive/viewmodel/vm_user.dart';
+import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -105,21 +106,17 @@ class CommunityCommentDetailViewModel extends GetxController {
   }
 
   Future<void> reportReply({required int userId, required int replyId}) async {
-    isLoading(true);
-    try {
-      ApiResponse response = await CommunityAPI().reportReply(userId: userId, replyId: replyId);
 
+      ApiResponse response = await CommunityAPI().reportReply(userId: userId, replyId: replyId);
+      CustomFullScreenDialog.cancelDialog();
       if (response.success) {
-        print('답글 Report 완료');
-      } else {
-        Get.snackbar('Error', '답글 Report 실패');
+        if(response.data['message']=='Reply has been reported.') {
+          Get.snackbar('신고 완료', '신고 내역이 접수되었습니다.');
+        }
+        if(response.data['message']=='You have already reported this reply.'){
+          Get.snackbar('신고 중복', '이미 신고한 글입니다.');
+        }
       }
-    } catch (e) {
-      print('Error reporting reply: $e');
-      Get.snackbar('Error', '리포트 중 오류 발생');
-    } finally {
-      isLoading(false);
-    }
   }
 
   Future<void> deleteComment({

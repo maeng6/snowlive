@@ -31,21 +31,16 @@ class UserViewModel extends GetxController {
 
   Future<void> block_user(body)  async{
 
-    isLoading(true);
     ApiResponse response = await UserAPI().blockUser(body);
+        CustomFullScreenDialog.cancelDialog();
     if (response.success) {
       if(response.data['message']=='User has been blocked.') {
-        CustomFullScreenDialog.cancelDialog();
         Get.snackbar('차단 완료', '차단한 유저의 게시글은 숨김처리됩니다.');
         print('차단 완료');
-        isLoading(false);
       }else{
-        CustomFullScreenDialog.cancelDialog();
-        isLoading(false);
+        Get.snackbar('중복 차단', '이미 차단한 유저입니다.');
       }
     }else{
-      CustomFullScreenDialog.cancelDialog();
-      isLoading(false);
     }
   }
 

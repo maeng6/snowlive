@@ -464,12 +464,14 @@ class CommunityCommentDetailView extends StatelessWidget {
                                                                                             child: Container(
                                                                                               child: TextButton(
                                                                                                   onPressed: () async {
+
+                                                                                                    Navigator.pop(context);
+                                                                                                    Navigator.pop(context);
+                                                                                                    CustomFullScreenDialog.showDialog();
                                                                                                     await _communityCommentDetailViewModel.reportReply(
                                                                                                         userId:  _userViewModel.user.user_id,
                                                                                                         replyId:  reply_id!
                                                                                                     );
-                                                                                                    Navigator.pop(context);
-                                                                                                    Navigator.pop(context);
                                                                                                   },
                                                                                                   style: TextButton.styleFrom(
                                                                                                     backgroundColor: Colors.transparent, // 배경색 투명
@@ -532,7 +534,7 @@ class CommunityCommentDetailView extends StatelessWidget {
                                                                                           height: 6,
                                                                                         ),
                                                                                         Text(
-                                                                                          '차단해제는 [더보기 - 친구 - 설정 - 차단목록]에서 하실 수 있습니다.',
+                                                                                          '숨김해제는 [더보기 - 친구 - 설정 - 차단목록]에서 하실 수 있습니다.',
                                                                                           textAlign: TextAlign.center,
                                                                                           style: SDSTextStyle.regular.copyWith(
                                                                                             color: SDSColor.gray500,
@@ -570,13 +572,14 @@ class CommunityCommentDetailView extends StatelessWidget {
                                                                                           Expanded(
                                                                                             child: Container(
                                                                                               child: TextButton(
-                                                                                                  onPressed: () {
-                                                                                                    _userViewModel.block_user({
-                                                                                                      "user_id" : _userViewModel.user.user_id,
-                                                                                                      "block_user_id" : user_id_reply
+                                                                                                  onPressed: () async{
+                                                                                                    Navigator.pop(context);
+                                                                                                    Navigator.pop(context);
+                                                                                                    CustomFullScreenDialog.showDialog();
+                                                                                                    await _userViewModel.block_user({
+                                                                                                      "user_id" : _userViewModel.user.user_id.toString(),
+                                                                                                      "block_user_id" : user_id_reply.toString()
                                                                                                     });
-                                                                                                    Navigator.pop(context);
-                                                                                                    Navigator.pop(context);
                                                                                                   },
                                                                                                   style: TextButton.styleFrom(
                                                                                                     backgroundColor: Colors.transparent, // 배경색 투명
