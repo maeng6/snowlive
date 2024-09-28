@@ -19,6 +19,9 @@ class CrewApplyViewModel extends GetxController {
   var isSubmitButtonEnabled = false.obs;
   var isSubmitButtonEnabled_crewHome = false.obs;
 
+  RxBool _activeApplyCrewComment = false.obs;
+  bool get activeApplyCrewComment => _activeApplyCrewComment.value;
+
 
   // 크루 가입 신청
   Future<void> applyForCrew(int crewId, int userId, String title) async {
@@ -130,6 +133,10 @@ class CrewApplyViewModel extends GetxController {
     } finally {
       isLoading.value = false;
     }
+  }
+
+  void toggleApplyCrewComment(bool active){
+    _activeApplyCrewComment.value = active;
   }
 
 }

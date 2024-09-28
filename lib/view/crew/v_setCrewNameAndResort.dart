@@ -284,39 +284,41 @@ class SetCrewNameAndResortView extends StatelessWidget {
             ),
           ),
         ),
-        bottomNavigationBar: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Obx(() {
-            return ElevatedButton(
-              onPressed: _setCrewViewModel.isNextButtonEnabled.value
-                  ? () {
-                if (_setCrewViewModel.formKey.currentState!.validate()) {
-                  _setCrewViewModel.goToNextStep(); // 다음 단계로 이동
+        bottomNavigationBar: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Obx(() {
+              return ElevatedButton(
+                onPressed: _setCrewViewModel.isNextButtonEnabled.value
+                    ? () {
+                  if (_setCrewViewModel.formKey.currentState!.validate()) {
+                    _setCrewViewModel.goToNextStep(); // 다음 단계로 이동
+                  }
                 }
-              }
-                  : null,
-              child: _setCrewViewModel.isLoading.value
-                  ? CircularProgressIndicator(color: Colors.white)
-                  : Text(
-                '다음',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 16,
+                    : null,
+                child: _setCrewViewModel.isLoading.value
+                    ? CircularProgressIndicator(color: Colors.white)
+                    : Text(
+                  '다음',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                  ),
                 ),
-              ),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: _setCrewViewModel.isNextButtonEnabled.value
-                    ? SDSColor.snowliveBlue
-                    : SDSColor.gray300,
-                minimumSize: Size(double.infinity, 48),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(6),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: _setCrewViewModel.isNextButtonEnabled.value
+                      ? SDSColor.snowliveBlue
+                      : SDSColor.gray300,
+                  minimumSize: Size(double.infinity, 48),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(6),
+                  ),
+                  elevation: 0
                 ),
-                elevation: 0
-              ),
-            );
-          }),
+              );
+            }),
+          ),
         ),
       ),
     );

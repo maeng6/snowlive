@@ -1,12 +1,10 @@
 import 'dart:convert';
-
 import 'package:com.snowlive/api/ApiResponse.dart';
 import 'package:com.snowlive/model/m_resortModel.dart';
 import 'package:com.snowlive/routes/routes.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewMemberList.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewNotice.dart';
 import 'package:com.snowlive/viewmodel/friend/vm_friendDetail.dart';
-import 'package:com.snowlive/viewmodel/ranking/vm_rankingList.dart';
 import 'package:com.snowlive/viewmodel/vm_user.dart';
 import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 import 'package:flutter/cupertino.dart';
@@ -21,16 +19,14 @@ class CrewDetailViewModel extends GetxController {
   final CrewNoticeViewModel _crewNoticeViewModel = Get.find<CrewNoticeViewModel>();
   final UserViewModel _userViewModel = Get.find<UserViewModel>();
   final FriendDetailViewModel _friendDetailViewModel = Get.find<FriendDetailViewModel>();
-  final RankingListViewModel _rankingListViewModel = Get.find<RankingListViewModel>();
 
   TextEditingController textEditingController_description = TextEditingController();
   final formKey_description = GlobalKey<FormState>();
 
-  // 탭 관리 리스트
-  static const tabNameListConst = ['홈', '멤버', '갤러리'];
+  var currentTab = '홈'.obs;
+
 
   // 탭과 관련된 Rx 변수들
-  late RxList<String> tabNameList;
   late RxString _selectedTabName;
 
   // 크루 디테일 모델을 옵저버블로 선언
@@ -78,17 +74,15 @@ class CrewDetailViewModel extends GetxController {
 
   bool get isCrewIntroExpanded => _isCrewIntroExpanded.value;
 
-  @override
-  void onInit() {
-    super.onInit();
-    tabNameList = tabNameListConst.obs;
-    _selectedTabName = tabNameList[0].obs;
-  }
 
   CrewDetailViewModel() {
     textEditingController_description.addListener(() {
       crewDetailInfo.description = textEditingController_description.text;
     });
+  }
+
+  void changeTab(String tabName) {
+    currentTab.value = tabName;
   }
 
   // API 호출해서 데이터를 가져오는 메소드
@@ -114,10 +108,6 @@ class CrewDetailViewModel extends GetxController {
     }
   }
 
-  // 탭 변경 함수
-  void changeTab(String tabName) {
-    _selectedTabName.value = tabName;
-  }
 
   // 리조트 번호를 리조트 이름으로 변환
   void changeResortNumberToName(int? selectedResortId) {

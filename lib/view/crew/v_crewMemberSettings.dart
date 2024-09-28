@@ -322,8 +322,8 @@ class CrewMemberSettingsView extends StatelessWidget {
                                               ? Stack(
                                             children: [
                                               Container(
-                                                  width: 50,
-                                                  height: 50,
+                                                  width: 40,
+                                                  height: 40,
                                                   decoration: BoxDecoration(
                                                     borderRadius: BorderRadius.circular(100),
                                                     border: (_crewMemberListViewModel.crewMembersList[index].userInfo!.withinBoundary == true &&
@@ -343,8 +343,8 @@ class CrewMemberSettingsView extends StatelessWidget {
                                                     shape: BoxShape.circle,
                                                     cacheHeight: 150,
                                                     borderRadius: BorderRadius.circular(8),
-                                                    width: 50,
-                                                    height: 50,
+                                                    width: 40,
+                                                    height: 40,
                                                     fit: BoxFit.cover,
                                                     loadStateChanged: (ExtendedImageState state) {
                                                       switch (state.extendedImageLoadState) {
@@ -384,8 +384,8 @@ class CrewMemberSettingsView extends StatelessWidget {
                                               : Stack(
                                             children: [
                                               Container(
-                                                width: 50,
-                                                height: 50,
+                                                width: 40,
+                                                height: 40,
                                                 decoration: BoxDecoration(
                                                   borderRadius: BorderRadius.circular(100),
                                                   border: (_crewMemberListViewModel.crewMembersList[index].userInfo!.withinBoundary == true &&
@@ -404,8 +404,8 @@ class CrewMemberSettingsView extends StatelessWidget {
                                                   enableMemoryCache: true,
                                                   shape: BoxShape.circle,
                                                   borderRadius: BorderRadius.circular(8),
-                                                  width: 50,
-                                                  height: 50,
+                                                  width: 40,
+                                                  height: 40,
                                                   fit: BoxFit.cover,
                                                 ),
                                               ),
@@ -424,47 +424,50 @@ class CrewMemberSettingsView extends StatelessWidget {
                                                 ),
                                             ],
                                           ),
-                                          SizedBox(width: 12),
+                                          SizedBox(width: 8),
                                           Container(
-                                            width: _size.width - 260,
-                                            child: Column(
-                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                            width: _size.width - 140,
+                                            child: Row(
+                                              crossAxisAlignment: CrossAxisAlignment.center,
                                               children: [
                                                 Text(
                                                   _crewMemberListViewModel.crewMembersList[index].userInfo!.displayName!,
                                                   style: SDSTextStyle.regular.copyWith(
                                                     color: SDSColor.gray900,
-                                                    fontSize: 16,
+                                                    fontSize: 15,
+                                                  ),
+                                                ),
+                                                Padding(
+                                                  padding: EdgeInsets.only(left: 8),
+                                                  child: Container(
+                                                    width: 40, // 원하는 너비 설정
+                                                    height: 20, // 원하는 높이 설정
+                                                    padding: EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+                                                    decoration: BoxDecoration(
+                                                      color: _crewMemberListViewModel.getRoleColorBox(
+                                                          _crewMemberListViewModel.getMemberRole(
+                                                              _crewMemberListViewModel.crewMembersList[index].userInfo!.userId!)),
+                                                      borderRadius: BorderRadius.circular(4),
+                                                    ),
+                                                    child: Center(
+                                                      child: Text(
+                                                        _crewMemberListViewModel.getMemberRole(
+                                                            _crewMemberListViewModel.crewMembersList[index].userInfo!.userId!),
+                                                        style: SDSTextStyle.bold.copyWith(
+                                                          color: _crewMemberListViewModel.getRoleColorText(
+                                                              _crewMemberListViewModel.getMemberRole(
+                                                                  _crewMemberListViewModel.crewMembersList[index].userInfo!.userId!)),
+                                                          fontSize: 11,
+                                                        ),
+                                                      ),
+                                                    ),
                                                   ),
                                                 ),
                                               ],
                                             ),
                                           ),
+
                                           Expanded(child: SizedBox()),
-                                          Container(
-                                            width: 40, // 원하는 너비 설정
-                                            height: 20, // 원하는 높이 설정
-                                            padding: EdgeInsets.symmetric(horizontal: 4, vertical: 3),
-                                            decoration: BoxDecoration(
-                                              color: _crewMemberListViewModel.getRoleColorBox(
-                                                  _crewMemberListViewModel.getMemberRole(
-                                                      _crewMemberListViewModel.crewMembersList[index].userInfo!.userId!)),
-                                              borderRadius: BorderRadius.circular(3),
-                                            ),
-                                            child: Center(
-                                              child: Text(
-                                                _crewMemberListViewModel.getMemberRole(
-                                                    _crewMemberListViewModel.crewMembersList[index].userInfo!.userId!),
-                                                style: TextStyle(
-                                                  color: _crewMemberListViewModel.getRoleColorText(
-                                                      _crewMemberListViewModel.getMemberRole(
-                                                          _crewMemberListViewModel.crewMembersList[index].userInfo!.userId!)),
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 10,
-                                                ),
-                                              ),
-                                            ),
-                                          ),
                                           if(_crewMemberListViewModel.getMemberRole(
                                               _crewMemberListViewModel.crewMembersList[index].userInfo!.userId!) != '크루장')
                                             GestureDetector(
@@ -475,21 +478,13 @@ class CrewMemberSettingsView extends StatelessWidget {
                                                 padding: const EdgeInsets.only(left: 10),
                                                 child: Container(
                                                   width: 40, // 원하는 너비 설정
-                                                  height: 20, // 원하는 높이 설정
+                                                  height: 40, // 원하는 높이 설정
                                                   padding: EdgeInsets.symmetric(horizontal: 4, vertical: 2),
-                                                  decoration: BoxDecoration(
-                                                    borderRadius: BorderRadius.circular(3),
-                                                    border: Border.all(color: SDSColor.gray600), // 테두리 회색
-                                                    color: Colors.transparent,
-                                                  ),
                                                   child: Center(
-                                                    child: Text(
-                                                      '관리',
-                                                      style: TextStyle(
-                                                        color: SDSColor.gray600, // 글자색 회색
-                                                        fontWeight: FontWeight.bold,
-                                                        fontSize: 10,
-                                                      ),
+                                                    child: Icon(
+                                                      Icons.more_horiz,
+                                                      color: SDSColor.gray200,
+                                                      size: 20,
                                                     ),
                                                   ),
                                                 ),

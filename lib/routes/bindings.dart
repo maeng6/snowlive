@@ -5,7 +5,6 @@ import 'package:com.snowlive/viewmodel/community/vm_communityUpdate.dart';
 import 'package:com.snowlive/viewmodel/community/vm_communityUpload.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewApply.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewDetail.dart';
-import 'package:com.snowlive/viewmodel/crew/vm_crewMain.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewMemberList.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewNotice.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewRecordRoom.dart';
@@ -54,7 +53,6 @@ class MainHomeBinding extends Bindings {
     Get.put(CrewNoticeViewModel());
     Get.put(CrewApplyViewModel());
     Get.put(SearchCrewViewModel());
-    Get.put(CrewMainViewModel());
     Get.put(CrewDetailViewModel());
     Get.put(SetCrewViewModel());
   }

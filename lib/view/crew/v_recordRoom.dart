@@ -19,6 +19,7 @@ class CrewRecordRoomView extends StatelessWidget {
       backgroundColor: SDSColor.gray50,
       appBar: AppBar(
         backgroundColor: SDSColor.gray50,
+        surfaceTintColor: Colors.transparent,
         elevation: 0.0,
         leading: GestureDetector(
           child: Image.asset(

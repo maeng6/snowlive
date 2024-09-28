@@ -28,13 +28,12 @@ class CrewMemberListView extends StatelessWidget {
                 children: [
                   SizedBox(height: 10,),
                   Text('멤버 ${_crewMemberListViewModel.totalMemberCount}명',
-                    style: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.bold,
+                    style: SDSTextStyle.bold.copyWith(
+                        fontSize: 14,
                         color: SDSColor.snowliveBlack
                     ),
                   ),
-                  SizedBox(height: 15,),
+                  SizedBox(height: 20,),
                   Container(
                     width : _size.width,
                     child: ListView.builder(
@@ -65,8 +64,8 @@ class CrewMemberListView extends StatelessWidget {
                                           ? Stack(
                                         children: [
                                           Container(
-                                              width: 50,
-                                              height: 50,
+                                              width: 48,
+                                              height: 48,
                                               decoration: BoxDecoration(
                                                 borderRadius: BorderRadius.circular(100),
                                                 border: (_crewMemberListViewModel.crewMembersList[index].userInfo!.withinBoundary == true
@@ -86,8 +85,8 @@ class CrewMemberListView extends StatelessWidget {
                                                 shape: BoxShape.circle,
                                                 cacheHeight: 150,
                                                 borderRadius: BorderRadius.circular(8),
-                                                width: 50,
-                                                height: 50,
+                                                width: 48,
+                                                height: 48,
                                                 fit: BoxFit.cover,
                                                 loadStateChanged: (ExtendedImageState state) {
                                                   switch (state.extendedImageLoadState) {
@@ -100,8 +99,8 @@ class CrewMemberListView extends StatelessWidget {
                                                         'assets/imgs/profile/img_profile_default_circle.png',
                                                         shape: BoxShape.circle,
                                                         borderRadius: BorderRadius.circular(8),
-                                                        width: 50,
-                                                        height: 50,
+                                                        width: 48,
+                                                        height: 48,
                                                         fit: BoxFit.cover,
                                                       ); // 예시로 에러 아이콘을 반환하고 있습니다.
                                                     default:
@@ -115,11 +114,10 @@ class CrewMemberListView extends StatelessWidget {
                                             Positioned(
                                               right: 0,
                                               bottom: 0,
-                                              left: 0,
                                               child: Center(
                                                 child: Image.asset(
                                                   'assets/imgs/icons/icon_badge_live.png',
-                                                  width: 34,
+                                                  width: 30,
                                                 ),
                                               ),
                                             ),
@@ -128,8 +126,8 @@ class CrewMemberListView extends StatelessWidget {
                                           : Stack(
                                         children: [
                                           Container(
-                                            width: 50,
-                                            height: 50,
+                                            width: 48,
+                                            height: 48,
                                             decoration: BoxDecoration(
                                               borderRadius: BorderRadius.circular(100),
                                               border: (_crewMemberListViewModel.crewMembersList[index].userInfo!.withinBoundary == true
@@ -148,8 +146,8 @@ class CrewMemberListView extends StatelessWidget {
                                               enableMemoryCache: true,
                                               shape: BoxShape.circle,
                                               borderRadius: BorderRadius.circular(8),
-                                              width: 50,
-                                              height: 50,
+                                              width: 48,
+                                              height: 48,
                                               fit: BoxFit.cover,
                                             ),
                                           ),
@@ -159,26 +157,25 @@ class CrewMemberListView extends StatelessWidget {
                                             Positioned(
                                               right: 0,
                                               bottom: 0,
-                                              left: 0,
                                               child: Center(
                                                 child: Image.asset(
                                                   'assets/imgs/icons/icon_badge_live.png',
-                                                  width: 34,
+                                                  width: 30,
                                                 ),
                                               ),
                                             ),
                                         ],
                                       ),
-                                      SizedBox(width: 15,),
+                                      SizedBox(width: 10,),
                                       Container(
                                         width: _size.width - 260,
                                         child: Column(
                                           crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
                                             Text(_crewMemberListViewModel.crewMembersList[index].userInfo!.displayName!,
-                                              style: TextStyle(
+                                              style: SDSTextStyle.regular.copyWith(
                                                   fontSize: 15,
-                                                  color: Color(0xFF111111)
+                                                  color: SDSColor.gray900
                                               ),
                                             ),
                                           ],

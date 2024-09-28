@@ -51,8 +51,8 @@ class UpdateCrewImageAndColorView extends StatelessWidget {
               titleSpacing: 0,
             ),
           ),
-          body: SingleChildScrollView(
-            child: SafeArea(
+          body: SafeArea(
+            child: SingleChildScrollView(
               child: Padding(
                 padding: EdgeInsets.only(
                   top: 10,
@@ -60,7 +60,7 @@ class UpdateCrewImageAndColorView extends StatelessWidget {
                   right: 16,
                 ),
                 child: Container(
-                  height: _size.height - 180,
+                  height: _size.height - 260,
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -85,88 +85,93 @@ class UpdateCrewImageAndColorView extends StatelessWidget {
                           ),
                         ],
                       ),
-                      Padding(
-                        padding: EdgeInsets.only(top: 10),
-                        child: Center(
-                          child: Column(
-                            children: [
-                              Obx(
-                                    () => Container(
-                                  width: 150,
-                                  height: 150,
-                                  decoration: BoxDecoration(
-                                    color: _setCrewViewModel.currentColorBackground.value,
-                                    borderRadius: BorderRadius.circular(30),
-                                  ),
-                                  child: (_setCrewViewModel.croppedFile != null)
-                                      ? Stack(
-                                    children: [
-                                      Center(
-                                        child: ClipRRect(
-                                          borderRadius: BorderRadius.circular(16),
-                                          child: ExtendedImage.file(
-                                            File(_setCrewViewModel.croppedFile!.path),
-                                            fit: BoxFit.cover, // 배경을 모두 채우도록 설정
-                                            cacheRawData: true,
-                                            enableLoadState: true,
-                                            width: 80, // 배경 안에 들어가도록 크기 조정
-                                            height: 80,
-                                          ),
-                                        ),
-                                      ),
-                                      Positioned(
-                                        top: 24,
-                                        right: 24,
-                                        child: GestureDetector(
-                                          onTap: () {
-                                            _setCrewViewModel.resetImage();
-                                          },
-                                          child: Container(
-                                            padding: EdgeInsets.all(3),
-                                            decoration: BoxDecoration(
-                                              color: SDSColor.snowliveBlack.withOpacity(0.7),
-                                              shape: BoxShape.circle,
-                                            ),
-                                            child: Icon(
-                                              Icons.close,
-                                              color: SDSColor.snowliveWhite,
-                                              size: 20,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  )
-                                      :Center(
-                                    child: ClipRRect(
-                                      borderRadius: BorderRadius.circular(16),
-                                      child:
-                                      ExtendedImage.network(
-                                        '${crewDefaultLogoUrl['${_setCrewViewModel.colorToHex(_setCrewViewModel.currentColor.value)}']}',
-                                        enableMemoryCache: true,
-                                        shape: BoxShape.rectangle,
+                      Center(
+                        child: Column(
+                          children: [
+                            Obx(
+                                  () => Container(
+                                width: 150,
+                                height: 150,
+                                decoration: BoxDecoration(
+                                  color: _setCrewViewModel.currentColorBackground.value,
+                                  borderRadius: BorderRadius.circular(30),
+                                ),
+                                child: (_setCrewViewModel.croppedFile != null)
+                                    ? Stack(
+                                  children: [
+                                    Center(
+                                      child: ClipRRect(
                                         borderRadius: BorderRadius.circular(16),
-                                        width: 80,
-                                        height: 80,
-                                        fit: BoxFit.cover,
-                                        cacheRawData: true,
-                                        enableLoadState: true,
-                                      )
+                                        child: ExtendedImage.file(
+                                          File(_setCrewViewModel.croppedFile!.path),
+                                          fit: BoxFit.cover, // 배경을 모두 채우도록 설정
+                                          cacheRawData: true,
+                                          enableLoadState: true,
+                                          width: 80, // 배경 안에 들어가도록 크기 조정
+                                          height: 80,
+                                        ),
+                                      ),
                                     ),
+                                    Positioned(
+                                      top: 24,
+                                      right: 24,
+                                      child: GestureDetector(
+                                        onTap: () {
+                                          _setCrewViewModel.resetImage();
+                                        },
+                                        child: Container(
+                                          padding: EdgeInsets.all(3),
+                                          decoration: BoxDecoration(
+                                            color: SDSColor.snowliveBlack.withOpacity(0.7),
+                                            shape: BoxShape.circle,
+                                          ),
+                                          child: Icon(
+                                            Icons.close,
+                                            color: SDSColor.snowliveWhite,
+                                            size: 20,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                )
+                                    :Center(
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(16),
+                                    child:
+                                    ExtendedImage.network(
+                                      '${crewDefaultLogoUrl['${_setCrewViewModel.colorToHex(_setCrewViewModel.currentColor.value)}']}',
+                                      enableMemoryCache: true,
+                                      shape: BoxShape.rectangle,
+                                      borderRadius: BorderRadius.circular(16),
+                                      width: 80,
+                                      height: 80,
+                                      fit: BoxFit.cover,
+                                      cacheRawData: true,
+                                      enableLoadState: true,
+                                    )
                                   ),
                                 ),
                               ),
-                              SizedBox(height: 12),
-                              TextButton(
-                                onPressed: () {
-                                  showModalBottomSheet(
-                                    context: context,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-                                    ),
-                                    builder: (context) => SafeArea(
+                            ),
+                            SizedBox(height: 12),
+                            TextButton(
+                              onPressed: () {
+                                showModalBottomSheet(
+                                  backgroundColor: SDSColor.snowliveWhite,
+                                  context: context,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+                                  ),
+                                  builder: (context) => SafeArea(
+                                    child: Container(
+                                      color: Colors.transparent,
+                                      height: 203,
                                       child: Container(
-                                        height: 203,
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.only(topLeft: Radius.circular(16), topRight: Radius.circular(16)),
+                                          color: SDSColor.snowliveWhite,
+                                        ),
                                         child: Padding(
                                           padding: EdgeInsets.only(bottom: 20, right: 20, left: 20, top: 12),
                                           child: Column(
@@ -252,25 +257,25 @@ class UpdateCrewImageAndColorView extends StatelessWidget {
                                         ),
                                       ),
                                     ),
-                                  );
-                                },
-                                child: Text(
-                                  '이미지 직접 등록',
-                                  style: SDSTextStyle.bold.copyWith(fontSize: 13, color: SDSColor.gray900),),
-                                style: ElevatedButton.styleFrom(
-                                  padding: EdgeInsets.symmetric(horizontal: 14, vertical: 3),
-                                  minimumSize: Size(36, 32),
-                                  backgroundColor: SDSColor.snowliveWhite,
-                                  side: BorderSide(
-                                      color: SDSColor.gray200
                                   ),
-                                  elevation: 0,
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(100)),
+                                );
+                              },
+                              child: Text(
+                                '이미지 직접 등록',
+                                style: SDSTextStyle.bold.copyWith(fontSize: 13, color: SDSColor.gray900),),
+                              style: ElevatedButton.styleFrom(
+                                padding: EdgeInsets.symmetric(horizontal: 14, vertical: 3),
+                                minimumSize: Size(36, 32),
+                                backgroundColor: SDSColor.snowliveWhite,
+                                side: BorderSide(
+                                    color: SDSColor.gray200
                                 ),
+                                elevation: 0,
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(100)),
                               ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
                       ),
                       Center(
@@ -338,35 +343,51 @@ class UpdateCrewImageAndColorView extends StatelessWidget {
           ),
         ),
         Positioned(
-          bottom: MediaQuery.of(context).viewInsets.bottom,
+          bottom: 0,
           right: 0,
           left: 0,
           child: SafeArea(
+            top: false,
             child: Padding(
-              padding: EdgeInsets.only(left: 16, right: 16, bottom: 16),
+              padding: EdgeInsets.only(left: 16, right: 16, bottom: 16, top: 16),
               child: Obx(() => ElevatedButton(
                 onPressed: () async {
                   showDialog(
                     context: context,
                     builder: (BuildContext context) {
                       return AlertDialog(
+                        backgroundColor: SDSColor.snowliveWhite,
+                        contentPadding: EdgeInsets.only(bottom: 0, left: 28, right: 28, top: 36),
+                        elevation: 0,
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20),
+                          borderRadius: BorderRadius.circular(16),
                         ),
-                        title: Text('변경사항을 저장하시겠어요?',
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16
-                            ),
-                            textAlign: TextAlign.center
+                        buttonPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+                        content: Container(
+                          height: 100,
+                          child: Column(
+                            children: [
+                              Text('변경사항을 저장하시겠어요?',
+                                textAlign: TextAlign.center,
+                                style: SDSTextStyle.bold.copyWith(
+                                    color: SDSColor.gray900,
+                                    fontSize: 16
+                                ),
+                              ),
+                              SizedBox(
+                                height: 6,
+                              ),
+                              Text('선택하신 이미지와 대표 색상으로 설정이 변경됩니다',
+                                textAlign: TextAlign.center,
+                                style: SDSTextStyle.regular.copyWith(
+                                  color: SDSColor.gray500,
+                                  fontSize: 14,
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
-                        content: Text('선택하신 이미지와 대표 색상으로 설정이 변경됩니다',
-                            style: TextStyle(
-                                fontSize: 14,
-                                color: SDSColor.gray600
-                            ),
-                            textAlign: TextAlign.center
-                        ),
+
                         actions: [
                           ElevatedButton(
                             onPressed: () async {

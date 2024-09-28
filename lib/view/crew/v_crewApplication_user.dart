@@ -92,9 +92,9 @@ class CrewApplicationUserView extends StatelessWidget {
                                   await _crewMemberListViewModel.fetchCrewMembers(crewId: crew.crewId!);
 
                                 },
-                                child: Obx(() => Row(
+                                child: Row(
                                   children: [
-                                    if (_crewDetailViewModel.crewLogoUrl!.isNotEmpty)
+                                    if (crewInfo['logoUrl'] != '')
                                       GestureDetector(
                                         onTap: () async{
                                           CustomFullScreenDialog.showDialog();
@@ -117,7 +117,7 @@ class CrewApplicationUserView extends StatelessWidget {
                                           width: 44,
                                           height: 44,
                                           child: ExtendedImage.network(
-                                            _crewDetailViewModel.crewLogoUrl!,
+                                            '${crewInfo['logoUrl']}',
                                             enableMemoryCache: true,
                                             shape: BoxShape.rectangle,
                                             borderRadius: BorderRadius.circular(10),
@@ -127,7 +127,7 @@ class CrewApplicationUserView extends StatelessWidget {
                                           ),
                                         ),
                                       ),
-                                    if (_crewDetailViewModel.crewLogoUrl!.isEmpty)
+                                    if (crewInfo['logoUrl'] == '')
                                       GestureDetector(
                                         onTap: () async{
                                           CustomFullScreenDialog.showDialog();
@@ -313,7 +313,7 @@ class CrewApplicationUserView extends StatelessWidget {
                                       ),
                                     ),
                                   ],
-                                )),
+                                ),
                               ),
                             );
                           }).toList(),
@@ -328,15 +328,15 @@ class CrewApplicationUserView extends StatelessWidget {
                       padding: EdgeInsets.all(16.0),
                       child: ElevatedButton(
                         onPressed: () {
-                          Get.offNamed(AppRoutes.searchCrew);
+                          Get.toNamed(AppRoutes.searchCrew);
                         },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: SDSColor.snowliveBlue, // 버튼 색상
-                          padding: EdgeInsets.symmetric(vertical: 16),
-                          minimumSize: Size(double.infinity, 48),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(6),
-                          ),
+                            backgroundColor: SDSColor.snowliveBlue, // 버튼 색상
+                            padding: EdgeInsets.symmetric(vertical: 16),
+                            minimumSize: Size(double.infinity, 48),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(6),
+                            ),
                             elevation: 0
                         ),
                         child: Text(

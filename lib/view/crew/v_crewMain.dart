@@ -3,10 +3,7 @@ import 'package:com.snowlive/routes/routes.dart';
 import 'package:com.snowlive/view/crew/v_crewHome.dart';
 import 'package:com.snowlive/view/crew/v_crewMember.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewDetail.dart';
-import 'package:com.snowlive/viewmodel/crew/vm_crewMain.dart';
-import 'package:com.snowlive/viewmodel/crew/vm_crewMemberList.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_searchCrew.dart';
-import 'package:com.snowlive/viewmodel/vm_mainHome.dart';
 import 'package:com.snowlive/viewmodel/vm_user.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -14,8 +11,6 @@ import 'package:get/get.dart';
 
 class CrewMainView extends StatelessWidget {
 
-  final CrewMainViewModel _crewMainViewModel = Get.find<CrewMainViewModel>();
-  final MainHomeViewModel _mainHomeViewModel = Get.find<MainHomeViewModel>();
   final SearchCrewViewModel _searchCrewViewModel = Get.find<SearchCrewViewModel>();
   final UserViewModel _userViewModel = Get.find<UserViewModel>();
   final CrewDetailViewModel _crewDetailViewModel = Get.find<CrewDetailViewModel>();
@@ -34,18 +29,18 @@ class CrewMainView extends StatelessWidget {
         child: AppBar(
           actions: [
             IconButton(
-                onPressed: () {
-                  _searchCrewViewModel.textEditingController.clear();
-                  _searchCrewViewModel.crewList.clear();
-                  _searchCrewViewModel.showRecentSearch.value = true;
-                  Get.toNamed(AppRoutes.searchCrew);
-                },
-                icon: Image.asset(
-                  'assets/imgs/icons/icon_appBar_search.png',
-                  scale: 4,
-                  width: 26,
-                  height: 26,
-                ),
+              onPressed: () {
+                _searchCrewViewModel.textEditingController.clear();
+                _searchCrewViewModel.crewList.clear();
+                _searchCrewViewModel.showRecentSearch.value = true;
+                Get.toNamed(AppRoutes.searchCrew);
+              },
+              icon: Image.asset(
+                'assets/imgs/icons/icon_appBar_search.png',
+                scale: 4,
+                width: 26,
+                height: 26,
+              ),
             ),
             if(_userViewModel.user.crew_id == _crewDetailViewModel.crewDetailInfo.crewId)
               Padding(
@@ -71,6 +66,7 @@ class CrewMainView extends StatelessWidget {
               height: 26,
             ),
             onTap: () async {
+              _crewDetailViewModel.changeTab('홈');
               Get.back();
             },
           ),
@@ -117,7 +113,7 @@ class CrewMainView extends StatelessWidget {
             Expanded(
               child: Obx(
                     () {
-                  if (_crewMainViewModel.currentTab.value == '홈') {
+                  if (_crewDetailViewModel.currentTab.value == '홈') {
                     return CrewHomeView();
                   } else {
                     return CrewMemberListView();
@@ -134,7 +130,7 @@ class CrewMainView extends StatelessWidget {
   Widget _buildTabButton(String title, String tabName) {
     return Expanded(
       child: Obx(() {
-        bool isSelected = _crewMainViewModel.currentTab.value == tabName;
+        bool isSelected = _crewDetailViewModel.currentTab.value == tabName;
         return Column(
           children: [
             Container(
@@ -142,7 +138,7 @@ class CrewMainView extends StatelessWidget {
               child: ElevatedButton(
                 onPressed: () {
                   HapticFeedback.lightImpact();
-                  _crewMainViewModel.changeTab(tabName);
+                  _crewDetailViewModel.changeTab(tabName);
                 },
                 child: Text(
                   title,

@@ -31,10 +31,65 @@ class CrewHomeView extends StatelessWidget {
   Widget build(BuildContext context) {
     final Size _size = MediaQuery.of(context).size;
 
-    return Scaffold(
+    return Obx(() => Scaffold(
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      floatingActionButton:
+      (_crewMemberListViewModel.liveMemberCount != 0)
+      ? Align(
+        alignment: Alignment.bottomCenter,
+        child: Container(
+          width: 180,
+          decoration: BoxDecoration(
+            color: Colors.transparent,
+            borderRadius: BorderRadius.circular(50),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.04),
+                spreadRadius: 2,
+                blurRadius: 8,
+                offset: Offset(0, 6),
+              ),
+            ],
+          ),
+          child: FloatingActionButton(
+            heroTag: 'bulletin_crew_recent',
+            mini: true,
+            elevation: 0,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(40),
+              side: BorderSide(color: SDSColor.gray200),
+            ),
+            backgroundColor: SDSColor.snowliveWhite,
+            foregroundColor: SDSColor.snowliveWhite,
+            onPressed: () {
+            },
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Image.asset(
+                  'assets/imgs/icons/icon_badge_live.png',
+                  width: 36,
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 2, right: 3),
+                  child: Text('라이브온 중인 멤버 ${_crewMemberListViewModel.liveMemberCount}명',
+                    style: TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.bold,
+                        color: SDSColor.gray900,
+                        letterSpacing: 0
+                    ),),
+                )
+              ],
+            ),
+          ),
+        ),
+      )
+      : Container(),
       backgroundColor: SDSColor.snowliveWhite,
       extendBodyBehindAppBar: true,
-      body: Obx(() => Stack(
+      body: Stack(
         children: [
           Container(
             width: _size.width,
@@ -263,22 +318,6 @@ class CrewHomeView extends StatelessWidget {
                       ),
                     ),
                   ),
-                  // Padding(
-                  //   padding: const EdgeInsets.only(left: 16, right: 16),
-                  //   child: Row(
-                  //     children: [
-                  //       Text(
-                  //         '라이브ON ${_crewMemberListViewModel.liveMemberCount}명',
-                  //         style: TextStyle(
-                  //           fontSize: 16,
-                  //           color: Color(0xFF111111),
-                  //           fontWeight: FontWeight.bold,
-                  //         ),
-                  //       ),
-                  //
-                  //     ],
-                  //   ),
-                  // ),
                   SizedBox(height: 24),
                   Padding(
                     padding: EdgeInsets.only(left: 20, right: 20),
@@ -662,7 +701,7 @@ class CrewHomeView extends StatelessWidget {
                   ),
                   (_userViewModel.user.crew_id == null)
                   ? SizedBox(height: 100)
-                  : SizedBox(height: 50),
+                  : SizedBox(height: 40),
                 ],
               ),
             ),
@@ -817,7 +856,7 @@ class CrewHomeView extends StatelessWidget {
             ),
         ],
       ),
-      ),
-    );
+
+    ));
   }
 }

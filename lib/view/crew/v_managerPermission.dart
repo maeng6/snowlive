@@ -10,8 +10,10 @@ class ManagerPermissionView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        backgroundColor: SDSColor.snowliveWhite,
         appBar: AppBar(
           backgroundColor: SDSColor.snowliveWhite,
+          surfaceTintColor: Colors.transparent,
           leading: GestureDetector(
             child: Image.asset(
               'assets/imgs/icons/icon_snowLive_back.png',
@@ -25,12 +27,10 @@ class ManagerPermissionView extends StatelessWidget {
           ),
           title: Text(
             '운영진 권한 설정',
-            style: TextStyle(
-                color: SDSColor.snowliveBlack,
-                fontSize: 18
-            ),
+            style: SDSTextStyle.bold.copyWith(color: SDSColor.snowliveBlack, fontSize: 18),
           ),
           elevation: 0,
+          toolbarHeight: 44,
         ),
         body: Obx(()=>Column(
           children: [
@@ -38,7 +38,7 @@ class ManagerPermissionView extends StatelessWidget {
             _buildOnOffButton(
               context,
               "크루 가입 신청 승인 권한",
-              "크루 가입 신청 승인 권한을 부여합니다.",
+              "운영진에게 크루 가입 신청 승인 권한을 부여합니다.",
               _crewDetailViewModel.permission_join,
                   (bool value) => _crewDetailViewModel.togglePermissionJoin(value),
             ),
@@ -75,11 +75,18 @@ class ManagerPermissionView extends StatelessWidget {
       ) {
     return ListTile(
       title: Text(title,
-        style: TextStyle(
-            fontSize: 15
+        style: SDSTextStyle.regular.copyWith(
+            fontSize: 15,
+          color: SDSColor.gray900
         ),
       ),
-      subtitle: subtitle != null ? Text(subtitle, style: TextStyle(fontSize: 12, color: Colors.grey)) : null,
+      subtitle: subtitle != null ?
+      Text(subtitle,
+        style: SDSTextStyle.regular.copyWith(
+            fontSize: 13,
+            color: SDSColor.gray500
+        ),
+      ) : null,
       trailing: GestureDetector(
         onTap: () async{
           CustomFullScreenDialog.showDialog();
@@ -96,9 +103,8 @@ class ManagerPermissionView extends StatelessWidget {
           ),
           child: Text(
             currentValue ? "ON" : "OFF",
-            style: TextStyle(
-              fontSize: 13,
-              fontWeight: FontWeight.bold,
+            style: SDSTextStyle.bold.copyWith(
+              fontSize: 12,
               color: currentValue ? SDSColor.snowliveBlue : SDSColor.snowliveBlack,
             ),
           ),

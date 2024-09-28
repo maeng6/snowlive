@@ -394,30 +394,31 @@ class CrewApplicationCrewView extends StatelessWidget {
                       }).toList(),
                     ),
                   )
-                  : Container(
-                    height: _size.height - _statusBarSize - 44,
-                    child: Padding(
-                      padding: EdgeInsets.only(bottom: 50),
-                      child: Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Image.asset(
-                              'assets/imgs/icons/icon_nodata.png',
-                              scale: 4,
-                              width: 73,
-                              height: 73,
-                            ),
-                            SizedBox(
-                              height: 6,
-                            ),
-                            Text('가입 신청한 사람이 없어요',
-                              style: SDSTextStyle.regular.copyWith(
-                                  fontSize: 14,
-                                  color: SDSColor.gray700
+                  : Expanded(
+                    child: Container(
+                      child: Padding(
+                        padding: EdgeInsets.only(bottom: 50),
+                        child: Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Image.asset(
+                                'assets/imgs/icons/icon_nodata.png',
+                                scale: 4,
+                                width: 73,
+                                height: 73,
                               ),
-                            ),
-                          ],
+                              SizedBox(
+                                height: 6,
+                              ),
+                              Text('가입 신청한 사람이 없어요',
+                                style: SDSTextStyle.regular.copyWith(
+                                    fontSize: 14,
+                                    color: SDSColor.gray700
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),
