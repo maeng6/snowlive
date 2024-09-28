@@ -285,31 +285,12 @@ class SetCrewImageAndColorView extends StatelessWidget {
                               ),
                               SizedBox(height: 12),
                               Container(
-                                width: 220,
+                                width: 280,
                                 child: Column(
                                   children: [
                                     Row(
                                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                      children: crewColorList.sublist(0, 5).map((color) {
-                                        return GestureDetector(
-                                          onTap: () {
-                                            _setCrewViewModel.selectColor(color!);
-                                          },
-                                          child: Container(
-                                            height: 24,
-                                            width: 24,
-                                            decoration: BoxDecoration(
-                                              shape: BoxShape.circle,
-                                              color: color,
-                                            ),
-                                          ),
-                                        );
-                                      }).toList(),
-                                    ),
-                                    SizedBox(height: 16),
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                      children: crewColorList.sublist(5).map((color) {
+                                      children: crewColorList.sublist(0, 8).map((color) {
                                         return GestureDetector(
                                           onTap: () {
                                             _setCrewViewModel.selectColor(color!);

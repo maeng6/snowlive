@@ -1306,7 +1306,7 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                                                     height: 18,
                                                   )
                                                       : Image.asset(
-                                                    'assets/imgs/icons/icon_pin_inactive리.png',
+                                                    'assets/imgs/icons/icon_pin_inactive.png',
                                                     width: 18,
                                                     height: 18,
                                                   ),

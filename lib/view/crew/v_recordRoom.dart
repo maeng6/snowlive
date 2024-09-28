@@ -20,6 +20,7 @@ class CrewRecordRoomView extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: SDSColor.gray50,
         surfaceTintColor: Colors.transparent,
+        toolbarHeight: 44,
         elevation: 0.0,
         leading: GestureDetector(
           child: Image.asset(
@@ -36,11 +37,9 @@ class CrewRecordRoomView extends StatelessWidget {
         centerTitle: true,
         title: Text(
           '기록실',
-          style: TextStyle(
-            color: Color(0xFF111111),
-            fontWeight: FontWeight.bold,
-            fontSize: 18,
-          ),
+          style: SDSTextStyle.extraBold.copyWith(
+              color: SDSColor.gray900,
+              fontSize: 18),
         ),
       ),
       body: Obx(() {
@@ -53,13 +52,13 @@ class CrewRecordRoomView extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
+              padding: EdgeInsets.only(left: 16, right: 16, top: 12),
               child: buildYearSelector(),
             ),
-            SizedBox(height: 16),
+            SizedBox(height: 20),
             Expanded(
               child: ListView(
-                padding: EdgeInsets.all(16.0),
+                padding: EdgeInsets.symmetric(horizontal: 16),
                 children: _buildGroupedRecords(),
               ),
             ),
@@ -87,27 +86,30 @@ class CrewRecordRoomView extends StatelessWidget {
             );
           },
           child: Obx(() => Container(
-            padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
             decoration: BoxDecoration(
               color: _crewRecordRoomViewModel.currentYear.value == year
                   ? SDSColor.snowliveBlack
                   : SDSColor.snowliveWhite,
-              borderRadius: BorderRadius.circular(16),
+              borderRadius: BorderRadius.circular(30.0),
               border: Border.all(color: Colors.transparent, width: 1),
             ),
+            padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            height: 36,
             child: Text(
               '$year년',
-              style: TextStyle(
+              style: SDSTextStyle.bold.copyWith(
                 color: _crewRecordRoomViewModel.currentYear.value == year
                     ? SDSColor.snowliveWhite
                     : SDSColor.snowliveBlack,
-                fontSize: 14,
+                fontWeight: _crewRecordRoomViewModel.currentYear.value == year
+                ? FontWeight.bold
+                : FontWeight.normal,
+                fontSize: 13,
               ),
             ),
           )),
         ),
       );
-
       yearTabs.add(SizedBox(width: 8)); // 각 탭 사이에 여백 추가
     }
 
@@ -134,13 +136,12 @@ class CrewRecordRoomView extends StatelessWidget {
         children: [
           // 월 타이틀 추가
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: 10),
+            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 4),
             child: Text(
               _formatMonthTitle(monthKey),
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
+              style: SDSTextStyle.bold.copyWith(
                 fontSize: 18,
-                color: Colors.black,
+                color: SDSColor.gray900,
               ),
             ),
           ),
@@ -175,7 +176,7 @@ class CrewRecordRoomView extends StatelessWidget {
   // 월 타이틀 포맷팅 함수
   String _formatMonthTitle(String monthKey) {
     DateTime parsedDate = DateFormat('yyyy-MM').parse(monthKey);
-    return DateFormat('MM월').format(parsedDate);
+    return DateFormat('M월').format(parsedDate);
   }
 
   // 기존의 buildExpansionTile 함수
@@ -191,49 +192,67 @@ class CrewRecordRoomView extends StatelessWidget {
     FontWeight dateFontWeight = FontWeight.bold; // 모든 날짜를 볼드체로 설정
     if (date != null) {
       if (date.weekday == DateTime.saturday) {
-        dateColor = Colors.blue; // 토요일은 파란색
+        dateColor = SDSColor.snowliveBlue; // 토요일은 파란색
       } else if (date.weekday == DateTime.sunday) {
-        dateColor = Colors.red; // 일요일은 빨간색
+        dateColor = SDSColor.red; // 일요일은 빨간색
       } else {
-        dateColor = Colors.black; // 나머지 요일은 검정색
+        dateColor = SDSColor.gray900; // 나머지 요일은 검정색
       }
     } else {
-      dateColor = Colors.black; // 날짜가 없을 경우 기본 검정색
+      dateColor = SDSColor.gray900; // 날짜가 없을 경우 기본 검정색
     }
 
     return Card(
+      surfaceTintColor: Colors.transparent,
+      shadowColor: Colors.transparent,
+      color: SDSColor.snowliveWhite,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
       ),
-      child: ExpansionTile(
-        key: Key('expansion_$index'),  // 각 타일에 고유한 키 설정
-        initiallyExpanded: _crewRecordRoomViewModel.expandedCardIndex.value == index,
-        onExpansionChanged: (expanded) {
-          _crewRecordRoomViewModel.setExpandedCardIndex(expanded ? index : null);
-        },
-        title: Text(
-          formattedDate,
-          style: TextStyle(
-            color: dateColor, // 요일에 따른 색상 적용
-            fontWeight: dateFontWeight, // 모든 날짜는 볼드체
-          ),
+      child: Theme(
+        data: ThemeData().copyWith(
+          dividerColor: Colors.transparent, // Divider를 제거하려면 추가
+          splashColor: Colors.transparent, // 터치 시 나타나는 스플래시 색상 투명
+          highlightColor: Colors.transparent, // 터치 시 하이라이트되는 색상 투명
         ),
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              children: [
-                buildScoreCard(record),
-                SizedBox(height: 32),
-                buildGraphs(record),
-                SizedBox(height: 16),
-                Divider(thickness: 1),
-                SizedBox(height: 16),
-                buildRidingMembers(record),
-              ],
+        child: ExpansionTile(
+          key: Key('expansion_$index'),  // 각 타일에 고유한 키 설정
+          initiallyExpanded: _crewRecordRoomViewModel.expandedCardIndex.value == index,
+          onExpansionChanged: (expanded) {
+            _crewRecordRoomViewModel.setExpandedCardIndex(expanded ? index : null);
+          },
+          collapsedIconColor: SDSColor.gray900,
+          iconColor: SDSColor.gray900,
+          title: Padding(
+            padding: EdgeInsets.only(left: 6),
+            child: Text(
+              formattedDate,
+              style: SDSTextStyle.bold.copyWith(
+                fontSize: 16,
+                color: dateColor, // 요일에 따른 색상 적용
+                fontWeight: dateFontWeight, // 모든 날짜는 볼드체
+              ),
             ),
           ),
-        ],
+          children: [
+            Padding(
+              padding: EdgeInsets.only(left: 20, right: 20, bottom: 24, top: 6),
+              child: Column(
+                children: [
+                  buildScoreCard(record),
+                  SizedBox(height: 24),
+                  buildGraphs(record),
+                  SizedBox(height: 16),
+                  Divider(color: SDSColor.gray100, thickness: 1, height: 32,),
+                  SizedBox(height: 16),
+                  buildRidingMembers(record),
+                ],
+              ),
+            ),
+          ],
+          collapsedBackgroundColor: Colors.transparent, // 축소 상태일 때 배경색 투명
+          backgroundColor: Colors.transparent, // 확장 상태일 때 배경색 투명
+        ),
       ),
     );
   }
@@ -267,16 +286,15 @@ class CrewRecordRoomView extends StatelessWidget {
         children: [
           Text(
             score,
-            style: TextStyle(fontWeight: FontWeight.bold),
+            style: SDSTextStyle.bold.copyWith(
+                fontSize: 16,
+                color: SDSColor.gray900),
           ),
-          Padding(
-            padding: const EdgeInsets.only(top: 3),
-            child: Text(
-              label,
-              style: SDSTextStyle.regular.copyWith(
-                color: Color(0xFF111111).withOpacity(0.5),
-                fontSize: 13,
-              ),
+          Text(
+            label,
+            style: SDSTextStyle.regular.copyWith(
+              color: SDSColor.gray500,
+              fontSize: 13,
             ),
           ),
         ],
@@ -294,9 +312,9 @@ class CrewRecordRoomView extends StatelessWidget {
       children: [
         Text(
           '시간대별 라이딩 횟수',
-          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+          style: SDSTextStyle.bold.copyWith(fontSize: 14, color: SDSColor.gray900),
         ),
-        SizedBox(height: 15),
+        SizedBox(height: 12),
         if (timeCountInfo.isNotEmpty)  // timeCountInfo가 비어있지 않으면 그래프 표시
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -315,26 +333,24 @@ class CrewRecordRoomView extends StatelessWidget {
                     // 횟수가 0이 아닐 때만 표시
                     AutoSizeText(
                       passCount != 0 ? '$passCount' : '',
-                      style: TextStyle(
-                        fontSize: 11,
-                        color: passCount == maxCount ? SDSColor.snowliveBlack : SDSColor.gray500,
-                        fontWeight: passCount == maxCount ? FontWeight.bold : FontWeight.w300,  // 가장 높은 값은 볼드체
+                      style: SDSTextStyle.regular.copyWith(
+                        fontSize: 12,
+                        color: SDSColor.gray900,
                       ),
                       minFontSize: 6,
                       maxLines: 1,
                       overflow: TextOverflow.visible,
                     ),
                     Padding(
-                      padding: EdgeInsets.only(top: passCount == maxCount ? 6 : 0),
+                      padding: EdgeInsets.only(top: 4),
                       child: Container(
                         width: 16,
                         height: 140 * barHeightRatio,  // 막대 높이를 비율에 따라 설정
                         decoration: BoxDecoration(
-                          color: passCount == maxCount ? SDSColor.blue500 : SDSColor.blue200,  // 가장 높은 값은 다른 색상
-                          borderRadius: BorderRadius.only(
-                            topRight: Radius.circular(4),
-                            topLeft: Radius.circular(4),
-                          ),
+                            color: SDSColor.blue200,
+                            borderRadius: BorderRadius.only(
+                                topRight: Radius.circular(4), topLeft: Radius.circular(4)
+                            )
                         ),
                       ),
                     ),
@@ -344,10 +360,10 @@ class CrewRecordRoomView extends StatelessWidget {
                         width: 20,
                         child: Text(
                           slotName,  // 시간대 텍스트
-                          style: TextStyle(
-                            fontSize: 11,
-                            color: Colors.black,
-                            height: 1.2,
+                          style: SDSTextStyle.regular.copyWith(
+                              fontSize: 11,
+                              color: SDSColor.sBlue600,
+                              height: 1.2
                           ),
                         ),
                       ),
@@ -358,7 +374,27 @@ class CrewRecordRoomView extends StatelessWidget {
             }).toList(),
           ),
         if (timeCountInfo.isEmpty)  // timeCountInfo가 비어있으면 메시지 표시
-          Text('라이딩 기록이 없습니다.'),
+          Center(
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: 30),
+              child: Column(
+                children: [
+                  ExtendedImage.asset(
+                    'assets/imgs/imgs/img_resoreHome_nodata.png',
+                    fit: BoxFit.cover,
+                    width: 72,
+                    height: 72,
+                  ),
+                  Text('라이딩 기록이 없어요',
+                    style: SDSTextStyle.regular.copyWith(
+                        fontSize: 14,
+                        color: SDSColor.gray600
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          )
       ],
     );
   }
@@ -372,7 +408,7 @@ class CrewRecordRoomView extends StatelessWidget {
       children: [
         Text(
           '라이딩 멤버 ${record.memberCount ?? 0}명',
-          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+          style: SDSTextStyle.bold.copyWith(fontSize: 14, color: SDSColor.gray900),
         ),
         SizedBox(height: 8),
         if (members.isNotEmpty)
@@ -383,7 +419,7 @@ class CrewRecordRoomView extends StatelessWidget {
                 width: 32,
                 height: 32,
                 decoration: BoxDecoration(
-                  color: Color(0xFFDFECFF),
+                  color: Colors.transparent,
                   borderRadius: BorderRadius.circular(50),
                 ),
                 child: ExtendedImage.network(
@@ -429,19 +465,45 @@ class CrewRecordRoomView extends StatelessWidget {
                   fit: BoxFit.cover,
                 ),
               ),
-              title: Text(
-                member.displayName!,
-                style: TextStyle(
-                  fontSize: 14,
+              contentPadding: EdgeInsets.zero,
+              title: Transform.translate(
+                offset: Offset(-6, 0),
+                child: Text(
+                  member.displayName!,
+                  style: SDSTextStyle.regular.copyWith(
+                    fontSize: 14,
+                    color: SDSColor.gray900
+                  ),
                 ),
               ),
               trailing: Text(
                 '${member.totalScore!.toStringAsFixed(0)}점',
-                style: TextStyle(fontSize: 16),
+                style: SDSTextStyle.regular.copyWith(fontSize: 16, color: SDSColor.gray900),
               ),
             );
           }).toList(),
-        if (members.isEmpty) Text('멤버 기록이 없습니다.'),
+        if (members.isEmpty)
+          Center(
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: 30),
+              child: Column(
+                children: [
+                  ExtendedImage.asset(
+                    'assets/imgs/imgs/img_resoreHome_nodata.png',
+                    fit: BoxFit.cover,
+                    width: 72,
+                    height: 72,
+                  ),
+                  Text('멤버 기록이 없어요',
+                    style: SDSTextStyle.regular.copyWith(
+                        fontSize: 14,
+                        color: SDSColor.gray600
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          )
       ],
     );
   }

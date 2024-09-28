@@ -26,9 +26,10 @@ class CrewMainView extends StatelessWidget {
       extendBodyBehindAppBar: true,
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(44),
-        child: AppBar(
+        child: Obx(() => AppBar(
           actions: [
-            IconButton(
+            (_userViewModel.user.crew_id != null && _userViewModel.user.crew_id == _crewDetailViewModel.crewDetailInfo.crewId)
+            ? IconButton(
               onPressed: () {
                 _searchCrewViewModel.textEditingController.clear();
                 _searchCrewViewModel.crewList.clear();
@@ -41,7 +42,8 @@ class CrewMainView extends StatelessWidget {
                 width: 26,
                 height: 26,
               ),
-            ),
+            )
+            : Container(),
             if(_userViewModel.user.crew_id == _crewDetailViewModel.crewDetailInfo.crewId)
               Padding(
                 padding: EdgeInsets.only(right: 5),
@@ -81,7 +83,7 @@ class CrewMainView extends StatelessWidget {
           foregroundColor: SDSColor.snowliveWhite,
           surfaceTintColor: SDSColor.snowliveWhite,
           elevation: 0.0,
-        ),
+        )),
       ),
       body: SafeArea(
         child: Column(

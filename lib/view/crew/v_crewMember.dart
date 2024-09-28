@@ -64,8 +64,8 @@ class CrewMemberListView extends StatelessWidget {
                                           ? Stack(
                                         children: [
                                           Container(
-                                              width: 48,
-                                              height: 48,
+                                              width: 40,
+                                              height: 40,
                                               decoration: BoxDecoration(
                                                 borderRadius: BorderRadius.circular(100),
                                                 border: (_crewMemberListViewModel.crewMembersList[index].userInfo!.withinBoundary == true
@@ -85,8 +85,8 @@ class CrewMemberListView extends StatelessWidget {
                                                 shape: BoxShape.circle,
                                                 cacheHeight: 150,
                                                 borderRadius: BorderRadius.circular(8),
-                                                width: 48,
-                                                height: 48,
+                                                width: 40,
+                                                height: 40,
                                                 fit: BoxFit.cover,
                                                 loadStateChanged: (ExtendedImageState state) {
                                                   switch (state.extendedImageLoadState) {
@@ -99,8 +99,8 @@ class CrewMemberListView extends StatelessWidget {
                                                         'assets/imgs/profile/img_profile_default_circle.png',
                                                         shape: BoxShape.circle,
                                                         borderRadius: BorderRadius.circular(8),
-                                                        width: 48,
-                                                        height: 48,
+                                                        width: 40,
+                                                        height: 40,
                                                         fit: BoxFit.cover,
                                                       ); // 예시로 에러 아이콘을 반환하고 있습니다.
                                                     default:
@@ -126,8 +126,8 @@ class CrewMemberListView extends StatelessWidget {
                                           : Stack(
                                         children: [
                                           Container(
-                                            width: 48,
-                                            height: 48,
+                                            width: 40,
+                                            height: 40,
                                             decoration: BoxDecoration(
                                               borderRadius: BorderRadius.circular(100),
                                               border: (_crewMemberListViewModel.crewMembersList[index].userInfo!.withinBoundary == true
@@ -146,8 +146,8 @@ class CrewMemberListView extends StatelessWidget {
                                               enableMemoryCache: true,
                                               shape: BoxShape.circle,
                                               borderRadius: BorderRadius.circular(8),
-                                              width: 48,
-                                              height: 48,
+                                              width: 40,
+                                              height: 40,
                                               fit: BoxFit.cover,
                                             ),
                                           ),
