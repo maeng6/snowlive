@@ -50,14 +50,12 @@ class Crew {
 
 
 List<Color?> crewColorList = [
-  Color(0xFFFFA835),
-  Color(0xFF2EB6FF),
-  Color(0xFFFF54A0),
-  Color(0xFF10BB88),
-  Color(0xFFB173FF),
-  Color(0xFFFF5F18),
-  Color(0xFF326EF6),
-  Color(0xFFEF0069),
-  Color(0xFF019D78),
-  Color(0xFF772ED3),
+  Color(0xFFEA4E4E),
+  Color(0xFFFD6D04),
+  Color(0xFFFDAF04),
+  Color(0xFF37CBA8),
+  Color(0xFF68A1F6),
+  Color(0xFF0D4CA9),
+  Color(0xFF9241F9),
+  Color(0xFF5E6B7F),
 ];
