@@ -114,23 +114,13 @@ class RankingAPI {
     }
   }
 
-  Future<ApiResponse> fetchRankingData_indiv_Refresh({
+  Future<ApiResponse> fetchRankingData_indiv_beta({
     required int userId,
-    int? resortId,
-    bool? daily,
-    String? season,
     String? url,
   }) async {
     final uri = url != null
         ? Uri.parse(url)
-        : Uri.parse('$baseUrl/list-indiv-refresh/').replace(
-      queryParameters: {
-        'user_id': userId.toString(),
-        if (resortId != null) 'resort_id': resortId.toString(),
-        if (daily != null) 'daily': daily.toString(),
-        if (season != null) 'season': season,
-      },
-    );
+        : Uri.parse('$baseUrl/list-indiv-beta/');
 
     final response = await http.get(uri);
 
@@ -172,23 +162,13 @@ class RankingAPI {
     }
   }
 
-  Future<ApiResponse> fetchRankingData_crew_Refresh({
+  Future<ApiResponse> fetchRankingData_crew_beta({
     required int userId,
-    int? resortId,
-    bool? daily,
-    String? season,
     String? url,
   }) async {
     final uri = url != null
         ? Uri.parse(url)
-        : Uri.parse('$baseUrl/list-crew-refresh/').replace(
-      queryParameters: {
-        'user_id': userId.toString(),
-        if (resortId != null) 'resort_id': resortId.toString(),
-        if (daily != null) 'daily': daily.toString(),
-        if (season != null) 'season': season,
-      },
-    );
+        : Uri.parse('$baseUrl/list-crew-beta/');
 
     final response = await http.get(uri);
 

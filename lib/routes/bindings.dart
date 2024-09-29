@@ -21,6 +21,7 @@ import 'package:com.snowlive/viewmodel/friend/vm_friendList.dart';
 import 'package:com.snowlive/viewmodel/onboarding_login/vm_login.dart';
 import 'package:com.snowlive/viewmodel/onboarding_login/vm_tos.dart';
 import 'package:com.snowlive/viewmodel/ranking/vm_rankingList.dart';
+import 'package:com.snowlive/viewmodel/ranking/vm_rankingList_beta.dart';
 import 'package:com.snowlive/viewmodel/resortHome/vm_openChat.dart';
 import 'package:com.snowlive/viewmodel/util/vm_imageController.dart';
 import 'package:com.snowlive/viewmodel/vm_mainHome.dart';
@@ -47,6 +48,7 @@ class MainHomeBinding extends Bindings {
     Get.put(ImageController());
     Get.put(FriendListViewModel());
     Get.put(RankingListViewModel());
+    Get.put(RankingListBetaViewModel());
     Get.put(CommunityBulletinListViewModel());
     Get.put(CommunityDetailViewModel());
     Get.put(CrewMemberListViewModel());
