@@ -1,3 +1,4 @@
+import 'package:com.snowlive/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/routes/routes.dart';
 import 'package:com.snowlive/util/util_1.dart';
 import 'package:com.snowlive/view/moreTab/v_noticeListPage.dart';
@@ -36,6 +37,7 @@ class MoreTabMainView extends StatelessWidget {
           preferredSize: Size.fromHeight(0),
           child: AppBar(
             backgroundColor: Colors.white,
+            surfaceTintColor: Colors.transparent,
             elevation: 0.0,
             centerTitle: false,
             titleSpacing: 0,
@@ -43,10 +45,9 @@ class MoreTabMainView extends StatelessWidget {
               padding: const EdgeInsets.only(left: 16),
               child: Text(
                 '',
-                style: TextStyle(
-                    color: Color(0xFF111111),
-                    fontWeight: FontWeight.bold,
-                    fontSize: 23),
+                style: SDSTextStyle.extraBold.copyWith(
+                    color: SDSColor.gray900,
+                    fontSize: 18),
               ),
             ),
           ),
@@ -72,7 +73,7 @@ class MoreTabMainView extends StatelessWidget {
                   child: Container(
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(14),
-                      color: Color(0xFFF1F1F3),
+                      color: SDSColor.gray50,
                     ),
                     width: _size.width - 32,
                     child: Padding(
