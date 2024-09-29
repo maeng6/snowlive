@@ -1,5 +1,6 @@
 import 'package:com.snowlive/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/view/ranking/v_rankingList_Indi.dart';
+import 'package:com.snowlive/view/ranking/v_rankingList_beta.dart';
 import 'package:com.snowlive/view/ranking/v_rankingList_crew.dart';
 import 'package:com.snowlive/viewmodel/ranking/vm_rankingList.dart';
 import 'package:com.snowlive/viewmodel/vm_user.dart';
@@ -25,7 +26,7 @@ class RankingHomeView extends StatelessWidget {
 
     Size _size = MediaQuery.of(context).size;
 
-    return Scaffold(
+    return Obx(()=>Scaffold(
         backgroundColor: Colors.white,
         extendBodyBehindAppBar: true,
         body: Obx(()=>SafeArea(
@@ -97,6 +98,30 @@ class RankingHomeView extends StatelessWidget {
                             ),
                           ),
                         ),
+                        Padding(
+                          padding: EdgeInsets.only(right: 12),
+                          child: ElevatedButton(
+                            child: Text(
+                              '지난랭킹',
+                              style: SDSTextStyle.extraBold.copyWith(
+                                  color: (_rankingListViewModel.tapName=='지난랭킹')
+                                      ? Color(0xFF111111)
+                                      : Color(0xFFDEDEDE),
+                                  fontSize: 18),
+                            ),
+                            onPressed: () async {
+                              _rankingListViewModel.changeTap('지난랭킹');
+                            },
+                            style: ElevatedButton.styleFrom(
+                              padding: EdgeInsets.only(top: 0),
+                              minimumSize: Size(40, 10),
+                              backgroundColor: Color(0xFFFFFFFF),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8)),
+                              elevation: 0,
+                            ),
+                          ),
+                        ),
 
                       ],
                     ),
@@ -109,10 +134,15 @@ class RankingHomeView extends StatelessWidget {
               if (_rankingListViewModel.tapName=='크루랭킹')
                 Expanded(
                   child: RankingCrewView()),
+              if (_rankingListViewModel.tapName=='지난랭킹')
+                Expanded(
+                    child: RankingBetaView()),
             ],
           ),
         )),
-        floatingActionButton: Obx(()=>FloatingButtonWithOptions(
+        floatingActionButton:
+        (_rankingListViewModel.tapName!='지난랭킹')
+        ?FloatingButtonWithOptions(
           selectedOption: _rankingListViewModel.dayOrTotal,
           onOptionSelected: (String value) {
             _rankingListViewModel.changeDayOrTotal(value);
@@ -123,8 +153,9 @@ class RankingHomeView extends StatelessWidget {
               _rankingListViewModel.toggleDataDayOrTotal(resortNum: _rankingListViewModel.selectedResortNum);
 
           },
-        )),
-        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked);
+        )
+        :SizedBox.shrink(),
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked));
   }
 }
 
