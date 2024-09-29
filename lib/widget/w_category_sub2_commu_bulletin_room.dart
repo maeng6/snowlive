@@ -3,13 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 
-class CategorySubCommuBulletinRoomWidget extends StatefulWidget {
+class CategorySub2CommuBulletinRoomWidget extends StatefulWidget {
 
   @override
-  _CategorySubCommuBulletinRoomWidgetState createState() => _CategorySubCommuBulletinRoomWidgetState();
+  _CategorySub2CommuBulletinRoomWidgetState createState() => _CategorySub2CommuBulletinRoomWidgetState();
 }
 
-class _CategorySubCommuBulletinRoomWidgetState extends State<CategorySubCommuBulletinRoomWidget> {
+class _CategorySub2CommuBulletinRoomWidgetState extends State<CategorySub2CommuBulletinRoomWidget> {
   List<bool?> _isSelected = List<bool?>.filled(3, false);
   String? category_sub_ski;
 

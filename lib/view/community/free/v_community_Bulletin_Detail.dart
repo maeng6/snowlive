@@ -371,9 +371,10 @@ class CommunityBulletinDetailView extends StatelessWidget {
                                           Navigator.pop(context);
                                           await _communityUpdateViewModel.fetchCommunityUpdateData(
                                             textEditingController_title: _communityDetailViewModel.communityDetail.title!,
+                                            selectedCategorySub2:  _communityDetailViewModel.communityDetail.categorySub2!,
                                             selectedCategorySub:  _communityDetailViewModel.communityDetail.categorySub!,
-                                            selectedCategoryMain:  _communityDetailViewModel.communityDetail.categoryMain!,
                                             description:  jsonEncode(_communityDetailViewModel.communityDetail.description!.toDelta().toJson()),
+                                              textEditingController_snsUrl: _communityDetailViewModel.communityDetail.snsUrl??''
                                           );
                                           Get.toNamed(AppRoutes.bulletinDetailUpdate);
                                         },
@@ -555,7 +556,7 @@ class CommunityBulletinDetailView extends StatelessWidget {
                                           borderRadius: BorderRadius.circular(4),
                                         ),
                                         child: Text(
-                                          '${_communityDetailViewModel.communityDetail.categoryMain}',
+                                          '${_communityDetailViewModel.communityDetail.categorySub}',
                                           maxLines: 1,
                                           overflow: TextOverflow.ellipsis,
                                           style: SDSTextStyle.regular.copyWith(
@@ -802,6 +803,27 @@ class CommunityBulletinDetailView extends StatelessWidget {
                                               ],
                                             ),
                                           ]),
+                                    ),
+                                    //SNS버튼
+                                    if(_communityDetailViewModel.communityDetail.snsUrl != null
+                                    && _communityDetailViewModel.communityDetail.snsUrl != '')
+                                    ElevatedButton(
+                                      onPressed: () async {
+                                        otherShare(contents: _communityDetailViewModel.communityDetail.snsUrl!);
+                                      },
+                                      child: Text(
+                                        'SNS 바로가기',
+                                        style: SDSTextStyle.bold.copyWith(color: SDSColor.gray700, fontSize: 16),
+                                      ),
+                                      style: TextButton.styleFrom(
+                                        shape: const RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.all(Radius.circular(6)),
+                                        ),
+                                        elevation: 0,
+                                        splashFactory: InkRipple.splashFactory,
+                                        minimumSize: Size(double.infinity, 48),
+                                        backgroundColor: SDSColor.gray100,
+                                      ),
                                     ),
                                     Divider(
                                       color: SDSColor.gray50,
@@ -1397,6 +1419,11 @@ class CommunityBulletinDetailView extends StatelessWidget {
                                                                                                                 CustomFullScreenDialog.showDialog();
                                                                                                                 await _communityDetailViewModel.deleteComment(comment.commentId!, _userViewModel.user.user_id);
                                                                                                                 CustomFullScreenDialog.cancelDialog();
+                                                                                                                if(_communityBulletinListViewModel.tapName =='게시판') {
+                                                                                                                  await _communityBulletinListViewModel.fetchAllCommunity();
+                                                                                                                }else{
+                                                                                                                  await _communityBulletinListViewModel.fetchEventCommunity();
+                                                                                                                }
                                                                                                               },
                                                                                                               style: TextButton.styleFrom(
                                                                                                                 backgroundColor: Colors.transparent, // 배경색 투명
@@ -1541,7 +1568,11 @@ class CommunityBulletinDetailView extends StatelessWidget {
                                         );
                                         FocusScope.of(context).unfocus();
                                         CustomFullScreenDialog.cancelDialog();
-                                        await _communityBulletinListViewModel.fetchAllCommunity();
+                                        if(_communityBulletinListViewModel.tapName =='게시판') {
+                                          await _communityBulletinListViewModel.fetchAllCommunity();
+                                        }else{
+                                          await _communityBulletinListViewModel.fetchEventCommunity();
+                                        }
                                       },
                                       icon: (_communityDetailViewModel.isCommentButtonEnabled.value == false)
                                           ? Image.asset(

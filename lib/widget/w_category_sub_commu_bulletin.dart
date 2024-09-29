@@ -2,13 +2,13 @@ import 'package:com.snowlive/data/snowliveDesignStyle.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-class CategoryMainCommuBulletinWidget extends StatefulWidget {
+class CategorySubCommuBulletinWidget extends StatefulWidget {
 
   @override
-  _CategoryMainCommuBulletinWidgetState createState() => _CategoryMainCommuBulletinWidgetState();
+  _CategorySubCommuBulletinWidgetState createState() => _CategorySubCommuBulletinWidgetState();
 }
 
-class _CategoryMainCommuBulletinWidgetState extends State<CategoryMainCommuBulletinWidget> {
+class _CategorySubCommuBulletinWidgetState extends State<CategorySubCommuBulletinWidget> {
   List<bool?> _isSelected = List<bool?>.filled(3, false);
   String? category_main;
 

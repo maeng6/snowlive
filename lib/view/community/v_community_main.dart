@@ -1,9 +1,9 @@
 import 'package:com.snowlive/data/snowliveDesignStyle.dart';
-import 'package:com.snowlive/view/community/free/v_community_Bulletin_Total_Crew.dart';
-import 'package:com.snowlive/view/community/free/v_community_Bulletin_Total_Event.dart';
-import 'package:com.snowlive/view/community/free/v_community_Bulletin_Total_Free.dart';
-import 'package:com.snowlive/view/community/free/v_community_Bulletin_Total_List.dart';
-import 'package:com.snowlive/view/community/free/v_community_Bulletin_Total_Room.dart';
+import 'package:com.snowlive/view/community/free/v_community_Bulletin_Crew.dart';
+import 'package:com.snowlive/view/community/free/v_community_Event.dart';
+import 'package:com.snowlive/view/community/free/v_community_Bulletin_Free.dart';
+import 'package:com.snowlive/view/community/free/v_community_Bulletin_Total.dart';
+import 'package:com.snowlive/view/community/free/v_community_Bulletin_Room.dart';
 import 'package:com.snowlive/viewmodel/community/vm_communityBulletinList.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -279,7 +279,7 @@ class CommunityMainView extends StatelessWidget {
                       && _communityBulletinListViewModel.chipName == Community_Category_sub_bulletin.crew.korean)
                     Expanded(child: CommunityBulletinCrewListView()),
                   if(_communityBulletinListViewModel.tapName=='행사·클리닉')
-                    Expanded(child: CommunityBulletinEventListView()),
+                    Expanded(child: CommunityEventListView()),
                 ],
               ),
             ],

@@ -163,9 +163,9 @@ class FleamarketDetailViewModel extends GetxController {
 
 
         if (url == null) {
-          _commentsList.value = commentResponse.results ?? [];
+          _fleamarketDetail.value.commentList = commentResponse.results ?? [];
         } else {
-          _commentsList.addAll(commentResponse.results ?? []);
+          _fleamarketDetail.value.commentList!.addAll(commentResponse.results ?? []);
         }
         _nextPageUrl_comments.value = commentResponse.next ?? '';
         _previousPageUrl_comments.value = commentResponse.previous ?? '';

@@ -13,9 +13,10 @@ import 'package:path/path.dart' as path;
 class CommunityUploadViewModel extends GetxController {
   var isLoading = true.obs;
   final TextEditingController textEditingController_title = TextEditingController();
+  final TextEditingController textEditingController_snsUrl = TextEditingController();
 
-  RxString _selectedCategoryMain = '상위 카테고리'.obs;
-  RxString _selectedCategorySub = '하위 카테고리'.obs;
+  RxString _selectedCategorySub = '상위 카테고리'.obs;
+  RxString _selectedCategorySub2 = '하위 카테고리'.obs;
   RxInt _pk = 0.obs;
   RxBool _isCategorySelected = true.obs;
   RxBool _isReadOnly = false.obs;
@@ -27,8 +28,8 @@ class CommunityUploadViewModel extends GetxController {
 
   RxBool _isTitleWritten = false.obs;
 
-  String get selectedCategoryMain => _selectedCategoryMain.value;
   String get selectedCategorySub => _selectedCategorySub.value;
+  String get selectedCategorySub2 => _selectedCategorySub2.value;
   int get pk => _pk.value;
   bool get isCategorySelected => _isCategorySelected.value;
   bool get isReadOnly => _isReadOnly.value;
@@ -77,15 +78,15 @@ class CommunityUploadViewModel extends GetxController {
     _isCategorySelected.value = true;
   }
 
-  void resetCategorySub() {
-    _selectedCategorySub.value = '하위 카테고리';
+  void resetCategorySub2() {
+    _selectedCategorySub2.value = '하위 카테고리';
   }
 
-  void selectCategoryMain(String selectedcategoryMain) {
-    _selectedCategoryMain.value = selectedcategoryMain;
-  }
   void selectCategorySub(String selectedcategorySub) {
     _selectedCategorySub.value = selectedcategorySub;
+  }
+  void selectCategorySub2(String selectedcategorySub2) {
+    _selectedCategorySub2.value = selectedcategorySub2;
   }
 
   // 커뮤니티 수정하기

@@ -1678,7 +1678,7 @@ class FleaMarketListView_total extends StatelessWidget {
                                                         border: Border.all(width: 0.5, color: SDSColor.gray100),
                                                         width: 110,
                                                         height: 110,
-                                                        cacheHeight: 250,
+                                                        cacheHeight: 400,
                                                         fit: BoxFit.cover,
                                                         handleLoadingProgress: true,
                                                         loadStateChanged: (ExtendedImageState state) {

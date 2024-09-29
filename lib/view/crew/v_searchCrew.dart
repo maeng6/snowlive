@@ -373,7 +373,7 @@ class _SearchCrewViewState extends State<SearchCrewView> {
                                                       overflow: TextOverflow.ellipsis,
                                                       maxLines: 1,
                                                     ),
-                                                    if (data.description != '')
+                                                    if (data.description != '' && data.description !=null)
                                                       Column(
                                                         crossAxisAlignment: CrossAxisAlignment.start,
                                                         children: [

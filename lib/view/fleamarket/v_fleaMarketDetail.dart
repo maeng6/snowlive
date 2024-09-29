@@ -607,11 +607,7 @@ class _FleaMarketDetailViewState extends State<FleaMarketDetailView> {
                                                                           );
                                                                           Get.back();
                                                                           CustomFullScreenDialog.cancelDialog();
-                                                                          await _fleamarketListViewModel.fetchFleamarketData_total(userId: _userViewModel.user.user_id);
-                                                                          await _fleamarketListViewModel.fetchFleamarketData_ski(userId: _userViewModel.user.user_id);
-                                                                          await _fleamarketListViewModel.fetchFleamarketData_board(userId: _userViewModel.user.user_id);
-                                                                          await _fleamarketListViewModel.fetchFleamarketData_my(userId: _userViewModel.user.user_id);
-
+                                                                          await _fleamarketListViewModel.fetchAllFleamarket();
                                                                         },
                                                                         style: TextButton.styleFrom(
                                                                           backgroundColor: Colors.transparent, // 배경색 투명
@@ -1766,6 +1762,7 @@ class _FleaMarketDetailViewState extends State<FleaMarketDetailView> {
                                                                                                                                 isLoading_indi: true,
                                                                                                                               );
                                                                                                                               CustomFullScreenDialog.cancelDialog();
+                                                                                                                              await _fleamarketListViewModel.fetchAllFleamarket();
                                                                                                                             },
                                                                                                                             style: TextButton.styleFrom(
                                                                                                                               backgroundColor: Colors.transparent, // 배경색 투명

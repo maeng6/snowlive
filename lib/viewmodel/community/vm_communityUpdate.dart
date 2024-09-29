@@ -16,21 +16,24 @@ class CommunityUpdateViewModel extends GetxController {
 
   final ImageController imageController = Get.put(ImageController());
   final TextEditingController textEditingController_title = TextEditingController();
+  final TextEditingController textEditingController_snsUrl = TextEditingController();
   var isLoading = true.obs;
 
   quill.Document? description;
   Rx<quill.QuillController> _quillController = quill.QuillController.basic().obs;
   RxBool _isReadOnly = false.obs;
   Rx<FocusNode> _focusNode = FocusNode().obs;
-  RxString _selectedCategoryMain = '상위 카테고리'.obs;
-  RxString _selectedCategorySub = '하위 카테고리'.obs;
+  RxString _selectedCategorySub = '상위 카테고리'.obs;
+  RxString _selectedCategorySub2 = '하위 카테고리'.obs;
+  RxString _snsUrl = '하위 카테고리'.obs;
   RxBool _isCategorySelected = true.obs;
   Rx<GlobalKey<FormState>> _formKey = GlobalKey<FormState>().obs;
   Rx<ScrollController> _scrollController = ScrollController().obs;
-  RxBool _isTitleWritten = false.obs;
+  RxBool _isTitleWritten = true.obs;
 
-  String get selectedCategoryMain => _selectedCategoryMain.value;
   String get selectedCategorySub => _selectedCategorySub.value;
+  String get selectedCategorySub2 => _selectedCategorySub2.value;
+  String get susUrl => _snsUrl.value;
   bool get isCategorySelected => _isCategorySelected.value;
   quill.QuillController get quillController => _quillController.value;
   GlobalKey<FormState> get formKey => _formKey.value;
@@ -41,13 +44,15 @@ class CommunityUpdateViewModel extends GetxController {
 
   Future<void> fetchCommunityUpdateData({
     required String textEditingController_title,
+    required String selectedCategorySub2,
     required String selectedCategorySub,
-    required String selectedCategoryMain,
     required String description, // JSON 문자열로 변경
+    required String textEditingController_snsUrl,
   }) async {
     this.textEditingController_title.text = textEditingController_title;
+    this._selectedCategorySub2.value = selectedCategorySub2;
     this._selectedCategorySub.value = selectedCategorySub;
-    this._selectedCategoryMain.value = selectedCategoryMain;
+    this.textEditingController_snsUrl.text = textEditingController_snsUrl;
 
     // JSON 문자열을 Delta로 변환 후 Document 생성
     final delta = quill.Delta.fromJson(json.decode(description));
@@ -69,14 +74,14 @@ class CommunityUpdateViewModel extends GetxController {
   }
 
   void resetCategorySub() {
-    _selectedCategorySub.value = '하위 카테고리';
+    _selectedCategorySub2.value = '하위 카테고리';
   }
 
   void selectCategoryMain(String selectedcategoryMain) {
-    _selectedCategoryMain.value = selectedcategoryMain;
+    _selectedCategorySub.value = selectedcategoryMain;
   }
   void selectCategorySub(String selectedcategorySub) {
-    _selectedCategorySub.value = selectedcategorySub;
+    _selectedCategorySub2.value = selectedcategorySub;
   }
 
   // 커뮤니티 수정하기

@@ -36,7 +36,7 @@ class CrewMemberListViewModel extends GetxController {
         crewMemberListResponse.value = CrewMemberListResponse.fromJson(jsonResponse);
 
         // 크루장 이름을 가져와 crewLeaderName에 저장
-        await findCrewLeaderName();  // await으로 크루장 이름 업데이트 완료 후 진행
+        findCrewLeaderName();  // await으로 크루장 이름 업데이트 완료 후 진행
       } else {
         print('크루 멤버를 불러오는 중 오류 발생: ${response.error}');
       }
@@ -48,7 +48,7 @@ class CrewMemberListViewModel extends GetxController {
   }
 
   // 크루장 이름을 업데이트하는 메서드
-  Future<void> findCrewLeaderName() async {
+  void findCrewLeaderName()  {
     try {
       // crewMembersList에서 status가 "크루장"인 멤버를 찾음
       CrewMember? crewLeader = crewMembersList.firstWhere((member) => member.status == "크루장");

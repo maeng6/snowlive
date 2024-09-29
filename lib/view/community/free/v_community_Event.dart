@@ -12,7 +12,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
-class CommunityBulletinEventListView extends StatelessWidget {
+class CommunityEventListView extends StatelessWidget {
 
   final CommunityBulletinListViewModel _communityBulletinListViewModel = Get.find<CommunityBulletinListViewModel>();
   final CommunityDetailViewModel _communityDetailViewModel = Get.find<CommunityDetailViewModel>();
@@ -236,8 +236,30 @@ class CommunityBulletinEventListView extends StatelessWidget {
                                                 border: Border.all(width: 1, color: SDSColor.gray100),
                                                 width: _size.width /2 - 27,
                                                 height: _size.width /2 - 27,
-                                                cacheHeight: 250,
+                                                cacheHeight: 1000,
                                                 fit: BoxFit.cover,
+                                                loadStateChanged: (ExtendedImageState state) {
+                                                  switch (state.extendedImageLoadState) {
+                                                    case LoadState.loading:
+                                                      return SizedBox.shrink();
+                                                    case LoadState.completed:
+                                                      return state.completedWidget;
+                                                    case LoadState.failed:
+                                                      return ExtendedImage.network(
+                                                        'https://i.esdrop.com/d/f/yytYSNBROy/kVsZwVhd1f.png',
+                                                        shape: BoxShape.rectangle,
+                                                        borderRadius: BorderRadius.circular(8),
+                                                        border: Border.all(width: 0.5, color: Color(0xFFdedede)),
+                                                        width: 32,
+                                                        height: 32,
+                                                        cacheHeight: 100,
+                                                        cache: true,
+                                                        fit: BoxFit.cover,
+                                                      );
+                                                    default:
+                                                      return null;
+                                                  }
+                                                },
                                               )
                                                   : Container(
                                                 width: _size.width /2 - 27,

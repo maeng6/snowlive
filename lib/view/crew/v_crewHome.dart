@@ -266,48 +266,77 @@ class CrewHomeView extends StatelessWidget {
                                         thickness: 1.0,
                                         height: 40,
                                       ),
-                                      GestureDetector(
-                                        onTap: (){
-                                          _crewDetailViewModel.toggleExpandCrewIntro();
+                                      LayoutBuilder(
+                                        builder: (context, constraints) {
+                                          // 텍스트의 크기를 계산하기 위한 TextPainter
+                                          TextPainter textPainter = TextPainter(
+                                            text: TextSpan(
+                                              text: _crewDetailViewModel.description,
+                                              style: SDSTextStyle.regular.copyWith(
+                                                fontSize: 14,
+                                                color: SDSColor.snowliveWhite,
+                                              ),
+                                            ),
+                                            maxLines: 1,
+                                            textDirection: TextDirection.ltr,
+                                          );
+
+                                          // 부모 위젯의 너비에 맞추어 텍스트를 레이아웃
+                                          textPainter.layout(maxWidth: constraints.maxWidth - 110);
+
+                                          // 텍스트가 한 줄을 넘는지 확인
+                                          bool isTextOverflowing = textPainter.didExceedMaxLines;
+
+                                          return Obx(()=>Row(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Container(
+                                                width: constraints.maxWidth - 110,
+                                                child: (_crewDetailViewModel.isCrewIntroExpanded == false)
+                                                    ? Text(
+                                                  _crewDetailViewModel.description,
+                                                  style: SDSTextStyle.regular.copyWith(
+                                                    fontSize: 14,
+                                                    color: SDSColor.snowliveWhite,
+                                                  ),
+                                                  overflow: TextOverflow.ellipsis,
+                                                  maxLines: 1,
+                                                )
+                                                    : Text(
+                                                  _crewDetailViewModel.description,
+                                                  style: SDSTextStyle.regular.copyWith(
+                                                    fontSize: 14,
+                                                    color: SDSColor.snowliveWhite,
+                                                  ),
+                                                ),
+                                              ),
+                                              // 텍스트가 한 줄 이상일 경우에만 아이콘을 표시
+                                              if (isTextOverflowing)
+                                                (_crewDetailViewModel.isCrewIntroExpanded == false)
+                                                    ? GestureDetector(
+                                                  onTap:(){
+                                                    _crewDetailViewModel.toggleExpandCrewIntro();
+                                                  },
+                                                  child: ExtendedImage.asset(
+                                                    'assets/imgs/icons/icon_plus_round.png',
+                                                    width: 20,
+                                                    height: 20,
+                                                  ),
+                                                )
+                                                    : GestureDetector(
+                                                  onTap:(){
+                                                    _crewDetailViewModel.toggleExpandCrewIntro();
+                                                  },
+                                                  child: ExtendedImage.asset(
+                                                    'assets/imgs/icons/icon_minus_round.png',
+                                                    width: 20,
+                                                    height: 20,
+                                                  ),
+                                                ),
+                                            ],
+                                          ));
                                         },
-                                        child: Row(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Container(
-                                              width: _size.width - 110,
-                                              child:
-                                              (_crewDetailViewModel.isCrewIntroExpanded == false)
-                                              ? Text(
-                                                _crewDetailViewModel.description,
-                                                style: SDSTextStyle.regular.copyWith(
-                                                  fontSize: 14,
-                                                  color: SDSColor.snowliveWhite,
-                                                ),
-                                                overflow: TextOverflow.ellipsis,
-                                                maxLines: 1,
-                                              )
-                                                  : Text(
-                                                _crewDetailViewModel.description,
-                                                style: SDSTextStyle.regular.copyWith(
-                                                  fontSize: 14,
-                                                  color: SDSColor.snowliveWhite,
-                                                ),
-                                              )
-                                            ),
-                                            (_crewDetailViewModel.isCrewIntroExpanded == false)
-                                            ? ExtendedImage.asset(
-                                              'assets/imgs/icons/icon_plus_round.png',
-                                              width: 20,
-                                              height: 20,
-                                            )
-                                            : ExtendedImage.asset(
-                                              'assets/imgs/icons/icon_minus_round.png',
-                                              width: 20,
-                                              height: 20,
-                                            ),
-                                          ],
-                                        ),
                                       ),
                                     ],
                                   ),

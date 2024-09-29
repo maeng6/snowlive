@@ -368,6 +368,28 @@ class CommunityBulletinTotalListView extends StatelessWidget {
                                                     height: 50,
                                                     cacheHeight: 250,
                                                     fit: BoxFit.cover,
+                                                    loadStateChanged: (ExtendedImageState state) {
+                                                      switch (state.extendedImageLoadState) {
+                                                        case LoadState.loading:
+                                                          return SizedBox.shrink();
+                                                        case LoadState.completed:
+                                                          return state.completedWidget;
+                                                        case LoadState.failed:
+                                                          return ExtendedImage.network(
+                                                            'https://i.esdrop.com/d/f/yytYSNBROy/kVsZwVhd1f.png',
+                                                            shape: BoxShape.rectangle,
+                                                            borderRadius: BorderRadius.circular(8),
+                                                            border: Border.all(width: 0.5, color: Color(0xFFdedede)),
+                                                            width: 32,
+                                                            height: 32,
+                                                            cacheHeight: 100,
+                                                            cache: true,
+                                                            fit: BoxFit.cover,
+                                                          );
+                                                        default:
+                                                          return null;
+                                                      }
+                                                    },
                                                   ),
                                                 )
                                                     : Container()

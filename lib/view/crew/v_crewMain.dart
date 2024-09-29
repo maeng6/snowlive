@@ -47,7 +47,10 @@ class CrewMainView extends StatelessWidget {
             if(_userViewModel.user.crew_id == _crewDetailViewModel.crewDetailInfo.crewId)
               Padding(
                 padding: EdgeInsets.only(right: 5),
-                child: IconButton(
+                child:
+                (_crewDetailViewModel.isLoading == true)
+                    ? SizedBox.shrink()
+                    : IconButton(
                   onPressed: () {
                     Get.toNamed(AppRoutes.crewSetting);
                   },
@@ -112,8 +115,28 @@ class CrewMainView extends StatelessWidget {
                 ),
               ],
             ),
-            Expanded(
-              child: Obx(
+           Obx(()=> Expanded(
+              child:
+              (_crewDetailViewModel.isLoading == true)
+                  ? Center(
+                child: Container(
+                  height: 150,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Center(
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          backgroundColor: SDSColor.snowliveWhite,
+                          color: SDSColor.snowliveBlue,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              )
+                  :
+              Obx(
                     () {
                   if (_crewDetailViewModel.currentTab.value == '홈') {
                     return CrewHomeView();
@@ -122,7 +145,7 @@ class CrewMainView extends StatelessWidget {
                   }
                 },
               ),
-            ),
+            )),
           ],
         ),
       ),

@@ -289,7 +289,7 @@ class FleaMarketListView_search extends StatelessWidget {
                                                 color: SDSColor.gray100),
                                             width: 110,
                                             height: 110,
-                                            cacheHeight: 250,
+                                            cacheHeight: 400,
                                             fit: BoxFit.cover,
                                           ),
                                         if (data.photos!.isEmpty)

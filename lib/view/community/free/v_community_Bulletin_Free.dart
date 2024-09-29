@@ -12,7 +12,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
-class CommunityBulletinCrewListView extends StatelessWidget {
+class CommunityBulletinFreeListView extends StatelessWidget {
 
   final CommunityBulletinListViewModel _communityBulletinListViewModel = Get.find<CommunityBulletinListViewModel>();
   final CommunityDetailViewModel _communityDetailViewModel = Get.find<CommunityDetailViewModel>();
@@ -36,7 +36,7 @@ class CommunityBulletinCrewListView extends StatelessWidget {
               Align(
                 alignment: Alignment.bottomCenter,
                 child: Visibility(
-                  visible: _communityBulletinListViewModel.isVisible_crew,
+                  visible: _communityBulletinListViewModel.isVisible_free,
                   child: Container(
                     width: 106,
                     decoration: BoxDecoration(
@@ -52,7 +52,7 @@ class CommunityBulletinCrewListView extends StatelessWidget {
                       ],
                     ),
                     child: FloatingActionButton(
-                      heroTag: 'bulletin_crew_recent',
+                      heroTag: 'bulletin_free_recent',
                       mini: true,
                       elevation: 0,
                       shape: RoundedRectangleBorder(
@@ -62,7 +62,7 @@ class CommunityBulletinCrewListView extends StatelessWidget {
                       backgroundColor: SDSColor.snowliveWhite,
                       foregroundColor: SDSColor.snowliveWhite,
                       onPressed: () {
-                        _communityBulletinListViewModel.scrollController_crew.jumpTo(0);
+                        _communityBulletinListViewModel.scrollController_free.jumpTo(0);
                       },
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -94,11 +94,11 @@ class CommunityBulletinCrewListView extends StatelessWidget {
                   child: Align(
                     alignment: Alignment.bottomRight,
                     child: AnimatedContainer(
-                      width: _communityBulletinListViewModel.showAddButton_crew ? 104 : 52,
+                      width: _communityBulletinListViewModel.showAddButton_free ? 104 : 52,
                       height: 52,
                       duration: Duration(milliseconds: 200),
                       child: FloatingActionButton.extended(
-                        heroTag: 'bulletin_crew',
+                        heroTag: 'bulletin_free',
                         elevation: 4,
                         onPressed: () async {
                           Get.toNamed(AppRoutes.bulletinUpload);
@@ -108,7 +108,7 @@ class CommunityBulletinCrewListView extends StatelessWidget {
                           child: Center(child: Icon(Icons.add,
                             color: SDSColor.snowliveWhite,)),
                         ),
-                        label: _communityBulletinListViewModel.showAddButton_crew
+                        label: _communityBulletinListViewModel.showAddButton_free
                             ? Padding(
                           padding: const EdgeInsets.only(right: 6),
                           child: Text(
@@ -134,7 +134,7 @@ class CommunityBulletinCrewListView extends StatelessWidget {
           ),
           backgroundColor: Colors.white,
           body:
-          (_communityBulletinListViewModel.isLoadingList_crew==true)
+          (_communityBulletinListViewModel.isLoadingList_free==true)
               ? Container(
             height: 150,
             child: Column(
@@ -155,15 +155,15 @@ class CommunityBulletinCrewListView extends StatelessWidget {
             edgeOffset: 20,
             backgroundColor: SDSColor.snowliveWhite,
             color: SDSColor.snowliveBlue,
-            onRefresh: _communityBulletinListViewModel.onRefresh_bulletin_crew,
+            onRefresh: _communityBulletinListViewModel.onRefresh_bulletin_free,
             child: SingleChildScrollView(
               physics: AlwaysScrollableScrollPhysics(),
-              controller: _communityBulletinListViewModel.scrollController_crew,
+              controller: _communityBulletinListViewModel.scrollController_free,
               child: Column(
                 children: [
                   Column(
                     children: [
-                      (_communityBulletinListViewModel.communityList_crew.length == 0)
+                      (_communityBulletinListViewModel.communityList_free.length == 0)
                           ? Container(
                         height: _size.height-380,
                         child: Center(
@@ -194,16 +194,16 @@ class CommunityBulletinCrewListView extends StatelessWidget {
                         child: ListView.builder(
                           physics: NeverScrollableScrollPhysics(),
                           shrinkWrap: true,
-                          itemCount: _communityBulletinListViewModel.communityList_crew.length,
+                          itemCount: _communityBulletinListViewModel.communityList_free.length,
                           itemBuilder: (context, index) {
-                            Community communityData = _communityBulletinListViewModel.communityList_crew[index];
+                            Community communityData = _communityBulletinListViewModel.communityList_free[index];
                             // 필드가 없을 경우 기본값 설정
                             String _time = GetDatetime().yyyymmddFormatFromString(communityData.uploadTime!);
                             String? profileUrl = communityData.userInfo!.profileImageUrlUser;
                             String? displayName = communityData.userInfo!.displayName;
                             return GestureDetector(
                               onTap: () async {
-                                _communityDetailViewModel.fetchCommunityDetailFromList(community: _communityBulletinListViewModel.communityList_crew[index]);
+                                _communityDetailViewModel.fetchCommunityDetailFromList(community: _communityBulletinListViewModel.communityList_free[index]);
                                 Get.toNamed(AppRoutes.bulletinDetail);
                                 await _communityDetailViewModel.addViewerCommunity(
                                     _communityDetailViewModel.communityDetail.communityId!,
@@ -335,6 +335,28 @@ class CommunityBulletinCrewListView extends StatelessWidget {
                                                     height: 50,
                                                     cacheHeight: 250,
                                                     fit: BoxFit.cover,
+                                                    loadStateChanged: (ExtendedImageState state) {
+                                                      switch (state.extendedImageLoadState) {
+                                                        case LoadState.loading:
+                                                          return SizedBox.shrink();
+                                                        case LoadState.completed:
+                                                          return state.completedWidget;
+                                                        case LoadState.failed:
+                                                          return ExtendedImage.network(
+                                                            'https://i.esdrop.com/d/f/yytYSNBROy/kVsZwVhd1f.png',
+                                                            shape: BoxShape.rectangle,
+                                                            borderRadius: BorderRadius.circular(8),
+                                                            border: Border.all(width: 0.5, color: Color(0xFFdedede)),
+                                                            width: 32,
+                                                            height: 32,
+                                                            cacheHeight: 100,
+                                                            cache: true,
+                                                            fit: BoxFit.cover,
+                                                          );
+                                                        default:
+                                                          return null;
+                                                      }
+                                                    },
                                                   ),
                                                 )
                                                     : Container()
@@ -345,7 +367,7 @@ class CommunityBulletinCrewListView extends StatelessWidget {
                                       ),
                                     ),
                                   ),
-                                  if(_communityBulletinListViewModel.communityList_crew.length != index + 1)
+                                  if(_communityBulletinListViewModel.communityList_free.length != index + 1)
                                     Divider(
                                       color: SDSColor.gray50,
                                       height: 16,

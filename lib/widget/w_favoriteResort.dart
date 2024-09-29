@@ -55,6 +55,7 @@ class _FavoriteResortWidgetState extends State<FavoriteResortWidget> {
               itemBuilder: (context, index) {
                 return Column(
                   children: [
+                    if(index != 4)
                     ListTile(
                       contentPadding: EdgeInsets.symmetric(horizontal: 0),
                       trailing: _isSelected[index]!

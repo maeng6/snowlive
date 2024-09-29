@@ -721,6 +721,11 @@ class CommunityCommentDetailView extends StatelessWidget {
                                                                                                   await _communityCommentDetailViewModel.fetchCommunityCommentDetail(
                                                                                                       commentId: _communityCommentDetailViewModel.commentModel_community.commentId!
                                                                                                   );
+                                                                                                  if(_communityBulletinListViewModel.tapName =='게시판') {
+                                                                                                    await _communityBulletinListViewModel.fetchAllCommunity();
+                                                                                                  }else{
+                                                                                                    await _communityBulletinListViewModel.fetchEventCommunity();
+                                                                                                  }
                                                                                                   print('댓글 삭제 완료');
                                                                                                   Navigator.pop(context);
                                                                                                   CustomFullScreenDialog.cancelDialog();

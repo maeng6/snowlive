@@ -4,9 +4,9 @@ import 'package:com.snowlive/viewmodel/community/vm_communityBulletinList.dart';
 import 'package:com.snowlive/viewmodel/community/vm_communityUpload.dart';
 import 'package:com.snowlive/viewmodel/vm_user.dart';
 import 'package:com.snowlive/widget/w_bulletin_quill_toolbar.dart';
-import 'package:com.snowlive/widget/w_category_main_commu_bulletin.dart';
+import 'package:com.snowlive/widget/w_category_sub_commu_bulletin.dart';
 import 'package:com.snowlive/widget/w_category_main_commu_event.dart';
-import 'package:com.snowlive/widget/w_category_sub_commu_bulletin_room.dart';
+import 'package:com.snowlive/widget/w_category_sub2_commu_bulletin_room.dart';
 import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -28,10 +28,8 @@ class CommunityBulletinUpload extends StatelessWidget {
 
     Size _size = MediaQuery.of(context).size;
     final double _statusBarSize = MediaQuery.of(context).padding.top;
-    String? selectedCategory_main;
     String? selectedCategory_sub;
-
-
+    String? selectedCategory_sub2;
 
     return Obx(()=>Container(
           color: Colors.white,
@@ -199,24 +197,24 @@ class CommunityBulletinUpload extends StatelessWidget {
                                               children: [
                                                 GestureDetector(
                                                   onTap: () async {
-                                                    selectedCategory_main = await showModalBottomSheet<String>(
+                                                    selectedCategory_sub = await showModalBottomSheet<String>(
                                                       constraints: BoxConstraints(
                                                         maxHeight: 360,
                                                       ),
                                                       backgroundColor: Colors.transparent,
                                                       context: context,
                                                       isScrollControlled: true,
-                                                      builder: (context) => CategoryMainCommuBulletinWidget(),
+                                                      builder: (context) => CategorySubCommuBulletinWidget(),
                                                     );
                                                     if(_communityUploadViewModel.isCategorySelected==true)
-                                                      _communityUploadViewModel.resetCategorySub();
-                                                    if(selectedCategory_main != null)
-                                                      _communityUploadViewModel.selectCategoryMain(selectedCategory_main!);
+                                                      _communityUploadViewModel.resetCategorySub2();
+                                                    if(selectedCategory_sub != null)
+                                                      _communityUploadViewModel.selectCategorySub(selectedCategory_sub!);
                                                     _communityUploadViewModel.setIsSelectedCategoryFalse();
                                                   },
                                                   child: Container(
                                                     width:
-                                                    (_communityUploadViewModel.selectedCategoryMain == '시즌방')
+                                                    (_communityUploadViewModel.selectedCategorySub == '시즌방')
                                                     ? _size.width / 2 - 21
                                                     : _size.width - 32,
                                                     height: 48,
@@ -228,9 +226,9 @@ class CommunityBulletinUpload extends StatelessWidget {
                                                     child: Obx(()=>Row(
                                                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                       children: [
-                                                        Text(_communityUploadViewModel.selectedCategoryMain,
+                                                        Text(_communityUploadViewModel.selectedCategorySub,
                                                           style: SDSTextStyle.regular.copyWith(
-                                                            color: _communityUploadViewModel.selectedCategoryMain == '상위 카테고리' ? SDSColor.gray400 : SDSColor.gray900,
+                                                            color: _communityUploadViewModel.selectedCategorySub == '상위 카테고리' ? SDSColor.gray400 : SDSColor.gray900,
                                                             fontSize: 14,
                                                           ),
                                                         ),
@@ -245,24 +243,24 @@ class CommunityBulletinUpload extends StatelessWidget {
                                                 ),
                                               ],
                                             ),
-                                            (_communityUploadViewModel.selectedCategoryMain == '시즌방')
+                                            (_communityUploadViewModel.selectedCategorySub == '시즌방')
                                             ? SizedBox(width: 8)
                                             : Container(),
-                                            (_communityUploadViewModel.selectedCategoryMain == '시즌방')
+                                            (_communityUploadViewModel.selectedCategorySub == '시즌방')
                                             ? GestureDetector(
                                               onTap: () async {
-                                                if( _communityUploadViewModel.selectedCategoryMain == '시즌방')
-                                                  selectedCategory_sub = await showModalBottomSheet<String>(
+                                                if( _communityUploadViewModel.selectedCategorySub == '시즌방')
+                                                  selectedCategory_sub2 = await showModalBottomSheet<String>(
                                                     constraints: BoxConstraints(
                                                       maxHeight: 360,
                                                     ),
                                                     backgroundColor: Colors.transparent,
                                                     context: context,
                                                     isScrollControlled: true,
-                                                    builder: (context) => CategorySubCommuBulletinRoomWidget(),
+                                                    builder: (context) => CategorySub2CommuBulletinRoomWidget(),
                                                   );
-                                                  if(selectedCategory_sub != null) {
-                                                    _communityUploadViewModel.selectCategorySub(selectedCategory_sub!);
+                                                  if(selectedCategory_sub2 != null) {
+                                                    _communityUploadViewModel.selectCategorySub2(selectedCategory_sub2!);
                                                     _communityUploadViewModel.setIsSelectedCategoryTrue();
                                                   }
                                               },
@@ -277,9 +275,9 @@ class CommunityBulletinUpload extends StatelessWidget {
                                                 child: Obx(()=>Row(
                                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                   children: [
-                                                    Text(_communityUploadViewModel.selectedCategorySub,
+                                                    Text(_communityUploadViewModel.selectedCategorySub2,
                                                       style: SDSTextStyle.regular.copyWith(
-                                                        color: _communityUploadViewModel.selectedCategorySub == '하위 카테고리' ? SDSColor.gray400 : SDSColor.gray900,
+                                                        color: _communityUploadViewModel.selectedCategorySub2 == '하위 카테고리' ? SDSColor.gray400 : SDSColor.gray900,
                                                         fontSize: 14,
                                                       ),
                                                     ),
@@ -302,7 +300,7 @@ class CommunityBulletinUpload extends StatelessWidget {
                                               children: [
                                                 GestureDetector(
                                                   onTap: () async {
-                                                    selectedCategory_main = await showModalBottomSheet<String>(
+                                                    selectedCategory_sub = await showModalBottomSheet<String>(
                                                       constraints: BoxConstraints(
                                                         maxHeight: 360,
                                                       ),
@@ -312,9 +310,9 @@ class CommunityBulletinUpload extends StatelessWidget {
                                                       builder: (context) => CategoryMainCommuEventWidget(),
                                                     );
                                                     if(_communityUploadViewModel.isCategorySelected==true)
-                                                      _communityUploadViewModel.resetCategorySub();
-                                                    if(selectedCategory_main != null)
-                                                      _communityUploadViewModel.selectCategoryMain(selectedCategory_main!);
+                                                      _communityUploadViewModel.resetCategorySub2();
+                                                    if(selectedCategory_sub != null)
+                                                      _communityUploadViewModel.selectCategorySub(selectedCategory_sub!);
                                                     _communityUploadViewModel.setIsSelectedCategoryFalse();
                                                   },
                                                   child: Container(
@@ -328,9 +326,9 @@ class CommunityBulletinUpload extends StatelessWidget {
                                                     child: Obx(()=>Row(
                                                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                       children: [
-                                                        Text(_communityUploadViewModel.selectedCategoryMain,
+                                                        Text(_communityUploadViewModel.selectedCategorySub,
                                                           style: SDSTextStyle.regular.copyWith(
-                                                            color: _communityUploadViewModel.selectedCategoryMain == '상위 카테고리' ? SDSColor.gray400 : SDSColor.gray900,
+                                                            color: _communityUploadViewModel.selectedCategorySub == '상위 카테고리' ? SDSColor.gray400 : SDSColor.gray900,
                                                             fontSize: 14,
                                                           ),
                                                         ),
@@ -472,8 +470,8 @@ class CommunityBulletinUpload extends StatelessWidget {
                               onPressed: () async {
 
                                 if(_communityUploadViewModel.isTitleWritten == true
-                                    && _communityUploadViewModel.selectedCategoryMain != '상위 카테고리'
-                                    && (_communityUploadViewModel.selectedCategoryMain != '시즌방' || (_communityUploadViewModel.selectedCategoryMain == '시즌방'&&_communityUploadViewModel.selectedCategorySub != '하위 카테고리'))
+                                    && _communityUploadViewModel.selectedCategorySub != '상위 카테고리'
+                                    && (_communityUploadViewModel.selectedCategorySub != '시즌방' || (_communityUploadViewModel.selectedCategorySub == '시즌방'&&_communityUploadViewModel.selectedCategorySub2 != '하위 카테고리'))
                                    ){
 
                                 CustomFullScreenDialog.showDialog();
@@ -483,8 +481,8 @@ class CommunityBulletinUpload extends StatelessWidget {
                                     (_communityBulletinListViewModel.tapName=='게시판')
                                     ? "게시판"
                                     : "이벤트",    // 필수 - 메인 카테고리
-                                    "category_sub": "${_communityUploadViewModel.selectedCategoryMain}",     // 필수 - 서브 카테고리
-                                    "category_sub2": "${_communityUploadViewModel.selectedCategorySub}",     // 선택 - 시즌방서브카테고리
+                                    "category_sub": "${_communityUploadViewModel.selectedCategorySub}",     // 필수 - 서브 카테고리
+                                    "category_sub2": "${_communityUploadViewModel.selectedCategorySub2}",     // 선택 - 시즌방서브카테고리
                                     "title": "${_communityUploadViewModel.textEditingController_title.text}",     // 필수 - 제목
                                     "thumb_img_url": null,
                                     "description": jsonEncode([{
@@ -524,8 +522,8 @@ class CommunityBulletinUpload extends StatelessWidget {
                                 minimumSize: Size(double.infinity, 48),
                                 backgroundColor:
                                 (_communityUploadViewModel.isTitleWritten == true
-                                    && _communityUploadViewModel.selectedCategoryMain != '상위 카테고리'
-                                    && (_communityUploadViewModel.selectedCategoryMain != '시즌방' || (_communityUploadViewModel.selectedCategoryMain == '시즌방'&&_communityUploadViewModel.selectedCategorySub != '하위 카테고리'))
+                                    && _communityUploadViewModel.selectedCategorySub != '상위 카테고리'
+                                    && (_communityUploadViewModel.selectedCategorySub != '시즌방' || (_communityUploadViewModel.selectedCategorySub == '시즌방'&&_communityUploadViewModel.selectedCategorySub2 != '하위 카테고리'))
                                    )
                                     ? SDSColor.snowliveBlue
                                     : SDSColor.gray200,
@@ -536,8 +534,8 @@ class CommunityBulletinUpload extends StatelessWidget {
                                 style: SDSTextStyle.bold.copyWith(
                                     color:
                                     (_communityUploadViewModel.isTitleWritten == true
-                                        && _communityUploadViewModel.selectedCategoryMain != '상위 카테고리'
-                                        && (_communityUploadViewModel.selectedCategoryMain != '시즌방' || (_communityUploadViewModel.selectedCategoryMain == '시즌방'&&_communityUploadViewModel.selectedCategorySub != '하위 카테고리'))
+                                        && _communityUploadViewModel.selectedCategorySub != '상위 카테고리'
+                                        && (_communityUploadViewModel.selectedCategorySub != '시즌방' || (_communityUploadViewModel.selectedCategorySub == '시즌방'&&_communityUploadViewModel.selectedCategorySub2 != '하위 카테고리'))
                                         )
                                     ? SDSColor.snowliveWhite
                                     : SDSColor.gray400,

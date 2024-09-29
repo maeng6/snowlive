@@ -78,7 +78,9 @@ class _FriendDetailViewState extends State<FriendDetailView> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Image.asset(
+                      (_friendDetailViewModel.isLoading == true)
+                          ? SizedBox.shrink()
+                          : Image.asset(
                         'assets/imgs/icons/icon_edit_pencil.png',
                         scale: 1,
                         width: 26,
@@ -256,13 +258,11 @@ class _FriendDetailViewState extends State<FriendDetailView> {
                                                     GestureDetector(
                                                       onTap: () async{
                                                         _textFocus.unfocus();
-                                                        CustomFullScreenDialog.showDialog();
+                                                        Get.toNamed(AppRoutes.crewMain);
                                                         await _crewDetailViewModel.fetchCrewDetail(
                                                             _friendDetailViewModel.friendDetailModel.friendUserInfo.crewId,
                                                             _friendDetailViewModel.seasonDate
                                                         );
-                                                        CustomFullScreenDialog.cancelDialog();
-                                                        Get.toNamed(AppRoutes.crewMain);
                                                         await _crewMemberListViewModel.fetchCrewMembers(crewId: _friendDetailViewModel.friendDetailModel.friendUserInfo.crewId);
 
                                                       },

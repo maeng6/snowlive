@@ -54,8 +54,12 @@ class RankingCrewView extends StatelessWidget {
                 :
             (_rankingListViewModel.rankingListCrewList_total!.length != 0 )
                 ? RefreshIndicator(
+                strokeWidth: 2,
+                edgeOffset: 20,
+                backgroundColor: SDSColor.snowliveWhite,
+                color: SDSColor.snowliveBlue,
                 onRefresh: () async {
-                  //리프레쉬처리
+                  await _rankingListViewModel.toggleDataDayOrTotal_refresh();
                 },
                 child: SingleChildScrollView(
                   physics: AlwaysScrollableScrollPhysics(),
@@ -248,7 +252,7 @@ class RankingCrewView extends StatelessWidget {
                                                   _rankingListViewModel.changeResortOrTotal('전체스키장');
                                                   _rankingListViewModel.changeResortNum(99);
                                                   _rankingListViewModel.changeMyBoxText();
-                                                  await _rankingListViewModel.toggleDataDayOrTotal();
+                                                  await _rankingListViewModel.toggleDataDayOrTotal_tapFilter();
                                                 },
                                                 style: ElevatedButton.styleFrom(
                                                     padding: EdgeInsets.only(
@@ -326,7 +330,7 @@ class RankingCrewView extends StatelessWidget {
                                                                           _rankingListViewModel.changeResortOrTotal('개별스키장');
                                                                           _rankingListViewModel.changeResortNum(1);
                                                                           _rankingListViewModel.changeMyBoxText();
-                                                                          await _rankingListViewModel.toggleDataDayOrTotal(resortNum: 1);
+                                                                          await _rankingListViewModel.toggleDataDayOrTotal_tapFilter(resortNum: 1);
                                                                         },
                                                                         shape: RoundedRectangleBorder(
                                                                             borderRadius:
@@ -350,7 +354,7 @@ class RankingCrewView extends StatelessWidget {
                                                                           _rankingListViewModel.changeResortOrTotal('개별스키장');
                                                                           _rankingListViewModel.changeResortNum(2);
                                                                           _rankingListViewModel.changeMyBoxText();
-                                                                          await _rankingListViewModel.toggleDataDayOrTotal(resortNum: 2);
+                                                                          await _rankingListViewModel.toggleDataDayOrTotal_tapFilter(resortNum: 2);
                                                                         },
                                                                         shape: RoundedRectangleBorder(
                                                                             borderRadius:
@@ -374,7 +378,7 @@ class RankingCrewView extends StatelessWidget {
                                                                           _rankingListViewModel.changeResortOrTotal('개별스키장');
                                                                           _rankingListViewModel.changeResortNum(3);
                                                                           _rankingListViewModel.changeMyBoxText();
-                                                                          await _rankingListViewModel.toggleDataDayOrTotal(resortNum: 3);
+                                                                          await _rankingListViewModel.toggleDataDayOrTotal_tapFilter(resortNum: 3);
                                                                         },
                                                                         shape: RoundedRectangleBorder(
                                                                             borderRadius:
@@ -398,7 +402,7 @@ class RankingCrewView extends StatelessWidget {
                                                                           _rankingListViewModel.changeResortOrTotal('개별스키장');
                                                                           _rankingListViewModel.changeResortNum(4);
                                                                           _rankingListViewModel.changeMyBoxText();
-                                                                          await _rankingListViewModel.toggleDataDayOrTotal(resortNum:4);
+                                                                          await _rankingListViewModel.toggleDataDayOrTotal_tapFilter(resortNum:4);
                                                                         },
                                                                         shape: RoundedRectangleBorder(
                                                                             borderRadius:
@@ -422,7 +426,7 @@ class RankingCrewView extends StatelessWidget {
                                                                           _rankingListViewModel.changeResortOrTotal('개별스키장');
                                                                           _rankingListViewModel.changeResortNum(6);
                                                                           _rankingListViewModel.changeMyBoxText();
-                                                                          await _rankingListViewModel.toggleDataDayOrTotal(resortNum: 6);
+                                                                          await _rankingListViewModel.toggleDataDayOrTotal_tapFilter(resortNum: 6);
                                                                         },
                                                                         shape: RoundedRectangleBorder(
                                                                             borderRadius:
@@ -446,7 +450,7 @@ class RankingCrewView extends StatelessWidget {
                                                                           _rankingListViewModel.changeResortOrTotal('개별스키장');
                                                                           _rankingListViewModel.changeResortNum(7);
                                                                           _rankingListViewModel.changeMyBoxText();
-                                                                          await _rankingListViewModel.toggleDataDayOrTotal(resortNum: 7);
+                                                                          await _rankingListViewModel.toggleDataDayOrTotal_tapFilter(resortNum: 7);
                                                                         },
                                                                         shape: RoundedRectangleBorder(
                                                                             borderRadius:
@@ -470,7 +474,7 @@ class RankingCrewView extends StatelessWidget {
                                                                           _rankingListViewModel.changeResortOrTotal('개별스키장');
                                                                           _rankingListViewModel.changeResortNum(8);
                                                                           _rankingListViewModel.changeMyBoxText();
-                                                                          await _rankingListViewModel.toggleDataDayOrTotal(resortNum: 8);
+                                                                          await _rankingListViewModel.toggleDataDayOrTotal_tapFilter(resortNum: 8);
                                                                         },
                                                                         shape: RoundedRectangleBorder(
                                                                             borderRadius:
@@ -494,7 +498,7 @@ class RankingCrewView extends StatelessWidget {
                                                                           _rankingListViewModel.changeResortOrTotal('개별스키장');
                                                                           _rankingListViewModel.changeResortNum(9);
                                                                           _rankingListViewModel.changeMyBoxText();
-                                                                          await _rankingListViewModel.toggleDataDayOrTotal(resortNum: 9);
+                                                                          await _rankingListViewModel.toggleDataDayOrTotal_tapFilter(resortNum: 9);
                                                                         },
                                                                         shape: RoundedRectangleBorder(
                                                                             borderRadius:
@@ -518,7 +522,7 @@ class RankingCrewView extends StatelessWidget {
                                                                           _rankingListViewModel.changeResortOrTotal('개별스키장');
                                                                           _rankingListViewModel.changeResortNum(10);
                                                                           _rankingListViewModel.changeMyBoxText();
-                                                                          await _rankingListViewModel.toggleDataDayOrTotal(resortNum: 10);
+                                                                          await _rankingListViewModel.toggleDataDayOrTotal_tapFilter(resortNum: 10);
                                                                         },
                                                                         shape: RoundedRectangleBorder(
                                                                             borderRadius:
@@ -542,7 +546,7 @@ class RankingCrewView extends StatelessWidget {
                                                                           _rankingListViewModel.changeResortOrTotal('개별스키장');
                                                                           _rankingListViewModel.changeResortNum(11);
                                                                           _rankingListViewModel.changeMyBoxText();
-                                                                          await _rankingListViewModel.toggleDataDayOrTotal(resortNum: 11);
+                                                                          await _rankingListViewModel.toggleDataDayOrTotal_tapFilter(resortNum: 11);
                                                                         },
                                                                         shape: RoundedRectangleBorder(
                                                                             borderRadius:
@@ -566,7 +570,7 @@ class RankingCrewView extends StatelessWidget {
                                                                           _rankingListViewModel.changeResortOrTotal('개별스키장');
                                                                           _rankingListViewModel.changeResortNum(12);
                                                                           _rankingListViewModel.changeMyBoxText();
-                                                                          await _rankingListViewModel.toggleDataDayOrTotal(resortNum: 12);
+                                                                          await _rankingListViewModel.toggleDataDayOrTotal_tapFilter(resortNum: 12);
                                                                         },
                                                                         shape: RoundedRectangleBorder(
                                                                             borderRadius:
@@ -590,7 +594,7 @@ class RankingCrewView extends StatelessWidget {
                                                                           _rankingListViewModel.changeResortOrTotal('개별스키장');
                                                                           _rankingListViewModel.changeResortNum(13);
                                                                           _rankingListViewModel.changeMyBoxText();
-                                                                          await _rankingListViewModel.toggleDataDayOrTotal(resortNum: 13);
+                                                                          await _rankingListViewModel.toggleDataDayOrTotal_tapFilter(resortNum: 13);
                                                                         },
                                                                         shape: RoundedRectangleBorder(
                                                                             borderRadius:
@@ -669,7 +673,7 @@ class RankingCrewView extends StatelessWidget {
                                                                         _rankingListViewModel.changeResortOrTotal('개별스키장');
                                                                         _rankingListViewModel.changeResortNum(1);
                                                                         _rankingListViewModel.changeMyBoxText();
-                                                                        await _rankingListViewModel.toggleDataDayOrTotal(resortNum: 1);
+                                                                        await _rankingListViewModel.toggleDataDayOrTotal_tapFilter(resortNum: 1);
                                                                       },
                                                                       shape: RoundedRectangleBorder(
                                                                           borderRadius:
@@ -693,7 +697,7 @@ class RankingCrewView extends StatelessWidget {
                                                                         _rankingListViewModel.changeResortOrTotal('개별스키장');
                                                                         _rankingListViewModel.changeResortNum(2);
                                                                         _rankingListViewModel.changeMyBoxText();
-                                                                        await _rankingListViewModel.toggleDataDayOrTotal(resortNum: 2);
+                                                                        await _rankingListViewModel.toggleDataDayOrTotal_tapFilter(resortNum: 2);
                                                                       },
                                                                       shape: RoundedRectangleBorder(
                                                                           borderRadius:
@@ -717,7 +721,7 @@ class RankingCrewView extends StatelessWidget {
                                                                         _rankingListViewModel.changeResortOrTotal('개별스키장');
                                                                         _rankingListViewModel.changeResortNum(3);
                                                                         _rankingListViewModel.changeMyBoxText();
-                                                                        await _rankingListViewModel.toggleDataDayOrTotal(resortNum: 3);
+                                                                        await _rankingListViewModel.toggleDataDayOrTotal_tapFilter(resortNum: 3);
                                                                       },
                                                                       shape: RoundedRectangleBorder(
                                                                           borderRadius:
@@ -741,7 +745,7 @@ class RankingCrewView extends StatelessWidget {
                                                                         _rankingListViewModel.changeResortOrTotal('개별스키장');
                                                                         _rankingListViewModel.changeResortNum(4);
                                                                         _rankingListViewModel.changeMyBoxText();
-                                                                        await _rankingListViewModel.toggleDataDayOrTotal(resortNum:4);
+                                                                        await _rankingListViewModel.toggleDataDayOrTotal_tapFilter(resortNum:4);
                                                                       },
                                                                       shape: RoundedRectangleBorder(
                                                                           borderRadius:
@@ -765,7 +769,7 @@ class RankingCrewView extends StatelessWidget {
                                                                         _rankingListViewModel.changeResortOrTotal('개별스키장');
                                                                         _rankingListViewModel.changeResortNum(6);
                                                                         _rankingListViewModel.changeMyBoxText();
-                                                                        await _rankingListViewModel.toggleDataDayOrTotal(resortNum: 6);
+                                                                        await _rankingListViewModel.toggleDataDayOrTotal_tapFilter(resortNum: 6);
                                                                       },
                                                                       shape: RoundedRectangleBorder(
                                                                           borderRadius:
@@ -789,7 +793,7 @@ class RankingCrewView extends StatelessWidget {
                                                                         _rankingListViewModel.changeResortOrTotal('개별스키장');
                                                                         _rankingListViewModel.changeResortNum(7);
                                                                         _rankingListViewModel.changeMyBoxText();
-                                                                        await _rankingListViewModel.toggleDataDayOrTotal(resortNum: 7);
+                                                                        await _rankingListViewModel.toggleDataDayOrTotal_tapFilter(resortNum: 7);
                                                                       },
                                                                       shape: RoundedRectangleBorder(
                                                                           borderRadius:
@@ -813,7 +817,7 @@ class RankingCrewView extends StatelessWidget {
                                                                         _rankingListViewModel.changeResortOrTotal('개별스키장');
                                                                         _rankingListViewModel.changeResortNum(8);
                                                                         _rankingListViewModel.changeMyBoxText();
-                                                                        await _rankingListViewModel.toggleDataDayOrTotal(resortNum: 8);
+                                                                        await _rankingListViewModel.toggleDataDayOrTotal_tapFilter(resortNum: 8);
                                                                       },
                                                                       shape: RoundedRectangleBorder(
                                                                           borderRadius:
@@ -837,7 +841,7 @@ class RankingCrewView extends StatelessWidget {
                                                                         _rankingListViewModel.changeResortOrTotal('개별스키장');
                                                                         _rankingListViewModel.changeResortNum(9);
                                                                         _rankingListViewModel.changeMyBoxText();
-                                                                        await _rankingListViewModel.toggleDataDayOrTotal(resortNum: 9);
+                                                                        await _rankingListViewModel.toggleDataDayOrTotal_tapFilter(resortNum: 9);
                                                                       },
                                                                       shape: RoundedRectangleBorder(
                                                                           borderRadius:
@@ -861,7 +865,7 @@ class RankingCrewView extends StatelessWidget {
                                                                         _rankingListViewModel.changeResortOrTotal('개별스키장');
                                                                         _rankingListViewModel.changeResortNum(10);
                                                                         _rankingListViewModel.changeMyBoxText();
-                                                                        await _rankingListViewModel.toggleDataDayOrTotal(resortNum: 10);
+                                                                        await _rankingListViewModel.toggleDataDayOrTotal_tapFilter(resortNum: 10);
                                                                       },
                                                                       shape: RoundedRectangleBorder(
                                                                           borderRadius:
@@ -885,7 +889,7 @@ class RankingCrewView extends StatelessWidget {
                                                                         _rankingListViewModel.changeResortOrTotal('개별스키장');
                                                                         _rankingListViewModel.changeResortNum(11);
                                                                         _rankingListViewModel.changeMyBoxText();
-                                                                        await _rankingListViewModel.toggleDataDayOrTotal(resortNum: 11);
+                                                                        await _rankingListViewModel.toggleDataDayOrTotal_tapFilter(resortNum: 11);
                                                                       },
                                                                       shape: RoundedRectangleBorder(
                                                                           borderRadius:
@@ -909,7 +913,7 @@ class RankingCrewView extends StatelessWidget {
                                                                         _rankingListViewModel.changeResortOrTotal('개별스키장');
                                                                         _rankingListViewModel.changeResortNum(12);
                                                                         _rankingListViewModel.changeMyBoxText();
-                                                                        await _rankingListViewModel.toggleDataDayOrTotal(resortNum: 12);
+                                                                        await _rankingListViewModel.toggleDataDayOrTotal_tapFilter(resortNum: 12);
                                                                       },
                                                                       shape: RoundedRectangleBorder(
                                                                           borderRadius:
@@ -933,7 +937,7 @@ class RankingCrewView extends StatelessWidget {
                                                                         _rankingListViewModel.changeResortOrTotal('개별스키장');
                                                                         _rankingListViewModel.changeResortNum(13);
                                                                         _rankingListViewModel.changeMyBoxText();
-                                                                        await _rankingListViewModel.toggleDataDayOrTotal(resortNum: 13);
+                                                                        await _rankingListViewModel.toggleDataDayOrTotal_tapFilter(resortNum: 13);
                                                                       },
                                                                       shape: RoundedRectangleBorder(
                                                                           borderRadius:
@@ -972,178 +976,173 @@ class RankingCrewView extends StatelessWidget {
                           SizedBox(height: 16),
 
                           (_rankingListViewModel.rankingListCrewList_view!.length != 0 )
-                              ? RefreshIndicator(
-                                onRefresh: () async{
-                                  //당겨서 새로고침
-                                },
-                                child: Scrollbar(
+                              ? Scrollbar(
+                                controller: _rankingListViewModel.scrollController_crew,
+                                child: ListView.builder(
+                                  shrinkWrap: true,
                                   controller: _rankingListViewModel.scrollController_crew,
-                                  child: ListView.builder(
-                                    shrinkWrap: true,
-                                    controller: _rankingListViewModel.scrollController_crew,
-                                    itemCount: _rankingListViewModel.rankingListCrewList_view!.length,
-                                    itemBuilder: (context, index) {
-                                      final document = _rankingListViewModel.rankingListCrewList_view![index];
-                                      return Padding(
-                                        padding: const EdgeInsets.only(bottom: 8, left: 2, right: 2),
-                                        child: GestureDetector(
-                                          onTap: () async {
-                                            CustomFullScreenDialog.showDialog();
-                                            await _crewDetailViewModel.fetchCrewDetail(
-                                                document.crewId!,
-                                                _friendDetailViewModel.seasonDate
-                                            );
-                                            CustomFullScreenDialog.cancelDialog();
-                                            Get.toNamed(AppRoutes.crewMain);
-                                            await _crewMemberListViewModel.fetchCrewMembers(crewId: document.crewId!);
-                                          },
-                                          child: Row(
-                                            children: [
-                                              // 크루 랭킹 정보 표시
-                                              Container(
-                                                width: 24,
-                                                height: 40,
-                                                child: Row(
-                                                  mainAxisAlignment: MainAxisAlignment.center,
-                                                  children: [
-                                                    if (index == 0) ...[
-                                                      Image.asset('assets/imgs/icons/icon_medal_1.png', width: 24),
-                                                    ] else if (index == 1) ...[
-                                                      Image.asset('assets/imgs/icons/icon_medal_2.png', width: 24),
-                                                    ] else if (index == 2) ...[
-                                                      Image.asset('assets/imgs/icons/icon_medal_3.png', width: 24),
-                                                    ] else ...[
-                                                      Expanded(
-                                                        child: Center(
-                                                          child: AutoSizeText(
-                                                            (_rankingListViewModel.resortOrTotal=='개별스키장')
-                                                                ?'${document.resortRank??''}'
-                                                                :'${document.overallRank??''}',
-                                                            style: SDSTextStyle.bold.copyWith(
-                                                                fontSize: 14,
-                                                                color: Color(0xFF111111)
-                                                            ),
-                                                            maxLines: 1,
-                                                            minFontSize: 6,
+                                  itemCount: _rankingListViewModel.rankingListCrewList_view!.length,
+                                  itemBuilder: (context, index) {
+                                    final document = _rankingListViewModel.rankingListCrewList_view![index];
+                                    return Padding(
+                                      padding: const EdgeInsets.only(bottom: 8, left: 2, right: 2),
+                                      child: GestureDetector(
+                                        onTap: () async {
+                                          CustomFullScreenDialog.showDialog();
+                                          await _crewDetailViewModel.fetchCrewDetail(
+                                              document.crewId!,
+                                              _friendDetailViewModel.seasonDate
+                                          );
+                                          CustomFullScreenDialog.cancelDialog();
+                                          Get.toNamed(AppRoutes.crewMain);
+                                          await _crewMemberListViewModel.fetchCrewMembers(crewId: document.crewId!);
+                                        },
+                                        child: Row(
+                                          children: [
+                                            // 크루 랭킹 정보 표시
+                                            Container(
+                                              width: 24,
+                                              height: 40,
+                                              child: Row(
+                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                children: [
+                                                  if (index == 0) ...[
+                                                    Image.asset('assets/imgs/icons/icon_medal_1.png', width: 24),
+                                                  ] else if (index == 1) ...[
+                                                    Image.asset('assets/imgs/icons/icon_medal_2.png', width: 24),
+                                                  ] else if (index == 2) ...[
+                                                    Image.asset('assets/imgs/icons/icon_medal_3.png', width: 24),
+                                                  ] else ...[
+                                                    Expanded(
+                                                      child: Center(
+                                                        child: AutoSizeText(
+                                                          (_rankingListViewModel.resortOrTotal=='개별스키장')
+                                                              ?'${document.resortRank??''}'
+                                                              :'${document.overallRank??''}',
+                                                          style: SDSTextStyle.bold.copyWith(
+                                                              fontSize: 14,
+                                                              color: Color(0xFF111111)
                                                           ),
+                                                          maxLines: 1,
+                                                          minFontSize: 6,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ],
+                                              ),
+                                            ),
+                                            // 크루 정보
+                                            SizedBox(width: 8),
+                                            Container(
+                                              width: 32,
+                                              height: 32,
+                                              decoration: BoxDecoration(
+                                                border: Border.all(
+                                                  color: SDSColor.gray100,
+                                                  width: 1,
+                                                ),
+                                                borderRadius: BorderRadius.circular(10),
+                                              ),
+                                              child: document.crewLogoUrl!.isNotEmpty
+                                                  ? ExtendedImage.network(
+                                                document.crewLogoUrl!,
+                                                enableMemoryCache: true,
+                                                shape: BoxShape.rectangle,
+                                                borderRadius: BorderRadius.circular(10),
+                                                cacheHeight: 100,
+                                                width: 32,
+                                                height: 32,
+                                                fit: BoxFit.cover,
+                                              )
+                                                  : ExtendedImage.network(
+                                                '${crewDefaultLogoUrl['${document.color}']}',
+                                                enableMemoryCache: true,
+                                                cacheHeight: 100,
+                                                shape: BoxShape.rectangle,
+                                                borderRadius: BorderRadius.circular(10),
+                                                width: 32,
+                                                height: 32,
+                                                fit: BoxFit.cover,
+                                              ),
+                                            ),
+                                            SizedBox(width: 10),
+                                            Container(
+                                              child: Column(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                children: [
+                                                  Row(
+                                                    children: [
+                                                      Text(document.crewName!,
+                                                        style: SDSTextStyle.regular.copyWith(
+                                                            fontSize: 14,
+                                                            color: SDSColor.gray900
                                                         ),
                                                       ),
                                                     ],
-                                                  ],
-                                                ),
-                                              ),
-                                              // 크루 정보
-                                              SizedBox(width: 8),
-                                              Container(
-                                                width: 32,
-                                                height: 32,
-                                                decoration: BoxDecoration(
-                                                  border: Border.all(
-                                                    color: SDSColor.gray100,
-                                                    width: 1,
                                                   ),
-                                                  borderRadius: BorderRadius.circular(10),
-                                                ),
-                                                child: document.crewLogoUrl!.isNotEmpty
-                                                    ? ExtendedImage.network(
-                                                  document.crewLogoUrl!,
-                                                  enableMemoryCache: true,
-                                                  shape: BoxShape.rectangle,
-                                                  borderRadius: BorderRadius.circular(10),
-                                                  cacheHeight: 100,
-                                                  width: 32,
-                                                  height: 32,
-                                                  fit: BoxFit.cover,
-                                                )
-                                                    : ExtendedImage.network(
-                                                  '${crewDefaultLogoUrl['${document.color}']}',
-                                                  enableMemoryCache: true,
-                                                  cacheHeight: 100,
-                                                  shape: BoxShape.rectangle,
-                                                  borderRadius: BorderRadius.circular(10),
-                                                  width: 32,
-                                                  height: 32,
-                                                  fit: BoxFit.cover,
-                                                ),
-                                              ),
-                                              SizedBox(width: 10),
-                                              Container(
-                                                child: Column(
-                                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                                  mainAxisAlignment: MainAxisAlignment.center,
-                                                  children: [
-                                                    Row(
+                                                  Container(
+                                                    width: _size.width - 200,
+                                                    child: Row(
                                                       children: [
-                                                        Text(document.crewName!,
+                                                        Text(
+                                                          document.baseResortNickname!,
                                                           style: SDSTextStyle.regular.copyWith(
-                                                              fontSize: 14,
-                                                              color: SDSColor.gray900
+                                                              fontSize: 12,
+                                                              color: SDSColor.gray500
+                                                          ),
+                                                        ),
+                                                        Text('·',
+                                                          style: SDSTextStyle.regular.copyWith(
+                                                              fontSize: 12,
+                                                              color: SDSColor.gray500
+                                                          ),
+                                                        ),
+                                                        Expanded(
+                                                          child: Container(
+                                                            child: Text(
+                                                              maxLines: 1,
+                                                              overflow: TextOverflow.ellipsis,
+                                                              document.description??'',
+                                                              style: SDSTextStyle.regular.copyWith(
+                                                                  fontSize: 12,
+                                                                  color: SDSColor.gray500
+                                                              ),
+                                                            ),
                                                           ),
                                                         ),
                                                       ],
                                                     ),
-                                                    Container(
-                                                      width: _size.width - 200,
-                                                      child: Row(
-                                                        children: [
-                                                          Text(
-                                                            document.baseResortNickname!,
-                                                            style: SDSTextStyle.regular.copyWith(
-                                                                fontSize: 12,
-                                                                color: SDSColor.gray500
-                                                            ),
-                                                          ),
-                                                          Text('·',
-                                                            style: SDSTextStyle.regular.copyWith(
-                                                                fontSize: 12,
-                                                                color: SDSColor.gray500
-                                                            ),
-                                                          ),
-                                                          Expanded(
-                                                            child: Container(
-                                                              child: Text(
-                                                                maxLines: 1,
-                                                                overflow: TextOverflow.ellipsis,
-                                                                document.description??'',
-                                                                style: SDSTextStyle.regular.copyWith(
-                                                                    fontSize: 12,
-                                                                    color: SDSColor.gray500
-                                                                ),
-                                                              ),
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                              Expanded(child: SizedBox()),
-                                              Row(
-                                                children: [
-                                                  if (_rankingListViewModel.resortOrTotal == '개별스키장' && document.resortTotalScore != null)
-                                                    Text('${document.resortTotalScore!.toInt()}점',
-                                                      style: SDSTextStyle.regular.copyWith(
-                                                        color: SDSColor.gray900,
-                                                        fontSize: 16,
-                                                      ),
-                                                    ),
-                                                  if (_rankingListViewModel.resortOrTotal == '전체스키장' && document.overallTotalScore != null)
-                                                    Text('${document.overallTotalScore!.toInt()}점',
-                                                      style: SDSTextStyle.regular.copyWith(
-                                                        color: SDSColor.gray900,
-                                                        fontSize: 16,
-                                                      ),
-                                                    )
+                                                  ),
                                                 ],
                                               ),
-                                            ],
-                                          ),
+                                            ),
+                                            Expanded(child: SizedBox()),
+                                            Row(
+                                              children: [
+                                                if (_rankingListViewModel.resortOrTotal == '개별스키장' && document.resortTotalScore != null)
+                                                  Text('${document.resortTotalScore!.toInt()}점',
+                                                    style: SDSTextStyle.regular.copyWith(
+                                                      color: SDSColor.gray900,
+                                                      fontSize: 16,
+                                                    ),
+                                                  ),
+                                                if (_rankingListViewModel.resortOrTotal == '전체스키장' && document.overallTotalScore != null)
+                                                  Text('${document.overallTotalScore!.toInt()}점',
+                                                    style: SDSTextStyle.regular.copyWith(
+                                                      color: SDSColor.gray900,
+                                                      fontSize: 16,
+                                                    ),
+                                                  )
+                                              ],
+                                            ),
+                                          ],
                                         ),
-                                      );
-                                    },
-                                    padding: EdgeInsets.only(bottom: 80),
-                                  ),
+                                      ),
+                                    );
+                                  },
+                                  padding: EdgeInsets.only(bottom: 80),
                                 ),
                               )
                               : Container(

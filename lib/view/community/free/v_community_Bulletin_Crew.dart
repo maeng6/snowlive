@@ -12,7 +12,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
-class CommunityBulletinRoomListView extends StatelessWidget {
+class CommunityBulletinCrewListView extends StatelessWidget {
 
   final CommunityBulletinListViewModel _communityBulletinListViewModel = Get.find<CommunityBulletinListViewModel>();
   final CommunityDetailViewModel _communityDetailViewModel = Get.find<CommunityDetailViewModel>();
@@ -36,7 +36,7 @@ class CommunityBulletinRoomListView extends StatelessWidget {
               Align(
                 alignment: Alignment.bottomCenter,
                 child: Visibility(
-                  visible: _communityBulletinListViewModel.isVisible_room,
+                  visible: _communityBulletinListViewModel.isVisible_crew,
                   child: Container(
                     width: 106,
                     decoration: BoxDecoration(
@@ -52,7 +52,7 @@ class CommunityBulletinRoomListView extends StatelessWidget {
                       ],
                     ),
                     child: FloatingActionButton(
-                      heroTag: 'bulletin_room_recent',
+                      heroTag: 'bulletin_crew_recent',
                       mini: true,
                       elevation: 0,
                       shape: RoundedRectangleBorder(
@@ -62,7 +62,7 @@ class CommunityBulletinRoomListView extends StatelessWidget {
                       backgroundColor: SDSColor.snowliveWhite,
                       foregroundColor: SDSColor.snowliveWhite,
                       onPressed: () {
-                        _communityBulletinListViewModel.scrollController_room.jumpTo(0);
+                        _communityBulletinListViewModel.scrollController_crew.jumpTo(0);
                       },
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -94,11 +94,11 @@ class CommunityBulletinRoomListView extends StatelessWidget {
                   child: Align(
                     alignment: Alignment.bottomRight,
                     child: AnimatedContainer(
-                      width: _communityBulletinListViewModel.showAddButton_room ? 104 : 52,
+                      width: _communityBulletinListViewModel.showAddButton_crew ? 104 : 52,
                       height: 52,
                       duration: Duration(milliseconds: 200),
                       child: FloatingActionButton.extended(
-                        heroTag: 'bulletin_room',
+                        heroTag: 'bulletin_crew',
                         elevation: 4,
                         onPressed: () async {
                           Get.toNamed(AppRoutes.bulletinUpload);
@@ -108,7 +108,7 @@ class CommunityBulletinRoomListView extends StatelessWidget {
                           child: Center(child: Icon(Icons.add,
                             color: SDSColor.snowliveWhite,)),
                         ),
-                        label: _communityBulletinListViewModel.showAddButton_room
+                        label: _communityBulletinListViewModel.showAddButton_crew
                             ? Padding(
                           padding: const EdgeInsets.only(right: 6),
                           child: Text(
@@ -134,7 +134,7 @@ class CommunityBulletinRoomListView extends StatelessWidget {
           ),
           backgroundColor: Colors.white,
           body:
-          (_communityBulletinListViewModel.isLoadingList_room==true)
+          (_communityBulletinListViewModel.isLoadingList_crew==true)
               ? Container(
             height: 150,
             child: Column(
@@ -155,15 +155,15 @@ class CommunityBulletinRoomListView extends StatelessWidget {
             edgeOffset: 20,
             backgroundColor: SDSColor.snowliveWhite,
             color: SDSColor.snowliveBlue,
-            onRefresh: _communityBulletinListViewModel.onRefresh_bulletin_room,
+            onRefresh: _communityBulletinListViewModel.onRefresh_bulletin_crew,
             child: SingleChildScrollView(
               physics: AlwaysScrollableScrollPhysics(),
-              controller: _communityBulletinListViewModel.scrollController_room,
+              controller: _communityBulletinListViewModel.scrollController_crew,
               child: Column(
                 children: [
                   Column(
                     children: [
-                      (_communityBulletinListViewModel.communityList_room.length == 0)
+                      (_communityBulletinListViewModel.communityList_crew.length == 0)
                           ? Container(
                         height: _size.height-380,
                         child: Center(
@@ -194,16 +194,16 @@ class CommunityBulletinRoomListView extends StatelessWidget {
                         child: ListView.builder(
                           physics: NeverScrollableScrollPhysics(),
                           shrinkWrap: true,
-                          itemCount: _communityBulletinListViewModel.communityList_room.length,
+                          itemCount: _communityBulletinListViewModel.communityList_crew.length,
                           itemBuilder: (context, index) {
-                            Community communityData = _communityBulletinListViewModel.communityList_room[index];
+                            Community communityData = _communityBulletinListViewModel.communityList_crew[index];
                             // 필드가 없을 경우 기본값 설정
                             String _time = GetDatetime().yyyymmddFormatFromString(communityData.uploadTime!);
                             String? profileUrl = communityData.userInfo!.profileImageUrlUser;
                             String? displayName = communityData.userInfo!.displayName;
                             return GestureDetector(
                               onTap: () async {
-                                _communityDetailViewModel.fetchCommunityDetailFromList(community: _communityBulletinListViewModel.communityList_room[index]);
+                                _communityDetailViewModel.fetchCommunityDetailFromList(community: _communityBulletinListViewModel.communityList_crew[index]);
                                 Get.toNamed(AppRoutes.bulletinDetail);
                                 await _communityDetailViewModel.addViewerCommunity(
                                     _communityDetailViewModel.communityDetail.communityId!,
@@ -243,23 +243,6 @@ class CommunityBulletinRoomListView extends StatelessWidget {
                                                                       child: Row(
                                                                         crossAxisAlignment: CrossAxisAlignment.center,
                                                                         children: [
-                                                                          //시즌방 하위카테고리 뱃지 디자인
-                                                                          if (communityData.categorySub == Community_Category_sub_bulletin.room.korean)
-                                                                            Padding(
-                                                                              padding: const EdgeInsets.only(right: 6),
-                                                                              child: Container(
-                                                                                padding: EdgeInsets.symmetric(horizontal: 5, vertical: 3),
-                                                                                decoration: BoxDecoration(
-                                                                                  color: SDSColor.gray50,
-                                                                                  borderRadius: BorderRadius.circular(4),
-                                                                                ),
-                                                                                child: Text('${communityData.categorySub2}',
-                                                                                  style: SDSTextStyle.regular.copyWith(
-                                                                                      fontSize: 11,
-                                                                                      color: SDSColor.gray700),
-                                                                                ),
-                                                                              ),
-                                                                            ),
                                                                           // 게시글 타이틀
                                                                           Expanded(
                                                                             child: Container(
@@ -352,6 +335,28 @@ class CommunityBulletinRoomListView extends StatelessWidget {
                                                     height: 50,
                                                     cacheHeight: 250,
                                                     fit: BoxFit.cover,
+                                                    loadStateChanged: (ExtendedImageState state) {
+                                                      switch (state.extendedImageLoadState) {
+                                                        case LoadState.loading:
+                                                          return SizedBox.shrink();
+                                                        case LoadState.completed:
+                                                          return state.completedWidget;
+                                                        case LoadState.failed:
+                                                          return ExtendedImage.network(
+                                                            'https://i.esdrop.com/d/f/yytYSNBROy/kVsZwVhd1f.png',
+                                                            shape: BoxShape.rectangle,
+                                                            borderRadius: BorderRadius.circular(8),
+                                                            border: Border.all(width: 0.5, color: Color(0xFFdedede)),
+                                                            width: 32,
+                                                            height: 32,
+                                                            cacheHeight: 100,
+                                                            cache: true,
+                                                            fit: BoxFit.cover,
+                                                          );
+                                                        default:
+                                                          return null;
+                                                      }
+                                                    },
                                                   ),
                                                 )
                                                     : Container()
@@ -362,7 +367,7 @@ class CommunityBulletinRoomListView extends StatelessWidget {
                                       ),
                                     ),
                                   ),
-                                  if(_communityBulletinListViewModel.communityList_room.length != index + 1)
+                                  if(_communityBulletinListViewModel.communityList_crew.length != index + 1)
                                     Divider(
                                       color: SDSColor.gray50,
                                       height: 16,

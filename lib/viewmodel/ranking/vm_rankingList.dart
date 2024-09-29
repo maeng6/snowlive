@@ -37,7 +37,7 @@ class RankingListViewModel extends GetxController {
   var _rankingListCrewMy_resort = RankingListCrewModel().myCrewRankingInfo.obs;
   var _rankingListCrewList_resort_daily = <CrewRanking>[].obs;
   var _rankingListCrewMy_resort_daily = RankingListCrewModel().myCrewRankingInfo.obs;
-  
+
   RxBool _isLoadingRankingListCrewList_total = false.obs;
   RxBool _isLoadingRankingListIndiv_total = false.obs;
   RxBool _isLoadingRankingListCrewList_total_daily = false.obs;
@@ -49,7 +49,7 @@ class RankingListViewModel extends GetxController {
 
   RxBool _isLoadingRankingListCrewList_next = false.obs;
   RxBool _isLoadingRankingListIndiv_next = false.obs;
-  
+
   RxString _tapName = '크루랭킹'.obs;
   RxString _dayOrTotal = '누적'.obs;
   RxString _resortOrTotal = '전체스키장'.obs;
@@ -109,7 +109,7 @@ class RankingListViewModel extends GetxController {
   String get nextPageUrl_crew_resort => _nextPageUrl_crew_resort.value;
   String get nextPageUrl_crew_total_daily => _nextPageUrl_crew_total_daily.value;
   String get nextPageUrl_crew_resort_daily => _nextPageUrl_crew_resort_daily.value;
-  
+
   bool get isLoadingRankingListCrewList_total => _isLoadingRankingListCrewList_total.value;
   bool get isLoadingRankingListIndiv_total => _isLoadingRankingListIndiv_total.value;
   bool get isLoadingRankingListCrewList_total_daily => _isLoadingRankingListCrewList_total_daily.value;
@@ -128,7 +128,7 @@ class RankingListViewModel extends GetxController {
   @override
   void onInit() async{
     super.onInit();
-    
+
     await fetchAllRanking();
 
     scrollController_indiv = ScrollController()
@@ -138,7 +138,7 @@ class RankingListViewModel extends GetxController {
       ..addListener(_scrollListener_crew);
 
   }
-  
+
   Future<void> fetchAllRanking() async{
     _isLoadingRankingListCrewList_total.value = true;
     _isLoadingRankingListCrewList_total_daily.value = true;
@@ -148,7 +148,7 @@ class RankingListViewModel extends GetxController {
     _isLoadingRankingListCrewList_resort_daily.value = true;
     _isLoadingRankingListIndiv_resort.value = true;
     _isLoadingRankingListIndiv_resort_daily.value = true;
-    
+
     await fetchRankingDataCrew_total(userId: _userViewModel.user.user_id);
     _rankingListCrewList_view.value =_rankingListCrewList_total;
     _rankingListCrewMy_view.value = _rankingListCrewMy_total.value;
@@ -164,16 +164,16 @@ class RankingListViewModel extends GetxController {
     await fetchRankingDataIndiv_total_daily(userId: _userViewModel.user.user_id,daily: true);
     //_isLoadingRankingListIndiv_total_daily.value = false;
 
-     fetchRankingDataCrew_resort(userId: _userViewModel.user.user_id,resortId: _userViewModel.user.favorite_resort);
+    fetchRankingDataCrew_resort(userId: _userViewModel.user.user_id,resortId: _userViewModel.user.favorite_resort);
     //_isLoadingRankingListCrewList_resort.value = true;
 
-     fetchRankingDataCrew_resort_daily(userId: _userViewModel.user.user_id,resortId: _userViewModel.user.favorite_resort,daily: true);
+    fetchRankingDataCrew_resort_daily(userId: _userViewModel.user.user_id,resortId: _userViewModel.user.favorite_resort,daily: true);
     //_isLoadingRankingListCrewList_resort_daily.value = true;
 
-     fetchRankingDataIndiv_resort(userId: _userViewModel.user.user_id, resortId: _userViewModel.user.favorite_resort);
+    fetchRankingDataIndiv_resort(userId: _userViewModel.user.user_id, resortId: _userViewModel.user.favorite_resort);
     //_isLoadingRankingListIndiv_resort.value = true;
 
-     fetchRankingDataIndiv_resort_daily(userId: _userViewModel.user.user_id, resortId: _userViewModel.user.favorite_resort,daily: true);
+    fetchRankingDataIndiv_resort_daily(userId: _userViewModel.user.user_id, resortId: _userViewModel.user.favorite_resort,daily: true);
     //_isLoadingRankingListIndiv_resort_daily.value = true;
 
 
@@ -199,12 +199,12 @@ class RankingListViewModel extends GetxController {
   }
 
   Future<void> fetchNextPage_indiv_total_daily() async{
-      print('fetchNextPage_indiv_total_daily 시작');
+    print('fetchNextPage_indiv_total_daily 시작');
     if (_nextPageUrl_indiv_total_daily.value.isNotEmpty) {
       await fetchRankingDataIndiv_total_daily(
           userId: _userViewModel.user.user_id,
           url: _nextPageUrl_indiv_total_daily.value,
-        daily: true
+          daily: true
       );
     }
   }
@@ -214,7 +214,7 @@ class RankingListViewModel extends GetxController {
       await fetchRankingDataIndiv_resort_daily(
           userId: _userViewModel.user.user_id,
           url: _nextPageUrl_indiv_resort_daily.value,
-        daily: true
+          daily: true
       );
     }
   }
@@ -262,7 +262,7 @@ class RankingListViewModel extends GetxController {
   }
 
   Future<void> _scrollListener_indiv() async {
-      _isLoadingRankingListIndiv_next.value = true;
+    _isLoadingRankingListIndiv_next.value = true;
     // 스크롤이 리스트의 끝에 도달했을 때
     if (scrollController_indiv.position.pixels == scrollController_indiv.position.maxScrollExtent ) {
       print('다음 100개 불러오기 시작');
@@ -303,7 +303,7 @@ class RankingListViewModel extends GetxController {
 
     // 스크롤이 리스트의 끝에 도달했을 때
     if (scrollController_crew.position.pixels == scrollController_crew.position.maxScrollExtent) {
-          _isLoadingRankingListCrewList_next.value = true;
+      _isLoadingRankingListCrewList_next.value = true;
       print('다음 100개 불러오기 시작');
       if(tapName == '크루랭킹' && resortOrTotal == '개별스키장' && dayOrTotal == '일간' ){
 
@@ -332,7 +332,7 @@ class RankingListViewModel extends GetxController {
         }
       }
     }
-          _isLoadingRankingListCrewList_next.value = false;
+    _isLoadingRankingListCrewList_next.value = false;
   }
 
   void changeTap(value) {
@@ -356,12 +356,14 @@ class RankingListViewModel extends GetxController {
     _isLoadingRankingListCrewList_next.value=false;
     _isLoadingRankingListIndiv_next.value=false;
     if(tapName == '개인랭킹' && resortOrTotal == '개별스키장' && dayOrTotal == '일간'){
-      _myBox_score.value = '${nicknameList[selectedResortNum-1]}\n일간 개인 점수';
-      _myBox_ranking.value = '${nicknameList[selectedResortNum-1]}\n일간 개인 랭킹';
+      _myBox_title.value = '${resortFullNameList[selectedResortNum-1]} 일간통계';
+      _myBox_score.value = '개인 점수';
+      _myBox_ranking.value = '개인 랭킹';
       print(_rankingListIndivList_view[0].displayName);
     } else if (tapName == '개인랭킹' && resortOrTotal == '개별스키장' && dayOrTotal == '누적'){
-      _myBox_score.value = '${nicknameList[selectedResortNum-1]}\n누적 개인 점수';
-      _myBox_ranking.value = '${nicknameList[selectedResortNum-1]}\n누적 개인 랭킹';
+      _myBox_title.value = '${resortFullNameList[selectedResortNum-1]} 누적통계';
+      _myBox_score.value = '개인 점수';
+      _myBox_ranking.value = '개인 랭킹';
     } else if (tapName == '개인랭킹' && resortOrTotal == '전체스키장' && dayOrTotal == '일간'){
       _myBox_title.value = '일간 전체 스키장';
       _myBox_score.value = '개인 점수';
@@ -425,6 +427,126 @@ class RankingListViewModel extends GetxController {
     }
   }
 
+  Future<void> toggleDataDayOrTotal_refresh({int? resortNum}) async{
+    if(tapName == '개인랭킹' && resortOrTotal == '개별스키장' && dayOrTotal == '일간'){
+      //_isLoadingRankingListIndiv_resort_daily.value = true;
+      await fetchRankingDataIndiv_resort_daily(userId: _userViewModel.user.user_id, resortId: resortNum,daily: true);
+      //_isLoadingRankingListIndiv_resort_daily.value = false;
+      _rankingListIndivList_view.value = _rankingListIndivList_resort_daily;
+      _rankingListIndivMy_view.value = _rankingListIndivMy_resort_daily.value;
+    } else if (tapName == '개인랭킹' && resortOrTotal == '개별스키장' && dayOrTotal == '누적'){
+      //_isLoadingRankingListIndiv_resort.value = true;
+      await fetchRankingDataIndiv_resort(userId: _userViewModel.user.user_id, resortId: resortNum);
+      //_isLoadingRankingListIndiv_resort.value = false;
+      _rankingListIndivList_view.value = _rankingListIndivList_resort;
+      _rankingListIndivMy_view.value = _rankingListIndivMy_resort.value;
+    } else if (tapName == '개인랭킹' && resortOrTotal == '전체스키장' && dayOrTotal == '일간'){
+      //_isLoadingRankingListIndiv_total_daily.value = true;
+      await fetchRankingDataIndiv_total_daily(userId: _userViewModel.user.user_id,daily: true);
+      //_isLoadingRankingListIndiv_total_daily.value = false;
+      _rankingListIndivList_view.value = _rankingListIndivList_total_daily;
+      _rankingListIndivMy_view.value = _rankingListIndivMy_total_daily.value;
+    } else if (tapName == '개인랭킹' && resortOrTotal == '전체스키장' && dayOrTotal == '누적'){
+    //_isLoadingRankingListIndiv_total.value = true;
+      await fetchRankingDataIndiv_total(userId: _userViewModel.user.user_id);
+    //_isLoadingRankingListIndiv_total.value = false;
+      _rankingListIndivList_view.value = _rankingListIndivList_total;
+      _rankingListIndivMy_view.value = _rankingListIndivMy_total.value;
+    } else if(tapName == '크루랭킹' && resortOrTotal == '개별스키장' && dayOrTotal == '일간'){
+    //_isLoadingRankingListCrewList_resort_daily.value = true;
+      await fetchRankingDataCrew_resort_daily(userId: _userViewModel.user.user_id, resortId: resortNum,daily: true);
+    //_isLoadingRankingListCrewList_resort_daily.value = false;
+      _rankingListCrewList_view.value = _rankingListCrewList_resort_daily;
+      _rankingListCrewMy_view.value = _rankingListCrewMy_resort_daily.value;
+    } else if (tapName == '크루랭킹' && resortOrTotal == '개별스키장' && dayOrTotal == '누적'){
+    //_isLoadingRankingListCrewList_resort.value = true;
+      await fetchRankingDataCrew_resort(userId: _userViewModel.user.user_id, resortId: resortNum);
+    //_isLoadingRankingListCrewList_resort.value = false;
+      _rankingListCrewList_view.value = _rankingListCrewList_resort;
+      _rankingListCrewMy_view.value = _rankingListCrewMy_resort.value;
+    } else if (tapName == '크루랭킹' && resortOrTotal == '전체스키장' && dayOrTotal == '일간'){
+    //_isLoadingRankingListCrewList_total_daily.value = true;
+      await fetchRankingDataCrew_total_daily(userId: _userViewModel.user.user_id,daily: true);
+    //_isLoadingRankingListCrewList_total_daily.value = false;
+      _rankingListCrewList_view.value = _rankingListCrewList_total_daily;
+      _rankingListCrewMy_view.value = _rankingListCrewMy_total_daily.value;
+    } else if (tapName == '크루랭킹' && resortOrTotal == '전체스키장' && dayOrTotal == '누적'){
+    //_isLoadingRankingListCrewList_total.value = true;
+      await fetchRankingDataCrew_total(userId: _userViewModel.user.user_id);
+    //_isLoadingRankingListCrewList_total.value = false;
+      _rankingListCrewList_view.value = _rankingListCrewList_total;
+      _rankingListCrewMy_view.value = _rankingListCrewMy_total.value;
+    }
+  }
+
+  Future<void> toggleDataDayOrTotal_tapFilter({int? resortNum}) async{
+    if(tapName == '개인랭킹' && resortOrTotal == '개별스키장' && dayOrTotal == '일간'){
+      _isLoadingRankingListIndiv_total.value=true;
+      _isLoadingRankingListIndiv_total_daily.value=true;
+      await fetchRankingDataIndiv_resort_daily(userId: _userViewModel.user.user_id, resortId: resortNum,daily: true);
+      _isLoadingRankingListIndiv_total.value=false;
+      _isLoadingRankingListIndiv_total_daily.value=false;
+      _rankingListIndivList_view.value = _rankingListIndivList_resort_daily;
+      _rankingListIndivMy_view.value = _rankingListIndivMy_resort_daily.value;
+    } else if (tapName == '개인랭킹' && resortOrTotal == '개별스키장' && dayOrTotal == '누적'){
+      _isLoadingRankingListIndiv_total.value=true;
+      _isLoadingRankingListIndiv_total_daily.value=true;
+      await fetchRankingDataIndiv_resort(userId: _userViewModel.user.user_id, resortId: resortNum);
+      _isLoadingRankingListIndiv_total.value=false;
+      _isLoadingRankingListIndiv_total_daily.value=false;
+      _rankingListIndivList_view.value = _rankingListIndivList_resort;
+      _rankingListIndivMy_view.value = _rankingListIndivMy_resort.value;
+    } else if (tapName == '개인랭킹' && resortOrTotal == '전체스키장' && dayOrTotal == '일간'){
+      // _isLoadingRankingListIndiv_total.value=true;
+      // _isLoadingRankingListIndiv_total_daily.value=true;
+      // await fetchRankingDataIndiv_total_daily(userId: _userViewModel.user.user_id,daily: true);
+      _isLoadingRankingListIndiv_total.value=false;
+      _isLoadingRankingListIndiv_total_daily.value=false;
+      _rankingListIndivList_view.value = _rankingListIndivList_total_daily;
+      _rankingListIndivMy_view.value = _rankingListIndivMy_total_daily.value;
+    } else if (tapName == '개인랭킹' && resortOrTotal == '전체스키장' && dayOrTotal == '누적'){
+      // _isLoadingRankingListIndiv_total.value=true;
+      // _isLoadingRankingListIndiv_total_daily.value=true;
+      // await fetchRankingDataIndiv_total(userId: _userViewModel.user.user_id);
+      _isLoadingRankingListIndiv_total.value=false;
+      _isLoadingRankingListIndiv_total_daily.value=false;
+      _rankingListIndivList_view.value = _rankingListIndivList_total;
+      _rankingListIndivMy_view.value = _rankingListIndivMy_total.value;
+    } else if(tapName == '크루랭킹' && resortOrTotal == '개별스키장' && dayOrTotal == '일간'){
+      _isLoadingRankingListCrewList_total.value=true;
+      _isLoadingRankingListCrewList_total_daily.value=true;
+      await fetchRankingDataCrew_resort_daily(userId: _userViewModel.user.user_id, resortId: resortNum,daily: true);
+      _isLoadingRankingListCrewList_total.value=false;
+      _isLoadingRankingListCrewList_total_daily.value=false;
+      _rankingListCrewList_view.value = _rankingListCrewList_resort_daily;
+      _rankingListCrewMy_view.value = _rankingListCrewMy_resort_daily.value;
+    } else if (tapName == '크루랭킹' && resortOrTotal == '개별스키장' && dayOrTotal == '누적'){
+      _isLoadingRankingListCrewList_total.value=true;
+      _isLoadingRankingListCrewList_total_daily.value=true;
+      await fetchRankingDataCrew_resort(userId: _userViewModel.user.user_id, resortId: resortNum);
+      _isLoadingRankingListCrewList_total.value=false;
+      _isLoadingRankingListCrewList_total_daily.value=false;
+      _rankingListCrewList_view.value = _rankingListCrewList_resort;
+      _rankingListCrewMy_view.value = _rankingListCrewMy_resort.value;
+    } else if (tapName == '크루랭킹' && resortOrTotal == '전체스키장' && dayOrTotal == '일간'){
+      // _isLoadingRankingListCrewList_total.value=true;
+      // _isLoadingRankingListCrewList_total_daily.value=true;
+      // await fetchRankingDataCrew_total_daily(userId: _userViewModel.user.user_id,daily: true);
+      _isLoadingRankingListCrewList_total.value=false;
+      _isLoadingRankingListCrewList_total_daily.value=false;
+      _rankingListCrewList_view.value = _rankingListCrewList_total_daily;
+      _rankingListCrewMy_view.value = _rankingListCrewMy_total_daily.value;
+    } else if (tapName == '크루랭킹' && resortOrTotal == '전체스키장' && dayOrTotal == '누적'){
+      // _isLoadingRankingListCrewList_total.value = true;
+      // _isLoadingRankingListCrewList_total_daily.value = true;
+      // await fetchRankingDataCrew_total(userId: _userViewModel.user.user_id);
+      _isLoadingRankingListCrewList_total.value=false;
+      _isLoadingRankingListCrewList_total_daily.value=false;
+      _rankingListCrewList_view.value = _rankingListCrewList_total;
+      _rankingListCrewMy_view.value = _rankingListCrewMy_total.value;
+    }
+  }
+
   Future<void> fetchRankingDataIndiv_total({
     required int userId,
     int? resortId,
@@ -451,10 +573,10 @@ class RankingListViewModel extends GetxController {
           _rankingListIndivList_total.value = rankingListIndivResponse.results!.rankingUsers;
         } else {
           // URL이 있을 경우 리스트에 추가
-            _rankingListIndivList_total.addAll(rankingListIndivResponse.results!.rankingUsers);
+          _rankingListIndivList_total.addAll(rankingListIndivResponse.results!.rankingUsers);
         }
-          _rankingListIndivMy_total.value=rankingListIndivResponse.myRankingInfo;
-          _nextPageUrl_indiv_total.value = rankingListIndivResponse.results!.next ?? '';
+        _rankingListIndivMy_total.value=rankingListIndivResponse.myRankingInfo;
+        _nextPageUrl_indiv_total.value = rankingListIndivResponse.results!.next ?? '';
       } else {
         print('Failed to load individual ranking: ${response.error}');
       }
@@ -494,7 +616,7 @@ class RankingListViewModel extends GetxController {
           // URL이 있을 경우 리스트에 추가
           _rankingListIndivList_resort.addAll(rankingListIndivResponse.results!.rankingUsers );
         }
-          _rankingListIndivMy_resort.value=rankingListIndivResponse.myRankingInfo;
+        _rankingListIndivMy_resort.value=rankingListIndivResponse.myRankingInfo;
         _nextPageUrl_indiv_resort.value = rankingListIndivResponse.results!.next ?? '';
       } else {
         print('Failed to load individual ranking: ${response.error}');
@@ -620,7 +742,7 @@ class RankingListViewModel extends GetxController {
           // URL이 있을 경우 리스트에 추가
           _rankingListCrewList_total.addAll(rankingListCrewResponse.rankingResults!.results ?? []);
         }
-          _rankingListCrewMy_total.value=rankingListCrewResponse.myCrewRankingInfo;
+        _rankingListCrewMy_total.value=rankingListCrewResponse.myCrewRankingInfo;
         _nextPageUrl_crew_total.value = rankingListCrewResponse.rankingResults!.next ?? '';
       } else {
         print('Failed to load crew ranking: ${response.error}');

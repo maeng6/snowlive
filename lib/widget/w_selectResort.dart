@@ -39,12 +39,12 @@ class _SelectResortWidgetState extends State<SelectResortWidget> {
             ),
           ),
           Text(
-            '자주가는 스키장을 선택해 주세요.',
+            '날씨 및 정보를 확인할 스키장을 선택해 주세요.',
             style: SDSTextStyle.bold.copyWith(fontSize: 16, color: SDSColor.gray900),
           ),
           SizedBox(height: 8),
           Text(
-            '자주가는 스키장은 1개만 선택할 수 있습니다.',
+            '자주가는 스키장은 내 프로필에서 수정할 수 있어요.',
             style: SDSTextStyle.regular.copyWith(fontSize: 14, color: SDSColor.gray500),
           ),
           SizedBox(height: 24),
@@ -55,6 +55,7 @@ class _SelectResortWidgetState extends State<SelectResortWidget> {
               itemBuilder: (context, index) {
                 return Column(
                   children: [
+                    if(index!=4)
                     ListTile(
                       contentPadding: EdgeInsets.symmetric(horizontal: 0),
                       trailing: _isSelected[index]!

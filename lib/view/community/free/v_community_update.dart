@@ -5,8 +5,9 @@ import 'package:com.snowlive/viewmodel/community/vm_communityDetail.dart';
 import 'package:com.snowlive/viewmodel/community/vm_communityUpdate.dart';
 import 'package:com.snowlive/viewmodel/vm_user.dart';
 import 'package:com.snowlive/widget/w_bulletin_quill_toolbar.dart';
-import 'package:com.snowlive/widget/w_category_main_commu_bulletin.dart';
-import 'package:com.snowlive/widget/w_category_sub_commu_bulletin_room.dart';
+import 'package:com.snowlive/widget/w_category_sub_commu_bulletin.dart';
+import 'package:com.snowlive/widget/w_category_main_commu_event.dart';
+import 'package:com.snowlive/widget/w_category_sub2_commu_bulletin_room.dart';
 import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
@@ -22,6 +23,7 @@ class CommunityBulletinUpdateView extends StatelessWidget {
   final CommunityUpdateViewModel _communityUpdateViewModel = Get.find<CommunityUpdateViewModel>();
   final CommunityDetailViewModel _communityDetailViewModel = Get.find<CommunityDetailViewModel>();
   final CommunityBulletinListViewModel _communityBulletinListViewModel = Get.find<CommunityBulletinListViewModel>();
+  final FocusNode urlFocusNode = FocusNode();
 
   @override
   Widget build(BuildContext context) {
@@ -189,7 +191,9 @@ class CommunityBulletinUpdateView extends StatelessWidget {
                                       ),
                                     ),
                                     SizedBox(height: 8),
-                                    Obx(() => Row(
+                                    Obx(() =>
+                                    (_communityBulletinListViewModel.tapName == '게시판')
+                                        ? Row(
                                       children: [
                                         Column(
                                           children: [
@@ -202,7 +206,7 @@ class CommunityBulletinUpdateView extends StatelessWidget {
                                                   backgroundColor: Colors.transparent,
                                                   context: context,
                                                   isScrollControlled: true,
-                                                  builder: (context) => CategoryMainCommuBulletinWidget(),
+                                                  builder: (context) => CategorySubCommuBulletinWidget(),
                                                 );
                                                 if(_communityUpdateViewModel.isCategorySelected==true)
                                                   _communityUpdateViewModel.resetCategorySub();
@@ -212,7 +216,7 @@ class CommunityBulletinUpdateView extends StatelessWidget {
                                               },
                                               child: Container(
                                                 width:
-                                                (_communityUpdateViewModel.selectedCategoryMain == '시즌방')
+                                                (_communityUpdateViewModel.selectedCategorySub == '시즌방')
                                                     ? _size.width / 2 - 21
                                                     : _size.width - 32,
                                                 height: 48,
@@ -224,9 +228,9 @@ class CommunityBulletinUpdateView extends StatelessWidget {
                                                 child: Obx(()=>Row(
                                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                   children: [
-                                                    Text(_communityUpdateViewModel.selectedCategoryMain,
+                                                    Text(_communityUpdateViewModel.selectedCategorySub,
                                                       style: SDSTextStyle.regular.copyWith(
-                                                        color: _communityUpdateViewModel.selectedCategoryMain == '상위 카테고리' ? SDSColor.gray400 : SDSColor.gray900,
+                                                        color: _communityUpdateViewModel.selectedCategorySub == '상위 카테고리' ? SDSColor.gray400 : SDSColor.gray900,
                                                         fontSize: 14,
                                                       ),
                                                     ),
@@ -241,13 +245,13 @@ class CommunityBulletinUpdateView extends StatelessWidget {
                                             ),
                                           ],
                                         ),
-                                        (_communityUpdateViewModel.selectedCategoryMain == '시즌방')
+                                        (_communityUpdateViewModel.selectedCategorySub == '시즌방')
                                             ? SizedBox(width: 8)
                                             : Container(),
-                                        (_communityUpdateViewModel.selectedCategoryMain == '시즌방')
+                                        (_communityUpdateViewModel.selectedCategorySub == '시즌방')
                                             ? GestureDetector(
                                           onTap: () async {
-                                            if(_communityUpdateViewModel.selectedCategoryMain == '시즌방')
+                                            if( _communityUpdateViewModel.selectedCategorySub == '시즌방')
                                               selectedCategory_sub = await showModalBottomSheet<String>(
                                                 constraints: BoxConstraints(
                                                   maxHeight: 360,
@@ -255,7 +259,7 @@ class CommunityBulletinUpdateView extends StatelessWidget {
                                                 backgroundColor: Colors.transparent,
                                                 context: context,
                                                 isScrollControlled: true,
-                                                builder: (context) => CategorySubCommuBulletinRoomWidget(),
+                                                builder: (context) => CategorySub2CommuBulletinRoomWidget(),
                                               );
                                             if(selectedCategory_sub != null) {
                                               _communityUpdateViewModel.selectCategorySub(selectedCategory_sub!);
@@ -273,9 +277,9 @@ class CommunityBulletinUpdateView extends StatelessWidget {
                                             child: Obx(()=>Row(
                                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                               children: [
-                                                Text(_communityUpdateViewModel.selectedCategorySub,
+                                                Text(_communityUpdateViewModel.selectedCategorySub2,
                                                   style: SDSTextStyle.regular.copyWith(
-                                                    color: _communityUpdateViewModel.selectedCategorySub == '하위 카테고리' ? SDSColor.gray400 : SDSColor.gray900,
+                                                    color: _communityUpdateViewModel.selectedCategorySub2 == '하위 카테고리' ? SDSColor.gray400 : SDSColor.gray900,
                                                     fontSize: 14,
                                                   ),
                                                 ),
@@ -291,10 +295,129 @@ class CommunityBulletinUpdateView extends StatelessWidget {
                                             : Container(),
 
                                       ],
-                                    )),
+                                    )
+                                        : Row(
+                                      children: [
+                                        Column(
+                                          children: [
+                                            GestureDetector(
+                                              onTap: () async {
+                                                selectedCategory_main = await showModalBottomSheet<String>(
+                                                  constraints: BoxConstraints(
+                                                    maxHeight: 360,
+                                                  ),
+                                                  backgroundColor: Colors.transparent,
+                                                  context: context,
+                                                  isScrollControlled: true,
+                                                  builder: (context) => CategoryMainCommuEventWidget(),
+                                                );
+                                                if(_communityUpdateViewModel.isCategorySelected==true)
+                                                  _communityUpdateViewModel.resetCategorySub();
+                                                if(selectedCategory_main != null)
+                                                  _communityUpdateViewModel.selectCategoryMain(selectedCategory_main!);
+                                                _communityUpdateViewModel.setIsSelectedCategoryFalse();
+                                              },
+                                              child: Container(
+                                                width: _size.width - 32,
+                                                height: 48,
+                                                decoration: BoxDecoration(
+                                                  color: SDSColor.gray50,
+                                                  borderRadius: BorderRadius.circular(6),
+                                                ),
+                                                padding: EdgeInsets.symmetric(horizontal: 12),
+                                                child: Obx(()=>Row(
+                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                  children: [
+                                                    Text(_communityUpdateViewModel.selectedCategorySub,
+                                                      style: SDSTextStyle.regular.copyWith(
+                                                        color: _communityUpdateViewModel.selectedCategorySub == '상위 카테고리' ? SDSColor.gray400 : SDSColor.gray900,
+                                                        fontSize: 14,
+                                                      ),
+                                                    ),
+                                                    Image.asset(
+                                                      'assets/imgs/icons/icon_dropdown.png',
+                                                      fit: BoxFit.cover,
+                                                      width: 20,
+                                                    ),
+                                                  ],
+                                                )),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+
+                                      ],
+                                    )
+                                    ),
                                   ],
                                 ),
                               ),
+                              (_communityBulletinListViewModel.tapName == '게시판')
+                                  ? Container()
+                                  : Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                                child: Column(
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: 32, left: 4),
+                                      child: Row(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text('SNS URL', style: SDSTextStyle.regular.copyWith(
+                                              fontSize: 13,
+                                              color: SDSColor.gray900
+                                          ),),
+                                        ],
+                                      ),
+                                    ),
+                                    SizedBox(height: 8),
+                                    TextFormField(
+                                      focusNode: urlFocusNode,
+                                      textAlignVertical: TextAlignVertical.center,
+                                      cursorColor: SDSColor.snowliveBlue,
+                                      cursorHeight: 16,
+                                      cursorWidth: 2,
+                                      autovalidateMode: AutovalidateMode.onUserInteraction,
+                                      controller: _communityUpdateViewModel.textEditingController_snsUrl,
+                                      style: SDSTextStyle.regular.copyWith(fontSize: 15),
+                                      strutStyle: StrutStyle(fontSize: 14, leading: 0),
+                                      decoration: InputDecoration(
+                                        floatingLabelBehavior: FloatingLabelBehavior.never,
+                                        errorMaxLines: 2,
+                                        errorStyle: SDSTextStyle.regular.copyWith(fontSize: 12, color: SDSColor.red),
+                                        labelStyle: SDSTextStyle.regular.copyWith(color: SDSColor.gray400, fontSize: 14),
+                                        hintStyle: SDSTextStyle.regular.copyWith(color: SDSColor.gray400, fontSize: 14),
+                                        hintText: 'URL',
+                                        contentPadding: EdgeInsets.only(top: 10, bottom: 10, left: 12, right: 50),
+                                        fillColor: SDSColor.gray50,
+                                        hoverColor: SDSColor.snowliveBlue,
+                                        filled: true,
+                                        focusColor: SDSColor.snowliveBlue,
+                                        border: OutlineInputBorder(
+                                          borderSide: BorderSide(color: SDSColor.gray50),
+                                          borderRadius: BorderRadius.circular(6),
+                                        ),
+                                        errorBorder: OutlineInputBorder(
+                                          borderSide: BorderSide(color: SDSColor.red, strokeAlign: BorderSide.strokeAlignInside, width: 1.5),
+                                        ),
+                                        focusedBorder: OutlineInputBorder(
+                                          borderSide: BorderSide(color: SDSColor.snowliveBlue, strokeAlign: BorderSide.strokeAlignInside, width: 1.5),
+                                        ),
+                                        enabledBorder: OutlineInputBorder(
+                                          borderSide: BorderSide(color: Colors.transparent),
+                                          borderRadius: BorderRadius.circular(6),
+                                        ),
+                                      ),
+                                      validator: (val) {
+                                      },
+                                    ),
+                                  ],
+                                ),
+                              ),
+
+
+
+
                               Padding(
                                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                                 child: Column(
@@ -349,8 +472,8 @@ class CommunityBulletinUpdateView extends StatelessWidget {
                         child: ElevatedButton(
                           onPressed: () async {
                             if(_communityUpdateViewModel.isTitleWritten == true
-                                && _communityUpdateViewModel.selectedCategoryMain != '상위 카테고리'
-                                && (_communityUpdateViewModel.selectedCategoryMain != '시즌방' || (_communityUpdateViewModel.selectedCategoryMain == '시즌방'&&_communityUpdateViewModel.selectedCategorySub != '하위 카테고리'))
+                                && _communityUpdateViewModel.selectedCategorySub != '상위 카테고리'
+                                && (_communityUpdateViewModel.selectedCategorySub != '시즌방' || (_communityUpdateViewModel.selectedCategorySub == '시즌방'&&_communityUpdateViewModel.selectedCategorySub2 != '하위 카테고리'))
                                 ){
 
                             CustomFullScreenDialog.showDialog();
@@ -358,10 +481,14 @@ class CommunityBulletinUpdateView extends StatelessWidget {
                                   _communityDetailViewModel.communityDetail.communityId,
                                   {
                                     "user_id": _userViewModel.user.user_id.toString(), // 필수 - 유저 ID
-                                    "category_main": "게시판",    // 필수 - 메인 카테고리
-                                    "category_sub": "${_communityUpdateViewModel.selectedCategoryMain}",     // 필수 - 서브 카테고리
-                                    "category_sub2": "${_communityUpdateViewModel.selectedCategorySub}",     // 선택 - 시즌방서브카테고리
+                                    "category_main":
+                                    (_communityBulletinListViewModel.tapName=='게시판')
+                                        ? "게시판"
+                                        : "이벤트",    // 필수 - 메인 카테고리
+                                    "category_sub": "${_communityUpdateViewModel.selectedCategorySub}",     // 필수 - 서브 카테고리
+                                    "category_sub2": "${_communityUpdateViewModel.selectedCategorySub2}",     // 선택 - 시즌방서브카테고리
                                     "title": "${_communityUpdateViewModel.textEditingController_title.text}",     // 필수 - 제목
+                                    "sns_url" : "${_communityUpdateViewModel.textEditingController_snsUrl.text}",
                                     "thumb_img_url": "",
                                     "description": jsonEncode([{
                                       "string": "임시내용"
@@ -383,7 +510,9 @@ class CommunityBulletinUpdateView extends StatelessWidget {
                             await _communityDetailViewModel.fetchCommunityDetail(_communityDetailViewModel.communityDetail.communityId!,_userViewModel.user.user_id);
                             CustomFullScreenDialog.cancelDialog();
                             Navigator.pop(context);
-                            await _communityBulletinListViewModel.fetchAllCommunity();
+                            (_communityBulletinListViewModel.tapName=='게시판')
+                                ? await _communityBulletinListViewModel.fetchAllCommunity()
+                                :await _communityBulletinListViewModel.fetchEventCommunity();
                             }
 
                           },
@@ -396,8 +525,8 @@ class CommunityBulletinUpdateView extends StatelessWidget {
                             minimumSize: Size(double.infinity, 48),
                             backgroundColor:
                             (_communityUpdateViewModel.isTitleWritten == true
-                                && _communityUpdateViewModel.selectedCategoryMain != '상위 카테고리'
-                                && (_communityUpdateViewModel.selectedCategoryMain != '시즌방' || (_communityUpdateViewModel.selectedCategoryMain == '시즌방'&&_communityUpdateViewModel.selectedCategorySub != '하위 카테고리'))
+                                && _communityUpdateViewModel.selectedCategorySub != '상위 카테고리'
+                                && (_communityUpdateViewModel.selectedCategorySub != '시즌방' || (_communityUpdateViewModel.selectedCategorySub == '시즌방'&&_communityUpdateViewModel.selectedCategorySub2 != '하위 카테고리'))
                             )
                             ?SDSColor.snowliveBlue
                             :SDSColor.gray200,
@@ -406,8 +535,8 @@ class CommunityBulletinUpdateView extends StatelessWidget {
                             style: SDSTextStyle.bold.copyWith(
                                 color:
                                 (_communityUpdateViewModel.isTitleWritten == true
-                                    && _communityUpdateViewModel.selectedCategoryMain != '상위 카테고리'
-                                    && (_communityUpdateViewModel.selectedCategoryMain != '시즌방' || (_communityUpdateViewModel.selectedCategoryMain == '시즌방'&&_communityUpdateViewModel.selectedCategorySub != '하위 카테고리'))
+                                    && _communityUpdateViewModel.selectedCategorySub != '상위 카테고리'
+                                    && (_communityUpdateViewModel.selectedCategorySub != '시즌방' || (_communityUpdateViewModel.selectedCategorySub == '시즌방'&&_communityUpdateViewModel.selectedCategorySub2 != '하위 카테고리'))
                                 )
                                 ?SDSColor.snowliveWhite
                                 :SDSColor.gray400,

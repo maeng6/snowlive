@@ -789,6 +789,7 @@ class FleamarketCommentDetailView extends StatelessWidget {
                                                                                                       );
                                                                                                       CustomFullScreenDialog.cancelDialog();
                                                                                                       print('댓글 삭제 완료');
+                                                                                                      _fleamarketListViewModel.fetchAllFleamarket();
                                                                                                     },
                                                                                                     style: TextButton.styleFrom(
                                                                                                       backgroundColor: Colors.transparent, // 배경색 투명
@@ -924,8 +925,6 @@ class FleamarketCommentDetailView extends StatelessWidget {
                                             });
                                             FocusScope.of(context).unfocus();
                                             _fleamarketCommentDetailViewModel.textEditingController.clear();
-                                            _fleamarketCommentDetailViewModel.scrollController.jumpTo(
-                                                _fleamarketCommentDetailViewModel.scrollController.position.maxScrollExtent);
                                             CustomFullScreenDialog.cancelDialog();
                                             await _fleamarketDetailViewModel.fetchFleamarketComments(
                                                 fleaId: _fleamarketDetailViewModel.fleamarketDetail.fleaId!,

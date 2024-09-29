@@ -148,9 +148,9 @@ class RankingHomeView extends StatelessWidget {
             _rankingListViewModel.changeDayOrTotal(value);
             _rankingListViewModel.changeMyBoxText();
             if(_rankingListViewModel.selectedResortNum == 99)
-            _rankingListViewModel.toggleDataDayOrTotal();
+            _rankingListViewModel.toggleDataDayOrTotal_tapFilter();
             if(_rankingListViewModel.selectedResortNum != 99)
-              _rankingListViewModel.toggleDataDayOrTotal(resortNum: _rankingListViewModel.selectedResortNum);
+              _rankingListViewModel.toggleDataDayOrTotal_tapFilter(resortNum: _rankingListViewModel.selectedResortNum);
 
           },
         )
