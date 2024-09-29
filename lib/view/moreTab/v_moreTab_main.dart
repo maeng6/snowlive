@@ -192,13 +192,11 @@ class MoreTabMainView extends StatelessWidget {
                                 Get.toNamed(AppRoutes.onBoardingCrewMain);
                               }
                               else{
-                                CustomFullScreenDialog.showDialog();
+                                Get.toNamed(AppRoutes.crewMain);
                                 await _crewDetailViewModel.fetchCrewDetail(
                                     _userViewModel.user.crew_id,
                                     _friendDetailViewModel.seasonDate
                                 );
-                                CustomFullScreenDialog.cancelDialog();
-                                Get.toNamed(AppRoutes.crewMain);
                                 await _crewMemberListViewModel.fetchCrewMembers(crewId: _userViewModel.user.crew_id);
 
 

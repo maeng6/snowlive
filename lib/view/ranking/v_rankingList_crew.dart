@@ -79,13 +79,11 @@ class RankingCrewView extends StatelessWidget {
                               if(_rankingListViewModel.rankingListCrewMy_view!.crewName != null)
                                 GestureDetector(
                                   onTap: () async{
-                                    CustomFullScreenDialog.showDialog();
+                                    Get.toNamed(AppRoutes.crewMain);
                                     await _crewDetailViewModel.fetchCrewDetail(
                                         _rankingListViewModel.rankingListCrewMy_view!.crewId!,
                                         _friendDetailViewModel.seasonDate
                                     );
-                                    CustomFullScreenDialog.cancelDialog();
-                                    Get.toNamed(AppRoutes.crewMain);
                                     await _crewMemberListViewModel.fetchCrewMembers(crewId: _rankingListViewModel.rankingListCrewMy_view!.crewId!);
 
                                   },
@@ -987,13 +985,11 @@ class RankingCrewView extends StatelessWidget {
                               padding: const EdgeInsets.only(bottom: 8, left: 2, right: 2),
                               child: GestureDetector(
                                 onTap: () async {
-                                  CustomFullScreenDialog.showDialog();
+                                  Get.toNamed(AppRoutes.crewMain);
                                   await _crewDetailViewModel.fetchCrewDetail(
                                       document.crewId!,
                                       _friendDetailViewModel.seasonDate
                                   );
-                                  CustomFullScreenDialog.cancelDialog();
-                                  Get.toNamed(AppRoutes.crewMain);
                                   await _crewMemberListViewModel.fetchCrewMembers(crewId: document.crewId!);
                                 },
                                 child: Row(

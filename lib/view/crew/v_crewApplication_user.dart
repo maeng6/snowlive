@@ -82,13 +82,11 @@ class CrewApplicationUserView extends StatelessWidget {
                               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                               child: GestureDetector(
                                 onTap: () async {
-                                  CustomFullScreenDialog.showDialog();
+                                  Get.toNamed(AppRoutes.crewMain);
                                   await _crewDetailViewModel.fetchCrewDetail(
                                     crew.crewId!,
                                     _friendDetailViewModel.seasonDate,
                                   );
-                                  CustomFullScreenDialog.cancelDialog();
-                                  Get.toNamed(AppRoutes.crewMain);
                                   await _crewMemberListViewModel.fetchCrewMembers(crewId: crew.crewId!);
 
                                 },
@@ -97,13 +95,11 @@ class CrewApplicationUserView extends StatelessWidget {
                                     if (crewInfo['logoUrl'] != '')
                                       GestureDetector(
                                         onTap: () async{
-                                          CustomFullScreenDialog.showDialog();
+                                          Get.toNamed(AppRoutes.crewMain);
                                           await _crewDetailViewModel.fetchCrewDetail(
                                             crew.crewId!,
                                             _friendDetailViewModel.seasonDate,
                                           );
-                                          CustomFullScreenDialog.cancelDialog();
-                                          Get.toNamed(AppRoutes.crewMain);
                                           await _crewMemberListViewModel.fetchCrewMembers(crewId: crew.crewId!);
 
                                         },
@@ -130,13 +126,11 @@ class CrewApplicationUserView extends StatelessWidget {
                                     if (crewInfo['logoUrl'] == '')
                                       GestureDetector(
                                         onTap: () async{
-                                          CustomFullScreenDialog.showDialog();
+                                          Get.toNamed(AppRoutes.crewMain);
                                           await _crewDetailViewModel.fetchCrewDetail(
                                             crew.crewId!,
                                             _friendDetailViewModel.seasonDate,
                                           );
-                                          CustomFullScreenDialog.cancelDialog();
-                                          Get.toNamed(AppRoutes.crewMain);
                                           await _crewMemberListViewModel.fetchCrewMembers(crewId: crew.crewId!);
 
                                         },

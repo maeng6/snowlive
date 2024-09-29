@@ -41,13 +41,11 @@ class RankingListBetaCrew extends StatelessWidget {
               padding: const EdgeInsets.only(bottom: 8, left: 2, right: 2),
               child: GestureDetector(
                 onTap: () async {
-                  CustomFullScreenDialog.showDialog();
+                  Get.toNamed(AppRoutes.crewMain);
                   await _crewDetailViewModel.fetchCrewDetail(
                       document.crewInfo!.crewId!,
                       _friendDetailViewModel.seasonDate
                   );
-                  CustomFullScreenDialog.cancelDialog();
-                  Get.toNamed(AppRoutes.crewMain);
                   await _crewMemberListViewModel.fetchCrewMembers(crewId:  document.crewInfo!.crewId!);
                 },
                 child: Row(
