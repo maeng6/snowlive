@@ -42,7 +42,7 @@ class _WebPageState extends State<WebPage> {
     return Scaffold(backgroundColor: Colors.white,
       extendBodyBehindAppBar: true,
       appBar: PreferredSize(
-        preferredSize: Size.fromHeight(58),
+        preferredSize: Size.fromHeight(44),
         child: AppBar(
           leading: GestureDetector(
             child: Image.asset(
@@ -56,24 +56,14 @@ class _WebPageState extends State<WebPage> {
             },
           ),
           backgroundColor: Colors.white,
+          surfaceTintColor: Colors.transparent,
           elevation: 0.0,
           centerTitle: false,
           titleSpacing: 0,
-          title: Padding(
-            padding: const EdgeInsets.only(left: 16),
-            child: Text(
-              '',
-              style: TextStyle(
-                  color: Color(0xFF111111),
-                  fontWeight: FontWeight.bold,
-                  fontSize: 23),
-            ),
-          ),
         ),
       ),
 
-      body:Padding(
-        padding:  EdgeInsets.only(top: _statusBarSize+58),
+      body: SafeArea(
         child: WebView(
           backgroundColor: Colors.white,
           initialUrl: '${widget.url}',

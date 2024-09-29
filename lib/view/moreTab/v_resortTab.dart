@@ -1,3 +1,4 @@
+import 'package:com.snowlive/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/util/util_1.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -14,7 +15,7 @@ class ResortTab extends StatelessWidget {
       backgroundColor: Color(0xFFF1F1F3),
       extendBodyBehindAppBar: true,
       appBar: PreferredSize(
-        preferredSize: Size.fromHeight(58),
+        preferredSize: Size.fromHeight(44),
         child: AppBar(
           leading: GestureDetector(
             child: Image.asset(
@@ -28,12 +29,13 @@ class ResortTab extends StatelessWidget {
             },
           ),
           backgroundColor: Color(0xFFF1F1F3),
+          surfaceTintColor: Colors.transparent,
           elevation: 0.0,
           titleSpacing: 0,
         ),
       ),
       body: Padding(
-        padding: EdgeInsets.only(top: _statusBarSize, left: 30, right: 30),
+        padding: EdgeInsets.only(top: 44, left: 30, right: 30),
         child: resortListView(_size),
       ),
     );
@@ -46,7 +48,7 @@ class ResortTab extends StatelessWidget {
       itemBuilder: (BuildContext context, int index) {
         return Container(
           width: 330,
-          height: 345,
+          height: 336,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(18),
             color: Color(0xffFFFFFF),
@@ -71,19 +73,17 @@ class ResortTab extends StatelessWidget {
                   ),
                   Text(
                     '${resortNameList[index]}',
-                    style: TextStyle(
+                    style: SDSTextStyle.bold.copyWith(
                         fontSize: 22,
-                        fontWeight: FontWeight.bold,
-                        color: Color(0xFF111111)),
+                        color: SDSColor.gray900),
                   ),
                   Padding(
                     padding: const EdgeInsets.only(top: 4),
                     child: Text(
                       '${resortAddressList[index]}',
-                      style: TextStyle(
+                      style: SDSTextStyle.regular.copyWith(
                           fontSize: 13,
-                          fontWeight: FontWeight.w300,
-                          color: Color(0xFF949494)),
+                          color: SDSColor.gray500),
                     ),
                   ),
                 ],
@@ -91,7 +91,7 @@ class ResortTab extends StatelessWidget {
               Column(
                 children: [
                   SizedBox(
-                    height: 48,
+                    height: 40,
                   ),
                   OutlinedButton(
                     onPressed: () {
@@ -99,16 +99,16 @@ class ResortTab extends StatelessWidget {
                     },
                     child: Text(
                       '네이버 날씨',
-                      style: TextStyle(
-                          color: Color(0xFF3D83ED),
+                      style: SDSTextStyle.bold.copyWith(
+                          color: SDSColor.snowliveBlue,
                           fontSize: 15,
-                          fontWeight: FontWeight.bold),
+                      ),
                     ),
                     style: ElevatedButton.styleFrom(
                         side: BorderSide(color: Colors.transparent),
                         minimumSize: Size(_size.width, 44),
                         padding: EdgeInsets.symmetric(horizontal: 10),
-                        backgroundColor: Color(0xFFD8E7FD),
+                        backgroundColor: SDSColor.blue50,
                         shape: RoundedRectangleBorder(
                             borderRadius:
                             BorderRadius.all(Radius.circular(6)))),
@@ -129,12 +129,12 @@ class ResortTab extends StatelessWidget {
                           },
                           child: Text(
                             '실시간 웹캠',
-                            style: TextStyle(
+                            style: SDSTextStyle.bold.copyWith(
                                 color: (webcamUrlList[index]!.isNotEmpty)
-                                    ? Color(0xFF555555)
-                                    : Color(0xFFDEDEDE),
+                                    ? SDSColor.gray700
+                                    : SDSColor.gray200,
                                 fontSize: 15,
-                                fontWeight: FontWeight.bold),
+                            ),
                           ),
                           style: OutlinedButton.styleFrom(
                               backgroundColor: (webcamUrlList[index]!.isNotEmpty)
@@ -167,12 +167,12 @@ class ResortTab extends StatelessWidget {
                           },
                           child: Text(
                             '슬로프 현황',
-                            style: TextStyle(
+                            style: SDSTextStyle.bold.copyWith(
                                 color: (slopeUrlList[index]!.isNotEmpty)
-                                    ? Color(0xFF555555)
-                                    : Color(0xFFDEDEDE),
+                                    ? SDSColor.gray700
+                                    : SDSColor.gray200,
                                 fontSize: 15,
-                                fontWeight: FontWeight.bold),
+                            ),
                           ),
                           style: ElevatedButton.styleFrom(
                               backgroundColor: (slopeUrlList[index]!.isNotEmpty)
