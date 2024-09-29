@@ -265,7 +265,7 @@ class _FriendDetailViewState extends State<FriendDetailView> {
                                                         );
                                                         await _crewMemberListViewModel.fetchCrewMembers(crewId: _friendDetailViewModel.friendDetailModel.friendUserInfo.crewId);
 
-                                                      },
+                                                      },//
                                                       child: Text(
                                                         ' · ${_friendDetailViewModel.friendDetailModel.friendUserInfo.crewName} >',
                                                         style: SDSTextStyle.regular.copyWith(
