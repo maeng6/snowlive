@@ -133,6 +133,8 @@ class CommunityDetailViewModel extends GetxController {
     isLoading.value = true;
     try {
       final response = await CommunityAPI().deleteCommunity(communityId, userId.toString());
+      CustomFullScreenDialog.cancelDialog();
+      Get.back();
       await deleteFolder('community', communityId.toString());
 
       if (response.success) {

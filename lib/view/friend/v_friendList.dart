@@ -640,7 +640,6 @@ class FriendListView extends StatelessWidget {
                                                                               {"friend_id": friend.friendId},
                                                                             );
                                                                             await _friendListViewModel.fetchFriendList();
-                                                                            CustomFullScreenDialog.cancelDialog();
                                                                           },
                                                                           child: Text(
                                                                             '확인',

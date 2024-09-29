@@ -452,16 +452,18 @@ class CommunityBulletinDetailView extends StatelessWidget {
                                                           child: Container(
                                                             child: TextButton(
                                                                 onPressed: () async {
+                                                                  Navigator.pop(context);
+                                                                  Navigator.pop(context);
                                                                   CustomFullScreenDialog.showDialog();
                                                                   await _communityDetailViewModel.deleteCommunityPost(
                                                                       _communityDetailViewModel.communityDetail.communityId!,
                                                                       _userViewModel.user.user_id
                                                                   );
-                                                                  await _communityBulletinListViewModel.fetchCommunityList_total(userId: _userViewModel.user.user_id,categoryMain: '게시판');
-                                                                  Navigator.pop(context);
-                                                                  Navigator.pop(context);
-                                                                  CustomFullScreenDialog.cancelDialog();
-                                                                  Get.back();
+                                                                  if(_communityBulletinListViewModel.tapName =='게시판') {
+                                                                    await _communityBulletinListViewModel.fetchAllCommunity();
+                                                                  }else{
+                                                                    await _communityBulletinListViewModel.fetchEventCommunity();
+                                                                  }
                                                                 },
                                                                 style: TextButton.styleFrom(
                                                                   backgroundColor: Colors.transparent, // 배경색 투명
