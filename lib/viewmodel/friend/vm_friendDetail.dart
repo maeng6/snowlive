@@ -129,7 +129,7 @@ class FriendDetailViewModel extends GetxController {
     isLoading(true);
     ApiResponse response = await FriendDetailAPI().fetchFriendDetail(userId,friendUserId,season);
     if(response.success) {
-    isLoading(false);
+      isLoading(false);
       _friendDetailModel.value = response.data as FriendDetailModel;
       changeMainTab(0);
       await fetchFriendsTalkList(userId: userId, friendUserId: friendUserId);
@@ -180,7 +180,7 @@ class FriendDetailViewModel extends GetxController {
           .toList();
       _friendsTalk.value = talkList;
     } else {
-      Get.snackbar('Error', '데이터 로딩 실패');
+      print('데이터 로딩 실패');
     }
 
   }
@@ -269,7 +269,7 @@ class FriendDetailViewModel extends GetxController {
         model?.friendUserInfo.bestFriend = response.data['best_friend'];
       });
       if(response.data['best_friend'] == true)
-      print('친친등록완료');
+        print('친친등록완료');
       if(response.data['best_friend'] == false)
         print('친친해제완료');
     } else {

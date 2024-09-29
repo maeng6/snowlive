@@ -1306,7 +1306,7 @@ class _FriendDetailViewState extends State<FriendDetailView> {
                                                     padding: EdgeInsets.symmetric(horizontal: 16),
                                                     child: Obx(()=>Column(
                                                       children: [
-                                                      (_friendDetailViewModel.friendsTalk.length >0)
+                                                        (_friendDetailViewModel.friendsTalk.length >0)
                                                             ? Column(
                                                           children: [
                                                             RefreshIndicator(
@@ -1337,9 +1337,7 @@ class _FriendDetailViewState extends State<FriendDetailView> {
                                                                   ),
                                                                 ),
                                                               )
-                                                                  :
-
-                                                                  ListView.builder(
+                                                                  : ListView.builder(
                                                                 padding: EdgeInsets.only(top: 4),
                                                                 shrinkWrap: true,
                                                                 physics: AlwaysScrollableScrollPhysics(),
@@ -1901,11 +1899,12 @@ class _FriendDetailViewState extends State<FriendDetailView> {
                                                                                                                                 Navigator.pop(context);
                                                                                                                                 CustomFullScreenDialog.showDialog();
                                                                                                                                 await _friendDetailViewModel.reportFriendsTalk(
-                                                                                                                                  {
-                                                                                                                                    "user_id": _userViewModel.user.user_id.toString(),    //필수 - 신고자(나)
-                                                                                                                                    "friends_talk_id": document.friendsTalkId   //필수 - 신고할 친구톡id
-                                                                                                                                  }
+                                                                                                                                    {
+                                                                                                                                      "user_id": _userViewModel.user.user_id.toString(),    //필수 - 신고자(나)
+                                                                                                                                      "friends_talk_id": document.friendsTalkId   //필수 - 신고할 친구톡id
+                                                                                                                                    }
                                                                                                                                 );
+                                                                                                                                Navigator.pop(context);
                                                                                                                               },
                                                                                                                               style: TextButton.styleFrom(
                                                                                                                                 backgroundColor: Colors.transparent, // 배경색 투명
@@ -2152,7 +2151,6 @@ class _FriendDetailViewState extends State<FriendDetailView> {
                                                                                                                         child: Container(
                                                                                                                           child: TextButton(
                                                                                                                               onPressed: () async {
-                                                                                                                                Navigator.pop(context);
                                                                                                                                 Navigator.pop(context);
                                                                                                                                 await _friendDetailViewModel.deleteFriendsTalk(userId: _userViewModel.user.user_id, friendsTalkId: document.friendsTalkId);
                                                                                                                                 await _friendDetailViewModel.fetchFriendsTalkList_afterFriendTalk(userId: _userViewModel.user.user_id, friendUserId: _friendDetailViewModel.friendDetailModel.friendUserInfo.userId);

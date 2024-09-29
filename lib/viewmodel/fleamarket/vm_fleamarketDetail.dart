@@ -85,7 +85,7 @@ class FleamarketDetailViewModel extends GetxController {
     required var fleamarketResponse,
     required int fleaId,
     required int userId,
-     String? url,
+    String? url,
   }) async {
     isLoading(true);
     fetchFleamarketDetailFromList(fleamarketResponse: fleamarketResponse,);
@@ -99,8 +99,8 @@ class FleamarketDetailViewModel extends GetxController {
   void fetchFleamarketDetailFromList({
     required var fleamarketResponse
   }) {
-        _fleamarketDetail.value = FleamarketDetailModel.fromFleamarketModel(fleamarketResponse);
-        _time.value = GetDatetime().getAgoString(_fleamarketDetail.value.uploadTime!);
+    _fleamarketDetail.value = FleamarketDetailModel.fromFleamarketModel(fleamarketResponse);
+    _time.value = GetDatetime().getAgoString(_fleamarketDetail.value.uploadTime!);
   }
 
   Future<void> fetchFleamarketDetailFromAPI({
@@ -218,22 +218,22 @@ class FleamarketDetailViewModel extends GetxController {
     // 로딩 상태를 true로 설정
     isLoading(true);
 
-      // deleteFleamarket API 호출
-      ApiResponse response = await FleamarketAPI().deleteFleamarket(
-        fleamarketId: fleamarketId,
-        userId: userId,
-      );
+    // deleteFleamarket API 호출
+    ApiResponse response = await FleamarketAPI().deleteFleamarket(
+      fleamarketId: fleamarketId,
+      userId: userId,
+    );
     await deleteFolder('fleamarket',fleamarketId.toString());
 
-      // 요청이 성공했는지 확인
-      if (response.success) {
-        print('Fleamarket 삭제 완료');
-        Get.back();
-      } else {
-        // 실패 시 오류 메시지 표시
-        Get.snackbar('Error', '게시물 삭제 실패');
-      }
-      isLoading(false);
+    // 요청이 성공했는지 확인
+    if (response.success) {
+      print('Fleamarket 삭제 완료');
+      Get.back();
+    } else {
+      // 실패 시 오류 메시지 표시
+      print('게시물 삭제 실패');
+    }
+    isLoading(false);
   }
 
   Future<void> updateFleamarket({
@@ -291,12 +291,12 @@ class FleamarketDetailViewModel extends GetxController {
         _time.value = GetDatetime().getAgoString(_fleamarketDetail.value.uploadTime!);
         print('상태 업데이트 완료');
       } else {
-        Get.snackbar('Error', '상태 업데이트 실패');
+        print('상태 업데이트 실패');
       }
     } catch (e) {
       // 예외 처리
       print('Error updating fleamarketStatus: $e');
-      Get.snackbar('Error', '상태 업데이트 중 오류 발생');
+      print('상태 업데이트 중 오류 발생');
     } finally {
       // 로딩 상태를 false로 설정
       isLoading(false);
@@ -317,7 +317,7 @@ class FleamarketDetailViewModel extends GetxController {
     if(response.success)
       await fetchFleamarketDetailFromAPI(fleamarketId: fleamarketID, userId: _userViewModel.user.user_id);
 
-      print('찜 추가 완료');
+    print('찜 추가 완료');
     if(!response.success)
       Get.snackbar('Error', '찜 추가 실패');
   }
@@ -327,7 +327,7 @@ class FleamarketDetailViewModel extends GetxController {
     if(response.success)
       await fetchFleamarketDetailFromAPI(fleamarketId: fleamarketID, userId: _userViewModel.user.user_id);
 
-      print('찜 삭제 완료');
+    print('찜 삭제 완료');
     if(!response.success)
       Get.snackbar('Error', '찜 삭제 실패');
   }
@@ -341,7 +341,7 @@ class FleamarketDetailViewModel extends GetxController {
       print('글 업로드 완료');
     }
     else {
-      Get.snackbar('Error', '업로드 실패');
+      print('댓글 업로드 실패');
     }
   }
 
@@ -360,7 +360,7 @@ class FleamarketDetailViewModel extends GetxController {
       // _scrollController.jumpTo(0);
       print('글 삭제 완료');
     if(!response.success)
-      Get.snackbar('Error', '삭제 실패');
+      print('글 삭제 실패');
   }
 
   Future<void> reportComment(Map<String, dynamic> body) async {
