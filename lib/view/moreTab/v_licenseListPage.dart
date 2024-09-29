@@ -1,3 +1,4 @@
+import 'package:com.snowlive/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/model/m_licenseModel.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -13,7 +14,9 @@ class LicenseListPage extends StatelessWidget {
       backgroundColor: Colors.white,
       extendBodyBehindAppBar: true,
       appBar: AppBar(
+        toolbarHeight: 44,
         backgroundColor: Colors.white,
+        surfaceTintColor: Colors.transparent,
         leading: GestureDetector(
           child: Image.asset(
             'assets/imgs/icons/icon_snowLive_back.png',
@@ -28,10 +31,9 @@ class LicenseListPage extends StatelessWidget {
         elevation: 0.0,
         titleSpacing: 0,
         centerTitle: true,
-        title: Text('오픈소스라이선스',
-          style: TextStyle(
-              color: Color(0xFF111111),
-              fontWeight: FontWeight.bold,
+        title: Text('오픈소스 라이선스',
+          style: SDSTextStyle.extraBold.copyWith(
+              color: SDSColor.gray900,
               fontSize: 18),
         ),
       ),
@@ -43,6 +45,8 @@ class LicenseListPage extends StatelessWidget {
     return ListView.builder(
         itemBuilder: (BuildContext context, int index){
           return InkWell(
+            highlightColor: Colors.transparent,
+            splashColor: Colors.transparent,
             onTap: (){
               Get.to(()=>LicenseDetailPage(
                 license: licenseList[index],
@@ -52,7 +56,7 @@ class LicenseListPage extends StatelessWidget {
               ));
             },
             child: Container(
-              padding: EdgeInsets.only(left: 16, right: 16, top: 14, bottom: 14),
+              padding: EdgeInsets.only(left: 16, right: 16, top: 16, bottom: 16),
               color: Colors.transparent,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,

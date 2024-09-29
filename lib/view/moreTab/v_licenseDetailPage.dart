@@ -1,3 +1,4 @@
+import 'package:com.snowlive/data/snowliveDesignStyle.dart';
 import 'package:flutter/material.dart';
 
 class LicenseDetailPage extends StatelessWidget {
@@ -21,7 +22,9 @@ class LicenseDetailPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: SDSColor.snowliveWhite,
       appBar: AppBar(
+        toolbarHeight: 44,
         leading: GestureDetector(
           child: Image.asset(
             'assets/imgs/icons/icon_snowLive_back.png',
@@ -33,20 +36,36 @@ class LicenseDetailPage extends StatelessWidget {
             Navigator.pop(context);
           },
         ),
-        title: Text('$licenseName $version'),
+        title: Text('$licenseName $version',
+          style: SDSTextStyle.extraBold.copyWith(
+              color: SDSColor.gray900,
+              fontSize: 18),),
         centerTitle: false,
+        backgroundColor: SDSColor.snowliveWhite,
+        surfaceTintColor: Colors.transparent,
       ),
       body: Padding(
-        padding: const EdgeInsets.all(10),
+        padding: const EdgeInsets.all(16),
         child: SingleChildScrollView(
           child: Container(
             child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('$repository'),
+                Text('$repository',
+                style: SDSTextStyle.regular.copyWith(
+                  fontSize: 15,
+                  color: SDSColor.gray900
+                ),),
                 SizedBox(
-                  height: 30,
+                  height: 40,
                 ),
-                Text(_bodyText()),
+                Text(_bodyText(),
+                  style: SDSTextStyle.regular.copyWith(
+                      fontSize: 15,
+                      color: SDSColor.gray900
+                  ),
+                ),
               ],
             ),
           ),

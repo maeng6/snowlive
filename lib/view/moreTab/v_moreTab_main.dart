@@ -118,16 +118,16 @@ class MoreTabMainView extends StatelessWidget {
                                     children: [
                                       Text(
                                         _userViewModel.user.display_name,
-                                        style: TextStyle(
-                                          color: Color(0xFF111111),
-                                          fontSize: 15,
+                                        style: SDSTextStyle.bold.copyWith(
+                                          color: SDSColor.gray900,
+                                          fontSize: 16,
                                         ),
                                       ),
                                       if (_userViewModel.user.state_msg != '' && _userViewModel.user.state_msg != null)
                                         Text(
                                           _userViewModel.user.state_msg,
-                                          style: TextStyle(
-                                            color: Color(0xFF949494),
+                                          style: SDSTextStyle.regular.copyWith(
+                                            color: SDSColor.gray500,
                                             fontSize: 13,
                                           ),
                                           overflow: TextOverflow.ellipsis,
@@ -154,184 +154,311 @@ class MoreTabMainView extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Column(
-                      children: [
-                        GestureDetector(
-                          onTap: () async{
-                            Get.toNamed(AppRoutes.friendList);
-                            await _friendListViewModel.fetchFriendList();
-                            await _friendListViewModel.fetchFriendRequestList(_userViewModel.user.user_id);
-                            await _friendListViewModel.fetchBlockUserList();
-                          },
-                          child: Column(
-                            children: [
-                              Image.asset('assets/imgs/icons/icon_moretab_friends.png', width: 40,),
-                              SizedBox(height: 6),
-                              Text('친구',style: TextStyle(
-                                  fontSize: 14,
-                                  color: Color(0xFF555555)
-                              ),)
-                            ],
+                    Container(
+                      width: 72,
+                      child: Column(
+                        children: [
+                          GestureDetector(
+                            onTap: () async{
+                              Get.toNamed(AppRoutes.friendList);
+                              await _friendListViewModel.fetchFriendList();
+                              await _friendListViewModel.fetchFriendRequestList(_userViewModel.user.user_id);
+                              await _friendListViewModel.fetchBlockUserList();
+                            },
+                            child: Column(
+                              children: [
+                                Image.asset('assets/imgs/icons/icon_moretab_friends.png', width: 40,),
+                                SizedBox(height: 6),
+                                Text('친구',
+                                  style: SDSTextStyle.regular.copyWith(
+                                    fontSize: 13,
+                                    color: SDSColor.gray700,
+                                      height: 1.2
+                                ),)
+                              ],
+                            ),
                           ),
-                        ),
-                        SizedBox(height: 25,),
-                      ],
+                          SizedBox(height: 25,),
+                        ],
+                      ),
                     ),
-                    Column(
-                      children: [
-                        GestureDetector(
-                          onTap: () async{
-                            if(_userViewModel.user.crew_id == null){
-                              Get.toNamed(AppRoutes.onBoardingCrewMain);
-                            }
-                            else{
-                              CustomFullScreenDialog.showDialog();
-                              await _crewDetailViewModel.fetchCrewDetail(
-                                  _userViewModel.user.crew_id,
-                                  _friendDetailViewModel.seasonDate
-                              );
-                              CustomFullScreenDialog.cancelDialog();
-                              Get.toNamed(AppRoutes.crewMain);
-                              await _crewMemberListViewModel.fetchCrewMembers(crewId: _userViewModel.user.crew_id);
+                    Container(
+                      width: 72,
+                      child: Column(
+                        children: [
+                          GestureDetector(
+                            onTap: () async{
+                              if(_userViewModel.user.crew_id == null){
+                                Get.toNamed(AppRoutes.onBoardingCrewMain);
+                              }
+                              else{
+                                CustomFullScreenDialog.showDialog();
+                                await _crewDetailViewModel.fetchCrewDetail(
+                                    _userViewModel.user.crew_id,
+                                    _friendDetailViewModel.seasonDate
+                                );
+                                CustomFullScreenDialog.cancelDialog();
+                                Get.toNamed(AppRoutes.crewMain);
+                                await _crewMemberListViewModel.fetchCrewMembers(crewId: _userViewModel.user.crew_id);
 
 
-                            }
-                          },
-                          child: Column(
-                            children: [
-                              Image.asset('assets/imgs/icons/icon_moretab_team.png', width: 40),
-                              SizedBox(height: 6),
-                              Text('라이브크루',style: TextStyle(
-                                  fontSize: 14,
-                                  color: Color(0xFF555555)
-                              ),)
-                            ],
+                              }
+                            },
+                            child: Column(
+                              children: [
+                                Image.asset('assets/imgs/icons/icon_moretab_team.png', width: 40),
+                                SizedBox(height: 6),
+                                Text('라이브크루',
+                                  style: SDSTextStyle.regular.copyWith(
+                                      fontSize: 13,
+                                      color: SDSColor.gray700,
+                                      height: 1.2
+                                  ),)
+                              ],
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
+                    ),
+                    Container(
+                      width: 72,
+                      child: Column(
+                        children: [
+                          GestureDetector(
+                            onTap: () async{
+                              Get.to(ResortTab());
+                            },
+                            child: Column(
+                              children: [
+                                Image.asset('assets/imgs/icons/icon_moretab_resort.png', width: 40,),
+                                SizedBox(height: 6),
+                                Text('스키장\n모아보기',
+                                  style: SDSTextStyle.regular.copyWith(
+                                      fontSize: 13,
+                                      color: SDSColor.gray700,
+                                      height: 1.2
+                                  ),
+                                textAlign: TextAlign.center,)
+                              ],
+                            ),
+                          ),
+                          SizedBox(height: 25,),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      width: 72,
+                      child: Column(
+                        children: [
+                          GestureDetector(
+                            onTap: () async{
+                              otherShare(contents: 'http://pf.kakao.com/_LxnDdG/chat');
+                            },
+                            child: Column(
+                              children: [
+                                Image.asset('assets/imgs/icons/icon_moretab_help.png', width: 40),
+                                SizedBox(height: 6),
+                                Text('고객 문의',
+                                  style: SDSTextStyle.regular.copyWith(
+                                      fontSize: 13,
+                                      color: SDSColor.gray700,
+                                      height: 1.2
+                                  ),)
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ],
                 ),
               ),
-              SizedBox(height: 4),
-              Container(height: 1,color: Color(0xFFECECEC),),
-              SizedBox(height: 40),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16),
-                child: Text(
-                  '스키장',
-                  style: TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.bold,
-                      color: Color(0xFF3D83ED)),
-                ),
-              ),
-              SizedBox(height: 10),
-              ListTile(
-                contentPadding: EdgeInsets.symmetric(horizontal: 16),
-                minVerticalPadding: 20,
-                onTap: () {
-                  Get.to(ResortTab());
-                },
-                title: Text(
-                  '스키장 모아보기',
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 15,
-                      color: Color(0xFF111111)),
-                ),
-                trailing: Image.asset(
-                  'assets/imgs/icons/icon_arrow_g.png',
-                  height: 24,
-                  width: 24,
-                ),
-              ),
-              SizedBox(height: 28),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16),
-                child: Text(
-                  '고객센터',
-                  style: TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.bold,
-                      color: Color(0xFF3D83ED)),
-                ),
-              ),
-              SizedBox(height: 10),
-              ListTile(
-                contentPadding: EdgeInsets.symmetric(horizontal: 16),
-                minVerticalPadding: 20,
-                onTap: () {
-                  otherShare(contents: 'http://pf.kakao.com/_LxnDdG/chat');
-                },
-                title: Stack(
+              Container(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      '1:1 고객 문의',
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 15,
-                          color: Color(0xFF111111)),
+                    Container(
+                      width: 72,
+                      child: Column(
+                        children: [
+                          GestureDetector(
+                            onTap: () async{
+                              Get.to(() => SnowliveDetailPage());
+                            },
+                            child: Column(
+                              children: [
+                                Image.asset('assets/imgs/icons/icon_moretab_snowlive.png', width: 40,),
+                                SizedBox(height: 6),
+                                Text('스노우라이브',
+                                  style: SDSTextStyle.regular.copyWith(
+                                      fontSize: 13,
+                                      color: SDSColor.gray700,
+                                      height: 1.2
+                                  ),
+                                )
+                              ],
+                            ),
+                          ),
+                          SizedBox(height: 25,),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      width: 72,
+                      child: Column(
+                        children: [
+                          GestureDetector(
+                            onTap: () async{
+                              Get.to(() => setting_moreTab());
+                            },
+                            child: Column(
+                              children: [
+                                Image.asset('assets/imgs/icons/icon_moretab_setting.png', width: 40),
+                                SizedBox(height: 6),
+                                Text('설정',
+                                  style: SDSTextStyle.regular.copyWith(
+                                      fontSize: 13,
+                                      color: SDSColor.gray700,
+                                      height: 1.2
+                                  ),)
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      width: 72,
+                    ),
+                    Container(
+                      width: 72,
                     ),
                   ],
                 ),
-                trailing: Image.asset(
-                  'assets/imgs/icons/icon_arrow_g.png',
-                  height: 24,
-                  width: 24,
-                ),
               ),
-              SizedBox(height: 28),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16),
-                child: Text(
-                  '설정',
-                  style: TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.bold,
-                      color: Color(0xFF3D83ED)),
-                ),
-              ),
-              SizedBox(height: 10),
-              ListTile(
-                contentPadding: EdgeInsets.symmetric(horizontal: 16),
-                minVerticalPadding: 20,
-                onTap: () {
-                  Get.to(() => SnowliveDetailPage());
-                },
-                title: Text(
-                  'SNOWLIVE',
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 15,
-                      color: Color(0xFF111111)),
-                ),
-                trailing: Image.asset(
-                  'assets/imgs/icons/icon_arrow_g.png',
-                  height: 24,
-                  width: 24,
-                ),
-              ),
-              ListTile(
-                contentPadding: EdgeInsets.symmetric(horizontal: 16),
-                minVerticalPadding: 20,
-                onTap: () {
-                  Get.to(() => setting_moreTab());
-                },
-                title: Text(
-                  '설정',
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 15,
-                      color: Color(0xFF111111)),
-                ),
-                trailing: Image.asset(
-                  'assets/imgs/icons/icon_arrow_g.png',
-                  height: 24,
-                  width: 24,
-                ),
-              ),
-              SizedBox(height: 36),
+
+              // Column(
+              //   crossAxisAlignment: CrossAxisAlignment.start,
+              //   children: [
+              //     Padding(
+              //       padding: EdgeInsets.symmetric(horizontal: 16),
+              //       child: Text(
+              //         '스키장',
+              //         style: TextStyle(
+              //             fontSize: 13,
+              //             fontWeight: FontWeight.bold,
+              //             color: Color(0xFF3D83ED)),
+              //       ),
+              //     ),
+              //     SizedBox(height: 10),
+              //     ListTile(
+              //       contentPadding: EdgeInsets.symmetric(horizontal: 16),
+              //       minVerticalPadding: 20,
+              //       onTap: () {
+              //         Get.to(ResortTab());
+              //       },
+              //       title: Text(
+              //         '스키장 모아보기',
+              //         style: TextStyle(
+              //             fontWeight: FontWeight.bold,
+              //             fontSize: 15,
+              //             color: Color(0xFF111111)),
+              //       ),
+              //       trailing: Image.asset(
+              //         'assets/imgs/icons/icon_arrow_g.png',
+              //         height: 24,
+              //         width: 24,
+              //       ),
+              //     ),
+              //     SizedBox(height: 28),
+              //     Padding(
+              //       padding: EdgeInsets.symmetric(horizontal: 16),
+              //       child: Text(
+              //         '고객센터',
+              //         style: TextStyle(
+              //             fontSize: 13,
+              //             fontWeight: FontWeight.bold,
+              //             color: Color(0xFF3D83ED)),
+              //       ),
+              //     ),
+              //     SizedBox(height: 10),
+              //     ListTile(
+              //       contentPadding: EdgeInsets.symmetric(horizontal: 16),
+              //       minVerticalPadding: 20,
+              //       onTap: () {
+              //         otherShare(contents: 'http://pf.kakao.com/_LxnDdG/chat');
+              //       },
+              //       title: Stack(
+              //         children: [
+              //           Text(
+              //             '1:1 고객 문의',
+              //             style: TextStyle(
+              //                 fontWeight: FontWeight.bold,
+              //                 fontSize: 15,
+              //                 color: Color(0xFF111111)),
+              //           ),
+              //         ],
+              //       ),
+              //       trailing: Image.asset(
+              //         'assets/imgs/icons/icon_arrow_g.png',
+              //         height: 24,
+              //         width: 24,
+              //       ),
+              //     ),
+              //     SizedBox(height: 28),
+              //     Padding(
+              //       padding: EdgeInsets.symmetric(horizontal: 16),
+              //       child: Text(
+              //         '설정',
+              //         style: TextStyle(
+              //             fontSize: 13,
+              //             fontWeight: FontWeight.bold,
+              //             color: Color(0xFF3D83ED)),
+              //       ),
+              //     ),
+              //     SizedBox(height: 10),
+              //     ListTile(
+              //       contentPadding: EdgeInsets.symmetric(horizontal: 16),
+              //       minVerticalPadding: 20,
+              //       onTap: () {
+              //         Get.to(() => SnowliveDetailPage());
+              //       },
+              //       title: Text(
+              //         'SNOWLIVE',
+              //         style: TextStyle(
+              //             fontWeight: FontWeight.bold,
+              //             fontSize: 15,
+              //             color: Color(0xFF111111)),
+              //       ),
+              //       trailing: Image.asset(
+              //         'assets/imgs/icons/icon_arrow_g.png',
+              //         height: 24,
+              //         width: 24,
+              //       ),
+              //     ),
+              //     ListTile(
+              //       contentPadding: EdgeInsets.symmetric(horizontal: 16),
+              //       minVerticalPadding: 20,
+              //       onTap: () {
+              //         Get.to(() => setting_moreTab());
+              //       },
+              //       title: Text(
+              //         '설정',
+              //         style: TextStyle(
+              //             fontWeight: FontWeight.bold,
+              //             fontSize: 15,
+              //             color: Color(0xFF111111)),
+              //       ),
+              //       trailing: Image.asset(
+              //         'assets/imgs/icons/icon_arrow_g.png',
+              //         height: 24,
+              //         width: 24,
+              //       ),
+              //     ),
+              //     SizedBox(height: 36),
+              //   ],
+              // ),
             ],
           ),
         ));
