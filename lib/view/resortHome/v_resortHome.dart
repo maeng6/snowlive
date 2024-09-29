@@ -1606,13 +1606,22 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                                           color: Color(0xFFF5F2F7),
                                           borderRadius: BorderRadius.circular(10),
                                         ),
-                                        child: Row(
+                                        child: Stack (
                                           children: [
-                                            Padding(
-                                              padding: const EdgeInsets.only(left: 24, top: 30, right: 24),
-                                              child: Column(
-                                                children: [
-                                                  Column(
+                                            Positioned(
+                                              bottom: 0,
+                                              right: 0,
+                                              child: Image.asset(
+                                                'assets/imgs/imgs/img_resortHome_ranking_1.png',
+                                                fit: BoxFit.cover,
+                                                width: _size.width - 60,
+                                              ),
+                                            ),
+                                            Row(
+                                              children: [
+                                                Padding(
+                                                  padding: const EdgeInsets.only(left: 24, top: 30, right: 24),
+                                                  child: Column(
                                                     crossAxisAlignment: CrossAxisAlignment.start,
                                                     mainAxisAlignment: MainAxisAlignment.start,
                                                     children: [
@@ -1624,7 +1633,7 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                                                         ),
                                                       ),
                                                       Padding(
-                                                        padding: const EdgeInsets.only(top: 6),
+                                                        padding: const EdgeInsets.only(top: 4),
                                                         child: Text(
                                                           '친구들의 라이브 상태도 확인하고',
                                                           style: SDSTextStyle.regular.copyWith(
@@ -1668,7 +1677,7 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                                                                     ),
                                                                   ),
                                                                 ),
-                                                                ExtendedImage.asset(
+                                                                Image.asset(
                                                                   'assets/imgs/icons/icon_arrow_round_black.png',
                                                                   fit: BoxFit.cover,
                                                                   width: 18,
@@ -1681,10 +1690,8 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                                                       ),
                                                     ],
                                                   ),
-                                                  Container(
-                                                  )
-                                                ],
-                                              ),
+                                                ),
+                                              ],
                                             ),
                                           ],
                                         ),

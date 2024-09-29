@@ -190,11 +190,17 @@ class CommunityBulletinEventListView extends StatelessWidget {
                         ),
                       )
                           : Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16),
-                        child: ListView.builder(
+                        padding: EdgeInsets.only(left: 16, right: 16, top: 16),
+                        child: GridView.builder(
                           physics: NeverScrollableScrollPhysics(),
                           shrinkWrap: true,
                           itemCount: _communityBulletinListViewModel.communityList_event.length,
+                          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            mainAxisSpacing: 12,
+                            crossAxisSpacing: 20,
+                            childAspectRatio: 1 / 1.7,
+                          ),
                           itemBuilder: (context, index) {
                             Community communityData = _communityBulletinListViewModel.communityList_event[index];
                             // 필드가 없을 경우 기본값 설정
@@ -208,168 +214,145 @@ class CommunityBulletinEventListView extends StatelessWidget {
                                 await _communityDetailViewModel.addViewerCommunity(
                                     _communityDetailViewModel.communityDetail.communityId!,
                                     {
-                                  "user_id":_userViewModel.user.user_id.toString()
-                                });
+                                      "user_id":_userViewModel.user.user_id.toString()
+                                    });
                               },
-                              child: Obx(() => Column(
+                              child: Column(
                                 children: [
-                                  Padding(
-                                    padding: EdgeInsets.only(top: 2),
-                                    child: Container(
-                                      color: Colors.white,
-                                      child: Row(
-                                        children: [
-                                          Container(
-                                            width: _size.width - 32,
-                                            child: Row(
-                                              crossAxisAlignment: CrossAxisAlignment.center,
-                                              children: [
-                                                Expanded(
-                                                  child: Padding(
-                                                    padding: const EdgeInsets.only(top: 6, bottom: 8),
-                                                    child: Column(
-                                                      mainAxisAlignment: MainAxisAlignment.start,
-                                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                                      children: [
-                                                        Padding(
-                                                          padding: const EdgeInsets.only(bottom: 6),
-                                                          child: Row(
-                                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                            children: [
-                                                              Expanded(
-                                                                child: Row(
+                                  Container(
+                                    color: Colors.white,
+                                    child: Row(
+                                      children: [
+                                        Container(
+                                          width: _size.width /2 - 27 ,
+                                          child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              (communityData.thumbImg != null)
+                                                  ? ExtendedImage.network(communityData.thumbImg!,
+                                                cache: true,
+                                                shape: BoxShape.rectangle,
+                                                borderRadius: BorderRadius.circular(12),
+                                                border: Border.all(width: 1, color: SDSColor.gray100),
+                                                width: _size.width /2 - 27,
+                                                height: _size.width /2 - 27,
+                                                cacheHeight: 250,
+                                                fit: BoxFit.cover,
+                                              )
+                                                  : Container(
+                                                width: _size.width /2 - 27,
+                                                height: _size.width /2 - 27,
+                                                decoration: BoxDecoration(
+                                                  color: SDSColor.blue50,
+                                                  borderRadius: BorderRadius.circular(12),
+                                                ),
+                                                child: Column(
+                                                  mainAxisAlignment: MainAxisAlignment.center,
+                                                  children: [
+                                                    Image.asset(
+                                                      'assets/imgs/logos/snowlive_logo_new.png',
+                                                      width: 120,
+                                                      color: SDSColor.blue100,
+                                                    )
+                                                  ],
+                                                ),
+                                              ),
+                                              Padding(
+                                                padding: const EdgeInsets.only(top: 6, bottom: 8),
+                                                child: Column(
+                                                  mainAxisAlignment: MainAxisAlignment.start,
+                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                  children: [
+                                                    Padding(
+                                                      padding: const EdgeInsets.only(bottom: 6),
+                                                      child: Row(
+                                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                        children: [
+                                                          Expanded(
+                                                            child: Row(
+                                                              children: [
+                                                                Column(
+                                                                  crossAxisAlignment: CrossAxisAlignment.start,
                                                                   children: [
-                                                                    Expanded(
-                                                                      child: Row(
-                                                                        crossAxisAlignment: CrossAxisAlignment.center,
-                                                                        children: [
-                                                                          //카테고리 뱃지 디자인
-                                                                          Padding(
-                                                                            padding: const EdgeInsets.only(right: 6),
-                                                                            child: Container(
-                                                                              padding: EdgeInsets.symmetric(horizontal: 5, vertical: 3),
+                                                                    // 게시글 타이틀
+                                                                    Padding(
+                                                                      padding: EdgeInsets.only(top: 6, bottom: 4),
+                                                                      child: Container(
+                                                                        width: _size.width /2 - 27,
+                                                                        child: Text(
+                                                                          '${communityData.title}',
+                                                                          maxLines: 2,
+                                                                          overflow: TextOverflow.ellipsis,
+                                                                          style: SDSTextStyle.bold.copyWith(
+                                                                              fontSize: 15,
+                                                                              color: SDSColor.gray900
+                                                                          ),
+                                                                        ),
+                                                                      ),
+                                                                    ),
+                                                                    //카테고리 뱃지 디자인
+                                                                    Padding(
+                                                                      padding: EdgeInsets.only(top: 2),
+                                                                      child: Container(
+                                                                        width: _size.width /2 - 27,
+                                                                        child: Row(
+                                                                          children: [
+                                                                            Container(
+                                                                              padding: EdgeInsets.symmetric(horizontal: 4, vertical: 2),
                                                                               decoration: BoxDecoration(
                                                                                 color: SDSColor.blue50,
                                                                                 borderRadius: BorderRadius.circular(4),
                                                                               ),
                                                                               child: Text(
                                                                                 '${communityData.categorySub}',
-                                                                                style: SDSTextStyle.regular.copyWith(
+                                                                                style: SDSTextStyle.bold.copyWith(
                                                                                     fontSize: 11,
                                                                                     color: SDSColor.snowliveBlue),
                                                                               ),
                                                                             ),
-                                                                          ),
-                                                                          // 게시글 타이틀
-                                                                          Expanded(
-                                                                            child: Container(
+                                                                            Padding(
+                                                                              padding: EdgeInsets.only(left: 6),
                                                                               child: Text(
-                                                                                '${communityData.title}',
+                                                                                '$displayName',
+                                                                                style: SDSTextStyle.regular.copyWith(
+                                                                                  fontSize: 13,
+                                                                                  color: SDSColor.gray900,
+                                                                                ),
                                                                                 maxLines: 1,
                                                                                 overflow: TextOverflow.ellipsis,
-                                                                                style: SDSTextStyle.bold.copyWith(
-                                                                                    fontSize: 15,
-                                                                                    color: SDSColor.gray900
-                                                                                ),
                                                                               ),
                                                                             ),
-                                                                          ),
-                                                                        ],
+                                                                          ],
+                                                                        ),
                                                                       ),
                                                                     ),
+
+
                                                                   ],
                                                                 ),
-                                                              ),
-                                                            ],
-                                                          ),
-                                                        ),
-                                                        Row(
-                                                          children: [
-                                                            Text('$displayName',
-                                                              style: SDSTextStyle.regular.copyWith(
-                                                                fontSize: 12,
-                                                                color: SDSColor.gray700,
-                                                              ),
-                                                            ),
-                                                            Text(' · $_time',
-                                                              style: SDSTextStyle.regular.copyWith(
-                                                                fontSize: 12,
-                                                                color: SDSColor.gray700,
-                                                              ),
-                                                            ),
-                                                            Text('  |  ',
-                                                              style: SDSTextStyle.regular.copyWith(
-                                                                fontSize: 12,
-                                                                color: SDSColor.gray300,
-                                                              ),
-                                                            ),
-                                                            Row(
-                                                              mainAxisAlignment: MainAxisAlignment.center,
-                                                              children: [
-                                                                Image.asset('assets/imgs/icons/icon_eye_rounded.png',
-                                                                  width: 14,
-                                                                  height: 14,),
-                                                                Padding(
-                                                                  padding: const EdgeInsets.only(left: 2),
-                                                                  child: Text(
-                                                                    '${communityData.viewsCount}',
-                                                                    style: SDSTextStyle.regular.copyWith(
-                                                                      fontSize: 12,
-                                                                      color: SDSColor.gray700,
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                                SizedBox(width: 6),
-                                                                Image.asset('assets/imgs/icons/icon_reply_rounded.png',
-                                                                  width: 14,
-                                                                  height: 14,),
-                                                                Padding(
-                                                                  padding: const EdgeInsets.only(left: 2),
-                                                                  child: Text('${communityData.commentCount}',
-                                                                    style: SDSTextStyle.regular.copyWith(
-                                                                      fontSize: 12,
-                                                                      color: SDSColor.gray700,
-                                                                    ),
-                                                                  ),
-                                                                )
                                                               ],
                                                             ),
-                                                          ],
-                                                        ),
-                                                      ],
+                                                          ),
+                                                        ],
+                                                      ),
                                                     ),
-                                                  ),
+                                                    Text('$_time',
+                                                      style: SDSTextStyle.regular.copyWith(
+                                                        fontSize: 12,
+                                                        color: SDSColor.gray500,
+                                                      ),
+                                                    ),
+                                                  ],
                                                 ),
-                                                (communityData.thumbImg != null)
-                                                    ? Padding(
-                                                  padding: const EdgeInsets.only(left: 16),
-                                                  child: ExtendedImage.network(communityData.thumbImg!,
-                                                    cache: true,
-                                                    shape: BoxShape.rectangle,
-                                                    borderRadius: BorderRadius.circular(8),
-                                                    border: Border.all(width: 0.5, color: Color(0xFFdedede)),
-                                                    width: 50,
-                                                    height: 50,
-                                                    cacheHeight: 250,
-                                                    fit: BoxFit.cover,
-                                                  ),
-                                                )
-                                                    : Container()
-                                              ],
-                                            ),
+                                              ),
+                                            ],
                                           ),
-                                        ],
-                                      ),
+                                        ),
+                                      ],
                                     ),
                                   ),
-                                  if(_communityBulletinListViewModel.communityList_event.length != index + 1)
-                                    Divider(
-                                      color: SDSColor.gray50,
-                                      height: 16,
-                                      thickness: 1,
-                                    ),
                                 ],
-                              )),
+                              ),
                             );
                           },
                           padding: EdgeInsets.only(bottom: 80),
