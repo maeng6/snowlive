@@ -16,6 +16,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:shimmer/shimmer.dart';
 
 class FleaMarketDetailView extends StatefulWidget {
 
@@ -724,7 +725,19 @@ class _FleaMarketDetailViewState extends State<FleaMarketDetailView> {
                                                           switch (state.extendedImageLoadState) {
                                                             case LoadState.loading:
                                                             // 로딩 중일 때 로딩 인디케이터를 표시
-                                                              return Center(child: CircularProgressIndicator());
+                                                              return Shimmer.fromColors(
+                                                                baseColor: SDSColor.gray50!,
+                                                                highlightColor: SDSColor.gray200!,
+                                                                direction: ShimmerDirection.ltr,
+                                                                child: Container(
+                                                                  width: _size.width,
+                                                                  height: _size.width,
+                                                                  decoration: BoxDecoration(
+                                                                    color: Colors.white,
+                                                                    borderRadius: BorderRadius.circular(8),
+                                                                  ),
+                                                                ),
+                                                              );
                                                             case LoadState.completed:
                                                             // 로딩이 완료되었을 때 이미지 반환
                                                               return state.completedWidget;

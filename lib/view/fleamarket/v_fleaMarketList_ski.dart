@@ -128,9 +128,9 @@ class FleaMarketListView_ski extends StatelessWidget {
           backgroundColor: Colors.white,
           body: Obx(()=>RefreshIndicator(
             strokeWidth: 2,
-            edgeOffset: 20,
-            backgroundColor: SDSColor.snowliveWhite,
-            color: SDSColor.snowliveBlue,
+            edgeOffset: 40,
+            backgroundColor: SDSColor.snowliveBlue,
+            color: SDSColor.snowliveWhite,
             onRefresh: _fleamarketListViewModel.onRefresh_flea_ski,
             child: Padding(
               padding: const EdgeInsets.only(top: 12),

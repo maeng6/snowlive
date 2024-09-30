@@ -23,6 +23,15 @@ class FriendDetailView extends StatefulWidget {
 
 class _FriendDetailViewState extends State<FriendDetailView> {
   FocusNode _textFocus = FocusNode();
+  late GlobalKey<FormState> _formKey;
+
+
+  @override
+  void initState() {
+    super.initState();
+    // initState에서 GlobalKey 초기화
+    _formKey = GlobalKey<FormState>();
+  }
 
   @override
   void dispose() {
@@ -2325,7 +2334,7 @@ class _FriendDetailViewState extends State<FriendDetailView> {
                           child: Padding(
                             padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                             child: TextFormField(
-                              key: _friendDetailViewModel.formKey,
+                              key: _formKey,
                               controller: _friendDetailViewModel.textEditingController,
                               focusNode: _textFocus, // FocusNode 추가
                               cursorColor: SDSColor.snowliveBlue,
