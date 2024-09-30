@@ -2,8 +2,6 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:com.snowlive/data/imgaUrls/Data_url_image.dart';
 import 'package:com.snowlive/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/routes/routes.dart';
-import 'package:com.snowlive/view/ranking/v_rankingListBeta_crew.dart';
-import 'package:com.snowlive/view/ranking/v_rankingListBeta_indiv.dart';
 import 'package:com.snowlive/viewmodel/friend/vm_rankingIndivHistory.dart';
 import 'package:com.snowlive/viewmodel/ranking/vm_rankingList_beta.dart';
 import 'package:extended_image/extended_image.dart';

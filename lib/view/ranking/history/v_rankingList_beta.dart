@@ -2,8 +2,6 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:com.snowlive/data/imgaUrls/Data_url_image.dart';
 import 'package:com.snowlive/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/routes/routes.dart';
-import 'package:com.snowlive/view/ranking/v_rankingListBeta_crew.dart';
-import 'package:com.snowlive/view/ranking/v_rankingListBeta_indiv.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewDetail.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewMemberList.dart';
 import 'package:com.snowlive/viewmodel/friend/vm_friendDetail.dart';
@@ -19,7 +17,6 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
 class RankingBetaView extends StatelessWidget {
-
   final UserViewModel _userViewModel = Get.find<UserViewModel>();
   final FriendDetailViewModel _friendDetailViewModel = Get.find<FriendDetailViewModel>();
   final RankingListBetaViewModel _rankingListBetaViewModel = Get.find<RankingListBetaViewModel>();
@@ -31,166 +28,510 @@ class RankingBetaView extends StatelessWidget {
     Size _size = MediaQuery.of(context).size;
     double _statusBarSize = MediaQuery.of(context).padding.top;
 
-    return Obx(()=>Container(
+    return Obx(() => Container(
       color: Colors.white,
       child: SafeArea(
         child: Stack(
           children: [
-            (_rankingListBetaViewModel.isLoadingBeta_crew==true
-                || _rankingListBetaViewModel.isLoadingBeta_indiv==true)
-                ? Container(
-              height: 150,
+            (_rankingListBetaViewModel.isLoadingBeta_crew == true ||
+                _rankingListBetaViewModel.isLoadingBeta_indiv == true)
+                ? Center(
+              child: CircularProgressIndicator(
+                strokeWidth: 2,
+                backgroundColor: SDSColor.snowliveWhite,
+                color: SDSColor.snowliveBlue,
+              ),
+            )
+                : Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Center(
-                    child: CircularProgressIndicator(
-                      strokeWidth: 2,
-                      backgroundColor: SDSColor.snowliveWhite,
-                      color: SDSColor.snowliveBlue,
+                  // 필터
+                  Container(
+                    height: 60,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.only(top: 16, bottom: 8),
+                              child: Row(
+                                children: [
+                                  Padding(
+                                    padding: EdgeInsets.only(right: 8),
+                                    child: Stack(
+                                      children: [
+                                        ElevatedButton(
+                                          onPressed: () {
+                                            _rankingListBetaViewModel.changeCrewOrIndiv('크루');
+                                          },
+                                          style: ElevatedButton.styleFrom(
+                                            padding: EdgeInsets.only(
+                                                right: 12, left: 12, top: 2, bottom: 2),
+                                            side: BorderSide(
+                                              width: 1,
+                                              color: (_rankingListBetaViewModel.crewOrIndiv == '크루')
+                                                  ? SDSColor.gray900
+                                                  : SDSColor.gray100,
+                                            ),
+                                            backgroundColor: (_rankingListBetaViewModel.crewOrIndiv == '크루')
+                                                ? SDSColor.gray900
+                                                : SDSColor.snowliveWhite,
+                                            elevation: 0,
+                                            shape: RoundedRectangleBorder(
+                                                borderRadius: BorderRadius.circular(50)),
+                                          ),
+                                          child: Text('크루',
+                                              style: SDSTextStyle.bold.copyWith(
+                                                  fontSize: 13,
+                                                  color: (_rankingListBetaViewModel.crewOrIndiv == '크루')
+                                                      ? Color(0xFFFFFFFF)
+                                                      : Color(0xFF111111))),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.only(top: 16, bottom: 8),
+                              child: Row(
+                                children: [
+                                  Padding(
+                                    padding: EdgeInsets.only(right: 8),
+                                    child: Stack(
+                                      children: [
+                                        ElevatedButton(
+                                          onPressed: () {
+                                            _rankingListBetaViewModel.changeCrewOrIndiv('개인');
+                                          },
+                                          style: ElevatedButton.styleFrom(
+                                            padding: EdgeInsets.only(
+                                                right: 12, left: 12, top: 2, bottom: 2),
+                                            side: BorderSide(
+                                              width: 1,
+                                              color: (_rankingListBetaViewModel.crewOrIndiv == '개인')
+                                                  ? SDSColor.gray900
+                                                  : SDSColor.gray100,
+                                            ),
+                                            backgroundColor: (_rankingListBetaViewModel.crewOrIndiv == '개인')
+                                                ? SDSColor.gray900
+                                                : SDSColor.snowliveWhite,
+                                            elevation: 0,
+                                            shape: RoundedRectangleBorder(
+                                                borderRadius: BorderRadius.circular(50)),
+                                          ),
+                                          child: Text('개인',
+                                              style: SDSTextStyle.bold.copyWith(
+                                                  fontSize: 13,
+                                                  color: (_rankingListBetaViewModel.crewOrIndiv == '개인')
+                                                      ? Color(0xFFFFFFFF)
+                                                      : Color(0xFF111111))),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                        Padding(
+                          padding: EdgeInsets.only(top: 16, bottom: 8),
+                          child: Row(
+                            children: [
+                              Padding(
+                                padding: EdgeInsets.only(right: 8),
+                                child: Stack(
+                                  children: [
+                                    ElevatedButton(
+                                      onPressed: () {},
+                                      style: ElevatedButton.styleFrom(
+                                        padding: EdgeInsets.only(
+                                            right: 12, left: 12, top: 2, bottom: 2),
+                                        side: BorderSide(
+                                          width: 1,
+                                          color: SDSColor.gray100,
+                                        ),
+                                        backgroundColor: SDSColor.snowliveWhite,
+                                        elevation: 0,
+                                        shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(50)),
+                                      ),
+                                      child: Text('23/24 시즌',
+                                          style: SDSTextStyle.bold.copyWith(
+                                              fontSize: 13, color: Color(0xFF111111))),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(height: 16),
+
+                  // 크루 또는 개인 랭킹 리스트 표시
+                  Expanded( // Expanded로 감싸서 남은 공간을 사용하도록 함
+                    child: (_rankingListBetaViewModel.crewOrIndiv == '크루')
+                        ? Scrollbar(
+                      controller: _rankingListBetaViewModel.scrollControllerCrewBeta,
+                      child: ListView.builder(
+                        controller: _rankingListBetaViewModel.scrollControllerCrewBeta,
+                        physics: AlwaysScrollableScrollPhysics(),
+                        itemCount: _rankingListBetaViewModel.rankingListCrewBetaList.length + 1,
+                        itemBuilder: (context, index) {
+
+                          if(index ==  _rankingListBetaViewModel.rankingListCrewBetaList.length){
+                            return Obx(() => _rankingListBetaViewModel.isLoadingNextList_crew == true // 여기서 Obx 사용
+                                ? Padding(
+                              padding: const EdgeInsets.all(16.0),
+                              child: Center(
+                                child: CircularProgressIndicator(), // 로딩 인디케이터
+                              ),
+                            )
+                                : SizedBox.shrink());
+                          }else{
+                            final document = _rankingListBetaViewModel.rankingListCrewBetaList[index];
+                            return Padding(
+                              padding:
+                              const EdgeInsets.only(bottom: 8, left: 2, right: 2),
+                              child: GestureDetector(
+                                onTap: () async {
+                                  Get.toNamed(AppRoutes.crewMain);
+                                  await _crewDetailViewModel.fetchCrewDetail(
+                                    document.crewInfo!.crewId!,
+                                    _friendDetailViewModel.seasonDate,
+                                  );
+                                  await _crewMemberListViewModel.fetchCrewMembers(
+                                    crewId: document.crewInfo!.crewId!,
+                                  );
+                                },
+                                child: Row(
+                                  children: [
+                                    // 크루 랭킹 정보 표시
+                                    Container(
+                                      width: 24,
+                                      height: 40,
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          if (index == 0) ...[
+                                            Image.asset(
+                                                'assets/imgs/icons/icon_medal_1.png',
+                                                width: 24),
+                                          ] else if (index == 1) ...[
+                                            Image.asset(
+                                                'assets/imgs/icons/icon_medal_2.png',
+                                                width: 24),
+                                          ] else if (index == 2) ...[
+                                            Image.asset(
+                                                'assets/imgs/icons/icon_medal_3.png',
+                                                width: 24),
+                                          ] else ...[
+                                            Expanded(
+                                              child: Center(
+                                                child: AutoSizeText(
+                                                  (index + 1).toString(), // 순위를 1부터 시작
+                                                  style: SDSTextStyle.bold.copyWith(
+                                                      fontSize: 14,
+                                                      color: Color(0xFF111111)),
+                                                  maxLines: 1,
+                                                  minFontSize: 6,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ],
+                                      ),
+                                    ),
+                                    SizedBox(width: 8),
+                                    Container(
+                                      width: 32,
+                                      height: 32,
+                                      decoration: BoxDecoration(
+                                        border: Border.all(
+                                          color: SDSColor.gray100,
+                                          width: 1,
+                                        ),
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                      child: document.crewInfo!.crewLogoUrl!.isNotEmpty
+                                          ? ExtendedImage.network(
+                                        document.crewInfo!.crewLogoUrl!,
+                                        enableMemoryCache: true,
+                                        shape: BoxShape.rectangle,
+                                        borderRadius: BorderRadius.circular(10),
+                                        cacheHeight: 100,
+                                        width: 32,
+                                        height: 32,
+                                        fit: BoxFit.cover,
+                                      )
+                                          : ExtendedImage.network(
+                                        '${crewDefaultLogoUrl['${document.crewInfo!.color}']}',
+                                        enableMemoryCache: true,
+                                        cacheHeight: 100,
+                                        shape: BoxShape.rectangle,
+                                        borderRadius: BorderRadius.circular(10),
+                                        width: 32,
+                                        height: 32,
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+                                    SizedBox(width: 10),
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                        mainAxisAlignment:
+                                        MainAxisAlignment.center,
+                                        children: [
+                                          Row(
+                                            children: [
+                                              Text(
+                                                document.crewInfo!.crewName!,
+                                                style: SDSTextStyle.regular.copyWith(
+                                                    fontSize: 14,
+                                                    color: SDSColor.gray900),
+                                              ),
+                                            ],
+                                          ),
+                                          Row(
+                                            children: [
+                                              Text(
+                                                document.crewInfo!.baseResortNickname!,
+                                                style: SDSTextStyle.regular.copyWith(
+                                                    fontSize: 12,
+                                                    color: SDSColor.gray500),
+                                              ),
+                                              Text(
+                                                '·',
+                                                style: SDSTextStyle.regular.copyWith(
+                                                    fontSize: 12,
+                                                    color: SDSColor.gray500),
+                                              ),
+                                              Expanded(
+                                                child: Text(
+                                                  document.crewInfo!.description ?? '',
+                                                  maxLines: 1,
+                                                  overflow:
+                                                  TextOverflow.ellipsis,
+                                                  style: SDSTextStyle.regular.copyWith(
+                                                      fontSize: 12,
+                                                      color: SDSColor.gray500),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    Row(
+                                      children: [
+                                        Text(
+                                          '${document.overallTotalScore!.toInt()}점',
+                                          style: SDSTextStyle.regular.copyWith(
+                                            color: SDSColor.gray900,
+                                            fontSize: 16,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            );
+                          }
+
+
+                        },
+                        padding: EdgeInsets.only(bottom: 80),
+                      ),
+                    )
+                        : Scrollbar(
+                      controller: _rankingListBetaViewModel.scrollControllerIndivBeta,
+                      child: ListView.builder(
+                        controller: _rankingListBetaViewModel.scrollControllerIndivBeta,
+                        physics: AlwaysScrollableScrollPhysics(),
+                        itemCount: _rankingListBetaViewModel.rankingListIndivBetaList.length + 1,
+                        itemBuilder: (context, index) {
+
+                          if(index == _rankingListBetaViewModel.rankingListIndivBetaList.length){
+                            return Obx(() => _rankingListBetaViewModel.isLoadingNextList_indi == true // 여기서 Obx 사용
+                                ? Padding(
+                              padding: const EdgeInsets.all(16.0),
+                              child: Center(
+                                child: CircularProgressIndicator(), // 로딩 인디케이터
+                              ),
+                            )
+                                : SizedBox.shrink());
+                          }else{
+                            final document = _rankingListBetaViewModel.rankingListIndivBetaList[index];
+                            return Padding(
+                              padding:
+                              const EdgeInsets.only(bottom: 8, left: 2, right: 2),
+                              child: GestureDetector(
+                                onTap: () async {
+                                  Get.toNamed(AppRoutes.friendDetail);
+                                  await _friendDetailViewModel.fetchFriendDetailInfo(
+                                      userId: _userViewModel.user.user_id,
+                                      friendUserId: document.userInfo!.userId!,
+                                      season: _friendDetailViewModel.seasonDate);
+                                },
+                                child: Row(
+                                  children: [
+                                    // 개인 랭킹 정보 표시
+                                    Container(
+                                      width: 24,
+                                      height: 40,
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          if (index == 0) ...[
+                                            Image.asset(
+                                                'assets/imgs/icons/icon_medal_1.png',
+                                                width: 24),
+                                          ] else if (index == 1) ...[
+                                            Image.asset(
+                                                'assets/imgs/icons/icon_medal_2.png',
+                                                width: 24),
+                                          ] else if (index == 2) ...[
+                                            Image.asset(
+                                                'assets/imgs/icons/icon_medal_3.png',
+                                                width: 24),
+                                          ] else ...[
+                                            Expanded(
+                                              child: Center(
+                                                child: AutoSizeText(
+                                                  (index + 1).toString(), // 순위를 1부터 시작
+                                                  style: SDSTextStyle.bold.copyWith(
+                                                      fontSize: 14,
+                                                      color: Color(0xFF111111)),
+                                                  maxLines: 1,
+                                                  minFontSize: 6,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ],
+                                      ),
+                                    ),
+                                    SizedBox(width: 8),
+                                    Container(
+                                      width: 32,
+                                      height: 32,
+                                      decoration: BoxDecoration(
+                                        border: Border.all(
+                                          color: SDSColor.gray100,
+                                          width: 1,
+                                        ),
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                      child: document.userInfo!.profileImageUrlUser!
+                                          .isNotEmpty
+                                          ? ExtendedImage.network(
+                                        document.userInfo!.profileImageUrlUser!,
+                                        enableMemoryCache: true,
+                                        shape: BoxShape.rectangle,
+                                        borderRadius: BorderRadius.circular(10),
+                                        cacheHeight: 100,
+                                        width: 32,
+                                        height: 32,
+                                        fit: BoxFit.cover,
+                                      )
+                                          : ExtendedImage.network(
+                                        '${profileImgUrlList[0].default_round}',
+                                        enableMemoryCache: true,
+                                        cacheHeight: 100,
+                                        shape: BoxShape.rectangle,
+                                        borderRadius: BorderRadius.circular(10),
+                                        width: 32,
+                                        height: 32,
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+                                    SizedBox(width: 10),
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                        mainAxisAlignment:
+                                        MainAxisAlignment.center,
+                                        children: [
+                                          Row(
+                                            children: [
+                                              Text(
+                                                document.userInfo!.displayName!,
+                                                style: SDSTextStyle.regular.copyWith(
+                                                    fontSize: 14,
+                                                    color: SDSColor.gray900),
+                                              ),
+                                            ],
+                                          ),
+                                          Row(
+                                            children: [
+                                              Text(
+                                                document.userInfo!.resortNickname!,
+                                                style: SDSTextStyle.regular.copyWith(
+                                                    fontSize: 12,
+                                                    color: SDSColor.gray500),
+                                              ),
+                                              Text(
+                                                '·',
+                                                style: SDSTextStyle.regular.copyWith(
+                                                    fontSize: 12,
+                                                    color: SDSColor.gray500),
+                                              ),
+                                              Expanded(
+                                                child: Text(
+                                                  document.userInfo!.crewName ?? '',
+                                                  maxLines: 1,
+                                                  overflow:
+                                                  TextOverflow.ellipsis,
+                                                  style: SDSTextStyle.regular.copyWith(
+                                                      fontSize: 12,
+                                                      color: SDSColor.gray500),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    Row(
+                                      children: [
+                                        Text(
+                                          '${document.resortTotalScore!.toInt()}점',
+                                          style: SDSTextStyle.regular.copyWith(
+                                            color: SDSColor.gray900,
+                                            fontSize: 16,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            );
+                          }
+
+
+                        },
+                        padding: EdgeInsets.only(bottom: 80),
+                      ),
                     ),
                   ),
                 ],
               ),
-            )
-                : SingleChildScrollView(
-                  physics: AlwaysScrollableScrollPhysics(),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: Container(
-                      child: Column(
-                        children: [
-                          //필터
-                          Container(
-                            height: 60,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Row(
-                                  children: [
-                                    Padding(
-                                      padding: EdgeInsets.only(top: 16, bottom: 8),
-                                      child: Row(
-                                        children: [
-                                          Padding(
-                                            padding: EdgeInsets.only(right: 8),
-                                            child: Stack(
-                                              children: [
-                                                ElevatedButton(
-                                                    onPressed: () {
-                                                      _rankingListBetaViewModel.changeCrewOrIndiv('크루');
-                                                    },
-                                                    style: ElevatedButton.styleFrom(
-                                                        padding: EdgeInsets.only(
-                                                            right: 12, left: 12, top: 2, bottom: 2),
-                                                        side: BorderSide(
-                                                          width: 1,
-                                                          color: (_rankingListBetaViewModel.crewOrIndiv=='크루') ? SDSColor.gray900 : SDSColor.gray100,
-                                                        ),
-                                                        backgroundColor: (_rankingListBetaViewModel.crewOrIndiv=='크루') ? SDSColor.gray900 : SDSColor.snowliveWhite,
-                                                        elevation: 0,
-                                                        shape: RoundedRectangleBorder(
-                                                            borderRadius: BorderRadius.circular(50))),
-                                                    child:
-                                                    Text('크루',
-                                                        style: SDSTextStyle.bold.copyWith(
-                                                            fontSize: 13,
-                                                            color: (_rankingListBetaViewModel.crewOrIndiv=='크루') ? Color(0xFFFFFFFF) : Color(0xFF111111)))
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    Padding(
-                                      padding: EdgeInsets.only(top: 16, bottom: 8),
-                                      child: Row(
-                                        children: [
-                                          Padding(
-                                            padding: EdgeInsets.only(right: 8),
-                                            child: Stack(
-                                              children: [
-                                                ElevatedButton(
-                                                    onPressed: () {
-                                                      _rankingListBetaViewModel.changeCrewOrIndiv('개인');
-                                                    },
-                                                    style: ElevatedButton.styleFrom(
-                                                        padding: EdgeInsets.only(
-                                                            right: 12, left: 12, top: 2, bottom: 2),
-                                                        side: BorderSide(
-                                                          width: 1,
-                                                          color: (_rankingListBetaViewModel.crewOrIndiv=='개인') ? SDSColor.gray900 : SDSColor.gray100,
-                                                        ),
-                                                        backgroundColor: (_rankingListBetaViewModel.crewOrIndiv=='개인') ? SDSColor.gray900 : SDSColor.snowliveWhite,
-                                                        elevation: 0,
-                                                        shape: RoundedRectangleBorder(
-                                                            borderRadius: BorderRadius.circular(50))),
-                                                    child:
-                                                    Text('개인',
-                                                        style: SDSTextStyle.bold.copyWith(
-                                                            fontSize: 13,
-                                                            color: (_rankingListBetaViewModel.crewOrIndiv=='개인') ? Color(0xFFFFFFFF) : Color(0xFF111111)))
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.only(top: 16, bottom: 8),
-                                  child: Row(
-                                    children: [
-                                      Padding(
-                                        padding: EdgeInsets.only(right: 8),
-                                        child: Stack(
-                                          children: [
-                                            ElevatedButton(
-                                                onPressed: () {
-                                                },
-                                                style: ElevatedButton.styleFrom(
-                                                    padding: EdgeInsets.only(
-                                                        right: 12, left: 12, top: 2, bottom: 2),
-                                                    side: BorderSide(
-                                                      width: 1,
-                                                      color: SDSColor.gray100,
-                                                    ),
-                                                    backgroundColor: SDSColor.snowliveWhite,
-                                                    elevation: 0,
-                                                    shape: RoundedRectangleBorder(
-                                                        borderRadius: BorderRadius.circular(50))),
-                                                child:
-                                                Text('23/24 시즌',
-                                                    style: SDSTextStyle.bold.copyWith(
-                                                        fontSize: 13,
-                                                        color:  Color(0xFF111111)))
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          SizedBox(height: 16),
-
-
-                          (_rankingListBetaViewModel.crewOrIndiv == '크루' )
-                              ? RankingListBetaCrew()
-                              : RankingListBetaIndiv()
-                        ],
-                      ),
-                    ),
-                  ),
-                )
+            ),
           ],
         ),
       ),
     ));
   }
 }
+

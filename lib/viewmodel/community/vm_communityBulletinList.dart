@@ -52,6 +52,12 @@ class CommunityBulletinListViewModel extends GetxController {
   RxBool _isLoadingList_crew = false.obs;
   RxBool _isLoadingList_event = false.obs;
 
+  RxBool _isLoadingNextList_total = false.obs;
+  RxBool _isLoadingNextList_free = false.obs;
+  RxBool _isLoadingNextList_room = false.obs;
+  RxBool _isLoadingNextList_crew = false.obs;
+  RxBool _isLoadingNextList_event = false.obs;
+
   String get nextPageUrlTotal => _nextPageUrl_total.value;
   String get nextPageUrlFree => _nextPageUrl_free.value;
   String get nextPageUrlRoom => _nextPageUrl_room.value;
@@ -81,6 +87,12 @@ class CommunityBulletinListViewModel extends GetxController {
   bool get isLoadingList_room  => _isLoadingList_room .value;
   bool get isLoadingList_crew  => _isLoadingList_crew .value;
   bool get isLoadingList_event  => _isLoadingList_event .value;
+
+  bool get isLoadingNextList_total => _isLoadingNextList_total .value;
+  bool get isLoadingNextList_free  => _isLoadingNextList_free .value;
+  bool get isLoadingNextList_room  => _isLoadingNextList_room .value;
+  bool get isLoadingNextList_crew  => _isLoadingNextList_crew .value;
+  bool get isLoadingNextList_event  => _isLoadingNextList_event .value;
 
   String get tapName => _tapName.value;
   String get chipName => _chipName.value;
@@ -138,8 +150,10 @@ class CommunityBulletinListViewModel extends GetxController {
   Future<void> _scrollListener_total() async {
     // 스크롤이 리스트의 끝에 도달했을 때
     if (scrollController_total.position.pixels == scrollController_total.position.maxScrollExtent) {
-          if (_nextPageUrl_total.value.isNotEmpty) {
-            await fetchNextPage_total();
+      if (_nextPageUrl_total.value.isNotEmpty) {
+        _isLoadingNextList_total.value = true;
+        await fetchNextPage_total();
+        _isLoadingNextList_total.value = false;
       }
     }
 
@@ -154,11 +168,14 @@ class CommunityBulletinListViewModel extends GetxController {
       _isVisible_total.value = false;
     }
   }
+
   Future<void> _scrollListener_free() async {
     // 스크롤이 리스트의 끝에 도달했을 때
     if (scrollController_free.position.pixels == scrollController_free.position.maxScrollExtent) {
       if (_nextPageUrl_free.value.isNotEmpty) {
+        _isLoadingNextList_free.value = true;
         await fetchNextPage_free();
+        _isLoadingNextList_free.value = false;
       }
     }
 
@@ -173,11 +190,14 @@ class CommunityBulletinListViewModel extends GetxController {
       _isVisible_free.value = false;
     }
   }
+
   Future<void> _scrollListener_room() async {
     // 스크롤이 리스트의 끝에 도달했을 때
     if (scrollController_room.position.pixels == scrollController_room.position.maxScrollExtent) {
       if (_nextPageUrl_room.value.isNotEmpty) {
+        _isLoadingNextList_room.value = true;
         await fetchNextPage_room();
+        _isLoadingNextList_room.value = false;
       }
     }
 
@@ -192,11 +212,14 @@ class CommunityBulletinListViewModel extends GetxController {
       _isVisible_room.value = false;
     }
   }
+
   Future<void> _scrollListener_crew() async {
     // 스크롤이 리스트의 끝에 도달했을 때
     if (scrollController_crew.position.pixels == scrollController_crew.position.maxScrollExtent) {
       if (_nextPageUrl_crew.value.isNotEmpty) {
+        _isLoadingNextList_crew.value = true;
         await fetchNextPage_crew();
+        _isLoadingNextList_crew.value = false;
       }
     }
 
@@ -211,11 +234,14 @@ class CommunityBulletinListViewModel extends GetxController {
       _isVisible_crew.value = false;
     }
   }
+
   Future<void> _scrollListener_event() async {
     // 스크롤이 리스트의 끝에 도달했을 때
     if (scrollController_event.position.pixels == scrollController_event.position.maxScrollExtent) {
       if (_nextPageUrl_event.value.isNotEmpty) {
+        _isLoadingNextList_event.value = true;
         await fetchNextPage_event();
+        _isLoadingNextList_event.value = true;
       }
     }
 
@@ -448,7 +474,7 @@ class CommunityBulletinListViewModel extends GetxController {
   Future<void> fetchNextPage_total() async{
     if (_nextPageUrl_total.value.isNotEmpty) {
       await fetchCommunityList_total(
-        userId: _userViewModel.user.user_id,
+          userId: _userViewModel.user.user_id,
           url: _nextPageUrl_total.value
       );
     }

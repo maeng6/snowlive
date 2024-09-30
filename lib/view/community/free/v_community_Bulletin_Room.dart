@@ -194,205 +194,219 @@ class CommunityBulletinRoomListView extends StatelessWidget {
                         child: ListView.builder(
                           physics: NeverScrollableScrollPhysics(),
                           shrinkWrap: true,
-                          itemCount: _communityBulletinListViewModel.communityList_room.length,
+                          itemCount: _communityBulletinListViewModel.communityList_room.length + 1,
                           itemBuilder: (context, index) {
-                            Community communityData = _communityBulletinListViewModel.communityList_room[index];
-                            // 필드가 없을 경우 기본값 설정
-                            String _time = GetDatetime().yyyymmddFormatFromString(communityData.uploadTime!);
-                            String? profileUrl = communityData.userInfo!.profileImageUrlUser;
-                            String? displayName = communityData.userInfo!.displayName;
-                            return GestureDetector(
-                              onTap: () async {
-                                _communityDetailViewModel.fetchCommunityDetailFromList(community: _communityBulletinListViewModel.communityList_room[index]);
-                                Get.toNamed(AppRoutes.bulletinDetail);
-                                await _communityDetailViewModel.addViewerCommunity(
-                                    _communityDetailViewModel.communityDetail.communityId!,
-                                    {
-                                  "user_id":_userViewModel.user.user_id.toString()
-                                });
-                              },
-                              child: Obx(() => Column(
-                                children: [
-                                  Padding(
-                                    padding: EdgeInsets.only(top: 2),
-                                    child: Container(
-                                      color: Colors.white,
-                                      child: Row(
-                                        children: [
-                                          Container(
-                                            width: _size.width - 32,
-                                            child: Row(
-                                              crossAxisAlignment: CrossAxisAlignment.center,
-                                              children: [
-                                                Expanded(
-                                                  child: Padding(
-                                                    padding: const EdgeInsets.only(top: 6, bottom: 8),
-                                                    child: Column(
-                                                      mainAxisAlignment: MainAxisAlignment.start,
-                                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                                      children: [
-                                                        Padding(
-                                                          padding: const EdgeInsets.only(bottom: 6),
-                                                          child: Row(
-                                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                            children: [
-                                                              Expanded(
-                                                                child: Row(
-                                                                  children: [
-                                                                    Expanded(
-                                                                      child: Row(
-                                                                        crossAxisAlignment: CrossAxisAlignment.center,
-                                                                        children: [
-                                                                          //시즌방 하위카테고리 뱃지 디자인
-                                                                          if (communityData.categorySub == Community_Category_sub_bulletin.room.korean)
-                                                                            Padding(
-                                                                              padding: const EdgeInsets.only(right: 6),
+
+                            if(index == _communityBulletinListViewModel.communityList_room.length){
+                              return Obx(() => _communityBulletinListViewModel.isLoadingNextList_room == true // 여기서 Obx 사용
+                                  ? Padding(
+                                padding: const EdgeInsets.all(16.0),
+                                child: Center(
+                                  child: CircularProgressIndicator(), // 로딩 인디케이터
+                                ),
+                              )
+                                  : SizedBox.shrink());
+                            }else{
+                              Community communityData = _communityBulletinListViewModel.communityList_room[index];
+                              // 필드가 없을 경우 기본값 설정
+                              String _time = GetDatetime().yyyymmddFormatFromString(communityData.uploadTime!);
+                              String? profileUrl = communityData.userInfo!.profileImageUrlUser;
+                              String? displayName = communityData.userInfo!.displayName;
+                              return GestureDetector(
+                                onTap: () async {
+                                  _communityDetailViewModel.fetchCommunityDetailFromList(community: _communityBulletinListViewModel.communityList_room[index]);
+                                  Get.toNamed(AppRoutes.bulletinDetail);
+                                  await _communityDetailViewModel.addViewerCommunity(
+                                      _communityDetailViewModel.communityDetail.communityId!,
+                                      {
+                                        "user_id":_userViewModel.user.user_id.toString()
+                                      });
+                                },
+                                child: Obx(() => Column(
+                                  children: [
+                                    Padding(
+                                      padding: EdgeInsets.only(top: 2),
+                                      child: Container(
+                                        color: Colors.white,
+                                        child: Row(
+                                          children: [
+                                            Container(
+                                              width: _size.width - 32,
+                                              child: Row(
+                                                crossAxisAlignment: CrossAxisAlignment.center,
+                                                children: [
+                                                  Expanded(
+                                                    child: Padding(
+                                                      padding: const EdgeInsets.only(top: 6, bottom: 8),
+                                                      child: Column(
+                                                        mainAxisAlignment: MainAxisAlignment.start,
+                                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                                        children: [
+                                                          Padding(
+                                                            padding: const EdgeInsets.only(bottom: 6),
+                                                            child: Row(
+                                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                              children: [
+                                                                Expanded(
+                                                                  child: Row(
+                                                                    children: [
+                                                                      Expanded(
+                                                                        child: Row(
+                                                                          crossAxisAlignment: CrossAxisAlignment.center,
+                                                                          children: [
+                                                                            //시즌방 하위카테고리 뱃지 디자인
+                                                                            if (communityData.categorySub == Community_Category_sub_bulletin.room.korean)
+                                                                              Padding(
+                                                                                padding: const EdgeInsets.only(right: 6),
+                                                                                child: Container(
+                                                                                  padding: EdgeInsets.symmetric(horizontal: 5, vertical: 3),
+                                                                                  decoration: BoxDecoration(
+                                                                                    color: SDSColor.gray50,
+                                                                                    borderRadius: BorderRadius.circular(4),
+                                                                                  ),
+                                                                                  child: Text('${communityData.categorySub2}',
+                                                                                    style: SDSTextStyle.regular.copyWith(
+                                                                                        fontSize: 11,
+                                                                                        color: SDSColor.gray700),
+                                                                                  ),
+                                                                                ),
+                                                                              ),
+                                                                            // 게시글 타이틀
+                                                                            Expanded(
                                                                               child: Container(
-                                                                                padding: EdgeInsets.symmetric(horizontal: 5, vertical: 3),
-                                                                                decoration: BoxDecoration(
-                                                                                  color: SDSColor.gray50,
-                                                                                  borderRadius: BorderRadius.circular(4),
-                                                                                ),
-                                                                                child: Text('${communityData.categorySub2}',
-                                                                                  style: SDSTextStyle.regular.copyWith(
-                                                                                      fontSize: 11,
-                                                                                      color: SDSColor.gray700),
-                                                                                ),
-                                                                              ),
-                                                                            ),
-                                                                          // 게시글 타이틀
-                                                                          Expanded(
-                                                                            child: Container(
-                                                                              child: Text(
-                                                                                '${communityData.title}',
-                                                                                maxLines: 1,
-                                                                                overflow: TextOverflow.ellipsis,
-                                                                                style: SDSTextStyle.bold.copyWith(
-                                                                                    fontSize: 15,
-                                                                                    color: SDSColor.gray900
+                                                                                child: Text(
+                                                                                  '${communityData.title}',
+                                                                                  maxLines: 1,
+                                                                                  overflow: TextOverflow.ellipsis,
+                                                                                  style: SDSTextStyle.bold.copyWith(
+                                                                                      fontSize: 15,
+                                                                                      color: SDSColor.gray900
+                                                                                  ),
                                                                                 ),
                                                                               ),
                                                                             ),
-                                                                          ),
-                                                                        ],
+                                                                          ],
+                                                                        ),
+                                                                      ),
+                                                                    ],
+                                                                  ),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          ),
+                                                          Row(
+                                                            children: [
+                                                              Text('$displayName',
+                                                                style: SDSTextStyle.regular.copyWith(
+                                                                  fontSize: 12,
+                                                                  color: SDSColor.gray700,
+                                                                ),
+                                                              ),
+                                                              Text(' · $_time',
+                                                                style: SDSTextStyle.regular.copyWith(
+                                                                  fontSize: 12,
+                                                                  color: SDSColor.gray700,
+                                                                ),
+                                                              ),
+                                                              Text('  |  ',
+                                                                style: SDSTextStyle.regular.copyWith(
+                                                                  fontSize: 12,
+                                                                  color: SDSColor.gray300,
+                                                                ),
+                                                              ),
+                                                              Row(
+                                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                                children: [
+                                                                  Image.asset('assets/imgs/icons/icon_eye_rounded.png',
+                                                                    width: 14,
+                                                                    height: 14,),
+                                                                  Padding(
+                                                                    padding: const EdgeInsets.only(left: 2),
+                                                                    child: Text(
+                                                                      '${communityData.viewsCount}',
+                                                                      style: SDSTextStyle.regular.copyWith(
+                                                                        fontSize: 12,
+                                                                        color: SDSColor.gray700,
                                                                       ),
                                                                     ),
-                                                                  ],
-                                                                ),
+                                                                  ),
+                                                                  SizedBox(width: 6),
+                                                                  Image.asset('assets/imgs/icons/icon_reply_rounded.png',
+                                                                    width: 14,
+                                                                    height: 14,),
+                                                                  Padding(
+                                                                    padding: const EdgeInsets.only(left: 2),
+                                                                    child: Text('${communityData.commentCount}',
+                                                                      style: SDSTextStyle.regular.copyWith(
+                                                                        fontSize: 12,
+                                                                        color: SDSColor.gray700,
+                                                                      ),
+                                                                    ),
+                                                                  )
+                                                                ],
                                                               ),
                                                             ],
                                                           ),
-                                                        ),
-                                                        Row(
-                                                          children: [
-                                                            Text('$displayName',
-                                                              style: SDSTextStyle.regular.copyWith(
-                                                                fontSize: 12,
-                                                                color: SDSColor.gray700,
-                                                              ),
-                                                            ),
-                                                            Text(' · $_time',
-                                                              style: SDSTextStyle.regular.copyWith(
-                                                                fontSize: 12,
-                                                                color: SDSColor.gray700,
-                                                              ),
-                                                            ),
-                                                            Text('  |  ',
-                                                              style: SDSTextStyle.regular.copyWith(
-                                                                fontSize: 12,
-                                                                color: SDSColor.gray300,
-                                                              ),
-                                                            ),
-                                                            Row(
-                                                              mainAxisAlignment: MainAxisAlignment.center,
-                                                              children: [
-                                                                Image.asset('assets/imgs/icons/icon_eye_rounded.png',
-                                                                  width: 14,
-                                                                  height: 14,),
-                                                                Padding(
-                                                                  padding: const EdgeInsets.only(left: 2),
-                                                                  child: Text(
-                                                                    '${communityData.viewsCount}',
-                                                                    style: SDSTextStyle.regular.copyWith(
-                                                                      fontSize: 12,
-                                                                      color: SDSColor.gray700,
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                                SizedBox(width: 6),
-                                                                Image.asset('assets/imgs/icons/icon_reply_rounded.png',
-                                                                  width: 14,
-                                                                  height: 14,),
-                                                                Padding(
-                                                                  padding: const EdgeInsets.only(left: 2),
-                                                                  child: Text('${communityData.commentCount}',
-                                                                    style: SDSTextStyle.regular.copyWith(
-                                                                      fontSize: 12,
-                                                                      color: SDSColor.gray700,
-                                                                    ),
-                                                                  ),
-                                                                )
-                                                              ],
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ],
+                                                        ],
+                                                      ),
                                                     ),
                                                   ),
-                                                ),
-                                                (communityData.thumbImg != null)
-                                                    ? Padding(
-                                                  padding: const EdgeInsets.only(left: 16),
-                                                  child: ExtendedImage.network(communityData.thumbImg!,
-                                                    cache: true,
-                                                    shape: BoxShape.rectangle,
-                                                    borderRadius: BorderRadius.circular(8),
-                                                    border: Border.all(width: 0.5, color: Color(0xFFdedede)),
-                                                    width: 50,
-                                                    height: 50,
-                                                    cacheHeight: 250,
-                                                    fit: BoxFit.cover,
-                                                    loadStateChanged: (ExtendedImageState state) {
-                                                      switch (state.extendedImageLoadState) {
-                                                        case LoadState.loading:
-                                                          return SizedBox.shrink();
-                                                        case LoadState.completed:
-                                                          return state.completedWidget;
-                                                        case LoadState.failed:
-                                                          return ExtendedImage.network(
-                                                            'https://i.esdrop.com/d/f/yytYSNBROy/kVsZwVhd1f.png',
-                                                            shape: BoxShape.rectangle,
-                                                            borderRadius: BorderRadius.circular(8),
-                                                            border: Border.all(width: 0.5, color: Color(0xFFdedede)),
-                                                            width: 32,
-                                                            height: 32,
-                                                            cacheHeight: 100,
-                                                            cache: true,
-                                                            fit: BoxFit.cover,
-                                                          );
-                                                        default:
-                                                          return null;
-                                                      }
-                                                    },
-                                                  ),
-                                                )
-                                                    : Container()
-                                              ],
+                                                  (communityData.thumbImg != null)
+                                                      ? Padding(
+                                                    padding: const EdgeInsets.only(left: 16),
+                                                    child: ExtendedImage.network(communityData.thumbImg!,
+                                                      cache: true,
+                                                      shape: BoxShape.rectangle,
+                                                      borderRadius: BorderRadius.circular(8),
+                                                      border: Border.all(width: 0.5, color: Color(0xFFdedede)),
+                                                      width: 50,
+                                                      height: 50,
+                                                      cacheHeight: 250,
+                                                      fit: BoxFit.cover,
+                                                      loadStateChanged: (ExtendedImageState state) {
+                                                        switch (state.extendedImageLoadState) {
+                                                          case LoadState.loading:
+                                                            return SizedBox.shrink();
+                                                          case LoadState.completed:
+                                                            return state.completedWidget;
+                                                          case LoadState.failed:
+                                                            return ExtendedImage.network(
+                                                              'https://i.esdrop.com/d/f/yytYSNBROy/kVsZwVhd1f.png',
+                                                              shape: BoxShape.rectangle,
+                                                              borderRadius: BorderRadius.circular(8),
+                                                              border: Border.all(width: 0.5, color: Color(0xFFdedede)),
+                                                              width: 32,
+                                                              height: 32,
+                                                              cacheHeight: 100,
+                                                              cache: true,
+                                                              fit: BoxFit.cover,
+                                                            );
+                                                          default:
+                                                            return null;
+                                                        }
+                                                      },
+                                                    ),
+                                                  )
+                                                      : Container()
+                                                ],
+                                              ),
                                             ),
-                                          ),
-                                        ],
+                                          ],
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                  if(_communityBulletinListViewModel.communityList_room.length != index + 1)
-                                    Divider(
-                                      color: SDSColor.gray50,
-                                      height: 16,
-                                      thickness: 1,
-                                    ),
-                                ],
-                              )),
-                            );
+                                    if(_communityBulletinListViewModel.communityList_room.length != index + 1)
+                                      Divider(
+                                        color: SDSColor.gray50,
+                                        height: 16,
+                                        thickness: 1,
+                                      ),
+                                  ],
+                                )),
+                              );
+                            }
+
+
                           },
                           padding: EdgeInsets.only(bottom: 80),
                         ),
