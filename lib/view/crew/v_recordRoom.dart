@@ -71,7 +71,7 @@ class CrewRecordRoomView extends StatelessWidget {
   // 년도 선택 탭을 생성하는 함수
   Widget buildYearSelector() {
     int currentYear = DateTime.now().year; // 현재 연도
-    int startYear = 2023; // 시작 연도
+    int startYear = 2024; // 시작 연도
 
     // 시작 연도부터 현재 연도까지의 탭을 최신순으로 생성
     List<Widget> yearTabs = [];
@@ -102,8 +102,8 @@ class CrewRecordRoomView extends StatelessWidget {
                     ? SDSColor.snowliveWhite
                     : SDSColor.snowliveBlack,
                 fontWeight: _crewRecordRoomViewModel.currentYear.value == year
-                ? FontWeight.bold
-                : FontWeight.normal,
+                    ? FontWeight.bold
+                    : FontWeight.normal,
                 fontSize: 13,
               ),
             ),
@@ -471,8 +471,8 @@ class CrewRecordRoomView extends StatelessWidget {
                 child: Text(
                   member.displayName!,
                   style: SDSTextStyle.regular.copyWith(
-                    fontSize: 14,
-                    color: SDSColor.gray900
+                      fontSize: 14,
+                      color: SDSColor.gray900
                   ),
                 ),
               ),

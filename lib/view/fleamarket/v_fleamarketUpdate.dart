@@ -1149,7 +1149,8 @@ class FleamarketUpdateView extends StatelessWidget {
                     bottom: 0,
                     left: 0,
                     right: 0,
-                    child: Padding(
+                    child: Container(
+                      color: SDSColor.snowliveWhite,
                       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
                       child: ElevatedButton(
                         onPressed: () async {

@@ -13,6 +13,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:shimmer/shimmer.dart';
 
 class FleaMarketListView_total extends StatelessWidget {
 
@@ -35,62 +36,51 @@ class FleaMarketListView_total extends StatelessWidget {
         child: Scaffold(
           floatingActionButton: Obx(()=>Stack(
             children: [
-              Align(
-                alignment: Alignment.bottomCenter,
-                child: Obx(()=> Visibility(
-                  visible: _fleamarketListViewModel.isVisible_total,
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 32),
-                    child: Container(
-                      width: 106,
-                      decoration: BoxDecoration(
-                        color: Colors.transparent,
-                        borderRadius: BorderRadius.circular(50),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.04),
-                            spreadRadius: 2,
-                            blurRadius: 8,
-                            offset: Offset(0, 6),
-                          ),
-                        ],
-                      ),
-                      child: FloatingActionButton(
-                        heroTag: 'fleamarketList',
-                        mini: true,
-                        elevation: 0,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(40),
-                          side: BorderSide(color: SDSColor.gray200),
-                        ),
-                        backgroundColor: SDSColor.snowliveWhite,
-                        foregroundColor: SDSColor.snowliveWhite,
-                        onPressed: () {
-                          _fleamarketListViewModel.scrollController_total.jumpTo(0);
-                        },
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Icon(Icons.arrow_upward_rounded,
-                                color: SDSColor.gray900,
-                                size: 16),
-                            Padding(
-                              padding: const EdgeInsets.only(left: 2, right: 3),
-                              child: Text('최신글 보기',
-                                style: TextStyle(
-                                    fontSize: 13,
-                                    fontWeight: FontWeight.bold,
-                                    color: SDSColor.gray900,
-                                    letterSpacing: 0
-                                ),),
-                            )
+              Transform.translate(
+                offset: Offset(18, 0),
+                child: Align(
+                  alignment: Alignment.bottomRight,
+                  child: Obx(()=> Visibility(
+                    visible: _fleamarketListViewModel.isVisible_total,
+                    child: Padding(
+                      padding: const EdgeInsets.only(bottom: 64),
+                      child: Container(
+                        width: 52,
+                        height: 52,
+                        decoration: BoxDecoration(
+                          color: Colors.transparent,
+                          borderRadius: BorderRadius.circular(50),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.04),
+                              spreadRadius: 2,
+                              blurRadius: 8,
+                              offset: Offset(0, 6),
+                            ),
                           ],
+                        ),
+                        child: FloatingActionButton(
+                          heroTag: 'fleamarketList',
+                          mini: true,
+                          elevation: 0,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(40),
+                            side: BorderSide(color: SDSColor.gray200),
+                          ),
+                          backgroundColor: SDSColor.snowliveWhite,
+                          foregroundColor: SDSColor.snowliveWhite,
+                          onPressed: () {
+                            _fleamarketListViewModel.scrollController_total.jumpTo(0);
+                          },
+                          child: Image.asset( 'assets/imgs/icons/icon_top_page.png',
+                            fit: BoxFit.cover,
+                            width: 16,
+                            height: 16,),
                         ),
                       ),
                     ),
-                  ),
-                )),
+                  )),
+                ),
               ),
               Positioned(
                 child: Transform.translate(
@@ -1598,21 +1588,26 @@ class FleaMarketListView_total extends StatelessWidget {
                     //리스트
                     (_fleamarketListViewModel.isLoadingList_total==true)
                         ? Container(
-                      height: 150,
+                      height: 300,
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           Center(
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2,
-                              backgroundColor: SDSColor.snowliveWhite,
-                              color: SDSColor.snowliveBlue,
+                            child: Container(
+                              width: 24,
+                              height: 24,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 4,
+                                backgroundColor: SDSColor.gray100,
+                                color: SDSColor.gray300.withOpacity(0.6),
+                              ),
                             ),
                           ),
                         ],
                       ),
                     )
-                        :Expanded(
+                        : Expanded(
                         child: (_fleamarketListViewModel.fleamarketListTotal.length == 0)
                             ? Transform.translate(
                           offset: Offset(0, -40),
@@ -1648,12 +1643,20 @@ class FleaMarketListView_total extends StatelessWidget {
                             itemBuilder: (context, index) {
                               if(index == _fleamarketListViewModel.fleamarketListTotal.length){
                                 return Obx(() => _fleamarketListViewModel.isLoadingNextList_total == true// 여기서 Obx 사용
-                                    ? Padding(
-                                  padding: const EdgeInsets.only(bottom: 16),
-                                  child: Center(
-                                    child: CircularProgressIndicator(), // 로딩 인디케이터
-                                  ),
-                                )
+                                    ? Center(
+                                      child: Padding(
+                                        padding: EdgeInsets.only(top: 24),
+                                        child: Container(
+                                          width: 24,
+                                          height: 24,
+                                          child: CircularProgressIndicator(
+                                            strokeWidth: 4,
+                                            backgroundColor: SDSColor.gray100,
+                                            color: SDSColor.gray300.withOpacity(0.6),
+                                          ),
+                                        ),
+                                      ),
+                                    )
                                     : SizedBox.shrink());
                               }else{
                                 Fleamarket data = _fleamarketListViewModel.fleamarketListTotal[index] ;
@@ -1694,7 +1697,18 @@ class FleaMarketListView_total extends StatelessWidget {
                                                             switch (state.extendedImageLoadState) {
                                                               case LoadState.loading:
                                                               // 로딩 중일 때 로딩 인디케이터를 표시
-                                                                return Center(child: CircularProgressIndicator());
+                                                                return Shimmer.fromColors(
+                                                                  baseColor: SDSColor.gray200!,
+                                                                  highlightColor: SDSColor.gray50!,
+                                                                  child: Container(
+                                                                    width: 110,
+                                                                    height: 110,
+                                                                    decoration: BoxDecoration(
+                                                                      color: Colors.white,
+                                                                      borderRadius: BorderRadius.circular(8),
+                                                                    ),
+                                                                  ),
+                                                                );
                                                               case LoadState.completed:
                                                               // 로딩이 완료되었을 때 이미지 반환
                                                                 return state.completedWidget;

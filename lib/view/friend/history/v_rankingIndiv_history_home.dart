@@ -1,11 +1,7 @@
 import 'package:com.snowlive/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/view/friend/history/v_rankingIndiv_history.dart';
-import 'package:com.snowlive/view/ranking/v_rankingList_Indi.dart';
-import 'package:com.snowlive/view/ranking/history/v_rankingList_beta.dart';
-import 'package:com.snowlive/view/ranking/v_rankingList_crew.dart';
 import 'package:com.snowlive/viewmodel/ranking/vm_rankingList.dart';
 import 'package:com.snowlive/viewmodel/vm_user.dart';
-import 'package:com.snowlive/widget/w_floatingButton_ranking.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -24,8 +20,6 @@ class RankingIndivHistoryHomeView extends StatelessWidget {
       statusBarColor: Colors.transparent, // 상태바 투명하게
       statusBarIconBrightness: Brightness.dark, // 상태바 아이콘 밝기
     ));
-
-    Size _size = MediaQuery.of(context).size;
 
     return Scaffold(
 
@@ -50,7 +44,7 @@ class RankingIndivHistoryHomeView extends StatelessWidget {
             child: Column(
               children: [
                 Text(
-                  '개인랭킹 기록실',
+                  '시즌 기록실',
                   style: SDSTextStyle.extraBold.copyWith(
                       color: SDSColor.gray900,
                       fontSize: 18),
@@ -66,30 +60,14 @@ class RankingIndivHistoryHomeView extends StatelessWidget {
           elevation: 0.0,
         ),
       ),
-        body: SafeArea(
-          child: Column(
-            children: [
-                Expanded(
-                    child: RankingIndivHistoryView()),
-            ],
-          ),
-    ),
-        // floatingActionButton:
-        // (_rankingListViewModel.tapName!='지난랭킹')
-        // ?FloatingButtonWithOptions(
-        //   selectedOption: _rankingListViewModel.dayOrTotal,
-        //   onOptionSelected: (String value) {
-        //     _rankingListViewModel.changeDayOrTotal(value);
-        //     _rankingListViewModel.changeMyBoxText();
-        //     if(_rankingListViewModel.selectedResortNum == 99)
-        //     _rankingListViewModel.toggleDataDayOrTotal_tapFilter();
-        //     if(_rankingListViewModel.selectedResortNum != 99)
-        //       _rankingListViewModel.toggleDataDayOrTotal_tapFilter(resortNum: _rankingListViewModel.selectedResortNum);
-        //
-        //   },
-        // )
-        // :SizedBox.shrink(),
-        // floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked
+      body: SafeArea(
+        child: Column(
+          children: [
+            Expanded(
+                child: RankingIndivHistoryView()),
+          ],
+        ),
+      ),
     );
   }
 }

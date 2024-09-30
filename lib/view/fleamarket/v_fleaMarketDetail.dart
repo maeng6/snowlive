@@ -771,12 +771,10 @@ class _FleaMarketDetailViewState extends State<FleaMarketDetailView> {
                                           ),
                                         ],
                                       ),
-                                    if (_fleamarketDetailViewModel.fleamarketDetail.photos!.length != 0)
-                                      SizedBox(height: 44),
                                     Padding(
                                       padding: EdgeInsets.symmetric(horizontal: 16,),
                                       child: Padding(
-                                        padding: EdgeInsets.only(top: (_fleamarketDetailViewModel.fleamarketDetail.photos!.isNotEmpty) ? 0 : 10),
+                                        padding: EdgeInsets.only(top: (_fleamarketDetailViewModel.fleamarketDetail.photos!.isNotEmpty) ? 16 : 0),
                                         child: Container(
                                             child: Column(
                                               children: [
@@ -855,7 +853,7 @@ class _FleaMarketDetailViewState extends State<FleaMarketDetailView> {
                                                               ),
                                                             ),
                                                           ),
-                                                        SizedBox(width: 10),
+                                                        SizedBox(width: 8),
                                                         //TODO: 닉네임
                                                         Column(
                                                           mainAxisAlignment: MainAxisAlignment.start,
@@ -880,10 +878,10 @@ class _FleaMarketDetailViewState extends State<FleaMarketDetailView> {
                                                   ],
                                                 ),
                                                 Divider(
-                                                  height: 32,
+                                                  height: 30,
                                                   thickness: 1,
-                                                  color: SDSColor.gray100,
-                                                )
+                                                  color: SDSColor.gray50,
+                                                ),
                                               ],
                                             )),
                                       ),
@@ -895,7 +893,7 @@ class _FleaMarketDetailViewState extends State<FleaMarketDetailView> {
                                           crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
                                             SizedBox(
-                                              height: 8,
+                                              height: 4,
                                             ),
                                             Row(
                                               mainAxisAlignment: MainAxisAlignment.start, // 좌측 정렬
@@ -1003,7 +1001,7 @@ class _FleaMarketDetailViewState extends State<FleaMarketDetailView> {
                                             ),
                                             //TODO: 설명
                                             Padding(
-                                              padding: EdgeInsets.only(top: 24),
+                                              padding: EdgeInsets.only(top: 16),
                                               child: Column(
                                                 crossAxisAlignment: CrossAxisAlignment.start,
                                                 children: [
@@ -1032,7 +1030,7 @@ class _FleaMarketDetailViewState extends State<FleaMarketDetailView> {
                                             Divider(
                                               height: 48,
                                               thickness: 1,
-                                              color: SDSColor.gray100,
+                                              color: SDSColor.gray50,
                                             ),
                                             //TODO: 물품명, 거래방식
                                             Row(

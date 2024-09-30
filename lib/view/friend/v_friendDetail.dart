@@ -705,78 +705,80 @@ class _FriendDetailViewState extends State<FriendDetailView> {
                                                   Padding(
                                                     padding: const EdgeInsets.only(bottom: 16, left: 4),
                                                     child: Row(
-                                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                        children: [
-                                                          Expanded(
-                                                            child: SingleChildScrollView(
-                                                              scrollDirection: Axis.horizontal,
-                                                              child: Row(
-                                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                                children: [
-                                                                  Row(
-                                                                    children: [
-                                                                      // 누적통계 버튼
-                                                                      GestureDetector(
-                                                                        onTap: (){
-                                                                          HapticFeedback.lightImpact();
-                                                                          _friendDetailViewModel.changeRidingStaticTab(0);
-                                                                        },
-                                                                        child: Padding(
-                                                                          padding: const EdgeInsets.only(left: 16),
-                                                                          child: Container(
-                                                                              decoration: BoxDecoration(
-                                                                                color: (_friendDetailViewModel.ridingStatisticsTabName == FriendDetailViewModel.ridingStatisticsTabNameListConst[0])
-                                                                                    ? SDSColor.gray900
-                                                                                    : SDSColor.snowliveWhite,
-                                                                                borderRadius: BorderRadius.circular(30.0),
-                                                                                border: Border.all(
-                                                                                    color: (_friendDetailViewModel.ridingStatisticsTabName == FriendDetailViewModel.ridingStatisticsTabNameListConst[0])
-                                                                                        ? SDSColor.gray900
-                                                                                        : SDSColor.gray200),
-                                                                              ),
-                                                                              padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                                                                              height: 36,
-                                                                              child: Text('${FriendDetailViewModel.ridingStatisticsTabNameListConst[0]}',
-                                                                                style: SDSTextStyle.bold.copyWith(
-                                                                                    fontSize: 13,
-                                                                                    color: (_friendDetailViewModel.ridingStatisticsTabName == FriendDetailViewModel.ridingStatisticsTabNameListConst[0])
-                                                                                        ? SDSColor.snowliveWhite
-                                                                                        : SDSColor.gray900
-                                                                                ),)
-                                                                          ),
-                                                                        ),
-                                                                      ),
-                                                                      SizedBox(width: 8),
-                                                                      //TODO: 일간통계 버튼
-                                                                      GestureDetector(
-                                                                        onTap: (){
-                                                                          HapticFeedback.lightImpact();
-                                                                          _friendDetailViewModel.changeRidingStaticTab(1);
-                                                                        },
+                                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                      children: [
+                                                        Expanded(
+                                                          child: SingleChildScrollView(
+                                                            scrollDirection: Axis.horizontal,
+                                                            child: Row(
+                                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                              children: [
+                                                                Row(
+                                                                  children: [
+                                                                    // 누적통계 버튼
+                                                                    GestureDetector(
+                                                                      onTap: (){
+                                                                        HapticFeedback.lightImpact();
+                                                                        _friendDetailViewModel.changeRidingStaticTab(0);
+                                                                      },
+                                                                      child: Padding(
+                                                                        padding: const EdgeInsets.only(left: 16),
                                                                         child: Container(
                                                                             decoration: BoxDecoration(
-                                                                              color: (_friendDetailViewModel.ridingStatisticsTabName == FriendDetailViewModel.ridingStatisticsTabNameListConst[1])
+                                                                              color: (_friendDetailViewModel.ridingStatisticsTabName == FriendDetailViewModel.ridingStatisticsTabNameListConst[0])
                                                                                   ? SDSColor.gray900
                                                                                   : SDSColor.snowliveWhite,
                                                                               borderRadius: BorderRadius.circular(30.0),
                                                                               border: Border.all(
-                                                                                  color: (_friendDetailViewModel.ridingStatisticsTabName == FriendDetailViewModel.ridingStatisticsTabNameListConst[1])
+                                                                                  color: (_friendDetailViewModel.ridingStatisticsTabName == FriendDetailViewModel.ridingStatisticsTabNameListConst[0])
                                                                                       ? SDSColor.gray900
                                                                                       : SDSColor.gray200),
                                                                             ),
                                                                             padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                                                                             height: 36,
-                                                                            child: Text('${FriendDetailViewModel.ridingStatisticsTabNameListConst[1]}',
+                                                                            child: Text('${FriendDetailViewModel.ridingStatisticsTabNameListConst[0]}',
                                                                               style: SDSTextStyle.bold.copyWith(
                                                                                   fontSize: 13,
-                                                                                  color: (_friendDetailViewModel.ridingStatisticsTabName == FriendDetailViewModel.ridingStatisticsTabNameListConst[1])
+                                                                                  color: (_friendDetailViewModel.ridingStatisticsTabName == FriendDetailViewModel.ridingStatisticsTabNameListConst[0])
                                                                                       ? SDSColor.snowliveWhite
                                                                                       : SDSColor.gray900
                                                                               ),)
                                                                         ),
                                                                       ),
-                                                                    ],
-                                                                  ),
+                                                                    ),
+                                                                    SizedBox(width: 8),
+                                                                    //TODO: 일간통계 버튼
+                                                                    GestureDetector(
+                                                                      onTap: (){
+                                                                        HapticFeedback.lightImpact();
+                                                                        _friendDetailViewModel.changeRidingStaticTab(1);
+                                                                      },
+                                                                      child: Container(
+                                                                          decoration: BoxDecoration(
+                                                                            color: (_friendDetailViewModel.ridingStatisticsTabName == FriendDetailViewModel.ridingStatisticsTabNameListConst[1])
+                                                                                ? SDSColor.gray900
+                                                                                : SDSColor.snowliveWhite,
+                                                                            borderRadius: BorderRadius.circular(30.0),
+                                                                            border: Border.all(
+                                                                                color: (_friendDetailViewModel.ridingStatisticsTabName == FriendDetailViewModel.ridingStatisticsTabNameListConst[1])
+                                                                                    ? SDSColor.gray900
+                                                                                    : SDSColor.gray200),
+                                                                          ),
+                                                                          padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                                                                          height: 36,
+                                                                          child: Text('${FriendDetailViewModel.ridingStatisticsTabNameListConst[1]}',
+                                                                            style: SDSTextStyle.bold.copyWith(
+                                                                                fontSize: 13,
+                                                                                color: (_friendDetailViewModel.ridingStatisticsTabName == FriendDetailViewModel.ridingStatisticsTabNameListConst[1])
+                                                                                    ? SDSColor.snowliveWhite
+                                                                                    : SDSColor.gray900
+                                                                            ),)
+                                                                      ),
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                                if(_friendDetailViewModel.friendDetailModel.friendUserInfo.userId
+                                                                    == _userViewModel.user.user_id)
                                                                   Padding(
                                                                     padding: EdgeInsets.only(right: 12),
                                                                     child:
@@ -792,12 +794,12 @@ class _FriendDetailViewState extends State<FriendDetailView> {
                                                                       ),
                                                                     ),
                                                                   ),
-                                                                ],
-                                                              ),
+                                                              ],
                                                             ),
                                                           ),
-                                                        ],
-                                                      ),
+                                                        ),
+                                                      ],
+                                                    ),
                                                   ),
                                                   // 누적통계
                                                   if(_friendDetailViewModel.ridingStatisticsTabName == FriendDetailViewModel.ridingStatisticsTabNameListConst[0])
