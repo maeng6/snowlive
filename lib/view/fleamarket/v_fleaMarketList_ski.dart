@@ -200,7 +200,7 @@ class FleaMarketListView_ski extends StatelessWidget {
                                                             userId: _userViewModel.user.user_id,
                                                             categoryMain: '스키',
                                                             spot:
-                                                              (_fleamarketListViewModel.selectedCategory_spot_ski == '전체 거래장소')
+                                                            (_fleamarketListViewModel.selectedCategory_spot_ski == '전체 거래장소')
                                                                 ? null
                                                                 :_fleamarketListViewModel.selectedCategory_spot_ski,
                                                           );
@@ -228,7 +228,7 @@ class FleaMarketListView_ski extends StatelessWidget {
                                                           CustomFullScreenDialog.showDialog();
                                                           _fleamarketListViewModel.changeCategory_sub_ski('${FleamarketCategory_sub.binding.korean}');
                                                           await _fleamarketListViewModel.fetchFleamarketData_ski(
-                                                              userId: _userViewModel.user.user_id,
+                                                            userId: _userViewModel.user.user_id,
                                                             categoryMain: '스키',
                                                             categorySub:_fleamarketListViewModel.selectedCategory_sub_ski,
                                                             spot:
@@ -259,7 +259,7 @@ class FleaMarketListView_ski extends StatelessWidget {
                                                           CustomFullScreenDialog.showDialog();
                                                           _fleamarketListViewModel.changeCategory_sub_ski('${FleamarketCategory_sub.boots.korean}');
                                                           await _fleamarketListViewModel.fetchFleamarketData_ski(
-                                                              userId: _userViewModel.user.user_id,
+                                                            userId: _userViewModel.user.user_id,
                                                             categoryMain: '스키',
                                                             categorySub:_fleamarketListViewModel.selectedCategory_sub_ski,
                                                             spot:
@@ -290,7 +290,7 @@ class FleaMarketListView_ski extends StatelessWidget {
                                                           CustomFullScreenDialog.showDialog();
                                                           _fleamarketListViewModel.changeCategory_sub_ski('${FleamarketCategory_sub.cloth.korean}');
                                                           await _fleamarketListViewModel.fetchFleamarketData_ski(
-                                                              userId: _userViewModel.user.user_id,
+                                                            userId: _userViewModel.user.user_id,
                                                             categoryMain: '스키',
                                                             categorySub:_fleamarketListViewModel.selectedCategory_sub_ski,
                                                             spot:
@@ -321,7 +321,7 @@ class FleaMarketListView_ski extends StatelessWidget {
                                                           CustomFullScreenDialog.showDialog();
                                                           _fleamarketListViewModel.changeCategory_sub_ski('${FleamarketCategory_sub.plate.korean}');
                                                           await _fleamarketListViewModel.fetchFleamarketData_ski(
-                                                              userId: _userViewModel.user.user_id,
+                                                            userId: _userViewModel.user.user_id,
                                                             categoryMain: '스키',
                                                             categorySub:_fleamarketListViewModel.selectedCategory_sub_ski,
                                                             spot:
@@ -352,7 +352,7 @@ class FleaMarketListView_ski extends StatelessWidget {
                                                           CustomFullScreenDialog.showDialog();
                                                           _fleamarketListViewModel.changeCategory_sub_ski('${FleamarketCategory_sub.etc.korean}');
                                                           await _fleamarketListViewModel.fetchFleamarketData_ski(
-                                                              userId: _userViewModel.user.user_id,
+                                                            userId: _userViewModel.user.user_id,
                                                             categoryMain: '스키',
                                                             categorySub:_fleamarketListViewModel.selectedCategory_sub_ski,
                                                             spot:
@@ -386,11 +386,11 @@ class FleaMarketListView_ski extends StatelessWidget {
                                       shape: RoundedRectangleBorder(
                                           borderRadius: BorderRadius.circular(50))),
                                   child:
-                                       Text('${_fleamarketListViewModel.selectedCategory_sub_ski}',
-                                           style: SDSTextStyle.bold.copyWith(
-                                               fontSize: 13,
-                                               color: (_fleamarketListViewModel.selectedCategory_sub_ski != '전체 카테고리') ? Color(0xFFFFFFFF) : Color(0xFF111111) ))
-                                    ),
+                                  Text('${_fleamarketListViewModel.selectedCategory_sub_ski}',
+                                      style: SDSTextStyle.bold.copyWith(
+                                          fontSize: 13,
+                                          color: (_fleamarketListViewModel.selectedCategory_sub_ski != '전체 카테고리') ? Color(0xFFFFFFFF) : Color(0xFF111111) ))
+                              ),
                               Positioned(
                                 top: 16,
                                 right: 10,
@@ -680,9 +680,9 @@ class FleaMarketListView_ski extends StatelessWidget {
                                                             CustomFullScreenDialog.showDialog();
                                                             _fleamarketListViewModel.changeCategory_spot_ski('${FleamarketCategory_spot.total.korean}');
                                                             await _fleamarketListViewModel.fetchFleamarketData_ski(
-                                                                userId: _userViewModel.user.user_id,
+                                                              userId: _userViewModel.user.user_id,
                                                               categoryMain: '스키',
-                                                                categorySub: (_fleamarketListViewModel.selectedCategory_sub_ski == '전체 카테고리')
+                                                              categorySub: (_fleamarketListViewModel.selectedCategory_sub_ski == '전체 카테고리')
                                                                   ? null
                                                                   :_fleamarketListViewModel.selectedCategory_sub_ski,
                                                             );
@@ -709,7 +709,7 @@ class FleaMarketListView_ski extends StatelessWidget {
                                                             CustomFullScreenDialog.showDialog();
                                                             _fleamarketListViewModel.changeCategory_spot_ski('${FleamarketCategory_spot.konjiam.korean}');
                                                             await _fleamarketListViewModel.fetchFleamarketData_ski(
-                                                                userId: _userViewModel.user.user_id,
+                                                              userId: _userViewModel.user.user_id,
                                                               categoryMain: '스키',
                                                               categorySub: (_fleamarketListViewModel.selectedCategory_sub_ski == '전체 카테고리')
                                                                   ? null
@@ -739,7 +739,7 @@ class FleaMarketListView_ski extends StatelessWidget {
                                                             CustomFullScreenDialog.showDialog();
                                                             _fleamarketListViewModel.changeCategory_spot_ski('${FleamarketCategory_spot.muju.korean}');
                                                             await _fleamarketListViewModel.fetchFleamarketData_ski(
-                                                                userId: _userViewModel.user.user_id,
+                                                              userId: _userViewModel.user.user_id,
                                                               categoryMain: '스키',
                                                               categorySub: (_fleamarketListViewModel.selectedCategory_sub_ski == '전체 카테고리')
                                                                   ? null
@@ -769,7 +769,7 @@ class FleaMarketListView_ski extends StatelessWidget {
                                                             CustomFullScreenDialog.showDialog();
                                                             _fleamarketListViewModel.changeCategory_spot_ski('${FleamarketCategory_spot.vivaldi.korean}');
                                                             await _fleamarketListViewModel.fetchFleamarketData_ski(
-                                                                userId: _userViewModel.user.user_id,
+                                                              userId: _userViewModel.user.user_id,
                                                               categoryMain: '스키',
                                                               categorySub: (_fleamarketListViewModel.selectedCategory_sub_ski == '전체 카테고리')
                                                                   ? null
@@ -799,7 +799,7 @@ class FleaMarketListView_ski extends StatelessWidget {
                                                             CustomFullScreenDialog.showDialog();
                                                             _fleamarketListViewModel.changeCategory_spot_ski('${FleamarketCategory_spot.alphen.korean}');
                                                             await _fleamarketListViewModel.fetchFleamarketData_ski(
-                                                                userId: _userViewModel.user.user_id,
+                                                              userId: _userViewModel.user.user_id,
                                                               categoryMain: '스키',
                                                               categorySub: (_fleamarketListViewModel.selectedCategory_sub_ski == '전체 카테고리')
                                                                   ? null
@@ -829,7 +829,7 @@ class FleaMarketListView_ski extends StatelessWidget {
                                                             CustomFullScreenDialog.showDialog();
                                                             _fleamarketListViewModel.changeCategory_spot_ski('${FleamarketCategory_spot.gangchon.korean}');
                                                             await _fleamarketListViewModel.fetchFleamarketData_ski(
-                                                                userId: _userViewModel.user.user_id,
+                                                              userId: _userViewModel.user.user_id,
                                                               categoryMain: '스키',
                                                               categorySub: (_fleamarketListViewModel.selectedCategory_sub_ski == '전체 카테고리')
                                                                   ? null
@@ -859,7 +859,7 @@ class FleaMarketListView_ski extends StatelessWidget {
                                                             CustomFullScreenDialog.showDialog();
                                                             _fleamarketListViewModel.changeCategory_spot_ski('${FleamarketCategory_spot.oak.korean}');
                                                             await _fleamarketListViewModel.fetchFleamarketData_ski(
-                                                                userId: _userViewModel.user.user_id,
+                                                              userId: _userViewModel.user.user_id,
                                                               categoryMain: '스키',
                                                               categorySub: (_fleamarketListViewModel.selectedCategory_sub_ski == '전체 카테고리')
                                                                   ? null
@@ -889,7 +889,7 @@ class FleaMarketListView_ski extends StatelessWidget {
                                                             CustomFullScreenDialog.showDialog();
                                                             _fleamarketListViewModel.changeCategory_spot_ski('${FleamarketCategory_spot.o2.korean}');
                                                             await _fleamarketListViewModel.fetchFleamarketData_ski(
-                                                                userId: _userViewModel.user.user_id,
+                                                              userId: _userViewModel.user.user_id,
                                                               categoryMain: '스키',
                                                               categorySub: (_fleamarketListViewModel.selectedCategory_sub_ski == '전체 카테고리')
                                                                   ? null
@@ -919,7 +919,7 @@ class FleaMarketListView_ski extends StatelessWidget {
                                                             CustomFullScreenDialog.showDialog();
                                                             _fleamarketListViewModel.changeCategory_spot_ski('${FleamarketCategory_spot.yongpyong.korean}');
                                                             await _fleamarketListViewModel.fetchFleamarketData_ski(
-                                                                userId: _userViewModel.user.user_id,
+                                                              userId: _userViewModel.user.user_id,
                                                               categoryMain: '스키',
                                                               categorySub: (_fleamarketListViewModel.selectedCategory_sub_ski == '전체 카테고리')
                                                                   ? null
@@ -949,7 +949,7 @@ class FleaMarketListView_ski extends StatelessWidget {
                                                             CustomFullScreenDialog.showDialog();
                                                             _fleamarketListViewModel.changeCategory_spot_ski('${FleamarketCategory_spot.welli.korean}');
                                                             await _fleamarketListViewModel.fetchFleamarketData_ski(
-                                                                userId: _userViewModel.user.user_id,
+                                                              userId: _userViewModel.user.user_id,
                                                               categoryMain: '스키',
                                                               categorySub: (_fleamarketListViewModel.selectedCategory_sub_ski == '전체 카테고리')
                                                                   ? null
@@ -979,7 +979,7 @@ class FleaMarketListView_ski extends StatelessWidget {
                                                             CustomFullScreenDialog.showDialog();
                                                             _fleamarketListViewModel.changeCategory_spot_ski('${FleamarketCategory_spot.jisan.korean}');
                                                             await _fleamarketListViewModel.fetchFleamarketData_ski(
-                                                                userId: _userViewModel.user.user_id,
+                                                              userId: _userViewModel.user.user_id,
                                                               categoryMain: '스키',
                                                               categorySub: (_fleamarketListViewModel.selectedCategory_sub_ski == '전체 카테고리')
                                                                   ? null
@@ -1009,7 +1009,7 @@ class FleaMarketListView_ski extends StatelessWidget {
                                                             CustomFullScreenDialog.showDialog();
                                                             _fleamarketListViewModel.changeCategory_spot_ski('${FleamarketCategory_spot.high1.korean}');
                                                             await _fleamarketListViewModel.fetchFleamarketData_ski(
-                                                                userId: _userViewModel.user.user_id,
+                                                              userId: _userViewModel.user.user_id,
                                                               categoryMain: '스키',
                                                               categorySub: (_fleamarketListViewModel.selectedCategory_sub_ski == '전체 카테고리')
                                                                   ? null
@@ -1039,7 +1039,7 @@ class FleaMarketListView_ski extends StatelessWidget {
                                                             CustomFullScreenDialog.showDialog();
                                                             _fleamarketListViewModel.changeCategory_spot_ski('${FleamarketCategory_spot.phoenix.korean}');
                                                             await _fleamarketListViewModel.fetchFleamarketData_ski(
-                                                                userId: _userViewModel.user.user_id,
+                                                              userId: _userViewModel.user.user_id,
                                                               categoryMain: '스키',
                                                               categorySub: (_fleamarketListViewModel.selectedCategory_sub_ski == '전체 카테고리')
                                                                   ? null
@@ -1069,7 +1069,7 @@ class FleaMarketListView_ski extends StatelessWidget {
                                                             CustomFullScreenDialog.showDialog();
                                                             _fleamarketListViewModel.changeCategory_spot_ski('${FleamarketCategory_spot.etc.korean}');
                                                             await _fleamarketListViewModel.fetchFleamarketData_ski(
-                                                                userId: _userViewModel.user.user_id,
+                                                              userId: _userViewModel.user.user_id,
                                                               categoryMain: '스키',
                                                               categorySub: (_fleamarketListViewModel.selectedCategory_sub_ski == '전체 카테고리')
                                                                   ? null
@@ -1183,7 +1183,7 @@ class FleaMarketListView_ski extends StatelessWidget {
                                                           CustomFullScreenDialog.showDialog();
                                                           _fleamarketListViewModel.changeCategory_spot_ski('${FleamarketCategory_spot.konjiam.korean}');
                                                           await _fleamarketListViewModel.fetchFleamarketData_ski(
-                                                              userId: _userViewModel.user.user_id,
+                                                            userId: _userViewModel.user.user_id,
                                                             categoryMain: '스키',
                                                             categorySub: (_fleamarketListViewModel.selectedCategory_sub_ski == '전체 카테고리')
                                                                 ? null
@@ -1213,7 +1213,7 @@ class FleaMarketListView_ski extends StatelessWidget {
                                                           CustomFullScreenDialog.showDialog();
                                                           _fleamarketListViewModel.changeCategory_spot_ski('${FleamarketCategory_spot.muju.korean}');
                                                           await _fleamarketListViewModel.fetchFleamarketData_ski(
-                                                              userId: _userViewModel.user.user_id,
+                                                            userId: _userViewModel.user.user_id,
                                                             categoryMain: '스키',
                                                             categorySub: (_fleamarketListViewModel.selectedCategory_sub_ski == '전체 카테고리')
                                                                 ? null
@@ -1243,7 +1243,7 @@ class FleaMarketListView_ski extends StatelessWidget {
                                                           CustomFullScreenDialog.showDialog();
                                                           _fleamarketListViewModel.changeCategory_spot_ski('${FleamarketCategory_spot.vivaldi.korean}');
                                                           await _fleamarketListViewModel.fetchFleamarketData_ski(
-                                                              userId: _userViewModel.user.user_id,
+                                                            userId: _userViewModel.user.user_id,
                                                             categoryMain: '스키',
                                                             categorySub: (_fleamarketListViewModel.selectedCategory_sub_ski == '전체 카테고리')
                                                                 ? null
@@ -1273,7 +1273,7 @@ class FleaMarketListView_ski extends StatelessWidget {
                                                           CustomFullScreenDialog.showDialog();
                                                           _fleamarketListViewModel.changeCategory_spot_ski('${FleamarketCategory_spot.alphen.korean}');
                                                           await _fleamarketListViewModel.fetchFleamarketData_ski(
-                                                              userId: _userViewModel.user.user_id,
+                                                            userId: _userViewModel.user.user_id,
                                                             categoryMain: '스키',
                                                             categorySub: (_fleamarketListViewModel.selectedCategory_sub_ski == '전체 카테고리')
                                                                 ? null
@@ -1303,7 +1303,7 @@ class FleaMarketListView_ski extends StatelessWidget {
                                                           CustomFullScreenDialog.showDialog();
                                                           _fleamarketListViewModel.changeCategory_spot_ski('${FleamarketCategory_spot.gangchon.korean}');
                                                           await _fleamarketListViewModel.fetchFleamarketData_ski(
-                                                              userId: _userViewModel.user.user_id,
+                                                            userId: _userViewModel.user.user_id,
                                                             categoryMain: '스키',
                                                             categorySub: (_fleamarketListViewModel.selectedCategory_sub_ski == '전체 카테고리')
                                                                 ? null
@@ -1333,7 +1333,7 @@ class FleaMarketListView_ski extends StatelessWidget {
                                                           CustomFullScreenDialog.showDialog();
                                                           _fleamarketListViewModel.changeCategory_spot_ski('${FleamarketCategory_spot.oak.korean}');
                                                           await _fleamarketListViewModel.fetchFleamarketData_ski(
-                                                              userId: _userViewModel.user.user_id,
+                                                            userId: _userViewModel.user.user_id,
                                                             categoryMain: '스키',
                                                             categorySub: (_fleamarketListViewModel.selectedCategory_sub_ski == '전체 카테고리')
                                                                 ? null
@@ -1363,7 +1363,7 @@ class FleaMarketListView_ski extends StatelessWidget {
                                                           CustomFullScreenDialog.showDialog();
                                                           _fleamarketListViewModel.changeCategory_spot_ski('${FleamarketCategory_spot.o2.korean}');
                                                           await _fleamarketListViewModel.fetchFleamarketData_ski(
-                                                              userId: _userViewModel.user.user_id,
+                                                            userId: _userViewModel.user.user_id,
                                                             categoryMain: '스키',
                                                             categorySub: (_fleamarketListViewModel.selectedCategory_sub_ski == '전체 카테고리')
                                                                 ? null
@@ -1393,7 +1393,7 @@ class FleaMarketListView_ski extends StatelessWidget {
                                                           CustomFullScreenDialog.showDialog();
                                                           _fleamarketListViewModel.changeCategory_spot_ski('${FleamarketCategory_spot.yongpyong.korean}');
                                                           await _fleamarketListViewModel.fetchFleamarketData_ski(
-                                                              userId: _userViewModel.user.user_id,
+                                                            userId: _userViewModel.user.user_id,
                                                             categoryMain: '스키',
                                                             categorySub: (_fleamarketListViewModel.selectedCategory_sub_ski == '전체 카테고리')
                                                                 ? null
@@ -1423,7 +1423,7 @@ class FleaMarketListView_ski extends StatelessWidget {
                                                           CustomFullScreenDialog.showDialog();
                                                           _fleamarketListViewModel.changeCategory_spot_ski('${FleamarketCategory_spot.welli.korean}');
                                                           await _fleamarketListViewModel.fetchFleamarketData_ski(
-                                                              userId: _userViewModel.user.user_id,
+                                                            userId: _userViewModel.user.user_id,
                                                             categoryMain: '스키',
                                                             categorySub: (_fleamarketListViewModel.selectedCategory_sub_ski == '전체 카테고리')
                                                                 ? null
@@ -1453,7 +1453,7 @@ class FleaMarketListView_ski extends StatelessWidget {
                                                           CustomFullScreenDialog.showDialog();
                                                           _fleamarketListViewModel.changeCategory_spot_ski('${FleamarketCategory_spot.jisan.korean}');
                                                           await _fleamarketListViewModel.fetchFleamarketData_ski(
-                                                              userId: _userViewModel.user.user_id,
+                                                            userId: _userViewModel.user.user_id,
                                                             categoryMain: '스키',
                                                             categorySub: (_fleamarketListViewModel.selectedCategory_sub_ski == '전체 카테고리')
                                                                 ? null
@@ -1483,7 +1483,7 @@ class FleaMarketListView_ski extends StatelessWidget {
                                                           CustomFullScreenDialog.showDialog();
                                                           _fleamarketListViewModel.changeCategory_spot_ski('${FleamarketCategory_spot.high1.korean}');
                                                           await _fleamarketListViewModel.fetchFleamarketData_ski(
-                                                              userId: _userViewModel.user.user_id,
+                                                            userId: _userViewModel.user.user_id,
                                                             categoryMain: '스키',
                                                             categorySub: (_fleamarketListViewModel.selectedCategory_sub_ski == '전체 카테고리')
                                                                 ? null
@@ -1513,7 +1513,7 @@ class FleaMarketListView_ski extends StatelessWidget {
                                                           CustomFullScreenDialog.showDialog();
                                                           _fleamarketListViewModel.changeCategory_spot_ski('${FleamarketCategory_spot.phoenix.korean}');
                                                           await _fleamarketListViewModel.fetchFleamarketData_ski(
-                                                              userId: _userViewModel.user.user_id,
+                                                            userId: _userViewModel.user.user_id,
                                                             categoryMain: '스키',
                                                             categorySub: (_fleamarketListViewModel.selectedCategory_sub_ski == '전체 카테고리')
                                                                 ? null
@@ -1543,7 +1543,7 @@ class FleaMarketListView_ski extends StatelessWidget {
                                                           CustomFullScreenDialog.showDialog();
                                                           _fleamarketListViewModel.changeCategory_spot_ski('${FleamarketCategory_spot.etc.korean}');
                                                           await _fleamarketListViewModel.fetchFleamarketData_ski(
-                                                              userId: _userViewModel.user.user_id,
+                                                            userId: _userViewModel.user.user_id,
                                                             categoryMain: '스키',
                                                             categorySub: (_fleamarketListViewModel.selectedCategory_sub_ski == '전체 카테고리')
                                                                 ? null
@@ -1602,40 +1602,50 @@ class FleaMarketListView_ski extends StatelessWidget {
                   )
                       :
                   Expanded(
-                    child: (_fleamarketListViewModel.fleamarketListSki.length == 0)
-                            ? Transform.translate(
-                          offset: Offset(0, -40),
-                          child: Center(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Image.asset(
-                                  'assets/imgs/icons/icon_nodata.png',
-                                  scale: 4,
-                                  width: 73,
-                                  height: 73,
+                      child: (_fleamarketListViewModel.fleamarketListSki.length == 0)
+                          ? Transform.translate(
+                        offset: Offset(0, -40),
+                        child: Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Image.asset(
+                                'assets/imgs/icons/icon_nodata.png',
+                                scale: 4,
+                                width: 73,
+                                height: 73,
+                              ),
+                              SizedBox(
+                                height: 6,
+                              ),
+                              Text('게시판에 글이 없습니다.',
+                                style: SDSTextStyle.regular.copyWith(
+                                    fontSize: 14,
+                                    color: SDSColor.gray600
                                 ),
-                                SizedBox(
-                                  height: 6,
-                                ),
-                                Text('게시판에 글이 없습니다.',
-                                  style: SDSTextStyle.regular.copyWith(
-                                      fontSize: 14,
-                                      color: SDSColor.gray600
-                                  ),
-                                ),
-                              ],
-                            ),
+                              ),
+                            ],
                           ),
-                        )
-                            : Scrollbar(
-                          controller: _fleamarketListViewModel.scrollController_ski,
-                          child: ListView.builder(
-                            controller: _fleamarketListViewModel.scrollController_ski, // ScrollController 연결
-                            itemCount: _fleamarketListViewModel.fleamarketListSki.length,
-                            physics: AlwaysScrollableScrollPhysics(),
-                            itemBuilder: (context, index) {
+                        ),
+                      )
+                          : Scrollbar(
+                        controller: _fleamarketListViewModel.scrollController_ski,
+                        child: ListView.builder(
+                          controller: _fleamarketListViewModel.scrollController_ski, // ScrollController 연결
+                          itemCount: _fleamarketListViewModel.fleamarketListSki.length + 1,
+                          physics: AlwaysScrollableScrollPhysics(),
+                          itemBuilder: (context, index) {
+                            if(index == _fleamarketListViewModel.fleamarketListSki.length){
+                              return Obx(() => _fleamarketListViewModel.isLoadingNextList_ski == true// 여기서 Obx 사용
+                                  ? Padding(
+                                padding: const EdgeInsets.only(bottom: 16),
+                                child: Center(
+                                  child: CircularProgressIndicator(), // 로딩 인디케이터
+                                ),
+                              )
+                                  : SizedBox.shrink());
+                            }else{
                               Fleamarket data = _fleamarketListViewModel.fleamarketListSki[index] ;
                               String _time = GetDatetime().getAgoString(data.uploadTime!);
                               return GestureDetector(
@@ -1659,36 +1669,36 @@ class FleaMarketListView_ski extends StatelessWidget {
                                                 Stack(
                                                   children: [
                                                     if (data.photos!.length != 0)
-                                                    ExtendedImage.network(
-                                                      data.photos!.first.urlFleaPhoto!,
-                                                      cache: true,
-                                                      shape: BoxShape.rectangle,
-                                                      borderRadius: BorderRadius.circular(8),
-                                                      border: Border.all(width: 0.5, color: SDSColor.gray100),
-                                                      width: 110,
-                                                      height: 110,
-                                                      cacheHeight: 400,
-                                                      fit: BoxFit.cover,
-                                                      handleLoadingProgress: true,
-                                                      loadStateChanged: (ExtendedImageState state) {
-                                                        switch (state.extendedImageLoadState) {
-                                                          case LoadState.loading:
-                                                          // 로딩 중일 때 로딩 인디케이터를 표시
-                                                            return Center(child: CircularProgressIndicator());
-                                                          case LoadState.completed:
-                                                          // 로딩이 완료되었을 때 이미지 반환
-                                                            return state.completedWidget;
-                                                          case LoadState.failed:
-                                                          // 로딩이 실패했을 때 대체 이미지 또는 다른 처리
-                                                            return Image.asset(
-                                                              'assets/imgs/imgs/img_flea_default.png', // 대체 이미지 경로
-                                                              width: 110,
-                                                              height: 110,
-                                                              fit: BoxFit.cover,
-                                                            );
-                                                        }
-                                                      },
-                                                    ),
+                                                      ExtendedImage.network(
+                                                        data.photos!.first.urlFleaPhoto!,
+                                                        cache: true,
+                                                        shape: BoxShape.rectangle,
+                                                        borderRadius: BorderRadius.circular(8),
+                                                        border: Border.all(width: 0.5, color: SDSColor.gray100),
+                                                        width: 110,
+                                                        height: 110,
+                                                        cacheHeight: 400,
+                                                        fit: BoxFit.cover,
+                                                        handleLoadingProgress: true,
+                                                        loadStateChanged: (ExtendedImageState state) {
+                                                          switch (state.extendedImageLoadState) {
+                                                            case LoadState.loading:
+                                                            // 로딩 중일 때 로딩 인디케이터를 표시
+                                                              return Center(child: CircularProgressIndicator());
+                                                            case LoadState.completed:
+                                                            // 로딩이 완료되었을 때 이미지 반환
+                                                              return state.completedWidget;
+                                                            case LoadState.failed:
+                                                            // 로딩이 실패했을 때 대체 이미지 또는 다른 처리
+                                                              return Image.asset(
+                                                                'assets/imgs/imgs/img_flea_default.png', // 대체 이미지 경로
+                                                                width: 110,
+                                                                height: 110,
+                                                                fit: BoxFit.cover,
+                                                              );
+                                                          }
+                                                        },
+                                                      ),
                                                     if (data.photos!.length == 0)
                                                       ExtendedImage
                                                           .asset(
@@ -1781,7 +1791,7 @@ class FleaMarketListView_ski extends StatelessWidget {
                                                           Padding(
                                                             padding: const EdgeInsets.only(top: 2),
                                                             child: Row(
-                                                               mainAxisAlignment: MainAxisAlignment.start,
+                                                              mainAxisAlignment: MainAxisAlignment.start,
                                                               children: [
                                                                 Text(
                                                                   ' ${data.spot!} · ',
@@ -1919,10 +1929,11 @@ class FleaMarketListView_ski extends StatelessWidget {
                                     ],
                                   )
                               );
-                            },
-                            padding: EdgeInsets.only(bottom: 80),
-                          ),
-                        )
+                            }
+                          },
+                          padding: EdgeInsets.only(bottom: 80),
+                        ),
+                      )
                   ),
                 ],
               ),

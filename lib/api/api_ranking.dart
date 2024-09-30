@@ -115,12 +115,16 @@ class RankingAPI {
   }
 
   Future<ApiResponse> fetchRankingData_indiv_beta({
-    required int userId,
+    int? userId,  // 선택적으로 userId를 받을 수 있도록 변경
     String? url,
   }) async {
     final uri = url != null
         ? Uri.parse(url)
-        : Uri.parse('$baseUrl/list-indiv-beta/');
+        : Uri.parse('$baseUrl/list-indiv-beta/').replace(
+      queryParameters: userId != null
+          ? {'user_id': userId.toString()}  // userId가 있을 때만 쿼리 파라미터에 포함
+          : null,  // userId가 없으면 쿼리 파라미터 추가하지 않음
+    );
 
     final response = await http.get(uri);
 
@@ -132,6 +136,7 @@ class RankingAPI {
       return ApiResponse.error(data);
     }
   }
+
 
   Future<ApiResponse> fetchRankingData_crew({
     required int userId,
@@ -163,12 +168,16 @@ class RankingAPI {
   }
 
   Future<ApiResponse> fetchRankingData_crew_beta({
-    required int userId,
+    int? crewId,  // 선택적으로 crewId를 받을 수 있도록 변경
     String? url,
   }) async {
     final uri = url != null
         ? Uri.parse(url)
-        : Uri.parse('$baseUrl/list-crew-beta/');
+        : Uri.parse('$baseUrl/list-crew-beta/').replace(
+      queryParameters: crewId != null
+          ? {'crew_id': crewId.toString()}  // crewId가 있을 때만 쿼리 파라미터에 포함
+          : null,  // crewId가 없으면 쿼리 파라미터 추가하지 않음
+    );
 
     final response = await http.get(uri);
 
@@ -180,6 +189,7 @@ class RankingAPI {
       return ApiResponse.error(data);
     }
   }
+
 
 
 

@@ -5,45 +5,32 @@ import 'package:com.snowlive/viewmodel/vm_user.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class RankingListBetaViewModel extends GetxController {
+class RankingIndivHistoryViewModel extends GetxController {
   var isLoadingBeta_indiv = false.obs;
-  var isLoadingBeta_crew = false.obs;
-  RxString _crewOrIndiv = '크루'.obs;
 
   final UserViewModel _userViewModel = Get.find<UserViewModel>();
 
   // 베타 개인 랭킹 관련 변수
   var _rankingListIndivBetaList = <RankingUserBeta>[].obs;
 
-  // 베타 크루 랭킹 관련 변수
-  var _rankingListCrewBetaList = <CrewRankingBeta>[].obs;
-
   // 페이징 관련 변수
   RxString _nextPageUrlIndivBeta = ''.obs;
-  RxString _nextPageUrlCrewBeta = ''.obs;
 
   List<RankingUserBeta> get rankingListIndivBetaList => _rankingListIndivBetaList;
-  List<CrewRankingBeta> get rankingListCrewBetaList => _rankingListCrewBetaList;
 
   String get nextPageUrlIndivBeta => _nextPageUrlIndivBeta.value;
-  String get nextPageUrlCrewBeta => _nextPageUrlCrewBeta.value;
-
-  String get crewOrIndiv => _crewOrIndiv.value;
 
   ScrollController scrollControllerIndivBeta = ScrollController();
-  ScrollController scrollControllerCrewBeta = ScrollController();
 
   @override
   void onInit() async{
     super.onInit();
     scrollControllerIndivBeta = ScrollController()..addListener(_scrollListenerIndivBeta);
-    scrollControllerCrewBeta = ScrollController()..addListener(_scrollListenerCrewBeta);
     await fetchAllRankingBeta();
   }
 
   Future<void> fetchAllRankingBeta() async {
-    await fetchRankingDataCrewBeta();
-    await fetchRankingDataIndivBeta();
+    await fetchRankingDataIndivBeta(userId: _userViewModel.user.user_id);
   }
 
   Future<void> fetchRankingDataIndivBeta({ int? userId, String? url}) async {
@@ -69,38 +56,9 @@ class RankingListBetaViewModel extends GetxController {
     }
   }
 
-  Future<void> fetchRankingDataCrewBeta({ int? crewId, String? url}) async {
-    try {
-      isLoadingBeta_crew(true);
-      final response = await RankingAPI().fetchRankingData_crew_beta(crewId: crewId, url: url);
-      if (response.success) {
-        final rankingListCrewResponseBeta = RankingListCrewResponseBeta.fromJson(response.data!);
-
-        if (url == null) {
-          _rankingListCrewBetaList.value = rankingListCrewResponseBeta.results!;
-        } else {
-          _rankingListCrewBetaList.addAll(rankingListCrewResponseBeta.results!);
-        }
-        _nextPageUrlCrewBeta.value = rankingListCrewResponseBeta.next ?? '';
-      } else {
-        print('Failed to load crew beta ranking: ${response.error}');
-      }
-    } catch (e) {
-      print('Error fetching crew beta ranking: $e');
-    } finally {
-      isLoadingBeta_crew(false);
-    }
-  }
-
   Future<void> fetchNextPageIndivBeta() async {
     if (_nextPageUrlIndivBeta.value.isNotEmpty) {
       await fetchRankingDataIndivBeta(userId: _userViewModel.user.user_id, url: _nextPageUrlIndivBeta.value);
-    }
-  }
-
-  Future<void> fetchNextPageCrewBeta() async {
-    if (_nextPageUrlCrewBeta.value.isNotEmpty) {
-      await fetchRankingDataCrewBeta(crewId: _userViewModel.user.crew_id, url: _nextPageUrlCrewBeta.value);
     }
   }
 
@@ -110,15 +68,5 @@ class RankingListBetaViewModel extends GetxController {
     }
   }
 
-  Future<void> _scrollListenerCrewBeta() async {
-    if (scrollControllerCrewBeta.position.pixels == scrollControllerCrewBeta.position.maxScrollExtent) {
-      print('다음 목록 불러오기 시작');
-      await fetchNextPageCrewBeta();
-    }
-  }
-
-  void changeCrewOrIndiv(crewOrIndiv){
-    _crewOrIndiv.value = crewOrIndiv;
-  }
 
 }

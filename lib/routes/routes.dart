@@ -18,8 +18,10 @@ import 'package:com.snowlive/view/fleamarket/v_fleaMarketCommentDetail.dart';
 import 'package:com.snowlive/view/fleamarket/v_fleaMarketList_search.dart';
 import 'package:com.snowlive/view/fleamarket/v_fleamarketUpdate.dart';
 import 'package:com.snowlive/view/fleamarket/v_fleamarketUpload.dart';
+import 'package:com.snowlive/view/friend/history/v_rankingIndiv_history_home.dart';
 import 'package:com.snowlive/view/friend/v_friendBlockList.dart';
 import 'package:com.snowlive/view/friend/v_invitation_friend.dart';
+import 'package:com.snowlive/view/ranking/history/v_ranking_history_home.dart';
 import 'package:com.snowlive/view/v_profileImageScreen.dart';
 import 'package:com.snowlive/view/crew/v_crewHome.dart';
 import 'package:com.snowlive/view/crew/v_crewMain.dart';
@@ -90,6 +92,8 @@ class AppRoutes {
   static const String crewMemberSettings = '/crewMemberSettings';
   static const String managerPermission = '/managerPermission';
   static const String crewNoticeModify = '/crewNoticeModify';
+  static const String rankingHistoryHome = '/rankingHistoryHome';
+  static const String rankingIndivHistoryHome = '/rankingIndivHistoryHome';
 
 
 
@@ -298,6 +302,16 @@ class AppRoutes {
     GetPage(
       name: crewNoticeModify,
       page: () => CrewNoticeModifyView(),
+    ),
+    GetPage(
+      name: rankingHistoryHome,
+      page: () => RankingHistoryHomeView(),
+      binding: CrewHistoryHome()
+    ),
+    GetPage(
+      name: rankingIndivHistoryHome,
+      page: () => RankingIndivHistoryHomeView(),
+      binding: IndivHistoryHome()
     ),
   ];
 }

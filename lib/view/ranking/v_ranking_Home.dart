@@ -1,6 +1,7 @@
 import 'package:com.snowlive/data/snowliveDesignStyle.dart';
+import 'package:com.snowlive/routes/routes.dart';
 import 'package:com.snowlive/view/ranking/v_rankingList_Indi.dart';
-import 'package:com.snowlive/view/ranking/v_rankingList_beta.dart';
+import 'package:com.snowlive/view/ranking/history/v_rankingList_beta.dart';
 import 'package:com.snowlive/view/ranking/v_rankingList_crew.dart';
 import 'package:com.snowlive/viewmodel/ranking/vm_rankingList.dart';
 import 'package:com.snowlive/viewmodel/vm_user.dart';
@@ -38,7 +39,6 @@ class RankingHomeView extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Padding(
                           padding: EdgeInsets.only(left: 16, right: 12),
@@ -98,32 +98,22 @@ class RankingHomeView extends StatelessWidget {
                             ),
                           ),
                         ),
-                        Padding(
-                          padding: EdgeInsets.only(right: 12),
-                          child: ElevatedButton(
-                            child: Text(
-                              '지난랭킹',
-                              style: SDSTextStyle.extraBold.copyWith(
-                                  color: (_rankingListViewModel.tapName=='지난랭킹')
-                                      ? Color(0xFF111111)
-                                      : Color(0xFFDEDEDE),
-                                  fontSize: 18),
-                            ),
-                            onPressed: () async {
-                              _rankingListViewModel.changeTap('지난랭킹');
-                            },
-                            style: ElevatedButton.styleFrom(
-                              padding: EdgeInsets.only(top: 0),
-                              minimumSize: Size(40, 10),
-                              backgroundColor: Color(0xFFFFFFFF),
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(8)),
-                              elevation: 0,
-                            ),
-                          ),
-                        ),
-
                       ],
+                    ),
+                    Padding(
+                      padding: EdgeInsets.only(right: 12),
+                      child:
+                      IconButton(
+                        highlightColor: Colors.transparent,
+                        onPressed: () async{
+                          Get.toNamed(AppRoutes.rankingHistoryHome);
+                        },
+                        icon: Image.asset(
+                          'assets/imgs/icons/icon_talk_resortHome.png',
+                          width: 26,
+                          height: 26,
+                        ),
+                      ),
                     ),
                   ],
                 ),
@@ -134,15 +124,11 @@ class RankingHomeView extends StatelessWidget {
               if (_rankingListViewModel.tapName=='크루랭킹')
                 Expanded(
                   child: RankingCrewView()),
-              if (_rankingListViewModel.tapName=='지난랭킹')
-                Expanded(
-                    child: RankingBetaView()),
             ],
           ),
         )),
         floatingActionButton:
-        (_rankingListViewModel.tapName!='지난랭킹')
-        ?FloatingButtonWithOptions(
+        FloatingButtonWithOptions(
           selectedOption: _rankingListViewModel.dayOrTotal,
           onOptionSelected: (String value) {
             _rankingListViewModel.changeDayOrTotal(value);
@@ -153,8 +139,7 @@ class RankingHomeView extends StatelessWidget {
               _rankingListViewModel.toggleDataDayOrTotal_tapFilter(resortNum: _rankingListViewModel.selectedResortNum);
 
           },
-        )
-        :SizedBox.shrink(),
+        ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked));
   }
 }

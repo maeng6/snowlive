@@ -11,6 +11,7 @@ class FleamarketSearchViewModel extends GetxController {
 
   ScrollController _scrollController = ScrollController();
   var isLoading = false.obs;
+  RxBool _isLoadingNextList = false.obs;
   final TextEditingController textEditingController = TextEditingController();
   final formKey = GlobalKey<FormState>();
   UserViewModel _userViewModel = Get.find<UserViewModel>();
@@ -38,6 +39,7 @@ class FleamarketSearchViewModel extends GetxController {
   ScrollController get scrollController => _scrollController;
   List<String> get recentSearches => _recentSearches;
   bool get isSearching => _isSearching.value;
+  bool get isLoadingNextList => _isLoadingNextList.value;
 
 
 
@@ -59,10 +61,12 @@ class FleamarketSearchViewModel extends GetxController {
     if (_scrollController.position.pixels == _scrollController.position.maxScrollExtent) {
       print('다음목록 로딩 시작');
       if (_nextPageUrl_total.value.isNotEmpty) {
+        _isLoadingNextList.value = true;
         await fetchFleamarketData_search(
             userId: _userViewModel.user.user_id,
             url: _nextPageUrl_total.value
         ); // 추가 데이터 로딩
+        _isLoadingNextList.value = false;
       }
     }
   }

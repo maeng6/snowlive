@@ -18,6 +18,7 @@ import 'package:com.snowlive/viewmodel/fleamarket/vm_fleamarketUpload.dart';
 import 'package:com.snowlive/viewmodel/friend/vm_friendDetail.dart';
 import 'package:com.snowlive/viewmodel/friend/vm_friendDetailUpdate.dart';
 import 'package:com.snowlive/viewmodel/friend/vm_friendList.dart';
+import 'package:com.snowlive/viewmodel/friend/vm_rankingIndivHistory.dart';
 import 'package:com.snowlive/viewmodel/onboarding_login/vm_login.dart';
 import 'package:com.snowlive/viewmodel/onboarding_login/vm_tos.dart';
 import 'package:com.snowlive/viewmodel/ranking/vm_rankingList.dart';
@@ -48,7 +49,6 @@ class MainHomeBinding extends Bindings {
     Get.put(ImageController());
     Get.put(FriendListViewModel());
     Get.put(RankingListViewModel());
-    Get.put(RankingListBetaViewModel());
     Get.put(CommunityBulletinListViewModel());
     Get.put(CommunityDetailViewModel());
     Get.put(CrewMemberListViewModel());
@@ -189,6 +189,18 @@ class CrewHomeBinding extends Bindings {
 class CrewRecordRoomBinding extends Bindings {
   @override
   void dependencies() {
+  }
+}
+class CrewHistoryHome extends Bindings {
+  @override
+  void dependencies() {
+    Get.put(RankingListBetaViewModel());
+  }
+}
+class IndivHistoryHome extends Bindings {
+  @override
+  void dependencies() {
+    Get.put(RankingIndivHistoryViewModel());
   }
 }
 

@@ -70,9 +70,8 @@ class RankingCrewView extends StatelessWidget {
                       child: ListView.builder(
                         shrinkWrap: true,
                         controller: _rankingListViewModel.scrollController_crew,
-                        itemCount: _rankingListViewModel.rankingListCrewList_view!.length,
+                        itemCount: _rankingListViewModel.rankingListCrewList_view!.length + 2,
                         itemBuilder: (context, index) {
-                          final document = _rankingListViewModel.rankingListCrewList_view![index];
                           if(index == 0){
                             return Column(children: [
                               //마이인포 박스 - 점수와 랭킹없는경우 안보여주게함
@@ -980,7 +979,19 @@ class RankingCrewView extends StatelessWidget {
                               ),
                               SizedBox(height: 16),
                             ],);
-                          }else{
+                          }else if(index == _rankingListViewModel.rankingListCrewList_view!.length + 1){
+                            return Obx(() => _rankingListViewModel.isLoadingRankingListCrewList_next // 여기서 Obx 사용
+                                ? Padding(
+                              padding: const EdgeInsets.all(16.0),
+                              child: Center(
+                                child: CircularProgressIndicator(), // 로딩 인디케이터
+                              ),
+                            )
+                                : SizedBox.shrink()); // 로딩이 완료되면 빈 공간
+                          }
+                          else{
+                            final document =
+                            _rankingListViewModel.rankingListCrewList_view![index - 1];
                             return Padding(
                               padding: const EdgeInsets.only(bottom: 8, left: 2, right: 2),
                               child: GestureDetector(
@@ -1001,19 +1012,19 @@ class RankingCrewView extends StatelessWidget {
                                       child: Row(
                                         mainAxisAlignment: MainAxisAlignment.center,
                                         children: [
-                                          if (index == 0) ...[
+                                          if (index == 1) ...[
                                             Image.asset('assets/imgs/icons/icon_medal_1.png', width: 24),
-                                          ] else if (index == 1) ...[
-                                            Image.asset('assets/imgs/icons/icon_medal_2.png', width: 24),
                                           ] else if (index == 2) ...[
+                                            Image.asset('assets/imgs/icons/icon_medal_2.png', width: 24),
+                                          ] else if (index == 3) ...[
                                             Image.asset('assets/imgs/icons/icon_medal_3.png', width: 24),
                                           ] else ...[
                                             Expanded(
                                               child: Center(
                                                 child: AutoSizeText(
                                                   (_rankingListViewModel.resortOrTotal=='개별스키장')
-                                                      ?'${document.resortRank??''}'
-                                                      :'${document.overallRank??''}',
+                                                      ?'${(document.resortRank?? '')}'
+                                                      :'${(document.overallRank??'')}',
                                                   style: SDSTextStyle.bold.copyWith(
                                                       fontSize: 14,
                                                       color: Color(0xFF111111)

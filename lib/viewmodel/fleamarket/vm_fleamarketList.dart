@@ -13,6 +13,11 @@ class FleamarketListViewModel extends GetxController {
   RxBool _isLoadingList_board = false.obs;
   RxBool _isLoadingList_my = false.obs;
   RxBool _isLoadingList_favorite = false.obs;
+  RxBool _isLoadingNextList_total = false.obs;
+  RxBool _isLoadingNextList_ski = false.obs;
+  RxBool _isLoadingNextList_board = false.obs;
+  RxBool _isLoadingNextList_my = false.obs;
+  RxBool _isLoadingNextList_favorite = false.obs;
   var _fleamarketList_total = <Fleamarket>[].obs;
   var _fleamarketList_ski = <Fleamarket>[].obs;
   var _fleamarketList_board = <Fleamarket>[].obs;
@@ -82,6 +87,11 @@ class FleamarketListViewModel extends GetxController {
   bool get isLoadingList_board  => _isLoadingList_board .value;
   bool get isLoadingList_my  => _isLoadingList_my .value;
   bool get isLoadingList_favorite  => _isLoadingList_favorite .value;
+  bool get isLoadingNextList_total  => _isLoadingNextList_total .value;
+  bool get isLoadingNextList_ski  => _isLoadingNextList_ski .value;
+  bool get isLoadingNextList_board  => _isLoadingNextList_board .value;
+  bool get isLoadingNextList_my  => _isLoadingNextList_my .value;
+  bool get isLoadingNextList_favorite  => _isLoadingNextList_favorite .value;
 
   String get tapName => _tapName.value;
 
@@ -179,8 +189,10 @@ class FleamarketListViewModel extends GetxController {
   Future<void> _scrollListener_total() async {
     // 스크롤이 리스트의 끝에 도달했을 때
     if (scrollController_total.position.pixels == scrollController_total.position.maxScrollExtent) {
-          if (_nextPageUrl_total.value.isNotEmpty) {
-            await fetchNextPage_total();
+      if (_nextPageUrl_total.value.isNotEmpty) {
+        _isLoadingNextList_total .value = true;
+        await fetchNextPage_total();
+        _isLoadingNextList_total .value = false;
       }
     }
 
@@ -199,7 +211,9 @@ class FleamarketListViewModel extends GetxController {
     // 스크롤이 리스트의 끝에 도달했을 때
     if (scrollController_ski.position.pixels == scrollController_ski.position.maxScrollExtent) {
       if (_nextPageUrl_ski.value.isNotEmpty) {
+        _isLoadingNextList_ski.value = true;
         await fetchNextPage_ski();
+        _isLoadingNextList_ski.value = false;
       }
     }
 
@@ -218,7 +232,9 @@ class FleamarketListViewModel extends GetxController {
     // 스크롤이 리스트의 끝에 도달했을 때
     if (scrollController_board.position.pixels == scrollController_board.position.maxScrollExtent) {
       if (_nextPageUrl_board.value.isNotEmpty) {
+        _isLoadingNextList_board.value = true;
         await fetchNextPage_board();
+        _isLoadingNextList_board.value = false;
       }
     }
 
@@ -237,7 +253,9 @@ class FleamarketListViewModel extends GetxController {
     // 스크롤이 리스트의 끝에 도달했을 때
     if (scrollController_favorite.position.pixels == scrollController_favorite.position.maxScrollExtent) {
       if (_nextPageUrl_favorite.value.isNotEmpty) {
+        _isLoadingNextList_favorite.value = true;
         await fetchNextPage_favorite();
+        _isLoadingNextList_favorite.value = false;
       }
     }
 
@@ -256,7 +274,9 @@ class FleamarketListViewModel extends GetxController {
     // 스크롤이 리스트의 끝에 도달했을 때
     if (scrollController_my.position.pixels == scrollController_my.position.maxScrollExtent) {
       if (_nextPageUrl_my.value.isNotEmpty) {
+        _isLoadingNextList_my.value = true;
         await fetchNextPage_my();
+        _isLoadingNextList_my.value = false;
       }
     }
 
@@ -511,7 +531,7 @@ class FleamarketListViewModel extends GetxController {
   Future<void> fetchNextPage_total() async{
     if (_nextPageUrl_total.value.isNotEmpty) {
       await fetchFleamarketData_total(
-        userId: _userViewModel.user.user_id,
+          userId: _userViewModel.user.user_id,
           url: _nextPageUrl_total.value
       );
     }

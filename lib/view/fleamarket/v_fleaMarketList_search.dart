@@ -246,144 +246,156 @@ class FleaMarketListView_search extends StatelessWidget {
                 child: Obx(
                       () => ListView.builder(
                     controller: _fleamarketSearchViewModel.scrollController,
-                    itemCount: _fleamarketSearchViewModel.fleamarketListSearch.length,
+                    itemCount: _fleamarketSearchViewModel.fleamarketListSearch.length + 1,
                     itemBuilder: (context, index) {
-                      Fleamarket data = _fleamarketSearchViewModel.fleamarketListSearch[index];
-                      String _time = GetDatetime().getAgoString(data.uploadTime!);
-
-                      return GestureDetector(
-                        onTap: () async {
-                          textFocus.unfocus();
-                          _fleamarketDetailViewModel
-                              .fetchFleamarketDetailFromList(
-                              fleamarketResponse:
-                              _fleamarketSearchViewModel
-                                  .fleamarketListSearch[index]);
-                          Get.toNamed(AppRoutes.fleamarketDetail);
-                          await _fleamarketDetailViewModel
-                              .addViewerFleamarket(
-                              fleamarketId: data.fleaId!,
-                              userId: _userViewModel.user.user_id);
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 16),
-                          child: Column(
-                            children: [
-                              Container(
-                                color: Colors.white,
-                                height: 110,
-                                child: Row(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Stack(
-                                      children: [
-                                        if (data.photos!.isNotEmpty)
-                                          ExtendedImage.network(
-                                            data.photos!.first.urlFleaPhoto!,
-                                            cache: true,
-                                            shape: BoxShape.rectangle,
-                                            borderRadius:
-                                            BorderRadius.circular(8),
-                                            border: Border.all(
-                                                width: 0.5,
-                                                color: SDSColor.gray100),
-                                            width: 110,
-                                            height: 110,
-                                            cacheHeight: 400,
-                                            fit: BoxFit.cover,
-                                          ),
-                                        if (data.photos!.isEmpty)
-                                          ExtendedImage.asset(
-                                            'assets/imgs/imgs/img_flea_default.png',
-                                            shape: BoxShape.rectangle,
-                                            borderRadius:
-                                            BorderRadius.circular(8),
-                                            width: 110,
-                                            height: 110,
-                                            fit: BoxFit.cover,
-                                          ),
-                                      ],
-                                    ),
-                                    const SizedBox(width: 16),
-                                    Column(
-                                      crossAxisAlignment: CrossAxisAlignment.end,
-                                      children: [
-                                        Container(
-                                          width: _size.width - 158,
-                                          height: 91,
-                                          child: Column(
-                                            mainAxisAlignment:
-                                            MainAxisAlignment.start,
-                                            crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                data.title!,
-                                                maxLines: 2,
-                                                overflow:
-                                                TextOverflow.ellipsis,
-                                                style: SDSTextStyle.regular
-                                                    .copyWith(
-                                                    fontSize: 15,
-                                                    color:
-                                                    SDSColor.gray900),
-                                              ),
-                                              const SizedBox(height: 2),
-                                              Row(
-                                                mainAxisAlignment:
-                                                MainAxisAlignment.start,
-                                                children: [
-                                                  Text(
-                                                    '${data.spot!} · ',
-                                                    style: SDSTextStyle.regular
-                                                        .copyWith(
-                                                        fontSize: 13,
-                                                        color: SDSColor
-                                                            .gray500),
-                                                  ),
-                                                  Text(
-                                                    _time,
-                                                    style: SDSTextStyle.regular
-                                                        .copyWith(
-                                                        fontSize: 13,
-                                                        color: SDSColor
-                                                            .gray500),
-                                                  ),
-                                                ],
-                                              ),
-                                              const SizedBox(height: 2),
-                                              Text(
-                                                '${f.format(data.price)}원',
-                                                maxLines: 1,
-                                                overflow:
-                                                TextOverflow.ellipsis,
-                                                style: SDSTextStyle.bold
-                                                    .copyWith(
-                                                    color: SDSColor
-                                                        .gray900,
-                                                    fontSize: 17),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              if (_fleamarketSearchViewModel
-                                  .fleamarketListSearch.length !=
-                                  index + 1)
-                                Divider(
-                                  color: SDSColor.gray100,
-                                  height: 32,
-                                  thickness: 1,
-                                ),
-                            ],
+                      if(index == _fleamarketSearchViewModel.fleamarketListSearch.length){
+                        return Obx(() => _fleamarketSearchViewModel.isLoadingNextList == true// 여기서 Obx 사용
+                            ? Padding(
+                          padding: const EdgeInsets.only(bottom: 16),
+                          child: Center(
+                            child: CircularProgressIndicator(), // 로딩 인디케이터
                           ),
-                        ),
-                      );
+                        )
+                            : SizedBox.shrink());
+                      }else{
+                        Fleamarket data = _fleamarketSearchViewModel.fleamarketListSearch[index];
+                        String _time = GetDatetime().getAgoString(data.uploadTime!);
+                        return GestureDetector(
+                          onTap: () async {
+                            textFocus.unfocus();
+                            _fleamarketDetailViewModel
+                                .fetchFleamarketDetailFromList(
+                                fleamarketResponse:
+                                _fleamarketSearchViewModel
+                                    .fleamarketListSearch[index]);
+                            Get.toNamed(AppRoutes.fleamarketDetail);
+                            await _fleamarketDetailViewModel
+                                .addViewerFleamarket(
+                                fleamarketId: data.fleaId!,
+                                userId: _userViewModel.user.user_id);
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 16),
+                            child: Column(
+                              children: [
+                                Container(
+                                  color: Colors.white,
+                                  height: 110,
+                                  child: Row(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Stack(
+                                        children: [
+                                          if (data.photos!.isNotEmpty)
+                                            ExtendedImage.network(
+                                              data.photos!.first.urlFleaPhoto!,
+                                              cache: true,
+                                              shape: BoxShape.rectangle,
+                                              borderRadius:
+                                              BorderRadius.circular(8),
+                                              border: Border.all(
+                                                  width: 0.5,
+                                                  color: SDSColor.gray100),
+                                              width: 110,
+                                              height: 110,
+                                              cacheHeight: 400,
+                                              fit: BoxFit.cover,
+                                            ),
+                                          if (data.photos!.isEmpty)
+                                            ExtendedImage.asset(
+                                              'assets/imgs/imgs/img_flea_default.png',
+                                              shape: BoxShape.rectangle,
+                                              borderRadius:
+                                              BorderRadius.circular(8),
+                                              width: 110,
+                                              height: 110,
+                                              fit: BoxFit.cover,
+                                            ),
+                                        ],
+                                      ),
+                                      const SizedBox(width: 16),
+                                      Column(
+                                        crossAxisAlignment: CrossAxisAlignment.end,
+                                        children: [
+                                          Container(
+                                            width: _size.width - 158,
+                                            height: 91,
+                                            child: Column(
+                                              mainAxisAlignment:
+                                              MainAxisAlignment.start,
+                                              crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  data.title!,
+                                                  maxLines: 2,
+                                                  overflow:
+                                                  TextOverflow.ellipsis,
+                                                  style: SDSTextStyle.regular
+                                                      .copyWith(
+                                                      fontSize: 15,
+                                                      color:
+                                                      SDSColor.gray900),
+                                                ),
+                                                const SizedBox(height: 2),
+                                                Row(
+                                                  mainAxisAlignment:
+                                                  MainAxisAlignment.start,
+                                                  children: [
+                                                    Text(
+                                                      '${data.spot!} · ',
+                                                      style: SDSTextStyle.regular
+                                                          .copyWith(
+                                                          fontSize: 13,
+                                                          color: SDSColor
+                                                              .gray500),
+                                                    ),
+                                                    Text(
+                                                      _time,
+                                                      style: SDSTextStyle.regular
+                                                          .copyWith(
+                                                          fontSize: 13,
+                                                          color: SDSColor
+                                                              .gray500),
+                                                    ),
+                                                  ],
+                                                ),
+                                                const SizedBox(height: 2),
+                                                Text(
+                                                  '${f.format(data.price)}원',
+                                                  maxLines: 1,
+                                                  overflow:
+                                                  TextOverflow.ellipsis,
+                                                  style: SDSTextStyle.bold
+                                                      .copyWith(
+                                                      color: SDSColor
+                                                          .gray900,
+                                                      fontSize: 17),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                if (_fleamarketSearchViewModel
+                                    .fleamarketListSearch.length !=
+                                    index + 1)
+                                  Divider(
+                                    color: SDSColor.gray100,
+                                    height: 32,
+                                    thickness: 1,
+                                  ),
+                              ],
+                            ),
+                          ),
+                        );
+                      }
+
                     },
+                    padding: EdgeInsets.only(bottom: 80),
                   ),
                 ),
               ),
