@@ -1649,10 +1649,22 @@ class FleaMarketListView_total extends StatelessWidget {
                                         child: Container(
                                           width: 24,
                                           height: 24,
-                                          child: CircularProgressIndicator(
-                                            strokeWidth: 4,
-                                            backgroundColor: SDSColor.gray100,
-                                            color: SDSColor.gray300.withOpacity(0.6),
+                                          child: Column(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            crossAxisAlignment: CrossAxisAlignment.center,
+                                            children: [
+                                              Center(
+                                                child: Container(
+                                                  width: 24,
+                                                  height: 24,
+                                                  child: CircularProgressIndicator(
+                                                    strokeWidth: 4,
+                                                    backgroundColor: SDSColor.gray100,
+                                                    color: SDSColor.gray300.withOpacity(0.6),
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
                                           ),
                                         ),
                                       ),

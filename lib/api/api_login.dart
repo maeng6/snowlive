@@ -71,12 +71,13 @@ class LoginAPI {
 
   }
 
-  Future<ApiResponse> deleteUser(String uid) async {
+  Future<ApiResponse> deleteUser(int user_id) async {
+    print(user_id);
     final response = await http.delete(
-      Uri.parse('$baseUrl/delete-user/$uid/'),
+      Uri.parse('$baseUrl/delete-user/${user_id}/'),
     );
 
-    if(response.statusCode==204){
+    if(response.statusCode==200){
       final data = json.decode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
       return ApiResponse.success(data);
     } else{

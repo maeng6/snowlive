@@ -360,13 +360,12 @@ class CrewHomeView extends StatelessWidget {
                           ),
                         ),
                         Expanded(child: SizedBox()),
-                        TextButton(
+                         if(_userViewModel.user.crew_id == _crewDetailViewModel.crewDetailInfo.crewId)
+                        (_crewDetailViewModel.isLoading == true)
+                            ? SizedBox.shrink()
+                            : TextButton(
                           onPressed: () async{
                             Get.toNamed(AppRoutes.crewRecordRoom);
-                            await _crewRecordRoomViewModel.fetchCrewRidingRecords(
-                                _crewDetailViewModel.crewDetailInfo.crewId!,
-                                '${DateTime.now().year}'
-                            );
                           },
                           style: ElevatedButton.styleFrom(
                             padding: EdgeInsets.symmetric(horizontal: 10, vertical: 3),

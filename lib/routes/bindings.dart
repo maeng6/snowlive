@@ -8,6 +8,7 @@ import 'package:com.snowlive/viewmodel/crew/vm_crewDetail.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewMemberList.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewNotice.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewRecordRoom.dart';
+import 'package:com.snowlive/viewmodel/crew/vm_rankingCrewHistory.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_searchCrew.dart';
 import 'package:com.snowlive/viewmodel/fleamarket/vm_fleamarketCommentDetail.dart';
 import 'package:com.snowlive/viewmodel/fleamarket/vm_fleamarketDetail.dart';
@@ -57,6 +58,10 @@ class MainHomeBinding extends Bindings {
     Get.put(SearchCrewViewModel());
     Get.put(CrewDetailViewModel());
     Get.put(SetCrewViewModel());
+    Get.put(RankingListBetaViewModel());
+    Get.put(CrewRecordRoomViewModel());
+    Get.put(RankingCrewHistoryViewModel());
+
   }
 }
 
@@ -176,7 +181,6 @@ class SetCrewNameAndResortBinding extends Bindings {
 class CrewMainBinding extends Bindings {
   @override
   void dependencies() {
-    Get.put(CrewRecordRoomViewModel());
   }
 }
 
@@ -189,18 +193,21 @@ class CrewHomeBinding extends Bindings {
 class CrewRecordRoomBinding extends Bindings {
   @override
   void dependencies() {
+
   }
 }
-class CrewHistoryHome extends Bindings {
-  @override
-  void dependencies() {
-    Get.put(RankingListBetaViewModel());
-  }
-}
+
 class IndivHistoryHome extends Bindings {
   @override
   void dependencies() {
     Get.put(RankingIndivHistoryViewModel());
+  }
+}
+
+class Setting_moreTabBinding extends Bindings {
+  @override
+  void dependencies() {
+    Get.put(LoginViewModel());
   }
 }
 

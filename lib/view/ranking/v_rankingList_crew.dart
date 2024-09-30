@@ -4,6 +4,7 @@ import 'package:com.snowlive/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/routes/routes.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewDetail.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewMemberList.dart';
+import 'package:com.snowlive/viewmodel/crew/vm_crewRecordRoom.dart';
 import 'package:com.snowlive/viewmodel/friend/vm_friendDetail.dart';
 import 'package:com.snowlive/viewmodel/ranking/vm_rankingList.dart';
 import 'package:com.snowlive/viewmodel/vm_user.dart';
@@ -23,6 +24,7 @@ class RankingCrewView extends StatelessWidget {
   final RankingListViewModel _rankingListViewModel = Get.find<RankingListViewModel>();
   final CrewDetailViewModel _crewDetailViewModel = Get.find<CrewDetailViewModel>();
   final CrewMemberListViewModel _crewMemberListViewModel = Get.find<CrewMemberListViewModel>();
+  final CrewRecordRoomViewModel _crewRecordRoomViewModel = Get.find<CrewRecordRoomViewModel>();
 
   @override
   Widget build(BuildContext context) {
@@ -40,12 +42,17 @@ class RankingCrewView extends StatelessWidget {
               height: 150,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Center(
-                    child: CircularProgressIndicator(
-                      strokeWidth: 2,
-                      backgroundColor: SDSColor.snowliveWhite,
-                      color: SDSColor.snowliveBlue,
+                    child: Container(
+                      width: 24,
+                      height: 24,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 4,
+                        backgroundColor: SDSColor.gray100,
+                        color: SDSColor.gray300.withOpacity(0.6),
+                      ),
                     ),
                   ),
                 ],
@@ -56,8 +63,8 @@ class RankingCrewView extends StatelessWidget {
                 ? RefreshIndicator(
                 strokeWidth: 2,
                 edgeOffset: 20,
-                backgroundColor: SDSColor.snowliveWhite,
-                color: SDSColor.snowliveBlue,
+                backgroundColor: SDSColor.snowliveBlue,
+                color: SDSColor.snowliveWhite,
                 onRefresh: () async {
                   await _rankingListViewModel.toggleDataDayOrTotal_refresh();
                 },
@@ -84,6 +91,11 @@ class RankingCrewView extends StatelessWidget {
                                         _friendDetailViewModel.seasonDate
                                     );
                                     await _crewMemberListViewModel.fetchCrewMembers(crewId: _rankingListViewModel.rankingListCrewMy_view!.crewId!);
+                                    if(_userViewModel.user.crew_id == _rankingListViewModel.rankingListCrewMy_view!.crewId!)
+                                    await _crewRecordRoomViewModel.fetchCrewRidingRecords(
+                                        _rankingListViewModel.rankingListCrewMy_view!.crewId!,
+                                        '${DateTime.now().year}'
+                                    );
 
                                   },
                                   child: Obx(() => Padding(
@@ -981,10 +993,24 @@ class RankingCrewView extends StatelessWidget {
                             ],);
                           }else if(index == _rankingListViewModel.rankingListCrewList_view!.length + 1){
                             return Obx(() => _rankingListViewModel.isLoadingRankingListCrewList_next // 여기서 Obx 사용
-                                ? Padding(
-                              padding: const EdgeInsets.all(16.0),
-                              child: Center(
-                                child: CircularProgressIndicator(), // 로딩 인디케이터
+                                ? Container(
+                              height: 100,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Center(
+                                    child: Container(
+                                      width: 24,
+                                      height: 24,
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 4,
+                                        backgroundColor: SDSColor.gray100,
+                                        color: SDSColor.gray300.withOpacity(0.6),
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
                             )
                                 : SizedBox.shrink()); // 로딩이 완료되면 빈 공간
@@ -1002,6 +1028,11 @@ class RankingCrewView extends StatelessWidget {
                                       _friendDetailViewModel.seasonDate
                                   );
                                   await _crewMemberListViewModel.fetchCrewMembers(crewId: document.crewId!);
+                                  if(_userViewModel.user.crew_id ==   _crewDetailViewModel.crewDetailInfo.crewId!)
+                                  await _crewRecordRoomViewModel.fetchCrewRidingRecords(
+                                      _crewDetailViewModel.crewDetailInfo.crewId!,
+                                      '${DateTime.now().year}'
+                                  );
                                 },
                                 child: Row(
                                   children: [

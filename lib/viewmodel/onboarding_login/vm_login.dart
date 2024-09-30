@@ -16,6 +16,7 @@ import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'dart:math' as math; // math 패키지 추가
 import 'package:crypto/crypto.dart'; // sha256을 위한 crypto 패키지 추가
+import 'package:firebase_storage/firebase_storage.dart';
 
 final ref = FirebaseFirestore.instance;
 
@@ -330,6 +331,48 @@ class LoginViewModel extends GetxController {
     await documentReference.get();
     bool isAndroidEmailLogIn = documentSnapshot.get('visible');
     this._isAndroidEmailLogIn!.value = isAndroidEmailLogIn;
+  }
+
+  Future<void> deleteUser({required int userId}) async {
+    ApiResponse response = await LoginAPI().deleteUser(userId);
+    CustomFullScreenDialog.cancelDialog();
+
+    if (response.success) {
+      String uid = response.data['uid']; // message 대신 uid로 변경하여 가져옴
+
+      // Firebase Storage에서 프로필 이미지 삭제
+      try {
+        final storageRef = FirebaseStorage.instance.ref();
+        final profileImageRef = storageRef.child('user_profile/$uid.jpg');
+
+        // 메타데이터로 이미지가 존재하는지 확인
+        try {
+          await profileImageRef.getMetadata();
+          // 메타데이터 가져오기가 성공하면 파일이 존재하므로 삭제
+          await profileImageRef.delete();
+          print('Firebase Storage에서 프로필 이미지가 삭제되었습니다.');
+        } catch (e) {
+          if (e is FirebaseException && e.code == 'object-not-found') {
+            print('Firebase Storage에서 해당 프로필 이미지를 찾을 수 없습니다.');
+          } else {
+            print('Firebase Storage에서 프로필 이미지 삭제 중 오류 발생: $e');
+          }
+        }
+      } catch (e) {
+        print('Firebase Storage에서 프로필 이미지 삭제 중 오류 발생: $e');
+      }
+
+      // SecureStorage 데이터 삭제
+      await FlutterSecureStorage().delete(key: 'localUid');
+      await FlutterSecureStorage().delete(key: 'device_id');
+      await FlutterSecureStorage().delete(key: 'device_token');
+      await FlutterSecureStorage().delete(key: 'user_id');
+
+      // 로그인 페이지로 이동
+      Get.offAllNamed(AppRoutes.login);
+    } else if (response.error['error'] == '크루장은 탈퇴할 수 없습니다.') {
+      Get.snackbar('먼저 할 일이 있어요.', '크루장을 위임하거나, 크루를 삭제해주세요.');
+    }
   }
 
 }

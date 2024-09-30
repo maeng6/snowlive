@@ -1,8 +1,12 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:com.snowlive/model/m_crewRecordRoom.dart';
 import 'package:com.snowlive/data/snowliveDesignStyle.dart';
+import 'package:com.snowlive/routes/routes.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewDetail.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewRecordRoom.dart';
+import 'package:com.snowlive/viewmodel/crew/vm_rankingCrewHistory.dart';
+import 'package:com.snowlive/viewmodel/friend/vm_friendDetail.dart';
+import 'package:com.snowlive/viewmodel/vm_user.dart';
 import 'package:com.snowlive/widget/w_verticalDivider.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
@@ -12,6 +16,10 @@ import 'package:intl/intl.dart';
 class CrewRecordRoomView extends StatelessWidget {
   final CrewRecordRoomViewModel _crewRecordRoomViewModel = Get.find<CrewRecordRoomViewModel>();
   final CrewDetailViewModel _crewDetailViewModel = Get.find<CrewDetailViewModel>();
+  final RankingCrewHistoryViewModel _rankingCrewHistoryViewModel = Get.find<RankingCrewHistoryViewModel>();
+  final UserViewModel _userViewModel = Get.find<UserViewModel>();
+  final FriendDetailViewModel _friendDetailViewModel = Get.find<FriendDetailViewModel>();
+
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +39,7 @@ class CrewRecordRoomView extends StatelessWidget {
           ),
           onTap: () {
             Get.back();
-            _crewRecordRoomViewModel.resetTabs();
+            //_crewRecordRoomViewModel.resetTabs();
           },
         ),
         centerTitle: true,
@@ -44,25 +52,60 @@ class CrewRecordRoomView extends StatelessWidget {
       ),
       body: Obx(() {
         if (_crewRecordRoomViewModel.isLoading.value) {
-          return Center(child: CircularProgressIndicator());
+          return Container(
+            height: 150,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Center(
+                        child: Container(
+                          width: 24,
+                          height: 24,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 4,
+                            backgroundColor: SDSColor.gray100,
+                            color: SDSColor.gray300.withOpacity(0.6),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          );
         }
 
         // 년도 선택 탭 추가
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: EdgeInsets.only(left: 16, right: 16, top: 12),
-              child: buildYearSelector(),
-            ),
-            SizedBox(height: 20),
-            Expanded(
-              child: ListView(
-                padding: EdgeInsets.symmetric(horizontal: 16),
-                children: _buildGroupedRecords(),
+        return RefreshIndicator(
+          strokeWidth: 2,
+          edgeOffset: 40,
+          backgroundColor: SDSColor.snowliveBlue,
+          color: SDSColor.snowliveWhite,
+          onRefresh: () async {
+            await _crewRecordRoomViewModel.fetchCrewRidingRecords_refresh(_userViewModel.user!.crew_id, '${DateTime.now().year}');
+          },
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: EdgeInsets.only(left: 16, right: 16, top: 12),
+                child: buildYearSelector(),
               ),
-            ),
-          ],
+              SizedBox(height: 20),
+              Expanded(
+                child: ListView(
+                  padding: EdgeInsets.symmetric(horizontal: 16),
+                  children: _buildGroupedRecords(),
+                ),
+              ),
+            ],
+          ),
         );
       }),
     );
@@ -422,49 +465,67 @@ class CrewRecordRoomView extends StatelessWidget {
                   color: Colors.transparent,
                   borderRadius: BorderRadius.circular(50),
                 ),
-                child: ExtendedImage.network(
-                  member.profileImageUrlUser!,
-                  enableMemoryCache: true,
-                  shape: BoxShape.circle,
-                  cacheHeight: 150,
-                  borderRadius: BorderRadius.circular(8),
-                  width: 32,
-                  height: 32,
-                  fit: BoxFit.cover,
-                  loadStateChanged: (ExtendedImageState state) {
-                    switch (state.extendedImageLoadState) {
-                      case LoadState.loading:
-                        return SizedBox.shrink();
-                      case LoadState.completed:
-                        return state.completedWidget;
-                      case LoadState.failed:
-                        return ExtendedImage.asset(
-                          'assets/imgs/profile/img_profile_default_circle.png',
-                          shape: BoxShape.circle,
-                          borderRadius: BorderRadius.circular(8),
-                          width: 80,
-                          height: 80,
-                          fit: BoxFit.cover,
-                        ); // 이미지 로딩 실패 시 대체 이미지
-                      default:
-                        return null;
-                    }
+                child: GestureDetector(
+                  onTap: () async{
+                    Get.toNamed(AppRoutes.friendDetail);
+                    await _friendDetailViewModel.fetchFriendDetailInfo(
+                        userId: _userViewModel.user.user_id,
+                        friendUserId:member.userId!,
+                        season: _friendDetailViewModel.seasonDate);
                   },
+                  child: ExtendedImage.network(
+                    member.profileImageUrlUser!,
+                    enableMemoryCache: true,
+                    shape: BoxShape.circle,
+                    cacheHeight: 150,
+                    borderRadius: BorderRadius.circular(8),
+                    width: 32,
+                    height: 32,
+                    fit: BoxFit.cover,
+                    loadStateChanged: (ExtendedImageState state) {
+                      switch (state.extendedImageLoadState) {
+                        case LoadState.loading:
+                          return SizedBox.shrink();
+                        case LoadState.completed:
+                          return state.completedWidget;
+                        case LoadState.failed:
+                          return ExtendedImage.asset(
+                            'assets/imgs/profile/img_profile_default_circle.png',
+                            shape: BoxShape.circle,
+                            borderRadius: BorderRadius.circular(8),
+                            width: 80,
+                            height: 80,
+                            fit: BoxFit.cover,
+                          ); // 이미지 로딩 실패 시 대체 이미지
+                        default:
+                          return null;
+                      }
+                    },
+                  ),
                 ),
               )
-                  : Container(
-                width: 32,
-                height: 32,
-                child: ExtendedImage.asset(
-                  'assets/imgs/profile/img_profile_default_circle.png',
-                  enableMemoryCache: true,
-                  shape: BoxShape.circle,
-                  borderRadius: BorderRadius.circular(8),
-                  width: 32,
-                  height: 32,
-                  fit: BoxFit.cover,
-                ),
-              ),
+                  : GestureDetector(
+                onTap: ()async{
+                  Get.toNamed(AppRoutes.friendDetail);
+                  await _friendDetailViewModel.fetchFriendDetailInfo(
+                      userId: _userViewModel.user.user_id,
+                      friendUserId:member.userId!,
+                      season: _friendDetailViewModel.seasonDate);
+                },
+                    child: Container(
+                                    width: 32,
+                                    height: 32,
+                                    child: ExtendedImage.asset(
+                    'assets/imgs/profile/img_profile_default_circle.png',
+                    enableMemoryCache: true,
+                    shape: BoxShape.circle,
+                    borderRadius: BorderRadius.circular(8),
+                    width: 32,
+                    height: 32,
+                    fit: BoxFit.cover,
+                                    ),
+                                  ),
+                  ),
               contentPadding: EdgeInsets.zero,
               title: Transform.translate(
                 offset: Offset(-6, 0),

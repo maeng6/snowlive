@@ -6,6 +6,7 @@ import 'package:com.snowlive/view/moreTab/v_resortTab.dart';
 import 'package:com.snowlive/view/moreTab/v_snowliveDetailPage.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewDetail.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewMemberList.dart';
+import 'package:com.snowlive/viewmodel/crew/vm_crewRecordRoom.dart';
 import 'package:com.snowlive/viewmodel/friend/vm_friendDetail.dart';
 import 'package:com.snowlive/viewmodel/friend/vm_friendList.dart';
 import 'package:com.snowlive/viewmodel/vm_user.dart';
@@ -23,6 +24,7 @@ class MoreTabMainView extends StatelessWidget {
   final FriendDetailViewModel _friendDetailViewModel = Get.find<FriendDetailViewModel>();
   final CrewDetailViewModel _crewDetailViewModel = Get.find<CrewDetailViewModel>();
   final CrewMemberListViewModel _crewMemberListViewModel = Get.find<CrewMemberListViewModel>();
+  final CrewRecordRoomViewModel _crewRecordRoomViewModel = Get.find<CrewRecordRoomViewModel>();
 
   @override
   Widget build(BuildContext context) {
@@ -198,6 +200,11 @@ class MoreTabMainView extends StatelessWidget {
                                     _friendDetailViewModel.seasonDate
                                 );
                                 await _crewMemberListViewModel.fetchCrewMembers(crewId: _userViewModel.user.crew_id);
+                                if(_userViewModel.user.crew_id == _userViewModel.user.crew_id)
+                                await _crewRecordRoomViewModel.fetchCrewRidingRecords(
+                                    _userViewModel.user.crew_id,
+                                    '${DateTime.now().year}'
+                                );
 
 
                               }
@@ -307,8 +314,8 @@ class MoreTabMainView extends StatelessWidget {
                       child: Column(
                         children: [
                           GestureDetector(
-                            onTap: () async{
-                              Get.to(() => setting_moreTab());
+                            onTap: () {
+                              Get.toNamed(AppRoutes.setting_moreTab);
                             },
                             child: Column(
                               children: [

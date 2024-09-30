@@ -36,12 +36,17 @@ class RankingIndiView extends StatelessWidget {
               height: 150,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Center(
-                    child: CircularProgressIndicator(
-                      strokeWidth: 2,
-                      backgroundColor: SDSColor.snowliveWhite,
-                      color: SDSColor.snowliveBlue,
+                    child: Container(
+                      width: 24,
+                      height: 24,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 4,
+                        backgroundColor: SDSColor.gray100,
+                        color: SDSColor.gray300.withOpacity(0.6),
+                      ),
                     ),
                   ),
                 ],
@@ -51,9 +56,9 @@ class RankingIndiView extends StatelessWidget {
             (_rankingListViewModel.rankingListIndivList_total!.length != 0)
                 ? RefreshIndicator(
               strokeWidth: 2,
-              edgeOffset: 20,
-              backgroundColor: SDSColor.snowliveWhite,
-              color: SDSColor.snowliveBlue,
+              edgeOffset: 40,
+              backgroundColor: SDSColor.snowliveBlue,
+              color: SDSColor.snowliveWhite,
               onRefresh: () async {
                 await _rankingListViewModel.toggleDataDayOrTotal_refresh();
               },
@@ -932,10 +937,24 @@ class RankingIndiView extends StatelessWidget {
                           ],);
                         }else if(index == _rankingListViewModel.rankingListIndivList_view!.length + 1){
                           return Obx(() => _rankingListViewModel.isLoadingRankingListIndiv_next // 여기서 Obx 사용
-                              ? Padding(
-                            padding: const EdgeInsets.all(16.0),
-                            child: Center(
-                              child: CircularProgressIndicator(), // 로딩 인디케이터
+                              ? Container(
+                            height: 100,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Center(
+                                  child: Container(
+                                    width: 24,
+                                    height: 24,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 4,
+                                      backgroundColor: SDSColor.gray100,
+                                      color: SDSColor.gray300.withOpacity(0.6),
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
                           )
                               : SizedBox.shrink()); // 로딩이 완료되면 빈 공간

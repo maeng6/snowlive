@@ -6,6 +6,7 @@ import 'package:com.snowlive/routes/routes.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewApply.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewDetail.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewMemberList.dart';
+import 'package:com.snowlive/viewmodel/crew/vm_crewRecordRoom.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_searchCrew.dart';
 import 'package:com.snowlive/viewmodel/friend/vm_friendDetail.dart';
 import 'package:com.snowlive/viewmodel/vm_user.dart';
@@ -26,6 +27,7 @@ class _SearchCrewViewState extends State<SearchCrewView> {
   final CrewMemberListViewModel _crewMemberListViewModel = Get.find<CrewMemberListViewModel>();
   final UserViewModel _userViewModel = Get.find<UserViewModel>();
   final CrewApplyViewModel _crewApplyViewModel = Get.find<CrewApplyViewModel>();
+  final CrewRecordRoomViewModel _crewRecordRoomViewModel = Get.find<CrewRecordRoomViewModel>();
 
   bool isSubmitButtonEnabled = false;
 
@@ -280,6 +282,11 @@ class _SearchCrewViewState extends State<SearchCrewView> {
                                 await _crewDetailViewModel.fetchCrewDetail(
                                     data.crewId!, _friendDetailViewModel.seasonDate);
                                 await _crewMemberListViewModel.fetchCrewMembers(crewId: data.crewId!);
+                                if(_userViewModel.user.crew_id == data.crewId!)
+                                await _crewRecordRoomViewModel.fetchCrewRidingRecords(
+                                    data.crewId!,
+                                    '${DateTime.now().year}'
+                                );
 
                               },
                               child: Padding(
@@ -304,6 +311,11 @@ class _SearchCrewViewState extends State<SearchCrewView> {
                                                         data.crewId!, _friendDetailViewModel.seasonDate);
 
                                                     await _crewMemberListViewModel.fetchCrewMembers(crewId: data.crewId!);
+                                                    if(_userViewModel.user.crew_id == _crewDetailViewModel.crewDetailInfo.crewId!)
+                                                    await _crewRecordRoomViewModel.fetchCrewRidingRecords(
+                                                        _crewDetailViewModel.crewDetailInfo.crewId!,
+                                                        '${DateTime.now().year}'
+                                                    );
 
                                                   },
                                                   child: Container(
@@ -334,6 +346,11 @@ class _SearchCrewViewState extends State<SearchCrewView> {
                                                         data.crewId!, _friendDetailViewModel.seasonDate);
 
                                                     await _crewMemberListViewModel.fetchCrewMembers(crewId: data.crewId!);
+                                                    if(_userViewModel.user.crew_id == _crewDetailViewModel.crewDetailInfo.crewId!)
+                                                    await _crewRecordRoomViewModel.fetchCrewRidingRecords(
+                                                        _crewDetailViewModel.crewDetailInfo.crewId!,
+                                                        '${DateTime.now().year}'
+                                                    );
 
                                                   },
                                                   child: Container(

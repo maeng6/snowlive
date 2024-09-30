@@ -4,14 +4,19 @@ import 'package:com.snowlive/routes/routes.dart';
 import 'package:com.snowlive/view/moreTab/v_licenseListPage.dart';
 import 'package:com.snowlive/view/v_webPage.dart';
 import 'package:com.snowlive/viewmodel/onboarding_login/vm_authcheck.dart';
+import 'package:com.snowlive/viewmodel/onboarding_login/vm_login.dart';
+import 'package:com.snowlive/viewmodel/vm_user.dart';
+import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
 
-class setting_moreTab extends StatelessWidget {
+class Setting_moreTabView extends StatelessWidget {
 
   final AuthCheckViewModel _authCheckViewModel = Get.find<AuthCheckViewModel>();
+  final LoginViewModel _loginViewModel = Get.find<LoginViewModel>();
+  final UserViewModel _userViewModel = Get.find<UserViewModel>();
 
   @override
   Widget build(BuildContext context) {
@@ -313,7 +318,9 @@ class setting_moreTab extends StatelessWidget {
                                   Expanded(
                                     child: ElevatedButton(
                                       onPressed: () async {
-                                        //회원탈퇴처리
+                                        Navigator.pop(context);
+                                        CustomFullScreenDialog.showDialog();
+                                        await _loginViewModel.deleteUser(userId: _userViewModel.user.user_id);
                                       },
                                       child: Text(
                                         '확인',

@@ -83,8 +83,8 @@ class _InvitationFriendViewState extends State<InvitationFriendView> {
               child: RefreshIndicator(
                 strokeWidth: 2,
                 edgeOffset: 20,
-                backgroundColor: SDSColor.snowliveWhite,
-                color: SDSColor.snowliveBlue,
+                backgroundColor: SDSColor.snowliveBlue,
+                color: SDSColor.snowliveWhite,
                 onRefresh: () async{
                   await _friendListViewModel.fetchFriendRequestList(
                       _userViewModel.user.user_id

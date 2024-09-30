@@ -4,6 +4,7 @@ import 'package:com.snowlive/api/api_crew.dart';
 
 class CrewRecordRoomViewModel extends GetxController {
   var isLoading = false.obs;
+  var isLoading_refresh = false.obs;
   var crewRidingRecords = <CrewRidingRecord>[].obs;
 
   // 현재 연도와 카드 확장 상태
@@ -44,6 +45,24 @@ class CrewRecordRoomViewModel extends GetxController {
       print('Exception while fetching riding records: $e');
     } finally {
       isLoading.value = false;
+    }
+  }
+
+  Future<void> fetchCrewRidingRecords_refresh(int crewId, String year) async {
+    isLoading_refresh.value = true;
+    try {
+      final response = await CrewAPI().getCrewDailyReport(crewId, year);
+      if (response.success) {
+        // 응답 데이터를 CrewRidingRecord 리스트로 변환
+        var ridingRecordResponse = CrewRecordRoomResponse.fromJson(response.data);
+        crewRidingRecords.value = ridingRecordResponse.records;
+      } else {
+        print('Error fetching riding records: ${response.error}');
+      }
+    } catch (e) {
+      print('Exception while fetching riding records: $e');
+    } finally {
+      isLoading_refresh.value = false;
     }
   }
 

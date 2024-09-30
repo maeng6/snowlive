@@ -718,10 +718,24 @@ class FleamarketUpdateView extends StatelessWidget {
                                             width: 90,
                                             child: Center( // 인디케이터를 중앙에 배치
                                               child: SizedBox(
-                                                height: 40, // CircularProgressIndicator 크기 설정
-                                                width: 40,  // CircularProgressIndicator 크기 설정
-                                                child: CircularProgressIndicator(
-                                                  strokeWidth: 1, // 인디케이터 두께 조절
+                                                height: 40,
+                                                width: 40,
+                                                child: Column(
+                                                  mainAxisAlignment: MainAxisAlignment.center,
+                                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                                  children: [
+                                                    Center(
+                                                      child: Container(
+                                                        width: 24,
+                                                        height: 24,
+                                                        child: CircularProgressIndicator(
+                                                          strokeWidth: 4,
+                                                          backgroundColor: SDSColor.gray100,
+                                                          color: SDSColor.gray300.withOpacity(0.6),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
                                                 ),
                                               ),
                                             ),

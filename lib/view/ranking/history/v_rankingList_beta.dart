@@ -4,6 +4,7 @@ import 'package:com.snowlive/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/routes/routes.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewDetail.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewMemberList.dart';
+import 'package:com.snowlive/viewmodel/crew/vm_crewRecordRoom.dart';
 import 'package:com.snowlive/viewmodel/friend/vm_friendDetail.dart';
 import 'package:com.snowlive/viewmodel/ranking/vm_rankingList.dart';
 import 'package:com.snowlive/viewmodel/ranking/vm_rankingList_beta.dart';
@@ -22,6 +23,8 @@ class RankingBetaView extends StatelessWidget {
   final RankingListBetaViewModel _rankingListBetaViewModel = Get.find<RankingListBetaViewModel>();
   final CrewDetailViewModel _crewDetailViewModel = Get.find<CrewDetailViewModel>();
   final CrewMemberListViewModel _crewMemberListViewModel = Get.find<CrewMemberListViewModel>();
+  final CrewRecordRoomViewModel _crewRecordRoomViewModel = Get.find<CrewRecordRoomViewModel>();
+
 
   @override
   Widget build(BuildContext context) {
@@ -36,10 +39,22 @@ class RankingBetaView extends StatelessWidget {
             (_rankingListBetaViewModel.isLoadingBeta_crew == true ||
                 _rankingListBetaViewModel.isLoadingBeta_indiv == true)
                 ? Center(
-              child: CircularProgressIndicator(
-                strokeWidth: 2,
-                backgroundColor: SDSColor.snowliveWhite,
-                color: SDSColor.snowliveBlue,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Center(
+                    child: Container(
+                      width: 24,
+                      height: 24,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 4,
+                        backgroundColor: SDSColor.gray100,
+                        color: SDSColor.gray300.withOpacity(0.6),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             )
                 : Padding(
@@ -209,6 +224,11 @@ class RankingBetaView extends StatelessWidget {
                                   );
                                   await _crewMemberListViewModel.fetchCrewMembers(
                                     crewId: document.crewInfo!.crewId!,
+                                  );
+                                  if(_userViewModel.user.crew_id == document.crewInfo!.crewId!)
+                                  await _crewRecordRoomViewModel.fetchCrewRidingRecords(
+                                      document.crewInfo!.crewId!,
+                                      '${DateTime.now().year}'
                                   );
                                 },
                                 child: Row(

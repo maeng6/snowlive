@@ -500,12 +500,17 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                                               ? Container(
                                             child: Column(
                                               mainAxisAlignment: MainAxisAlignment.center,
+                                              crossAxisAlignment: CrossAxisAlignment.center,
                                               children: [
                                                 Center(
-                                                  child: CircularProgressIndicator(
-                                                    strokeWidth: 2,
-                                                    backgroundColor: SDSColor.snowliveWhite,
-                                                    color: SDSColor.snowliveBlue,
+                                                  child: Container(
+                                                    width: 24,
+                                                    height: 24,
+                                                    child: CircularProgressIndicator(
+                                                      strokeWidth: 4,
+                                                      backgroundColor: SDSColor.gray100,
+                                                      color: SDSColor.gray300.withOpacity(0.6),
+                                                    ),
                                                   ),
                                                 ),
                                               ],
@@ -754,7 +759,9 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
           ),
           body: RefreshIndicator(
             strokeWidth: 2,
-            edgeOffset: 20,
+            edgeOffset: 80,
+            backgroundColor: SDSColor.snowliveBlue,
+            color: SDSColor.snowliveWhite,
             onRefresh: _resortHomeViewModel.onRefresh_resortHome,
             child: SingleChildScrollView(
               child: Column(
