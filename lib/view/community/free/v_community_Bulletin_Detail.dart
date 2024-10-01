@@ -18,6 +18,8 @@ import 'package:get/get.dart';
 import 'package:flutter_quill/flutter_quill.dart' as quill;
 import 'package:flutter_quill_extensions/flutter_quill_extensions.dart';
 import 'dart:io' as io;
+import 'package:photo_view/photo_view.dart';
+import 'package:photo_view/photo_view_gallery.dart';
 
 
 
@@ -1653,8 +1655,31 @@ class CustomImageEmbedBuilder extends quill.EmbedBuilder {
         ? NetworkImage(imageUrl)
         : FileImage(io.File(imageUrl)) as ImageProvider;
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 20),
+    return GestureDetector(
+      onTap: () {
+        // 이미지 클릭 시 PhotoView 사용하여 확대된 이미지 보여주기
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return Dialog(
+              backgroundColor: Colors.transparent,
+              child: GestureDetector(
+                onTap: () {
+                  Navigator.of(context).pop();  // 클릭 시 다이얼로그 닫기
+                },
+                child: PhotoView(
+                  imageProvider: imageProvider,
+                  backgroundDecoration: const BoxDecoration(
+                    color: Colors.transparent, // 배경을 투명으로 설정
+                  ),
+                  minScale: PhotoViewComputedScale.contained,
+                  maxScale: PhotoViewComputedScale.covered * 7,
+                ),
+              ),
+            );
+          },
+        );
+      },
       child: ClipRRect(
         borderRadius: BorderRadius.circular(8),
         child: Image(
@@ -1665,10 +1690,10 @@ class CustomImageEmbedBuilder extends quill.EmbedBuilder {
             return Container(
               width: double.infinity,
               height: 300, // 필요에 따라 높이 조정
-              color: SDSColor.gray50, // 회색 박스
+              color: Colors.grey[50], // 회색 박스
               child: Center(
                 child: CircularProgressIndicator(
-                  color: SDSColor.gray200,
+                  color: Colors.grey[200],
                   value: loadingProgress.expectedTotalBytes != null
                       ? loadingProgress.cumulativeBytesLoaded / (loadingProgress.expectedTotalBytes ?? 1)
                       : null,
@@ -1680,7 +1705,7 @@ class CustomImageEmbedBuilder extends quill.EmbedBuilder {
             return Container(
               width: double.infinity,
               height: 300, // 필요에 따라 높이 조정
-              color: SDSColor.gray50,
+              color: Colors.grey[50],
               child: const Center(
                 child: Icon(Icons.error, color: Colors.red),
               ),

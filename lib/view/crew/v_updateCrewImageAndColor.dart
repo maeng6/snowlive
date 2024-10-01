@@ -205,7 +205,7 @@ class UpdateCrewImageAndColorView extends StatelessWidget {
                                                     child: ElevatedButton(
                                                       onPressed: () async {
                                                         Navigator.pop(context);
-                                                        _setCrewViewModel.uploadImage(ImageSource.camera);
+                                                        await _setCrewViewModel.uploadImage(ImageSource.camera);
                                                       },
                                                       child: Text(
                                                         '사진 촬영',
@@ -230,7 +230,7 @@ class UpdateCrewImageAndColorView extends StatelessWidget {
                                                     child: ElevatedButton(
                                                       onPressed: () async {
                                                         Navigator.pop(context);
-                                                        _setCrewViewModel.uploadImage(ImageSource.gallery);
+                                                        await _setCrewViewModel.uploadImage(ImageSource.gallery);
                                                       },
                                                       child: Text(
                                                         '앨범에서 선택',

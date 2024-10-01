@@ -179,6 +179,12 @@ class SetCrewViewModel extends GetxController {
     }
   }
 
+  void initializeCrewName() {
+    if (_crewDetailViewModel.color.isNotEmpty) {
+        _crewName.value = _crewDetailViewModel.crewName;
+    }
+  }
+
 
   // 다음 버튼 활성화 상태 업데이트
   void updateNextButtonState() {

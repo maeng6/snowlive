@@ -18,13 +18,16 @@ import 'package:image_picker/image_picker.dart';
 
 class SetProfileView extends StatelessWidget {
 
+
+  FocusNode textFocus = FocusNode();
+
+
   @override
   Widget build(BuildContext context) {
 
     final SetProfileViewModel _setProfileViewModel = Get.find<SetProfileViewModel>();
     final UserViewModel _userViewModel = Get.find<UserViewModel>();
     final NotificationController _notificationController = Get.find<NotificationController>();
-    FocusNode textFocus = FocusNode();
     final double _statusBarSize = MediaQuery.of(context).padding.top;
     int? selectedIndex;
     String? selectedSkiOrBoard;
@@ -32,7 +35,10 @@ class SetProfileView extends StatelessWidget {
     Size _size = MediaQuery.of(context).size;
 
     return GestureDetector(
-      onTap: () => FocusScope.of(context).unfocus(),
+      onTap: (){
+        textFocus.unfocus();
+        FocusScope.of(context).unfocus();
+      },
       child: Scaffold(
         backgroundColor: Colors.white,
         appBar: PreferredSize(
@@ -66,6 +72,7 @@ class SetProfileView extends StatelessWidget {
                     children: [
                       GestureDetector(
                         onTap: (){
+                          textFocus.unfocus();
                           showModalBottomSheet(
                             backgroundColor: Colors.transparent,
                             context: context,
@@ -246,6 +253,7 @@ class SetProfileView extends StatelessWidget {
                                       cursorWidth: 2,
                                       autovalidateMode: AutovalidateMode.onUserInteraction,
                                       controller: _setProfileViewModel.textEditingController,
+                                      focusNode: textFocus,
                                       style: SDSTextStyle.regular.copyWith(fontSize: 15),
                                       strutStyle: StrutStyle(fontSize: 14, leading: 0),
                                       inputFormatters: [
@@ -302,8 +310,8 @@ class SetProfileView extends StatelessWidget {
                                       bottom: 0,
                                       child: TextButton(
                                         style: TextButton.styleFrom(
-                                          surfaceTintColor: Colors.transparent,
-                                          overlayColor: Colors.transparent
+                                            surfaceTintColor: Colors.transparent,
+                                            overlayColor: Colors.transparent
                                         ),
                                         onPressed: (_setProfileViewModel.activeCheckDisplaynameButton == true && !_setProfileViewModel.isCheckedDisplayName)
                                             ? () async {
@@ -328,45 +336,45 @@ class SetProfileView extends StatelessWidget {
                                                       mainAxisSize: MainAxisSize.min,
                                                       children: [
                                                         Text('이미 존재하는 활동명이에요',
-                                                      style: SDSTextStyle.bold.copyWith(fontSize: 16, color: SDSColor.gray900),
-                                                      textAlign: TextAlign.center,
-                                                    ),
-                                                    Padding(
-                                                      padding: EdgeInsets.only(top: 8),
-                                                      child: Text(
-                                                        '다른 사용자의 닉네임과 중복되지 않는\n다른 닉네임을 사용해주세요.',
-                                                        style: SDSTextStyle.regular.copyWith(fontSize: 14, color: SDSColor.gray500),
-                                                        textAlign: TextAlign.center,
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                              actions: [
-                                                Row(
-                                                  mainAxisAlignment: MainAxisAlignment.center,
-                                                  children: [
-                                                    Container(
-                                                      width: 240,
-                                                      child: TextButton(
-                                                        onPressed: () {
-                                                          Navigator.pop(context);
-                                                        },
-                                                        child: Text(
-                                                          '확인',
                                                           style: SDSTextStyle.bold.copyWith(fontSize: 16, color: SDSColor.gray900),
+                                                          textAlign: TextAlign.center,
                                                         ),
-                                                      ),
+                                                        Padding(
+                                                          padding: EdgeInsets.only(top: 8),
+                                                          child: Text(
+                                                            '다른 사용자의 닉네임과 중복되지 않는\n다른 닉네임을 사용해주세요.',
+                                                            style: SDSTextStyle.regular.copyWith(fontSize: 14, color: SDSColor.gray500),
+                                                            textAlign: TextAlign.center,
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                  actions: [
+                                                    Row(
+                                                      mainAxisAlignment: MainAxisAlignment.center,
+                                                      children: [
+                                                        Container(
+                                                          width: 240,
+                                                          child: TextButton(
+                                                            onPressed: () {
+                                                              Navigator.pop(context);
+                                                            },
+                                                            child: Text(
+                                                              '확인',
+                                                              style: SDSTextStyle.bold.copyWith(fontSize: 16, color: SDSColor.gray900),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ],
                                                     ),
                                                   ],
-                                                ),
-                                              ],
-                                            ));
+                                                ));
                                         }
                                             : (){},
                                         child: _setProfileViewModel.isCheckedDisplayName
                                             ? Text('검사완료', style: SDSTextStyle.bold.copyWith(
-                                          color: SDSColor.gray500
+                                            color: SDSColor.gray500
                                         ),
                                         )
                                             : Text('중복검사',style: SDSTextStyle.bold.copyWith(
@@ -406,6 +414,7 @@ class SetProfileView extends StatelessWidget {
                                 SizedBox(height: 8),
                                 GestureDetector(
                                   onTap: () async {
+                                    textFocus.unfocus();
                                     selectedIndex = await showModalBottomSheet<int>(
                                       constraints: BoxConstraints(
                                         maxHeight: _size.height - _statusBarSize - 44,
@@ -415,7 +424,7 @@ class SetProfileView extends StatelessWidget {
                                       isScrollControlled: true,
                                       builder: (context) => SafeArea(child: FavoriteResortWidget()),
                                     );
-                                      if(selectedIndex != null)
+                                    if(selectedIndex != null)
                                       _setProfileViewModel.selectResortInfo(selectedIndex!);
                                   },
                                   child: Container(
@@ -484,6 +493,7 @@ class SetProfileView extends StatelessWidget {
                                 SizedBox(height: 8),
                                 GestureDetector(
                                   onTap: () async {
+                                    textFocus.unfocus();
                                     selectedSkiOrBoard = await showModalBottomSheet<String>(
                                       constraints: BoxConstraints(
                                         maxHeight: 340,
@@ -551,6 +561,7 @@ class SetProfileView extends StatelessWidget {
                                 SizedBox(height: 8),
                                 GestureDetector(
                                   onTap: () async {
+                                    textFocus.unfocus();
                                     selectedSex = await showModalBottomSheet<String>(
                                       constraints: BoxConstraints(
                                         maxHeight: 340,
@@ -606,10 +617,10 @@ class SetProfileView extends StatelessWidget {
               child: Column(
                 children: [
                   Text('입력해주신 정보는 이후에도 변경이 가능합니다.',
-                  style: SDSTextStyle.regular.copyWith(
-                    fontSize: 13,
-                    color: SDSColor.gray400
-                  ),),
+                    style: SDSTextStyle.regular.copyWith(
+                        fontSize: 13,
+                        color: SDSColor.gray400
+                    ),),
                   Obx(() =>
                   (_setProfileViewModel.selectedResortIndex != 99
                       && _setProfileViewModel.displayName != ''
@@ -617,10 +628,10 @@ class SetProfileView extends StatelessWidget {
                       && _setProfileViewModel.selectedSex != ''
                   )
                       ? Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-                        child: ElevatedButton(
-                                        onPressed: () async {
-                                          CustomFullScreenDialog.showDialog();
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                    child: ElevatedButton(
+                      onPressed: () async {
+                        CustomFullScreenDialog.showDialog();
                         await _setProfileViewModel.getImageUrl();
                         await _setProfileViewModel.startSnowlive(
                             {
@@ -640,33 +651,33 @@ class SetProfileView extends StatelessWidget {
                         await FlutterSecureStorage().write(key: 'device_id', value: _notificationController.deviceID);
                         await FlutterSecureStorage().write(key: 'device_token', value: _notificationController.deviceToken);
                         await FlutterSecureStorage().write(key: 'user_id', value: _userViewModel.user.user_id.toString());
-                                          CustomFullScreenDialog.cancelDialog();
+                        CustomFullScreenDialog.cancelDialog();
                         Get.offAllNamed(AppRoutes.mainHome);
-                        },
-                          style: TextButton.styleFrom(
-                            shape: const RoundedRectangleBorder(
+                      },
+                      style: TextButton.styleFrom(
+                        shape: const RoundedRectangleBorder(
                           borderRadius: BorderRadius.all(Radius.circular(6)),
                         ),
                         elevation: 0,
                         splashFactory: InkRipple.splashFactory,
                         minimumSize: Size(double.infinity, 48),
                         backgroundColor: SDSColor.snowliveBlue,
-                                        ),
-                                        child: Text('시작하기',
+                      ),
+                      child: Text('시작하기',
                         style: SDSTextStyle.bold
                             .copyWith(color: SDSColor.snowliveWhite, fontSize: 16),
-                                        ),
-                                      ),
-                      )
+                      ),
+                    ),
+                  )
                       : Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-                        child: ElevatedButton(
-                                        onPressed: () {},
-                                        child: Text('시작하기',
+                    child: ElevatedButton(
+                      onPressed: () {},
+                      child: Text('시작하기',
                         style: SDSTextStyle.bold
                             .copyWith(color: SDSColor.snowliveWhite, fontSize: 16),
-                                        ),
-                                        style: TextButton.styleFrom(
+                      ),
+                      style: TextButton.styleFrom(
                           shape: const RoundedRectangleBorder(
                             borderRadius: BorderRadius.all(Radius.circular(6)),
                           ),
@@ -674,9 +685,9 @@ class SetProfileView extends StatelessWidget {
                           splashFactory: InkRipple.splashFactory,
                           minimumSize: Size(double.infinity, 48),
                           backgroundColor:  SDSColor.gray200
-                                        ),
-                                      ),
                       ),
+                    ),
+                  ),
                   ),
                 ],
               ),
