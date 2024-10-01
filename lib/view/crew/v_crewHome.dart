@@ -33,67 +33,56 @@ class CrewHomeView extends StatelessWidget {
 
     return Obx(() => Scaffold(
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      floatingActionButton:
-      (_crewMemberListViewModel.liveMemberCount != 0)
-      ? Align(
-        alignment: Alignment.bottomCenter,
-        child: Container(
-          width: 180,
-          decoration: BoxDecoration(
-            color: Colors.transparent,
-            borderRadius: BorderRadius.circular(50),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.04),
-                spreadRadius: 2,
-                blurRadius: 8,
-                offset: Offset(0, 6),
-              ),
-            ],
-          ),
-          child: FloatingActionButton(
-            splashColor: SDSColor.snowliveWhite,
-            highlightElevation: 0,
-            focusElevation: 0,
-            hoverElevation: 0,
-            focusColor: SDSColor.snowliveWhite,
-            hoverColor: SDSColor.snowliveWhite,
-            heroTag: 'bulletin_crew_recent',
-            mini: true,
-            elevation: 0,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(40),
-              side: BorderSide(color: SDSColor.gray200),
-            ),
-            backgroundColor: SDSColor.snowliveWhite,
-            foregroundColor: SDSColor.snowliveWhite,
-            onPressed: () {
-              null;
-            },
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Image.asset(
-                  'assets/imgs/icons/icon_badge_live.png',
-                  width: 36,
+      floatingActionButton: (_crewMemberListViewModel.liveMemberCount != 0)
+            ? Align(
+          alignment: Alignment.bottomCenter,
+          child: Container(
+            width: 180,
+            decoration: BoxDecoration(
+              color: Colors.transparent,
+              borderRadius: BorderRadius.circular(50),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.04),
+                  spreadRadius: 2,
+                  blurRadius: 8,
+                  offset: Offset(0, 6),
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 2, right: 3),
-                  child: Text('라이브온 중인 멤버 ${_crewMemberListViewModel.liveMemberCount}명',
-                    style: TextStyle(
+              ],
+            ),
+            child: Container(
+              padding: const EdgeInsets.symmetric(vertical: 10),
+              decoration: BoxDecoration(
+                color: SDSColor.snowliveWhite,
+                borderRadius: BorderRadius.circular(40),
+                border: Border.all(color: SDSColor.gray200),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Image.asset(
+                    'assets/imgs/icons/icon_badge_live.png',
+                    width: 36,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 2, right: 3),
+                    child: Text(
+                      '라이브온 중인 멤버 ${_crewMemberListViewModel.liveMemberCount}명',
+                      style: TextStyle(
                         fontSize: 13,
                         fontWeight: FontWeight.bold,
                         color: SDSColor.gray900,
-                        letterSpacing: 0
-                    ),),
-                )
-              ],
+                        letterSpacing: 0,
+                      ),
+                    ),
+                  )
+                ],
+              ),
             ),
           ),
-        ),
-      )
-      : Container(),
+        )
+        : Container(),
       backgroundColor: SDSColor.snowliveWhite,
       extendBodyBehindAppBar: true,
       body: Stack(

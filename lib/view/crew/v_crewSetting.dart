@@ -77,6 +77,7 @@ class CrewSettingView extends StatelessWidget {
                   CustomFullScreenDialog.showDialog();
                   await _setCrewViewModel.setCrewLogoAsCroppedFile();
                   await _setCrewViewModel.initializeColor();
+                   _setCrewViewModel.initializeCrewName();
                   CustomFullScreenDialog.cancelDialog();
                   Get.toNamed(AppRoutes.updateCrewImageAndColor);
                 }),
