@@ -78,8 +78,8 @@ Map<String, String> crewDefaultLogoUrl = {
   "0XFFFDAF04": 'https://i.esdrop.com/d/f/yytYSNBROy/QP4cG3vjk3.png',
   "0XFF37CBA8": 'https://i.esdrop.com/d/f/yytYSNBROy/9FdGigpyYO.png',
   "0XFF68A1F6": 'https://i.esdrop.com/d/f/yytYSNBROy/jolYV66aQZ.png',
-  "0XFF9241F9": 'https://i.esdrop.com/d/f/yytYSNBROy/GizZEbY9JS.png',
-  "0XFF0D4CA9": 'https://i.esdrop.com/d/f/yytYSNBROy/Md8NI0Tkki.png',
+  "0XFF9241F9": 'https://i.esdrop.com/d/f/yytYSNBROy/Md8NI0Tkki.png',
+  "0XFF0D4CA9": 'https://i.esdrop.com/d/f/yytYSNBROy/GizZEbY9JS.png',
   "0XFF5E6B7F": 'https://i.esdrop.com/d/f/yytYSNBROy/V7BdtuFI9r.png',
 
 };

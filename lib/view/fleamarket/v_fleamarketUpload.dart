@@ -735,10 +735,24 @@ class FleamarketUploadView extends StatelessWidget {
                                             width: 90,
                                             child: Center( // 인디케이터를 중앙에 배치
                                               child: SizedBox(
-                                                height: 40, // CircularProgressIndicator 크기 설정
-                                                width: 40,  // CircularProgressIndicator 크기 설정
-                                                child: CircularProgressIndicator(
-                                                  strokeWidth: 1, // 인디케이터 두께 조절
+                                                height: 40,
+                                                width: 40,
+                                                child: Column(
+                                                  mainAxisAlignment: MainAxisAlignment.center,
+                                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                                  children: [
+                                                    Center(
+                                                      child: Container(
+                                                        width: 24,
+                                                        height: 24,
+                                                        child: CircularProgressIndicator(
+                                                          strokeWidth: 4,
+                                                          backgroundColor: SDSColor.gray100,
+                                                          color: SDSColor.gray300.withOpacity(0.6),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
                                                 ),
                                               ),
                                             ),
@@ -1066,6 +1080,33 @@ class FleamarketUploadView extends StatelessWidget {
                                 ),
                               ),
                               validator: (val) {
+                                if (val == null || val.isEmpty) {
+                                  return null;  // 입력이 없으면 검증 통과
+                                }
+
+                                // 앞뒤 공백 제거 후 공백 확인
+                                if (val.trim() != val) {
+                                  return '앞뒤 공백이 포함될 수 없습니다.';
+                                }
+
+                                // 중간 공백이 포함되었는지 확인
+                                final regex = RegExp(r'^\S+$');
+                                if (!regex.hasMatch(val)) {
+                                  return '문자 사이에 공백이 포함될 수 없습니다.';
+                                }
+
+                                // 한글 자음, 모음 및 완성된 한글 포함 여부 검증
+                                final koreanRegex = RegExp(r'[가-힣ㄱ-ㅎㅏ-ㅣ]');
+                                if (koreanRegex.hasMatch(val)) {
+                                  return '한글 자음, 모음 또는 완성된 한글이 포함될 수 없습니다.';
+                                }
+
+                                // URL이 'https://open.kakao.com'으로 시작하는지 검증
+                                if (!val.startsWith('https://open.kakao.com')) {
+                                  return '유효한 URL을 입력해주세요.';
+                                }
+
+                                return null;  // 모든 검증을 통과하면 null 반환
                               },
                             ),
                             Padding(
@@ -1197,7 +1238,7 @@ class FleamarketUploadView extends StatelessWidget {
                                   "negotiable": _fleamarketUploadViewModel.negotiable,
                                   "method": _fleamarketUploadViewModel.selectedTradeMethod,
                                   "spot": _fleamarketUploadViewModel.selectedTradeSpot,
-                                  "sns_url": _fleamarketUploadViewModel.textEditingController_sns.text,
+                                  "sns_url": _fleamarketUploadViewModel.textEditingController_sns.text.trim(),
                                   "title": _fleamarketUploadViewModel.textEditingController_title.text,
                                   "description": _fleamarketUploadViewModel.textEditingController_desc.text,
                                 }
@@ -1216,7 +1257,7 @@ class FleamarketUploadView extends StatelessWidget {
                                   "negotiable": _fleamarketUploadViewModel.negotiable,
                                   "method": _fleamarketUploadViewModel.selectedTradeMethod,
                                   "spot": _fleamarketUploadViewModel.selectedTradeSpot,
-                                  "sns_url": _fleamarketUploadViewModel.textEditingController_sns.text,
+                                  "sns_url": _fleamarketUploadViewModel.textEditingController_sns.text.trim(),
                                   "title": _fleamarketUploadViewModel.textEditingController_title.text,
                                   "description": _fleamarketUploadViewModel.textEditingController_desc.text,
                                 },

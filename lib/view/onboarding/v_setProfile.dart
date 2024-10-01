@@ -5,6 +5,7 @@ import 'package:com.snowlive/viewmodel/onboarding_login/vm_setProfile.dart';
 import 'package:com.snowlive/viewmodel/vm_notificationController.dart';
 import 'package:com.snowlive/viewmodel/vm_user.dart';
 import 'package:com.snowlive/widget/w_favoriteResort.dart';
+import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 import 'package:com.snowlive/widget/w_sex.dart';
 import 'package:com.snowlive/widget/w_skiorboard.dart';
 import 'package:extended_image/extended_image.dart';
@@ -23,7 +24,7 @@ class SetProfileView extends StatelessWidget {
     final SetProfileViewModel _setProfileViewModel = Get.find<SetProfileViewModel>();
     final UserViewModel _userViewModel = Get.find<UserViewModel>();
     final NotificationController _notificationController = Get.find<NotificationController>();
-
+    FocusNode textFocus = FocusNode();
     final double _statusBarSize = MediaQuery.of(context).padding.top;
     int? selectedIndex;
     String? selectedSkiOrBoard;
@@ -302,11 +303,13 @@ class SetProfileView extends StatelessWidget {
                                       child: TextButton(
                                         onPressed: (_setProfileViewModel.activeCheckDisplaynameButton == true && !_setProfileViewModel.isCheckedDisplayName)
                                             ? () async {
-                                          print(_setProfileViewModel.textEditingController.text);
+                                          CustomFullScreenDialog.showDialog();
                                           await _setProfileViewModel.checkDisplayName({
                                             "display_name": _setProfileViewModel.textEditingController.text,
                                           });
+                                          CustomFullScreenDialog.cancelDialog();
                                           FocusScope.of(context).unfocus();
+                                          textFocus.unfocus();
                                           if (!_setProfileViewModel.isCheckedDisplayName)
                                             Get.dialog(
                                                 AlertDialog(
@@ -454,10 +457,27 @@ class SetProfileView extends StatelessWidget {
                                 SizedBox(height: 24),
                                 Padding(
                                   padding: const EdgeInsets.only(left: 4),
-                                  child: Text('종목', style: SDSTextStyle.regular.copyWith(
-                                      fontSize: 12,
-                                      color: SDSColor.gray900
-                                  ),),
+                                  child: Row(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text('종목', style: SDSTextStyle.regular.copyWith(
+                                          fontSize: 12,
+                                          color: SDSColor.gray900
+                                      ),),
+                                      Padding(
+                                        padding: const EdgeInsets.only(left: 2, top: 2),
+                                        child: Container(
+                                          width: 4,
+                                          height: 4,
+                                          decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.circular(10),
+                                            color: SDSColor.red,
+                                          ),
+                                        ),
+                                      )
+                                    ],
+                                  ),
+
                                 ),
                                 SizedBox(height: 8),
                                 GestureDetector(
@@ -507,10 +527,26 @@ class SetProfileView extends StatelessWidget {
                                 SizedBox(height: 24),
                                 Padding(
                                   padding: const EdgeInsets.only(left: 4),
-                                  child: Text('성별', style: SDSTextStyle.regular.copyWith(
-                                      fontSize: 12,
-                                      color: SDSColor.gray900
-                                  ),),
+                                  child: Row(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text('성별', style: SDSTextStyle.regular.copyWith(
+                                          fontSize: 12,
+                                          color: SDSColor.gray900
+                                      ),),
+                                      Padding(
+                                        padding: const EdgeInsets.only(left: 2, top: 2),
+                                        child: Container(
+                                          width: 4,
+                                          height: 4,
+                                          decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.circular(10),
+                                            color: SDSColor.red,
+                                          ),
+                                        ),
+                                      )
+                                    ],
+                                  ),
                                 ),
                                 SizedBox(height: 8),
                                 GestureDetector(
@@ -577,11 +613,16 @@ class SetProfileView extends StatelessWidget {
                     color: SDSColor.gray400
                   ),),
                   Obx(() =>
-                  (_setProfileViewModel.selectedResortIndex != 99 && _setProfileViewModel.displayName != '')
+                  (_setProfileViewModel.selectedResortIndex != 99
+                      && _setProfileViewModel.displayName != ''
+                      && _setProfileViewModel.selectedSkiOrBoard != ''
+                      && _setProfileViewModel.selectedSex != ''
+                  )
                       ? Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
                         child: ElevatedButton(
                                         onPressed: () async {
+                                          CustomFullScreenDialog.showDialog();
                         await _setProfileViewModel.getImageUrl();
                         await _setProfileViewModel.startSnowlive(
                             {
@@ -601,6 +642,7 @@ class SetProfileView extends StatelessWidget {
                         await FlutterSecureStorage().write(key: 'device_id', value: _notificationController.deviceID);
                         await FlutterSecureStorage().write(key: 'device_token', value: _notificationController.deviceToken);
                         await FlutterSecureStorage().write(key: 'user_id', value: _userViewModel.user.user_id.toString());
+                                          CustomFullScreenDialog.cancelDialog();
                         Get.offAllNamed(AppRoutes.mainHome);
                         },
                           style: TextButton.styleFrom(

@@ -527,9 +527,9 @@ class CommunityBulletinDetailView extends StatelessWidget {
                       height: _size.height - MediaQuery.of(context).viewPadding.top - 58 - MediaQuery.of(context).viewPadding.bottom - 88,
                       child: RefreshIndicator(
                         strokeWidth: 2,
-                        edgeOffset: 20,
-                        backgroundColor: SDSColor.snowliveWhite,
-                        color: SDSColor.snowliveBlue,
+                        edgeOffset: 40,
+                        backgroundColor: SDSColor.snowliveBlue,
+                        color: SDSColor.snowliveWhite,
                         onRefresh: () async{
                           await _communityDetailViewModel.fetchCommunityDetail(
                               _communityDetailViewModel.communityDetail.communityId!,

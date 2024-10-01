@@ -668,9 +668,9 @@ class _FleaMarketDetailViewState extends State<FleaMarketDetailView> {
                     children: [
                       RefreshIndicator(
                         strokeWidth: 2,
-                        edgeOffset: 20,
-                        backgroundColor: SDSColor.snowliveWhite,
-                        color: SDSColor.snowliveBlue,
+                        edgeOffset: 40,
+                        backgroundColor: SDSColor.snowliveBlue,
+                        color: SDSColor.snowliveWhite,
                         onRefresh: () async{
                           await _fleamarketDetailViewModel.fetchFleamarketDetailFromAPI(
                               fleamarketId: _fleamarketDetailViewModel.fleamarketDetail.fleaId!,

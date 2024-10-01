@@ -30,67 +30,57 @@ class CommunityBulletinCrewListView extends StatelessWidget {
         color: Colors.white,
         child: Scaffold(
           floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-          floatingActionButton: Stack(
+          floatingActionButton: Obx(()=>Stack(
             children: [
-              //최신글보기
-              Align(
-                alignment: Alignment.bottomCenter,
-                child: Visibility(
-                  visible: _communityBulletinListViewModel.isVisible_crew,
-                  child: Container(
-                    width: 106,
-                    decoration: BoxDecoration(
-                      color: Colors.transparent,
-                      borderRadius: BorderRadius.circular(50),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.04),
-                          spreadRadius: 2,
-                          blurRadius: 8,
-                          offset: Offset(0, 6),
+              Transform.translate(
+                offset: Offset(18, 0),
+                child: Align(
+                  alignment: Alignment.bottomRight,
+                  child: Obx(()=> Visibility(
+                    visible: _communityBulletinListViewModel.isVisible_crew,
+                    child: Padding(
+                      padding: const EdgeInsets.only(bottom: 64),
+                      child: Container(
+                        width: 52,
+                        height: 52,
+                        decoration: BoxDecoration(
+                          color: Colors.transparent,
+                          borderRadius: BorderRadius.circular(50),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.04),
+                              spreadRadius: 2,
+                              blurRadius: 8,
+                              offset: Offset(0, 6),
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
-                    child: FloatingActionButton(
-                      heroTag: 'bulletin_crew_recent',
-                      mini: true,
-                      elevation: 0,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(40),
-                        side: BorderSide(color: SDSColor.gray200),
-                      ),
-                      backgroundColor: SDSColor.snowliveWhite,
-                      foregroundColor: SDSColor.snowliveWhite,
-                      onPressed: () {
-                        _communityBulletinListViewModel.scrollController_crew.jumpTo(0);
-                      },
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Icon(Icons.arrow_upward_rounded,
-                              color: SDSColor.gray900,
-                              size: 16),
-                          Padding(
-                            padding: const EdgeInsets.only(left: 2, right: 3),
-                            child: Text('최신글 보기',
-                              style: TextStyle(
-                                  fontSize: 13,
-                                  fontWeight: FontWeight.bold,
-                                  color: SDSColor.gray900,
-                                  letterSpacing: 0
-                              ),),
-                          )
-                        ],
+                        child: FloatingActionButton(
+                          heroTag: 'bulletin_free_recent',
+                          mini: true,
+                          elevation: 0,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(40),
+                            side: BorderSide(color: SDSColor.gray200),
+                          ),
+                          backgroundColor: SDSColor.snowliveWhite,
+                          foregroundColor: SDSColor.snowliveWhite,
+                          onPressed: () {
+                            _communityBulletinListViewModel.scrollController_crew.jumpTo(0);
+                          },
+                          child: Image.asset( 'assets/imgs/icons/icon_top_page.png',
+                            fit: BoxFit.cover,
+                            width: 16,
+                            height: 16,),
+                        ),
                       ),
                     ),
-                  ),
+                  )),
                 ),
               ),
-              //글쓰기 버튼
               Positioned(
-                child: Padding(
-                  padding: EdgeInsets.only(right: 14),
+                child: Transform.translate(
+                  offset: Offset(18, 0),
                   child: Align(
                     alignment: Alignment.bottomRight,
                     child: AnimatedContainer(
@@ -98,21 +88,20 @@ class CommunityBulletinCrewListView extends StatelessWidget {
                       height: 52,
                       duration: Duration(milliseconds: 200),
                       child: FloatingActionButton.extended(
-                        heroTag: 'bulletin_crew',
                         elevation: 4,
-                        onPressed: () async {
+                        heroTag: 'bulletin_free',
+                        onPressed: () {
                           Get.toNamed(AppRoutes.bulletinUpload);
                         },
                         icon: Transform.translate(
-                          offset: Offset(6, 0),
-                          child: Center(child: Icon(Icons.add,
-                            color: SDSColor.snowliveWhite,)),
-                        ),
+                            offset: Offset(6,0),
+                            child: Center(child: Icon(Icons.add,
+                              color: SDSColor.snowliveWhite,
+                            ))),
                         label: _communityBulletinListViewModel.showAddButton_crew
                             ? Padding(
                           padding: const EdgeInsets.only(right: 6),
-                          child: Text(
-                            '글쓰기',
+                          child: Text('글쓰기',
                             style: SDSTextStyle.bold.copyWith(
                                 letterSpacing: 0.5,
                                 fontSize: 15,
@@ -120,7 +109,7 @@ class CommunityBulletinCrewListView extends StatelessWidget {
                                 overflow: TextOverflow.ellipsis),
                           ),
                         )
-                            : SizedBox.shrink(),
+                            : SizedBox.shrink(), // Hide the text when _showAddButton is false
                         backgroundColor: SDSColor.snowliveBlue,
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(50)
@@ -131,7 +120,7 @@ class CommunityBulletinCrewListView extends StatelessWidget {
                 ),
               ),
             ],
-          ),
+          )),
           backgroundColor: Colors.white,
           body:
           (_communityBulletinListViewModel.isLoadingList_crew==true)
@@ -139,12 +128,29 @@ class CommunityBulletinCrewListView extends StatelessWidget {
             height: 150,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Center(
-                  child: CircularProgressIndicator(
-                    strokeWidth: 2,
-                    backgroundColor: SDSColor.snowliveWhite,
-                    color: SDSColor.snowliveBlue,
+                  child: Container(
+                    width: 24,
+                    height: 24,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Center(
+                          child: Container(
+                            width: 24,
+                            height: 24,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 4,
+                              backgroundColor: SDSColor.gray100,
+                              color: SDSColor.gray300.withOpacity(0.6),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ],
@@ -152,9 +158,9 @@ class CommunityBulletinCrewListView extends StatelessWidget {
           )
               : RefreshIndicator(
             strokeWidth: 2,
-            edgeOffset: 20,
-            backgroundColor: SDSColor.snowliveWhite,
-            color: SDSColor.snowliveBlue,
+            edgeOffset: 40,
+            backgroundColor: SDSColor.snowliveBlue,
+            color: SDSColor.snowliveWhite,
             onRefresh: _communityBulletinListViewModel.onRefresh_bulletin_crew,
             child: SingleChildScrollView(
               physics: AlwaysScrollableScrollPhysics(),
@@ -199,10 +205,30 @@ class CommunityBulletinCrewListView extends StatelessWidget {
 
                             if(index == _communityBulletinListViewModel.communityList_crew.length){
                               return Obx(() => _communityBulletinListViewModel.isLoadingNextList_crew == true // 여기서 Obx 사용
-                                  ? Padding(
-                                padding: const EdgeInsets.all(16.0),
-                                child: Center(
-                                  child: CircularProgressIndicator(), // 로딩 인디케이터
+                                  ? Center(
+                                child: Padding(
+                                  padding: EdgeInsets.only(top: 24),
+                                  child: Container(
+                                    width: 24,
+                                    height: 24,
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      children: [
+                                        Center(
+                                          child: Container(
+                                            width: 24,
+                                            height: 24,
+                                            child: CircularProgressIndicator(
+                                              strokeWidth: 4,
+                                              backgroundColor: SDSColor.gray100,
+                                              color: SDSColor.gray300.withOpacity(0.6),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
                                 ),
                               )
                                   : SizedBox.shrink());
