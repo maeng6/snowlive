@@ -51,43 +51,40 @@ class _ReceiveFriendRequestViewState extends State<ReceiveFriendRequestView> {
                             );
                           },
                           child: Container(
-                            width: 56,
-                            child: Container(
+                            width: 40,
+                            height: 40,
+                            decoration: BoxDecoration(
+                                color: SDSColor.gray50,
+                                borderRadius: BorderRadius.circular(50)
+                            ),
+                            alignment: Alignment.centerLeft,
+                            child: ExtendedImage.network(
+                              '${friend.friendUserInfo.profileImageUrlUser}',
+                              enableMemoryCache: true,
+                              shape: BoxShape.circle,
+                              borderRadius: BorderRadius.circular(8),
                               width: 40,
                               height: 40,
-                              decoration: BoxDecoration(
-                                  color: Color(0xFFDFECFF),
-                                  borderRadius: BorderRadius.circular(50)
-                              ),
-                              alignment: Alignment.centerLeft,
-                              child: ExtendedImage.network(
-                                '${friend.friendUserInfo.profileImageUrlUser}',
-                                enableMemoryCache: true,
-                                shape: BoxShape.circle,
-                                borderRadius: BorderRadius.circular(8),
-                                width: 40,
-                                height: 40,
-                                fit: BoxFit.cover,
-                                loadStateChanged: (ExtendedImageState state) {
-                                  switch (state.extendedImageLoadState) {
-                                    case LoadState.loading:
-                                      return SizedBox.shrink();
-                                    case LoadState.completed:
-                                      return state.completedWidget;
-                                    case LoadState.failed:
-                                      return ExtendedImage.asset(
-                                        'assets/imgs/profile/img_profile_default_circle.png',
-                                        shape: BoxShape.circle,
-                                        borderRadius: BorderRadius.circular(20),
-                                        width: 24,
-                                        height: 24,
-                                        fit: BoxFit.cover,
-                                      ); // 예시로 에러 아이콘을 반환하고 있습니다.
-                                    default:
-                                      return null;
-                                  }
-                                },
-                              ),
+                              fit: BoxFit.cover,
+                              loadStateChanged: (ExtendedImageState state) {
+                                switch (state.extendedImageLoadState) {
+                                  case LoadState.loading:
+                                    return SizedBox.shrink();
+                                  case LoadState.completed:
+                                    return state.completedWidget;
+                                  case LoadState.failed:
+                                    return ExtendedImage.asset(
+                                      'assets/imgs/profile/img_profile_default_circle.png',
+                                      shape: BoxShape.circle,
+                                      borderRadius: BorderRadius.circular(20),
+                                      width: 24,
+                                      height: 24,
+                                      fit: BoxFit.cover,
+                                    ); // 예시로 에러 아이콘을 반환하고 있습니다.
+                                  default:
+                                    return null;
+                                }
+                              },
                             ),
                           ),
                         )
@@ -101,30 +98,24 @@ class _ReceiveFriendRequestViewState extends State<ReceiveFriendRequestView> {
                             );
                           },
                           child: Container(
-                            width: 56,
-                            child: Container(
-                              alignment: Alignment.centerLeft,
-                              child: ExtendedImage.asset('assets/imgs/profile/img_profile_default_circle.png',
-                                enableMemoryCache:
-                                true,
-                                shape: BoxShape.circle,
-                                borderRadius:
-                                BorderRadius.circular(8),
-                                width: 40,
-                                height: 40,
-                                fit: BoxFit.cover,
-                              ),
+                            alignment: Alignment.centerLeft,
+                            child: ExtendedImage.asset('assets/imgs/profile/img_profile_default_circle.png',
+                              enableMemoryCache:
+                              true,
+                              shape: BoxShape.circle,
+                              borderRadius:
+                              BorderRadius.circular(8),
+                              width: 40,
+                              height: 40,
+                              fit: BoxFit.cover,
                             ),
                           ),
                         ),
-                        title: Transform.translate(
-                          offset: Offset(-20,0),
-                          child: Text(
-                            friend.friendUserInfo.displayName,
-                            style: SDSTextStyle.regular.copyWith(
-                              fontSize: 15,
-                              color: SDSColor.gray900,
-                            ),
+                        title: Text(
+                          friend.friendUserInfo.displayName,
+                          style: SDSTextStyle.regular.copyWith(
+                            fontSize: 15,
+                            color: SDSColor.gray900,
                           ),
                         ),
                         trailing: Container(

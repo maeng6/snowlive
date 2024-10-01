@@ -336,6 +336,7 @@ class FriendListView extends StatelessWidget {
                   ),
                   (_friendListViewModel.friendList.isEmpty)
                       ? Container(
+                    height: _size.height - 320,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -592,65 +593,84 @@ class FriendListView extends StatelessWidget {
                                                             onTap: () {
                                                               Get.dialog(
                                                                 AlertDialog(
-                                                                  contentPadding: EdgeInsets.only(
-                                                                    bottom: 0,
-                                                                    left: 20,
-                                                                    right: 20,
-                                                                    top: 30,
-                                                                  ),
+                                                                  backgroundColor: SDSColor.snowliveWhite,
+                                                                  contentPadding: EdgeInsets.only(bottom: 0, left: 28, right: 28, top: 36),
                                                                   elevation: 0,
                                                                   shape: RoundedRectangleBorder(
-                                                                    borderRadius: BorderRadius.circular(10.0),
-                                                                  ),
-                                                                  buttonPadding: EdgeInsets.symmetric(
-                                                                    horizontal: 20,
-                                                                    vertical: 0,
-                                                                  ),
-                                                                  content: Text(
-                                                                    '친구목록에서 삭제하시겠습니까?',
-                                                                    style: TextStyle(
-                                                                      fontWeight: FontWeight.w600,
-                                                                      fontSize: 15,
-                                                                    ),
-                                                                  ),
-                                                                  actions: [
-                                                                    Row(
-                                                                      mainAxisAlignment: MainAxisAlignment.end,
+                                                                      borderRadius: BorderRadius.circular(16)),
+                                                                  buttonPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+                                                                  content: Container(
+                                                                    height: 40,
+                                                                    child: Column(
+                                                                      crossAxisAlignment: CrossAxisAlignment.center,
                                                                       children: [
-                                                                        TextButton(
-                                                                          onPressed: () {
-                                                                            Navigator.pop(context);
-                                                                            Get.back();
-                                                                          },
-                                                                          child: Text(
-                                                                            '취소',
-                                                                            style: TextStyle(
-                                                                              fontSize: 15,
-                                                                              color: Color(0xFF949494),
-                                                                              fontWeight: FontWeight.bold,
-                                                                            ),
-                                                                          ),
-                                                                        ),
-                                                                        TextButton(
-                                                                          onPressed: () async {
-                                                                            Navigator.pop(context);
-                                                                            Navigator.pop(context);
-                                                                            CustomFullScreenDialog.showDialog();
-                                                                            await _friendListViewModel.deleteFriend(
-                                                                              {"friend_id": friend.friendId},
-                                                                            );
-                                                                            await _friendListViewModel.fetchFriendList();
-                                                                          },
-                                                                          child: Text(
-                                                                            '확인',
-                                                                            style: TextStyle(
-                                                                              fontSize: 15,
-                                                                              color: Color(0xFF3D83ED),
-                                                                              fontWeight: FontWeight.bold,
-                                                                            ),
+                                                                        Text(
+                                                                          '친구 목록에서 삭제하시겠어요?',
+                                                                          textAlign: TextAlign.center,
+                                                                          style: SDSTextStyle.bold.copyWith(
+                                                                              color: SDSColor.gray900,
+                                                                              fontSize: 16
                                                                           ),
                                                                         ),
                                                                       ],
+                                                                    ),
+                                                                  ),
+                                                                  actions: [
+                                                                    Padding(
+                                                                      padding: EdgeInsets.only(top: 10, left: 16, right: 16),
+                                                                      child: Row(
+                                                                        mainAxisAlignment: MainAxisAlignment.end,
+                                                                        children: [
+                                                                          Expanded(
+                                                                            child: Container(
+                                                                              child: TextButton(
+                                                                                onPressed: () {
+                                                                                  Navigator.pop(context);
+                                                                                  Get.back();
+                                                                                },
+                                                                                style: TextButton.styleFrom(
+                                                                                  backgroundColor: Colors.transparent, // 배경색 투명
+                                                                                  splashFactory: NoSplash.splashFactory, // 터치 시 효과 제거
+                                                                                ),
+                                                                                child: Text('취소',
+                                                                                  style: SDSTextStyle.bold.copyWith(
+                                                                                    fontSize: 17,
+                                                                                    color: SDSColor.gray500,
+                                                                                  ),
+                                                                                ),
+                                                                              ),
+                                                                            ),
+                                                                          ),
+                                                                          SizedBox(
+                                                                            width: 10,
+                                                                          ),
+                                                                          Expanded(
+                                                                            child: Container(
+                                                                              child: TextButton(
+                                                                                onPressed: () async {
+                                                                                  Navigator.pop(context);
+                                                                                  Navigator.pop(context);
+                                                                                  CustomFullScreenDialog.showDialog();
+                                                                                  await _friendListViewModel.deleteFriend(
+                                                                                    {"friend_id": friend.friendId},
+                                                                                  );
+                                                                                  await _friendListViewModel.fetchFriendList();
+                                                                                },
+                                                                                style: TextButton.styleFrom(
+                                                                                  backgroundColor: Colors.transparent, // 배경색 투명
+                                                                                  splashFactory: NoSplash.splashFactory, // 터치 시 효과 제거
+                                                                                ),
+                                                                                child: Text('삭제하기',
+                                                                                  style: SDSTextStyle.bold.copyWith(
+                                                                                    fontSize: 17,
+                                                                                    color: SDSColor.snowliveBlue,
+                                                                                  ),
+                                                                                ),
+                                                                              ),
+                                                                            ),
+                                                                          ),
+                                                                        ],
+                                                                      ),
                                                                     ),
                                                                   ],
                                                                 ),
@@ -735,62 +755,82 @@ class FriendListView extends StatelessWidget {
                                                             onTap: () {
                                                               Get.dialog(
                                                                 AlertDialog(
-                                                                  contentPadding: EdgeInsets.only(
-                                                                    bottom: 0,
-                                                                    left: 20,
-                                                                    right: 20,
-                                                                    top: 30,
-                                                                  ),
+                                                                  backgroundColor: SDSColor.snowliveWhite,
+                                                                  contentPadding: EdgeInsets.only(bottom: 0, left: 28, right: 28, top: 36),
                                                                   elevation: 0,
                                                                   shape: RoundedRectangleBorder(
-                                                                    borderRadius: BorderRadius.circular(10.0),
-                                                                  ),
-                                                                  buttonPadding: EdgeInsets.symmetric(
-                                                                    horizontal: 20,
-                                                                    vertical: 0,
-                                                                  ),
-                                                                  content: Text(
-                                                                    '친구 목록에서 삭제하시겠습니까?',
-                                                                    style: TextStyle(
-                                                                      fontWeight: FontWeight.w600,
-                                                                      fontSize: 15,
-                                                                    ),
-                                                                  ),
-                                                                  actions: [
-                                                                    Row(
-                                                                      mainAxisAlignment: MainAxisAlignment.end,
+                                                                      borderRadius: BorderRadius.circular(16)),
+                                                                  buttonPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+                                                                  content: Container(
+                                                                    height: 40,
+                                                                    child: Column(
+                                                                      crossAxisAlignment: CrossAxisAlignment.center,
                                                                       children: [
-                                                                        TextButton(
-                                                                          onPressed: () {
-                                                                            Navigator.pop(context);
-                                                                          },
-                                                                          child: Text(
-                                                                            '취소',
-                                                                            style: TextStyle(
-                                                                              fontSize: 15,
-                                                                              color: Color(0xFF949494),
-                                                                              fontWeight: FontWeight.bold,
-                                                                            ),
-                                                                          ),
-                                                                        ),
-                                                                        TextButton(
-                                                                          onPressed: () async {
-                                                                            Navigator.pop(context);
-                                                                            await _friendListViewModel.deleteFriend(
-                                                                              {"friend_id": friend.friendId},
-                                                                            );
-                                                                            Navigator.pop(context);
-                                                                          },
-                                                                          child: Text(
-                                                                            '확인',
-                                                                            style: TextStyle(
-                                                                              fontSize: 15,
-                                                                              color: Color(0xFF3D83ED),
-                                                                              fontWeight: FontWeight.bold,
-                                                                            ),
+                                                                        Text(
+                                                                          '친구 목록에서 삭제하시겠어요?',
+                                                                          textAlign: TextAlign.center,
+                                                                          style: SDSTextStyle.bold.copyWith(
+                                                                              color: SDSColor.gray900,
+                                                                              fontSize: 16
                                                                           ),
                                                                         ),
                                                                       ],
+                                                                    ),
+                                                                  ),
+                                                                  actions: [
+                                                                    Padding(
+                                                                      padding: EdgeInsets.only(top: 10, left: 16, right: 16),
+                                                                      child: Row(
+                                                                        mainAxisAlignment: MainAxisAlignment.end,
+                                                                        children: [
+                                                                          Expanded(
+                                                                            child: Container(
+                                                                              child: TextButton(
+                                                                                onPressed: () {
+                                                                                  Navigator.pop(context);
+                                                                                },
+                                                                                style: TextButton.styleFrom(
+                                                                                  backgroundColor: Colors.transparent, // 배경색 투명
+                                                                                  splashFactory: NoSplash.splashFactory, // 터치 시 효과 제거
+                                                                                ),
+                                                                                child: Text('취소',
+                                                                                  style: SDSTextStyle.bold.copyWith(
+                                                                                    fontSize: 17,
+                                                                                    color: SDSColor.gray500,
+                                                                                  ),
+                                                                                ),
+                                                                              ),
+                                                                            ),
+                                                                          ),
+                                                                          SizedBox(
+                                                                            width: 10,
+                                                                          ),
+                                                                          Expanded(
+                                                                            child: Container(
+                                                                              child: TextButton(
+                                                                                onPressed: () async {
+                                                                                  CustomFullScreenDialog.showDialog();
+                                                                                  await _friendListViewModel.deleteFriend(
+                                                                                    {"friend_id": friend.friendId},
+                                                                                  );
+                                                                                  CustomFullScreenDialog.cancelDialog();
+                                                                                  Navigator.pop(context);
+                                                                                },
+                                                                                style: TextButton.styleFrom(
+                                                                                  backgroundColor: Colors.transparent, // 배경색 투명
+                                                                                  splashFactory: NoSplash.splashFactory, // 터치 시 효과 제거
+                                                                                ),
+                                                                                child: Text('삭제하기',
+                                                                                  style: SDSTextStyle.bold.copyWith(
+                                                                                    fontSize: 17,
+                                                                                    color: SDSColor.snowliveBlue,
+                                                                                  ),
+                                                                                ),
+                                                                              ),
+                                                                            ),
+                                                                          ),
+                                                                        ],
+                                                                      ),
                                                                     ),
                                                                   ],
                                                                 ),

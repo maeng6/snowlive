@@ -79,40 +79,40 @@ class _FriendDetailViewState extends State<FriendDetailView> {
               Get.back();
             },
           ),
-          actions: [
-            if (_friendDetailViewModel.friendDetailModel.friendUserInfo.userId == _userViewModel.user.user_id)
-              GestureDetector(
-                child: Padding(
-                  padding: const EdgeInsets.only(right: 16),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      (_friendDetailViewModel.isLoading == true)
-                          ? SizedBox.shrink()
-                          : Image.asset(
-                        'assets/imgs/icons/icon_edit_pencil.png',
-                        scale: 1,
-                        width: 26,
-                        height: 26,
-                      )
-                    ],
-                  ),
-                ),
-                onTap: () {
-                  _friendDetailUpdateViewModel.fetchFriendDetailUpdateData(
-                    displayName: _friendDetailViewModel.friendDetailModel.friendUserInfo.displayName,
-                    state_msg: _friendDetailViewModel.friendDetailModel.friendUserInfo.stateMsg,
-                    profileImageUrl: _friendDetailViewModel.friendDetailModel.friendUserInfo.profileImageUrlUser,
-                    selectedResortName: _friendDetailViewModel.friendDetailModel.friendUserInfo.favoriteResort,
-                    selectedResortIndex: _friendDetailViewModel.friendDetailModel.friendUserInfo.favoriteResortId - 1,
-                    selectedSkiOrBoard: _friendDetailViewModel.friendDetailModel.friendUserInfo.skiorboard,
-                    selectedSex: _friendDetailViewModel.friendDetailModel.friendUserInfo.sex,
-                    hideProfile: _friendDetailViewModel.friendDetailModel.friendUserInfo.hideProfile,
-                  );
-                  Get.toNamed(AppRoutes.friendDetailUpdate);
-                },
-              ),
-          ],
+          // actions: [
+          //   if (_friendDetailViewModel.friendDetailModel.friendUserInfo.userId == _userViewModel.user.user_id)
+          //     GestureDetector(
+          //       child: Padding(
+          //         padding: const EdgeInsets.only(right: 16),
+          //         child: Column(
+          //           mainAxisAlignment: MainAxisAlignment.center,
+          //           children: [
+          //             (_friendDetailViewModel.isLoading == true)
+          //                 ? SizedBox.shrink()
+          //                 : Image.asset(
+          //               'assets/imgs/icons/icon_edit_pencil.png',
+          //               scale: 1,
+          //               width: 26,
+          //               height: 26,
+          //             )
+          //           ],
+          //         ),
+          //       ),
+          //       onTap: () {
+          //         _friendDetailUpdateViewModel.fetchFriendDetailUpdateData(
+          //           displayName: _friendDetailViewModel.friendDetailModel.friendUserInfo.displayName,
+          //           state_msg: _friendDetailViewModel.friendDetailModel.friendUserInfo.stateMsg,
+          //           profileImageUrl: _friendDetailViewModel.friendDetailModel.friendUserInfo.profileImageUrlUser,
+          //           selectedResortName: _friendDetailViewModel.friendDetailModel.friendUserInfo.favoriteResort,
+          //           selectedResortIndex: _friendDetailViewModel.friendDetailModel.friendUserInfo.favoriteResortId - 1,
+          //           selectedSkiOrBoard: _friendDetailViewModel.friendDetailModel.friendUserInfo.skiorboard,
+          //           selectedSex: _friendDetailViewModel.friendDetailModel.friendUserInfo.sex,
+          //           hideProfile: _friendDetailViewModel.friendDetailModel.friendUserInfo.hideProfile,
+          //         );
+          //         Get.toNamed(AppRoutes.friendDetailUpdate);
+          //       },
+          //     ),
+          // ],
           elevation: 0.0,
           titleSpacing: 0,
           centerTitle: true,
@@ -120,7 +120,9 @@ class _FriendDetailViewState extends State<FriendDetailView> {
         ),
         body: RefreshIndicator(
           strokeWidth: 2,
-          edgeOffset: 40,
+          edgeOffset: 80,
+          backgroundColor: SDSColor.snowliveBlue,
+          color: SDSColor.snowliveWhite,
           onRefresh: () => _friendDetailViewModel.fetchFriendDetailInfo(
             userId: _userViewModel.user.user_id,
             friendUserId: _friendDetailViewModel.friendDetailModel.friendUserInfo.userId,
@@ -275,12 +277,26 @@ class _FriendDetailViewState extends State<FriendDetailView> {
                                                         await _crewMemberListViewModel.fetchCrewMembers(crewId: _friendDetailViewModel.friendDetailModel.friendUserInfo.crewId);
 
                                                       },//
-                                                      child: Text(
-                                                        ' · ${_friendDetailViewModel.friendDetailModel.friendUserInfo.crewName} >',
-                                                        style: SDSTextStyle.regular.copyWith(
-                                                          fontSize: 13,
-                                                          color: SDSColor.gray900,
-                                                        ),
+                                                      child: Row(
+                                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                                        children: [
+                                                          Text(
+                                                            ' · ${_friendDetailViewModel.friendDetailModel.friendUserInfo.crewName}',
+                                                            style: SDSTextStyle.regular.copyWith(
+                                                              fontSize: 13,
+                                                              color: SDSColor.gray900,
+                                                            ),
+                                                          ),
+                                                          SizedBox(
+                                                            width: 4,
+                                                          ),
+                                                          Image.asset(
+                                                            'assets/imgs/icons/icon_arrow_round_black.png',
+                                                            fit: BoxFit.cover,
+                                                            width: 15,
+                                                            height: 15,
+                                                          ),
+                                                        ],
                                                       ),
                                                     ),
                                                 ],),
@@ -306,7 +322,39 @@ class _FriendDetailViewState extends State<FriendDetailView> {
                                             ),
                                             //친구추가 버튼
                                             if(_userViewModel.user.user_id == _friendDetailViewModel.friendDetailModel.friendUserInfo.userId)
-                                              Container(), //프디페 = 내 프디페
+                                              ElevatedButton(
+                                                onPressed: () async{
+
+                                                  _friendDetailUpdateViewModel.fetchFriendDetailUpdateData(
+                                                    displayName: _friendDetailViewModel.friendDetailModel.friendUserInfo.displayName,
+                                                    state_msg: _friendDetailViewModel.friendDetailModel.friendUserInfo.stateMsg,
+                                                    profileImageUrl: _friendDetailViewModel.friendDetailModel.friendUserInfo.profileImageUrlUser,
+                                                    selectedResortName: _friendDetailViewModel.friendDetailModel.friendUserInfo.favoriteResort,
+                                                    selectedResortIndex: _friendDetailViewModel.friendDetailModel.friendUserInfo.favoriteResortId - 1,
+                                                    selectedSkiOrBoard: _friendDetailViewModel.friendDetailModel.friendUserInfo.skiorboard,
+                                                    selectedSex: _friendDetailViewModel.friendDetailModel.friendUserInfo.sex,
+                                                    hideProfile: _friendDetailViewModel.friendDetailModel.friendUserInfo.hideProfile,
+                                                  );
+                                                  Get.toNamed(AppRoutes.friendDetailUpdate);
+                                                  
+                                                }, child: Text('프로필 수정',
+                                                style: SDSTextStyle.bold.copyWith(
+                                                    fontSize: 13,
+                                                    color: SDSColor.gray900
+                                                ),
+                                              ),
+                                                style: TextButton.styleFrom(
+                                                    shape: const RoundedRectangleBorder(
+                                                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                                                        side: BorderSide(color: SDSColor.gray100)
+                                                    ),
+                                                    padding: EdgeInsets.symmetric(horizontal: 0),
+                                                    elevation: 0,
+                                                    splashFactory: InkRipple.splashFactory,
+                                                    overlayColor: Colors.transparent,
+                                                    minimumSize: Size(84, 34),
+                                                    backgroundColor: Color(0xffffffff)),
+                                              ), //프디페 = 내 프디페
                                             if(_userViewModel.user.user_id != _friendDetailViewModel.friendDetailModel.friendUserInfo.userId &&
                                                 !_friendDetailViewModel.friendDetailModel.friendUserInfo.areWeFriend)
                                               ElevatedButton(
@@ -685,25 +733,36 @@ class _FriendDetailViewState extends State<FriendDetailView> {
                                                               ),
                                                             ],
                                                           ),
-                                                          ExtendedImage.network(
-                                                            '${_friendDetailViewModel.friendDetailModel.seasonRankingInfo.overallTierIconUrl}',
-                                                            fit: BoxFit.cover,
-                                                            enableMemoryCache: true,
-                                                            width: 56,
-                                                            height: 56,
-                                                            loadStateChanged: (ExtendedImageState state) {
-                                                              switch (state.extendedImageLoadState) {
-                                                                case LoadState.loading:
-                                                                // 로딩 중일 때 로딩 인디케이터를 표시
-                                                                  return Center(child: CircularProgressIndicator());
-                                                                case LoadState.completed:
-                                                                // 로딩이 완료되었을 때 이미지 반환
-                                                                  return state.completedWidget;
-                                                                case LoadState.failed:
-                                                                // 로딩이 실패했을 때 대체 이미지 또는 다른 처리
-                                                                  return Container();
-                                                              }
-                                                            },
+                                                          Padding(
+                                                            padding: EdgeInsets.only(top: 4),
+                                                            child: ExtendedImage.network(
+                                                              '${_friendDetailViewModel.friendDetailModel.seasonRankingInfo.overallTierIconUrl}',
+                                                              fit: BoxFit.cover,
+                                                              enableMemoryCache: true,
+                                                              width: 72,
+                                                              height: 72,
+                                                              loadStateChanged: (ExtendedImageState state) {
+                                                                switch (state.extendedImageLoadState) {
+                                                                  case LoadState.loading:
+                                                                  // 로딩 중일 때 로딩 인디케이터를 표시
+                                                                    return Center(child: Container(
+                                                                      width: 24,
+                                                                      height: 24,
+                                                                      child: CircularProgressIndicator(
+                                                                        strokeWidth: 4,
+                                                                        backgroundColor: SDSColor.blue600,
+                                                                        color: SDSColor.blue800.withOpacity(0.6),
+                                                                      ),
+                                                                    ),);
+                                                                  case LoadState.completed:
+                                                                  // 로딩이 완료되었을 때 이미지 반환
+                                                                    return state.completedWidget;
+                                                                  case LoadState.failed:
+                                                                  // 로딩이 실패했을 때 대체 이미지 또는 다른 처리
+                                                                    return Container();
+                                                                }
+                                                              },
+                                                            ),
                                                           )
                                                         ],
                                                       ),
@@ -712,7 +771,7 @@ class _FriendDetailViewState extends State<FriendDetailView> {
                                                   SizedBox(height: 40,),
                                                   // 누적통계, 일간통계 칩 버튼
                                                   Padding(
-                                                    padding: const EdgeInsets.only(bottom: 16, left: 4),
+                                                    padding: const EdgeInsets.only(bottom: 10, left: 4),
                                                     child: Row(
                                                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                       children: [
