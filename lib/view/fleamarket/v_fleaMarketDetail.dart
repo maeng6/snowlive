@@ -811,14 +811,15 @@ class _FleaMarketDetailViewState extends State<FleaMarketDetailView> {
                                                                   friendUserId:_fleamarketDetailViewModel.fleamarketDetail.userInfo!.userId!,
                                                                   season: _friendDetailViewModel.seasonDate);
                                                             },
-                                                            child: ExtendedImage.asset(
-                                                              'assets/imgs/profile/img_profile_default_circle.png',
-                                                              shape: BoxShape.circle,
-                                                              borderRadius: BorderRadius.circular(50),
-                                                              width: 32,
-                                                              height: 32,
-                                                              fit: BoxFit.cover,
-                                                            ),
+                                                            child: ClipOval(
+                                                              child: Image.asset(
+                                                                'assets/imgs/profile/img_profile_default_circle.png',
+                                                                width: 32,
+                                                                height: 32,
+                                                                fit: BoxFit.cover,
+                                                              ),
+                                                            )
+                                                            ,
                                                           ),
                                                         if (_fleamarketDetailViewModel.fleamarketDetail.userInfo!.profileImageUrlUser!.isNotEmpty)
                                                           GestureDetector(
@@ -851,14 +852,15 @@ class _FleaMarketDetailViewState extends State<FleaMarketDetailView> {
                                                                     case LoadState.completed:
                                                                       return state.completedWidget;
                                                                     case LoadState.failed:
-                                                                      return ExtendedImage.asset(
-                                                                        'assets/imgs/profile/img_profile_default_circle.png',
-                                                                        shape: BoxShape.circle,
-                                                                        borderRadius: BorderRadius.circular(50),
-                                                                        width: 32,
-                                                                        height: 32,
-                                                                        fit: BoxFit.cover,
-                                                                      ); // 예시로 에러 아이콘을 반환하고 있습니다.
+                                                                      return ClipOval(
+                                                                        child: Image.asset(
+                                                                          'assets/imgs/profile/img_profile_default_circle.png',
+                                                                          width: 32,
+                                                                          height: 32,
+                                                                          fit: BoxFit.cover,
+                                                                        ),
+                                                                      )
+                                                                      ; // 예시로 에러 아이콘을 반환하고 있습니다.
                                                                     default:
                                                                       return null;
                                                                   }
@@ -1374,14 +1376,15 @@ class _FleaMarketDetailViewState extends State<FleaMarketDetailView> {
                                                                             friendUserId: document_comment.userInfo!.userId!,
                                                                             season: _friendDetailViewModel.seasonDate);
                                                                       },
-                                                                      child: ExtendedImage.network(
-                                                                        '${profileImgUrlList[0].default_round}',
-                                                                        shape: BoxShape.circle,
-                                                                        borderRadius: BorderRadius.circular(20),
-                                                                        width: 32,
-                                                                        height: 32,
-                                                                        fit: BoxFit.cover,
-                                                                      ),
+                                                                      child: ClipOval(
+                                                                        child: Image.asset(
+                                                                          'assets/imgs/profile/img_profile_default_circle.png',
+                                                                          width: 32,
+                                                                          height: 32,
+                                                                          fit: BoxFit.cover,
+                                                                        ),
+                                                                      )
+                                                                      ,
                                                                     ),
                                                                   SizedBox(width: 12),
                                                                   Expanded(
@@ -1932,13 +1935,12 @@ class _FleaMarketDetailViewState extends State<FleaMarketDetailView> {
                                           color: Color(0xFFFEE500),
                                         ),
                                         padding: EdgeInsets.all(8),
-                                        child: ExtendedImage.asset(
+                                        child: Image.asset(
                                           'assets/imgs/logos/kakao_logo.png',
-                                          enableMemoryCache: true,
-                                          shape: BoxShape.rectangle,
                                           width: 20,
                                           fit: BoxFit.cover,
-                                        ),
+                                        )
+                                        ,
                                       ),
                                     ),
                                   ),

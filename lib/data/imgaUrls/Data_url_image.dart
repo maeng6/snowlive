@@ -54,7 +54,7 @@ class IconAssetUrl {
 
 List<ProfileImgUrl> profileImgUrlList = [
   ProfileImgUrl(
-    default_round: 'https://i.esdrop.com/d/f/yytYSNBROy/NIlGn0N46O.png',
+    default_round: 'https://i.esdrop.com/d/f/yytYSNBROy/FiIpOL87ae.png',
     default_suqare: 'https://i.esdrop.com/d/f/yytYSNBROy/6rPYflzCCZ.png',
     anony_round: 'https://i.esdrop.com/d/f/yytYSNBROy/JgMO4cLHTW.png',
     snowlive_official : 'https://i.esdrop.com/d/f/yytYSNBROy/0e1CZIxevJ.jpg',

@@ -1736,14 +1736,16 @@ class FleaMarketListView_total extends StatelessWidget {
                                                           },
                                                         ),
                                                       if (data.photos!.length == 0)
-                                                        ExtendedImage.asset(
-                                                          'assets/imgs/imgs/img_flea_default.png',
-                                                          shape: BoxShape.rectangle,
+                                                        ClipRRect(
                                                           borderRadius: BorderRadius.circular(8),
-                                                          width: 110,
-                                                          height: 110,
-                                                          fit: BoxFit.cover,
-                                                        ),
+                                                          child: Image.asset(
+                                                            'assets/imgs/imgs/img_flea_default.png',
+                                                            width: 110,
+                                                            height: 110,
+                                                            fit: BoxFit.cover,
+                                                          ),
+                                                        )
+                                                      ,
                                                       if (data.status == FleamarketStatus.soldOut.korean)
                                                         Container(
                                                           width: 110, // 이미지와 동일한 너비

@@ -302,14 +302,16 @@ class FleaMarketListView_my extends StatelessWidget {
                                                         },
                                                       ),
                                                     if (data.photos!.length == 0)
-                                                      ExtendedImage.asset(
-                                                        'assets/imgs/imgs/img_flea_default.png',
-                                                        shape: BoxShape.rectangle,
+                                                      ClipRRect(
                                                         borderRadius: BorderRadius.circular(8),
-                                                        width: 110,
-                                                        height: 110,
-                                                        fit: BoxFit.cover,
-                                                      ),
+                                                        child: Image.asset(
+                                                          'assets/imgs/imgs/img_flea_default.png',
+                                                          width: 110,
+                                                          height: 110,
+                                                          fit: BoxFit.cover,
+                                                        ),
+                                                      )
+                                                    ,
                                                     if (data.status == FleamarketStatus.soldOut.korean)
                                                       Container(
                                                         width: 110, // 이미지와 동일한 너비
@@ -441,14 +443,16 @@ class FleaMarketListView_my extends StatelessWidget {
                                                           Row(
                                                             mainAxisAlignment: MainAxisAlignment.center,
                                                             children: [
-                                                              ExtendedImage.asset(
-                                                                'assets/imgs/icons/icon_list_view.png',
-                                                                shape: BoxShape.rectangle,
+                                                              ClipRRect(
                                                                 borderRadius: BorderRadius.circular(8),
-                                                                width: 16,
-                                                                height: 16,
-                                                                fit: BoxFit.cover,
-                                                              ),
+                                                                child: Image.asset(
+                                                                  'assets/imgs/icons/icon_list_view.png',
+                                                                  width: 16,
+                                                                  height: 16,
+                                                                  fit: BoxFit.cover,
+                                                                ),
+                                                              )
+                                                              ,
                                                               SizedBox(width: 2,),
                                                               Text(
                                                                   '${data.viewsCount}',
@@ -466,14 +470,16 @@ class FleaMarketListView_my extends StatelessWidget {
                                                             child: Row(
                                                               mainAxisAlignment: MainAxisAlignment.center,
                                                               children: [
-                                                                ExtendedImage.asset(
-                                                                  'assets/imgs/icons/icon_list_scrap.png',
-                                                                  shape: BoxShape.rectangle,
+                                                                ClipRRect(
                                                                   borderRadius: BorderRadius.circular(8),
-                                                                  width: 16,
-                                                                  height: 16,
-                                                                  fit: BoxFit.cover,
-                                                                ),
+                                                                  child: Image.asset(
+                                                                    'assets/imgs/icons/icon_list_scrap.png',
+                                                                    width: 16,
+                                                                    height: 16,
+                                                                    fit: BoxFit.cover,
+                                                                  ),
+                                                                )
+                                                                ,
                                                                 SizedBox(width: 2,),
                                                                 Text(
                                                                     '${data.favoriteCount.toString()}',
@@ -492,14 +498,16 @@ class FleaMarketListView_my extends StatelessWidget {
                                                             child: Row(
                                                               mainAxisAlignment: MainAxisAlignment.center,
                                                               children: [
-                                                                ExtendedImage.asset(
-                                                                  'assets/imgs/icons/icon_list_reply.png',
-                                                                  shape: BoxShape.rectangle,
+                                                                ClipRRect(
                                                                   borderRadius: BorderRadius.circular(8),
-                                                                  width: 16,
-                                                                  height: 16,
-                                                                  fit: BoxFit.cover,
-                                                                ),
+                                                                  child: Image.asset(
+                                                                    'assets/imgs/icons/icon_list_reply.png',
+                                                                    width: 16,
+                                                                    height: 16,
+                                                                    fit: BoxFit.cover,
+                                                                  ),
+                                                                )
+                                                                ,
                                                                 SizedBox(width: 2,),
                                                                 Text(
                                                                     '${data.commentCount.toString()}',

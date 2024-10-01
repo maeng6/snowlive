@@ -119,14 +119,15 @@ class CrewApplicationCrewView extends StatelessWidget {
                                     CustomFullScreenDialog.cancelDialog();
                                     Get.toNamed(AppRoutes.friendDetail);
                                   },
-                                  child: ExtendedImage.asset(
-                                    'assets/imgs/profile/img_profile_default_.png',
-                                    shape: BoxShape.circle,
-                                    borderRadius: BorderRadius.circular(8),
-                                    width: 40,
-                                    height: 40,
-                                    fit: BoxFit.cover,
-                                  ),
+                                  child: ClipOval(
+                                    child: Image.asset(
+                                      'assets/imgs/profile/img_profile_default_.png',
+                                      width: 40,
+                                      height: 40,
+                                      fit: BoxFit.cover,
+                                    ),
+                                  )
+                                  ,
                                 ),
                               SizedBox(width: 12),
                               // 유저명 및 부가 정보

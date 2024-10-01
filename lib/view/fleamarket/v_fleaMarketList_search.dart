@@ -58,7 +58,42 @@ class FleaMarketListView_search extends StatelessWidget {
           ),
         ),
         body: SafeArea(
-          child: Column(
+          child:
+
+          (_fleamarketSearchViewModel.isLoading==true)
+              ? Container(
+            height: 300,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Center(
+                  child: Container(
+                    width: 24,
+                    height: 24,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Center(
+                          child: Container(
+                            width: 24,
+                            height: 24,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 4,
+                              backgroundColor: SDSColor.gray100,
+                              color: SDSColor.gray300.withOpacity(0.6),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          )
+              :Column(
             children: [
               Obx(
                     () => Padding(
@@ -302,15 +337,16 @@ class FleaMarketListView_search extends StatelessWidget {
                                               fit: BoxFit.cover,
                                             ),
                                           if (data.photos!.isEmpty)
-                                            ExtendedImage.asset(
-                                              'assets/imgs/imgs/img_flea_default.png',
-                                              shape: BoxShape.rectangle,
-                                              borderRadius:
-                                              BorderRadius.circular(8),
-                                              width: 110,
-                                              height: 110,
-                                              fit: BoxFit.cover,
-                                            ),
+                                            ClipRRect(
+                                              borderRadius: BorderRadius.circular(8),
+                                              child: Image.asset(
+                                                'assets/imgs/imgs/img_flea_default.png',
+                                                width: 110,
+                                                height: 110,
+                                                fit: BoxFit.cover,
+                                              ),
+                                            )
+                                          ,
                                         ],
                                       ),
                                       const SizedBox(width: 16),

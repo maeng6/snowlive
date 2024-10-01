@@ -95,14 +95,16 @@ class CrewMemberListView extends StatelessWidget {
                                                     case LoadState.completed:
                                                       return state.completedWidget;
                                                     case LoadState.failed:
-                                                      return ExtendedImage.asset(
-                                                        'assets/imgs/profile/img_profile_default_circle.png',
-                                                        shape: BoxShape.circle,
+                                                      return ClipRRect(
                                                         borderRadius: BorderRadius.circular(8),
-                                                        width: 40,
-                                                        height: 40,
-                                                        fit: BoxFit.cover,
-                                                      ); // 예시로 에러 아이콘을 반환하고 있습니다.
+                                                        child: Image.asset(
+                                                          'assets/imgs/profile/img_profile_default_circle.png',
+                                                          width: 40,
+                                                          height: 40,
+                                                          fit: BoxFit.cover,
+                                                        ),
+                                                      )
+                                                      ; // 예시로 에러 아이콘을 반환하고 있습니다.
                                                     default:
                                                       return null;
                                                   }
@@ -141,15 +143,16 @@ class CrewMemberListView extends StatelessWidget {
                                                 width: 1,
                                               ),
                                             ),
-                                            child: ExtendedImage.asset(
-                                              'assets/imgs/profile/img_profile_default_circle.png',
-                                              enableMemoryCache: true,
-                                              shape: BoxShape.circle,
+                                            child: ClipRRect(
                                               borderRadius: BorderRadius.circular(8),
-                                              width: 40,
-                                              height: 40,
-                                              fit: BoxFit.cover,
-                                            ),
+                                              child: Image.asset(
+                                                'assets/imgs/profile/img_profile_default_circle.png',
+                                                width: 40,
+                                                height: 40,
+                                                fit: BoxFit.cover,
+                                              ),
+                                            )
+                                            ,
                                           ),
                                           if(_crewMemberListViewModel.crewMembersList[index].userInfo!.withinBoundary == true
                                               && _crewMemberListViewModel.crewMembersList[index].userInfo!.revealWb == true
