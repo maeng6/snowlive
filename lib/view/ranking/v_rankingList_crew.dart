@@ -83,171 +83,182 @@ class RankingCrewView extends StatelessWidget {
                             return Column(children: [
                               //마이인포 박스 - 점수와 랭킹없는경우 안보여주게함
                               if(_rankingListViewModel.rankingListCrewMy_view!.crewName != null)
-                                GestureDetector(
-                                  onTap: () async{
-                                    Get.toNamed(AppRoutes.crewMain);
-                                    await _crewDetailViewModel.fetchCrewDetail(
-                                        _rankingListViewModel.rankingListCrewMy_view!.crewId!,
-                                        _friendDetailViewModel.seasonDate
-                                    );
-                                    await _crewMemberListViewModel.fetchCrewMembers(crewId: _rankingListViewModel.rankingListCrewMy_view!.crewId!);
-                                    if(_userViewModel.user.crew_id == _rankingListViewModel.rankingListCrewMy_view!.crewId!)
-                                    await _crewRecordRoomViewModel.fetchCrewRidingRecords(
-                                        _rankingListViewModel.rankingListCrewMy_view!.crewId!,
-                                        '${DateTime.now().year}'
-                                    );
-
-                                  },
-                                  child: Obx(() => Padding(
-                                    padding: EdgeInsets.only(top: 16, bottom: 16),
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Padding(
-                                          padding: EdgeInsets.only(left: 4, right: 6),
-                                          child: Row(
-                                            mainAxisAlignment: MainAxisAlignment.start,
-                                            children: [
-                                              Text(_rankingListViewModel.myBox_title,
-                                                style: SDSTextStyle.bold.copyWith(
-                                                    fontSize: 14,
-                                                    color: SDSColor.gray900
-                                                ),
-                                              ),
-                                              Padding(
-                                                padding: EdgeInsets.only(left: 8.0),
-                                                child: Text(
-                                                  _rankingListViewModel.rankingListCrewMy_view!.crewName ?? '',
-                                                  maxLines: 1,
-                                                  overflow: TextOverflow.ellipsis,
-                                                  style: SDSTextStyle.regular.copyWith(
-                                                    fontSize: 14,
-                                                    color: SDSColor.gray900,
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                        SizedBox(height: 8),
-                                        Row(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          mainAxisAlignment: MainAxisAlignment.start,
+                                Obx(() => Padding(
+                                  padding: EdgeInsets.only(top: 16, bottom: 16),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Padding(
+                                        padding: EdgeInsets.only(left: 4, right: 6),
+                                        child: Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                           children: [
-                                            Container(
-                                              width: _size.width - 124,
-                                              height: 80,
-                                              decoration: BoxDecoration(
-                                                color: SDSColor.gray50,
-                                                borderRadius: BorderRadius.circular(16),
-                                              ),
-                                              padding: EdgeInsets.symmetric(horizontal: 6, vertical: 18),
-                                              child: Column(
-                                                crossAxisAlignment: CrossAxisAlignment.center,
-                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                children: [
-                                                  Row(
-                                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                                    children: [
-                                                      Column(
-                                                        children: [
-                                                          Text(
-                                                            (_rankingListViewModel.resortOrTotal == '개별스키장')
-                                                                ? '${_rankingListViewModel.rankingListCrewMy_view!.resortTotalScore ?? '-'}'
-                                                                : '${_rankingListViewModel.rankingListCrewMy_view!.overallTotalScore ?? '-'}',
-                                                            style: SDSTextStyle.bold.copyWith(
-                                                              color: SDSColor.gray900,
-                                                              fontSize: 16,
-                                                            ),
-                                                          ),
-                                                          Padding(
-                                                            padding: const EdgeInsets.only(top: 1),
-                                                            child: Text(
-                                                              _rankingListViewModel.myBox_score,
-                                                              style: SDSTextStyle.regular.copyWith(
-                                                                color: SDSColor.gray500,
-                                                                fontSize: 13,
-                                                              ),
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                      buildVerticalDivider_ranking_indi_Screen(),
-                                                      Column(
-                                                        children: [
-                                                          Text(
-                                                            (_rankingListViewModel.resortOrTotal == '개별스키장')
-                                                                ? '${_rankingListViewModel.rankingListCrewMy_view!.resortRank ?? '-'}'
-                                                                : '${_rankingListViewModel.rankingListCrewMy_view!.overallRank ?? '-'}',
-                                                            style: SDSTextStyle.bold.copyWith(
-                                                              color: SDSColor.gray900,
-                                                              fontSize: 16,
-                                                            ),
-                                                          ),
-                                                          Padding(
-                                                            padding: const EdgeInsets.only(top: 1),
-                                                            child: Text(
-                                                              _rankingListViewModel.myBox_ranking,
-                                                              style: SDSTextStyle.regular.copyWith(
-                                                                color: SDSColor.gray500,
-                                                                fontSize: 13,
-                                                              ),
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ],
+                                            Text(_rankingListViewModel.myBox_title,
+                                              style: SDSTextStyle.bold.copyWith(
+                                                  fontSize: 14,
+                                                  color: SDSColor.gray900
                                               ),
                                             ),
-                                            Container(
-                                              width: 12,
-                                            ),
-                                            Container(
-                                              width: 80,
-                                              height: 80,
-                                              decoration: BoxDecoration(
-                                                color: SDSColor.blue50,
-                                                borderRadius: BorderRadius.circular(16),
-                                              ),
-                                              padding: EdgeInsets.all(18),
-                                              child: Transform.translate(
-                                                offset: Offset(0, 0),
-                                                child: Container(
-                                                  decoration: BoxDecoration(
-                                                    boxShadow: [
-                                                      BoxShadow(
-                                                        color: Colors.black.withOpacity(0.06),
-                                                        spreadRadius: 2,
-                                                        blurRadius: 10,
-                                                        offset: Offset(0, 4),
+                                            GestureDetector(
+                                              onTap: () async{
+                                                Get.toNamed(AppRoutes.crewMain);
+                                                await _crewDetailViewModel.fetchCrewDetail(
+                                                    _rankingListViewModel.rankingListCrewMy_view!.crewId!,
+                                                    _friendDetailViewModel.seasonDate
+                                                );
+                                                await _crewMemberListViewModel.fetchCrewMembers(crewId: _rankingListViewModel.rankingListCrewMy_view!.crewId!);
+                                                if(_userViewModel.user.crew_id == _rankingListViewModel.rankingListCrewMy_view!.crewId!)
+                                                  await _crewRecordRoomViewModel.fetchCrewRidingRecords(
+                                                    _rankingListViewModel.rankingListCrewMy_view!.crewId!,
+                                                    '${DateTime.now().year}'
+                                                );
+                                              },
+                                              child: Padding(
+                                                padding: EdgeInsets.only(left: 8.0),
+                                                child: Row(
+                                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                                  children: [
+                                                    Text(
+                                                      '${_rankingListViewModel.rankingListCrewMy_view!.crewName ?? ''}',
+                                                      style: SDSTextStyle.regular.copyWith(
+                                                        fontSize: 13,
+                                                        color: SDSColor.gray900,
                                                       ),
-                                                    ],
-                                                    borderRadius: BorderRadius.circular(8),
-                                                  ),
-                                                  child: ClipRRect(
-                                                    borderRadius: BorderRadius.circular(8),
-                                                    child: ExtendedImage.network(
-                                                      '${_rankingListViewModel.rankingListCrewMy_view!.crewLogoUrl
-                                                          ?? crewDefaultLogoUrl['${_rankingListViewModel.rankingListCrewMy_view!.color}']}',
-                                                      enableMemoryCache: true,
-                                                      cacheWidth: 300,
-                                                      shape: BoxShape.rectangle,
-                                                      borderRadius: BorderRadius.circular(4),
-                                                      fit: BoxFit.cover,
                                                     ),
-                                                  ),
+                                                    SizedBox(
+                                                      width: 4,
+                                                    ),
+                                                    Image.asset(
+                                                      'assets/imgs/icons/icon_arrow_round_black.png',
+                                                      fit: BoxFit.cover,
+                                                      width: 15,
+                                                      height: 15,
+                                                    ),
+                                                  ],
                                                 ),
                                               ),
-                                            ),
+                                            )
                                           ],
                                         ),
-                                      ],
-                                    ),
-                                  )
-
+                                      ),
+                                      SizedBox(height: 8),
+                                      Row(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        mainAxisAlignment: MainAxisAlignment.start,
+                                        children: [
+                                          Container(
+                                            width: _size.width - 124,
+                                            height: 80,
+                                            decoration: BoxDecoration(
+                                              color: SDSColor.gray50,
+                                              borderRadius: BorderRadius.circular(16),
+                                            ),
+                                            padding: EdgeInsets.symmetric(horizontal: 6, vertical: 18),
+                                            child: Column(
+                                              crossAxisAlignment: CrossAxisAlignment.center,
+                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                              children: [
+                                                Row(
+                                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                                  children: [
+                                                    Column(
+                                                      children: [
+                                                        Text(
+                                                          (_rankingListViewModel.resortOrTotal == '개별스키장')
+                                                              ? '${_rankingListViewModel.rankingListCrewMy_view!.resortTotalScore ?? '-'}'
+                                                              : '${_rankingListViewModel.rankingListCrewMy_view!.overallTotalScore ?? '-'}',
+                                                          style: SDSTextStyle.bold.copyWith(
+                                                            color: SDSColor.gray900,
+                                                            fontSize: 16,
+                                                          ),
+                                                        ),
+                                                        Padding(
+                                                          padding: const EdgeInsets.only(top: 1),
+                                                          child: Text(
+                                                            _rankingListViewModel.myBox_score,
+                                                            style: SDSTextStyle.regular.copyWith(
+                                                              color: SDSColor.gray500,
+                                                              fontSize: 13,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                    buildVerticalDivider_ranking_indi_Screen(),
+                                                    Column(
+                                                      children: [
+                                                        Text(
+                                                          (_rankingListViewModel.resortOrTotal == '개별스키장')
+                                                              ? '${_rankingListViewModel.rankingListCrewMy_view!.resortRank ?? '-'}'
+                                                              : '${_rankingListViewModel.rankingListCrewMy_view!.overallRank ?? '-'}',
+                                                          style: SDSTextStyle.bold.copyWith(
+                                                            color: SDSColor.gray900,
+                                                            fontSize: 16,
+                                                          ),
+                                                        ),
+                                                        Padding(
+                                                          padding: const EdgeInsets.only(top: 1),
+                                                          child: Text(
+                                                            _rankingListViewModel.myBox_ranking,
+                                                            style: SDSTextStyle.regular.copyWith(
+                                                              color: SDSColor.gray500,
+                                                              fontSize: 13,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ],
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                          Container(
+                                            width: 12,
+                                          ),
+                                          Container(
+                                            width: 80,
+                                            height: 80,
+                                            decoration: BoxDecoration(
+                                              color: SDSColor.blue50,
+                                              borderRadius: BorderRadius.circular(16),
+                                            ),
+                                            padding: EdgeInsets.all(18),
+                                            child: Transform.translate(
+                                              offset: Offset(0, 0),
+                                              child: Container(
+                                                decoration: BoxDecoration(
+                                                  boxShadow: [
+                                                    BoxShadow(
+                                                      color: Colors.black.withOpacity(0.06),
+                                                      spreadRadius: 2,
+                                                      blurRadius: 10,
+                                                      offset: Offset(0, 4),
+                                                    ),
+                                                  ],
+                                                  borderRadius: BorderRadius.circular(8),
+                                                ),
+                                                child: ClipRRect(
+                                                  borderRadius: BorderRadius.circular(8),
+                                                  child: ExtendedImage.network(
+                                                    '${_rankingListViewModel.rankingListCrewMy_view!.crewLogoUrl
+                                                        ?? crewDefaultLogoUrl['${_rankingListViewModel.rankingListCrewMy_view!.color}']}',
+                                                    enableMemoryCache: true,
+                                                    cacheWidth: 300,
+                                                    shape: BoxShape.rectangle,
+                                                    borderRadius: BorderRadius.circular(4),
+                                                    fit: BoxFit.cover,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
                                   ),
+                                )
+
                                 ),
                               //필터
                               Container(

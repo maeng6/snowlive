@@ -6,6 +6,7 @@ import 'package:com.snowlive/util/util_1.dart';
 import 'package:com.snowlive/view/friend/v_profilePageCalendar.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewDetail.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewMemberList.dart';
+import 'package:com.snowlive/viewmodel/crew/vm_crewRecordRoom.dart';
 import 'package:com.snowlive/viewmodel/friend/vm_friendDetail.dart';
 import 'package:com.snowlive/viewmodel/friend/vm_friendDetailUpdate.dart';
 import 'package:com.snowlive/viewmodel/vm_user.dart';
@@ -49,6 +50,7 @@ class _FriendDetailViewState extends State<FriendDetailView> {
     FriendDetailUpdateViewModel _friendDetailUpdateViewModel = Get.find<FriendDetailUpdateViewModel>();
     final CrewDetailViewModel _crewDetailViewModel = Get.find<CrewDetailViewModel>();
     final CrewMemberListViewModel _crewMemberListViewModel = Get.find<CrewMemberListViewModel>();
+    final CrewRecordRoomViewModel _crewRecordRoomViewModel = Get.find<CrewRecordRoomViewModel>();
 
     return GestureDetector(
       onTap: () {
@@ -278,6 +280,11 @@ class _FriendDetailViewState extends State<FriendDetailView> {
                                                             _friendDetailViewModel.seasonDate
                                                         );
                                                         await _crewMemberListViewModel.fetchCrewMembers(crewId: _friendDetailViewModel.friendDetailModel.friendUserInfo.crewId);
+                                                        if(_userViewModel.user.crew_id == _friendDetailViewModel.friendDetailModel.friendUserInfo.crewId)
+                                                          await _crewRecordRoomViewModel.fetchCrewRidingRecords(
+                                                              _friendDetailViewModel.friendDetailModel.friendUserInfo.crewId,
+                                                              '${DateTime.now().year}'
+                                                          );
 
                                                       },//
                                                       child: Row(
@@ -650,7 +657,8 @@ class _FriendDetailViewState extends State<FriendDetailView> {
                                             ),
                                             //라이딩 통계탭
                                             if(_friendDetailViewModel.mainTabName == FriendDetailViewModel.mainTabNameListConst[0])
-                                              Column(
+                                              (_friendDetailViewModel.friendDetailModel.seasonRankingInfo.overallTotalCount != 0)
+                                              ?Column(
                                                 crossAxisAlignment: CrossAxisAlignment.start,
                                                 children: [
                                                   SizedBox(height: 30,),
@@ -868,7 +876,7 @@ class _FriendDetailViewState extends State<FriendDetailView> {
                                                                         ),
                                                                         Transform.translate(
                                                                                  offset: Offset(-6, 0),
-                                                                          child: Text('지난 시즌 기록보기',
+                                                                          child: Text('라이딩 기록실',
                                                                               style: SDSTextStyle.regular.copyWith(
                                                                                   fontSize: 14,
                                                                                   color: SDSColor.gray900
@@ -1400,8 +1408,33 @@ class _FriendDetailViewState extends State<FriendDetailView> {
                                                   SizedBox(
                                                     height: 40,
                                                   )
-                                                ],),
+                                                ],)
+                                                  :Padding(
+                                                padding: const EdgeInsets.all(20),
+                                                child: Container(
+                                                  height: _size.height - 570,
+                                                  child: Center(
+                                                    child: Column(
+                                                      mainAxisAlignment: MainAxisAlignment.center,
+                                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                                      children: [
+                                                        Image.asset(
+                                                          'assets/imgs/icons/icon_nodata.png',
+                                                          width: 74,
+                                                        ),
+                                                        SizedBox(
+                                                          height: 4,
+                                                        ),
+                                                        Text('라이딩 기록이 없어요.',
+                                                          style: SDSTextStyle.regular.copyWith(
+                                                              fontSize: 14,
+                                                              color: SDSColor.gray500),),
 
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
                                             // 방명록
                                             if(_friendDetailViewModel.mainTabName == FriendDetailViewModel.mainTabNameListConst[1])
                                               Container(
@@ -2263,6 +2296,8 @@ class _FriendDetailViewState extends State<FriendDetailView> {
                                                                                                                           child: TextButton(
                                                                                                                               onPressed: () async {
                                                                                                                                 Navigator.pop(context);
+                                                                                                                                Navigator.pop(context);
+                                                                                                                                CustomFullScreenDialog.showDialog();
                                                                                                                                 await _friendDetailViewModel.deleteFriendsTalk(userId: _userViewModel.user.user_id, friendsTalkId: document.friendsTalkId);
                                                                                                                                 await _friendDetailViewModel.fetchFriendsTalkList_afterFriendTalk(userId: _userViewModel.user.user_id, friendUserId: _friendDetailViewModel.friendDetailModel.friendUserInfo.userId);
                                                                                                                                 print('삭제 완료');

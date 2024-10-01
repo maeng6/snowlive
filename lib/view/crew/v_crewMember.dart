@@ -1,5 +1,6 @@
 import 'package:com.snowlive/routes/routes.dart';
 import 'package:com.snowlive/data/snowliveDesignStyle.dart';
+import 'package:com.snowlive/viewmodel/crew/vm_crewDetail.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewMemberList.dart';
 import 'package:com.snowlive/viewmodel/friend/vm_friendDetail.dart';
 import 'package:com.snowlive/viewmodel/vm_user.dart';
@@ -14,6 +15,7 @@ class CrewMemberListView extends StatelessWidget {
   final CrewMemberListViewModel _crewMemberListViewModel = Get.find<CrewMemberListViewModel>();
   final FriendDetailViewModel _friendDetailViewModel = Get.find<FriendDetailViewModel>();
   final UserViewModel _userViewModel = Get.find<UserViewModel>();
+  final CrewDetailViewModel _crewDetailViewModel = Get.find<CrewDetailViewModel>();
 
   @override
   Widget build(BuildContext context) {
@@ -69,7 +71,8 @@ class CrewMemberListView extends StatelessWidget {
                                               decoration: BoxDecoration(
                                                 borderRadius: BorderRadius.circular(100),
                                                 border: (_crewMemberListViewModel.crewMembersList[index].userInfo!.withinBoundary == true
-                                                    && _crewMemberListViewModel.crewMembersList[index].userInfo!.revealWb == true)
+                                                    && _crewMemberListViewModel.crewMembersList[index].userInfo!.revealWb == true
+                                                &&  _crewDetailViewModel.crewDetailInfo.crewId == _userViewModel.user.crew_id)
                                                     ? Border.all(
                                                   color: SDSColor.snowliveBlue,
                                                   width: 2,
@@ -112,6 +115,7 @@ class CrewMemberListView extends StatelessWidget {
                                               )),
                                           if(_crewMemberListViewModel.crewMembersList[index].userInfo!.withinBoundary == true
                                               && _crewMemberListViewModel.crewMembersList[index].userInfo!.revealWb == true
+                                          && _crewDetailViewModel.crewDetailInfo.crewId == _userViewModel.user.crew_id
                                           )
                                             Positioned(
                                               right: 0,

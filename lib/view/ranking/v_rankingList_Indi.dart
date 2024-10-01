@@ -12,6 +12,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:shimmer/shimmer.dart';
 
 class RankingIndiView extends StatelessWidget {
 
@@ -193,6 +194,35 @@ class RankingIndiView extends StatelessWidget {
                                                 '${_rankingListViewModel.rankingListIndivMy_view?.overallTierIconUrl ?? '등급 없음'}',
                                                 enableMemoryCache: true,
                                                 fit: BoxFit.cover,
+                                                  loadStateChanged: (ExtendedImageState state) {
+                                                    switch (state.extendedImageLoadState) {
+                                                      case LoadState.loading:
+                                                      // 로딩 중일 때 로딩 인디케이터를 표시
+                                                        return Shimmer.fromColors(
+                                                          baseColor: SDSColor.gray200!,
+                                                          highlightColor: SDSColor.gray50!,
+                                                          child: Container(
+                                                            width: 80,
+                                                            height: 80,
+                                                            decoration: BoxDecoration(
+                                                              color: Colors.white,
+                                                              borderRadius: BorderRadius.circular(8),
+                                                            ),
+                                                          ),
+                                                        );
+                                                      case LoadState.completed:
+                                                      // 로딩이 완료되었을 때 이미지 반환
+                                                        return state.completedWidget;
+                                                      case LoadState.failed:
+                                                      // 로딩이 실패했을 때 대체 이미지 또는 다른 처리
+                                                        return Image.asset(
+                                                          'assets/imgs/imgs/img_flea_default.png', // 대체 이미지 경로
+                                                          width: 80,
+                                                          height: 80,
+                                                          fit: BoxFit.cover,
+                                                        );
+                                                    }
+                                                  }
                                               ),
                                             ),
                                           ),

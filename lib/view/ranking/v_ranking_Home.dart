@@ -101,17 +101,35 @@ class RankingHomeView extends StatelessWidget {
                       ],
                     ),
                     Padding(
-                      padding: EdgeInsets.only(right: 12),
+                      padding: EdgeInsets.only(right: 14),
                       child:
-                      IconButton(
-                        highlightColor: Colors.transparent,
-                        onPressed: () async{
+                      GestureDetector(
+                        onTap: (){
                           Get.toNamed(AppRoutes.rankingHistoryHome);
-                        },
-                        icon: Image.asset(
-                          'assets/imgs/icons/icon_talk_resortHome.png',
-                          width: 26,
-                          height: 26,
+                        } ,
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            IconButton(
+                              highlightColor: Colors.transparent,
+                              onPressed: () async{
+                                Get.toNamed(AppRoutes.rankingHistoryHome);
+                              },
+                              icon: Image.asset(
+                                'assets/imgs/icons/icon_data_history.png',
+                                width: 26,
+                                height: 26,
+                              ),
+                            ),
+                            Transform.translate(
+                              offset: Offset(-6, 0),
+                              child: Text('랭킹 기록실',
+                                  style: SDSTextStyle.regular.copyWith(
+                                      fontSize: 14,
+                                      color: SDSColor.gray900
+                                  )),
+                            )
+                          ],
                         ),
                       ),
                     ),

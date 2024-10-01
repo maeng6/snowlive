@@ -52,6 +52,12 @@ class CrewHomeView extends StatelessWidget {
             ],
           ),
           child: FloatingActionButton(
+            splashColor: SDSColor.snowliveWhite,
+            highlightElevation: 0,
+            focusElevation: 0,
+            hoverElevation: 0,
+            focusColor: SDSColor.snowliveWhite,
+            hoverColor: SDSColor.snowliveWhite,
             heroTag: 'bulletin_crew_recent',
             mini: true,
             elevation: 0,
@@ -62,6 +68,7 @@ class CrewHomeView extends StatelessWidget {
             backgroundColor: SDSColor.snowliveWhite,
             foregroundColor: SDSColor.snowliveWhite,
             onPressed: () {
+              null;
             },
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
