@@ -183,8 +183,11 @@ class _FriendDetailViewState extends State<FriendDetailView> {
                                             width: 82,
                                             height: 82,
                                             decoration: BoxDecoration(
-                                                color: Color(0xFFDFECFF),
-                                                borderRadius: BorderRadius.circular(80)
+                                                color: SDSColor.gray50,
+                                                borderRadius: BorderRadius.circular(80),
+                                                border: Border.all(
+                                                    color: SDSColor.gray100
+                                                )
                                             ),
                                             child: ExtendedImage.network(
                                               _friendDetailViewModel.friendDetailModel.friendUserInfo.profileImageUrlUser,
@@ -645,12 +648,12 @@ class _FriendDetailViewState extends State<FriendDetailView> {
                                                 ),
                                               ],
                                             ),
-                                            SizedBox(height: 30,),
                                             //라이딩 통계탭
                                             if(_friendDetailViewModel.mainTabName == FriendDetailViewModel.mainTabNameListConst[0])
                                               Column(
                                                 crossAxisAlignment: CrossAxisAlignment.start,
                                                 children: [
+                                                  SizedBox(height: 30,),
                                                   //타이틀
                                                   Padding(
                                                     padding: const EdgeInsets.only(bottom: 12, left: 20),
@@ -733,36 +736,33 @@ class _FriendDetailViewState extends State<FriendDetailView> {
                                                               ),
                                                             ],
                                                           ),
-                                                          Padding(
-                                                            padding: EdgeInsets.only(top: 4),
-                                                            child: ExtendedImage.network(
-                                                              '${_friendDetailViewModel.friendDetailModel.seasonRankingInfo.overallTierIconUrl}',
-                                                              fit: BoxFit.cover,
-                                                              enableMemoryCache: true,
-                                                              width: 72,
-                                                              height: 72,
-                                                              loadStateChanged: (ExtendedImageState state) {
-                                                                switch (state.extendedImageLoadState) {
-                                                                  case LoadState.loading:
-                                                                  // 로딩 중일 때 로딩 인디케이터를 표시
-                                                                    return Center(child: Container(
-                                                                      width: 24,
-                                                                      height: 24,
-                                                                      child: CircularProgressIndicator(
-                                                                        strokeWidth: 4,
-                                                                        backgroundColor: SDSColor.blue600,
-                                                                        color: SDSColor.blue800.withOpacity(0.6),
-                                                                      ),
-                                                                    ),);
-                                                                  case LoadState.completed:
-                                                                  // 로딩이 완료되었을 때 이미지 반환
-                                                                    return state.completedWidget;
-                                                                  case LoadState.failed:
-                                                                  // 로딩이 실패했을 때 대체 이미지 또는 다른 처리
-                                                                    return Container();
-                                                                }
-                                                              },
-                                                            ),
+                                                          ExtendedImage.network(
+                                                            '${_friendDetailViewModel.friendDetailModel.seasonRankingInfo.overallTierIconUrl}',
+                                                            fit: BoxFit.cover,
+                                                            enableMemoryCache: true,
+                                                            width: 66,
+                                                            height: 66,
+                                                            loadStateChanged: (ExtendedImageState state) {
+                                                              switch (state.extendedImageLoadState) {
+                                                                case LoadState.loading:
+                                                                // 로딩 중일 때 로딩 인디케이터를 표시
+                                                                  return Center(child: Container(
+                                                                    width: 24,
+                                                                    height: 24,
+                                                                    child: CircularProgressIndicator(
+                                                                      strokeWidth: 4,
+                                                                      backgroundColor: SDSColor.blue600,
+                                                                      color: SDSColor.blue800.withOpacity(0.6),
+                                                                    ),
+                                                                  ),);
+                                                                case LoadState.completed:
+                                                                // 로딩이 완료되었을 때 이미지 반환
+                                                                  return state.completedWidget;
+                                                                case LoadState.failed:
+                                                                // 로딩이 실패했을 때 대체 이미지 또는 다른 처리
+                                                                  return Container();
+                                                              }
+                                                            },
                                                           )
                                                         ],
                                                       ),
@@ -776,94 +776,109 @@ class _FriendDetailViewState extends State<FriendDetailView> {
                                                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                       children: [
                                                         Expanded(
-                                                          child: SingleChildScrollView(
-                                                            scrollDirection: Axis.horizontal,
-                                                            child: Row(
-                                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                              children: [
-                                                                Row(
-                                                                  children: [
-                                                                    // 누적통계 버튼
-                                                                    GestureDetector(
-                                                                      onTap: (){
-                                                                        HapticFeedback.lightImpact();
-                                                                        _friendDetailViewModel.changeRidingStaticTab(0);
-                                                                      },
-                                                                      child: Padding(
-                                                                        padding: const EdgeInsets.only(left: 16),
-                                                                        child: Container(
-                                                                            decoration: BoxDecoration(
-                                                                              color: (_friendDetailViewModel.ridingStatisticsTabName == FriendDetailViewModel.ridingStatisticsTabNameListConst[0])
-                                                                                  ? SDSColor.gray900
-                                                                                  : SDSColor.snowliveWhite,
-                                                                              borderRadius: BorderRadius.circular(30.0),
-                                                                              border: Border.all(
-                                                                                  color: (_friendDetailViewModel.ridingStatisticsTabName == FriendDetailViewModel.ridingStatisticsTabNameListConst[0])
-                                                                                      ? SDSColor.gray900
-                                                                                      : SDSColor.gray200),
-                                                                            ),
-                                                                            padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                                                                            height: 36,
-                                                                            child: Text('${FriendDetailViewModel.ridingStatisticsTabNameListConst[0]}',
-                                                                              style: SDSTextStyle.bold.copyWith(
-                                                                                  fontSize: 13,
-                                                                                  color: (_friendDetailViewModel.ridingStatisticsTabName == FriendDetailViewModel.ridingStatisticsTabNameListConst[0])
-                                                                                      ? SDSColor.snowliveWhite
-                                                                                      : SDSColor.gray900
-                                                                              ),)
-                                                                        ),
-                                                                      ),
-                                                                    ),
-                                                                    SizedBox(width: 8),
-                                                                    //TODO: 일간통계 버튼
-                                                                    GestureDetector(
-                                                                      onTap: (){
-                                                                        HapticFeedback.lightImpact();
-                                                                        _friendDetailViewModel.changeRidingStaticTab(1);
-                                                                      },
+                                                          child: Row(
+                                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                            children: [
+                                                              Row(
+                                                                children: [
+                                                                  // 누적통계 버튼
+                                                                  GestureDetector(
+                                                                    onTap: (){
+                                                                      HapticFeedback.lightImpact();
+                                                                      _friendDetailViewModel.changeRidingStaticTab(0);
+                                                                    },
+                                                                    child: Padding(
+                                                                      padding: const EdgeInsets.only(left: 16),
                                                                       child: Container(
                                                                           decoration: BoxDecoration(
-                                                                            color: (_friendDetailViewModel.ridingStatisticsTabName == FriendDetailViewModel.ridingStatisticsTabNameListConst[1])
+                                                                            color: (_friendDetailViewModel.ridingStatisticsTabName == FriendDetailViewModel.ridingStatisticsTabNameListConst[0])
                                                                                 ? SDSColor.gray900
                                                                                 : SDSColor.snowliveWhite,
                                                                             borderRadius: BorderRadius.circular(30.0),
                                                                             border: Border.all(
-                                                                                color: (_friendDetailViewModel.ridingStatisticsTabName == FriendDetailViewModel.ridingStatisticsTabNameListConst[1])
+                                                                                color: (_friendDetailViewModel.ridingStatisticsTabName == FriendDetailViewModel.ridingStatisticsTabNameListConst[0])
                                                                                     ? SDSColor.gray900
                                                                                     : SDSColor.gray200),
                                                                           ),
                                                                           padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                                                                           height: 36,
-                                                                          child: Text('${FriendDetailViewModel.ridingStatisticsTabNameListConst[1]}',
+                                                                          child: Text('${FriendDetailViewModel.ridingStatisticsTabNameListConst[0]}',
                                                                             style: SDSTextStyle.bold.copyWith(
                                                                                 fontSize: 13,
-                                                                                color: (_friendDetailViewModel.ridingStatisticsTabName == FriendDetailViewModel.ridingStatisticsTabNameListConst[1])
+                                                                                color: (_friendDetailViewModel.ridingStatisticsTabName == FriendDetailViewModel.ridingStatisticsTabNameListConst[0])
                                                                                     ? SDSColor.snowliveWhite
                                                                                     : SDSColor.gray900
                                                                             ),)
                                                                       ),
                                                                     ),
-                                                                  ],
-                                                                ),
-                                                                if(_friendDetailViewModel.friendDetailModel.friendUserInfo.userId
-                                                                    == _userViewModel.user.user_id)
-                                                                  Padding(
-                                                                    padding: EdgeInsets.only(right: 12),
-                                                                    child:
-                                                                    IconButton(
-                                                                      highlightColor: Colors.transparent,
-                                                                      onPressed: () async{
-                                                                        Get.toNamed(AppRoutes.rankingIndivHistoryHome);
-                                                                      },
-                                                                      icon: Image.asset(
-                                                                        'assets/imgs/icons/icon_talk_resortHome.png',
-                                                                        width: 26,
-                                                                        height: 26,
-                                                                      ),
+                                                                  ),
+                                                                  SizedBox(width: 8),
+                                                                  //TODO: 일간통계 버튼
+                                                                  GestureDetector(
+                                                                    onTap: (){
+                                                                      HapticFeedback.lightImpact();
+                                                                      _friendDetailViewModel.changeRidingStaticTab(1);
+                                                                    },
+                                                                    child: Container(
+                                                                        decoration: BoxDecoration(
+                                                                          color: (_friendDetailViewModel.ridingStatisticsTabName == FriendDetailViewModel.ridingStatisticsTabNameListConst[1])
+                                                                              ? SDSColor.gray900
+                                                                              : SDSColor.snowliveWhite,
+                                                                          borderRadius: BorderRadius.circular(30.0),
+                                                                          border: Border.all(
+                                                                              color: (_friendDetailViewModel.ridingStatisticsTabName == FriendDetailViewModel.ridingStatisticsTabNameListConst[1])
+                                                                                  ? SDSColor.gray900
+                                                                                  : SDSColor.gray200),
+                                                                        ),
+                                                                        padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                                                                        height: 36,
+                                                                        child: Text('${FriendDetailViewModel.ridingStatisticsTabNameListConst[1]}',
+                                                                          style: SDSTextStyle.bold.copyWith(
+                                                                              fontSize: 13,
+                                                                              color: (_friendDetailViewModel.ridingStatisticsTabName == FriendDetailViewModel.ridingStatisticsTabNameListConst[1])
+                                                                                  ? SDSColor.snowliveWhite
+                                                                                  : SDSColor.gray900
+                                                                          ),)
                                                                     ),
                                                                   ),
-                                                              ],
-                                                            ),
+                                                                ],
+                                                              ),
+                                                              if(_friendDetailViewModel.friendDetailModel.friendUserInfo.userId
+                                                                  == _userViewModel.user.user_id)
+                                                                Padding(
+                                                                  padding: EdgeInsets.only(right: 14),
+                                                                  child:
+                                                                  GestureDetector(
+                                                                    onTap: (){
+                                                                      Get.toNamed(AppRoutes.rankingIndivHistoryHome);
+                                                                    } ,
+                                                                    child: Row(
+                                                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                                                      children: [
+                                                                        IconButton(
+                                                                          highlightColor: Colors.transparent,
+                                                                          onPressed: () async{
+                                                                            Get.toNamed(AppRoutes.rankingIndivHistoryHome);
+                                                                          },
+                                                                          icon: Image.asset(
+                                                                            'assets/imgs/icons/icon_data_history.png',
+                                                                            width: 26,
+                                                                            height: 26,
+                                                                          ),
+                                                                        ),
+                                                                        Transform.translate(
+                                                                                 offset: Offset(-6, 0),
+                                                                          child: Text('지난 시즌 기록보기',
+                                                                              style: SDSTextStyle.regular.copyWith(
+                                                                                  fontSize: 14,
+                                                                                  color: SDSColor.gray900
+                                                                              )),
+                                                                        )
+                                                                      ],
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                            ],
                                                           ),
                                                         ),
                                                       ],
@@ -1400,8 +1415,8 @@ class _FriendDetailViewState extends State<FriendDetailView> {
                                                             RefreshIndicator(
                                                               strokeWidth: 2,
                                                               edgeOffset: -50,
-                                                              backgroundColor: SDSColor.snowliveWhite,
-                                                              color: SDSColor.snowliveBlue,
+                                                              backgroundColor: SDSColor.snowliveBlue,
+                                                              color: SDSColor.snowliveWhite,
                                                               onRefresh: () => _friendDetailViewModel.fetchFriendsTalkList_refresh(
                                                                 userId: _userViewModel.user.user_id,
                                                                 friendUserId: _friendDetailViewModel.friendDetailModel.friendUserInfo.userId,
@@ -1415,10 +1430,14 @@ class _FriendDetailViewState extends State<FriendDetailView> {
                                                                     mainAxisAlignment: MainAxisAlignment.center,
                                                                     children: [
                                                                       Center(
-                                                                        child: CircularProgressIndicator(
-                                                                          strokeWidth: 2,
-                                                                          backgroundColor: SDSColor.snowliveWhite,
-                                                                          color: SDSColor.snowliveBlue,
+                                                                        child: Container(
+                                                                          width: 24,
+                                                                          height: 24,
+                                                                          child: CircularProgressIndicator(
+                                                                            strokeWidth: 4,
+                                                                            backgroundColor: SDSColor.gray100,
+                                                                            color: SDSColor.gray300.withOpacity(0.6),
+                                                                          ),
                                                                         ),
                                                                       ),
                                                                     ],
@@ -1426,9 +1445,9 @@ class _FriendDetailViewState extends State<FriendDetailView> {
                                                                 ),
                                                               )
                                                                   : ListView.builder(
-                                                                padding: EdgeInsets.only(top: 4),
+                                                                padding: EdgeInsets.only(top: 30),
                                                                 shrinkWrap: true,
-                                                                physics: AlwaysScrollableScrollPhysics(),
+                                                                physics: NeverScrollableScrollPhysics(),
                                                                 itemCount: _friendDetailViewModel.friendsTalk.length,
                                                                 itemBuilder: (context, index) {
                                                                   final document = _friendDetailViewModel.friendsTalk[index];
@@ -1453,7 +1472,11 @@ class _FriendDetailViewState extends State<FriendDetailView> {
                                                                                 height: 24,
                                                                                 decoration: BoxDecoration(
                                                                                     color: Color(0xFFDFECFF),
-                                                                                    borderRadius: BorderRadius.circular(50)
+                                                                                    borderRadius: BorderRadius.circular(50),
+                                                                                  border: Border.all(
+                                                                                    color: SDSColor.gray100,
+                                                                                    width: 1
+                                                                                  )
                                                                                 ),
                                                                                 child: ExtendedImage.network(
                                                                                   document.authorInfo.profileImageUrlUser,
@@ -2285,14 +2308,14 @@ class _FriendDetailViewState extends State<FriendDetailView> {
                                                                         ],
                                                                       ),
                                                                       Padding(
-                                                                        padding: const EdgeInsets.only(top: 10, bottom: 20),
+                                                                        padding: const EdgeInsets.only(top: 6, bottom: 20),
                                                                         child: Row(
                                                                           children: [
                                                                             Expanded(
                                                                               child: Container(
                                                                                 decoration: BoxDecoration(
                                                                                   color: SDSColor.blue50,
-                                                                                  borderRadius: BorderRadius.circular(16),
+                                                                                  borderRadius: BorderRadius.circular(12),
                                                                                 ),
                                                                                 padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                                                                                 width: double.infinity,
@@ -2318,9 +2341,9 @@ class _FriendDetailViewState extends State<FriendDetailView> {
                                                         )
                                                             : Padding(
                                                           padding: const EdgeInsets.all(20),
-                                                          child: Center(
-                                                            child: Padding(
-                                                              padding: EdgeInsets.only(top: 30),
+                                                          child: Container(
+                                                            height: _size.height - 570,
+                                                            child: Center(
                                                               child: Column(
                                                                 mainAxisAlignment: MainAxisAlignment.center,
                                                                 crossAxisAlignment: CrossAxisAlignment.center,

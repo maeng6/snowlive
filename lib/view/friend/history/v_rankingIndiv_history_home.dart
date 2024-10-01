@@ -44,7 +44,7 @@ class RankingIndivHistoryHomeView extends StatelessWidget {
             child: Column(
               children: [
                 Text(
-                  '시즌 기록실',
+                  '개인 시즌 기록실',
                   style: SDSTextStyle.extraBold.copyWith(
                       color: SDSColor.gray900,
                       fontSize: 18),
