@@ -206,7 +206,7 @@ class _ProfilePageCalendarState extends State<ProfilePageCalendar> {
           DateTime dateTime = DateTime(date.year, date.month, date.day);
           int? ridingCount = ridingHistory[dateTime];
 
-          print('Date: $dateTime, Riding Count: $ridingCount');
+          //print('Date: $dateTime, Riding Count: $ridingCount');
 
           bool hasData = ridingHistory[dateTime] != null;
 
