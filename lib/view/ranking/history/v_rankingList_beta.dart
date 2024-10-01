@@ -203,10 +203,24 @@ class RankingBetaView extends StatelessWidget {
 
                           if(index ==  _rankingListBetaViewModel.rankingListCrewBetaList.length){
                             return Obx(() => _rankingListBetaViewModel.isLoadingNextList_crew == true // 여기서 Obx 사용
-                                ? Padding(
-                              padding: const EdgeInsets.all(16.0),
-                              child: Center(
-                                child: CircularProgressIndicator(), // 로딩 인디케이터
+                                ? Container(
+                              height: 100,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Center(
+                                    child: Container(
+                                      width: 24,
+                                      height: 24,
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 4,
+                                        backgroundColor: SDSColor.gray100,
+                                        color: SDSColor.gray300.withOpacity(0.6),
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
                             )
                                 : SizedBox.shrink());
@@ -290,6 +304,27 @@ class RankingBetaView extends StatelessWidget {
                                         width: 32,
                                         height: 32,
                                         fit: BoxFit.cover,
+                                        loadStateChanged: (ExtendedImageState state) {
+                                          switch (state.extendedImageLoadState) {
+                                            case LoadState.loading:
+                                              return SizedBox.shrink();
+                                            case LoadState.completed:
+                                              return state.completedWidget;
+                                            case LoadState.failed:
+                                              return ExtendedImage.network(
+                                                '${crewDefaultLogoUrl['${document.crewInfo!.color}']}',
+                                                enableMemoryCache: true,
+                                                cacheHeight: 100,
+                                                shape: BoxShape.rectangle,
+                                                borderRadius: BorderRadius.circular(10),
+                                                width: 32,
+                                                height: 32,
+                                                fit: BoxFit.cover,
+                                              );
+                                            default:
+                                              return null;
+                                          }
+                                        },
                                       )
                                           : ExtendedImage.network(
                                         '${crewDefaultLogoUrl['${document.crewInfo!.color}']}',
@@ -382,10 +417,24 @@ class RankingBetaView extends StatelessWidget {
 
                           if(index == _rankingListBetaViewModel.rankingListIndivBetaList.length){
                             return Obx(() => _rankingListBetaViewModel.isLoadingNextList_indi == true // 여기서 Obx 사용
-                                ? Padding(
-                              padding: const EdgeInsets.all(16.0),
-                              child: Center(
-                                child: CircularProgressIndicator(), // 로딩 인디케이터
+                                ? Container(
+                              height: 100,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Center(
+                                    child: Container(
+                                      width: 24,
+                                      height: 24,
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 4,
+                                        backgroundColor: SDSColor.gray100,
+                                        color: SDSColor.gray300.withOpacity(0.6),
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
                             )
                                 : SizedBox.shrink());
@@ -445,32 +494,34 @@ class RankingBetaView extends StatelessWidget {
                                       width: 32,
                                       height: 32,
                                       decoration: BoxDecoration(
-                                        border: Border.all(
-                                          color: SDSColor.gray100,
-                                          width: 1,
-                                        ),
-                                        borderRadius: BorderRadius.circular(10),
+                                          border: Border.all(
+                                            color: SDSColor.gray100,
+                                            width: 1,
+                                          ),
+                                          borderRadius: BorderRadius.circular(50)
                                       ),
                                       child: document.userInfo!.profileImageUrlUser!
                                           .isNotEmpty
                                           ? ExtendedImage.network(
                                         document.userInfo!.profileImageUrlUser!,
                                         enableMemoryCache: true,
-                                        shape: BoxShape.rectangle,
-                                        borderRadius: BorderRadius.circular(10),
+                                        shape: BoxShape.circle,
+                                        borderRadius: BorderRadius.circular(8),
                                         cacheHeight: 100,
                                         width: 32,
                                         height: 32,
+                                        cacheWidth: 100,
                                         fit: BoxFit.cover,
                                       )
                                           : ExtendedImage.network(
                                         '${profileImgUrlList[0].default_round}',
                                         enableMemoryCache: true,
+                                        shape: BoxShape.circle,
+                                        borderRadius: BorderRadius.circular(8),
                                         cacheHeight: 100,
-                                        shape: BoxShape.rectangle,
-                                        borderRadius: BorderRadius.circular(10),
                                         width: 32,
                                         height: 32,
+                                        cacheWidth: 100,
                                         fit: BoxFit.cover,
                                       ),
                                     ),
