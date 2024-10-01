@@ -118,7 +118,7 @@ Widget loading_resortHome_scoreBox(containerHeight) {
                                 ),
                               ),
                               SizedBox(width: 10,),
-                              ExtendedImage.asset(
+                              Image.asset(
                                 'assets/imgs/icons/icon_arrow_round_black.png',
                                 fit: BoxFit.cover,
                                 width: 18,

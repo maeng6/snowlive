@@ -602,27 +602,26 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                                                                       case LoadState.completed:
                                                                         return state.completedWidget;
                                                                       case LoadState.failed:
-                                                                        return ExtendedImage.asset(
-                                                                          'assets/imgs/profile/img_profile_default_circle.png',
-                                                                          shape: BoxShape.circle,
-                                                                          borderRadius: BorderRadius.circular(100),
-                                                                          width: 68,
-                                                                          height: 68,
-                                                                          fit: BoxFit.cover,
+                                                                        return ClipOval(
+                                                                          child: Image.asset(
+                                                                            'assets/imgs/profile/img_profile_default_circle.png',
+                                                                            width: 68,
+                                                                            height: 68,
+                                                                            fit: BoxFit.cover,
+                                                                          ),
                                                                         );
                                                                       default:
                                                                         return null;
                                                                     }
                                                                   },
                                                                 )
-                                                                    : ExtendedImage.asset(
-                                                                  'assets/imgs/profile/img_profile_default_circle.png',
-                                                                  enableMemoryCache: true,
-                                                                  shape: BoxShape.circle,
-                                                                  borderRadius: BorderRadius.circular(100),
-                                                                  width: 68,
-                                                                  height: 68,
-                                                                  fit: BoxFit.cover,
+                                                                    : ClipOval(
+                                                                  child: Image.asset(
+                                                                    'assets/imgs/profile/img_profile_default_circle.png',
+                                                                    width: 68,
+                                                                    height: 68,
+                                                                    fit: BoxFit.cover,
+                                                                  ),
                                                                 ),
                                                               ),
                                                               if (BFdoc.friendInfo.withinBoundary == true &&
@@ -945,7 +944,7 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                                                       ? Positioned(
                                                     left: 0,
                                                     top: 10,
-                                                    child: ExtendedImage.asset(
+                                                    child: Image.asset(
                                                       'assets/imgs/icons/icon_plus_round.png',
                                                       width: 20,
                                                       height: 20,
@@ -954,7 +953,7 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                                                       : Positioned(
                                                     left: 0,
                                                     top: 10,
-                                                    child: ExtendedImage.asset(
+                                                    child: Image.asset(
                                                       'assets/imgs/icons/icon_minus_round.png',
                                                       width: 20,
                                                       height: 20,
@@ -1506,7 +1505,7 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                                                             padding: const EdgeInsets.only(bottom: 30),
                                                             child: Column(
                                                               children: [
-                                                                ExtendedImage.asset(
+                                                                Image.asset(
                                                                   'assets/imgs/imgs/img_resoreHome_nodata.png',
                                                                   fit: BoxFit.cover,
                                                                   width: 72,
@@ -1622,7 +1621,7 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                                                             padding: const EdgeInsets.only(bottom: 30),
                                                             child: Column(
                                                               children: [
-                                                                ExtendedImage.asset(
+                                                                Image.asset(
                                                                   'assets/imgs/imgs/img_resoreHome_nodata.png',
                                                                   fit: BoxFit.cover,
                                                                   width: 72,

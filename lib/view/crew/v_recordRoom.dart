@@ -470,7 +470,7 @@ class CrewRecordRoomView extends StatelessWidget {
               padding: const EdgeInsets.only(bottom: 30),
               child: Column(
                 children: [
-                  ExtendedImage.asset(
+                  Image.asset(
                     'assets/imgs/imgs/img_resoreHome_nodata.png',
                     fit: BoxFit.cover,
                     width: 72,
@@ -537,13 +537,13 @@ class CrewRecordRoomView extends StatelessWidget {
                         case LoadState.completed:
                           return state.completedWidget;
                         case LoadState.failed:
-                          return ExtendedImage.asset(
-                            'assets/imgs/profile/img_profile_default_circle.png',
-                            shape: BoxShape.circle,
-                            borderRadius: BorderRadius.circular(8),
-                            width: 80,
-                            height: 80,
-                            fit: BoxFit.cover,
+                          return ClipOval(
+                            child: Image.asset(
+                              'assets/imgs/profile/img_profile_default_circle.png',
+                              width: 80,
+                              height: 80,
+                              fit: BoxFit.cover,
+                            ),
                           ); // 이미지 로딩 실패 시 대체 이미지
                         default:
                           return null;
@@ -563,14 +563,13 @@ class CrewRecordRoomView extends StatelessWidget {
                 child: Container(
                   width: 32,
                   height: 32,
-                  child: ExtendedImage.asset(
-                    'assets/imgs/profile/img_profile_default_circle.png',
-                    enableMemoryCache: true,
-                    shape: BoxShape.circle,
-                    borderRadius: BorderRadius.circular(8),
-                    width: 32,
-                    height: 32,
-                    fit: BoxFit.cover,
+                  child: ClipOval(
+                    child: Image.asset(
+                      'assets/imgs/profile/img_profile_default_circle.png',
+                      width: 32,
+                      height: 32,
+                      fit: BoxFit.cover,
+                    ),
                   ),
                 ),
               ),
@@ -597,7 +596,7 @@ class CrewRecordRoomView extends StatelessWidget {
               padding: const EdgeInsets.only(bottom: 30),
               child: Column(
                 children: [
-                  ExtendedImage.asset(
+                  Image.asset(
                     'assets/imgs/imgs/img_resoreHome_nodata.png',
                     fit: BoxFit.cover,
                     width: 72,
@@ -703,7 +702,7 @@ class CrewRecordRoomView extends StatelessWidget {
           padding: const EdgeInsets.only(bottom: 30),
           child: Column(
             children: [
-              ExtendedImage.asset(
+              Image.asset(
                 'assets/imgs/imgs/img_resoreHome_nodata.png',
                 fit: BoxFit.cover,
                 width: 72,

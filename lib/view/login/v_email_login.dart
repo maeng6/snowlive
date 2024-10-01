@@ -1,6 +1,7 @@
 
 import 'package:com.snowlive/view/login/v_email_signup.dart';
 import 'package:com.snowlive/view/onboarding/v_tos.dart';
+import 'package:com.snowlive/viewmodel/onboarding_login/vm_tos.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -19,8 +20,10 @@ class _EmailLoginPageState extends State<EmailLoginPage> {
   TextEditingController _textEditingController2 = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
+
   @override
   Widget build(BuildContext context) {
+    Get.put(TermsOfServiceViewModel());
 
     final double _statusBarSize = MediaQuery.of(context).padding.top;
     Size _size = MediaQuery.of(context).size;

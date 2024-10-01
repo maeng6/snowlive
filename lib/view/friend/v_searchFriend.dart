@@ -264,13 +264,13 @@ class SearchFriendView extends StatelessWidget {
                                                       case LoadState.completed:
                                                         return state.completedWidget;
                                                       case LoadState.failed:
-                                                        return ExtendedImage.asset(
-                                                          'assets/imgs/profile/img_profile_default_circle.png',
-                                                          shape: BoxShape.circle,
-                                                          borderRadius: BorderRadius.circular(8),
-                                                          width: 90,
-                                                          height: 90,
-                                                          fit: BoxFit.cover,
+                                                        return ClipOval(
+                                                          child: Image.asset(
+                                                            'assets/imgs/profile/img_profile_default_circle.png',
+                                                            width: 90,
+                                                            height: 90,
+                                                            fit: BoxFit.cover,
+                                                          ),
                                                         );
                                                       default:
                                                         return null;
@@ -281,14 +281,13 @@ class SearchFriendView extends StatelessWidget {
                                                   : Container(
                                                 width: 90,
                                                 height: 90,
-                                                child: ExtendedImage.asset(
-                                                  'assets/imgs/profile/img_profile_default_white.png',
-                                                  enableMemoryCache: true,
-                                                  shape: BoxShape.circle,
-                                                  borderRadius: BorderRadius.circular(8),
-                                                  width: 90,
-                                                  height: 90,
-                                                  fit: BoxFit.cover,
+                                                child: ClipOval(
+                                                  child: Image.asset(
+                                                    'assets/imgs/profile/img_profile_default_white.png',
+                                                    width: 90,
+                                                    height: 90,
+                                                    fit: BoxFit.cover,
+                                                  ),
                                                 ),
                                               ),
                                             ),

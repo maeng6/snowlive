@@ -585,7 +585,7 @@ class ResortHomeViewModel extends GetxController {
                 height: 330,
                 child: Column(
                   children: [
-                    ExtendedImage.asset(
+                    Image.asset(
                       'assets/imgs/imgs/img_app_update.png',
                       scale: 4,
                       fit: BoxFit.fitHeight,

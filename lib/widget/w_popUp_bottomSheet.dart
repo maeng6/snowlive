@@ -130,7 +130,7 @@ Future<void> bottomPopUp(BuildContext context) async {
                           },
                           child: Align(
                             alignment: Alignment.topRight,
-                            child: ExtendedImage.asset(
+                            child: Image.asset(
                               'assets/imgs/icons/icon_profile_delete.png',
                               fit: BoxFit.cover,
                               width: 24,
@@ -271,7 +271,7 @@ Future<void> bottomPopUp(BuildContext context) async {
                           },
                           child: Align(
                             alignment: Alignment.topRight,
-                            child: ExtendedImage.asset(
+                            child: Image.asset(
                               'assets/imgs/icons/icon_profile_delete.png',
                               fit: BoxFit.cover,
                               width: 24,
@@ -419,7 +419,7 @@ Future<void> bottomPopUp(BuildContext context) async {
   //                                 },
   //                                 child: Align(
   //                                   alignment: Alignment.topRight,
-  //                                   child: ExtendedImage.asset('assets/imgs/icons/icon_profile_delete.png',
+  //                                   child: Image.asset('assets/imgs/icons/icon_profile_delete.png',
   //                                     fit: BoxFit.cover,
   //                                     width: 24,
   //                                     height: 24,

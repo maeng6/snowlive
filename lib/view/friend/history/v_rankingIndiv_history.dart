@@ -117,7 +117,7 @@ class RankingIndivHistoryView extends StatelessWidget {
                                   padding: const EdgeInsets.only(bottom: 30),
                                   child: Column(
                                     children: [
-                                      ExtendedImage.asset(
+                                      Image.asset(
                                         'assets/imgs/imgs/img_resoreHome_nodata.png',
                                         fit: BoxFit.cover,
                                         width: 72,
@@ -178,7 +178,7 @@ class RankingIndivHistoryView extends StatelessWidget {
                                 padding: const EdgeInsets.only(bottom: 30),
                                 child: Column(
                                   children: [
-                                    ExtendedImage.asset(
+                                    Image.asset(
                                       'assets/imgs/imgs/img_resoreHome_nodata.png',
                                       fit: BoxFit.cover,
                                       width: 72,

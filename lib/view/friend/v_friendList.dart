@@ -269,12 +269,13 @@ class FriendListView extends StatelessWidget {
                                     width: 1,
                                   ),
                                 ),
-                                child: ExtendedImage.asset(
-                                  'assets/imgs/profile/img_profile_default_circle.png',
-                                  shape: BoxShape.circle,
-                                  width: 56,
-                                  height: 56,
-                                  fit: BoxFit.cover,
+                                child: ClipOval(
+                                  child: Image.asset(
+                                    'assets/imgs/profile/img_profile_default_circle.png',
+                                    width: 56,
+                                    height: 56,
+                                    fit: BoxFit.cover,
+                                  ),
                                 ),
                               ),
                               if (_userViewModel.user.within_boundary == true &&
@@ -487,12 +488,13 @@ class FriendListView extends StatelessWidget {
                                                   width: 1,
                                                 ),
                                               ),
-                                              child: ExtendedImage.asset(
-                                                'assets/imgs/profile/img_profile_default_circle.png',
-                                                shape: BoxShape.circle,
-                                                width: 48,
-                                                height: 48,
-                                                fit: BoxFit.cover,
+                                              child: ClipOval(
+                                                child: Image.asset(
+                                                  'assets/imgs/profile/img_profile_default_circle.png',
+                                                  width: 48,
+                                                  height: 48,
+                                                  fit: BoxFit.cover,
+                                                ),
                                               ),
                                             ),
                                             if (friend.friendInfo.withinBoundary == true &&

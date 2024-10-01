@@ -41,6 +41,7 @@ class LoginViewModel extends GetxController {
   @override
   void onInit()  async{
     await _getToken();
+    await getIsAndroidEmailLogIn();
     super.onInit();
   }
 

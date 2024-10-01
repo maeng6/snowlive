@@ -5,7 +5,6 @@ import 'package:com.snowlive/routes/routes.dart';
 import 'package:com.snowlive/viewmodel/friend/vm_friendDetail.dart';
 import 'package:com.snowlive/viewmodel/ranking/vm_rankingList.dart';
 import 'package:com.snowlive/viewmodel/vm_user.dart';
-import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 import 'package:com.snowlive/widget/w_verticalDivider.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/cupertino.dart';
@@ -941,12 +940,12 @@ class RankingIndiView extends StatelessWidget {
                                                         });
                                                   },
                                                   child: (_rankingListViewModel.resortOrTotal != '전체스키장')
-                                                      ? ExtendedImage.asset(
+                                                      ? Image.asset(
                                                     'assets/imgs/icons/icon_check_round.png',
                                                     fit: BoxFit.cover,
                                                     width: 16,
                                                     height: 16,)
-                                                      : ExtendedImage.asset(
+                                                      : Image.asset(
                                                     'assets/imgs/icons/icon_check_round_black.png',
                                                     fit: BoxFit.cover,
                                                     width: 16,

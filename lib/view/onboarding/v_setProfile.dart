@@ -191,7 +191,7 @@ class SetProfileView extends StatelessWidget {
                                 bottom: 4,
                                 right: 4,
                                 child: GestureDetector(
-                                  child: ExtendedImage.asset(
+                                  child: Image.asset(
                                       _setProfileViewModel.profileImage
                                           ? 'assets/imgs/icons/icon_profile_delete.png'
                                           : 'assets/imgs/icons/icon_profile_add.png',
@@ -435,7 +435,7 @@ class SetProfileView extends StatelessWidget {
                                             fontSize: 14,
                                           ),
                                         ),
-                                        ExtendedImage.asset(
+                                        Image.asset(
                                           'assets/imgs/icons/icon_dropdown.png',
                                           fit: BoxFit.cover,
                                           width: 20,
@@ -515,7 +515,7 @@ class SetProfileView extends StatelessWidget {
                                             fontSize: 14,
                                           ),
                                         ),
-                                        ExtendedImage.asset(
+                                        Image.asset(
                                           'assets/imgs/icons/icon_dropdown.png',
                                           fit: BoxFit.cover,
                                           width: 20,
@@ -584,7 +584,7 @@ class SetProfileView extends StatelessWidget {
                                             fontSize: 14,
                                           ),
                                         ),
-                                        ExtendedImage.asset(
+                                        Image.asset(
                                           'assets/imgs/icons/icon_dropdown.png',
                                           fit: BoxFit.cover,
                                           width: 20,

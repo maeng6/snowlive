@@ -73,15 +73,15 @@ class SnowliveDetailPage extends StatelessWidget {
                   Container(
                     width: 140,
                     height: 140,
-                    child: ExtendedImage.asset(
-                      'assets/imgs/profile/img_profile_snowliveOperator.png',
-                      enableMemoryCache: true,
-                      shape: BoxShape.circle,
-                      borderRadius: BorderRadius.circular(8),
-                      width: 140,
-                      height: 140,
-                      fit: BoxFit.cover,
-                    ),
+                    child: ClipOval(
+                      child: Image.asset(
+                        'assets/imgs/profile/img_profile_snowliveOperator.png',
+                        width: 140,
+                        height: 140,
+                        fit: BoxFit.cover,
+                      ),
+                    )
+                    ,
                   ),
                   SizedBox(
                     height: 12,
@@ -120,14 +120,13 @@ class SnowliveDetailPage extends StatelessWidget {
                             Container(
                               width: 58,
                               height: 58,
-                              child: ExtendedImage.asset(
-                                'assets/imgs/icons/icon_link_snowlive.png',
-                                enableMemoryCache: true,
-                                shape: BoxShape.circle,
-                                borderRadius: BorderRadius.circular(8),
-                                width: 58,
-                                height: 58,
-                                fit: BoxFit.cover,
+                              child: ClipOval(
+                                child: Image.asset(
+                                  'assets/imgs/icons/icon_link_snowlive.png',
+                                  width: 58,
+                                  height: 58,
+                                  fit: BoxFit.cover,
+                                ),
                               ),
                             ),
                             SizedBox(
@@ -150,14 +149,13 @@ class SnowliveDetailPage extends StatelessWidget {
                             Container(
                               width: 58,
                               height: 58,
-                              child: ExtendedImage.asset(
-                                'assets/imgs/icons/icon_link_instagram.png',
-                                enableMemoryCache: true,
-                                shape: BoxShape.circle,
-                                borderRadius: BorderRadius.circular(8),
-                                width: 58,
-                                height: 58,
-                                fit: BoxFit.cover,
+                              child: ClipOval(
+                                child: Image.asset(
+                                  'assets/imgs/icons/icon_link_instagram.png',
+                                  width: 58,
+                                  height: 58,
+                                  fit: BoxFit.cover,
+                                ),
                               ),
                             ),
                             SizedBox(
@@ -180,14 +178,13 @@ class SnowliveDetailPage extends StatelessWidget {
                             Container(
                               width: 58,
                               height: 58,
-                              child: ExtendedImage.asset(
-                                'assets/imgs/icons/icon_link_kakao.png',
-                                enableMemoryCache: true,
-                                shape: BoxShape.circle,
-                                borderRadius: BorderRadius.circular(8),
-                                width: 58,
-                                height: 58,
-                                fit: BoxFit.cover,
+                              child: ClipOval(
+                                child: Image.asset(
+                                  'assets/imgs/icons/icon_link_kakao.png',
+                                  width: 58,
+                                  height: 58,
+                                  fit: BoxFit.cover,
+                                ),
                               ),
                             ),
                             SizedBox(
