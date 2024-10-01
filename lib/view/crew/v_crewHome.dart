@@ -113,7 +113,7 @@ class CrewHomeView extends StatelessWidget {
                             Row(
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
-                                ExtendedImage.asset(
+                                Image.asset(
                                   'assets/imgs/icons/icon_liveCrew_notice.png',
                                   width: 22,
                                   height: 22,
@@ -318,7 +318,7 @@ class CrewHomeView extends StatelessWidget {
                                                   onTap:(){
                                                     _crewDetailViewModel.toggleExpandCrewIntro();
                                                   },
-                                                  child: ExtendedImage.asset(
+                                                  child: Image.asset(
                                                     'assets/imgs/icons/icon_plus_round.png',
                                                     width: 20,
                                                     height: 20,
@@ -328,7 +328,7 @@ class CrewHomeView extends StatelessWidget {
                                                   onTap:(){
                                                     _crewDetailViewModel.toggleExpandCrewIntro();
                                                   },
-                                                  child: ExtendedImage.asset(
+                                                  child: Image.asset(
                                                     'assets/imgs/icons/icon_minus_round.png',
                                                     width: 20,
                                                     height: 20,
@@ -561,7 +561,7 @@ class CrewHomeView extends StatelessWidget {
                                     padding: const EdgeInsets.only(bottom: 30),
                                     child: Column(
                                       children: [
-                                        ExtendedImage.asset(
+                                        Image.asset(
                                           'assets/imgs/imgs/img_resoreHome_nodata.png',
                                           fit: BoxFit.cover,
                                           width: 72,

@@ -316,7 +316,7 @@ class FleamarketUploadView extends StatelessWidget {
                                                 fontSize: 14,
                                               ),
                                             ),
-                                            ExtendedImage.asset(
+                                            Image.asset(
                                               'assets/imgs/icons/icon_dropdown.png',
                                               fit: BoxFit.cover,
                                               width: 20,
@@ -407,7 +407,7 @@ class FleamarketUploadView extends StatelessWidget {
                                                 fontSize: 14,
                                               ),
                                             ),
-                                            ExtendedImage.asset(
+                                            Image.asset(
                                               'assets/imgs/icons/icon_dropdown.png',
                                               fit: BoxFit.cover,
                                               width: 20,
@@ -944,7 +944,7 @@ class FleamarketUploadView extends StatelessWidget {
                                                 fontSize: 14,
                                               ),
                                             ),
-                                            ExtendedImage.asset(
+                                            Image.asset(
                                               'assets/imgs/icons/icon_dropdown.png',
                                               fit: BoxFit.cover,
                                               width: 20,
@@ -1016,7 +1016,7 @@ class FleamarketUploadView extends StatelessWidget {
                                                 fontSize: 14,
                                               ),
                                             ),
-                                            ExtendedImage.asset(
+                                            Image.asset(
                                               'assets/imgs/icons/icon_dropdown.png',
                                               fit: BoxFit.cover,
                                               width: 20,

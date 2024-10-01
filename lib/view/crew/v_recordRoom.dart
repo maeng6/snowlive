@@ -23,91 +23,101 @@ class CrewRecordRoomView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Size _size = MediaQuery.of(context).size;
     return Scaffold(
-      backgroundColor: SDSColor.gray50,
-      appBar: AppBar(
         backgroundColor: SDSColor.gray50,
-        surfaceTintColor: Colors.transparent,
-        toolbarHeight: 44,
-        elevation: 0.0,
-        leading: GestureDetector(
-          child: Image.asset(
-            'assets/imgs/icons/icon_snowLive_back.png',
-            scale: 4,
-            width: 26,
-            height: 26,
+        appBar: AppBar(
+          backgroundColor: SDSColor.gray50,
+          surfaceTintColor: Colors.transparent,
+          toolbarHeight: 44,
+          elevation: 0.0,
+          leading: GestureDetector(
+            child: Image.asset(
+              'assets/imgs/icons/icon_snowLive_back.png',
+              scale: 4,
+              width: 26,
+              height: 26,
+            ),
+            onTap: () {
+              Get.back();
+              //_crewRecordRoomViewModel.resetTabs();
+            },
           ),
-          onTap: () {
-            Get.back();
-            //_crewRecordRoomViewModel.resetTabs();
-          },
+          centerTitle: true,
+          title: Text(
+            '기록실',
+            style: SDSTextStyle.extraBold.copyWith(
+                color: SDSColor.gray900,
+                fontSize: 18),
+          ),
         ),
-        centerTitle: true,
-        title: Text(
-          '기록실',
-          style: SDSTextStyle.extraBold.copyWith(
-              color: SDSColor.gray900,
-              fontSize: 18),
-        ),
-      ),
-      body: Obx(() {
-        if (_crewRecordRoomViewModel.isLoading.value) {
-          return Container(
-            height: 150,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Center(
-                        child: Container(
-                          width: 24,
-                          height: 24,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 4,
-                            backgroundColor: SDSColor.gray100,
-                            color: SDSColor.gray300.withOpacity(0.6),
+        body:  Obx(()=>Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: EdgeInsets.only(left: 16, right: 16, top: 12),
+              child: buildYearSelector(),  // 년도 선택 탭은 항상 고정
+            ),
+            SizedBox(height: 20),
+            Expanded(
+              child: Obx(() {
+                if(_crewRecordRoomViewModel.isLoading.value == true
+                    || _rankingCrewHistoryViewModel.isLoadingBeta_Crew.value == true
+                ){
+                  return Container(
+                    height: 150,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Center(
+                                child: Container(
+                                  width: 24,
+                                  height: 24,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 4,
+                                    backgroundColor: SDSColor.gray100,
+                                    color: SDSColor.gray300.withOpacity(0.6),
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
                         ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
+                      ],
+                    ),
+                  );
+                }
+                if(_crewRecordRoomViewModel.currentYear.value == -1) {
+                  return _buildBetaView(_size);  // 전체보기 탭을 선택했을 때 나타나는 화면
+                }
+                else {
+                  // 년도별 탭을 선택했을 때 기존 화면을 보여줌
+                  return RefreshIndicator(
+                    strokeWidth: 2,
+                    edgeOffset: 40,
+                    backgroundColor: SDSColor.snowliveBlue,
+                    color: SDSColor.snowliveWhite,
+                    onRefresh: () async {
+                      await _crewRecordRoomViewModel.fetchCrewRidingRecords_refresh(
+                        _userViewModel.user!.crew_id,
+                        '${_crewRecordRoomViewModel.currentYear.value}',
+                      );
+                    },
+                    child: ListView(
+                      padding: EdgeInsets.symmetric(horizontal: 16),
+                      children: _buildGroupedRecords(),
+                    ),
+                  );
+                }
+              }),
             ),
-          );
-        }
-
-        // 년도 선택 탭 추가
-        return RefreshIndicator(
-          strokeWidth: 2,
-          edgeOffset: 40,
-          backgroundColor: SDSColor.snowliveBlue,
-          color: SDSColor.snowliveWhite,
-          onRefresh: () async {
-            await _crewRecordRoomViewModel.fetchCrewRidingRecords_refresh(_userViewModel.user!.crew_id, '${DateTime.now().year}');
-          },
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: EdgeInsets.only(left: 16, right: 16, top: 12),
-                child: buildYearSelector(),
-              ),
-              SizedBox(height: 20),
-              Expanded(
-                child: ListView(
-                  padding: EdgeInsets.symmetric(horizontal: 16),
-                  children: _buildGroupedRecords(),
-                ),
-              ),
-            ],
-          ),
-        );
-      }),
+          ],
+        ),)
     );
   }
 
@@ -127,6 +137,7 @@ class CrewRecordRoomView extends StatelessWidget {
             await _crewRecordRoomViewModel.fetchCrewRidingRecords(
               _crewDetailViewModel.crewDetailInfo.crewId!, year.toString(),
             );
+            print('시즌기록로드');
           },
           child: Obx(() => Container(
             decoration: BoxDecoration(
@@ -156,6 +167,42 @@ class CrewRecordRoomView extends StatelessWidget {
       yearTabs.add(SizedBox(width: 8)); // 각 탭 사이에 여백 추가
     }
 
+    // 커스텀 탭 추가 (예: "전체보기" 또는 다른 기능의 탭)
+    yearTabs.add(
+      GestureDetector(
+        onTap: () async{
+          _crewRecordRoomViewModel.setYear(-1);
+          await _rankingCrewHistoryViewModel.fetchRankingDataCrewBeta(
+              crewId : _crewDetailViewModel.crewDetailInfo.crewId
+          );
+          print("전체보기 탭 눌림");
+        },
+        child: Container(
+          decoration: BoxDecoration(
+            color: _crewRecordRoomViewModel.currentYear.value == -1
+                ? SDSColor.snowliveBlack
+                : SDSColor.snowliveWhite, // 탭의 배경색 설정
+            borderRadius: BorderRadius.circular(30.0),
+            border: Border.all(color: Colors.transparent, width: 1),
+          ),
+          padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+          height: 36,
+          child: Text(
+            '23/24시즌',  // 원하는 탭 이름
+            style:  SDSTextStyle.bold.copyWith(
+              color: _crewRecordRoomViewModel.currentYear.value == -1
+                  ? SDSColor.snowliveWhite
+                  : SDSColor.snowliveBlack,
+              fontWeight: _crewRecordRoomViewModel.currentYear.value == -1
+                  ? FontWeight.bold
+                  : FontWeight.normal,
+              fontSize: 13,
+            ),
+          ),
+        ),
+      ),
+    );
+
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: Row(
@@ -164,6 +211,7 @@ class CrewRecordRoomView extends StatelessWidget {
       ),
     );
   }
+
 
   // 월별로 그룹화된 기록들을 표시하는 함수
   List<Widget> _buildGroupedRecords() {
@@ -512,10 +560,10 @@ class CrewRecordRoomView extends StatelessWidget {
                       friendUserId:member.userId!,
                       season: _friendDetailViewModel.seasonDate);
                 },
-                    child: Container(
-                                    width: 32,
-                                    height: 32,
-                                    child: ExtendedImage.asset(
+                child: Container(
+                  width: 32,
+                  height: 32,
+                  child: ExtendedImage.asset(
                     'assets/imgs/profile/img_profile_default_circle.png',
                     enableMemoryCache: true,
                     shape: BoxShape.circle,
@@ -523,9 +571,9 @@ class CrewRecordRoomView extends StatelessWidget {
                     width: 32,
                     height: 32,
                     fit: BoxFit.cover,
-                                    ),
-                                  ),
                   ),
+                ),
+              ),
               contentPadding: EdgeInsets.zero,
               title: Transform.translate(
                 offset: Offset(-6, 0),
@@ -568,4 +616,206 @@ class CrewRecordRoomView extends StatelessWidget {
       ],
     );
   }
+
+  // 23/24시즌 정보 표시
+  Widget _buildBetaView(Size size) {
+    return SingleChildScrollView(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          children: [
+            Container(
+              padding: EdgeInsets.all(24),
+              width: size.width,
+              decoration: BoxDecoration(
+                color: SDSColor.blue50,
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('이용 슬로프',
+                      style: SDSTextStyle.regular.copyWith(
+                          color: SDSColor.gray900.withOpacity(0.5),
+                          fontSize: 14)),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 4),
+                    child: Text(
+                      '${_rankingCrewHistoryViewModel.rankingListCrewBetaList[0].passcount?.length ?? 0}',
+                      style: SDSTextStyle.extraBold.copyWith(
+                          color: SDSColor.gray900, fontSize: 30),
+                    ),
+                  ),
+                  Column(
+                    children: [
+                      // 최대값 찾아서 비율 계산에 사용
+                      _buildSlopeBars(_rankingCrewHistoryViewModel, size),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(height: 16,),
+            Container(
+              padding: EdgeInsets.all(24),
+              width: size.width,
+              decoration: BoxDecoration(
+                color: SDSColor.blue50,
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('총 라이딩 횟수',
+                      style: SDSTextStyle.regular.copyWith(
+                          color: SDSColor.gray900.withOpacity(0.5),
+                          fontSize: 14)),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 4),
+                    child: Text(
+                      '${_rankingCrewHistoryViewModel.rankingListCrewBetaList[0].passcountTotal}',
+                      style: SDSTextStyle.extraBold.copyWith(
+                          color: SDSColor.gray900, fontSize: 30),
+                    ),
+                  ),
+                  Column(
+                    children: [
+                      // 최대값 찾아서 비율 계산에 사용
+                      _buildTimeSlotBars(_rankingCrewHistoryViewModel, size),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSlopeBars(RankingCrewHistoryViewModel viewModel, Size size) {
+    // passcount 데이터가 있는지 확인
+    if (viewModel.rankingListCrewBetaList.isEmpty ||
+        viewModel.rankingListCrewBetaList[0].passcount == null ||
+        viewModel.rankingListCrewBetaList[0].passcount!.isEmpty) {
+      return Center(
+        child: Padding(
+          padding: const EdgeInsets.only(bottom: 30),
+          child: Column(
+            children: [
+              ExtendedImage.asset(
+                'assets/imgs/imgs/img_resoreHome_nodata.png',
+                fit: BoxFit.cover,
+                width: 72,
+                height: 72,
+              ),
+              Text(
+                '데이터가 없어요',
+                style: SDSTextStyle.regular.copyWith(
+                  fontSize: 14,
+                  color: SDSColor.gray600,
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
+    // passcount가 있는 경우에만 그래프를 그립니다.
+    final passcount = viewModel.rankingListCrewBetaList[0].passcount!;
+
+    // 최대값 찾기
+    int maxPassCount = passcount.values.fold(0, (previousValue, element) => element > previousValue ? element : previousValue);
+
+    return Column(
+      children: passcount.entries.map<Widget>((entry) {
+        String slopeName = entry.key;
+        int slopePassCount = entry.value;
+        double barWidthRatio = (slopePassCount / maxPassCount);  // 최대값 기준으로 비율 계산
+
+        return Padding(
+          padding: const EdgeInsets.only(bottom: 8, top: 4),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Container(
+                width: 44,
+                child: Text(
+                  slopeName,
+                  style: SDSTextStyle.regular.copyWith(
+                    fontSize: 11,
+                    color: SDSColor.sBlue600,
+                  ),
+                ),
+              ),
+              Container(
+                height: 14,
+                width: (size.width - 166) * barWidthRatio,  // 너비 비율 적용
+                decoration: BoxDecoration(
+                  color: SDSColor.blue200,
+                  borderRadius: BorderRadius.circular(4),
+                ),
+              ),
+              SizedBox(width: 6),
+              Text(
+                '$slopePassCount',
+                style: SDSTextStyle.extraBold.copyWith(
+                  fontSize: 12,
+                  color: SDSColor.gray900,
+                ),
+              ),
+            ],
+          ),
+        );
+      }).toList(),
+    );
+  }
+
+  Widget _buildTimeSlotBars(RankingCrewHistoryViewModel viewModel, Size size) {
+    final passcountTime = viewModel.rankingListCrewBetaList[0].passcountTime!;
+
+    // 최대값 찾기
+    int maxPassCount = passcountTime.values.fold(0, (previousValue, element) => element > previousValue ? element : previousValue);
+
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: passcountTime.entries.map<Widget>((entry) {
+        String timeSlot = entry.key;
+        int timePassCount = entry.value;
+        double barHeightRatio = (timePassCount / maxPassCount);  // 최대값을 기준으로 비율 계산
+
+        return Column(
+          children: [
+            Text(
+              '$timePassCount',
+              style: SDSTextStyle.regular.copyWith(
+                fontSize: 12,
+                color: SDSColor.gray900,
+              ),
+            ),
+            Container(
+              width: 16,
+              height: 140 * barHeightRatio,  // 높이 비율 적용
+              decoration: BoxDecoration(
+                color: SDSColor.blue200,
+                borderRadius: BorderRadius.circular(4),
+              ),
+            ),
+            SizedBox(height: 8),
+            Text(
+              timeSlot,
+              style: SDSTextStyle.regular.copyWith(
+                fontSize: 11,
+                color: SDSColor.sBlue600,
+              ),
+            ),
+          ],
+        );
+      }).toList(),
+    );
+  }
+
+
 }

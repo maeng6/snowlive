@@ -97,7 +97,8 @@ class FleamarketCommentDetailView extends StatelessWidget {
                                   Row(
                                     crossAxisAlignment: CrossAxisAlignment.center,
                                     children: [
-                                      GestureDetector(
+                                      if(_fleamarketCommentDetailViewModel.commentModel_flea.userInfo!.profileImageUrlUser != '')
+                                        GestureDetector(
                                         onTap: () async{
                                           textFocus.unfocus();
                                           Get.toNamed(AppRoutes.friendDetail);
@@ -117,6 +118,7 @@ class FleamarketCommentDetailView extends StatelessWidget {
                                           child: ExtendedImage.network(
                                             '${_fleamarketCommentDetailViewModel.commentModel_flea.userInfo!.profileImageUrlUser}',
                                             cache: true,
+                                            enableMemoryCache: true,
                                             shape: BoxShape.circle,
                                             borderRadius:
                                             BorderRadius.circular(20),
@@ -130,14 +132,15 @@ class FleamarketCommentDetailView extends StatelessWidget {
                                                 case LoadState.completed:
                                                   return state.completedWidget;
                                                 case LoadState.failed:
-                                                  return ExtendedImage.network(
-                                                    '${profileImgUrlList[0].default_round}',
-                                                    shape: BoxShape.circle,
-                                                    borderRadius: BorderRadius.circular(20),
-                                                    width: 32,
-                                                    height: 32,
-                                                    fit: BoxFit.cover,
-                                                  ); // 예시로 에러 아이콘을 반환하고 있습니다.
+                                                  return ClipOval(
+                                                    child: Image.asset(
+                                                      'assets/imgs/profile/img_profile_default_circle.png',
+                                                      width: 32,
+                                                      height: 32,
+                                                      fit: BoxFit.cover,
+                                                    ),
+                                                  )
+                                                  ; // 예시로 에러 아이콘을 반환하고 있습니다.
                                                 default:
                                                   return null;
                                               }
@@ -145,6 +148,34 @@ class FleamarketCommentDetailView extends StatelessWidget {
                                           ),
                                         ),
                                       ),
+                                      if(_fleamarketCommentDetailViewModel.commentModel_flea.userInfo!.profileImageUrlUser == '')
+                                        GestureDetector(
+                                          onTap: () async{
+                                            textFocus.unfocus();
+                                            Get.toNamed(AppRoutes.friendDetail);
+                                            await _friendDetailViewModel.fetchFriendDetailInfo(
+                                                userId: _userViewModel.user.user_id,
+                                                friendUserId:_fleamarketCommentDetailViewModel.commentModel_flea.userInfo!.userId!,
+                                                season: _friendDetailViewModel.seasonDate);
+                                          },
+                                          child:
+                                          Container(
+                                            width: 32,
+                                            height: 32,
+                                            decoration: BoxDecoration(
+                                                color: Color(0xFFDFECFF),
+                                                borderRadius: BorderRadius.circular(50)
+                                            ),
+                                            child: ClipOval(
+                                              child: Image.asset(
+                                                'assets/imgs/profile/img_profile_default_circle.png',
+                                                width: 32,
+                                                height: 32,
+                                                fit: BoxFit.cover,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
                                       SizedBox(width: 12),
                                       Expanded(
                                         child: Column(

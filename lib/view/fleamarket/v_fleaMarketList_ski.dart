@@ -606,12 +606,12 @@ class FleaMarketListView_ski extends StatelessWidget {
                                           );
                                         });
                                   },
-                                  child: (_fleamarketListViewModel.selectedCategory_sub_ski != '전체 카테고리') ? ExtendedImage.asset(
+                                  child: (_fleamarketListViewModel.selectedCategory_sub_ski != '전체 카테고리') ? Image.asset(
                                     'assets/imgs/icons/icon_check_round.png',
                                     fit: BoxFit.cover,
                                     width: 16,
                                     height: 16,
-                                  ) : ExtendedImage.asset(
+                                  ) : Image.asset(
                                     'assets/imgs/icons/icon_check_round_black.png',
                                     fit: BoxFit.cover,
                                     width: 16,
@@ -1554,12 +1554,12 @@ class FleaMarketListView_ski extends StatelessWidget {
                                           );
                                         });
                                   },
-                                  child: (_fleamarketListViewModel.selectedCategory_spot_ski != '전체 거래장소') ? ExtendedImage.asset(
+                                  child: (_fleamarketListViewModel.selectedCategory_spot_ski != '전체 거래장소') ? Image.asset(
                                     'assets/imgs/icons/icon_check_round.png',
                                     fit: BoxFit.cover,
                                     width: 16,
                                     height: 16,
-                                  ) : ExtendedImage.asset(
+                                  ) : Image.asset(
                                     'assets/imgs/icons/icon_check_round_black.png',
                                     fit: BoxFit.cover,
                                     width: 16,
@@ -1738,14 +1738,14 @@ class FleaMarketListView_ski extends StatelessWidget {
                                                         },
                                                       ),
                                                     if (data.photos!.length == 0)
-                                                      ExtendedImage
-                                                          .asset(
-                                                        'assets/imgs/imgs/img_flea_default.png',
-                                                        shape: BoxShape.rectangle,
+                                                      ClipRRect(
                                                         borderRadius: BorderRadius.circular(8),
-                                                        width: 110,
-                                                        height: 110,
-                                                        fit: BoxFit.cover,
+                                                        child: Image.asset(
+                                                          'assets/imgs/imgs/img_flea_default.png',
+                                                          width: 110,
+                                                          height: 110,
+                                                          fit: BoxFit.cover,
+                                                        ),
                                                       ),
                                                     if (data.status == FleamarketStatus.soldOut.korean)
                                                       Container(
@@ -1879,13 +1879,14 @@ class FleaMarketListView_ski extends StatelessWidget {
                                                           Row(
                                                             mainAxisAlignment: MainAxisAlignment.center,
                                                             children: [
-                                                              ExtendedImage.asset(
-                                                                'assets/imgs/icons/icon_list_view.png',
-                                                                shape: BoxShape.rectangle,
+                                                              ClipRRect(
                                                                 borderRadius: BorderRadius.circular(8),
-                                                                width: 16,
-                                                                height: 16,
-                                                                fit: BoxFit.cover,
+                                                                child: Image.asset(
+                                                                  'assets/imgs/icons/icon_list_view.png',
+                                                                  width: 16,
+                                                                  height: 16,
+                                                                  fit: BoxFit.cover,
+                                                                ),
                                                               ),
                                                               SizedBox(width: 2,),
                                                               Text(
@@ -1904,14 +1905,16 @@ class FleaMarketListView_ski extends StatelessWidget {
                                                             child: Row(
                                                               mainAxisAlignment: MainAxisAlignment.center,
                                                               children: [
-                                                                ExtendedImage.asset(
-                                                                  'assets/imgs/icons/icon_list_scrap.png',
-                                                                  shape: BoxShape.rectangle,
+                                                                ClipRRect(
                                                                   borderRadius: BorderRadius.circular(8),
-                                                                  width: 16,
-                                                                  height: 16,
-                                                                  fit: BoxFit.cover,
-                                                                ),
+                                                                  child: Image.asset(
+                                                                    'assets/imgs/icons/icon_list_scrap.png',
+                                                                    width: 16,
+                                                                    height: 16,
+                                                                    fit: BoxFit.cover,
+                                                                  ),
+                                                                )
+                                                                ,
                                                                 SizedBox(width: 2,),
                                                                 Text(
                                                                     '${data.favoriteCount.toString()}',
@@ -1930,14 +1933,16 @@ class FleaMarketListView_ski extends StatelessWidget {
                                                             child: Row(
                                                               mainAxisAlignment: MainAxisAlignment.center,
                                                               children: [
-                                                                ExtendedImage.asset(
-                                                                  'assets/imgs/icons/icon_list_reply.png',
-                                                                  shape: BoxShape.rectangle,
+                                                                ClipRRect(
                                                                   borderRadius: BorderRadius.circular(8),
-                                                                  width: 16,
-                                                                  height: 16,
-                                                                  fit: BoxFit.cover,
-                                                                ),
+                                                                  child: Image.asset(
+                                                                    'assets/imgs/icons/icon_list_reply.png',
+                                                                    width: 16,
+                                                                    height: 16,
+                                                                    fit: BoxFit.cover,
+                                                                  ),
+                                                                )
+                                                                ,
                                                                 SizedBox(width: 2,),
                                                                 Text(
                                                                     '${data.commentCount.toString()}',

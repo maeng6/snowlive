@@ -7,6 +7,7 @@ import 'package:com.snowlive/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/viewmodel/friend/vm_friendDetail.dart';
 import 'package:com.snowlive/viewmodel/friend/vm_friendList.dart';
 import 'package:com.snowlive/viewmodel/resortHome/vm_resortHome.dart';
+import 'package:com.snowlive/viewmodel/resortHome/vm_setGenderAndCategory.dart';
 import 'package:com.snowlive/viewmodel/vm_user.dart';
 import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 import 'package:com.snowlive/widget/w_liveOn_animatedGradient.dart';
@@ -41,6 +42,7 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
   UserViewModel _userViewModel = Get.find<UserViewModel>();
   FriendDetailViewModel _friendDetailViewModel = Get.find<FriendDetailViewModel>();
   FriendListViewModel _friendListViewModel = Get.find<FriendListViewModel>();
+  GenderCategoryViewModel _genderCategoryViewModel = Get.find<GenderCategoryViewModel>();
   //TODO: Dependency Injection**************************************************
 
   @override
@@ -71,6 +73,17 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
       begin: SDSColor.gray50,
       end: SDSColor.gray300,
     ).animate(_controller);
+
+    // 성별과 종목 선택 팝업을 뷰모델을 통해 호출
+    if(_userViewModel.user.sex == null ||
+        _userViewModel.user.skiorboard == null
+    ){
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _genderCategoryViewModel.showGenderAndCategoryPopup();
+      });
+    }
+
+
   }
 
 
@@ -424,8 +437,8 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                           return Obx(() => DraggableScrollableSheet(
                             initialChildSize:
                             (_resortHomeViewModel.bestFriendList.length > 8)
-                            ? 0.6
-                            : (_resortHomeViewModel.bestFriendList.length > 4)
+                                ? 0.6
+                                : (_resortHomeViewModel.bestFriendList.length > 4)
                                 ? 0.56
                                 : 0.4,
                             minChildSize: 0.4,

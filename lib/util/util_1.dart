@@ -15,25 +15,27 @@ class TimeStamp{
   }
 
 
-  String getAgo(Timestamp timestamp) {
-    DateTime uploadTime = timestamp.toDate();
+  String getAgo(DateTime dateTime) {
     DateTime now = DateTime.now();
+    Duration difference = now.difference(dateTime);
 
-    Duration difference = now.difference(uploadTime);
-
-    if (difference.inDays >= 30) {
+    if (difference.inDays >= 365) {
+      int years = difference.inDays ~/ 365;
+      return '$years년 전'; // 1년 이상인 경우 년으로 표현
+    } else if (difference.inDays >= 30) {
       int months = difference.inDays ~/ 30;
-      return '$months개월 전';
-    } else if (difference.inDays > 1) {
-      return '${difference.inDays}일 전'; // 1일 이상이면 날짜 형식으로 반환
-    } else if (difference.inHours > 1) {
-      return '${difference.inHours}시간 전'; // 1시간 이상이면 시간 형식으로 반환
-    } else if (difference.inMinutes > 1) {
-      return '${difference.inMinutes}분 전'; // 1분 이상이면 분 형식으로 반환
+      return '$months개월 전'; // 1개월 이상인 경우 개월로 표현
+    } else if (difference.inDays >= 1) {
+      return '${difference.inDays}일 전'; // 1일 이상인 경우 일로 표현
+    } else if (difference.inHours >= 1) {
+      return '${difference.inHours}시간 전'; // 1시간 이상인 경우 시간으로 표현
+    } else if (difference.inMinutes >= 1) {
+      return '${difference.inMinutes}분 전'; // 1분 이상인 경우 분으로 표현
     } else {
       return '방금 전'; // 그 외의 경우 방금 전으로 반환
     }
   }
+
 
 }
 
@@ -63,57 +65,30 @@ class GetDatetime{
   }
 
 
-  String getAgo(DateTime dateTime) {
-    DateTime now = DateTime.now();
-    Duration difference = now.difference(dateTime);
-
-    if (difference.inDays >= 30) {
-      int months = difference.inDays ~/ 30;
-      return '$months개월 전';
-    } else if (difference.inDays > 1) {
-      return '${difference.inDays}일 전'; // 1일 이상이면 날짜 형식으로 반환
-    } else if (difference.inHours > 1) {
-      return '${difference.inHours}시간 전'; // 1시간 이상이면 시간 형식으로 반환
-    } else if (difference.inMinutes > 1) {
-      return '${difference.inMinutes}분 전'; // 1분 이상이면 분 형식으로 반환
-    } else {
-      return '방금 전'; // 그 외의 경우 방금 전으로 반환
-    }
-  }
-
   String getAgoString(String time) {
     DateTime dateTime = DateTime.parse(time); // 문자열을 DateTime으로 변환
     DateTime now = DateTime.now();
     Duration difference = now.difference(dateTime);
 
-    if (difference.inDays >= 30) {
+    if (difference.inDays >= 365) {
+      int years = difference.inDays ~/ 365;
+      return '$years년 전';
+    } else if (difference.inDays >= 30) {
       int months = difference.inDays ~/ 30;
       return '$months개월 전';
-    } else if (difference.inDays > 1) {
+    } else if (difference.inDays >= 1) {
       return '${difference.inDays}일 전'; // 1일 이상이면 날짜 형식으로 반환
-    } else if (difference.inHours > 1) {
+    } else if (difference.inHours >= 1) {
       return '${difference.inHours}시간 전'; // 1시간 이상이면 시간 형식으로 반환
-    } else if (difference.inMinutes > 1) {
+    } else if (difference.inMinutes >= 1) {
       return '${difference.inMinutes}분 전'; // 1분 이상이면 분 형식으로 반환
     } else {
       return '방금 전'; // 그 외의 경우 방금 전으로 반환
     }
   }
 
-  String getAgo_dateFormat(DateTime dateTime) {
-    DateTime now = DateTime.now();
-    Duration difference = now.difference(dateTime);
 
-    if (difference.inDays > 1) {
-      return DateFormat.yMMMd('ko').format(dateTime); // 1일 이상이면 날짜 형식으로 반환
-    } else if (difference.inHours > 1) {
-      return '${difference.inHours}시간 전'; // 1시간 이상이면 시간 형식으로 반환
-    } else if (difference.inMinutes > 1) {
-      return '${difference.inMinutes}분 전'; // 1분 이상이면 분 형식으로 반환
-    } else {
-      return '방금 전'; // 그 외의 경우 방금 전으로 반환
-    }
-  }
+
 
   String getDateTime(){
     var now = DateTime.now();
