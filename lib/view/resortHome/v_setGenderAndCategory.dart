@@ -13,180 +13,227 @@ class GenderAndCategoryPopup extends StatelessWidget {
     final Size _size = MediaQuery.of(context).size;
 
     return Dialog(
+      backgroundColor: SDSColor.snowliveWhite,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
       ),
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              '성별과 주 종목을 모두 선택해 주세요',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            SizedBox(height: 5,),
-            Text(
-              '원활한 서비스 이용을 위해 꼭 알려주세요!',
-              style: TextStyle(
-                  fontSize: 12,
-                  color: SDSColor.gray500
-              ),
-            ),
-            SizedBox(height: 16),
-            Obx(() => Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Padding(
+            padding: EdgeInsets.only(bottom: 0, left: 28, right: 28, top: 30),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
               children: [
-                Expanded(
-                  child: GestureDetector(
-                    onTap: () {
-                      _genderCategoryViewModel.selectGender('여자');
-                    },
-                    child: Container(
-                      height: 40,
-                      margin: EdgeInsets.symmetric(horizontal: 8),
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                          color: _genderCategoryViewModel.selectedGender.value == '여자'
-                              ? SDSColor.snowliveBlue
-                              : SDSColor.gray500,
-                        ),
-                        borderRadius: BorderRadius.circular(25),
-                        color: _genderCategoryViewModel.selectedGender.value == '여자'
-                            ? SDSColor.snowliveBlue
-                            : SDSColor.snowliveWhite,
-                      ),
-                      child: Center(
-                        child: Text(
-                          '여자',
-                          style: TextStyle(
+                Text(
+                  '성별과 주 종목을 선택해 주세요',
+                  textAlign: TextAlign.center,
+                  style: SDSTextStyle.bold.copyWith(
+                      color: SDSColor.gray900,
+                      fontSize: 16
+                  ),
+                ),
+                SizedBox(
+                  height: 6,
+                ),
+                Text(
+                  '원활한 서비스 이용을 위해 선택 후 선택 완료를 눌러주세요.',
+                  textAlign: TextAlign.center,
+                  style: SDSTextStyle.regular.copyWith(
+                    color: SDSColor.gray500,
+                    fontSize: 14,
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 30, left: 4),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('성별 선택', style: SDSTextStyle.regular.copyWith(
+                          fontSize: 13,
+                          color: SDSColor.gray900
+                      ),),
+                    ],
+                  ),
+                ),
+                SizedBox(height: 8),
+                Obx(() => Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Expanded(
+                      child: GestureDetector(
+                        onTap: () {
+                          _genderCategoryViewModel.selectGender('여자');
+                        },
+                        child: Container(
+                          height: 36,
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                              width: _genderCategoryViewModel.selectedGender.value == '여자'
+                                  ? 1.5 : 1,
+                              color: _genderCategoryViewModel.selectedGender.value == '여자'
+                                  ? SDSColor.snowliveBlue
+                                  : SDSColor.gray200,
+                            ),
+                            borderRadius: BorderRadius.circular(6),
                             color: _genderCategoryViewModel.selectedGender.value == '여자'
-                                ? Colors.white
-                                : SDSColor.gray500,
-                            fontWeight: FontWeight.bold,
+                                ? SDSColor.snowliveWhite
+                                : SDSColor.snowliveWhite,
+                          ),
+                          child: Center(
+                            child: Text(
+                              '여자',
+                              style: SDSTextStyle.bold.copyWith(
+                                fontSize: 14,
+                                color: _genderCategoryViewModel.selectedGender.value == '여자'
+                                    ? SDSColor.snowliveBlue
+                                    : SDSColor.gray900,
+                              ),
+                            ),
                           ),
                         ),
                       ),
                     ),
-                  ),
-                ),
-                Expanded(
-                  child: GestureDetector(
-                    onTap: () {
-                      _genderCategoryViewModel.selectGender('남자');
-                    },
-                    child: Container(
-                      height: 40,
-                      margin: EdgeInsets.symmetric(horizontal: 8),
-                      decoration:  BoxDecoration(
-                        border: Border.all(
-                          color: _genderCategoryViewModel.selectedGender.value == '남자'
-                              ? SDSColor.snowliveBlue
-                              : SDSColor.gray500,
-                        ),
-                        borderRadius: BorderRadius.circular(25),
-                        color: _genderCategoryViewModel.selectedGender.value == '남자'
-                            ? SDSColor.snowliveBlue
-                            : SDSColor.snowliveWhite,
-                      ),
-                      child: Center(
-                        child: Text(
-                          '남자',
-                          style: TextStyle(
+                    SizedBox(
+                      width: 10,
+                    ),
+                    Expanded(
+                      child: GestureDetector(
+                        onTap: () {
+                          _genderCategoryViewModel.selectGender('남자');
+                        },
+                        child: Container(
+                          height: 36,
+                          decoration:  BoxDecoration(
+                            border: Border.all(
+                              width: _genderCategoryViewModel.selectedGender.value == '남자'
+                                  ? 1.5 : 1,
+                              color: _genderCategoryViewModel.selectedGender.value == '남자'
+                                  ? SDSColor.snowliveBlue
+                                  : SDSColor.gray200,
+                            ),
+                            borderRadius: BorderRadius.circular(6),
                             color: _genderCategoryViewModel.selectedGender.value == '남자'
-                                ? Colors.white
-                                : SDSColor.gray500,
-                            fontWeight: FontWeight.bold,
+                                ? SDSColor.snowliveWhite
+                                : SDSColor.snowliveWhite,
+                          ),
+                          child: Center(
+                            child: Text(
+                              '남자',
+                              style: SDSTextStyle.bold.copyWith(
+                                fontSize: 14,
+                                color: _genderCategoryViewModel.selectedGender.value == '남자'
+                                    ? SDSColor.snowliveBlue
+                                    : SDSColor.gray900,
+                              ),
+                            ),
                           ),
                         ),
                       ),
                     ),
+                  ],
+                )),
+                Padding(
+                  padding: const EdgeInsets.only(top: 20, left: 4),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('주 종목 선택', style: SDSTextStyle.regular.copyWith(
+                          fontSize: 13,
+                          color: SDSColor.gray900
+                      ),),
+                    ],
                   ),
                 ),
+                SizedBox(height: 8),
+                Obx(() => Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Expanded(
+                      child: GestureDetector(
+                        onTap: () {
+                          _genderCategoryViewModel.selectCategory('스키');
+                        },
+                        child: Container(
+                          height: 36,
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                              width: _genderCategoryViewModel.selectedCategory.value == '스키'
+                                  ? 1.5 : 1,
+                              color: _genderCategoryViewModel.selectedCategory.value == '스키'
+                                  ? SDSColor.snowliveBlue
+                                  : SDSColor.gray200,
+                            ),
+                            borderRadius: BorderRadius.circular(6),
+                            color: _genderCategoryViewModel.selectedCategory.value == '스키'
+                                ? SDSColor.snowliveWhite
+                                : SDSColor.snowliveWhite,
+                          ),
+                          child: Center(
+                            child: Text(
+                              '스키',
+                              style: SDSTextStyle.bold.copyWith(
+                                color: _genderCategoryViewModel.selectedCategory.value == '스키'
+                                    ? SDSColor.snowliveBlue
+                                    : SDSColor.gray900,
+                                fontSize: 14,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    Expanded(
+                      child: GestureDetector(
+                        onTap: () {
+                          _genderCategoryViewModel.selectCategory('스노보드');
+                        },
+                        child: Container(
+                          height: 36, // 버튼 높이를 줄여줍니다.
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                              width: _genderCategoryViewModel.selectedCategory.value == '스노보드'
+                                  ? 1.5 : 1,
+                              color: _genderCategoryViewModel.selectedCategory.value == '스노보드'
+                                  ? SDSColor.snowliveBlue
+                                  : SDSColor.gray200,
+                            ),
+                            borderRadius: BorderRadius.circular(6),
+                            color: _genderCategoryViewModel.selectedCategory.value == '스노보드'
+                                ? SDSColor.snowliveWhite
+                                : SDSColor.snowliveWhite,
+                          ),
+                          child: Center(
+                            child: Text(
+                              '스노보드',
+                              style: SDSTextStyle.bold.copyWith(
+                                color: _genderCategoryViewModel.selectedCategory.value == '스노보드'
+                                    ? SDSColor.snowliveBlue
+                                    : SDSColor.gray900,
+                                fontSize: 14,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                )),
+                SizedBox(height: 40),
 
               ],
-            )),
-            SizedBox(height: 20,),
-            Obx(() => Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Expanded(
-                  child: GestureDetector(
-                    onTap: () {
-                      _genderCategoryViewModel.selectCategory('스키');
-                    },
-                    child: Container(
-                      height: 40, // 버튼 높이를 줄여줍니다.
-                      margin: EdgeInsets.symmetric(horizontal: 8), // 버튼 간격 조정
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                          color: _genderCategoryViewModel.selectedCategory.value == '스키'
-                              ? SDSColor.snowliveBlue
-                              : SDSColor.gray500,
-                        ),
-                        borderRadius: BorderRadius.circular(25),
-                        color: _genderCategoryViewModel.selectedCategory.value == '스키'
-                            ? SDSColor.snowliveBlue
-                            : SDSColor.snowliveWhite,
-                      ),
-                      child: Center(
-                        child: Text(
-                          '스키',
-                          style: TextStyle(
-                            color: _genderCategoryViewModel.selectedCategory.value == '스키'
-                                ? Colors.white
-                                : SDSColor.gray500,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                Expanded(
-                  child: GestureDetector(
-                    onTap: () {
-                      _genderCategoryViewModel.selectCategory('스노보드');
-                    },
-                    child: Container(
-                      height: 40, // 버튼 높이를 줄여줍니다.
-                      margin: EdgeInsets.symmetric(horizontal: 8), // 버튼 간격 조정
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                          color: _genderCategoryViewModel.selectedCategory.value == '스노보드'
-                              ? SDSColor.snowliveBlue
-                              : SDSColor.gray500,
-                        ),
-                        borderRadius: BorderRadius.circular(25),
-                        color: _genderCategoryViewModel.selectedCategory.value == '스노보드'
-                            ? SDSColor.snowliveBlue
-                            : SDSColor.snowliveWhite,
-                      ),
-                      child: Center(
-                        child: Text(
-                          '스노보드',
-                          style: TextStyle(
-                            color: _genderCategoryViewModel.selectedCategory.value == '스노보드'
-                                ? Colors.white
-                                : SDSColor.gray500,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            )),
-            SizedBox(height: 24),
-            Container(
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.only(left: 16, right: 16, bottom: 16),
+            child: Container(
               width: _size.width,
               height: 48,
               decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(5),
+                  borderRadius: BorderRadius.circular(6),
                   color: SDSColor.snowliveBlue
               ),
               child: TextButton(
@@ -197,9 +244,9 @@ class GenderAndCategoryPopup extends StatelessWidget {
                     Get.snackbar(
                       "알림",
                       "성별과 종목을 모두 선택해주세요.",
-                      snackPosition: SnackPosition.TOP,
-                      backgroundColor: SDSColor.snowliveWhite,
-                      colorText: SDSColor.snowliveBlack,
+                      snackPosition: SnackPosition.BOTTOM,
+                      backgroundColor: SDSColor.snowliveBlack.withOpacity(0.7),
+                      colorText: SDSColor.snowliveWhite,
                     );
                   }
                 },
@@ -212,8 +259,8 @@ class GenderAndCategoryPopup extends StatelessWidget {
                 ),
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

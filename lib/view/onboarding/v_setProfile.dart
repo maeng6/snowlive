@@ -301,6 +301,10 @@ class SetProfileView extends StatelessWidget {
                                       top: 0,
                                       bottom: 0,
                                       child: TextButton(
+                                        style: TextButton.styleFrom(
+                                          surfaceTintColor: Colors.transparent,
+                                          overlayColor: Colors.transparent
+                                        ),
                                         onPressed: (_setProfileViewModel.activeCheckDisplaynameButton == true && !_setProfileViewModel.isCheckedDisplayName)
                                             ? () async {
                                           CustomFullScreenDialog.showDialog();
@@ -406,12 +410,10 @@ class SetProfileView extends StatelessWidget {
                                       constraints: BoxConstraints(
                                         maxHeight: _size.height - _statusBarSize - 44,
                                       ),
-                                      backgroundColor: Colors.transparent,
+                                      backgroundColor: Colors.white,
                                       context: context,
                                       isScrollControlled: true,
-                                      enableDrag: false,
-                                      isDismissible: false,
-                                      builder: (context) => FavoriteResortWidget(),
+                                      builder: (context) => SafeArea(child: FavoriteResortWidget()),
                                     );
                                       if(selectedIndex != null)
                                       _setProfileViewModel.selectResortInfo(selectedIndex!);
@@ -484,14 +486,12 @@ class SetProfileView extends StatelessWidget {
                                   onTap: () async {
                                     selectedSkiOrBoard = await showModalBottomSheet<String>(
                                       constraints: BoxConstraints(
-                                        maxHeight: _size.height - _statusBarSize - 44,
+                                        maxHeight: 340,
                                       ),
-                                      backgroundColor: Colors.transparent,
+                                      backgroundColor: Colors.white,
                                       context: context,
-                                      isDismissible: false,
-                                      enableDrag: false,
                                       isScrollControlled: true,
-                                      builder: (context) => SkiorboardWidget(),
+                                      builder: (context) => SafeArea(child: SkiorboardWidget()),
                                     );
                                     if(selectedSkiOrBoard != null)
                                       _setProfileViewModel.selectSkiOrBoard(selectedSkiOrBoard!);
@@ -553,14 +553,12 @@ class SetProfileView extends StatelessWidget {
                                   onTap: () async {
                                     selectedSex = await showModalBottomSheet<String>(
                                       constraints: BoxConstraints(
-                                        maxHeight: _size.height - _statusBarSize - 44,
+                                        maxHeight: 340,
                                       ),
-                                      backgroundColor: Colors.transparent,
+                                      backgroundColor: Colors.white,
                                       context: context,
-                                      isDismissible: false,
-                                      enableDrag: false,
                                       isScrollControlled: true,
-                                      builder: (context) => SexWidget(),
+                                      builder: (context) => SafeArea(child: SexWidget()),
                                     );
                                     if(selectedSex != null)
                                       _setProfileViewModel.selectSex(selectedSex!);

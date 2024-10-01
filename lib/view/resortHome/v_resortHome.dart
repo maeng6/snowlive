@@ -533,11 +533,13 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                                           Expanded(
                                             child: _resortHomeViewModel.bestFriendList.isEmpty
                                                 ? Center(
-                                              child: Padding(
-                                                padding: const EdgeInsets.only(bottom: 24),
+                                              child: Container(
+                                                height: 180,
                                                 child: Text(
                                                   '친구 관리로 이동해 즐겨찾는 친구를 등록해 주세요.\n라이브중인 친구를 바로 확인하실 수 있어요.',
-                                                  style: SDSTextStyle.regular.copyWith(fontSize: 14, color: SDSColor.gray500, height: 1.4),
+                                                  style: SDSTextStyle.regular.copyWith(
+                                                      fontSize: 14, color: SDSColor.gray500, height: 1.4
+                                                  ),
                                                   textAlign: TextAlign.center,
                                                 ),
                                               ),
@@ -791,8 +793,7 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                           padding: EdgeInsets.only(left: 16, right: 16),
                           child: Container(
                             decoration: BoxDecoration(
-                                borderRadius:
-                                BorderRadius.circular(16),
+                                borderRadius: BorderRadius.circular(16),
                                 color: (_resortHomeViewModel.isLoading_weather == true)
                                     ? SDSColor.gray200
                                     : _resortHomeViewModel.weatherColors),
@@ -816,7 +817,15 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                                               children: [
                                                 Padding(
                                                   padding: const EdgeInsets.only(left: 24),
-                                                  child: Text(
+                                                  child:
+                                                  (_resortHomeViewModel.isLoading_weather == true)
+                                                  ? Text(
+                                                    ' ',
+                                                    style: SDSTextStyle.bold.copyWith(
+                                                        color: SDSColor.snowliveWhite,
+                                                        fontSize: 16),
+                                                  )
+                                                  : Text(
                                                     '${_resortHomeViewModel.resortHomeModel.instantResortName}',
                                                     style: SDSTextStyle.bold.copyWith(
                                                         color: SDSColor.snowliveWhite,
@@ -826,7 +835,9 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                                                 SizedBox(
                                                   width: 3,
                                                 ),
-                                                Image.asset(
+                                                (_resortHomeViewModel.isLoading_weather == true)
+                                                ? Container()
+                                                    : Image.asset(
                                                   'assets/imgs/icons/icon_dropdown.png',
                                                   width: 18,
                                                   height: 18,
@@ -864,7 +875,13 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                                               child: Row(
                                                 mainAxisAlignment: MainAxisAlignment.start,
                                                 children: [
-                                                  Text('${GetDatetime().getDateTime()}',
+                                                  (_resortHomeViewModel.isLoading_weather == true)
+                                                  ? Text(' ',
+                                                    style: SDSTextStyle.regular.copyWith(
+                                                        color: SDSColor.snowliveWhite.withOpacity(0.6),
+                                                        fontSize: 13),
+                                                  )
+                                                      : Text('${GetDatetime().getDateTime()}',
                                                     style: SDSTextStyle.regular.copyWith(
                                                         color: SDSColor.snowliveWhite.withOpacity(0.6),
                                                         fontSize: 13),
@@ -896,9 +913,8 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                                               SizedBox(width: 10,),
                                               Obx(() => (_resortHomeViewModel.isLoading_weather == true)
                                                   ? Padding(
-                                                padding: const EdgeInsets.only(right: 16),
+                                                padding: EdgeInsets.only(right: 16),
                                                 child: Container(
-                                                    height: 30,
                                                     width: 50,
                                                     child: Lottie.asset('assets/json/loadings_wht_final.json')),
                                               )
@@ -918,11 +934,14 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                                               Padding(
                                                 padding: const EdgeInsets.only(right: 6),
                                                 child: Obx(() => (_resortHomeViewModel.isLoading_weather == true)
-                                                    ? Text(' ',
-                                                  style: GoogleFonts.bebasNeue(
-                                                      fontSize: 44,
-                                                      color: Colors.white),
-                                                )
+                                                    ? Padding(
+                                                  padding: const EdgeInsets.only(bottom: 4, left: 2),
+                                                      child: Text(' ',
+                                                        style: GoogleFonts.bebasNeue(
+                                                        fontSize: 36,
+                                                        color: Colors.white),
+                                                      ),
+                                                    )
                                                     : Padding(
                                                   padding: const EdgeInsets.only(bottom: 4, left: 2),
                                                   child: Text('\u00B0',

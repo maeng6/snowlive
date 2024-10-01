@@ -74,13 +74,13 @@ class MoreTabMainView extends StatelessWidget {
                   padding: EdgeInsets.symmetric(horizontal: 16),
                   child: Container(
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(14),
+                      borderRadius: BorderRadius.circular(20),
                       color: SDSColor.gray50,
                     ),
                     width: _size.width - 32,
                     child: Padding(
                       padding:
-                      EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                      EdgeInsets.symmetric(horizontal: 16, vertical: 16),
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         mainAxisAlignment: MainAxisAlignment.start,
@@ -102,7 +102,7 @@ class MoreTabMainView extends StatelessWidget {
                                 width: 56,
                                 child: ClipOval(
                                   child: Image.asset(
-                                    'assets/imgs/profile/img_profile_default_circle.png',
+                                    'assets/imgs/profile/img_profile_default_circle_wht.png',
                                     width: 56,
                                     height: 56,
                                     fit: BoxFit.cover,

@@ -150,7 +150,7 @@ class CrewHomeView extends StatelessWidget {
                       borderRadius: BorderRadius.circular(16),
                       child: Container(
                         color: Color(int.parse(_crewDetailViewModel.color.replaceFirst('0X', ''), radix: 16)),
-                        padding: const EdgeInsets.only(top: 20, bottom: 20, left: 24, right: 24),
+                        padding: EdgeInsets.only(top: 20, bottom: (_crewDetailViewModel.isCrewIntroExpanded == false) ? 12 : 20, left: 24, right: 24),
                         child: Column(
                           children: [
                             Column(
@@ -268,10 +268,15 @@ class CrewHomeView extends StatelessWidget {
                                 if (_crewDetailViewModel.description.isNotEmpty)
                                   Column(
                                     children: [
+                                      SizedBox(
+                                        height: 16,
+                                      ),
                                       Divider(
                                         color: SDSColor.snowliveBlack.withOpacity(0.1),
                                         thickness: 1.0,
-                                        height: 40,
+                                      ),
+                                      SizedBox(
+                                        height: 2,
                                       ),
                                       LayoutBuilder(
                                         builder: (context, constraints) {
@@ -295,11 +300,11 @@ class CrewHomeView extends StatelessWidget {
                                           bool isTextOverflowing = textPainter.didExceedMaxLines;
 
                                           return Obx(()=>Row(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            crossAxisAlignment: (_crewDetailViewModel.isCrewIntroExpanded == false) ? CrossAxisAlignment.center : CrossAxisAlignment.start,
                                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                             children: [
                                               Container(
-                                                width: constraints.maxWidth - 110,
+                                                width: _size.width - 120,
                                                 child: (_crewDetailViewModel.isCrewIntroExpanded == false)
                                                     ? Text(
                                                   _crewDetailViewModel.description,
@@ -310,13 +315,16 @@ class CrewHomeView extends StatelessWidget {
                                                   overflow: TextOverflow.ellipsis,
                                                   maxLines: 1,
                                                 )
-                                                    : Text(
-                                                  _crewDetailViewModel.description,
-                                                  style: SDSTextStyle.regular.copyWith(
-                                                    fontSize: 14,
-                                                    color: SDSColor.snowliveWhite,
-                                                  ),
-                                                ),
+                                                    : Padding(
+                                                      padding: EdgeInsets.only(top: (_crewDetailViewModel.isCrewIntroExpanded == false) ? 0 : 10),
+                                                      child: Text(
+                                                                                                        _crewDetailViewModel.description,
+                                                                                                        style: SDSTextStyle.regular.copyWith(
+                                                      fontSize: 14,
+                                                      color: SDSColor.snowliveWhite,
+                                                                                                        ),
+                                                                                                      ),
+                                                    ),
                                               ),
                                               // 텍스트가 한 줄 이상일 경우에만 아이콘을 표시
                                               if (isTextOverflowing)
@@ -325,20 +333,46 @@ class CrewHomeView extends StatelessWidget {
                                                   onTap:(){
                                                     _crewDetailViewModel.toggleExpandCrewIntro();
                                                   },
-                                                  child: Image.asset(
-                                                    'assets/imgs/icons/icon_plus_round.png',
-                                                    width: 20,
-                                                    height: 20,
+                                                  child: Stack(
+                                                    children: [
+                                                      Container(
+                                                        width: 40,
+                                                        height: 40,
+                                                        color: Colors.transparent,
+                                                      ),
+                                                      Positioned(
+                                                        top: 10,
+                                                        right: 0,
+                                                        child: Image.asset(
+                                                          'assets/imgs/icons/icon_plus_round.png',
+                                                          width: 20,
+                                                          height: 20,
+                                                        ),
+                                                      ),
+                                                    ],
                                                   ),
                                                 )
                                                     : GestureDetector(
                                                   onTap:(){
                                                     _crewDetailViewModel.toggleExpandCrewIntro();
                                                   },
-                                                  child: Image.asset(
-                                                    'assets/imgs/icons/icon_minus_round.png',
-                                                    width: 20,
-                                                    height: 20,
+                                                  child: Stack (
+                                                    children: [
+                                                      Container(
+                                                        width: 40,
+                                                        height: 40,
+                                                        color: Colors.transparent,
+                                                      ),
+                                                      Positioned(
+                                                        top: 10,
+                                                        right: 0,
+                                                        child: Image.asset(
+                                                          'assets/imgs/icons/icon_minus_round.png',
+                                                          width: 20,
+                                                          height: 20,
+                                                        ),
+                                                      ),
+                                                    ],
                                                   ),
                                                 ),
                                             ],
@@ -565,7 +599,7 @@ class CrewHomeView extends StatelessWidget {
                               if (_crewDetailViewModel.totalSlopeCount == 0)
                                 Center(
                                   child: Padding(
-                                    padding: const EdgeInsets.only(bottom: 30),
+                                    padding: const EdgeInsets.only(bottom: 60),
                                     child: Column(
                                       children: [
                                         Image.asset(
