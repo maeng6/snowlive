@@ -75,13 +75,16 @@ class CrewRecordRoomView extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               Center(
-                                child: Container(
-                                  width: 24,
-                                  height: 24,
-                                  child: CircularProgressIndicator(
-                                    strokeWidth: 4,
-                                    backgroundColor: SDSColor.gray100,
-                                    color: SDSColor.gray300.withOpacity(0.6),
+                                child: Padding(
+                                  padding: EdgeInsets.only(bottom: 100),
+                                  child: Container(
+                                    width: 24,
+                                    height: 24,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 4,
+                                      backgroundColor: SDSColor.gray100,
+                                      color: SDSColor.gray300.withOpacity(0.6),
+                                    ),
                                   ),
                                 ),
                               ),
@@ -109,8 +112,8 @@ class CrewRecordRoomView extends StatelessWidget {
                       );
                     },
                     child: ListView(
-                      padding: EdgeInsets.symmetric(horizontal: 16),
-                      children: _buildGroupedRecords(),
+                      padding: EdgeInsets.only(left: 16, right: 16, bottom: 60),
+                      children: _buildGroupedRecords(_size),
                     ),
                   );
                 }
@@ -214,9 +217,39 @@ class CrewRecordRoomView extends StatelessWidget {
 
 
   // 월별로 그룹화된 기록들을 표시하는 함수
-  List<Widget> _buildGroupedRecords() {
+  List<Widget> _buildGroupedRecords(Size size) {
     // 기록을 월별로 그룹화
     Map<String, List<CrewRidingRecord>> groupedByMonth = _groupRecordsByMonth(_crewRecordRoomViewModel.crewRidingRecords);
+    // 데이터가 없는 경우에 대한 처리
+    if (groupedByMonth.isEmpty) {
+      return [
+        Container(
+          height: size.height - 200,
+          child: Center(
+            child: Padding(
+              padding: EdgeInsets.only(bottom: 80),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Image.asset(
+                    'assets/imgs/imgs/img_resoreHome_nodata.png',
+                    width: 72,
+                    height: 72,
+                  ),
+                  Text(
+                    '데이터가 없어요',
+                    style: SDSTextStyle.regular.copyWith(
+                      fontSize: 14,
+                      color: SDSColor.gray600,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        )
+      ];
+    }
 
     return groupedByMonth.entries.map((entry) {
       String monthKey = entry.key; // "yyyy-MM"
@@ -504,89 +537,96 @@ class CrewRecordRoomView extends StatelessWidget {
         SizedBox(height: 8),
         if (members.isNotEmpty)
           ...members.map((member) {
-            return ListTile(
-              leading: member.profileImageUrlUser != null && member.profileImageUrlUser!.isNotEmpty
-                  ? Container(
-                width: 32,
-                height: 32,
-                decoration: BoxDecoration(
-                  color: Colors.transparent,
-                  borderRadius: BorderRadius.circular(50),
-                ),
-                child: GestureDetector(
-                  onTap: () async{
+            return Container(
+              height: 42,
+              child: ListTile(
+                leading: member.profileImageUrlUser != null && member.profileImageUrlUser!.isNotEmpty
+                    ? Container(
+                  width: 32,
+                  height: 32,
+                  decoration: BoxDecoration(
+                    color: Colors.transparent,
+                    borderRadius: BorderRadius.circular(50),
+                    border: Border.all(
+                      color: SDSColor.gray100,
+                      width: 1
+                    )
+                  ),
+                  child: GestureDetector(
+                    onTap: () async{
+                      Get.toNamed(AppRoutes.friendDetail);
+                      await _friendDetailViewModel.fetchFriendDetailInfo(
+                          userId: _userViewModel.user.user_id,
+                          friendUserId:member.userId!,
+                          season: _friendDetailViewModel.seasonDate);
+                    },
+                    child: ExtendedImage.network(
+                      member.profileImageUrlUser!,
+                      enableMemoryCache: true,
+                      shape: BoxShape.circle,
+                      cacheHeight: 150,
+                      borderRadius: BorderRadius.circular(8),
+                      width: 32,
+                      height: 32,
+                      fit: BoxFit.cover,
+                      loadStateChanged: (ExtendedImageState state) {
+                        switch (state.extendedImageLoadState) {
+                          case LoadState.loading:
+                            return SizedBox.shrink();
+                          case LoadState.completed:
+                            return state.completedWidget;
+                          case LoadState.failed:
+                            return ClipOval(
+                              child: Image.asset(
+                                'assets/imgs/profile/img_profile_default_circle.png',
+                                width: 80,
+                                height: 80,
+                                fit: BoxFit.cover,
+                              ),
+                            ); // 이미지 로딩 실패 시 대체 이미지
+                          default:
+                            return null;
+                        }
+                      },
+                    ),
+                  ),
+                )
+                    : GestureDetector(
+                  onTap: ()async{
                     Get.toNamed(AppRoutes.friendDetail);
                     await _friendDetailViewModel.fetchFriendDetailInfo(
                         userId: _userViewModel.user.user_id,
                         friendUserId:member.userId!,
                         season: _friendDetailViewModel.seasonDate);
                   },
-                  child: ExtendedImage.network(
-                    member.profileImageUrlUser!,
-                    enableMemoryCache: true,
-                    shape: BoxShape.circle,
-                    cacheHeight: 150,
-                    borderRadius: BorderRadius.circular(8),
+                  child: Container(
                     width: 32,
                     height: 32,
-                    fit: BoxFit.cover,
-                    loadStateChanged: (ExtendedImageState state) {
-                      switch (state.extendedImageLoadState) {
-                        case LoadState.loading:
-                          return SizedBox.shrink();
-                        case LoadState.completed:
-                          return state.completedWidget;
-                        case LoadState.failed:
-                          return ClipOval(
-                            child: Image.asset(
-                              'assets/imgs/profile/img_profile_default_circle.png',
-                              width: 80,
-                              height: 80,
-                              fit: BoxFit.cover,
-                            ),
-                          ); // 이미지 로딩 실패 시 대체 이미지
-                        default:
-                          return null;
-                      }
-                    },
-                  ),
-                ),
-              )
-                  : GestureDetector(
-                onTap: ()async{
-                  Get.toNamed(AppRoutes.friendDetail);
-                  await _friendDetailViewModel.fetchFriendDetailInfo(
-                      userId: _userViewModel.user.user_id,
-                      friendUserId:member.userId!,
-                      season: _friendDetailViewModel.seasonDate);
-                },
-                child: Container(
-                  width: 32,
-                  height: 32,
-                  child: ClipOval(
-                    child: Image.asset(
-                      'assets/imgs/profile/img_profile_default_circle.png',
-                      width: 32,
-                      height: 32,
-                      fit: BoxFit.cover,
+                    child: ClipOval(
+                      child: Image.asset(
+                        'assets/imgs/profile/img_profile_default_circle.png',
+                        width: 32,
+                        height: 32,
+                        fit: BoxFit.cover,
+                      ),
                     ),
                   ),
                 ),
-              ),
-              contentPadding: EdgeInsets.zero,
-              title: Transform.translate(
-                offset: Offset(-6, 0),
-                child: Text(
-                  member.displayName!,
-                  style: SDSTextStyle.regular.copyWith(
-                      fontSize: 14,
-                      color: SDSColor.gray900
+                contentPadding: EdgeInsets.zero,
+                title: Transform.translate(
+                  offset: Offset(-6, 0),
+                  child: Text(
+                    member.displayName!,
+                    style: SDSTextStyle.regular.copyWith(
+                        fontSize: 14,
+                        color: SDSColor.gray900
+                    ),
                   ),
                 ),
-              ),
-              trailing: Text(
-                '${member.totalScore!.toStringAsFixed(0)}점',
-                style: SDSTextStyle.regular.copyWith(fontSize: 16, color: SDSColor.gray900),
+                trailing: Text(
+                  '${member.totalScore!.toStringAsFixed(0)}점',
+                  style: SDSTextStyle.regular.copyWith(fontSize: 16, color: SDSColor.gray900),
+                ),
               ),
             );
           }).toList(),
@@ -618,6 +658,34 @@ class CrewRecordRoomView extends StatelessWidget {
 
   // 23/24시즌 정보 표시
   Widget _buildBetaView(Size size) {
+    if (_rankingCrewHistoryViewModel.rankingListCrewBetaList.isEmpty) {
+      return Container(
+        height: size.height - 200,
+        child: Center(
+          child: Padding(
+            padding: EdgeInsets.only(bottom: 80),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Image.asset(
+                  'assets/imgs/imgs/img_resoreHome_nodata.png',
+                  width: 72,
+                  height: 72,
+                ),
+                Text(
+                  '데이터가 없어요',
+                  style: SDSTextStyle.regular.copyWith(
+                    fontSize: 14,
+                    color: SDSColor.gray600,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    }
+
     return SingleChildScrollView(
       child: Padding(
         padding: const EdgeInsets.all(16),
@@ -627,18 +695,18 @@ class CrewRecordRoomView extends StatelessWidget {
               padding: EdgeInsets.all(24),
               width: size.width,
               decoration: BoxDecoration(
-                color: SDSColor.blue50,
+                color: SDSColor.snowliveWhite,
                 borderRadius: BorderRadius.circular(16),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('이용 슬로프',
+                  Text('지난 시즌 이용한 슬로프',
                       style: SDSTextStyle.regular.copyWith(
                           color: SDSColor.gray900.withOpacity(0.5),
                           fontSize: 14)),
                   Padding(
-                    padding: const EdgeInsets.only(top: 4),
+                    padding: const EdgeInsets.only(top: 4, bottom: 10),
                     child: Text(
                       '${_rankingCrewHistoryViewModel.rankingListCrewBetaList[0].passcount?.length ?? 0}',
                       style: SDSTextStyle.extraBold.copyWith(
@@ -654,12 +722,12 @@ class CrewRecordRoomView extends StatelessWidget {
                 ],
               ),
             ),
-            SizedBox(height: 16,),
+            SizedBox(height: 20),
             Container(
               padding: EdgeInsets.all(24),
               width: size.width,
               decoration: BoxDecoration(
-                color: SDSColor.blue50,
+                color: SDSColor.snowliveWhite,
                 borderRadius: BorderRadius.circular(16),
               ),
               child: Column(
@@ -670,7 +738,7 @@ class CrewRecordRoomView extends StatelessWidget {
                           color: SDSColor.gray900.withOpacity(0.5),
                           fontSize: 14)),
                   Padding(
-                    padding: const EdgeInsets.only(top: 4),
+                    padding: const EdgeInsets.only(top: 4, bottom: 10),
                     child: Text(
                       '${_rankingCrewHistoryViewModel.rankingListCrewBetaList[0].passcountTotal}',
                       style: SDSTextStyle.extraBold.copyWith(
@@ -686,36 +754,41 @@ class CrewRecordRoomView extends StatelessWidget {
                 ],
               ),
             ),
+            SizedBox(
+              height: 40,
+            )
           ],
         ),
       ),
     );
   }
-
   Widget _buildSlopeBars(RankingCrewHistoryViewModel viewModel, Size size) {
     // passcount 데이터가 있는지 확인
     if (viewModel.rankingListCrewBetaList.isEmpty ||
         viewModel.rankingListCrewBetaList[0].passcount == null ||
         viewModel.rankingListCrewBetaList[0].passcount!.isEmpty) {
-      return Center(
-        child: Padding(
-          padding: const EdgeInsets.only(bottom: 30),
-          child: Column(
-            children: [
-              Image.asset(
-                'assets/imgs/imgs/img_resoreHome_nodata.png',
-                fit: BoxFit.cover,
-                width: 72,
-                height: 72,
-              ),
-              Text(
-                '데이터가 없어요',
-                style: SDSTextStyle.regular.copyWith(
-                  fontSize: 14,
-                  color: SDSColor.gray600,
+      return Container(
+        height: size.height - 200,
+        child: Center(
+          child: Padding(
+            padding: EdgeInsets.only(bottom: 80),
+            child: Column(
+              children: [
+                Image.asset(
+                  'assets/imgs/imgs/img_resoreHome_nodata.png',
+                  fit: BoxFit.cover,
+                  width: 72,
+                  height: 72,
                 ),
-              ),
-            ],
+                Text(
+                  '데이터가 없어요',
+                  style: SDSTextStyle.regular.copyWith(
+                    fontSize: 14,
+                    color: SDSColor.gray600,
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       );
@@ -753,13 +826,16 @@ class CrewRecordRoomView extends StatelessWidget {
                 width: (size.width - 166) * barWidthRatio,  // 너비 비율 적용
                 decoration: BoxDecoration(
                   color: SDSColor.blue200,
-                  borderRadius: BorderRadius.circular(4),
+                    borderRadius: BorderRadius.only(
+                        topRight: Radius.circular(4),
+                        bottomRight: Radius.circular(4)
+                    )
                 ),
               ),
               SizedBox(width: 6),
               Text(
                 '$slopePassCount',
-                style: SDSTextStyle.extraBold.copyWith(
+                style: SDSTextStyle.regular.copyWith(
                   fontSize: 12,
                   color: SDSColor.gray900,
                 ),
@@ -770,7 +846,6 @@ class CrewRecordRoomView extends StatelessWidget {
       }).toList(),
     );
   }
-
   Widget _buildTimeSlotBars(RankingCrewHistoryViewModel viewModel, Size size) {
     final passcountTime = viewModel.rankingListCrewBetaList[0].passcountTime!;
 
@@ -785,32 +860,45 @@ class CrewRecordRoomView extends StatelessWidget {
         int timePassCount = entry.value;
         double barHeightRatio = (timePassCount / maxPassCount);  // 최대값을 기준으로 비율 계산
 
-        return Column(
-          children: [
-            Text(
-              '$timePassCount',
-              style: SDSTextStyle.regular.copyWith(
-                fontSize: 12,
-                color: SDSColor.gray900,
+        return Container(
+          width: 30,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Padding(
+                padding: EdgeInsets.only(bottom: 4),
+                child: Text(
+                  '$timePassCount',
+                  style: SDSTextStyle.regular.copyWith(
+                    fontSize: 12,
+                    color: SDSColor.gray900,
+                  ),
+                ),
               ),
-            ),
-            Container(
-              width: 16,
-              height: 140 * barHeightRatio,  // 높이 비율 적용
-              decoration: BoxDecoration(
-                color: SDSColor.blue200,
-                borderRadius: BorderRadius.circular(4),
+              Container(
+                width: 16,
+                height: 140 * barHeightRatio,  // 높이 비율 적용
+                decoration: BoxDecoration(
+                  color: SDSColor.blue200,
+                    borderRadius: BorderRadius.only(
+                        topRight: Radius.circular(4), topLeft: Radius.circular(4)
+                    )
+                ),
               ),
-            ),
-            SizedBox(height: 8),
-            Text(
-              timeSlot,
-              style: SDSTextStyle.regular.copyWith(
-                fontSize: 11,
-                color: SDSColor.sBlue600,
+              SizedBox(height: 8),
+              Container(
+                width: 20,
+                child: Text(
+                  timeSlot,
+                  style: SDSTextStyle.regular.copyWith(
+                    fontSize: 11,
+                    color: SDSColor.sBlue600,
+                      height: 1.2
+                  ),
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         );
       }).toList(),
     );

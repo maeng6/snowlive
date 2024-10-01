@@ -177,7 +177,7 @@ class RankingCrewView extends StatelessWidget {
                                                           child: Text(
                                                             _rankingListViewModel.myBox_score,
                                                             style: SDSTextStyle.regular.copyWith(
-                                                              color: SDSColor.gray500,
+                                                              color: SDSColor.snowliveBlack.withOpacity(0.4),
                                                               fontSize: 13,
                                                             ),
                                                           ),
@@ -201,7 +201,7 @@ class RankingCrewView extends StatelessWidget {
                                                           child: Text(
                                                             _rankingListViewModel.myBox_ranking,
                                                             style: SDSTextStyle.regular.copyWith(
-                                                              color: SDSColor.gray500,
+                                                              color: SDSColor.snowliveBlack.withOpacity(0.4),
                                                               fontSize: 13,
                                                             ),
                                                           ),
@@ -220,26 +220,26 @@ class RankingCrewView extends StatelessWidget {
                                             width: 80,
                                             height: 80,
                                             decoration: BoxDecoration(
-                                              color: SDSColor.blue50,
+                                              color: Color(int.parse(_rankingListViewModel.rankingListCrewMy_view!.color!)).withOpacity(0.3),
                                               borderRadius: BorderRadius.circular(16),
                                             ),
-                                            padding: EdgeInsets.all(18),
+                                            padding: EdgeInsets.all(2),
                                             child: Transform.translate(
                                               offset: Offset(0, 0),
                                               child: Container(
                                                 decoration: BoxDecoration(
-                                                  boxShadow: [
-                                                    BoxShadow(
-                                                      color: Colors.black.withOpacity(0.06),
-                                                      spreadRadius: 2,
-                                                      blurRadius: 10,
-                                                      offset: Offset(0, 4),
-                                                    ),
-                                                  ],
-                                                  borderRadius: BorderRadius.circular(8),
+                                                  // boxShadow: [
+                                                  //   BoxShadow(
+                                                  //     color: Colors.black.withOpacity(0.06),
+                                                  //     spreadRadius: 2,
+                                                  //     blurRadius: 2,
+                                                  //     offset: Offset(0, 2),
+                                                  //   ),
+                                                  // ],
+                                                  borderRadius: BorderRadius.circular(14),
                                                 ),
                                                 child: ClipRRect(
-                                                  borderRadius: BorderRadius.circular(8),
+                                                  borderRadius: BorderRadius.circular(14),
                                                   child: ExtendedImage.network(
                                                     '${_rankingListViewModel.rankingListCrewMy_view!.crewLogoUrl
                                                         ?? crewDefaultLogoUrl['${_rankingListViewModel.rankingListCrewMy_view!.color}']}',
@@ -2126,7 +2126,7 @@ class RankingCrewView extends StatelessWidget {
                             ],);
                           }else{
                             return Container(
-                              height: _size.height - _size.height*0.3,
+                              height: _size.height - 520,
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 mainAxisAlignment: MainAxisAlignment.center,

@@ -358,7 +358,7 @@ class _FriendDetailViewState extends State<FriendDetailView> {
                                                     hideProfile: _friendDetailViewModel.friendDetailModel.friendUserInfo.hideProfile,
                                                   );
                                                   Get.toNamed(AppRoutes.friendDetailUpdate);
-                                                  
+
                                                 }, child: Text('프로필 수정',
                                                 style: SDSTextStyle.bold.copyWith(
                                                     fontSize: 13,
@@ -670,7 +670,7 @@ class _FriendDetailViewState extends State<FriendDetailView> {
                                             //라이딩 통계탭
                                             if(_friendDetailViewModel.mainTabName == FriendDetailViewModel.mainTabNameListConst[0])
                                               (_friendDetailViewModel.friendDetailModel.seasonRankingInfo.overallTotalCount != 0)
-                                              ?Column(
+                                                  ?Column(
                                                 crossAxisAlignment: CrossAxisAlignment.start,
                                                 children: [
                                                   SizedBox(height: 30,),
@@ -887,7 +887,7 @@ class _FriendDetailViewState extends State<FriendDetailView> {
                                                                           ),
                                                                         ),
                                                                         Transform.translate(
-                                                                                 offset: Offset(-6, 0),
+                                                                          offset: Offset(-6, 0),
                                                                           child: Text('라이딩 기록실',
                                                                               style: SDSTextStyle.regular.copyWith(
                                                                                   fontSize: 14,
@@ -1177,7 +1177,7 @@ class _FriendDetailViewState extends State<FriendDetailView> {
                                                                   child: Column(
                                                                     crossAxisAlignment: CrossAxisAlignment.start,
                                                                     children: [
-                                                                      Text('오늘 탄 슬로프',
+                                                                      Text('이용 슬로프',
                                                                         style: SDSTextStyle.regular.copyWith(
                                                                             color: SDSColor.gray900.withOpacity(0.5),
                                                                             fontSize: 14
@@ -1309,7 +1309,7 @@ class _FriendDetailViewState extends State<FriendDetailView> {
                                                                       Column(
                                                                         crossAxisAlignment: CrossAxisAlignment.start,
                                                                         children: [
-                                                                          Text('오늘 총 라이딩 횟수',
+                                                                          Text('라이딩 횟수',
                                                                             style: SDSTextStyle.regular.copyWith(
                                                                                 color: SDSColor.gray900.withOpacity(0.5),
                                                                                 fontSize: 14
@@ -1518,10 +1518,10 @@ class _FriendDetailViewState extends State<FriendDetailView> {
                                                                                 decoration: BoxDecoration(
                                                                                     color: Color(0xFFDFECFF),
                                                                                     borderRadius: BorderRadius.circular(50),
-                                                                                  border: Border.all(
-                                                                                    color: SDSColor.gray100,
-                                                                                    width: 1
-                                                                                  )
+                                                                                    border: Border.all(
+                                                                                        color: SDSColor.gray100,
+                                                                                        width: 1
+                                                                                    )
                                                                                 ),
                                                                                 child: ExtendedImage.network(
                                                                                   document.authorInfo.profileImageUrlUser,

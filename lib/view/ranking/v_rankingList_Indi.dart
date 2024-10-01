@@ -191,21 +191,20 @@ class RankingIndiView extends StatelessWidget {
                                               offset: Offset(0, 0),
                                               child: ExtendedImage.network(
                                                 '${_rankingListViewModel.rankingListIndivMy_view?.overallTierIconUrl ?? '등급 없음'}',
-                                                enableMemoryCache: true,
-                                                fit: BoxFit.cover,
+                                                  enableMemoryCache: true,
+                                                  fit: BoxFit.cover,
                                                   loadStateChanged: (ExtendedImageState state) {
                                                     switch (state.extendedImageLoadState) {
                                                       case LoadState.loading:
                                                       // 로딩 중일 때 로딩 인디케이터를 표시
-                                                        return Shimmer.fromColors(
-                                                          baseColor: SDSColor.gray200!,
-                                                          highlightColor: SDSColor.gray50!,
+                                                        return Center(
                                                           child: Container(
-                                                            width: 80,
-                                                            height: 80,
-                                                            decoration: BoxDecoration(
-                                                              color: Colors.white,
-                                                              borderRadius: BorderRadius.circular(8),
+                                                            width: 24,
+                                                            height: 24,
+                                                            child: CircularProgressIndicator(
+                                                              strokeWidth: 4,
+                                                              backgroundColor: SDSColor.blue100.withOpacity(0.3),
+                                                              color: SDSColor.blue200.withOpacity(0.4),
                                                             ),
                                                           ),
                                                         );
@@ -214,11 +213,13 @@ class RankingIndiView extends StatelessWidget {
                                                         return state.completedWidget;
                                                       case LoadState.failed:
                                                       // 로딩이 실패했을 때 대체 이미지 또는 다른 처리
-                                                        return Image.asset(
-                                                          'assets/imgs/imgs/img_flea_default.png', // 대체 이미지 경로
-                                                          width: 80,
-                                                          height: 80,
-                                                          fit: BoxFit.cover,
+                                                        return Padding(
+                                                          padding: EdgeInsets.symmetric(horizontal: 2),
+                                                          child: Image.asset(
+                                                            'assets/imgs/logos/snowlive_logo_new.png', // 대체 이미지 경로
+                                                            width: 24,
+                                                            color: SDSColor.blue200,
+                                                          ),
                                                         );
                                                     }
                                                   }
@@ -1192,7 +1193,7 @@ class RankingIndiView extends StatelessWidget {
                     ),
                   )
                       : Container(
-                    height: _size.height - 420,
+                    height: _size.height - 520,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       mainAxisAlignment: MainAxisAlignment.center,
