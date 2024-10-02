@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:com.snowlive/firebase_options.dart';
 import 'package:com.snowlive/util/pushNoitification.dart';
+import 'package:com.snowlive/viewmodel/friend/vm_friendDetail.dart';
 import 'package:com.snowlive/viewmodel/onboarding_login/vm_authcheck.dart';
 import 'package:com.snowlive/viewmodel/vm_notificationController.dart';
 import 'package:com.snowlive/viewmodel/vm_splashController.dart';
@@ -63,6 +64,7 @@ void main() async {
   HttpOverrides.global = MyHttpOverrides();
   // Dependency Injection
   await Get.put(UserViewModel(), permanent: true);
+  await Get.put(FriendDetailViewModel());
   await Get.put(NotificationController(),permanent: true);
   await Get.put(AuthCheckViewModel(), permanent: true);
   await Get.put(SplashController(),permanent: true);

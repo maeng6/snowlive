@@ -44,7 +44,6 @@ class MainHomeBinding extends Bindings {
     Get.put(ResortHomeViewModel());
     Get.put(GenderCategoryViewModel());
     Get.put(ChatViewModel());
-    Get.put(FriendDetailViewModel());
     Get.put(FriendDetailUpdateViewModel());
     Get.put(FleamarketListViewModel());
     Get.put(FleamarketDetailViewModel());

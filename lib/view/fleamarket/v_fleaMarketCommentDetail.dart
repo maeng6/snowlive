@@ -820,7 +820,11 @@ class FleamarketCommentDetailView extends StatelessWidget {
                                                                                                       );
                                                                                                       CustomFullScreenDialog.cancelDialog();
                                                                                                       print('댓글 삭제 완료');
-                                                                                                      _fleamarketListViewModel.fetchAllFleamarket();
+                                                                                                      await _fleamarketDetailViewModel.fetchFleamarketDetailFromAPI(
+                                                                                                          fleamarketId: _fleamarketDetailViewModel.fleamarketDetail.fleaId!
+                                                                                                          , userId: _userViewModel.user.user_id
+                                                                                                      );
+                                                                                                      await _fleamarketListViewModel.fetchAllFleamarket();
                                                                                                     },
                                                                                                     style: TextButton.styleFrom(
                                                                                                       backgroundColor: Colors.transparent, // 배경색 투명

@@ -362,7 +362,6 @@ class RankingListViewModel extends GetxController {
       _myBox_title.value = '${resortFullNameList[selectedResortNum-1]} 일간통계';
       _myBox_score.value = '개인 점수';
       _myBox_ranking.value = '개인 랭킹';
-      print(_rankingListIndivList_view[0].displayName);
     } else if (tapName == '개인랭킹' && resortOrTotal == '개별스키장' && dayOrTotal == '누적'){
       _myBox_title.value = '${resortFullNameList[selectedResortNum-1]} 누적통계';
       _myBox_score.value = '개인 점수';
@@ -727,6 +726,8 @@ class RankingListViewModel extends GetxController {
     print('fetchRankingDataCrew_total 시작');
     try {
       isLoading(true);
+      print('크루전체 패치시작');
+      print(season);
       final response = await RankingAPI().fetchRankingData_crew(
         userId: userId,
         resortId: resortId,

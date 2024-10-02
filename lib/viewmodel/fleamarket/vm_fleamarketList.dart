@@ -648,12 +648,18 @@ class FleamarketListViewModel extends GetxController {
 
   Future<void> onRefresh_flea_total() async {
     await fetchFleamarketData_total(userId:  _userViewModel.user.user_id);
+    changeCategory_sub_total(FleamarketCategory_sub.total.korean);
+    changeCategory_spot_total(FleamarketCategory_spot.total.korean);
   }
   Future<void> onRefresh_flea_ski() async {
     await fetchFleamarketData_ski(userId:  _userViewModel.user.user_id);
+    changeCategory_sub_ski(FleamarketCategory_sub.total.korean);
+    changeCategory_spot_ski(FleamarketCategory_spot.total.korean);
   }
   Future<void> onRefresh_flea_board() async {
     await fetchFleamarketData_board(userId:  _userViewModel.user.user_id);
+    changeCategory_sub_board(FleamarketCategory_sub.total.korean);
+    changeCategory_spot_board(FleamarketCategory_spot.total.korean);
   }
   Future<void> onRefresh_flea_favorite() async {
     await fetchFleamarketData_favorite(userId:  _userViewModel.user.user_id);
