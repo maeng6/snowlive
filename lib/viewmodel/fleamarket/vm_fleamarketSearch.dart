@@ -62,7 +62,7 @@ class FleamarketSearchViewModel extends GetxController {
       print('다음목록 로딩 시작');
       if (_nextPageUrl_total.value.isNotEmpty) {
         _isLoadingNextList.value = true;
-        await fetchFleamarketData_search(
+        await fetchFleamarketData_search_Next(
             userId: _userViewModel.user.user_id,
             url: _nextPageUrl_total.value
         ); // 추가 데이터 로딩
@@ -120,25 +120,56 @@ class FleamarketSearchViewModel extends GetxController {
     }
   }
 
+  Future<void> fetchFleamarketData_search_Next({
+    required int userId,
+    String? categoryMain,
+    String? categorySub,
+    String? spot,
+    bool? favorite_list,
+    String? search_query,
+    bool? myflea,
+    String? url,
+  }) async {
+    _isLoadingNextList(true);
 
-  Future<void> fetchNextPage_total() async{
-    if (_nextPageUrl_total.value.isNotEmpty) {
-      await fetchFleamarketData_search(
-          userId: _userViewModel.user.user_id,
-          url: _nextPageUrl_total.value
+    try {
+
+      final response = await _fleamarketAPI.fetchFleamarketList(
+          userId: userId,
+          categoryMain: categoryMain,
+          categorySub: categorySub,
+          spot: spot,
+          favorite_list: favorite_list,
+          search_query: search_query,
+          myflea: myflea,
+          url: url
       );
+
+      if (response.success) {
+        final fleamarketResponse = FleamarketResponse.fromJson(response.data!);
+
+        if (url == null) {
+          // For initial fetch
+          _fleamarketList_search.value = fleamarketResponse.results ?? [];
+        } else {
+          // For pagination
+          _fleamarketList_search.addAll(fleamarketResponse.results ?? []);
+        }
+
+        _nextPageUrl_total.value = fleamarketResponse.next ?? '';
+        _previousPageUrl_total.value = fleamarketResponse.previous ?? '';
+      } else {
+        // Handle error response
+        print('Failed to load data: ${response.error}');
+      }
+    } catch (e) {
+      print('Error fetching data: $e');
+    } finally {
+      _isLoadingNextList(false);
     }
   }
 
 
-  Future<void> fetchPreviousPage_total() async{
-    if (_previousPageUrl_total.value.isNotEmpty) {
-      await fetchFleamarketData_search(
-          userId: _userViewModel.user.user_id,
-          url: _previousPageUrl_total.value
-      );
-    }
-  }
 
 
   Future<void> _loadRecentSearches() async {

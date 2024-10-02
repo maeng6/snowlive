@@ -4,6 +4,7 @@ import 'package:com.snowlive/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/routes/routes.dart';
 import 'package:com.snowlive/util/util_1.dart';
 import 'package:com.snowlive/view/friend/v_profilePageCalendar.dart';
+import 'package:com.snowlive/view/v_profileImageScreen.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewDetail.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewMemberList.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewRecordRoom.dart';
@@ -16,6 +17,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:photo_view/photo_view.dart';
 
 class FriendDetailView extends StatefulWidget {
   @override
@@ -187,11 +189,36 @@ class _FriendDetailViewState extends State<FriendDetailView> {
                                     crossAxisAlignment: CrossAxisAlignment.center,
                                     children: [
                                       //프사
-                                      (_friendDetailViewModel.friendDetailModel.friendUserInfo.profileImageUrlUser.isNotEmpty)
+                                      (_friendDetailViewModel.friendDetailModel.friendUserInfo.profileImageUrlUser != '')
                                           ? GestureDetector(
                                         onTap: () {
                                           _textFocus.unfocus();
-                                          Get.toNamed(AppRoutes.userProfileIamge,arguments:_friendDetailViewModel.friendDetailModel.friendUserInfo.profileImageUrlUser);
+                                          showDialog(
+                                            context: context,
+                                            builder: (BuildContext context) {
+                                              return Dialog(
+                                                backgroundColor: Colors.transparent, // 다이얼로그 배경을 투명하게 설정
+                                                child: GestureDetector(
+                                                  onTap: () {
+                                                    Navigator.of(context).pop(); // 클릭 시 다이얼로그 닫기
+                                                  },
+                                                  child: Center(
+                                                    child: PhotoView(
+                                                      imageProvider: ExtendedNetworkImageProvider(
+                                                        _friendDetailViewModel.friendDetailModel.friendUserInfo.profileImageUrlUser, // 이미지 URL 설정
+                                                        cache: true, // 캐싱 옵션
+                                                      ),
+                                                      backgroundDecoration: const BoxDecoration(
+                                                        color: Colors.transparent, // 배경을 투명으로 설정
+                                                      ),
+                                                      minScale: PhotoViewComputedScale.contained, // 최소 확대 비율
+                                                      maxScale: PhotoViewComputedScale.covered * 7, // 최대 확대 비율
+                                                    ),
+                                                  ),
+                                                ),
+                                              );
+                                            },
+                                          );
                                         },
                                         child: Container(
                                             width: 82,
@@ -238,14 +265,13 @@ class _FriendDetailViewState extends State<FriendDetailView> {
                                         child: Container(
                                           width: 82,
                                           height: 82,
-                                          child: ExtendedImage.network(
-                                            'https://i.esdrop.com/d/f/yytYSNBROy/NIlGn0N46O.png',
-                                            enableMemoryCache: true,
-                                            shape: BoxShape.circle,
-                                            borderRadius: BorderRadius.circular(8),
-                                            width: 82,
-                                            height: 82,
-                                            fit: BoxFit.cover,
+                                          child: ClipOval(
+                                            child: Image.asset(
+                                              'assets/imgs/profile/img_profile_default_circle.png',
+                                              width: 82,
+                                              height: 82,
+                                              fit: BoxFit.cover,
+                                            ),
                                           ),
                                         ),
                                       ),

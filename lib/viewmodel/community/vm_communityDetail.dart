@@ -155,6 +155,7 @@ class CommunityDetailViewModel extends GetxController {
       final response = await CommunityAPI().addView(communityId, userId);
 
       if (response.success) {
+        print('뷰어등록성공');
       } else {
         print('Failed to addview community post: ${response.error}');
       }
@@ -355,10 +356,10 @@ class CommunityDetailViewModel extends GetxController {
   }
 
   // 답글 삭제하기
-  Future<void> deleteReply(int replyId, String userId) async {
+  Future<void> deleteReply(int replyId, Map<String, dynamic> body) async {
     isLoading.value = true;
     try {
-      final response = await CommunityAPI().deleteReply(replyId, userId);
+      final response = await CommunityAPI().deleteReply(replyId, body);
 
       if (response.success) {
         print('Reply deleted successfully');

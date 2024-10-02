@@ -84,7 +84,7 @@ class _CategorySubSkiFleamarketWidgetState extends State<CategorySubSkiFleamarke
           ),
           Container(
             width: _size.width,
-            padding: EdgeInsets.only(top: 16),
+            padding: EdgeInsets.only(top: 16, bottom: 16),
             child: ElevatedButton(
               onPressed: () {
                 Navigator.pop(context, category_sub_ski);

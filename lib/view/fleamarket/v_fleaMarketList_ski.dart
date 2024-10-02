@@ -85,40 +85,40 @@ class FleaMarketListView_ski extends StatelessWidget {
                 child: Transform.translate(
                   offset: Offset(18, 0),
                   child: Align(
-                    alignment: Alignment.bottomRight,
-                    child: AnimatedContainer(
-                      width: _fleamarketListViewModel.showAddButton_ski ? 104 : 52,
-                      height: 52,
-                      duration: Duration(milliseconds: 200),
-                      child: FloatingActionButton.extended(
-                        elevation: 4,
-                        heroTag: 'fleaListScreen',
-                        onPressed: () async {
-                          Get.toNamed(AppRoutes.fleamarketUpload);
-                        },
-                        icon: Transform.translate(
-                            offset: Offset(6,0),
-                            child: Center(child: Icon(Icons.add,
-                              color: SDSColor.snowliveWhite,
-                            ))),
-                        label: _fleamarketListViewModel.showAddButton_ski
-                            ? Padding(
-                          padding: const EdgeInsets.only(right: 6),
-                          child: Text('글쓰기',
-                            style: SDSTextStyle.bold.copyWith(
-                                letterSpacing: 0.5,
-                                fontSize: 15,
+                      alignment: Alignment.bottomRight,
+                      child: Obx(()=>AnimatedContainer(
+                        width: _fleamarketListViewModel.showAddButton_ski ? 104 : 52,
+                        height: 52,
+                        duration: Duration(milliseconds: 200),
+                        child: FloatingActionButton.extended(
+                          elevation: 4,
+                          heroTag: 'fleaListScreen',
+                          onPressed: () async {
+                            Get.toNamed(AppRoutes.fleamarketUpload);
+                          },
+                          icon: Transform.translate(
+                              offset: Offset(6,0),
+                              child: Center(child: Icon(Icons.add,
                                 color: SDSColor.snowliveWhite,
-                                overflow: TextOverflow.ellipsis),
+                              ))),
+                          label: _fleamarketListViewModel.showAddButton_ski
+                              ? Padding(
+                            padding: const EdgeInsets.only(right: 6),
+                            child: Text('글쓰기',
+                              style: SDSTextStyle.bold.copyWith(
+                                  letterSpacing: 0.5,
+                                  fontSize: 15,
+                                  color: SDSColor.snowliveWhite,
+                                  overflow: TextOverflow.ellipsis),
+                            ),
+                          )
+                              : SizedBox.shrink(), // Hide the text when _showAddButton is false
+                          backgroundColor: SDSColor.snowliveBlue,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(50)
                           ),
-                        )
-                            : SizedBox.shrink(), // Hide the text when _showAddButton is false
-                        backgroundColor: SDSColor.snowliveBlue,
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(50)
                         ),
-                      ),
-                    ),
+                      ),)
                   ),
                 ),
               ),

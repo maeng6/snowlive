@@ -259,11 +259,14 @@ class CommunityAPI {
   }
 
   // 답글 삭제
-  Future<ApiResponse> deleteReply(int replyId, String userId) async {
+  Future<ApiResponse> deleteReply(int replyId, Map<String, dynamic> body) async {
     final response = await http.delete(
       Uri.parse('$baseUrl/replies/$replyId/'),
-      headers: {'Content-Type': 'application/json', 'user_id': userId},
+      body: json.encode(body),
+      headers: {'Content-Type': 'application/json'},
     );
+    print(body);
+    print(response.body);
 
     if (response.statusCode == 204) {
       return ApiResponse.success(null);
@@ -279,8 +282,6 @@ class CommunityAPI {
       body: json.encode(body),
       headers: {'Content-Type': 'application/json'},
     );
-
-    print(response.body);
 
     if (response.statusCode == 201 || response.statusCode == 400) {
       return ApiResponse.success(json.decode(utf8.decode(response.bodyBytes)));

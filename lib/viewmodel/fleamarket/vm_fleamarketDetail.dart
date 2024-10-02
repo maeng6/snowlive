@@ -74,12 +74,6 @@ class FleamarketDetailViewModel extends GetxController {
 
   }
 
-  @override
-  void onClose() {
-    textEditingController.dispose(); // 메모리 누수를 방지하기 위해 컨트롤러 해제
-    super.onClose();
-  }
-
 
   Future<void> fetchFleamarketDetailandComment({
     required var fleamarketResponse,

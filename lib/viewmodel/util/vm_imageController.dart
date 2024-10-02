@@ -172,9 +172,35 @@ class ImageController extends GetxController {
       resizedImages =[];
       Get.dialog(
         AlertDialog(
-          title: Text('사진 개수 초과'),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          contentPadding: EdgeInsets.all(20),
+          title: Center(
+            child: Column(
+              children: [
+                Image.asset(
+                  'assets/imgs/imgs/img_error_1.png',
+                  scale: 4,
+                  width: 100,
+                  height: 100,
+                ),
+                SizedBox(height: 5),
+                Text(
+                  '최대 5장까지 업로드 가능합니다',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black87,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ],
+            ),
+          ),
         ),
       );
+
       return resizedImages;
     }
   }

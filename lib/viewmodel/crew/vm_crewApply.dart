@@ -23,23 +23,23 @@ class CrewApplyViewModel extends GetxController {
 
 
   // 크루 가입 신청
-  Future<void> applyForCrew(int crewId, int userId, String title) async {
+  Future<void> applyForCrew(int crewId, int userId, String? title) async {
     isLoading.value = true;
     try {
       // 서버에 전송할 데이터 구성
-      final response = await CrewAPI().applyForCrew({
-        'crew_id': crewId.toString(),
-        'applicant_user_id': userId.toString(),
-        'title': title
-      });
-
+      final response = await CrewAPI().applyForCrew(
+          {
+        "crew_id": crewId.toString(),
+        "applicant_user_id": userId.toString(),
+        "title": title
+      }
+      );
         CustomFullScreenDialog.cancelDialog();
 
       if (response.success) {
         await fetchCrewApplyListUser(userId);
         Get.offNamed(AppRoutes.crewApplicationUser);
       } else {
-        Get.back();
         Get.snackbar('중복 신청', '이미 가입 신청 중인 크루입니다.');
       }
     } catch (e) {
