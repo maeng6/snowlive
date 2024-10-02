@@ -107,10 +107,10 @@ class CommunityCommentDetailView extends StatelessWidget {
                                             color: Color(0xFFDFECFF),
                                             borderRadius: BorderRadius.circular(50)
                                         ),
-                                        child: ExtendedImage.network(
-                                          (_communityCommentDetailViewModel.commentModel_community.userInfo!.profileImageUrlUser!=null)
-                                              ?'${_communityCommentDetailViewModel.commentModel_community.userInfo!.profileImageUrlUser}'
-                                              : '${profileImgUrlList[0].default_round}',
+                                        child:
+                                        (_communityCommentDetailViewModel.commentModel_community.userInfo!.profileImageUrlUser!='')
+                                        ? ExtendedImage.network(
+                                          '${_communityCommentDetailViewModel.commentModel_community.userInfo!.profileImageUrlUser}',
                                           cache: true,
                                           shape: BoxShape.circle,
                                           borderRadius:
@@ -125,18 +125,26 @@ class CommunityCommentDetailView extends StatelessWidget {
                                               case LoadState.completed:
                                                 return state.completedWidget;
                                               case LoadState.failed:
-                                                return ExtendedImage.network(
-                                                  '${profileImgUrlList[0].default_round}',
-                                                  shape: BoxShape.circle,
-                                                  borderRadius: BorderRadius.circular(20),
-                                                  width: 32,
-                                                  height: 32,
-                                                  fit: BoxFit.cover,
+                                                return ClipOval(
+                                                  child: Image.asset(
+                                                    'assets/imgs/profile/img_profile_default_circle.png',
+                                                    width: 24,
+                                                    height: 24,
+                                                    fit: BoxFit.cover,
+                                                  ),
                                                 ); // 예시로 에러 아이콘을 반환하고 있습니다.
                                               default:
                                                 return null;
                                             }
                                           },
+                                        )
+                                        : ClipOval(
+                                          child: Image.asset(
+                                            'assets/imgs/profile/img_profile_default_circle.png',
+                                            width: 24,
+                                            height: 24,
+                                            fit: BoxFit.cover,
+                                          ),
                                         ),
                                       ),
                                     ),
@@ -711,24 +719,26 @@ class CommunityCommentDetailView extends StatelessWidget {
                                                                                           child: Container(
                                                                                             child: TextButton(
                                                                                                 onPressed: () async {
+                                                                                                  print('1111');
+                                                                                                  Navigator.pop(context);
+                                                                                                  Navigator.pop(context);
                                                                                                   CustomFullScreenDialog.showDialog();
-                                                                                                  Navigator.pop(context);
-                                                                                                  Navigator.pop(context);
                                                                                                   await _communityCommentDetailViewModel.deleteCommunityReply(
                                                                                                       replyID: reply_id,
-                                                                                                      userID: _userViewModel.user.user_id.toString()
+                                                                                                      body: {
+                                                                                                        "user_id":_userViewModel.user.user_id
+                                                                                                      }
                                                                                                   );
                                                                                                   await _communityCommentDetailViewModel.fetchCommunityCommentDetail(
                                                                                                       commentId: _communityCommentDetailViewModel.commentModel_community.commentId!
                                                                                                   );
+                                                                                                  CustomFullScreenDialog.cancelDialog();
                                                                                                   if(_communityBulletinListViewModel.tapName =='게시판') {
                                                                                                     await _communityBulletinListViewModel.fetchAllCommunity();
                                                                                                   }else{
                                                                                                     await _communityBulletinListViewModel.fetchEventCommunity();
                                                                                                   }
                                                                                                   print('댓글 삭제 완료');
-                                                                                                  Navigator.pop(context);
-                                                                                                  CustomFullScreenDialog.cancelDialog();
                                                                                                 },
                                                                                                 style: TextButton.styleFrom(
                                                                                                   backgroundColor: Colors.transparent, // 배경색 투명

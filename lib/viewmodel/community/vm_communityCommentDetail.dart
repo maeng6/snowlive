@@ -179,8 +179,9 @@ class CommunityCommentDetailViewModel extends GetxController {
       Get.snackbar('Error', '답글 수정 실패');
   }
 
-  Future<void> deleteCommunityReply({required replyID, required userID}) async {
-    ApiResponse response = await CommunityAPI().deleteReply(replyID, userID);
+  Future<void> deleteCommunityReply({required replyID, required body}) async {
+    ApiResponse response = await CommunityAPI().deleteReply(replyID, body);
+
     if(response.success)
       // _scrollController.jumpTo(0);
       print('답글 삭제 완료');

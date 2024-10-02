@@ -106,16 +106,17 @@ class CrewAPI {
 
   // 크루 가입 신청
   Future<ApiResponse<Map<String, dynamic>>> applyForCrew(Map<String, dynamic> applicationData) async {
+    print(applicationData);
     final response = await http.post(
       Uri.parse('$baseUrl/crew-member/apply/'),
       body: json.encode(applicationData),
       headers: {'Content-Type': 'application/json'},
     );
-    print(response.body);
+    print(response.statusCode);
     if (response.statusCode == 201) {
       return ApiResponse.success(json.decode(utf8.decode(response.bodyBytes)));
     } else {
-      return ApiResponse.error(json.decode(utf8.decode(response.bodyBytes)));
+      return ApiResponse.error(null);
     }
   }
 

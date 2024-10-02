@@ -11,6 +11,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:photo_view/photo_view.dart';
 import 'package:shimmer/shimmer.dart';
 
 class RankingIndiView extends StatelessWidget {
@@ -190,40 +191,71 @@ class RankingIndiView extends StatelessWidget {
                                             padding: EdgeInsets.all(8),
                                             child: Transform.translate(
                                               offset: Offset(0, 0),
-                                              child: ExtendedImage.network(
-                                                '${_rankingListViewModel.rankingListIndivMy_view?.overallTierIconUrl ?? '등급 없음'}',
-                                                  enableMemoryCache: true,
-                                                  fit: BoxFit.cover,
-                                                  loadStateChanged: (ExtendedImageState state) {
-                                                    switch (state.extendedImageLoadState) {
-                                                      case LoadState.loading:
-                                                      // 로딩 중일 때 로딩 인디케이터를 표시
-                                                        return Center(
-                                                          child: Container(
-                                                            width: 24,
-                                                            height: 24,
-                                                            child: CircularProgressIndicator(
-                                                              strokeWidth: 4,
-                                                              backgroundColor: SDSColor.blue100.withOpacity(0.3),
-                                                              color: SDSColor.blue200.withOpacity(0.4),
+                                              child: GestureDetector(
+                                                onTap:(){
+                                                  showDialog(
+                                                    context: context,
+                                                    builder: (BuildContext context) {
+                                                      return Dialog(
+                                                        backgroundColor: Colors.transparent, // 다이얼로그 배경을 투명하게 설정
+                                                        child: GestureDetector(
+                                                          onTap: () {
+                                                            Navigator.of(context).pop(); // 클릭 시 다이얼로그 닫기
+                                                          },
+                                                          child: Center(
+                                                            child: PhotoView(
+                                                              imageProvider: ExtendedNetworkImageProvider(
+                                                                _rankingListViewModel.rankingListIndivMy_view!.overallTierIconUrl!, // 이미지 URL 설정
+                                                                cache: true, // 캐싱 옵션
+                                                              ),
+                                                              backgroundDecoration: const BoxDecoration(
+                                                                color: Colors.transparent, // 배경을 투명으로 설정
+                                                              ),
+                                                              minScale: PhotoViewComputedScale.contained, // 최소 확대 비율
+                                                              maxScale: PhotoViewComputedScale.covered * 7, // 최대 확대 비율
+
                                                             ),
                                                           ),
-                                                        );
-                                                      case LoadState.completed:
-                                                      // 로딩이 완료되었을 때 이미지 반환
-                                                        return state.completedWidget;
-                                                      case LoadState.failed:
-                                                      // 로딩이 실패했을 때 대체 이미지 또는 다른 처리
-                                                        return Padding(
-                                                          padding: EdgeInsets.symmetric(horizontal: 2),
-                                                          child: Image.asset(
-                                                            'assets/imgs/logos/snowlive_logo_new.png', // 대체 이미지 경로
-                                                            width: 24,
-                                                            color: SDSColor.blue200,
-                                                          ),
-                                                        );
+                                                        ),
+                                                      );
+                                                    },
+                                                  );
+                                                },
+                                                child: ExtendedImage.network(
+                                                  '${_rankingListViewModel.rankingListIndivMy_view?.overallTierIconUrl ?? '등급 없음'}',
+                                                    enableMemoryCache: true,
+                                                    fit: BoxFit.cover,
+                                                    loadStateChanged: (ExtendedImageState state) {
+                                                      switch (state.extendedImageLoadState) {
+                                                        case LoadState.loading:
+                                                        // 로딩 중일 때 로딩 인디케이터를 표시
+                                                          return Center(
+                                                            child: Container(
+                                                              width: 24,
+                                                              height: 24,
+                                                              child: CircularProgressIndicator(
+                                                                strokeWidth: 4,
+                                                                backgroundColor: SDSColor.blue100.withOpacity(0.3),
+                                                                color: SDSColor.blue200.withOpacity(0.4),
+                                                              ),
+                                                            ),
+                                                          );
+                                                        case LoadState.completed:
+                                                        // 로딩이 완료되었을 때 이미지 반환
+                                                          return state.completedWidget;
+                                                        case LoadState.failed:
+                                                        // 로딩이 실패했을 때 대체 이미지 또는 다른 처리
+                                                          return Padding(
+                                                            padding: EdgeInsets.symmetric(horizontal: 2),
+                                                            child: Image.asset(
+                                                              'assets/imgs/logos/snowlive_logo_new.png', // 대체 이미지 경로
+                                                              width: 24,
+                                                              color: SDSColor.blue200,
+                                                            ),
+                                                          );
+                                                      }
                                                     }
-                                                  }
+                                                ),
                                               ),
                                             ),
                                           ),

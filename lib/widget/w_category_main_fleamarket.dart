@@ -85,7 +85,7 @@ class _CategoryMainFleamarketWidgetState extends State<CategoryMainFleamarketWid
           ),
           Container(
             width: _size.width,
-            padding: EdgeInsets.only(top: 16),
+            padding: EdgeInsets.only(top: 16, bottom: 16),
             child: ElevatedButton(
               onPressed: () {
                 Navigator.pop(context, category_main);
