@@ -1569,6 +1569,7 @@ class CommunityBulletinDetailView extends StatelessWidget {
                                           _communityDetailViewModel.scrollController.position.maxScrollExtent,
                                         );
                                         FocusScope.of(context).unfocus();
+                                        await _communityDetailViewModel.fetchCommunityDetail(_communityDetailViewModel.communityDetail.communityId!, _userViewModel.user.user_id);
                                         CustomFullScreenDialog.cancelDialog();
                                         if(_communityBulletinListViewModel.tapName =='게시판') {
                                           await _communityBulletinListViewModel.fetchAllCommunity();
