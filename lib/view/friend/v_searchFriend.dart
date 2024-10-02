@@ -217,158 +217,169 @@ class SearchFriendView extends StatelessWidget {
                                       );
                                     } }
                                   // 검색된 친구 데이터가 있을 때 프로필 카드 및 버튼 표시
-                                  return Column(
-                                    children: [
-                                      Container(
-                                        width: 280,
-                                        height: 340,
-                                        decoration: BoxDecoration(
-                                            image: DecorationImage(
-                                              image: AssetImage(
-                                                  'assets/imgs/profile/img_friend_profileCard.png'), // 이미지 경로
-                                              fit: BoxFit.fill,
-                                            ),
-                                            borderRadius: BorderRadius.circular(20),
-                                            border: Border.all(
-                                                style: BorderStyle.solid,
-                                                width: 4,
-                                                color: SDSColor.blue100
-                                            )
-                                        ),
-                                        child: Column(
-                                          children: [
-                                            SizedBox(height: 40),
-                                            Center(
-                                              child: (_friendListViewModel.searchFriend.profileImageUrlUser != null &&
-                                                  _friendListViewModel.searchFriend.profileImageUrlUser!.isNotEmpty)
-                                                  ? Container(
-                                                width: 90,
-                                                height: 90,
+                                  return Container(
+                                    height: _size.height - 310,
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Padding(
+                                          padding: EdgeInsets.only(bottom: 40),
+                                          child: Column(
+                                            children: [
+                                              Container(
+                                                width: 280,
+                                                height: 340,
                                                 decoration: BoxDecoration(
-                                                  color: Color(0xFFDFECFF),
-                                                  borderRadius: BorderRadius.circular(50),
+                                                    image: DecorationImage(
+                                                      image: AssetImage(
+                                                          'assets/imgs/profile/img_friend_profileCard.png'), // 이미지 경로
+                                                      fit: BoxFit.fill,
+                                                    ),
+                                                    borderRadius: BorderRadius.circular(20),
+                                                    border: Border.all(
+                                                        style: BorderStyle.solid,
+                                                        width: 4,
+                                                        color: SDSColor.blue100
+                                                    )
                                                 ),
-                                                child: ExtendedImage.network(
-                                                  _friendListViewModel.searchFriend.profileImageUrlUser!,
-                                                  enableMemoryCache: true,
-                                                  shape: BoxShape.circle,
-                                                  cacheHeight: 150,
-                                                  borderRadius: BorderRadius.circular(8),
-                                                  width: 90,
-                                                  height: 90,
-                                                  fit: BoxFit.cover,
-                                                  loadStateChanged: (ExtendedImageState state) {
-                                                    switch (state.extendedImageLoadState) {
-                                                      case LoadState.loading:
-                                                        return SizedBox.shrink();
-                                                      case LoadState.completed:
-                                                        return state.completedWidget;
-                                                      case LoadState.failed:
-                                                        return ClipOval(
+                                                child: Column(
+                                                  children: [
+                                                    SizedBox(height: 40),
+                                                    Center(
+                                                      child: (_friendListViewModel.searchFriend.profileImageUrlUser != '' &&
+                                                          _friendListViewModel.searchFriend.profileImageUrlUser!.isNotEmpty)
+                                                          ? Container(
+                                                        width: 90,
+                                                        height: 90,
+                                                        decoration: BoxDecoration(
+                                                          color: Color(0xFFDFECFF),
+                                                          borderRadius: BorderRadius.circular(50),
+                                                        ),
+                                                        child: ExtendedImage.network(
+                                                          _friendListViewModel.searchFriend.profileImageUrlUser!,
+                                                          enableMemoryCache: true,
+                                                          shape: BoxShape.circle,
+                                                          cacheHeight: 150,
+                                                          borderRadius: BorderRadius.circular(8),
+                                                          width: 90,
+                                                          height: 90,
+                                                          fit: BoxFit.cover,
+                                                          loadStateChanged: (ExtendedImageState state) {
+                                                            switch (state.extendedImageLoadState) {
+                                                              case LoadState.loading:
+                                                                return SizedBox.shrink();
+                                                              case LoadState.completed:
+                                                                return state.completedWidget;
+                                                              case LoadState.failed:
+                                                                return ClipOval(
+                                                                  child: Image.asset(
+                                                                    'assets/imgs/profile/img_profile_default_circle.png',
+                                                                    width: 90,
+                                                                    height: 90,
+                                                                    fit: BoxFit.cover,
+                                                                  ),
+                                                                );
+                                                              default:
+                                                                return null;
+                                                            }
+                                                          },
+                                                        ),
+                                                      )
+                                                          : Container(
+                                                        width: 90,
+                                                        height: 90,
+                                                        child: ClipOval(
                                                           child: Image.asset(
                                                             'assets/imgs/profile/img_profile_default_circle.png',
                                                             width: 90,
                                                             height: 90,
                                                             fit: BoxFit.cover,
                                                           ),
-                                                        );
-                                                      default:
-                                                        return null;
-                                                    }
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    SizedBox(height: 10),
+                                                    Text(_friendListViewModel.searchFriend.displayName ?? '',
+                                                      style: SDSTextStyle.bold.copyWith(
+                                                          fontSize: 18,
+                                                          color: SDSColor.gray900
+                                                      ),),
+                                                    Text(
+                                                      _friendListViewModel.searchFriend.crewName ?? '개인',
+                                                      style: SDSTextStyle.regular.copyWith(
+                                                          color: SDSColor.gray900,
+                                                          fontSize: 15
+                                                      ),
+                                                    ),
+                                                    SizedBox(height: 20),
+                                                    Container(
+                                                      width: 64,
+                                                      height: 24,
+                                                      padding: EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+                                                      decoration: BoxDecoration(
+                                                        borderRadius: BorderRadius.circular(40),
+                                                        color: SDSColor.snowliveWhite,
+                                                      ),
+                                                      child: Center(
+                                                        child: Text(
+                                                          _friendListViewModel.searchFriend.skiorboard ?? '미설정',
+                                                          style: SDSTextStyle.bold.copyWith(
+                                                            color: SDSColor.gray900,
+                                                            fontSize: 13,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    Padding(
+                                                      padding: EdgeInsets.only(top: 50),
+                                                      child: Image.asset(
+                                                        'assets/imgs/logos/snowlive_logo_profile.png',
+                                                        scale: 4,
+                                                        width: 112,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                              SizedBox(height: 20),
+                                              Container(
+                                                width: 96,
+                                                height: 36,
+                                                child: ElevatedButton(
+                                                  onPressed: () async {
+                                                    textFocus.unfocus();
+                                                    Get.toNamed(AppRoutes.friendDetail);
+                                                    await _friendDetailViewModel.fetchFriendDetailInfo(
+                                                      userId: _userViewModel.user.user_id,
+                                                      friendUserId: _friendListViewModel.searchFriend.userId!,
+                                                      season: _friendDetailViewModel.seasonDate,
+                                                    );
                                                   },
-                                                ),
-                                              )
-                                                  : Container(
-                                                width: 90,
-                                                height: 90,
-                                                child: ClipOval(
-                                                  child: Image.asset(
-                                                    'assets/imgs/profile/img_profile_default_white.png',
-                                                    width: 90,
-                                                    height: 90,
-                                                    fit: BoxFit.cover,
+                                                  child: Text(
+                                                    '프로필 보기',
+                                                    style: SDSTextStyle.bold.copyWith(
+                                                        color: SDSColor.gray900, fontSize: 14),
+                                                  ),
+                                                  style: TextButton.styleFrom(
+                                                    padding: EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                                    side:BorderSide(
+                                                        color: SDSColor.gray200
+                                                    ),
+                                                    shape: RoundedRectangleBorder(
+                                                      borderRadius: BorderRadius.all(Radius.circular(6)),
+                                                    ),
+                                                    elevation: 0,
+                                                    splashFactory: InkRipple.splashFactory,
+                                                    minimumSize: Size(double.infinity, 48),
+                                                    backgroundColor: SDSColor.snowliveWhite,
                                                   ),
                                                 ),
                                               ),
-                                            ),
-                                            SizedBox(height: 10),
-                                            Text(_friendListViewModel.searchFriend.displayName ?? '',
-                                              style: SDSTextStyle.bold.copyWith(
-                                                  fontSize: 18,
-                                                  color: SDSColor.gray900
-                                              ),),
-                                            Text(
-                                              _friendListViewModel.searchFriend.crewName ?? '개인',
-                                              style: SDSTextStyle.regular.copyWith(
-                                                  color: SDSColor.gray900,
-                                                  fontSize: 15
-                                              ),
-                                            ),
-                                            SizedBox(height: 20),
-                                            Container(
-                                              width: 64,
-                                              height: 24,
-                                              padding: EdgeInsets.symmetric(horizontal: 4, vertical: 2),
-                                              decoration: BoxDecoration(
-                                                borderRadius: BorderRadius.circular(40),
-                                                color: SDSColor.snowliveWhite,
-                                              ),
-                                              child: Center(
-                                                child: Text(
-                                                  _friendListViewModel.searchFriend.skiorboard ?? '미설정',
-                                                  style: SDSTextStyle.bold.copyWith(
-                                                    color: SDSColor.gray900,
-                                                    fontSize: 13,
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                            Padding(
-                                              padding: EdgeInsets.only(top: 50),
-                                              child: Image.asset(
-                                                'assets/imgs/logos/snowlive_logo_profile.png',
-                                                scale: 4,
-                                                width: 112,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      SizedBox(height: 20),
-                                      Container(
-                                        width: 96,
-                                        height: 36,
-                                        child: ElevatedButton(
-                                          onPressed: () async {
-                                            textFocus.unfocus();
-                                            Get.toNamed(AppRoutes.friendDetail);
-                                            await _friendDetailViewModel.fetchFriendDetailInfo(
-                                              userId: _userViewModel.user.user_id,
-                                              friendUserId: _friendListViewModel.searchFriend.userId!,
-                                              season: _friendDetailViewModel.seasonDate,
-                                            );
-                                          },
-                                          child: Text(
-                                            '프로필 보기',
-                                            style: SDSTextStyle.bold.copyWith(
-                                                color: SDSColor.gray900, fontSize: 14),
-                                          ),
-                                          style: TextButton.styleFrom(
-                                            padding: EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                                            side:BorderSide(
-                                                color: SDSColor.gray200
-                                            ),
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius: BorderRadius.all(Radius.circular(6)),
-                                            ),
-                                            elevation: 0,
-                                            splashFactory: InkRipple.splashFactory,
-                                            minimumSize: Size(double.infinity, 48),
-                                            backgroundColor: SDSColor.snowliveWhite,
+                                            ],
                                           ),
                                         ),
-                                      ),
-                                    ],
+                                      ],
+                                    ),
                                   );
                                 }),
                               ],

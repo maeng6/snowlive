@@ -60,135 +60,113 @@ class RankingBetaView extends StatelessWidget {
                 : Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   // 필터
-                  Container(
-                    height: 60,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Padding(
+                      padding: EdgeInsets.only(left: 4),
+                      child: Text('23/24 시즌',
+                          style: SDSTextStyle.bold.copyWith(
+                              fontSize: 15, color: Color(0xFF111111))),
+                    ),
+                      Container(
+                        height: 50,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Padding(
-                              padding: EdgeInsets.only(top: 16, bottom: 8),
-                              child: Row(
-                                children: [
-                                  Padding(
-                                    padding: EdgeInsets.only(right: 8),
-                                    child: Stack(
-                                      children: [
-                                        ElevatedButton(
-                                          onPressed: () {
-                                            _rankingListBetaViewModel.changeCrewOrIndiv('크루');
-                                          },
-                                          style: ElevatedButton.styleFrom(
-                                            padding: EdgeInsets.only(
-                                                right: 12, left: 12, top: 2, bottom: 2),
-                                            side: BorderSide(
-                                              width: 1,
-                                              color: (_rankingListBetaViewModel.crewOrIndiv == '크루')
-                                                  ? SDSColor.gray900
-                                                  : SDSColor.gray100,
-                                            ),
-                                            backgroundColor: (_rankingListBetaViewModel.crewOrIndiv == '크루')
-                                                ? SDSColor.gray900
-                                                : SDSColor.snowliveWhite,
-                                            elevation: 0,
-                                            shape: RoundedRectangleBorder(
-                                                borderRadius: BorderRadius.circular(50)),
-                                          ),
-                                          child: Text('크루',
-                                              style: SDSTextStyle.bold.copyWith(
-                                                  fontSize: 13,
+                            Row(
+                              children: [
+                                Padding(
+                                  padding: EdgeInsets.only(top: 8, bottom: 8),
+                                  child: Row(
+                                    children: [
+                                      Padding(
+                                        padding: EdgeInsets.only(right: 8),
+                                        child: Stack(
+                                          children: [
+                                            ElevatedButton(
+                                              onPressed: () {
+                                                _rankingListBetaViewModel.changeCrewOrIndiv('크루');
+                                              },
+                                              style: ElevatedButton.styleFrom(
+                                                padding: EdgeInsets.only(
+                                                    right: 12, left: 12, top: 2, bottom: 2),
+                                                side: BorderSide(
+                                                  width: 1,
                                                   color: (_rankingListBetaViewModel.crewOrIndiv == '크루')
-                                                      ? Color(0xFFFFFFFF)
-                                                      : Color(0xFF111111))),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Padding(
-                              padding: EdgeInsets.only(top: 16, bottom: 8),
-                              child: Row(
-                                children: [
-                                  Padding(
-                                    padding: EdgeInsets.only(right: 8),
-                                    child: Stack(
-                                      children: [
-                                        ElevatedButton(
-                                          onPressed: () {
-                                            _rankingListBetaViewModel.changeCrewOrIndiv('개인');
-                                          },
-                                          style: ElevatedButton.styleFrom(
-                                            padding: EdgeInsets.only(
-                                                right: 12, left: 12, top: 2, bottom: 2),
-                                            side: BorderSide(
-                                              width: 1,
-                                              color: (_rankingListBetaViewModel.crewOrIndiv == '개인')
-                                                  ? SDSColor.gray900
-                                                  : SDSColor.gray100,
+                                                      ? SDSColor.gray900
+                                                      : SDSColor.gray100,
+                                                ),
+                                                backgroundColor: (_rankingListBetaViewModel.crewOrIndiv == '크루')
+                                                    ? SDSColor.gray900
+                                                    : SDSColor.snowliveWhite,
+                                                elevation: 0,
+                                                shape: RoundedRectangleBorder(
+                                                    borderRadius: BorderRadius.circular(50)),
+                                              ),
+                                              child: Text('크루랭킹',
+                                                  style: SDSTextStyle.bold.copyWith(
+                                                      fontSize: 13,
+                                                      color: (_rankingListBetaViewModel.crewOrIndiv == '크루')
+                                                          ? Color(0xFFFFFFFF)
+                                                          : Color(0xFF111111))),
                                             ),
-                                            backgroundColor: (_rankingListBetaViewModel.crewOrIndiv == '개인')
-                                                ? SDSColor.gray900
-                                                : SDSColor.snowliveWhite,
-                                            elevation: 0,
-                                            shape: RoundedRectangleBorder(
-                                                borderRadius: BorderRadius.circular(50)),
-                                          ),
-                                          child: Text('개인',
-                                              style: SDSTextStyle.bold.copyWith(
-                                                  fontSize: 13,
-                                                  color: (_rankingListBetaViewModel.crewOrIndiv == '개인')
-                                                      ? Color(0xFFFFFFFF)
-                                                      : Color(0xFF111111))),
+                                          ],
                                         ),
-                                      ],
-                                    ),
+                                      ),
+                                    ],
                                   ),
-                                ],
-                              ),
+                                ),
+                                Padding(
+                                  padding: EdgeInsets.only(top: 8, bottom: 8),
+                                  child: Row(
+                                    children: [
+                                      Stack(
+                                        children: [
+                                          ElevatedButton(
+                                            onPressed: () {
+                                              _rankingListBetaViewModel.changeCrewOrIndiv('개인');
+                                            },
+                                            style: ElevatedButton.styleFrom(
+                                              padding: EdgeInsets.only(
+                                                  right: 12, left: 12, top: 2, bottom: 2),
+                                              side: BorderSide(
+                                                width: 1,
+                                                color: (_rankingListBetaViewModel.crewOrIndiv == '개인')
+                                                    ? SDSColor.gray900
+                                                    : SDSColor.gray100,
+                                              ),
+                                              backgroundColor: (_rankingListBetaViewModel.crewOrIndiv == '개인')
+                                                  ? SDSColor.gray900
+                                                  : SDSColor.snowliveWhite,
+                                              elevation: 0,
+                                              shape: RoundedRectangleBorder(
+                                                  borderRadius: BorderRadius.circular(50)),
+                                            ),
+                                            child: Text('개인랭킹',
+                                                style: SDSTextStyle.bold.copyWith(
+                                                    fontSize: 13,
+                                                    color: (_rankingListBetaViewModel.crewOrIndiv == '개인')
+                                                        ? Color(0xFFFFFFFF)
+                                                        : Color(0xFF111111))),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
                             ),
                           ],
                         ),
-                        Padding(
-                          padding: EdgeInsets.only(top: 16, bottom: 8),
-                          child: Row(
-                            children: [
-                              Padding(
-                                padding: EdgeInsets.only(right: 8),
-                                child: Stack(
-                                  children: [
-                                    ElevatedButton(
-                                      onPressed: () {},
-                                      style: ElevatedButton.styleFrom(
-                                        padding: EdgeInsets.only(
-                                            right: 12, left: 12, top: 2, bottom: 2),
-                                        side: BorderSide(
-                                          width: 1,
-                                          color: SDSColor.gray100,
-                                        ),
-                                        backgroundColor: SDSColor.snowliveWhite,
-                                        elevation: 0,
-                                        shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(50)),
-                                      ),
-                                      child: Text('23/24 시즌',
-                                          style: SDSTextStyle.bold.copyWith(
-                                              fontSize: 13, color: Color(0xFF111111))),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
-                  SizedBox(height: 16),
+                  SizedBox(height: 12),
 
                   // 크루 또는 개인 랭킹 리스트 표시
                   Expanded( // Expanded로 감싸서 남은 공간을 사용하도록 함
@@ -240,10 +218,10 @@ class RankingBetaView extends StatelessWidget {
                                     crewId: document.crewInfo!.crewId!,
                                   );
                                   if(_userViewModel.user.crew_id == document.crewInfo!.crewId!)
-                                  await _crewRecordRoomViewModel.fetchCrewRidingRecords(
-                                      document.crewInfo!.crewId!,
-                                      '${DateTime.now().year}'
-                                  );
+                                    await _crewRecordRoomViewModel.fetchCrewRidingRecords(
+                                        document.crewInfo!.crewId!,
+                                        '${DateTime.now().year}'
+                                    );
                                 },
                                 child: Row(
                                   children: [
@@ -536,7 +514,7 @@ class RankingBetaView extends StatelessWidget {
                                           Row(
                                             children: [
                                               Text(
-                                                document.userInfo!.displayName!,
+                                                document.userInfo?.displayName?? '',
                                                 style: SDSTextStyle.regular.copyWith(
                                                     fontSize: 14,
                                                     color: SDSColor.gray900),
@@ -546,20 +524,21 @@ class RankingBetaView extends StatelessWidget {
                                           Row(
                                             children: [
                                               Text(
-                                                document.userInfo!.resortNickname!,
+                                                document.userInfo?.resortNickname??'',
                                                 style: SDSTextStyle.regular.copyWith(
                                                     fontSize: 12,
                                                     color: SDSColor.gray500),
                                               ),
-                                              Text(
-                                                '·',
-                                                style: SDSTextStyle.regular.copyWith(
-                                                    fontSize: 12,
-                                                    color: SDSColor.gray500),
-                                              ),
+                                              if(document.userInfo?.crewName != null)
+                                                Text(
+                                                  ' · ',
+                                                  style: SDSTextStyle.regular.copyWith(
+                                                      fontSize: 12,
+                                                      color: SDSColor.gray500),
+                                                ),
                                               Expanded(
                                                 child: Text(
-                                                  document.userInfo!.crewName ?? '',
+                                                  document.userInfo?.crewName ?? '',
                                                   maxLines: 1,
                                                   overflow:
                                                   TextOverflow.ellipsis,
