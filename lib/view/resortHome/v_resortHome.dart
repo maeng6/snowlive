@@ -38,13 +38,6 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
   late Animation<Color?> _colorAnimation3;
   late Animation<Color?> _colorAnimation4;
 
-  var _alarmStream;
-
-  Stream<QuerySnapshot> alarmStream() {
-    return FirebaseFirestore.instance
-        .collection('newAlarm')
-        .snapshots();
-  }
 
 
   //TODO: Dependency Injection**************************************************
@@ -59,7 +52,6 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
   void initState() {
     super.initState();
 
-    _alarmStream = alarmStream();
 
     print('내 유저아이디 : ${_userViewModel.user.user_id}');
     _controller = AnimationController(
@@ -745,147 +737,6 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                     height: 28,
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(right: 8),
-                  child: StreamBuilder(
-                    stream: _alarmStream,
-                    builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
-                      if (!snapshot.hasData || snapshot.data == null) {
-                        return  Stack(
-                          children: [
-                            IconButton(
-                              onPressed: () async {
-                                // 버튼 클릭시 동작할 코드
-                              },
-                              icon: Container(
-                                width: 26,  // 명시적인 크기 설정
-                                height: 26,
-                                child: Image.asset(
-                                  'assets/imgs/icons/icon_alarm_resortHome.png',
-                                  fit: BoxFit.cover,  // 이미지 크기 조절
-                                ),
-                              ),
-                            ),
-                            Positioned(  // draw a red marble
-                              top: 10,
-                              left: 32,
-                              child: new Icon(Icons.brightness_1, size: 6.0,
-                                  color:Colors.transparent),
-                            )
-                          ],
-                        );
-                      }
-                      else if (snapshot.data!.docs.isNotEmpty) {
-                        final alarmDocs = snapshot.data!.docs;
-                        bool alarmIsActive;
-                        try {
-                          alarmIsActive = (alarmDocs[0]['alarmCenter'] ?? false) == true;
-                        }catch(e){
-                          alarmIsActive = false;
-                        }
-                        return  Padding(
-                          padding: const EdgeInsets.only(top: 6),
-                          child: Stack(
-                            children: [
-                              IconButton(
-                                onPressed: () async{
-
-                                },
-                                icon: OverflowBox(
-                                  maxHeight: 42,
-                                  maxWidth: 42,
-                                  child: Image.asset(
-                                    'assets/imgs/icons/icon_alarm.png',
-                                  ),
-                                ),
-                              ),
-                              Positioned(  // draw a red marble
-                                  top: 2,
-                                  right: 0,
-                                  child:
-                                  (alarmIsActive)
-                                      ? Container(
-                                    padding: EdgeInsets.symmetric(horizontal: 3, vertical: 2),
-                                    decoration: BoxDecoration(
-                                      color: Color(0xFFD6382B),
-                                      borderRadius: BorderRadius.circular(6),
-                                    ),
-                                    child: Text('NEW',
-                                      style: TextStyle(
-                                          fontSize: 10,
-                                          fontWeight: FontWeight.bold,
-                                          color: Color(0xFFFFFFFF)
-                                      ),
-
-                                    ),
-                                  )
-                                      :
-                                  Container()
-                                // new Icon(Icons.brightness_1, size: 6.0,
-                                //     color:
-                                //     (alarmDocs[0]['newInvited_friend'] == true)
-                                //         ?Color(0xFFD32F2F):Colors.white),
-                              )
-                            ],
-                          ),
-                        );
-                      }
-                      else if (snapshot.connectionState == ConnectionState.waiting) {
-                        return  Padding(
-                          padding: const EdgeInsets.only(top: 6),
-                          child: Stack(
-                            children: [
-                              IconButton(
-                                onPressed: () async{
-
-                                },
-                                icon: OverflowBox(
-                                  maxHeight: 42,
-                                  maxWidth: 42,
-                                  child: Image.asset(
-                                    'assets/imgs/icons/icon_alarm.png',
-                                  ),
-                                ),
-                              ),
-                              Positioned(  // draw a red marble
-                                top: 2,
-                                left: 0,
-                                child: new Icon(Icons.brightness_1, size: 6.0,
-                                    color:Colors.white),
-                              )
-                            ],
-                          ),
-                        );
-                      }
-                      return  Padding(
-                        padding: const EdgeInsets.only(top: 6),
-                        child: Stack(
-                          children: [
-                            IconButton(
-                              onPressed: () async{
-
-                              },
-                              icon: OverflowBox(
-                                maxHeight: 40,
-                                maxWidth: 40,
-                                child: Image.asset(
-                                  'assets/imgs/icons/icon_alarm.png',
-                                ),
-                              ),
-                            ),
-                            Positioned(  // draw a red marble
-                              top: 0,
-                              left: 32,
-                              child: new Icon(Icons.brightness_1, size: 6.0,
-                                  color:Colors.white),
-                            )
-                          ],
-                        ),
-                      );
-                    },
-                  ),
-                ),
-
               ],
               systemOverlayStyle: SystemUiOverlayStyle.dark,
               centerTitle: false,
