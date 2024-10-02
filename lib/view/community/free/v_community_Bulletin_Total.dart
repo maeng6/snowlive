@@ -32,88 +32,82 @@ class CommunityBulletinTotalListView extends StatelessWidget {
           floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
           floatingActionButton: Obx(()=>Stack(
             children: [
-              Transform.translate(
-                offset: Offset(18, 0),
-                child: Align(
-                  alignment: Alignment.bottomRight,
-                  child: Obx(()=> Visibility(
-                    visible: _communityBulletinListViewModel.isVisible_total,
-                    child: Padding(
-                      padding: const EdgeInsets.only(bottom: 64),
-                      child: Container(
-                        width: 52,
-                        height: 52,
-                        decoration: BoxDecoration(
-                          color: Colors.transparent,
-                          borderRadius: BorderRadius.circular(50),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.04),
-                              spreadRadius: 2,
-                              blurRadius: 8,
-                              offset: Offset(0, 6),
-                            ),
-                          ],
-                        ),
-                        child: FloatingActionButton(
-                          heroTag: 'bulletin_total_recent',
-                          mini: true,
-                          elevation: 0,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(40),
-                            side: BorderSide(color: SDSColor.gray200),
+              Align(
+                alignment: Alignment.bottomRight,
+                child: Obx(()=> Visibility(
+                  visible: _communityBulletinListViewModel.isVisible_total,
+                  child: Padding(
+                    padding: const EdgeInsets.only(bottom: 64),
+                    child: Container(
+                      width: 52,
+                      height: 52,
+                      decoration: BoxDecoration(
+                        color: Colors.transparent,
+                        borderRadius: BorderRadius.circular(50),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.04),
+                            spreadRadius: 2,
+                            blurRadius: 8,
+                            offset: Offset(0, 6),
                           ),
-                          backgroundColor: SDSColor.snowliveWhite,
-                          foregroundColor: SDSColor.snowliveWhite,
-                          onPressed: () {
-                            _communityBulletinListViewModel.scrollController_total.jumpTo(0);
-                          },
-                          child: Image.asset( 'assets/imgs/icons/icon_top_page.png',
-                            fit: BoxFit.cover,
-                            width: 16,
-                            height: 16,),
+                        ],
+                      ),
+                      child: FloatingActionButton(
+                        heroTag: 'bulletin_total_recent',
+                        mini: true,
+                        elevation: 0,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(40),
+                          side: BorderSide(color: SDSColor.gray200),
                         ),
+                        backgroundColor: SDSColor.snowliveWhite,
+                        foregroundColor: SDSColor.snowliveWhite,
+                        onPressed: () {
+                          _communityBulletinListViewModel.scrollController_total.jumpTo(0);
+                        },
+                        child: Image.asset( 'assets/imgs/icons/icon_top_page.png',
+                          fit: BoxFit.cover,
+                          width: 16,
+                          height: 16,),
                       ),
                     ),
-                  )),
-                ),
+                  ),
+                )),
               ),
               Positioned(
-                child: Transform.translate(
-                  offset: Offset(18, 0),
-                  child: Align(
-                    alignment: Alignment.bottomRight,
-                    child: AnimatedContainer(
-                      width: _communityBulletinListViewModel.showAddButton_total ? 104 : 52,
-                      height: 52,
-                      duration: Duration(milliseconds: 200),
-                      child: FloatingActionButton.extended(
-                        elevation: 4,
-                        heroTag: 'bulletin_total',
-                        onPressed: () {
-                          Get.toNamed(AppRoutes.bulletinUpload);
-                        },
-                        icon: Transform.translate(
-                            offset: Offset(6,0),
-                            child: Center(child: Icon(Icons.add,
+                child: Align(
+                  alignment: Alignment.bottomRight,
+                  child: AnimatedContainer(
+                    width: _communityBulletinListViewModel.showAddButton_total ? 104 : 52,
+                    height: 52,
+                    duration: Duration(milliseconds: 200),
+                    child: FloatingActionButton.extended(
+                      elevation: 4,
+                      heroTag: 'bulletin_total',
+                      onPressed: () {
+                        Get.toNamed(AppRoutes.bulletinUpload);
+                      },
+                      icon: Transform.translate(
+                          offset: Offset(6,0),
+                          child: Center(child: Icon(Icons.add,
+                            color: SDSColor.snowliveWhite,
+                          ))),
+                      label: _communityBulletinListViewModel.showAddButton_total
+                          ? Padding(
+                        padding: const EdgeInsets.only(right: 6),
+                        child: Text('글쓰기',
+                          style: SDSTextStyle.bold.copyWith(
+                              letterSpacing: 0.5,
+                              fontSize: 15,
                               color: SDSColor.snowliveWhite,
-                            ))),
-                        label: _communityBulletinListViewModel.showAddButton_total
-                            ? Padding(
-                          padding: const EdgeInsets.only(right: 6),
-                          child: Text('글쓰기',
-                            style: SDSTextStyle.bold.copyWith(
-                                letterSpacing: 0.5,
-                                fontSize: 15,
-                                color: SDSColor.snowliveWhite,
-                                overflow: TextOverflow.ellipsis),
-                          ),
-                        )
-                            : SizedBox.shrink(), // Hide the text when _showAddButton is false
-                        backgroundColor: SDSColor.snowliveBlue,
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(50)
+                              overflow: TextOverflow.ellipsis),
                         ),
+                      )
+                          : SizedBox.shrink(), // Hide the text when _showAddButton is false
+                      backgroundColor: SDSColor.snowliveBlue,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(50)
                       ),
                     ),
                   ),
