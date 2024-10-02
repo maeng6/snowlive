@@ -216,8 +216,6 @@ class FleamarketCommentDetailViewModel extends GetxController {
     if(response.success)
       // _scrollController.jumpTo(0);
       print('답글 삭제 완료');
-    if(!response.success)
-      Get.snackbar('Error', '답글 삭제 실패');
   }
 
   void changeFleamarketCommentDetailInputText(value) {

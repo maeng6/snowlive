@@ -442,16 +442,18 @@ class FleaMarketListView_favorite extends StatelessWidget {
                                                           Row(
                                                             mainAxisAlignment: MainAxisAlignment.center,
                                                             children: [
-                                                              ClipRRect(
-                                                                borderRadius: BorderRadius.circular(8),
-                                                                child: Image.asset(
-                                                                  'assets/imgs/icons/icon_list_view.png',
-                                                                  width: 16,
-                                                                  height: 16,
-                                                                  fit: BoxFit.cover,
+                                                              Container(
+                                                                width: 16,
+                                                                height: 16,
+                                                                decoration: BoxDecoration(
+                                                                  shape: BoxShape.rectangle,
+                                                                  borderRadius: BorderRadius.circular(8),
+                                                                  image: DecorationImage(
+                                                                    image: AssetImage('assets/imgs/icons/icon_list_view.png'),
+                                                                    fit: BoxFit.cover,
+                                                                  ),
                                                                 ),
-                                                              )
-                                                              ,
+                                                              ),
                                                               SizedBox(width: 2,),
                                                               Text(
                                                                   '${data.viewsCount}',
@@ -469,13 +471,29 @@ class FleaMarketListView_favorite extends StatelessWidget {
                                                             child: Row(
                                                               mainAxisAlignment: MainAxisAlignment.center,
                                                               children: [
-                                                                ClipRRect(
-                                                                  borderRadius: BorderRadius.circular(8),
-                                                                  child: Image.asset(
-                                                                    'assets/imgs/icons/icon_list_scrap.png',
-                                                                    width: 16,
-                                                                    height: 16,
-                                                                    fit: BoxFit.cover,
+                                                                (data.isFavorite == false)
+                                                                    ? Container(
+                                                                  width: 16,
+                                                                  height: 16,
+                                                                  decoration: BoxDecoration(
+                                                                    shape: BoxShape.rectangle,
+                                                                    borderRadius: BorderRadius.circular(8),
+                                                                    image: DecorationImage(
+                                                                      image: AssetImage('assets/imgs/icons/icon_list_scrap.png'),
+                                                                      fit: BoxFit.cover,
+                                                                    ),
+                                                                  ),
+                                                                )
+                                                                    : Container(
+                                                                  width: 16,
+                                                                  height: 16,
+                                                                  decoration: BoxDecoration(
+                                                                    shape: BoxShape.rectangle,
+                                                                    borderRadius: BorderRadius.circular(8),
+                                                                    image: DecorationImage(
+                                                                      image: AssetImage('assets/imgs/icons/icon_list_scrap_my.png'),
+                                                                      fit: BoxFit.cover,
+                                                                    ),
                                                                   ),
                                                                 )
                                                                 ,
@@ -497,16 +515,18 @@ class FleaMarketListView_favorite extends StatelessWidget {
                                                             child: Row(
                                                               mainAxisAlignment: MainAxisAlignment.center,
                                                               children: [
-                                                                ClipRRect(
-                                                                  borderRadius: BorderRadius.circular(8),
-                                                                  child: Image.asset(
-                                                                    'assets/imgs/icons/icon_list_reply.png',
-                                                                    width: 16,
-                                                                    height: 16,
-                                                                    fit: BoxFit.cover,
+                                                                Container(
+                                                                  width: 16,
+                                                                  height: 16,
+                                                                  decoration: BoxDecoration(
+                                                                    shape: BoxShape.rectangle,
+                                                                    borderRadius: BorderRadius.circular(8),
+                                                                    image: DecorationImage(
+                                                                      image: AssetImage('assets/imgs/icons/icon_list_reply.png'),
+                                                                      fit: BoxFit.cover,
+                                                                    ),
                                                                   ),
-                                                                )
-                                                                ,
+                                                                ),
                                                                 SizedBox(width: 2,),
                                                                 Text(
                                                                     '${data.commentCount.toString()}',
