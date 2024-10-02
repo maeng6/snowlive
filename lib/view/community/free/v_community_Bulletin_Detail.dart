@@ -800,7 +800,7 @@ class CommunityBulletinDetailView extends StatelessWidget {
 
                                                 ),
                                                 Container(
-                                                  height: 20,
+                                                  height: 36,
                                                 )
                                               ],
                                             ),
@@ -809,22 +809,29 @@ class CommunityBulletinDetailView extends StatelessWidget {
                                     //SNS버튼
                                     if(_communityDetailViewModel.communityDetail.snsUrl != null
                                     && _communityDetailViewModel.communityDetail.snsUrl != '')
-                                    ElevatedButton(
-                                      onPressed: () async {
-                                        otherShare(contents: _communityDetailViewModel.communityDetail.snsUrl!);
-                                      },
-                                      child: Text(
-                                        'SNS 바로가기',
-                                        style: SDSTextStyle.bold.copyWith(color: SDSColor.gray700, fontSize: 16),
-                                      ),
-                                      style: TextButton.styleFrom(
-                                        shape: const RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.all(Radius.circular(6)),
+                                    Padding(
+                                      padding: EdgeInsets.symmetric(horizontal: 16),
+                                      child: ElevatedButton(
+                                        onPressed: () async {
+                                          otherShare(contents: _communityDetailViewModel.communityDetail.snsUrl!);
+                                        },
+                                        child: Text(
+                                          'SNS 바로가기',
+                                          style: SDSTextStyle.bold.copyWith(color: SDSColor.gray900, fontSize: 15),
                                         ),
-                                        elevation: 0,
-                                        splashFactory: InkRipple.splashFactory,
-                                        minimumSize: Size(double.infinity, 48),
-                                        backgroundColor: SDSColor.gray100,
+                                        style: TextButton.styleFrom(
+                                          shape: RoundedRectangleBorder(
+                                            side: BorderSide(
+                                              color: SDSColor.gray100,
+                                              width: 1
+                                            ),
+                                            borderRadius: BorderRadius.all(Radius.circular(6)),
+                                          ),
+                                          elevation: 0,
+                                          splashFactory: InkRipple.splashFactory,
+                                          minimumSize: Size(double.infinity, 48),
+                                          backgroundColor: SDSColor.snowliveWhite,
+                                        ),
                                       ),
                                     ),
                                     Divider(
