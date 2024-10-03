@@ -1,5 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:com.snowlive/api/api_alarmcenter..dart';
 import 'package:com.snowlive/model/m_alarmCenterList.dart';
+import 'package:com.snowlive/viewmodel/friend/vm_friendDetail.dart';
+import 'package:com.snowlive/viewmodel/vm_user.dart';
 import 'package:get/get.dart';
 
 class AlarmCenterViewModel extends GetxController {
@@ -12,13 +15,18 @@ class AlarmCenterViewModel extends GetxController {
   bool get deleteSuccess => _deleteSuccess.value;
   bool get updateSuccess => _updateSuccess.value;
 
+
+  UserViewModel _userViewModel = Get.find<UserViewModel>();
+  FriendDetailViewModel _friendDetailViewModel = Get.find<FriendDetailViewModel>();
+
   @override
-  void onInit() {
+  void onInit() async{
     super.onInit();
+    await fetchAlarmCenterList(userId:_userViewModel.user.user_id);
   }
 
   // 알람 센터 리스트 불러오기
-  Future<void> fetchAlarmCenterList(int userId, {int? alarminfoId}) async {
+  Future<void> fetchAlarmCenterList({required int userId, int? alarminfoId}) async {
     isLoading(true);
     try {
       final response = await AlarmCenterAPI().fetchAlarmCenterList(userId: userId, alarminfoId: alarminfoId);
@@ -27,6 +35,7 @@ class AlarmCenterViewModel extends GetxController {
         // 데이터를 AlarmCenterModel 리스트로 변환
         final List<dynamic> dataList = response.data as List<dynamic>;
         _alarmCenterList.value = dataList.map((data) => AlarmCenterModel.fromJson(data)).toList();
+        print('알센 패치 완료');
       } else {
         _alarmCenterList.value = []; // 빈 리스트로 처리
         print('알람 센터 리스트 불러오기 실패: ${response.error}');
@@ -78,4 +87,49 @@ class AlarmCenterViewModel extends GetxController {
     }
     isLoading(false);
   }
+
+  // 문서가 없으면 생성하고, 있으면 total 값을 true로 업데이트하는 메소드
+  Future<void> updateNotification(
+      int uid, {
+        bool? total,
+        bool? friend,
+        bool? crew,
+      }) async {
+    try {
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+          .collection('notificationCenter')
+          .where('uid', isEqualTo: uid)
+          .get();
+
+      if (querySnapshot.docs.isNotEmpty) {
+        DocumentSnapshot document = querySnapshot.docs.first;
+        Map<String, dynamic> updateData = {};
+
+        if (total != null) {
+          updateData['total'] = total;
+        }
+        if (friend != null) {
+          updateData['friend'] = friend;
+        }
+        if (crew != null) {
+          updateData['crew'] = crew;
+        }
+        if (updateData.isNotEmpty) {
+          await document.reference.update(updateData);
+          print('Fields updated successfully');
+        }
+      } else {
+        await FirebaseFirestore.instance.collection('notificationCenter').add({
+          'uid': uid,
+          'total': total ?? false, // 전달되지 않으면 기본값은 false
+          'friend': friend ?? false,
+          'crew': crew ?? false,
+        });
+        print('Document created and fields set successfully');
+      }
+    } catch (e) {
+      print('Failed to update or create document: $e');
+    }
+  }
+
 }

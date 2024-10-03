@@ -11,6 +11,9 @@ class AlarmCenterModel {
   late int? pkCommentCommunity;
   late int? pkReplyFleamarket;
   late int? pkReplyCommunity;
+  late String textMain;  // 추가된 textMain 필드
+  late String textSub;   // 추가된 textSub 필드
+  late int? crewLeaderUserId; // 추가된 crew_leader_user_id 필드
 
   // 기본 생성자
   AlarmCenterModel() {
@@ -26,6 +29,9 @@ class AlarmCenterModel {
     pkCommentCommunity = null;
     pkReplyFleamarket = null;
     pkReplyCommunity = null;
+    textMain = '';  // 기본값으로 빈 문자열 설정
+    textSub = '';   // 기본값으로 빈 문자열 설정
+    crewLeaderUserId = null;  // 기본값 null 설정
   }
 
   // fromJson 생성자
@@ -44,6 +50,9 @@ class AlarmCenterModel {
     pkCommentCommunity = json['pk_comment_community'];
     pkReplyFleamarket = json['pk_reply_fleamarket'];
     pkReplyCommunity = json['pk_reply_community'];
+    textMain = json['text_main'] ?? '';  // text_main 필드 추가
+    textSub = json['text_sub'] ?? '';    // text_sub 필드 추가
+    crewLeaderUserId = json['crew_leader_user_id']; // crew_leader_user_id 필드 추가
   }
 }
 

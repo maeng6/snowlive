@@ -68,11 +68,11 @@ class RankingBetaView extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Padding(
-                      padding: EdgeInsets.only(left: 4),
-                      child: Text('23/24 시즌',
-                          style: SDSTextStyle.bold.copyWith(
-                              fontSize: 15, color: Color(0xFF111111))),
-                    ),
+                        padding: EdgeInsets.only(left: 4),
+                        child: Text('23/24 시즌',
+                            style: SDSTextStyle.bold.copyWith(
+                                fontSize: 15, color: Color(0xFF111111))),
+                      ),
                       Container(
                         height: 50,
                         child: Row(
@@ -341,12 +341,13 @@ class RankingBetaView extends StatelessWidget {
                                                     fontSize: 12,
                                                     color: SDSColor.gray500),
                                               ),
-                                              Text(
-                                                '·',
-                                                style: SDSTextStyle.regular.copyWith(
-                                                    fontSize: 12,
-                                                    color: SDSColor.gray500),
-                                              ),
+                                              if(document.crewInfo!.description != '')
+                                                Text(
+                                                  ' · ',
+                                                  style: SDSTextStyle.regular.copyWith(
+                                                      fontSize: 12,
+                                                      color: SDSColor.gray500),
+                                                ),
                                               Expanded(
                                                 child: Text(
                                                   document.crewInfo!.description ?? '',

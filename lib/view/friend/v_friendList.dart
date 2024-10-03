@@ -28,21 +28,6 @@ class FriendListView extends StatelessWidget {
         backgroundColor: Colors.white,
         surfaceTintColor: Colors.transparent,
         actions: [
-          if (_friendListViewModel.friendsRequestList.isEmpty)
-            IconButton(
-              highlightColor: Colors.transparent,
-              onPressed: () async {
-                Get.toNamed(AppRoutes.invitaionFriend);
-                await _friendListViewModel.fetchFriendRequestList(_userViewModel.user.user_id);
-              },
-              icon: Image.asset(
-                'assets/imgs/icons/icon_alarm_resortHome.png',
-                scale: 4,
-                width: 26,
-                height: 26,
-              ),
-            ),
-          if (_friendListViewModel.friendsRequestList.isNotEmpty)
             Stack(
               children: [
                 IconButton(
@@ -58,6 +43,7 @@ class FriendListView extends StatelessWidget {
                     height: 26,
                   ),
                 ),
+                if (_friendListViewModel.friendsRequestList.isNotEmpty)
                 Positioned(
                   top: 4,
                   right: 4,

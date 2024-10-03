@@ -90,25 +90,35 @@ class _ReceiveFriendRequestViewState extends State<ReceiveFriendRequestView> {
                         )
                             : GestureDetector(
                           onTap: () async{
-                            Get.toNamed(AppRoutes.friendDetail);
-                            await _friendDetailViewModel.fetchFriendDetailInfo(
-                              userId: _userViewModel.user.user_id,
-                              friendUserId: friend.friendUserId,
-                              season: _friendDetailViewModel.seasonDate,
-                            );
-                          },
-                          child: Container(
-                            alignment: Alignment.centerLeft,
-                            child: ClipOval(
-                              child: Image.asset(
-                                'assets/imgs/profile/img_profile_default_circle.png',
-                                width: 40,
-                                height: 40,
-                                fit: BoxFit.cover,
+                    Get.toNamed(AppRoutes.friendDetail);
+                    await _friendDetailViewModel.fetchFriendDetailInfo(
+                    userId: _userViewModel.user.user_id,
+                    friendUserId: friend.friendUserId,
+                    season: _friendDetailViewModel.seasonDate,
+                    );
+                    },
+                      child: Container(
+                        width: 40,
+                        height: 40,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Container(
+                              alignment: Alignment.centerLeft,
+                              child: ClipOval(
+                                child: Image.asset(
+                                  'assets/imgs/profile/img_profile_default_circle.png',
+                                  width: 40,
+                                  height: 40,
+                                  fit: BoxFit.cover,
+                                ),
                               ),
                             ),
-                          ),
+                          ],
                         ),
+                      ),
+                    ),
                         title: Text(
                           friend.friendUserInfo.displayName,
                           style: SDSTextStyle.regular.copyWith(
