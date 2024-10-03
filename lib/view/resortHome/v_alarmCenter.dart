@@ -41,13 +41,8 @@ class AlarmCenterView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Size _size = MediaQuery
-        .of(context)
-        .size;
-    final double _statusBarSize = MediaQuery
-        .of(context)
-        .padding
-        .top;
+    final Size _size = MediaQuery.of(context).size;
+    final double _statusBarSize = MediaQuery.of(context).padding.top;
 
 
     return Scaffold(
@@ -88,7 +83,39 @@ class AlarmCenterView extends StatelessWidget {
               children: [
               ],
             ),
-            Expanded(
+            (_alarmCenterViewModel.alarmCenterList.isEmpty)
+            ? ConstrainedBox(
+              constraints: BoxConstraints(
+                minHeight: _size.height-140
+              ),
+              child: Center(
+                child: Transform.translate(
+                  offset: Offset(0, -40),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Image.asset(
+                        'assets/imgs/icons/icon_nodata.png',
+                        scale: 4,
+                        width: 73,
+                        height: 73,
+                      ),
+                      SizedBox(
+                        height: 6,
+                      ),
+                      Text('차단목록이 비어있습니다',
+                        style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.normal,
+                            color: Color(0xFF949494)
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            )
+            : Expanded(
                   child:
                   (_alarmCenterViewModel.isLoading == true)
                       ? Center(
@@ -417,11 +444,11 @@ class AlarmCenterView extends StatelessWidget {
                                                                 if(alarmDoc.alarmInfo.alarmInfoId == 3)
                                                                   Image.asset('assets/imgs/icons/icon_moretab_team.png', width: 30),
                                                                 if(alarmDoc.alarmInfo.alarmInfoId == 4)
-                                                                  Image.asset('assets/imgs/icons/icon_moretab_team.png', width: 30),
+                                                                  Image.asset('assets/imgs/icons/icon_moretab_flea.png', width: 30),
                                                                 if(alarmDoc.alarmInfo.alarmInfoId == 5)
                                                                   Image.asset('assets/imgs/icons/icon_moretab_comm.png', width: 30),
                                                                 if(alarmDoc.alarmInfo.alarmInfoId == 6)
-                                                                  Image.asset('assets/imgs/icons/icon_moretab_team.png', width: 30),
+                                                                  Image.asset('assets/imgs/icons/icon_moretab_reply.png', width: 30),
                                                                 SizedBox(width: 10,),
                                                                 Container(
                                                                   width: _size.width - 72,
