@@ -41,13 +41,8 @@ class AlarmCenterView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Size _size = MediaQuery
-        .of(context)
-        .size;
-    final double _statusBarSize = MediaQuery
-        .of(context)
-        .padding
-        .top;
+    final Size _size = MediaQuery.of(context).size;
+    final double _statusBarSize = MediaQuery.of(context).padding.top;
 
 
     return Scaffold(
@@ -88,7 +83,39 @@ class AlarmCenterView extends StatelessWidget {
               children: [
               ],
             ),
-            Expanded(
+            (_alarmCenterViewModel.alarmCenterList.isEmpty)
+            ? ConstrainedBox(
+              constraints: BoxConstraints(
+                minHeight: _size.height-140
+              ),
+              child: Center(
+                child: Transform.translate(
+                  offset: Offset(0, -40),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Image.asset(
+                        'assets/imgs/icons/icon_nodata.png',
+                        scale: 4,
+                        width: 73,
+                        height: 73,
+                      ),
+                      SizedBox(
+                        height: 6,
+                      ),
+                      Text('차단목록이 비어있습니다',
+                        style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.normal,
+                            color: Color(0xFF949494)
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            )
+            : Expanded(
                   child:
                   (_alarmCenterViewModel.isLoading == true)
                       ? Center(
@@ -154,17 +181,17 @@ class AlarmCenterView extends StatelessWidget {
                                                   onTap: () async {
                                                     if(alarmDoc.alarmInfo.alarmInfoId == 1) {
                                                       //친구요청
-                                                        CustomFullScreenDialog.showDialog();
-                                                        await _friendListViewModel.fetchFriendRequestList(_userViewModel.user.user_id);
-                                                        CustomFullScreenDialog.cancelDialog();
-                                                        Get.toNamed(AppRoutes.invitaionFriend);
-                                                        await _alarmCenterViewModel.updateAlarmCenter(alarmDoc.alarmCenterId, {
-                                                          "active": false
-                                                        });
-                                                        await _alarmCenterViewModel.fetchAlarmCenterList(userId: _userViewModel.user.user_id);
+                                                      CustomFullScreenDialog.showDialog();
+                                                      await _friendListViewModel.fetchFriendRequestList(_userViewModel.user.user_id);
+                                                      CustomFullScreenDialog.cancelDialog();
+                                                      Get.toNamed(AppRoutes.invitaionFriend);
+                                                      await _alarmCenterViewModel.updateAlarmCenter(alarmDoc.alarmCenterId, {
+                                                        "active": false
+                                                      });
+                                                      await _alarmCenterViewModel.fetchAlarmCenterList(userId: _userViewModel.user.user_id);
                                                     }
-                                                     else if(alarmDoc.alarmInfo.alarmInfoId == 2) {
-                                                       //방명록
+                                                    else if(alarmDoc.alarmInfo.alarmInfoId == 2) {
+                                                      //방명록
                                                       try{Get.toNamed(AppRoutes.friendDetail);
                                                       await _friendDetailViewModel.fetchFriendDetailInfo(
                                                           userId: _userViewModel.user.user_id,
@@ -257,7 +284,7 @@ class AlarmCenterView extends StatelessWidget {
                                                       //스노우마켓 댓글
                                                       try{
                                                         CustomFullScreenDialog.showDialog();
-                                                        await _fleamarketDetailViewModel.fetchFleamarketDetailFromAPI(fleamarketId: alarmDoc.pkCommentFleamarket!, userId: _userViewModel.user.user_id);
+                                                        await _fleamarketDetailViewModel.fetchFleamarketDetailFromAPI(fleamarketId: alarmDoc.pkFleamarket!, userId: _userViewModel.user.user_id);
                                                         CustomFullScreenDialog.cancelDialog();
                                                         Get.toNamed(AppRoutes.fleamarketDetail);
                                                         await _alarmCenterViewModel.updateAlarmCenter(alarmDoc.alarmCenterId, {
@@ -304,7 +331,7 @@ class AlarmCenterView extends StatelessWidget {
                                                       //커뮤니티 댓글
                                                       try {
                                                         CustomFullScreenDialog.showDialog();
-                                                        await _communityDetailViewModel.fetchCommunityDetail(alarmDoc.pkCommentFleamarket!, _userViewModel.user.user_id);
+                                                        await _communityDetailViewModel.fetchCommunityDetail(alarmDoc.pkCommunity!, _userViewModel.user.user_id);
                                                         CustomFullScreenDialog.cancelDialog();
                                                         Get.toNamed(AppRoutes.bulletinDetail);
                                                         await _alarmCenterViewModel.updateAlarmCenter(alarmDoc.alarmCenterId, {
@@ -351,14 +378,14 @@ class AlarmCenterView extends StatelessWidget {
                                                     else if(alarmDoc.alarmInfo.alarmInfoId == 6) {
                                                       //답글
                                                       try{
-                                                        if(alarmDoc.pkReplyCommunity != null){
+                                                        if(alarmDoc.pkCommentCommunity != null){
                                                           CustomFullScreenDialog.showDialog();
-                                                          await _communityCommentDetailViewModel.fetchCommunityCommentDetail(commentId: alarmDoc.pkReplyCommunity!);
+                                                          await _communityCommentDetailViewModel.fetchCommunityCommentDetail(commentId: alarmDoc.pkCommentCommunity!);
                                                           CustomFullScreenDialog.cancelDialog();
                                                           Get.toNamed(AppRoutes.bulletinCommentDetail);
                                                         }else{
                                                           CustomFullScreenDialog.showDialog();
-                                                          await _fleamarketCommentDetailViewModel.fetchFleamarketCommentDetail(commentId: alarmDoc.pkReplyFleamarket!);
+                                                          await _fleamarketCommentDetailViewModel.fetchFleamarketCommentDetail(commentId: alarmDoc.pkCommentFleamarket!);
                                                           CustomFullScreenDialog.cancelDialog();
                                                           Get.toNamed(AppRoutes.fleamarketCommentDetail);
                                                         }
@@ -402,6 +429,7 @@ class AlarmCenterView extends StatelessWidget {
                                                       }
                                                     }
                                                   },
+
                                                   child: Stack(
                                                     children: [
                                                       Column(
@@ -417,11 +445,11 @@ class AlarmCenterView extends StatelessWidget {
                                                                 if(alarmDoc.alarmInfo.alarmInfoId == 3)
                                                                   Image.asset('assets/imgs/icons/icon_moretab_team.png', width: 30),
                                                                 if(alarmDoc.alarmInfo.alarmInfoId == 4)
-                                                                  Image.asset('assets/imgs/icons/icon_moretab_team.png', width: 30),
+                                                                  Image.asset('assets/imgs/icons/icon_moretab_flea.png', width: 30),
                                                                 if(alarmDoc.alarmInfo.alarmInfoId == 5)
                                                                   Image.asset('assets/imgs/icons/icon_moretab_comm.png', width: 30),
                                                                 if(alarmDoc.alarmInfo.alarmInfoId == 6)
-                                                                  Image.asset('assets/imgs/icons/icon_moretab_team.png', width: 30),
+                                                                  Image.asset('assets/imgs/icons/icon_moretab_reply.png', width: 30),
                                                                 SizedBox(width: 10,),
                                                                 Container(
                                                                   width: _size.width - 72,
@@ -468,12 +496,12 @@ class AlarmCenterView extends StatelessWidget {
                                                                           Column(
                                                                             crossAxisAlignment: CrossAxisAlignment.start,
                                                                             children: [
-                                                                              if(alarmDoc.textMain != '')
+                                                                              if(alarmDoc.textMain != '' && alarmDoc.textMain != null)
                                                                               Padding(
                                                                                 padding: EdgeInsets.only(top: 2),
                                                                                 child: Container(
                                                                                   width: _size.width - 72,
-                                                                                  child: Text(alarmDoc.textMain,
+                                                                                  child: Text('${alarmDoc.textMain}',
                                                                                     style: SDSTextStyle.regular.copyWith(
                                                                                         fontSize: 14,
                                                                                         color: SDSColor.gray500
@@ -483,7 +511,7 @@ class AlarmCenterView extends StatelessWidget {
                                                                                   ),
                                                                                 ),
                                                                               ),
-                                                                              if(alarmDoc.textSub != '')
+                                                                              if(alarmDoc.textSub != '' && alarmDoc.textSub != null)
                                                                                 Container(
                                                                                   width: _size.width - 72,
                                                                                   child: Padding(

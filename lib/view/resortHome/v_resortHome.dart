@@ -739,63 +739,70 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                     height: 28,
                   ),
                 ),
-                StreamBuilder<QuerySnapshot>(
-                  stream: FirebaseFirestore.instance
-                      .collection('notificationCenter')
-                      .where('uid', isEqualTo:  _userViewModel.user.user_id)
-                      .snapshots(),
-                  builder: (context, snapshot) {
-                    if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                      return IconButton(
-                        onPressed: () {
-                          Get.toNamed(AppRoutes.alarmCenter);
-                        },
-                        icon: Image.asset(
-                          'assets/imgs/icons/icon_alarm_resortHome.png',
-                        ),
-                      );
-                    }
-
-                    var data = snapshot.data!.docs[0].data() as Map<String, dynamic>?;
-                    bool isNewNotification = data?['total'] ?? false; // Firestore 문서 필드
-
-                    return Stack(
-                      children: [
-                        IconButton(
-                          onPressed: () async{
-                            await _alarmCenterViewModel.updateNotification(
-                              _userViewModel.user.user_id,
-                              total: false,
-                            );
+                Padding(
+                  padding: EdgeInsets.only(right: 8),
+                  child: StreamBuilder<QuerySnapshot>(
+                    stream: FirebaseFirestore.instance
+                        .collection('notificationCenter')
+                        .where('uid', isEqualTo:  _userViewModel.user.user_id)
+                        .snapshots(),
+                    builder: (context, snapshot) {
+                      if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                        return IconButton(
+                          onPressed: () {
                             Get.toNamed(AppRoutes.alarmCenter);
                           },
                           icon: Image.asset(
                             'assets/imgs/icons/icon_alarm_resortHome.png',
                           ),
-                        ),
-                        if (isNewNotification)
-                          Positioned(
-                            top: 5,
-                            right: 3,
-                            child: Container(
-                              padding: EdgeInsets.symmetric(horizontal: 3, vertical: 2),
-                              decoration: BoxDecoration(
-                                color: Color(0xFFD6382B),
-                                borderRadius: BorderRadius.circular(6),
-                              ),
-                              child: Text(
-                                'NEW',
-                                style: TextStyle(
-                                  fontSize: 8,
-                                  fontWeight: FontWeight.bold,
-                                  color: Color(0xFFFFFFFF),
+                        );
+                      }
+
+                      var data = snapshot.data!.docs[0].data() as Map<String, dynamic>?;
+                      bool isNewNotification = data?['total'] ?? false; // Firestore 문서 필드
+
+                      return Stack(
+                        children: [
+                          IconButton(
+                            highlightColor: Colors.transparent,
+                            splashColor: Colors.transparent,
+                            onPressed: () async{
+                              await _alarmCenterViewModel.updateNotification(
+                                _userViewModel.user.user_id,
+                                total: false,
+                              );
+                              Get.toNamed(AppRoutes.alarmCenter);
+                            },
+                            icon: Image.asset(
+                              'assets/imgs/icons/icon_alarm_resortHome.png',
+                            ),
+                          ),
+                          if (isNewNotification)
+                            Positioned(
+                              top: 5,
+                              right: 5,
+                              child: Container(
+                                width: 20,
+                                height: 20,
+                                padding: EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                decoration: BoxDecoration(
+                                  color: Color(0xFFD6382B),
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                child: Text(
+                                  'N',
+                                  style: SDSTextStyle.extraBold.copyWith(
+                                    fontSize: 11,
+                                    fontWeight: FontWeight.bold,
+                                    color: Color(0xFFFFFFFF),
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
-                      ],
-                    );
-                  },
+                        ],
+                      );
+                    },
+                  ),
                 )
               ],
               systemOverlayStyle: SystemUiOverlayStyle.dark,
