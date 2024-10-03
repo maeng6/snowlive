@@ -46,92 +46,109 @@ class CrewMainView extends StatelessWidget {
               icon: Image.asset(
                 'assets/imgs/icons/icon_appBar_search.png',
                 scale: 4,
-                width: 26,
-                height: 26,
+                width: 25,
+                height: 25,
               ),
             )
                 : Container(),
             if(_userViewModel.user.crew_id == _crewDetailViewModel.crewDetailInfo.crewId)
-              Padding(
-                padding: EdgeInsets.only(right: 5),
-                child:
-                (_crewDetailViewModel.isLoading == true)
-                    ? SizedBox.shrink()
-                    : IconButton(
-                  onPressed: () {
-                    Get.toNamed(AppRoutes.crewSetting);
-                  },
-                  icon: Image.asset(
-                    'assets/imgs/icons/icon_settings.png',
-                    scale: 4,
-                    width: 26,
-                    height: 26,
-                  ),
+              (_crewDetailViewModel.isLoading == true)
+                  ? SizedBox.shrink()
+                  : IconButton(
+                onPressed: () {
+                  Get.toNamed(AppRoutes.crewSetting);
+                },
+                icon: Image.asset(
+                  'assets/imgs/icons/icon_settings.png',
+                  scale: 4,
+                  width: 26,
+                  height: 26,
                 ),
               ),
             if(_crewMemberListViewModel.getMemberRole(_userViewModel.user.user_id) == '크루장' ||
                 (_crewMemberListViewModel.getMemberRole(_userViewModel.user.user_id) == '운영진' &&
                     _crewDetailViewModel.permission_join== true))
-              StreamBuilder<QuerySnapshot>(
-                stream: FirebaseFirestore.instance
-                    .collection('notificationCenter')
-                    .where('uid', isEqualTo:  _userViewModel.user.user_id)
-                    .snapshots(),
-                builder: (context, snapshot) {
-                  if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                    return IconButton(
-                      onPressed: () {
-                        Get.toNamed(AppRoutes.alarmCenter);
-                      },
-                      icon: Image.asset(
-                        'assets/imgs/icons/icon_alarm_resortHome.png',
-                      ),
-                    );
-                  }
-
-                  var data = snapshot.data!.docs[0].data() as Map<String, dynamic>?;
-                  bool isNewNotification = data?['crew'] ?? false; // Firestore 문서 필드
-
-                  return Stack(
-                    children: [
-                      IconButton(
-                        onPressed: () async{
-                          Get.toNamed(AppRoutes.crewApplicationCrew);
-                          await _alarmCenterViewModel.updateNotification(
-                            _userViewModel.user.user_id,
-                            crew: false,
-                          );
-                          await _crewApplyViewModel.fetchCrewApplyList(
-                              _crewDetailViewModel.crewDetailInfo.crewId!
-                          );
+              Padding(
+                padding: EdgeInsets.only(right: 8),
+                child: StreamBuilder<QuerySnapshot>(
+                  stream: FirebaseFirestore.instance
+                      .collection('notificationCenter')
+                      .where('uid', isEqualTo:  _userViewModel.user.user_id)
+                      .snapshots(),
+                  builder: (context, snapshot) {
+                    if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                      return IconButton(
+                        onPressed: () {
+                          Get.toNamed(AppRoutes.alarmCenter);
                         },
                         icon: Image.asset(
                           'assets/imgs/icons/icon_alarm_resortHome.png',
+                            width: 26,
+                            height: 26,
                         ),
-                      ),
-                      if (isNewNotification)
-                        Positioned(
-                          top: 5,
-                          right: 3,
-                          child: Container(
-                            padding: EdgeInsets.symmetric(horizontal: 3, vertical: 2),
-                            decoration: BoxDecoration(
-                              color: Color(0xFFD6382B),
-                              borderRadius: BorderRadius.circular(6),
-                            ),
-                            child: Text(
-                              'NEW',
-                              style: TextStyle(
-                                fontSize: 8,
-                                fontWeight: FontWeight.bold,
-                                color: Color(0xFFFFFFFF),
+                      );
+                    }
+
+                    var data = snapshot.data!.docs[0].data() as Map<String, dynamic>?;
+                    bool isNewNotification = data?['crew'] ?? false; // Firestore 문서 필드
+
+                    return Stack(
+                      children: [
+                        IconButton(
+                          onPressed: () async{
+                            Get.toNamed(AppRoutes.crewApplicationCrew);
+                            await _alarmCenterViewModel.updateNotification(
+                              _userViewModel.user.user_id,
+                              crew: false,
+                            );
+                            await _crewApplyViewModel.fetchCrewApplyList(
+                                _crewDetailViewModel.crewDetailInfo.crewId!
+                            );
+                          },
+                          icon: Image.asset(
+                            'assets/imgs/icons/icon_alarm_resortHome.png',
+                            width: 26,
+                            height: 26,
+                          ),
+                        ),
+                        if (isNewNotification)
+                          Positioned(
+                            top: 5,
+                            right: 5,
+                            child: GestureDetector(
+                              onTap: () async {
+                                Get.toNamed(AppRoutes.crewApplicationCrew);
+                                await _alarmCenterViewModel.updateNotification(
+                                  _userViewModel.user.user_id,
+                                  crew: false,
+                                );
+                                await _crewApplyViewModel.fetchCrewApplyList(
+                                    _crewDetailViewModel.crewDetailInfo.crewId!
+                                );
+                                },
+                              child: Container(
+                                width: 20,
+                                height: 20,
+                                padding: EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                decoration: BoxDecoration(
+                                  color: Color(0xFFD6382B),
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                child: Text(
+                                  'N',
+                                  style: SDSTextStyle.extraBold.copyWith(
+                                    fontSize: 11,
+                                    fontWeight: FontWeight.bold,
+                                    color: Color(0xFFFFFFFF),
+                                  ),
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                    ],
-                  );
-                },
+                      ],
+                    );
+                  },
+                ),
               ),
           ],
           leading: GestureDetector(
@@ -148,7 +165,7 @@ class CrewMainView extends StatelessWidget {
           ),
           centerTitle: true,
           title: Text(
-            '라이브크루',
+            ' ',
             style: SDSTextStyle.extraBold.copyWith(
                 color: SDSColor.gray900,
                 fontSize: 18),

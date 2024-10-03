@@ -79,10 +79,6 @@ class AlarmCenterView extends StatelessWidget {
       body: SafeArea(
         child: Column(
           children: [
-            Stack(
-              children: [
-              ],
-            ),
             (_alarmCenterViewModel.alarmCenterList.isEmpty)
             ? ConstrainedBox(
               constraints: BoxConstraints(
@@ -103,11 +99,10 @@ class AlarmCenterView extends StatelessWidget {
                       SizedBox(
                         height: 6,
                       ),
-                      Text('차단목록이 비어있습니다',
-                        style: TextStyle(
+                      Text('알림 목록이 비어있습니다',
+                        style: SDSTextStyle.regular.copyWith(
                             fontSize: 14,
-                            fontWeight: FontWeight.normal,
-                            color: Color(0xFF949494)
+                            color: SDSColor.gray500
                         ),
                       ),
                     ],
@@ -161,7 +156,7 @@ class AlarmCenterView extends StatelessWidget {
                               Column(
                                 children: [
                                   Padding(
-                                    padding: const EdgeInsets.only(left: 16, right: 16, top: 16, bottom: 30),
+                                    padding: const EdgeInsets.only(left: 16, right: 16, top: 20, bottom: 30),
                                     child: Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
@@ -438,18 +433,25 @@ class AlarmCenterView extends StatelessWidget {
                                                             child: Row(
                                                               crossAxisAlignment: CrossAxisAlignment.start,
                                                               children: [
-                                                                if(alarmDoc.alarmInfo.alarmInfoId == 1)
-                                                                  Image.asset('assets/imgs/icons/icon_moretab_friends.png', width: 30),
-                                                                if(alarmDoc.alarmInfo.alarmInfoId == 2)
-                                                                  Image.asset('assets/imgs/icons/icon_moretab_bubble.png', width: 30),
-                                                                if(alarmDoc.alarmInfo.alarmInfoId == 3)
-                                                                  Image.asset('assets/imgs/icons/icon_moretab_team.png', width: 30),
-                                                                if(alarmDoc.alarmInfo.alarmInfoId == 4)
-                                                                  Image.asset('assets/imgs/icons/icon_moretab_flea.png', width: 30),
-                                                                if(alarmDoc.alarmInfo.alarmInfoId == 5)
-                                                                  Image.asset('assets/imgs/icons/icon_moretab_comm.png', width: 30),
-                                                                if(alarmDoc.alarmInfo.alarmInfoId == 6)
-                                                                  Image.asset('assets/imgs/icons/icon_moretab_reply.png', width: 30),
+                                                                  Padding(
+                                                                    padding: EdgeInsets.only(top: 1),
+                                                                    child: Column(
+                                                                      children: [
+                                                                        if(alarmDoc.alarmInfo.alarmInfoId == 1)
+                                                                        Image.asset('assets/imgs/icons/icon_moretab_friends.png', width: 26),
+                                                                        if(alarmDoc.alarmInfo.alarmInfoId == 2)
+                                                                          Image.asset('assets/imgs/icons/icon_moretab_bubble.png', width: 26),
+                                                                        if(alarmDoc.alarmInfo.alarmInfoId == 3)
+                                                                          Image.asset('assets/imgs/icons/icon_moretab_team.png', width: 26),
+                                                                        if(alarmDoc.alarmInfo.alarmInfoId == 4)
+                                                                          Image.asset('assets/imgs/icons/icon_moretab_flea.png', width: 26),
+                                                                        if(alarmDoc.alarmInfo.alarmInfoId == 5)
+                                                                          Image.asset('assets/imgs/icons/icon_moretab_comm.png', width: 26),
+                                                                        if(alarmDoc.alarmInfo.alarmInfoId == 6)
+                                                                          Image.asset('assets/imgs/icons/icon_moretab_reply.png', width: 26),
+                                                                      ],
+                                                                    ),
+                                                                  ),
                                                                 SizedBox(width: 10,),
                                                                 Container(
                                                                   width: _size.width - 72,

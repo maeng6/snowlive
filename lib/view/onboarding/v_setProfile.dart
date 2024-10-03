@@ -56,6 +56,8 @@ class SetProfileView extends StatelessWidget {
               },
             ),
             backgroundColor: Colors.white,
+            foregroundColor: Colors.transparent,
+            surfaceTintColor: Colors.transparent,
             elevation: 0.0,
             centerTitle: false,
             titleSpacing: 0,

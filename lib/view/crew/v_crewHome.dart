@@ -924,12 +924,8 @@ class CrewHomeView extends StatelessWidget {
                                             await _crewApplyViewModel.applyForCrew(
                                                 _crewDetailViewModel.crewDetailInfo.crewId!,
                                                 _userViewModel.user.user_id,
-                                                _crewApplyViewModel.textEditingController_crewHome.text
-                                            );
-                                            await _alarmCenterViewModel.updateNotification(
-                                                _crewDetailViewModel.crewDetailInfo.crewLeaderUserId!,
-                                                crew: true,
-                                                total: true
+                                                _crewApplyViewModel.textEditingController_crewHome.text,
+                                                _crewDetailViewModel.crewDetailInfo.crewLeaderUserId!
                                             );
                                             _crewApplyViewModel.textEditingController_crewHome.clear();
                                             _crewApplyViewModel.isSubmitButtonEnabled_crewHome.value = false;

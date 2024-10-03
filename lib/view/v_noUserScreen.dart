@@ -21,6 +21,8 @@ class NoUserScreen extends StatelessWidget {
           },
         ),
         backgroundColor: Colors.white,
+        foregroundColor: Colors.transparent,
+        surfaceTintColor: Colors.transparent,
       ),
       body: Center(
         child: Column(

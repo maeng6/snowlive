@@ -1854,7 +1854,7 @@ class _FleaMarketDetailViewState extends State<FleaMarketDetailView> {
                                                                                       : '답글 ${document_comment.replies!.length}개 보기',
                                                                                   style: SDSTextStyle.bold.copyWith(
                                                                                     fontSize: 13,
-                                                                                    color: SDSColor.gray900,
+                                                                                    color: (document_comment.replies!.length == 0) ? SDSColor.gray900 : SDSColor.snowliveBlue,
                                                                                   ),
                                                                                 ),
                                                                               ],
@@ -1920,7 +1920,7 @@ class _FleaMarketDetailViewState extends State<FleaMarketDetailView> {
                           height: 72,
                           color: Colors.white,
                           child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                            padding: EdgeInsets.only(top: 12, left: 12, right: 12, bottom: 12),
                             child: Row(
                               children: [
                                 if(_fleamarketDetailViewModel.fleamarketDetail.snsUrl != null && _fleamarketDetailViewModel.fleamarketDetail.snsUrl != '' && (_fleamarketDetailViewModel.fleamarketDetail.status != FleamarketStatus.soldOut.korean))
@@ -2024,6 +2024,8 @@ class _FleaMarketDetailViewState extends State<FleaMarketDetailView> {
                                           CustomFullScreenDialog.cancelDialog();
                                           await _fleamarketDetailViewModel.fetchFleamarketDetailFromAPI(fleamarketId: _fleamarketDetailViewModel.fleamarketDetail.fleaId!, userId: _userViewModel.user.user_id);
                                           await _fleamarketListViewModel.fetchAllFleamarket();
+
+                                          if(_fleamarketDetailViewModel.fleamarketDetail.userId != _userViewModel.user.user_id)
                                           await _alarmCenterViewModel.updateNotification(
                                               _fleamarketDetailViewModel.fleamarketDetail.userId!,
                                               total: true

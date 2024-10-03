@@ -4,6 +4,7 @@ import 'package:com.snowlive/api/api_friend.dart';
 import 'package:com.snowlive/api/api_friendDetail.dart';
 import 'package:com.snowlive/model/m_friendDetail.dart';
 import 'package:com.snowlive/model/m_friendsTalk.dart';
+import 'package:com.snowlive/viewmodel/resortHome/vm_alarmCenter.dart';
 import 'package:com.snowlive/viewmodel/util/vm_imageController.dart';
 import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 import 'package:flutter/material.dart';
@@ -31,7 +32,6 @@ class FriendDetailViewModel extends GetxController {
   @override
   void onInit() async {
     super.onInit();
-
     textEditingController.addListener(() {
       if (textEditingController.text.trim().isNotEmpty) {
         isSendButtonEnabled(true);
@@ -232,12 +232,45 @@ class FriendDetailViewModel extends GetxController {
     isLoading(true);
     ApiResponse response = await FriendAPI().addFriend(body);
     CustomFullScreenDialog.cancelDialog();
-    if(response.success)
+
+    if (response.success) {
+      int friendUserId = body['friend_user_id'];
+      try {
+        QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+            .collection('notificationCenter')
+            .where('uid', isEqualTo: friendUserId)
+            .get();
+
+        if (querySnapshot.docs.isNotEmpty) {
+          DocumentSnapshot document = querySnapshot.docs.first;
+          // total과 friend 필드를 true로 업데이트
+          await document.reference.update({
+            'total': true,
+            'friend': true,
+          });
+          print('Fields updated successfully');
+        } else {
+          // 문서가 없으면 생성
+          await FirebaseFirestore.instance.collection('notificationCenter').add({
+            'uid': friendUserId,
+            'total': true, // 기본값 true로 설정
+            'friend': true, // 기본값 true로 설정
+            'crew': false, // crew는 false로 설정
+          });
+          print('Document created and fields set successfully');
+        }
+      } catch (e) {
+        print('Failed to update or create document: $e');
+      }
       Get.snackbar('친구신청 성공', '상대방이 수락하면 친구로 등록됩니다.');
-    if(!response.success)
-      Get.snackbar('잠시만요!','이미 친구이거나 친구 신청 중입니다');
+    } else {
+      Get.snackbar('잠시만요!', '이미 친구이거나 친구 신청 중입니다');
+    }
+
     isLoading(false);
   }
+
+
 
   Future<void> acceptFriend(body) async {
 

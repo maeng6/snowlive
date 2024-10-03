@@ -1,6 +1,7 @@
 import 'package:com.snowlive/model/m_crewApplyList.dart';
 import 'package:com.snowlive/routes/routes.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewMemberList.dart';
+import 'package:com.snowlive/viewmodel/resortHome/vm_alarmCenter.dart';
 import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
@@ -11,6 +12,7 @@ class CrewApplyViewModel extends GetxController {
   final CrewMemberListViewModel _crewMemberListViewModel = Get.find<CrewMemberListViewModel>();
   TextEditingController textEditingController = TextEditingController();
   TextEditingController textEditingController_crewHome = TextEditingController();
+  final AlarmCenterViewModel _alarmCenterViewModel = Get.find<AlarmCenterViewModel>();
 
 
   // 크루 가입 신청 목록과 로딩 상태를 위한 Rx 변수
@@ -23,20 +25,25 @@ class CrewApplyViewModel extends GetxController {
 
 
   // 크루 가입 신청
-  Future<void> applyForCrew(int crewId, int userId, String? title) async {
+  Future<void> applyForCrew(int crewId, int userId, String? title, int crewLeaderId) async {
     isLoading.value = true;
     try {
       // 서버에 전송할 데이터 구성
       final response = await CrewAPI().applyForCrew(
           {
-        "crew_id": crewId.toString(),
-        "applicant_user_id": userId.toString(),
-        "title": title
-      }
+            "crew_id": crewId.toString(),
+            "applicant_user_id": userId.toString(),
+            "title": title
+          }
       );
-        CustomFullScreenDialog.cancelDialog();
+      CustomFullScreenDialog.cancelDialog();
 
       if (response.success) {
+        await _alarmCenterViewModel.updateNotification(
+            crewLeaderId,
+            crew: true,
+            total: true
+        );
         await fetchCrewApplyListUser(userId);
         Get.offNamed(AppRoutes.crewApplicationUser);
       } else {

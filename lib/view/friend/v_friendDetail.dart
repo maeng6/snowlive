@@ -464,11 +464,6 @@ class _FriendDetailViewState extends State<FriendDetailView> {
                                                                             "user_id": _userViewModel.user.user_id,    //필수 - 신청자 (나)
                                                                             "friend_user_id": _friendDetailViewModel.friendDetailModel.friendUserInfo.userId    //필수 - 신청받는사람
                                                                           });
-                                                                          await _alarmCenterViewModel.updateNotification(
-                                                                              _friendDetailViewModel.friendDetailModel.friendUserInfo.userId,
-                                                                              total: true,
-                                                                              friend: true
-                                                                          );
                                                                         },
                                                                         child: Text('보내기',
                                                                           style: TextStyle(
@@ -2493,85 +2488,84 @@ class _FriendDetailViewState extends State<FriendDetailView> {
                         Container(
                           color: Colors.white,
                           child: Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                            child: TextFormField(
-                              key: _formKey,
-                              controller: _friendDetailViewModel.textEditingController,
-                              focusNode: _textFocus, // FocusNode 추가
-                              cursorColor: SDSColor.snowliveBlue,
-                              cursorHeight: 16,
-                              cursorWidth: 2,
-                              style: SDSTextStyle.regular.copyWith(fontSize: 15),
-                              enableSuggestions: false,
-                              autocorrect: false,
-                              textInputAction: TextInputAction.newline,
-                              decoration: InputDecoration(
-                                errorMaxLines: 2,
-                                errorStyle: SDSTextStyle.regular.copyWith(fontSize: 12, color: SDSColor.red),
-                                labelStyle: SDSTextStyle.regular.copyWith(color: SDSColor.gray400, fontSize: 14),
-                                hintStyle: SDSTextStyle.regular.copyWith(color: SDSColor.gray400, fontSize: 14),
-                                hintText: '방명록을 남겨주세요.',
-                                contentPadding: EdgeInsets.only(top: 10, bottom: 10, left: 12, right: 50),
-                                fillColor: SDSColor.gray50,
-                                hoverColor: SDSColor.snowliveBlue,
-                                focusColor: SDSColor.snowliveBlue,
-                                filled: true,
-                                floatingLabelBehavior: FloatingLabelBehavior.never,
-                                suffixIcon: IconButton(
-                                  splashColor: Colors.transparent,
-                                  onPressed: () async {
-                                    if (_friendDetailViewModel.textEditingController.text.trim().isEmpty) {
-                                      return;
-                                    }
-                                    CustomFullScreenDialog.showDialog();
-                                    await _friendDetailViewModel.uploadFriendsTalk({
-                                      "author_user_id": _userViewModel.user.user_id,
-                                      "friend_user_id": _friendDetailViewModel.friendDetailModel.friendUserInfo.userId,
-                                      "content": _friendDetailViewModel.textEditingController.text,
-                                    });
-                                    CustomFullScreenDialog.cancelDialog();
-                                    await _friendDetailViewModel.fetchFriendsTalkList_afterFriendTalk(
-                                      userId: _userViewModel.user.user_id,
-                                      friendUserId: _friendDetailViewModel.friendDetailModel.friendUserInfo.userId,
-                                    );
-                                    _textFocus.unfocus(); // 메시지 전송 후 포커스 해제
-                                    _friendDetailViewModel.textEditingController.clear();
-                                    await _alarmCenterViewModel.updateNotification(
-                                        _friendDetailViewModel.friendDetailModel.friendUserInfo.userId,
-                                        total: true
-                                    );
-                                  },
-                                  icon: (_friendDetailViewModel.isSendButtonEnabled.value == false)
-                                      ? Image.asset(
-                                    'assets/imgs/icons/icon_livetalk_send_g.png',
-                                    width: 27,
-                                    height: 27,
-                                  )
-                                      : Image.asset(
-                                    'assets/imgs/icons/icon_livetalk_send.png',
-                                    width: 27,
-                                    height: 27,
-                                  ),
-                                ),
-                                border: OutlineInputBorder(
-                                  borderSide: BorderSide(color: SDSColor.gray50),
-                                  borderRadius: BorderRadius.circular(6),
-                                ),
-                                errorBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(color: SDSColor.red, strokeAlign: BorderSide.strokeAlignInside, width: 1.5),
-                                ),
-                                focusedBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(color: SDSColor.snowliveBlue, strokeAlign: BorderSide.strokeAlignInside, width: 1.5),
-                                ),
-                                enabledBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(color: Colors.transparent),
-                                  borderRadius: BorderRadius.circular(6),
+                            padding: EdgeInsets.only(top: 12, left: 12, right: 12, bottom: 12),                            child: TextFormField(
+                            key: _formKey,
+                            controller: _friendDetailViewModel.textEditingController,
+                            focusNode: _textFocus, // FocusNode 추가
+                            cursorColor: SDSColor.snowliveBlue,
+                            cursorHeight: 16,
+                            cursorWidth: 2,
+                            style: SDSTextStyle.regular.copyWith(fontSize: 15),
+                            enableSuggestions: false,
+                            autocorrect: false,
+                            textInputAction: TextInputAction.newline,
+                            decoration: InputDecoration(
+                              errorMaxLines: 2,
+                              errorStyle: SDSTextStyle.regular.copyWith(fontSize: 12, color: SDSColor.red),
+                              labelStyle: SDSTextStyle.regular.copyWith(color: SDSColor.gray400, fontSize: 14),
+                              hintStyle: SDSTextStyle.regular.copyWith(color: SDSColor.gray400, fontSize: 14),
+                              hintText: '방명록을 남겨주세요.',
+                              contentPadding: EdgeInsets.only(top: 10, bottom: 10, left: 12, right: 50),
+                              fillColor: SDSColor.gray50,
+                              hoverColor: SDSColor.snowliveBlue,
+                              focusColor: SDSColor.snowliveBlue,
+                              filled: true,
+                              floatingLabelBehavior: FloatingLabelBehavior.never,
+                              suffixIcon: IconButton(
+                                splashColor: Colors.transparent,
+                                onPressed: () async {
+                                  if (_friendDetailViewModel.textEditingController.text.trim().isEmpty) {
+                                    return;
+                                  }
+                                  CustomFullScreenDialog.showDialog();
+                                  await _friendDetailViewModel.uploadFriendsTalk({
+                                    "author_user_id": _userViewModel.user.user_id,
+                                    "friend_user_id": _friendDetailViewModel.friendDetailModel.friendUserInfo.userId,
+                                    "content": _friendDetailViewModel.textEditingController.text,
+                                  });
+                                  CustomFullScreenDialog.cancelDialog();
+                                  await _friendDetailViewModel.fetchFriendsTalkList_afterFriendTalk(
+                                    userId: _userViewModel.user.user_id,
+                                    friendUserId: _friendDetailViewModel.friendDetailModel.friendUserInfo.userId,
+                                  );
+                                  _textFocus.unfocus(); // 메시지 전송 후 포커스 해제
+                                  _friendDetailViewModel.textEditingController.clear();
+                                  await _alarmCenterViewModel.updateNotification(
+                                      _friendDetailViewModel.friendDetailModel.friendUserInfo.userId,
+                                      total: true
+                                  );
+                                },
+                                icon: (_friendDetailViewModel.isSendButtonEnabled.value == false)
+                                    ? Image.asset(
+                                  'assets/imgs/icons/icon_livetalk_send_g.png',
+                                  width: 27,
+                                  height: 27,
+                                )
+                                    : Image.asset(
+                                  'assets/imgs/icons/icon_livetalk_send.png',
+                                  width: 27,
+                                  height: 27,
                                 ),
                               ),
-                              onChanged: (value) {
-                                _friendDetailViewModel.changefriendsTalkInputText(value);
-                              },
+                              border: OutlineInputBorder(
+                                borderSide: BorderSide(color: SDSColor.gray50),
+                                borderRadius: BorderRadius.circular(6),
+                              ),
+                              errorBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: SDSColor.red, strokeAlign: BorderSide.strokeAlignInside, width: 1.5),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: SDSColor.snowliveBlue, strokeAlign: BorderSide.strokeAlignInside, width: 1.5),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.transparent),
+                                borderRadius: BorderRadius.circular(6),
+                              ),
                             ),
+                            onChanged: (value) {
+                              _friendDetailViewModel.changefriendsTalkInputText(value);
+                            },
+                          ),
                           ),
                         ),
                         Positioned(

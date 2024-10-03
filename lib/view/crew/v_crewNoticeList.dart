@@ -50,7 +50,11 @@ class CrewNoticeListView extends StatelessWidget {
         ),
         body: Obx(() {
           if (_crewNoticeViewModel.isLoading.value) {
-            return Center(child: CircularProgressIndicator());
+            return Center(child: CircularProgressIndicator(
+              strokeWidth: 4,
+              backgroundColor: SDSColor.gray100,
+              color: SDSColor.gray300.withOpacity(0.6),
+            ),);
           }
 
           if (_crewNoticeViewModel.noticeList.isEmpty) {
@@ -253,11 +257,11 @@ class CrewNoticeListView extends StatelessWidget {
                     ],
                   ),
                   if (index != _crewNoticeViewModel.noticeList.length - 1)
-                  Divider(
+                    Divider(
                       thickness: 1,
                       color: SDSColor.gray100,
-                    height: 32,
-                  ),
+                      height: 32,
+                    ),
                 ],
               );
             },

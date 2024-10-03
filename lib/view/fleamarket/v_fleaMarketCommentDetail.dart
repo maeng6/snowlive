@@ -960,10 +960,6 @@ class FleamarketCommentDetailView extends StatelessWidget {
                                               "user_id": _userViewModel.user.user_id.toString(),
                                               "secret": _fleamarketCommentDetailViewModel.isSecret
                                             });
-                                            await _alarmCenterViewModel.updateNotification(
-                                                _fleamarketCommentDetailViewModel.commentModel_flea.userId!,
-                                                total: true
-                                            );
                                             print(_fleamarketCommentDetailViewModel.commentModel_flea.userId!);
                                             FocusScope.of(context).unfocus();
                                             _fleamarketCommentDetailViewModel.textEditingController.clear();
@@ -974,6 +970,12 @@ class FleamarketCommentDetailView extends StatelessWidget {
                                                 isLoading_indi: true
                                             );
                                             await _fleamarketListViewModel.fetchAllFleamarket();
+
+                                            if(_fleamarketCommentDetailViewModel.commentModel_flea.userId != _userViewModel.user.user_id)
+                                            await _alarmCenterViewModel.updateNotification(
+                                                _fleamarketCommentDetailViewModel.commentModel_flea.userId!,
+                                                total: true
+                                            );
                                           },
                                           icon: (_fleamarketCommentDetailViewModel.isCommentButtonEnabled.value == false)
                                               ? Image.asset(

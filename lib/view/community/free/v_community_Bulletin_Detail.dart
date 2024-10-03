@@ -1052,10 +1052,9 @@ class CommunityBulletinDetailView extends StatelessWidget {
                                                                               (comment.replies!.length == 0)
                                                                                   ? '답글 달기'
                                                                                   : '답글 ${comment.replies!.length}개 보기',
-                                                                              style: TextStyle(
+                                                                              style: SDSTextStyle.bold.copyWith(
                                                                                 fontSize: 14,
-                                                                                color: SDSColor.snowliveBlack,
-                                                                                fontWeight: FontWeight.bold,
+                                                                                color: (comment.replies!.length == 0)? SDSColor.gray900 : SDSColor.snowliveBlue,
                                                                               ),
                                                                             ),
                                                                           ],
@@ -1540,6 +1539,7 @@ class CommunityBulletinDetailView extends StatelessWidget {
                         height: 1,
                       ),
                       Container(
+                        height: 72,
                         decoration: BoxDecoration(
                           color: Colors.white,
                         ),
@@ -1586,16 +1586,17 @@ class CommunityBulletinDetailView extends StatelessWidget {
                                         );
                                         FocusScope.of(context).unfocus();
                                         await _communityDetailViewModel.fetchCommunityDetail(_communityDetailViewModel.communityDetail.communityId!, _userViewModel.user.user_id);
-                                        await _alarmCenterViewModel.updateNotification(
-                                            _communityDetailViewModel.communityDetail.userId!,
-                                            total: true
-                                        );
                                         CustomFullScreenDialog.cancelDialog();
                                         if(_communityBulletinListViewModel.tapName =='게시판') {
                                           await _communityBulletinListViewModel.fetchAllCommunity();
                                         }else{
                                           await _communityBulletinListViewModel.fetchEventCommunity();
                                         }
+                                        if(_communityDetailViewModel.communityDetail.userId != _userViewModel.user.user_id)
+                                        await _alarmCenterViewModel.updateNotification(
+                                            _communityDetailViewModel.communityDetail.userId!,
+                                            total: true
+                                        );
                                       },
                                       icon: (_communityDetailViewModel.isCommentButtonEnabled.value == false)
                                           ? Image.asset(
