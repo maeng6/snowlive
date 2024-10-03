@@ -2018,6 +2018,7 @@ class _FleaMarketDetailViewState extends State<FleaMarketDetailView> {
                                           FocusScope.of(context).unfocus();
                                           _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
                                           CustomFullScreenDialog.cancelDialog();
+                                          await _fleamarketDetailViewModel.fetchFleamarketDetailFromAPI(fleamarketId: _fleamarketDetailViewModel.fleamarketDetail.fleaId!, userId: _userViewModel.user.user_id);
                                           await _fleamarketListViewModel.fetchAllFleamarket();
                                         },
                                         icon: (_fleamarketDetailViewModel.isCommentButtonEnabled.value == false)

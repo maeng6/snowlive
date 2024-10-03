@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:com.snowlive/routes/routes.dart';
 import 'package:com.snowlive/util/util_1.dart';
 import 'package:com.snowlive/view/resortHome/v_chat_resortHome.dart';
@@ -736,6 +735,37 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                     width: 28,
                     height: 28,
                   ),
+                ),
+                Stack(
+                  children: [
+                    IconButton(
+                      onPressed: () async{
+
+                      },
+                      icon: Image.asset(
+                        'assets/imgs/icons/icon_noti_off.png',
+                      ),
+                    ),
+                    Positioned(
+                        top: 5,
+                        right: 3,
+                        child: Container(
+                          padding: EdgeInsets.symmetric(horizontal: 3, vertical: 2),
+                          decoration: BoxDecoration(
+                            color: Color(0xFFD6382B),
+                            borderRadius: BorderRadius.circular(6),
+                          ),
+                          child: Text('NEW',
+                            style: TextStyle(
+                                fontSize: 8,
+                                fontWeight: FontWeight.bold,
+                                color: Color(0xFFFFFFFF)
+                            ),
+
+                          ),
+                        )
+                    )
+                  ],
                 ),
               ],
               systemOverlayStyle: SystemUiOverlayStyle.dark,

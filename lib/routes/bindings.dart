@@ -24,6 +24,7 @@ import 'package:com.snowlive/viewmodel/onboarding_login/vm_login.dart';
 import 'package:com.snowlive/viewmodel/onboarding_login/vm_tos.dart';
 import 'package:com.snowlive/viewmodel/ranking/vm_rankingList.dart';
 import 'package:com.snowlive/viewmodel/ranking/vm_rankingList_beta.dart';
+import 'package:com.snowlive/viewmodel/resortHome/vm_alarmCenter.dart';
 import 'package:com.snowlive/viewmodel/resortHome/vm_openChat.dart';
 import 'package:com.snowlive/viewmodel/resortHome/vm_setGenderAndCategory.dart';
 import 'package:com.snowlive/viewmodel/util/vm_imageController.dart';
@@ -40,6 +41,7 @@ class MainHomeBinding extends Bindings {
   @override
   void dependencies() {
     Get.put(MainHomeViewModel());
+    Get.put(AlarmCenterViewModel());
     Get.put(StreamController_Banner());
     Get.put(ResortHomeViewModel());
     Get.put(GenderCategoryViewModel());
