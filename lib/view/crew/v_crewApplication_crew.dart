@@ -76,6 +76,9 @@ class CrewApplicationCrewView extends StatelessWidget {
                           'profileImageUrlUser': '',
                         };
 
+                        print('ApplicantUserId 2: ${user.applicantUserId}');
+                        print('UserInfo 2: $userInfo');
+
                         return Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                           child: Column(
@@ -138,7 +141,7 @@ class CrewApplicationCrewView extends StatelessWidget {
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                          userInfo['displayName']!,
+                                          '${userInfo['displayName']!}',
                                           style: SDSTextStyle.regular.copyWith(
                                             fontSize: 15,
                                             color: SDSColor.gray900
@@ -392,7 +395,7 @@ class CrewApplicationCrewView extends StatelessWidget {
                                 ],
                               ),
                               Padding(
-                                padding: EdgeInsets.only(top: 6, bottom: 20),
+                                padding: EdgeInsets.only(top: 6, bottom: 6),
                                 child: Row(
                                   children: [
                                     Expanded(
@@ -403,11 +406,20 @@ class CrewApplicationCrewView extends StatelessWidget {
                                         ),
                                         padding: EdgeInsets.symmetric(horizontal: 14, vertical: 10),
                                         width: double.infinity,
-                                        child: Text('ㅂㅈㅇㅂㅈㅇㅂㅈㅇㅂㅈㅇ',
+                                        child:
+                                        (user.title != '')
+                                            ? Text('${user.title}',
                                           style: SDSTextStyle.regular.copyWith(
                                               fontSize: 13,
                                               color: SDSColor.gray900
-                                          ),),
+                                          ),
+                                        )
+                                            : Text('안녕하세요. 크루 가입 신청합니다.',
+                                          style: SDSTextStyle.regular.copyWith(
+                                              fontSize: 13,
+                                              color: SDSColor.gray900
+                                          ),
+                                        ),
                                       ),
                                     ),
                                   ],
