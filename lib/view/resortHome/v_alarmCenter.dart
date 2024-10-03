@@ -454,7 +454,7 @@ class AlarmCenterView extends StatelessWidget {
                                                                   ),
                                                                 SizedBox(width: 10,),
                                                                 Container(
-                                                                  width: _size.width - 72,
+                                                                  width: _size.width - 112,
                                                                   child: Column(
                                                                     crossAxisAlignment: CrossAxisAlignment.start,
                                                                     children: [
@@ -481,17 +481,20 @@ class AlarmCenterView extends StatelessWidget {
                                                                       SizedBox(
                                                                         height: 2,
                                                                       ),
-                                                                      Row(
-                                                                        children: [
-                                                                          Text(
-                                                                            alarmDoc.otherUserInfo.displayName,
-                                                                            style: SDSTextStyle.regular.copyWith(fontSize: 15, color: SDSColor.gray900),
-                                                                          ),
-                                                                          Text(
-                                                                            alarmDoc.alarmInfo.alarmText,
-                                                                            style: SDSTextStyle.regular.copyWith(fontSize: 15, color: SDSColor.gray900),
-                                                                          ),
-                                                                        ],
+                                                                      Container(
+                                                                        width: _size.width - 112,
+                                                                        child: Row(
+                                                                          children: [
+                                                                            Text(
+                                                                              alarmDoc.otherUserInfo.displayName,
+                                                                              style: SDSTextStyle.regular.copyWith(fontSize: 14, color: SDSColor.gray900),
+                                                                            ),
+                                                                            Text(
+                                                                              alarmDoc.alarmInfo.alarmText,
+                                                                              style: SDSTextStyle.regular.copyWith(fontSize: 14, color: SDSColor.gray900),
+                                                                            ),
+                                                                          ],
+                                                                        ),
                                                                       ),
                                                                       Row(
                                                                         children: [
@@ -502,7 +505,7 @@ class AlarmCenterView extends StatelessWidget {
                                                                               Padding(
                                                                                 padding: EdgeInsets.only(top: 2),
                                                                                 child: Container(
-                                                                                  width: _size.width - 72,
+                                                                                  width: _size.width - 112,
                                                                                   child: Text('${alarmDoc.textMain}',
                                                                                     style: SDSTextStyle.regular.copyWith(
                                                                                         fontSize: 14,
@@ -515,7 +518,7 @@ class AlarmCenterView extends StatelessWidget {
                                                                               ),
                                                                               if(alarmDoc.textSub != '' && alarmDoc.textSub != null)
                                                                                 Container(
-                                                                                  width: _size.width - 72,
+                                                                                  width: _size.width - 112,
                                                                                   child: Padding(
                                                                                     padding: EdgeInsets.only(top: 2),
                                                                                     child: Text(': ${alarmDoc.textSub}',
@@ -533,6 +536,23 @@ class AlarmCenterView extends StatelessWidget {
                                                                         ],
                                                                       ),
                                                                     ],
+                                                                  ),
+                                                                ),
+                                                                SizedBox(width: 10,),
+                                                                Padding(
+                                                                  padding: EdgeInsets.only(left: 16),
+                                                                  child: Container(
+                                                                    height: 40,
+                                                                    child: Column(
+                                                                      mainAxisAlignment: MainAxisAlignment.start,
+                                                                      children: [
+                                                                        Icon(
+                                                                          Icons.clear,
+                                                                          color: SDSColor.gray300,
+                                                                          size: 18,
+                                                                        ),
+                                                                      ],
+                                                                    ),
                                                                   ),
                                                                 ),
                                                               ],
