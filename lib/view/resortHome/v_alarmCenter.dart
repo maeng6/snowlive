@@ -185,7 +185,7 @@ class AlarmCenterView extends StatelessWidget {
                                                                     width: 100,
                                                                     height: 100,
                                                                   ),
-                                                                  SizedBox(height: 5),
+                                                                  SizedBox(height: 20),
                                                                   Text(
                                                                     '권한이 없습니다.',
                                                                     style: TextStyle(
@@ -222,32 +222,49 @@ class AlarmCenterView extends StatelessWidget {
                                                       Column(
                                                         children: [
                                                           Container(
-                                                            width: _size.width,
                                                             child: Row(
+                                                              crossAxisAlignment: CrossAxisAlignment.start,
                                                               children: [
                                                                 if(alarmDoc.alarmInfo.alarmInfoId == 1)
-                                                                  Image.asset('assets/imgs/icons/icon_moretab_team.png', width: 30),
+                                                                  Image.asset('assets/imgs/icons/icon_moretab_friends.png', width: 30),
                                                                 if(alarmDoc.alarmInfo.alarmInfoId == 2)
-                                                                  Image.asset('assets/imgs/icons/icon_moretab_team.png', width: 30),
+                                                                  Image.asset('assets/imgs/icons/icon_moretab_bubble.png', width: 30),
                                                                 if(alarmDoc.alarmInfo.alarmInfoId == 3)
                                                                   Image.asset('assets/imgs/icons/icon_moretab_team.png', width: 30),
                                                                 if(alarmDoc.alarmInfo.alarmInfoId == 4)
                                                                   Image.asset('assets/imgs/icons/icon_moretab_team.png', width: 30),
                                                                 if(alarmDoc.alarmInfo.alarmInfoId == 5)
-                                                                  Image.asset('assets/imgs/icons/icon_moretab_team.png', width: 30),
+                                                                  Image.asset('assets/imgs/icons/icon_moretab_comm.png', width: 30),
                                                                 if(alarmDoc.alarmInfo.alarmInfoId == 6)
                                                                   Image.asset('assets/imgs/icons/icon_moretab_team.png', width: 30),
                                                                 SizedBox(width: 10,),
                                                                 Container(
-                                                                  width: _size.width-72,
+                                                                  width: _size.width - 72,
                                                                   child: Column(
                                                                     crossAxisAlignment: CrossAxisAlignment.start,
                                                                     children: [
-                                                                      Text(alarmDoc.alarmInfo.alarmInfoName,
-                                                                        style: SDSTextStyle.regular.copyWith(
-                                                                            fontSize: 15,
-                                                                            color: SDSColor.gray900
-                                                                        ),
+                                                                      Row(
+                                                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                                                        children: [
+                                                                          Text(alarmDoc.alarmInfo.alarmInfoName,
+                                                                            style: SDSTextStyle.bold.copyWith(
+                                                                                fontSize: 14,
+                                                                                color: SDSColor.gray900
+                                                                            ),
+                                                                          ),
+                                                                          Padding(
+                                                                            padding: EdgeInsets.only(left: 6),
+                                                                            child: Text(_time,
+                                                                              style: SDSTextStyle.regular.copyWith(
+                                                                                  fontSize: 13,
+                                                                                  color: SDSColor.gray500
+                                                                              ),
+                                                                            ),
+                                                                          ),
+                                                                        ],
+                                                                      ),
+                                                                      SizedBox(
+                                                                        height: 2,
                                                                       ),
                                                                       Row(
                                                                         children: [
@@ -261,25 +278,44 @@ class AlarmCenterView extends StatelessWidget {
                                                                           ),
                                                                         ],
                                                                       ),
-                                                                      if(alarmDoc.textMain != '')
-                                                                      Text(alarmDoc.textMain,
-                                                                        style: SDSTextStyle.regular.copyWith(
-                                                                            fontSize: 15,
-                                                                            color: SDSColor.gray900
-                                                                        ),
-                                                                      ),
-                                                                      if(alarmDoc.textSub != '')
-                                                                      Text(alarmDoc.textSub,
-                                                                        style: SDSTextStyle.regular.copyWith(
-                                                                            fontSize: 15,
-                                                                            color: SDSColor.gray900
-                                                                        ),
-                                                                      ),
-                                                                      Text(_time,
-                                                                        style: SDSTextStyle.regular.copyWith(
-                                                                            fontSize: 15,
-                                                                            color: SDSColor.gray900
-                                                                        ),
+                                                                      Row(
+                                                                        children: [
+                                                                          Column(
+                                                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                                                            children: [
+                                                                              if(alarmDoc.textMain != '')
+                                                                              Padding(
+                                                                                padding: EdgeInsets.only(top: 2),
+                                                                                child: Container(
+                                                                                  width: _size.width - 72,
+                                                                                  child: Text(alarmDoc.textMain,
+                                                                                    style: SDSTextStyle.regular.copyWith(
+                                                                                        fontSize: 14,
+                                                                                        color: SDSColor.gray500
+                                                                                    ),
+                                                                                    maxLines: 1,
+                                                                                    overflow: TextOverflow.ellipsis,
+                                                                                  ),
+                                                                                ),
+                                                                              ),
+                                                                              if(alarmDoc.textSub != '')
+                                                                                Container(
+                                                                                  width: _size.width - 72,
+                                                                                  child: Padding(
+                                                                                    padding: EdgeInsets.only(top: 2),
+                                                                                    child: Text(': ${alarmDoc.textSub}',
+                                                                                      style: SDSTextStyle.regular.copyWith(
+                                                                                          fontSize: 14,
+                                                                                          color: SDSColor.gray900
+                                                                                      ),
+                                                                                      maxLines: 3,
+                                                                                      overflow: TextOverflow.ellipsis,
+                                                                                    ),
+                                                                                  ),
+                                                                                ),
+                                                                            ],
+                                                                          ),
+                                                                        ],
                                                                       ),
                                                                     ],
                                                                   ),
@@ -288,7 +324,7 @@ class AlarmCenterView extends StatelessWidget {
                                                             ),
                                                           ),
                                                           if (index != _alarmCenterViewModel.alarmCenterList.length - 1)
-                                                            SizedBox(height: 15,)
+                                                            SizedBox(height: 32)
                                                         ],
                                                       ),
                                                       if(alarmDoc.active == false)
@@ -298,7 +334,7 @@ class AlarmCenterView extends StatelessWidget {
                                                         left:0,
                                                         right:0,
                                                         child: Container(
-                                                          color: Colors.white.withOpacity(0.5),
+                                                          color: Colors.white.withOpacity(0.7),
                                                         ),
                                                       )
                                                     ],
