@@ -282,36 +282,10 @@ class FleaMarketListView_search extends StatelessWidget {
                       controller: _fleamarketSearchViewModel.scrollController,
                       itemCount: _fleamarketSearchViewModel.fleamarketListSearch.length + 1,
                       itemBuilder: (context, index) {
-                        if(index == _fleamarketSearchViewModel.fleamarketListSearch.length){
-                          return Obx(() => _fleamarketSearchViewModel.isLoadingNextList == true// 여기서 Obx 사용
-                              ? Center(
-                            child: Padding(
-                              padding: EdgeInsets.only(top: 24),
-                              child: Container(
-                                width: 24,
-                                height: 24,
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Center(
-                                      child: Container(
-                                        width: 24,
-                                        height: 24,
-                                        child: CircularProgressIndicator(
-                                          strokeWidth: 4,
-                                          backgroundColor: SDSColor.gray100,
-                                          color: SDSColor.gray300.withOpacity(0.6),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          )
-                              : (_fleamarketSearchViewModel.showRecentSearch.value == false)
-                              ? Container(
+                        if(_fleamarketSearchViewModel.fleamarketListSearch.isEmpty
+                            && _fleamarketSearchViewModel.showRecentSearch.value == false
+                        ){
+                          return Container(
                             height: _size.height - 400,
                             child: Center(
                               child: Column(
@@ -341,6 +315,35 @@ class FleaMarketListView_search extends StatelessWidget {
                                     ),
                                   ),
                                 ],
+                              ),
+                            ),
+                          );
+                        }
+                        if(index == _fleamarketSearchViewModel.fleamarketListSearch.length){
+                          return Obx(() => _fleamarketSearchViewModel.isLoadingNextList == true// 여기서 Obx 사용
+                              ? Center(
+                            child: Padding(
+                              padding: EdgeInsets.only(top: 24),
+                              child: Container(
+                                width: 24,
+                                height: 24,
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Center(
+                                      child: Container(
+                                        width: 24,
+                                        height: 24,
+                                        child: CircularProgressIndicator(
+                                          strokeWidth: 4,
+                                          backgroundColor: SDSColor.gray100,
+                                          color: SDSColor.gray300.withOpacity(0.6),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
                           )
