@@ -769,8 +769,10 @@ class _SearchCrewViewState extends State<SearchCrewView> {
                     ),
                   ),
                 )
-                    : Container(
-                  height: _size.height - 300,
+                    :
+                (_searchCrewViewModel.showRecentSearch.value == false)
+                    ? Container(
+                  height: _size.height - 400,
                   child: Center(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -801,7 +803,8 @@ class _SearchCrewViewState extends State<SearchCrewView> {
                       ],
                     ),
                   ),
-                ),
+                )
+                    : Container()
                 ),
               ],
             ),
