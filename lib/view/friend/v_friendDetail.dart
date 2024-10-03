@@ -619,6 +619,7 @@ class _FriendDetailViewState extends State<FriendDetailView> {
                                                             minimumSize: Size(40, 10),
                                                             backgroundColor: Colors.transparent,
                                                             overlayColor: Colors.transparent,
+                                                            shadowColor: Colors.transparent,
                                                             shape: RoundedRectangleBorder(
                                                                 borderRadius: BorderRadius.circular(8)),
                                                             elevation: 0,
@@ -672,6 +673,7 @@ class _FriendDetailViewState extends State<FriendDetailView> {
                                                             minimumSize: Size(40, 10),
                                                             overlayColor: Colors.transparent,
                                                             backgroundColor: Colors.transparent,
+                                                            shadowColor: Colors.transparent,
                                                             shape: RoundedRectangleBorder(
                                                                 borderRadius: BorderRadius.circular(8)),
                                                             elevation: 0,
