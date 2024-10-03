@@ -1,3 +1,30 @@
+class AlarmCenterResponse {
+  int? count;
+  String? next;
+  String? previous;
+  List<AlarmCenterModel>? results;
+
+  AlarmCenterResponse({
+    this.count,
+    this.next,
+    this.previous,
+    this.results,
+  });
+
+  // fromJson 생성자
+  AlarmCenterResponse.fromJson(Map<String, dynamic> json) {
+    count = json['count'];
+    next = json['next'];
+    previous = json['previous'];
+    if (json['results'] != null) {
+      results = [];
+      json['results'].forEach((v) {
+        results?.add(AlarmCenterModel.fromJson(v));
+      });
+    }
+  }
+}
+
 class AlarmCenterModel {
   late int alarmCenterId;
   late AlarmInfo alarmInfo;
@@ -13,9 +40,9 @@ class AlarmCenterModel {
   late int? pkCommentCommunity;
   late int? pkReplyFleamarket;
   late int? pkReplyCommunity;
-  late String? textMain;  // nullable String
-  late String? textSub;   // nullable String
-  late int? crewLeaderUserId; // nullable crewLeaderUserId 추가
+  late String? textMain;
+  late String? textSub;
+  late int? crewLeaderUserId;
 
   // 기본 생성자
   AlarmCenterModel() {
@@ -35,7 +62,7 @@ class AlarmCenterModel {
     pkReplyCommunity = null;
     textMain = null;
     textSub = null;
-    crewLeaderUserId = null; // 기본값 null 설정
+    crewLeaderUserId = null;
   }
 
   // fromJson 생성자
@@ -58,7 +85,7 @@ class AlarmCenterModel {
     pkReplyCommunity = json['pk_reply_community'];
     textMain = json['text_main'];
     textSub = json['text_sub'];
-    crewLeaderUserId = json['crew_leader_user_id']; // crew_leader_user_id 추가
+    crewLeaderUserId = json['crew_leader_user_id'];
   }
 }
 

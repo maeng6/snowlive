@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:com.snowlive/api/api_alarmcenter..dart';
-import 'package:com.snowlive/model/m_alarmCenterList.dart';
+import 'package:com.snowlive/model/m_alarmCenterList.dart'; // AlarmCenterModel이 정의된 파일
 import 'package:com.snowlive/viewmodel/friend/vm_friendDetail.dart';
 import 'package:com.snowlive/viewmodel/vm_user.dart';
 import 'package:get/get.dart';
@@ -15,33 +15,43 @@ class AlarmCenterViewModel extends GetxController {
   bool get deleteSuccess => _deleteSuccess.value;
   bool get updateSuccess => _updateSuccess.value;
 
-
   UserViewModel _userViewModel = Get.find<UserViewModel>();
   FriendDetailViewModel _friendDetailViewModel = Get.find<FriendDetailViewModel>();
 
   @override
-  void onInit() async{
+  void onInit() async {
     super.onInit();
-    await fetchAlarmCenterList(userId:_userViewModel.user.user_id);
+    await fetchAlarmCenterList(userId: _userViewModel.user.user_id);
   }
 
-  // 알람 센터 리스트 불러오기
+// 알람 센터 리스트 불러오기
   Future<void> fetchAlarmCenterList({required int userId, int? alarminfoId}) async {
     isLoading(true);
     try {
       final response = await AlarmCenterAPI().fetchAlarmCenterList(userId: userId, alarminfoId: alarminfoId);
 
       if (response.success && response.data != null) {
-        // 데이터를 AlarmCenterModel 리스트로 변환
-        final List<dynamic> dataList = response.data as List<dynamic>;
-        _alarmCenterList.value = dataList.map((data) => AlarmCenterModel.fromJson(data)).toList();
-        print('알센 패치 완료');
+        // 응답 데이터가 Map<String, dynamic> 형태일 경우 처리
+        if (response.data is Map<String, dynamic>) {
+          final Map<String, dynamic> responseData = response.data;
+          // results 리스트를 추출하여 AlarmCenterModel 리스트로 변환
+          if (responseData['results'] != null) {
+            final List<dynamic> resultsList = responseData['results'] as List<dynamic>;
+            _alarmCenterList.value = resultsList.map((data) => AlarmCenterModel.fromJson(data)).toList();
+          } else {
+            _alarmCenterList.value = []; // results가 없을 경우 빈 리스트 처리
+          }
+          print('알람 센터 목록 불러오기 완료');
+        } else {
+          _alarmCenterList.value = [];
+          print('알람 센터 목록 불러오기 실패: 응답 데이터가 리스트가 아님');
+        }
       } else {
         _alarmCenterList.value = []; // 빈 리스트로 처리
-        print('알람 센터 리스트 불러오기 실패: ${response.error}');
+        print('알람 센터 목록 불러오기 실패: ${response.error}');
       }
     } catch (e) {
-      print('Error fetching alarm center list: $e');
+      print('알람 센터 목록을 불러오는 중 오류 발생: $e');
     }
     isLoading(false);
   }
@@ -56,12 +66,13 @@ class AlarmCenterViewModel extends GetxController {
         _deleteSuccess.value = true;
         print("알람 센터 삭제 성공");
         // 삭제 후 알람 센터 리스트를 다시 불러올 수 있음
+        await fetchAlarmCenterList(userId: _userViewModel.user.user_id);
       } else {
         _deleteSuccess.value = false;
         print("알람 센터 삭제 실패: ${response.error}");
       }
     } catch (e) {
-      print("Error deleting alarm center: $e");
+      print("알람 센터 삭제 중 오류 발생: $e");
       _deleteSuccess.value = false;
     }
     isLoading(false);
@@ -77,18 +88,19 @@ class AlarmCenterViewModel extends GetxController {
         _updateSuccess.value = true;
         print("알람 센터 수정 성공");
         // 수정 후 알람 센터 리스트를 다시 불러올 수 있음
+        await fetchAlarmCenterList(userId: _userViewModel.user.user_id);
       } else {
         _updateSuccess.value = false;
         print("알람 센터 수정 실패: ${response.error}");
       }
     } catch (e) {
-      print("Error updating alarm center: $e");
+      print("알람 센터 수정 중 오류 발생: $e");
       _updateSuccess.value = false;
     }
     isLoading(false);
   }
 
-  // 문서가 없으면 생성하고, 있으면 total 값을 true로 업데이트하는 메소드
+  // Firebase Firestore에서 알림 설정 업데이트
   Future<void> updateNotification(
       int uid, {
         bool? total,
@@ -116,20 +128,19 @@ class AlarmCenterViewModel extends GetxController {
         }
         if (updateData.isNotEmpty) {
           await document.reference.update(updateData);
-          print('Fields updated successfully');
+          print('알림 필드 업데이트 완료');
         }
       } else {
         await FirebaseFirestore.instance.collection('notificationCenter').add({
           'uid': uid,
-          'total': total ?? false, // 전달되지 않으면 기본값은 false
+          'total': total ?? false, // 기본값 false
           'friend': friend ?? false,
           'crew': crew ?? false,
         });
-        print('Document created and fields set successfully');
+        print('문서 생성 및 필드 설정 완료');
       }
     } catch (e) {
-      print('Failed to update or create document: $e');
+      print('문서 업데이트 또는 생성 중 오류 발생: $e');
     }
   }
-
 }
