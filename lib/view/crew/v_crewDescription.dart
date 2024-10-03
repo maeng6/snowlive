@@ -77,7 +77,7 @@ class CrewDescriptionView extends StatelessWidget {
                     maxLines: null,
                     minLines: null,
                     expands: true,
-                    maxLength: 200,
+                    maxLength: 50,
                     autovalidateMode: AutovalidateMode.onUserInteraction,
                     style: SDSTextStyle.regular.copyWith(fontSize: 15),
                     strutStyle: StrutStyle(fontSize: 14, leading: 0),
@@ -109,12 +109,12 @@ class CrewDescriptionView extends StatelessWidget {
                         borderRadius: BorderRadius.circular(6),
                       ),
                     ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return '소개글을 입력해 주세요.';
-                      }
-                      return null;
-                    },
+                    // validator: (value) {
+                    //   if (value == null || value.isEmpty) {
+                    //     return '소개글을 입력해 주세요.';
+                    //   }
+                    //   return null;
+                    // },
                   ),
                 ),
               ),
@@ -150,6 +150,7 @@ class CrewDescriptionView extends StatelessWidget {
                   ),
                 ),
               ),
+              SizedBox(height: 16,)
             ],
           ),
         ),

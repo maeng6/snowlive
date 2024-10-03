@@ -143,6 +143,7 @@ class CrewNoticeCreateView extends StatelessWidget {
                   ),
                 ),
               ),
+              SizedBox(height: 16,)
             ],
           ),
         ),

@@ -34,55 +34,55 @@ class CrewHomeView extends StatelessWidget {
     return Obx(() => Scaffold(
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: (_crewMemberListViewModel.liveMemberCount != 0)
-            ? Align(
-          alignment: Alignment.bottomCenter,
+          ? Align(
+        alignment: Alignment.bottomCenter,
+        child: Container(
+          width: 180,
+          decoration: BoxDecoration(
+            color: Colors.transparent,
+            borderRadius: BorderRadius.circular(50),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.04),
+                spreadRadius: 2,
+                blurRadius: 8,
+                offset: Offset(0, 6),
+              ),
+            ],
+          ),
           child: Container(
-            width: 180,
+            padding: const EdgeInsets.symmetric(vertical: 10),
             decoration: BoxDecoration(
-              color: Colors.transparent,
-              borderRadius: BorderRadius.circular(50),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.04),
-                  spreadRadius: 2,
-                  blurRadius: 8,
-                  offset: Offset(0, 6),
+              color: SDSColor.snowliveWhite,
+              borderRadius: BorderRadius.circular(40),
+              border: Border.all(color: SDSColor.gray200),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Image.asset(
+                  'assets/imgs/icons/icon_badge_live.png',
+                  width: 36,
                 ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 2, right: 3),
+                  child: Text(
+                    '라이브온 중인 멤버 ${_crewMemberListViewModel.liveMemberCount}명',
+                    style: TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.bold,
+                      color: SDSColor.gray900,
+                      letterSpacing: 0,
+                    ),
+                  ),
+                )
               ],
             ),
-            child: Container(
-              padding: const EdgeInsets.symmetric(vertical: 10),
-              decoration: BoxDecoration(
-                color: SDSColor.snowliveWhite,
-                borderRadius: BorderRadius.circular(40),
-                border: Border.all(color: SDSColor.gray200),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Image.asset(
-                    'assets/imgs/icons/icon_badge_live.png',
-                    width: 36,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 2, right: 3),
-                    child: Text(
-                      '라이브온 중인 멤버 ${_crewMemberListViewModel.liveMemberCount}명',
-                      style: TextStyle(
-                        fontSize: 13,
-                        fontWeight: FontWeight.bold,
-                        color: SDSColor.gray900,
-                        letterSpacing: 0,
-                      ),
-                    ),
-                  )
-                ],
-              ),
-            ),
           ),
-        )
-        : Container(),
+        ),
+      )
+          : Container(),
       backgroundColor: SDSColor.snowliveWhite,
       extendBodyBehindAppBar: true,
       body: Stack(
@@ -120,8 +120,8 @@ class CrewHomeView extends StatelessWidget {
                                   child: Text(
                                     _crewNoticeViewModel.noticeList.first.notice!,
                                     style: SDSTextStyle.regular.copyWith(
-                                        fontSize: 14,
-                                        color: SDSColor.gray900,
+                                      fontSize: 14,
+                                      color: SDSColor.gray900,
                                     ),
                                     maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
@@ -305,15 +305,15 @@ class CrewHomeView extends StatelessWidget {
                                                   maxLines: 1,
                                                 )
                                                     : Padding(
-                                                      padding: EdgeInsets.only(top: (_crewDetailViewModel.isCrewIntroExpanded == false) ? 0 : 10),
-                                                      child: Text(
-                                                                                                        _crewDetailViewModel.description,
-                                                                                                        style: SDSTextStyle.regular.copyWith(
+                                                  padding: EdgeInsets.only(top: (_crewDetailViewModel.isCrewIntroExpanded == false) ? 0 : 10),
+                                                  child: Text(
+                                                    _crewDetailViewModel.description,
+                                                    style: SDSTextStyle.regular.copyWith(
                                                       fontSize: 14,
                                                       color: SDSColor.snowliveWhite,
-                                                                                                        ),
-                                                                                                      ),
                                                     ),
+                                                  ),
+                                                ),
                                               ),
                                               // 텍스트가 한 줄 이상일 경우에만 아이콘을 표시
                                               if (isTextOverflowing)
@@ -370,6 +370,8 @@ class CrewHomeView extends StatelessWidget {
                                       ),
                                     ],
                                   ),
+                                if (_crewDetailViewModel.description.isEmpty)
+                                  SizedBox(height: 8,)
                               ],
                             ),
                           ],
@@ -390,30 +392,30 @@ class CrewHomeView extends StatelessWidget {
                           ),
                         ),
                         Expanded(child: SizedBox()),
-                         if(_userViewModel.user.crew_id == _crewDetailViewModel.crewDetailInfo.crewId)
-                        (_crewDetailViewModel.isLoading == true)
-                            ? SizedBox.shrink()
-                            : TextButton(
-                          onPressed: () async{
-                            Get.toNamed(AppRoutes.crewRecordRoom);
-                          },
-                          style: ElevatedButton.styleFrom(
-                            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 3),
-                            minimumSize: Size(36, 32),
-                            backgroundColor: SDSColor.snowliveWhite,
-                            side: BorderSide(
-                                color: SDSColor.gray200
+                        if(_userViewModel.user.crew_id == _crewDetailViewModel.crewDetailInfo.crewId)
+                          (_crewDetailViewModel.isLoading == true)
+                              ? SizedBox.shrink()
+                              : TextButton(
+                            onPressed: () async{
+                              Get.toNamed(AppRoutes.crewRecordRoom);
+                            },
+                            style: ElevatedButton.styleFrom(
+                              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 3),
+                              minimumSize: Size(36, 32),
+                              backgroundColor: SDSColor.snowliveWhite,
+                              side: BorderSide(
+                                  color: SDSColor.gray200
+                              ),
+                              elevation: 0,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(5)),
                             ),
-                            elevation: 0,
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(5)),
-                          ),
-                          child: Text(
-                            '기록실',
-                            style: SDSTextStyle.bold.copyWith(fontSize: 13, color: SDSColor.gray900),
+                            child: Text(
+                              '기록실',
+                              style: SDSTextStyle.bold.copyWith(fontSize: 13, color: SDSColor.gray900),
 
+                            ),
                           ),
-                        ),
                       ],
                     ),
                   ),
@@ -442,7 +444,7 @@ class CrewHomeView extends StatelessWidget {
                                       '${_crewDetailViewModel.overallRank}',
                                       style: SDSTextStyle.bold.copyWith(
                                           fontSize: 18,
-                                        color: SDSColor.gray900
+                                          color: SDSColor.gray900
                                       ),
                                     ),
                                     Text(
@@ -668,13 +670,13 @@ class CrewHomeView extends StatelessWidget {
                                                       child: Text(
                                                         '$passCount',
                                                         style: SDSTextStyle.extraBold.copyWith(
-                                                          fontSize: 12,
-                                                          fontWeight: (slopeData == _crewDetailViewModel.countInfo.first)
-                                                              ? FontWeight.w900
-                                                              : FontWeight.w300,
-                                                          color: (slopeData == _crewDetailViewModel.countInfo.first)
-                                                              ? SDSColor.snowliveWhite
-                                                              : SDSColor.gray900
+                                                            fontSize: 12,
+                                                            fontWeight: (slopeData == _crewDetailViewModel.countInfo.first)
+                                                                ? FontWeight.w900
+                                                                : FontWeight.w300,
+                                                            color: (slopeData == _crewDetailViewModel.countInfo.first)
+                                                                ? SDSColor.snowliveWhite
+                                                                : SDSColor.gray900
                                                         ),
                                                       ),
                                                     ),
@@ -758,8 +760,8 @@ class CrewHomeView extends StatelessWidget {
                     ),
                   ),
                   (_userViewModel.user.crew_id == null)
-                  ? SizedBox(height: 100)
-                  : SizedBox(height: 40),
+                      ? SizedBox(height: 100)
+                      : SizedBox(height: 40),
                 ],
               ),
             ),
@@ -887,9 +889,9 @@ class CrewHomeView extends StatelessWidget {
                                       Expanded(
                                         child: ElevatedButton(
                                           onPressed: () {
-                                                _crewApplyViewModel.textEditingController_crewHome.clear();
-                                                _crewApplyViewModel.isSubmitButtonEnabled_crewHome.value = false;
-                                                Navigator.pop(context); // 팝업 닫기
+                                            _crewApplyViewModel.textEditingController_crewHome.clear();
+                                            _crewApplyViewModel.isSubmitButtonEnabled_crewHome.value = false;
+                                            Navigator.pop(context); // 팝업 닫기
                                           },
                                           child: Text(
                                             '돌아가기',
@@ -917,9 +919,9 @@ class CrewHomeView extends StatelessWidget {
                                             Navigator.pop(context);
                                             CustomFullScreenDialog.showDialog();
                                             await _crewApplyViewModel.applyForCrew(
-                                              _crewDetailViewModel.crewDetailInfo.crewId!,
-                                              _userViewModel.user.user_id,
-                                              _crewApplyViewModel.textEditingController_crewHome.text
+                                                _crewDetailViewModel.crewDetailInfo.crewId!,
+                                                _userViewModel.user.user_id,
+                                                _crewApplyViewModel.textEditingController_crewHome.text
                                             );
                                             _crewApplyViewModel.textEditingController_crewHome.clear();
                                             _crewApplyViewModel.isSubmitButtonEnabled_crewHome.value = false;
@@ -931,13 +933,13 @@ class CrewHomeView extends StatelessWidget {
                                                 fontSize: 16),
                                           ),
                                           style: TextButton.styleFrom(
-                                            shape: const RoundedRectangleBorder(
-                                              borderRadius: BorderRadius.all(Radius.circular(6)),
-                                            ),
-                                            splashFactory: InkRipple.splashFactory,
-                                            elevation: 0,
-                                            minimumSize: Size(100, 56),
-                                            backgroundColor:  SDSColor.snowliveBlue // 입력이 있을 때 버튼 활성화
+                                              shape: const RoundedRectangleBorder(
+                                                borderRadius: BorderRadius.all(Radius.circular(6)),
+                                              ),
+                                              splashFactory: InkRipple.splashFactory,
+                                              elevation: 0,
+                                              minimumSize: Size(100, 56),
+                                              backgroundColor:  SDSColor.snowliveBlue // 입력이 있을 때 버튼 활성화
                                           ),
                                         ),
                                       ),

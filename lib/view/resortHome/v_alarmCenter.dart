@@ -3,8 +3,12 @@ import 'package:com.snowlive/model/m_alarmCenterList.dart';
 import 'package:com.snowlive/routes/routes.dart';
 import 'package:com.snowlive/view/crew/v_crewHome.dart';
 import 'package:com.snowlive/view/crew/v_crewMember.dart';
+import 'package:com.snowlive/viewmodel/community/vm_communityBulletinList.dart';
+import 'package:com.snowlive/viewmodel/community/vm_communityCommentDetail.dart';
+import 'package:com.snowlive/viewmodel/community/vm_communityDetail.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewDetail.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_searchCrew.dart';
+import 'package:com.snowlive/viewmodel/fleamarket/vm_fleamarketCommentDetail.dart';
 import 'package:com.snowlive/viewmodel/fleamarket/vm_fleamarketDetail.dart';
 import 'package:com.snowlive/viewmodel/fleamarket/vm_fleamarketList.dart';
 import 'package:com.snowlive/viewmodel/friend/vm_friendDetail.dart';
@@ -28,6 +32,12 @@ class AlarmCenterView extends StatelessWidget {
   FriendDetailViewModel _friendDetailViewModel = Get.find<FriendDetailViewModel>();
   final FleamarketListViewModel _fleamarketListViewModel = Get.find<FleamarketListViewModel>();
   final FleamarketDetailViewModel _fleamarketDetailViewModel = Get.find<FleamarketDetailViewModel>();
+  final CommunityBulletinListViewModel _communityBulletinListViewModel = Get.find<CommunityBulletinListViewModel>();
+  final CommunityDetailViewModel _communityDetailViewModel = Get.find<CommunityDetailViewModel>();
+  final CommunityCommentDetailViewModel _communityCommentDetailViewModel = Get.find<CommunityCommentDetailViewModel>();
+  final FleamarketCommentDetailViewModel _fleamarketCommentDetailViewModel = Get.find<FleamarketCommentDetailViewModel>();
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -136,7 +146,7 @@ class AlarmCenterView extends StatelessWidget {
                                             itemBuilder: (BuildContext context, int index) {
                                               AlarmCenterModel alarmDoc = _alarmCenterViewModel.alarmCenterList[index];
                                               String _time = TimeStamp().getAgo(alarmDoc.date);
-                                              if (_alarmCenterViewModel.alarmCenterList.isNotEmpty || _alarmCenterViewModel.alarmCenterList != null) {
+                                              if (_alarmCenterViewModel.alarmCenterList.length != 0) {
                                                 return InkWell(
                                                   highlightColor: Colors.transparent,
                                                   splashColor: Colors.transparent,
@@ -211,6 +221,33 @@ class AlarmCenterView extends StatelessWidget {
                                                       await _fleamarketDetailViewModel.fetchFleamarketDetailFromAPI(fleamarketId: alarmDoc.pkCommentFleamarket!, userId: _userViewModel.user.user_id);
                                                       CustomFullScreenDialog.cancelDialog();
                                                       Get.toNamed(AppRoutes.fleamarketDetail);
+                                                      await _alarmCenterViewModel.updateAlarmCenter(alarmDoc.alarmCenterId, {
+                                                        "active": false
+                                                      });
+                                                      await _alarmCenterViewModel.fetchAlarmCenterList(userId: _userViewModel.user.user_id);
+                                                    }
+                                                    else if(alarmDoc.alarmInfo.alarmInfoId == 5) {
+                                                      CustomFullScreenDialog.showDialog();
+                                                      await _communityDetailViewModel.fetchCommunityDetail(alarmDoc.pkCommentFleamarket!, _userViewModel.user.user_id);
+                                                      CustomFullScreenDialog.cancelDialog();
+                                                      Get.toNamed(AppRoutes.bulletinDetail);
+                                                      await _alarmCenterViewModel.updateAlarmCenter(alarmDoc.alarmCenterId, {
+                                                        "active": false
+                                                      });
+                                                      await _alarmCenterViewModel.fetchAlarmCenterList(userId: _userViewModel.user.user_id);
+                                                    }
+                                                    else if(alarmDoc.alarmInfo.alarmInfoId == 6) {
+                                                      if(alarmDoc.pkReplyCommunity != null){
+                                                        CustomFullScreenDialog.showDialog();
+                                                        await _communityCommentDetailViewModel.fetchCommunityCommentDetail(commentId: alarmDoc.pkReplyCommunity!);
+                                                        Get.toNamed(AppRoutes.bulletinCommentDetail);
+                                                        CustomFullScreenDialog.cancelDialog();
+                                                      }else{
+                                                        CustomFullScreenDialog.showDialog();
+                                                        await _fleamarketCommentDetailViewModel.fetchFleamarketCommentDetail(commentId: alarmDoc.pkReplyFleamarket!);
+                                                        Get.toNamed(AppRoutes.fleamarketCommentDetail);
+                                                        CustomFullScreenDialog.cancelDialog();
+                                                      }
                                                       await _alarmCenterViewModel.updateAlarmCenter(alarmDoc.alarmCenterId, {
                                                         "active": false
                                                       });
@@ -345,8 +382,7 @@ class AlarmCenterView extends StatelessWidget {
                                                 return Container(
                                                   height: _size.height - 400,
                                                   child: Column(
-                                                    mainAxisAlignment: MainAxisAlignment
-                                                        .center,
+                                                    mainAxisAlignment: MainAxisAlignment.center,
                                                     children: [
                                                       Center(
                                                         child: Image.asset(

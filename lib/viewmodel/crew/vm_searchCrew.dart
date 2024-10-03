@@ -36,6 +36,7 @@ class SearchCrewViewModel extends GetxController {
     try {
       final response = await CrewAPI().listCrews(crewName: crewName);
       print(crewName);
+      print(response.data);
       if (response.success) {
         CrewListResponse crewListResponse = CrewListResponse.fromJson(response.data as List<dynamic>);
         crewList.assignAll(crewListResponse.results ?? []);

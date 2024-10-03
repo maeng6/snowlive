@@ -2,7 +2,6 @@ import 'package:com.snowlive/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/routes/routes.dart';
 import 'package:com.snowlive/viewmodel/friend/vm_friendDetail.dart';
 import 'package:com.snowlive/viewmodel/friend/vm_friendList.dart';
-import 'package:com.snowlive/viewmodel/resortHome/vm_alarmCenter.dart';
 import 'package:com.snowlive/viewmodel/vm_user.dart';
 import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 import 'package:extended_image/extended_image.dart';
@@ -15,8 +14,6 @@ class SearchFriendView extends StatelessWidget {
   final FriendListViewModel _friendListViewModel = Get.find<FriendListViewModel>();
   final FriendDetailViewModel _friendDetailViewModel = Get.find<FriendDetailViewModel>();
   final UserViewModel _userViewModel = Get.find<UserViewModel>();
-  final AlarmCenterViewModel _alarmCenterViewModel = Get.find<AlarmCenterViewModel>();
-
   FocusNode textFocus = FocusNode();
 
 
@@ -51,6 +48,7 @@ class SearchFriendView extends StatelessWidget {
                     height: 26,
                   ),
                   onTap: () {
+                    _friendListViewModel.textEditingController.clear();
                     _friendListViewModel.searchFriendSuccess == false;
                     Get.back();
                   },
@@ -100,7 +98,6 @@ class SearchFriendView extends StatelessWidget {
                                                 CustomFullScreenDialog.showDialog();
                                                 await _friendListViewModel.searchUser(
                                                     _friendListViewModel.textEditingController.text);
-                                                _friendListViewModel.textEditingController.clear();
                                                 CustomFullScreenDialog.cancelDialog();
                                               }
 
@@ -201,10 +198,11 @@ class SearchFriendView extends StatelessWidget {
                                               SizedBox(
                                                 height: 6,
                                               ),
-                                              Text('친구 검색 결과가 없습니다.',
+                                              Text('"${_friendListViewModel.textEditingController.text}"에 대한 검색 결과가 없습니다.',
                                                 style: SDSTextStyle.regular.copyWith(
                                                     fontSize: 14,
-                                                    color: SDSColor.gray600
+                                                    color: SDSColor.gray600,
+                                                    fontWeight: FontWeight.bold
                                                 ),
                                               ),
                                               Text('닉네임 전체를 정확히 입력해 주세요.',
@@ -465,11 +463,6 @@ class SearchFriendView extends StatelessWidget {
                                                       "user_id": _userViewModel.user.user_id.toString(),    //필수 - 신청자 (나)
                                                       "friend_user_id": _friendListViewModel.searchFriend.userId.toString()    //필수 - 신청받는사람
                                                     });
-                                                    await _alarmCenterViewModel.updateNotification(
-                                                        _friendListViewModel.searchFriend.userId!,
-                                                        total: true,
-                                                        friend: true
-                                                    );
                                                   },
                                                   style: TextButton.styleFrom(
                                                     backgroundColor: Colors.transparent, // 배경색 투명

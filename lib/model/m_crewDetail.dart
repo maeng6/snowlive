@@ -31,6 +31,7 @@ class CrewDetailInfo {
   int? baseResortId;
   int? crewMemberTotal;
   String? notice;
+  int? crewLeaderUserId; // 크루 리더 user_id 필드 추가
 
   CrewDetailInfo({
     this.crewId,
@@ -49,6 +50,7 @@ class CrewDetailInfo {
     this.baseResortId,
     this.crewMemberTotal,
     this.notice,
+    this.crewLeaderUserId, // 크루 리더 user_id 필드 추가
   });
 
   CrewDetailInfo.fromJson(Map<String, dynamic> json) {
@@ -68,6 +70,7 @@ class CrewDetailInfo {
     baseResortId = json['base_resort_id'];
     crewMemberTotal = json['crew_member_total'];
     notice = json['notice'];
+    crewLeaderUserId = json['crew_leader_user_id']; // 크루 리더 user_id 초기화
   }
 }
 

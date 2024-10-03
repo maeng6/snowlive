@@ -215,60 +215,92 @@ class _SearchCrewViewState extends State<SearchCrewView> {
                 ),
                 SizedBox(height: 20),
                 Obx(
-                      () => _searchCrewViewModel.showRecentSearch.value &&
-                      _searchCrewViewModel.recentSearches.isNotEmpty
-                      ? Expanded(
-                    child: ListView.builder(
-                      itemCount: _searchCrewViewModel.recentSearches.length,
-                      itemBuilder: (context, index) {
-                        String recentSearch = _searchCrewViewModel.recentSearches[index];
-                        return GestureDetector(
-                          onTap: () async {
-                            textFocus.unfocus();
-                            _searchCrewViewModel.textEditingController.text = recentSearch;
-                            _searchCrewViewModel.search(recentSearch);
-                            CustomFullScreenDialog.showDialog();
-                            await _searchCrewViewModel.searchCrews(recentSearch);
-                            CustomFullScreenDialog.cancelDialog();
-                            _searchCrewViewModel.showRecentSearch.value = false; // 검색 결과로 전환
-                          },
-                          child: Row(
-                            children: [
-                              Padding(
-                                padding: EdgeInsets.only(left: 16, right: 8),
-                                child: Image.asset(
-                                  'assets/imgs/icons/icon_search.png',
-                                  color: SDSColor.gray400,
-                                  width: 16,
-                                ),
-                              ),
-                              Expanded(
-                                child: Text(
-                                  recentSearch,
-                                  style: SDSTextStyle.regular.copyWith(
-                                    fontSize: 16,
-                                    color: SDSColor.gray900,
+                        () => _searchCrewViewModel.showRecentSearch.value &&
+                        _searchCrewViewModel.recentSearches.isNotEmpty
+                        ? Expanded(
+                      child: ListView.builder(
+                        itemCount: _searchCrewViewModel.recentSearches.length,
+                        itemBuilder: (context, index) {
+                          String recentSearch = _searchCrewViewModel.recentSearches[index];
+                          return GestureDetector(
+                            onTap: () async {
+                              textFocus.unfocus();
+                              _searchCrewViewModel.textEditingController.text = recentSearch;
+                              _searchCrewViewModel.search(recentSearch);
+                              CustomFullScreenDialog.showDialog();
+                              await _searchCrewViewModel.searchCrews(recentSearch);
+                              CustomFullScreenDialog.cancelDialog();
+                              _searchCrewViewModel.showRecentSearch.value = false; // 검색 결과로 전환
+                            },
+                            child: Row(
+                              children: [
+                                Padding(
+                                  padding: EdgeInsets.only(left: 16, right: 8),
+                                  child: Image.asset(
+                                    'assets/imgs/icons/icon_search.png',
+                                    color: SDSColor.gray400,
+                                    width: 16,
                                   ),
                                 ),
-                              ),
-                              IconButton(
-                                icon: Icon(
-                                  Icons.clear,
-                                  color: SDSColor.gray500,
-                                  size: 20,
+                                Expanded(
+                                  child: Text(
+                                    recentSearch,
+                                    style: SDSTextStyle.regular.copyWith(
+                                      fontSize: 16,
+                                      color: SDSColor.gray900,
+                                    ),
+                                  ),
                                 ),
-                                onPressed: () {
-                                  _searchCrewViewModel.deleteRecentSearch(recentSearch);
-                                },
-                              ),
-                            ],
-                          ),
-                        );
-                      },
-                    ),
+                                IconButton(
+                                  icon: Icon(
+                                    Icons.clear,
+                                    color: SDSColor.gray500,
+                                    size: 20,
+                                  ),
+                                  onPressed: () {
+                                    _searchCrewViewModel.deleteRecentSearch(recentSearch);
+                                  },
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                      ),
 
-                  )
-                      : Container(),
+                    )
+                        : Container(
+                      height: _size.height - 300,
+                      child: Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Image.asset(
+                              'assets/imgs/icons/icon_nodata.png',
+                              scale: 4,
+                              width: 73,
+                              height: 73,
+                            ),
+                            SizedBox(
+                              height: 6,
+                            ),
+                            Text('"${_searchCrewViewModel.textEditingController.text}"에 대한 검색 결과가 없습니다.',
+                              style: SDSTextStyle.regular.copyWith(
+                                  fontSize: 14,
+                                  color: SDSColor.gray600,
+                                  fontWeight: FontWeight.bold
+                              ),
+                            ),
+                            Text('다른 검색어를 입력해 보세요',
+                              style: SDSTextStyle.regular.copyWith(
+                                  fontSize: 14,
+                                  color: SDSColor.gray600
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    )
                 ),
                 Obx(() => (_searchCrewViewModel.crewList.isNotEmpty)
                     ? Expanded(
