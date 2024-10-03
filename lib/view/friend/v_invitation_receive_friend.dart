@@ -24,9 +24,11 @@ class _ReceiveFriendRequestViewState extends State<ReceiveFriendRequestView> {
   @override
   Widget build(BuildContext context) {
     final Size _size = MediaQuery.of(context).size;
-    return Scaffold(
+    return Obx(()=>Scaffold(
         backgroundColor: Colors.white,
-        body: Obx(()=>ListView.builder(
+        body:
+        (_friendListViewModel.friendsRequestList.length != 0)
+            ? Obx(()=>ListView.builder(
           padding: EdgeInsets.symmetric(horizontal: 0),
           itemCount: _friendListViewModel.friendsRequestList.length,
           itemBuilder: (BuildContext context, int index) {
@@ -90,35 +92,35 @@ class _ReceiveFriendRequestViewState extends State<ReceiveFriendRequestView> {
                         )
                             : GestureDetector(
                           onTap: () async{
-                    Get.toNamed(AppRoutes.friendDetail);
-                    await _friendDetailViewModel.fetchFriendDetailInfo(
-                    userId: _userViewModel.user.user_id,
-                    friendUserId: friend.friendUserId,
-                    season: _friendDetailViewModel.seasonDate,
-                    );
-                    },
-                      child: Container(
-                        width: 40,
-                        height: 40,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Container(
-                              alignment: Alignment.centerLeft,
-                              child: ClipOval(
-                                child: Image.asset(
-                                  'assets/imgs/profile/img_profile_default_circle.png',
-                                  width: 40,
-                                  height: 40,
-                                  fit: BoxFit.cover,
+                            Get.toNamed(AppRoutes.friendDetail);
+                            await _friendDetailViewModel.fetchFriendDetailInfo(
+                              userId: _userViewModel.user.user_id,
+                              friendUserId: friend.friendUserId,
+                              season: _friendDetailViewModel.seasonDate,
+                            );
+                          },
+                          child: Container(
+                            width: 40,
+                            height: 40,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Container(
+                                  alignment: Alignment.centerLeft,
+                                  child: ClipOval(
+                                    child: Image.asset(
+                                      'assets/imgs/profile/img_profile_default_circle.png',
+                                      width: 40,
+                                      height: 40,
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
                                 ),
-                              ),
+                              ],
                             ),
-                          ],
+                          ),
                         ),
-                      ),
-                    ),
                         title: Text(
                           friend.friendUserInfo.displayName,
                           style: SDSTextStyle.regular.copyWith(
@@ -220,13 +222,13 @@ class _ReceiveFriendRequestViewState extends State<ReceiveFriendRequestView> {
                                   );
                                 },
                                 child: Text('수락',
-                                style: SDSTextStyle.bold.copyWith(fontSize: 13, color: SDSColor.gray900),),
+                                  style: SDSTextStyle.bold.copyWith(fontSize: 13, color: SDSColor.gray900),),
                                 style: ElevatedButton.styleFrom(
                                   padding: EdgeInsets.symmetric(horizontal: 14, vertical: 3),
                                   minimumSize: Size(36, 32),
                                   backgroundColor: SDSColor.snowliveWhite,
                                   side: BorderSide(
-                                    color: SDSColor.gray200
+                                      color: SDSColor.gray200
                                   ),
                                   elevation: 0,
                                   shape: RoundedRectangleBorder(
@@ -346,6 +348,34 @@ class _ReceiveFriendRequestViewState extends State<ReceiveFriendRequestView> {
             );
           },
         ))
-    );
+            : Container(
+          height: _size.height - 400,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Center(
+                child: Image.asset(
+                  'assets/imgs/icons/icon_no_member.png',
+                  width: 100,
+                ),
+              ),
+              SizedBox(height: 12),
+              Center(
+                child: Padding(
+                  padding: const EdgeInsets
+                      .only(bottom: 50),
+                  child: Text(
+                    '받은 친구요청이 없습니다',
+                    style: TextStyle(
+                        fontSize: 14,
+                        color: Color(
+                            0xFF666666)),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        )
+    ));
   }
 }

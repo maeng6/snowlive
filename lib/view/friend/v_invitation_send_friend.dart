@@ -24,9 +24,11 @@ class _SendFriendRequestViewState extends State<SendFriendRequestView> {
   @override
   Widget build(BuildContext context) {
     final Size _size = MediaQuery.of(context).size;
-    return Scaffold(
+    return Obx(()=>Scaffold(
         backgroundColor: Colors.white,
-        body: Obx(()=>ListView.builder(
+        body:
+        (_friendListViewModel.myRequestList.length != 0)
+            ? Obx(()=>ListView.builder(
           padding: EdgeInsets.symmetric(horizontal: 0),
           itemCount: _friendListViewModel.myRequestList.length,
           itemBuilder: (BuildContext context, int index) {
@@ -36,214 +38,242 @@ class _SendFriendRequestViewState extends State<SendFriendRequestView> {
               child: Column(
                 children: [
                   Container(
-                height: 44,
-                child: Center(
-                  child: ListTile(
-                    contentPadding: EdgeInsets.symmetric(horizontal: 0),
-                    leading:  (friend.friendUserInfo.profileImageUrlUser.isNotEmpty)
-                        ? GestureDetector(
-                      onTap: () async{
-                        Get.toNamed(AppRoutes.friendDetail);
-                        await _friendDetailViewModel.fetchFriendDetailInfo(
-                          userId: _userViewModel.user.user_id,
-                          friendUserId: friend.friendUserId,
-                          season: _friendDetailViewModel.seasonDate,
-                        );
-                      },
-                      child: Container(
-                        width: 40,
-                        height: 40,
-                        decoration: BoxDecoration(
-                            color: SDSColor.gray50,
-                            borderRadius: BorderRadius.circular(50)
-                        ),
-                        alignment: Alignment.centerLeft,
-                        child: ExtendedImage.network(
-                          '${friend.friendUserInfo.profileImageUrlUser}',
-                          enableMemoryCache: true,
-                          shape: BoxShape.circle,
-                          borderRadius: BorderRadius.circular(8),
-                          width: 40,
-                          height: 40,
-                          fit: BoxFit.cover,
-                          loadStateChanged: (ExtendedImageState state) {
-                            switch (state.extendedImageLoadState) {
-                              case LoadState.loading:
-                                return SizedBox.shrink();
-                              case LoadState.completed:
-                                return state.completedWidget;
-                              case LoadState.failed:
-                                return ClipOval(
-                                  child: Image.asset(
-                                    'assets/imgs/profile/img_profile_default_circle.png',
-                                    width: 24,
-                                    height: 24,
-                                    fit: BoxFit.cover,
-                                  ),
-                                ); // 예시로 에러 아이콘을 반환하고 있습니다.
-                              default:
-                                return null;
-                            }
+                    height: 44,
+                    child: Center(
+                      child: ListTile(
+                        contentPadding: EdgeInsets.symmetric(horizontal: 0),
+                        leading:  (friend.friendUserInfo.profileImageUrlUser.isNotEmpty)
+                            ? GestureDetector(
+                          onTap: () async{
+                            Get.toNamed(AppRoutes.friendDetail);
+                            await _friendDetailViewModel.fetchFriendDetailInfo(
+                              userId: _userViewModel.user.user_id,
+                              friendUserId: friend.friendUserId,
+                              season: _friendDetailViewModel.seasonDate,
+                            );
                           },
-                        ),
-                      ),
-                    )
-                        : GestureDetector(
-                      onTap: () async{
-                        Get.toNamed(AppRoutes.friendDetail);
-                        await _friendDetailViewModel.fetchFriendDetailInfo(
-                          userId: _userViewModel.user.user_id,
-                          friendUserId: friend.friendUserId,
-                          season: _friendDetailViewModel.seasonDate,
-                        );
-                      },
-                      child: Container(
-                        width: 40,
-                        height: 40,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Container(
-                              alignment: Alignment.centerLeft,
-                              child: ClipOval(
-                                child: Image.asset(
-                                  'assets/imgs/profile/img_profile_default_circle.png',
-                                  width: 40,
-                                  height: 40,
-                                  fit: BoxFit.cover,
-                                ),
-                              ),
+                          child: Container(
+                            width: 40,
+                            height: 40,
+                            decoration: BoxDecoration(
+                                color: SDSColor.gray50,
+                                borderRadius: BorderRadius.circular(50)
                             ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    title: Text(
-                      friend.friendUserInfo.displayName,
-                      style: SDSTextStyle.regular.copyWith(
-                        fontSize: 15,
-                        color: SDSColor.gray900,
-                      ),
-                    ),
-                    trailing: Container(
-                      width: 140,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          ElevatedButton(
-                            onPressed: (){
-
-
-                              Get.dialog(
-                                  AlertDialog(
-                                    backgroundColor: SDSColor.snowliveWhite,
-                                    contentPadding: EdgeInsets.only(bottom: 0, left: 28, right: 28, top: 36),
-                                    elevation: 0,
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(16)),
-                                    buttonPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
-                                    content: Container(
-                                      height: 40,
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.center,
-                                        children: [
-                                          Text(
-                                            '보낸 요청을 취소하시겠어요?',
-                                            textAlign: TextAlign.center,
-                                            style: SDSTextStyle.bold.copyWith(
-                                                color: SDSColor.gray900,
-                                                fontSize: 16
-                                            ),
-                                          ),
-                                        ],
+                            alignment: Alignment.centerLeft,
+                            child: ExtendedImage.network(
+                              '${friend.friendUserInfo.profileImageUrlUser}',
+                              enableMemoryCache: true,
+                              shape: BoxShape.circle,
+                              borderRadius: BorderRadius.circular(8),
+                              width: 40,
+                              height: 40,
+                              fit: BoxFit.cover,
+                              loadStateChanged: (ExtendedImageState state) {
+                                switch (state.extendedImageLoadState) {
+                                  case LoadState.loading:
+                                    return SizedBox.shrink();
+                                  case LoadState.completed:
+                                    return state.completedWidget;
+                                  case LoadState.failed:
+                                    return ClipOval(
+                                      child: Image.asset(
+                                        'assets/imgs/profile/img_profile_default_circle.png',
+                                        width: 24,
+                                        height: 24,
+                                        fit: BoxFit.cover,
                                       ),
+                                    ); // 예시로 에러 아이콘을 반환하고 있습니다.
+                                  default:
+                                    return null;
+                                }
+                              },
+                            ),
+                          ),
+                        )
+                            : GestureDetector(
+                          onTap: () async{
+                            Get.toNamed(AppRoutes.friendDetail);
+                            await _friendDetailViewModel.fetchFriendDetailInfo(
+                              userId: _userViewModel.user.user_id,
+                              friendUserId: friend.friendUserId,
+                              season: _friendDetailViewModel.seasonDate,
+                            );
+                          },
+                          child: Container(
+                            width: 40,
+                            height: 40,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Container(
+                                  alignment: Alignment.centerLeft,
+                                  child: ClipOval(
+                                    child: Image.asset(
+                                      'assets/imgs/profile/img_profile_default_circle.png',
+                                      width: 40,
+                                      height: 40,
+                                      fit: BoxFit.cover,
                                     ),
-                                    actions: [
-                                      Padding(
-                                        padding: EdgeInsets.only(top: 10, left: 16, right: 16),
-                                        child: Row(
-                                          children: [
-                                            Expanded(
-                                              child: Container(
-                                                child: TextButton(
-                                                    onPressed: () {
-                                                      Navigator.pop(context);
-                                                    },
-                                                    style: TextButton.styleFrom(
-                                                      backgroundColor: Colors.transparent, // 배경색 투명
-                                                      splashFactory: NoSplash.splashFactory, // 터치 시 효과 제거
-                                                    ),
-                                                    child: Text('취소',
-                                                      style: SDSTextStyle.bold.copyWith(
-                                                        fontSize: 17,
-                                                        color: SDSColor.gray500,
-                                                      ),
-                                                    )
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        title: Text(
+                          friend.friendUserInfo.displayName,
+                          style: SDSTextStyle.regular.copyWith(
+                            fontSize: 15,
+                            color: SDSColor.gray900,
+                          ),
+                        ),
+                        trailing: Container(
+                          width: 140,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              ElevatedButton(
+                                onPressed: (){
+
+
+                                  Get.dialog(
+                                      AlertDialog(
+                                        backgroundColor: SDSColor.snowliveWhite,
+                                        contentPadding: EdgeInsets.only(bottom: 0, left: 28, right: 28, top: 36),
+                                        elevation: 0,
+                                        shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(16)),
+                                        buttonPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+                                        content: Container(
+                                          height: 40,
+                                          child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.center,
+                                            children: [
+                                              Text(
+                                                '보낸 요청을 취소하시겠어요?',
+                                                textAlign: TextAlign.center,
+                                                style: SDSTextStyle.bold.copyWith(
+                                                    color: SDSColor.gray900,
+                                                    fontSize: 16
                                                 ),
                                               ),
-                                            ),
-                                            SizedBox(
-                                              width: 10,
-                                            ),
-                                            Expanded(
-                                              child: Container(
-                                                child: TextButton(
-                                                    onPressed: () async {
-                                                      Navigator.pop(context);
-                                                      CustomFullScreenDialog.showDialog();
-                                                      await _friendListViewModel.deleteFriend(
-                                                          {
-                                                            "friend_id": friend.friendId    //필수 - 수락할 친구요청id(user_id 아님에 주의)
-                                                          }
-                                                      );
-                                                      await _friendListViewModel.fetchFriendRequestList(_userViewModel.user.user_id);
-
-                                                    },
-                                                    style: TextButton.styleFrom(
-                                                      backgroundColor: Colors.transparent, // 배경색 투명
-                                                      splashFactory: NoSplash.splashFactory, // 터치 시 효과 제거
-                                                    ),
-                                                    child: Text('취소하기',
-                                                      style: SDSTextStyle.bold.copyWith(
-                                                        fontSize: 17,
-                                                        color: SDSColor.snowliveBlue,
-                                                      ),
-                                                    )),
-                                              ),
-                                            )
-                                          ],
-                                          mainAxisAlignment: MainAxisAlignment.center,
+                                            ],
+                                          ),
                                         ),
-                                      )
-                                    ],
-                                  )
-                              );
+                                        actions: [
+                                          Padding(
+                                            padding: EdgeInsets.only(top: 10, left: 16, right: 16),
+                                            child: Row(
+                                              children: [
+                                                Expanded(
+                                                  child: Container(
+                                                    child: TextButton(
+                                                        onPressed: () {
+                                                          Navigator.pop(context);
+                                                        },
+                                                        style: TextButton.styleFrom(
+                                                          backgroundColor: Colors.transparent, // 배경색 투명
+                                                          splashFactory: NoSplash.splashFactory, // 터치 시 효과 제거
+                                                        ),
+                                                        child: Text('취소',
+                                                          style: SDSTextStyle.bold.copyWith(
+                                                            fontSize: 17,
+                                                            color: SDSColor.gray500,
+                                                          ),
+                                                        )
+                                                    ),
+                                                  ),
+                                                ),
+                                                SizedBox(
+                                                  width: 10,
+                                                ),
+                                                Expanded(
+                                                  child: Container(
+                                                    child: TextButton(
+                                                        onPressed: () async {
+                                                          Navigator.pop(context);
+                                                          CustomFullScreenDialog.showDialog();
+                                                          await _friendListViewModel.deleteFriend(
+                                                              {
+                                                                "friend_id": friend.friendId    //필수 - 수락할 친구요청id(user_id 아님에 주의)
+                                                              }
+                                                          );
+                                                          await _friendListViewModel.fetchFriendRequestList(_userViewModel.user.user_id);
 
-                            }, child: Text('취소',
-                            style: SDSTextStyle.bold.copyWith(fontSize: 13, color: SDSColor.gray900),),
-                            style: ElevatedButton.styleFrom(
-                              padding: EdgeInsets.symmetric(horizontal: 14, vertical: 3),
-                              minimumSize: Size(36, 32),
-                              backgroundColor: SDSColor.snowliveWhite,
-                              side: BorderSide(
-                                  color: SDSColor.gray200
-                              ),
-                              elevation: 0,
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(100)),
-                            ),),
-                        ],
+                                                        },
+                                                        style: TextButton.styleFrom(
+                                                          backgroundColor: Colors.transparent, // 배경색 투명
+                                                          splashFactory: NoSplash.splashFactory, // 터치 시 효과 제거
+                                                        ),
+                                                        child: Text('취소하기',
+                                                          style: SDSTextStyle.bold.copyWith(
+                                                            fontSize: 17,
+                                                            color: SDSColor.snowliveBlue,
+                                                          ),
+                                                        )),
+                                                  ),
+                                                )
+                                              ],
+                                              mainAxisAlignment: MainAxisAlignment.center,
+                                            ),
+                                          )
+                                        ],
+                                      )
+                                  );
+
+                                }, child: Text('취소',
+                                style: SDSTextStyle.bold.copyWith(fontSize: 13, color: SDSColor.gray900),),
+                                style: ElevatedButton.styleFrom(
+                                  padding: EdgeInsets.symmetric(horizontal: 14, vertical: 3),
+                                  minimumSize: Size(36, 32),
+                                  backgroundColor: SDSColor.snowliveWhite,
+                                  side: BorderSide(
+                                      color: SDSColor.gray200
+                                  ),
+                                  elevation: 0,
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(100)),
+                                ),),
+                            ],
+                          ),
+                        ),
                       ),
                     ),
                   ),
-                ),
-              ),
                 ],
               ),
             );
           },
         ))
-    );
+            : Container(
+          height: _size.height - 400,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Center(
+                child: Image.asset(
+                  'assets/imgs/icons/icon_no_member.png',
+                  width: 100,
+                ),
+              ),
+              SizedBox(height: 12),
+              Center(
+                child: Padding(
+                  padding: const EdgeInsets
+                      .only(bottom: 50),
+                  child: Text(
+                    '보낸 친구요청이 없습니다',
+                    style: TextStyle(
+                        fontSize: 14,
+                        color: Color(
+                            0xFF666666)),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        )
+    ));
   }
 }

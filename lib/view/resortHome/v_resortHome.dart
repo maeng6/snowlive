@@ -754,6 +754,8 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                           },
                           icon: Image.asset(
                             'assets/imgs/icons/icon_alarm_resortHome.png',
+                            width: 26,
+                            height: 26,
                           ),
                         );
                       }
@@ -781,20 +783,29 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                             Positioned(
                               top: 5,
                               right: 5,
-                              child: Container(
-                                width: 20,
-                                height: 20,
-                                padding: EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                                decoration: BoxDecoration(
-                                  color: Color(0xFFD6382B),
-                                  borderRadius: BorderRadius.circular(20),
-                                ),
-                                child: Text(
-                                  'N',
-                                  style: SDSTextStyle.extraBold.copyWith(
-                                    fontSize: 11,
-                                    fontWeight: FontWeight.bold,
-                                    color: Color(0xFFFFFFFF),
+                              child: GestureDetector(
+                                onTap: () async {
+                                  await _alarmCenterViewModel.updateNotification(
+                                    _userViewModel.user.user_id,
+                                    total: false,
+                                  );
+                                  Get.toNamed(AppRoutes.alarmCenter);
+                                },
+                                child: Container(
+                                  width: 20,
+                                  height: 20,
+                                  padding: EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                  decoration: BoxDecoration(
+                                    color: Color(0xFFD6382B),
+                                    borderRadius: BorderRadius.circular(20),
+                                  ),
+                                  child: Text(
+                                    'N',
+                                    style: SDSTextStyle.extraBold.copyWith(
+                                      fontSize: 11,
+                                      fontWeight: FontWeight.bold,
+                                      color: Color(0xFFFFFFFF),
+                                    ),
                                   ),
                                 ),
                               ),

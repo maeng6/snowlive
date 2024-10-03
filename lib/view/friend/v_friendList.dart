@@ -65,24 +65,39 @@ class FriendListView extends StatelessWidget {
                     },
                     icon: Image.asset(
                       'assets/imgs/icons/icon_alarm_resortHome.png',
+                      width: 26,
+                      height: 26,
                     ),
                   ),
                   if (isNewNotification)
                     Positioned(
                       top: 5,
-                      right: 3,
-                      child: Container(
-                        padding: EdgeInsets.symmetric(horizontal: 3, vertical: 2),
-                        decoration: BoxDecoration(
-                          color: Color(0xFFD6382B),
-                          borderRadius: BorderRadius.circular(6),
-                        ),
-                        child: Text(
-                          'NEW',
-                          style: TextStyle(
-                            fontSize: 8,
-                            fontWeight: FontWeight.bold,
-                            color: Color(0xFFFFFFFF),
+                      right: 5,
+                      child: GestureDetector(
+                        onTap: () async {
+                          Get.toNamed(AppRoutes.invitaionFriend);
+                        await _alarmCenterViewModel.updateNotification(
+                          _userViewModel.user.user_id,
+                          friend: false,
+                        );
+                        await _friendListViewModel.fetchFriendRequestList(_userViewModel.user.user_id);
+
+                        },
+                        child: Container(
+                          width: 20,
+                          height: 20,
+                          padding: EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                          decoration: BoxDecoration(
+                            color: Color(0xFFD6382B),
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: Text(
+                            'N',
+                            style: SDSTextStyle.extraBold.copyWith(
+                              fontSize: 11,
+                              fontWeight: FontWeight.bold,
+                              color: Color(0xFFFFFFFF),
+                            ),
                           ),
                         ),
                       ),
@@ -104,8 +119,8 @@ class FriendListView extends StatelessWidget {
               icon: Image.asset(
                 'assets/imgs/icons/icon_settings.png',
                 scale: 4,
-                width: 26,
-                height: 26,
+                width: 28,
+                height: 28,
               ),
             ),
           )
@@ -193,10 +208,14 @@ class FriendListView extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Center(
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                        backgroundColor: SDSColor.snowliveWhite,
-                        color: SDSColor.snowliveBlue,
+                      child: Container(
+                        width: 24,
+                        height: 24,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 4,
+                          backgroundColor: SDSColor.gray100,
+                          color: SDSColor.gray300.withOpacity(0.6),
+                        ),
                       ),
                     ),
                   ],

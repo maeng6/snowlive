@@ -6,11 +6,16 @@ class  AlarmCenterAPI {
 
   static const String baseUrl = 'https://snowlive-api-0eab29705c9f.herokuapp.com/api/alarm-center';
 
+// AlarmCenterAPI에서 URL을 사용한 요청 처리
   Future<ApiResponse> fetchAlarmCenterList({
     required int userId,
-    int? alarminfoId
+    int? alarminfoId,
+    String? url, // URL을 받아서 처리
   }) async {
-    final uri = Uri.parse('$baseUrl/').replace(
+    // URL이 있으면 해당 URL을 사용, 없으면 기본 URL에 queryParameter 추가
+    final uri = url != null
+        ? Uri.parse(url)
+        : Uri.parse('$baseUrl/').replace(
       queryParameters: {
         'user_id': userId.toString(),
         if (alarminfoId != null) 'alarminfo_id': alarminfoId.toString(),

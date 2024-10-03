@@ -460,8 +460,8 @@ class SearchFriendView extends StatelessWidget {
                                                     print(_userViewModel.user.user_id.toString());
                                                     print(_friendDetailViewModel.friendDetailModel.friendUserInfo.userId.toString());
                                                     await _friendDetailViewModel.sendFriendRequest({
-                                                      "user_id": _userViewModel.user.user_id.toString(),    //필수 - 신청자 (나)
-                                                      "friend_user_id": _friendListViewModel.searchFriend.userId.toString()    //필수 - 신청받는사람
+                                                      "user_id": _userViewModel.user.user_id,    //필수 - 신청자 (나)
+                                                      "friend_user_id": _friendListViewModel.searchFriend.userId    //필수 - 신청받는사람
                                                     });
                                                   },
                                                   style: TextButton.styleFrom(

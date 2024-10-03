@@ -235,8 +235,8 @@ class RankingIndiView extends StatelessWidget {
                                                               height: 24,
                                                               child: CircularProgressIndicator(
                                                                 strokeWidth: 4,
-                                                                backgroundColor: SDSColor.blue100.withOpacity(0.3),
-                                                                color: SDSColor.blue200.withOpacity(0.4),
+                                                                backgroundColor: SDSColor.gray100,
+                                                                color: SDSColor.gray300.withOpacity(0.6),
                                                               ),
                                                             ),
                                                           );
@@ -1363,8 +1363,8 @@ class RankingIndiView extends StatelessWidget {
                                                             height: 24,
                                                             child: CircularProgressIndicator(
                                                               strokeWidth: 4,
-                                                              backgroundColor: SDSColor.blue100.withOpacity(0.3),
-                                                              color: SDSColor.blue200.withOpacity(0.4),
+                                                              backgroundColor: SDSColor.gray100,
+                                                              color: SDSColor.gray300.withOpacity(0.6),
                                                             ),
                                                           ),
                                                         );

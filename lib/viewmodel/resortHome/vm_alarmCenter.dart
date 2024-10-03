@@ -3,6 +3,8 @@ import 'package:com.snowlive/api/api_alarmcenter..dart';
 import 'package:com.snowlive/model/m_alarmCenterList.dart'; // AlarmCenterModel이 정의된 파일
 import 'package:com.snowlive/viewmodel/friend/vm_friendDetail.dart';
 import 'package:com.snowlive/viewmodel/vm_user.dart';
+import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class AlarmCenterViewModel extends GetxController {
@@ -11,9 +13,21 @@ class AlarmCenterViewModel extends GetxController {
   var _deleteSuccess = false.obs;
   var _updateSuccess = false.obs;
 
+  // 페이지네이션을 위한 변수
+  var _nextPageUrl = ''.obs;  // 다음 페이지 URL
+  var _previousPageUrl = ''.obs;  // 이전 페이지 URL
+  RxBool _isLoadingNextList_alarm = false.obs;
+
   List<AlarmCenterModel> get alarmCenterList => _alarmCenterList;
   bool get deleteSuccess => _deleteSuccess.value;
   bool get updateSuccess => _updateSuccess.value;
+
+  // 페이지네이션 관련 getter
+  String get nextPageUrl => _nextPageUrl.value;
+  String get previousPageUrl => _previousPageUrl.value;
+  bool get isLoadingNextList_alarm  => _isLoadingNextList_alarm .value;
+
+  ScrollController scrollController_alarm = ScrollController();
 
   UserViewModel _userViewModel = Get.find<UserViewModel>();
   FriendDetailViewModel _friendDetailViewModel = Get.find<FriendDetailViewModel>();
@@ -22,22 +36,65 @@ class AlarmCenterViewModel extends GetxController {
   void onInit() async {
     super.onInit();
     await fetchAlarmCenterList(userId: _userViewModel.user.user_id);
+
+    scrollController_alarm = ScrollController()
+      ..addListener(_scrollListener_alarm);
   }
 
-// 알람 센터 리스트 불러오기
-  Future<void> fetchAlarmCenterList({required int userId, int? alarminfoId}) async {
+
+  Future<void> _scrollListener_alarm() async {
+    // 스크롤이 리스트의 끝에 도달했을 때
+    if (scrollController_alarm.position.pixels == scrollController_alarm.position.maxScrollExtent) {
+      if (_nextPageUrl.value.isNotEmpty) {
+        _isLoadingNextList_alarm .value = true;
+        await fetchNextPage_alarm();
+        _isLoadingNextList_alarm .value = false;
+      }
+    }
+  }
+
+  Future<void> fetchNextPage_alarm() async{
+    if (_nextPageUrl.value.isNotEmpty) {
+      print('다음 30개 패치 시작');
+      await fetchAlarmCenterList(
+          userId: _userViewModel.user.user_id,
+          url: _nextPageUrl.value
+      );
+    }
+  }
+
+  // 알람 센터 리스트 불러오기
+  Future<void> fetchAlarmCenterList({
+    required int userId,
+    int? alarminfoId,
+    String? url, // 페이지네이션을 위한 URL 추가
+  }) async {
     isLoading(true);
     try {
-      final response = await AlarmCenterAPI().fetchAlarmCenterList(userId: userId, alarminfoId: alarminfoId);
+      final response = await AlarmCenterAPI().fetchAlarmCenterList(
+        userId: userId,
+        alarminfoId: alarminfoId,
+        url: url, // URL을 전달
+      );
 
       if (response.success && response.data != null) {
-        // 응답 데이터가 Map<String, dynamic> 형태일 경우 처리
         if (response.data is Map<String, dynamic>) {
           final Map<String, dynamic> responseData = response.data;
-          // results 리스트를 추출하여 AlarmCenterModel 리스트로 변환
+
+          // 페이지네이션을 위한 URL 필드 업데이트
+          _nextPageUrl.value = responseData['next'] ?? '';
+          _previousPageUrl.value = responseData['previous'] ?? '';
+
           if (responseData['results'] != null) {
             final List<dynamic> resultsList = responseData['results'] as List<dynamic>;
-            _alarmCenterList.value = resultsList.map((data) => AlarmCenterModel.fromJson(data)).toList();
+
+            if (url == null) {
+              // URL이 null이면 새로 불러오기
+              _alarmCenterList.value = resultsList.map((data) => AlarmCenterModel.fromJson(data)).toList();
+            } else {
+              // URL이 있으면 페이지네이션으로 기존 리스트에 추가
+              _alarmCenterList.addAll(resultsList.map((data) => AlarmCenterModel.fromJson(data)).toList());
+            }
           } else {
             _alarmCenterList.value = []; // results가 없을 경우 빈 리스트 처리
           }
@@ -61,6 +118,7 @@ class AlarmCenterViewModel extends GetxController {
     isLoading(true);
     try {
       final response = await AlarmCenterAPI().deleteAlarmCenter(alarmCenterId);
+      CustomFullScreenDialog.cancelDialog();
 
       if (response.success) {
         _deleteSuccess.value = true;

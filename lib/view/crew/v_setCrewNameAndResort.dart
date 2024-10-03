@@ -297,7 +297,17 @@ class SetCrewNameAndResortView extends StatelessWidget {
                 }
                     : null,
                 child: _setCrewViewModel.isLoading.value
-                    ? CircularProgressIndicator(color: Colors.white)
+                    ? Center(
+                  child: Container(
+                    width: 24,
+                    height: 24,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 4,
+                      backgroundColor: SDSColor.gray100,
+                      color: SDSColor.gray300.withOpacity(0.6),
+                    ),
+                  ),
+                )
                     : Text(
                   '다음',
                   style: TextStyle(

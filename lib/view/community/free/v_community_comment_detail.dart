@@ -833,10 +833,6 @@ class CommunityCommentDetailView extends StatelessWidget {
                                               "content": _communityCommentDetailViewModel.textEditingController.text,
                                               "user_id": _userViewModel.user.user_id.toString()
                                             });
-                                            await _alarmCenterViewModel.updateNotification(
-                                                _communityCommentDetailViewModel.commentModel_community.userId!,
-                                                total: true
-                                            );
                                             _communityCommentDetailViewModel.textEditingController.clear();
                                             _communityCommentDetailViewModel.scrollController.jumpTo(
                                               _communityCommentDetailViewModel.scrollController.position.maxScrollExtent,
@@ -847,6 +843,11 @@ class CommunityCommentDetailView extends StatelessWidget {
                                                 userId: _userViewModel.user.user_id,
                                                 isLoading_indi: true);
                                             await _communityBulletinListViewModel.fetchAllCommunity();
+                                            if(_communityCommentDetailViewModel.commentModel_community.userId != _userViewModel.user.user_id)
+                                            await _alarmCenterViewModel.updateNotification(
+                                                _communityCommentDetailViewModel.commentModel_community.userId!,
+                                                total: true
+                                            );
                                           },
                                           icon: (_communityCommentDetailViewModel.isCommentButtonEnabled.value == false)
                                               ? Image.asset(
