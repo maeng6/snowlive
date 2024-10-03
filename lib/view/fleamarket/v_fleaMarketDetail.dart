@@ -1779,7 +1779,6 @@ class _FleaMarketDetailViewState extends State<FleaMarketDetailView> {
                                                                                                                                 isLoading_indi: true,
                                                                                                                               );
                                                                                                                               CustomFullScreenDialog.cancelDialog();
-                                                                                                                              await _fleamarketDetailViewModel.fetchFleamarketDetailFromAPI(fleamarketId: _fleamarketDetailViewModel.fleamarketDetail.fleaId!, userId: _userViewModel.user.user_id);
                                                                                                                               await _fleamarketListViewModel.fetchAllFleamarket();
                                                                                                                             },
                                                                                                                             style: TextButton.styleFrom(
@@ -2021,13 +2020,14 @@ class _FleaMarketDetailViewState extends State<FleaMarketDetailView> {
                                           _fleamarketDetailViewModel.textEditingController.clear();
                                           FocusScope.of(context).unfocus();
                                           _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
+
+                                          CustomFullScreenDialog.cancelDialog();
+                                          await _fleamarketDetailViewModel.fetchFleamarketDetailFromAPI(fleamarketId: _fleamarketDetailViewModel.fleamarketDetail.fleaId!, userId: _userViewModel.user.user_id);
+                                          await _fleamarketListViewModel.fetchAllFleamarket();
                                           await _alarmCenterViewModel.updateNotification(
                                               _fleamarketDetailViewModel.fleamarketDetail.userId!,
                                               total: true
                                           );
-                                          CustomFullScreenDialog.cancelDialog();
-                                          await _fleamarketDetailViewModel.fetchFleamarketDetailFromAPI(fleamarketId: _fleamarketDetailViewModel.fleamarketDetail.fleaId!, userId: _userViewModel.user.user_id);
-                                          await _fleamarketListViewModel.fetchAllFleamarket();
                                         },
                                         icon: (_fleamarketDetailViewModel.isCommentButtonEnabled.value == false)
                                             ? Image.asset(

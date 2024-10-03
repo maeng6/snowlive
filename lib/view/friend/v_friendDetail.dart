@@ -2529,10 +2529,6 @@ class _FriendDetailViewState extends State<FriendDetailView> {
                                       "friend_user_id": _friendDetailViewModel.friendDetailModel.friendUserInfo.userId,
                                       "content": _friendDetailViewModel.textEditingController.text,
                                     });
-                                    await _alarmCenterViewModel.updateNotification(
-                                        _friendDetailViewModel.friendDetailModel.friendUserInfo.userId,
-                                        total: true
-                                    );
                                     CustomFullScreenDialog.cancelDialog();
                                     await _friendDetailViewModel.fetchFriendsTalkList_afterFriendTalk(
                                       userId: _userViewModel.user.user_id,
@@ -2540,6 +2536,10 @@ class _FriendDetailViewState extends State<FriendDetailView> {
                                     );
                                     _textFocus.unfocus(); // 메시지 전송 후 포커스 해제
                                     _friendDetailViewModel.textEditingController.clear();
+                                    await _alarmCenterViewModel.updateNotification(
+                                        _friendDetailViewModel.friendDetailModel.friendUserInfo.userId,
+                                        total: true
+                                    );
                                   },
                                   icon: (_friendDetailViewModel.isSendButtonEnabled.value == false)
                                       ? Image.asset(

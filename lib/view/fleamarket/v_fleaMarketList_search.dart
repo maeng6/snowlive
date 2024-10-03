@@ -310,7 +310,41 @@ class FleaMarketListView_search extends StatelessWidget {
                               ),
                             ),
                           )
-                              : SizedBox.shrink());
+                              : (_fleamarketSearchViewModel.showRecentSearch.value == false)
+                              ? Container(
+                            height: _size.height - 400,
+                            child: Center(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Image.asset(
+                                    'assets/imgs/icons/icon_nodata.png',
+                                    scale: 4,
+                                    width: 73,
+                                    height: 73,
+                                  ),
+                                  SizedBox(
+                                    height: 6,
+                                  ),
+                                  Text('"${_fleamarketSearchViewModel.textEditingController.text}"에 대한 검색 결과가 없습니다.',
+                                    style: SDSTextStyle.regular.copyWith(
+                                        fontSize: 14,
+                                        color: SDSColor.gray600,
+                                        fontWeight: FontWeight.bold
+                                    ),
+                                  ),
+                                  Text('다른 검색어를 입력해 보세요',
+                                    style: SDSTextStyle.regular.copyWith(
+                                        fontSize: 14,
+                                        color: SDSColor.gray600
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          )
+                              : Container());
                         }else{
                           Fleamarket data = _fleamarketSearchViewModel.fleamarketListSearch[index];
                           String _time = GetDatetime().getAgoString(data.uploadTime!);

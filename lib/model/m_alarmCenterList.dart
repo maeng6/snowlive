@@ -7,13 +7,15 @@ class AlarmCenterModel {
   late int? pkRequestFriend;
   late int? pkFriendsTalk;
   late int? pkApplyCrew;
+  late int? pkFleamarket;
   late int? pkCommentFleamarket;
+  late int? pkCommunity;
   late int? pkCommentCommunity;
   late int? pkReplyFleamarket;
   late int? pkReplyCommunity;
-  late String textMain;  // 추가된 textMain 필드
-  late String textSub;   // 추가된 textSub 필드
-  late int? crewLeaderUserId; // 추가된 crew_leader_user_id 필드
+  late String? textMain;  // nullable String
+  late String? textSub;   // nullable String
+  late int? crewLeaderUserId; // nullable crewLeaderUserId 추가
 
   // 기본 생성자
   AlarmCenterModel() {
@@ -25,13 +27,15 @@ class AlarmCenterModel {
     pkRequestFriend = null;
     pkFriendsTalk = null;
     pkApplyCrew = null;
+    pkFleamarket = null;
     pkCommentFleamarket = null;
+    pkCommunity = null;
     pkCommentCommunity = null;
     pkReplyFleamarket = null;
     pkReplyCommunity = null;
-    textMain = '';  // 기본값으로 빈 문자열 설정
-    textSub = '';   // 기본값으로 빈 문자열 설정
-    crewLeaderUserId = null;  // 기본값 null 설정
+    textMain = null;
+    textSub = null;
+    crewLeaderUserId = null; // 기본값 null 설정
   }
 
   // fromJson 생성자
@@ -46,13 +50,15 @@ class AlarmCenterModel {
     pkRequestFriend = json['pk_request_friend'];
     pkFriendsTalk = json['pk_friends_talk'];
     pkApplyCrew = json['pk_apply_crew'];
+    pkFleamarket = json['pk_fleamarket'];
     pkCommentFleamarket = json['pk_comment_fleamarket'];
+    pkCommunity = json['pk_community'];
     pkCommentCommunity = json['pk_comment_community'];
     pkReplyFleamarket = json['pk_reply_fleamarket'];
     pkReplyCommunity = json['pk_reply_community'];
-    textMain = json['text_main'] ?? '';  // text_main 필드 추가
-    textSub = json['text_sub'] ?? '';    // text_sub 필드 추가
-    crewLeaderUserId = json['crew_leader_user_id']; // crew_leader_user_id 필드 추가
+    textMain = json['text_main'];
+    textSub = json['text_sub'];
+    crewLeaderUserId = json['crew_leader_user_id']; // crew_leader_user_id 추가
   }
 }
 
