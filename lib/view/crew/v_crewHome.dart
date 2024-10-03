@@ -7,6 +7,7 @@ import 'package:com.snowlive/viewmodel/crew/vm_crewDetail.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewMemberList.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewNotice.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewRecordRoom.dart';
+import 'package:com.snowlive/viewmodel/resortHome/vm_alarmCenter.dart';
 import 'package:com.snowlive/viewmodel/vm_user.dart';
 import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 import 'package:com.snowlive/widget/w_verticalDivider.dart';
@@ -26,6 +27,8 @@ class CrewHomeView extends StatelessWidget {
   final CrewRecordRoomViewModel _crewRecordRoomViewModel = Get.find<CrewRecordRoomViewModel>();
   final CrewApplyViewModel _crewApplyViewModel = Get.find<CrewApplyViewModel>();
   final CrewNoticeViewModel _crewNoticeViewModel = Get.find<CrewNoticeViewModel>();
+  final AlarmCenterViewModel _alarmCenterViewModel = Get.find<AlarmCenterViewModel>();
+
 
   @override
   Widget build(BuildContext context) {
@@ -922,6 +925,11 @@ class CrewHomeView extends StatelessWidget {
                                                 _crewDetailViewModel.crewDetailInfo.crewId!,
                                                 _userViewModel.user.user_id,
                                                 _crewApplyViewModel.textEditingController_crewHome.text
+                                            );
+                                            await _alarmCenterViewModel.updateNotification(
+                                                _crewDetailViewModel.crewDetailInfo.crewLeaderUserId!,
+                                                crew: true,
+                                                total: true
                                             );
                                             _crewApplyViewModel.textEditingController_crewHome.clear();
                                             _crewApplyViewModel.isSubmitButtonEnabled_crewHome.value = false;

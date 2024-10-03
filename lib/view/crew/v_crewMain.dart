@@ -1,9 +1,13 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:com.snowlive/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/routes/routes.dart';
 import 'package:com.snowlive/view/crew/v_crewHome.dart';
 import 'package:com.snowlive/view/crew/v_crewMember.dart';
+import 'package:com.snowlive/viewmodel/crew/vm_crewApply.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewDetail.dart';
+import 'package:com.snowlive/viewmodel/crew/vm_crewMemberList.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_searchCrew.dart';
+import 'package:com.snowlive/viewmodel/resortHome/vm_alarmCenter.dart';
 import 'package:com.snowlive/viewmodel/vm_user.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -14,6 +18,9 @@ class CrewMainView extends StatelessWidget {
   final SearchCrewViewModel _searchCrewViewModel = Get.find<SearchCrewViewModel>();
   final UserViewModel _userViewModel = Get.find<UserViewModel>();
   final CrewDetailViewModel _crewDetailViewModel = Get.find<CrewDetailViewModel>();
+  final CrewMemberListViewModel _crewMemberListViewModel = Get.find<CrewMemberListViewModel>();
+  final AlarmCenterViewModel _alarmCenterViewModel = Get.find<AlarmCenterViewModel>();
+  final CrewApplyViewModel _crewApplyViewModel = Get.find<CrewApplyViewModel>();
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +36,7 @@ class CrewMainView extends StatelessWidget {
         child: Obx(() => AppBar(
           actions: [
             (_userViewModel.user.crew_id != null && _userViewModel.user.crew_id == _crewDetailViewModel.crewDetailInfo.crewId)
-            ? IconButton(
+                ? IconButton(
               onPressed: () {
                 _searchCrewViewModel.textEditingController.clear();
                 _searchCrewViewModel.crewList.clear();
@@ -43,7 +50,7 @@ class CrewMainView extends StatelessWidget {
                 height: 26,
               ),
             )
-            : Container(),
+                : Container(),
             if(_userViewModel.user.crew_id == _crewDetailViewModel.crewDetailInfo.crewId)
               Padding(
                 padding: EdgeInsets.only(right: 5),
@@ -61,7 +68,71 @@ class CrewMainView extends StatelessWidget {
                     height: 26,
                   ),
                 ),
-              )
+              ),
+            if(_crewMemberListViewModel.getMemberRole(_userViewModel.user.user_id) == '크루장' ||
+                (_crewMemberListViewModel.getMemberRole(_userViewModel.user.user_id) == '운영진' &&
+                    _crewDetailViewModel.permission_join== true))
+              StreamBuilder<QuerySnapshot>(
+                stream: FirebaseFirestore.instance
+                    .collection('notificationCenter')
+                    .where('uid', isEqualTo:  _userViewModel.user.user_id)
+                    .snapshots(),
+                builder: (context, snapshot) {
+                  if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                    return IconButton(
+                      onPressed: () {
+                        Get.toNamed(AppRoutes.alarmCenter);
+                      },
+                      icon: Image.asset(
+                        'assets/imgs/icons/icon_alarm_resortHome.png',
+                      ),
+                    );
+                  }
+
+                  var data = snapshot.data!.docs[0].data() as Map<String, dynamic>?;
+                  bool isNewNotification = data?['crew'] ?? false; // Firestore 문서 필드
+
+                  return Stack(
+                    children: [
+                      IconButton(
+                        onPressed: () async{
+                          Get.toNamed(AppRoutes.crewApplicationCrew);
+                          await _alarmCenterViewModel.updateNotification(
+                            _userViewModel.user.user_id,
+                            crew: false,
+                          );
+                          await _crewApplyViewModel.fetchCrewApplyList(
+                              _crewDetailViewModel.crewDetailInfo.crewId!
+                          );
+                        },
+                        icon: Image.asset(
+                          'assets/imgs/icons/icon_alarm_resortHome.png',
+                        ),
+                      ),
+                      if (isNewNotification)
+                        Positioned(
+                          top: 5,
+                          right: 3,
+                          child: Container(
+                            padding: EdgeInsets.symmetric(horizontal: 3, vertical: 2),
+                            decoration: BoxDecoration(
+                              color: Color(0xFFD6382B),
+                              borderRadius: BorderRadius.circular(6),
+                            ),
+                            child: Text(
+                              'NEW',
+                              style: TextStyle(
+                                fontSize: 8,
+                                fontWeight: FontWeight.bold,
+                                color: Color(0xFFFFFFFF),
+                              ),
+                            ),
+                          ),
+                        ),
+                    ],
+                  );
+                },
+              ),
           ],
           leading: GestureDetector(
             child: Image.asset(
@@ -115,7 +186,7 @@ class CrewMainView extends StatelessWidget {
                 ),
               ],
             ),
-           Obx(()=> Expanded(
+            Obx(()=> Expanded(
               child:
               (_crewDetailViewModel.isLoading == true)
                   ? Center(

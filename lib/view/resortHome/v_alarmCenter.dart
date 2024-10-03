@@ -129,6 +129,7 @@ class AlarmCenterView extends StatelessWidget {
                     await _alarmCenterViewModel.fetchAlarmCenterList(userId: _userViewModel.user.user_id);
                     },
                         child: SingleChildScrollView(
+                          physics: AlwaysScrollableScrollPhysics(),
                           child: Obx(() =>
                               Column(
                                 children: [
@@ -152,17 +153,19 @@ class AlarmCenterView extends StatelessWidget {
                                                   splashColor: Colors.transparent,
                                                   onTap: () async {
                                                     if(alarmDoc.alarmInfo.alarmInfoId == 1) {
-                                                      CustomFullScreenDialog.showDialog();
-                                                      await _friendListViewModel.fetchFriendRequestList(_userViewModel.user.user_id);
-                                                      Get.toNamed(AppRoutes.invitaionFriend);
-                                                      CustomFullScreenDialog.cancelDialog();
-                                                      await _alarmCenterViewModel.updateAlarmCenter(alarmDoc.alarmCenterId, {
-                                                        "active": false
-                                                      });
-                                                      await _alarmCenterViewModel.fetchAlarmCenterList(userId: _userViewModel.user.user_id);
+                                                      //친구요청
+                                                        CustomFullScreenDialog.showDialog();
+                                                        await _friendListViewModel.fetchFriendRequestList(_userViewModel.user.user_id);
+                                                        CustomFullScreenDialog.cancelDialog();
+                                                        Get.toNamed(AppRoutes.invitaionFriend);
+                                                        await _alarmCenterViewModel.updateAlarmCenter(alarmDoc.alarmCenterId, {
+                                                          "active": false
+                                                        });
+                                                        await _alarmCenterViewModel.fetchAlarmCenterList(userId: _userViewModel.user.user_id);
                                                     }
                                                      else if(alarmDoc.alarmInfo.alarmInfoId == 2) {
-                                                      Get.toNamed(AppRoutes.friendDetail);
+                                                       //방명록
+                                                      try{Get.toNamed(AppRoutes.friendDetail);
                                                       await _friendDetailViewModel.fetchFriendDetailInfo(
                                                           userId: _userViewModel.user.user_id,
                                                           friendUserId: _userViewModel.user.user_id,
@@ -171,8 +174,42 @@ class AlarmCenterView extends StatelessWidget {
                                                         "active": false
                                                       });
                                                       await _alarmCenterViewModel.fetchAlarmCenterList(userId: _userViewModel.user.user_id);
+                                                      }catch (e){
+                                                        Get.dialog(
+                                                          AlertDialog(
+                                                            shape: RoundedRectangleBorder(
+                                                              borderRadius: BorderRadius.circular(16),
+                                                            ),
+                                                            contentPadding: EdgeInsets.all(20),
+                                                            title: Center(
+                                                              child: Column(
+                                                                children: [
+                                                                  Image.asset(
+                                                                    'assets/imgs/imgs/img_error_1.png',
+                                                                    scale: 4,
+                                                                    width: 100,
+                                                                    height: 100,
+                                                                  ),
+                                                                  SizedBox(height: 20),
+                                                                  Text(
+                                                                    '탈퇴한 회원입니다.',
+                                                                    style: TextStyle(
+                                                                      fontSize: 16,
+                                                                      fontWeight: FontWeight.bold,
+                                                                      color: Colors.black87,
+                                                                    ),
+                                                                    textAlign: TextAlign.center,
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        );
+                                                      }
+
                                                     }
                                                     else if(alarmDoc.alarmInfo.alarmInfoId == 3) {
+                                                      //크루 가입신청
                                                       if(alarmDoc.crewLeaderUserId == _userViewModel.user.user_id) {
                                                         Get.toNamed(AppRoutes.crewApplicationCrew);
                                                         await _friendDetailViewModel.fetchFriendDetailInfo(
@@ -217,41 +254,152 @@ class AlarmCenterView extends StatelessWidget {
                                                       await _alarmCenterViewModel.fetchAlarmCenterList(userId: _userViewModel.user.user_id);
                                                     }
                                                     else if(alarmDoc.alarmInfo.alarmInfoId == 4) {
-                                                      CustomFullScreenDialog.showDialog();
-                                                      await _fleamarketDetailViewModel.fetchFleamarketDetailFromAPI(fleamarketId: alarmDoc.pkCommentFleamarket!, userId: _userViewModel.user.user_id);
-                                                      CustomFullScreenDialog.cancelDialog();
-                                                      Get.toNamed(AppRoutes.fleamarketDetail);
-                                                      await _alarmCenterViewModel.updateAlarmCenter(alarmDoc.alarmCenterId, {
-                                                        "active": false
-                                                      });
-                                                      await _alarmCenterViewModel.fetchAlarmCenterList(userId: _userViewModel.user.user_id);
+                                                      //스노우마켓 댓글
+                                                      try{
+                                                        CustomFullScreenDialog.showDialog();
+                                                        await _fleamarketDetailViewModel.fetchFleamarketDetailFromAPI(fleamarketId: alarmDoc.pkCommentFleamarket!, userId: _userViewModel.user.user_id);
+                                                        CustomFullScreenDialog.cancelDialog();
+                                                        Get.toNamed(AppRoutes.fleamarketDetail);
+                                                        await _alarmCenterViewModel.updateAlarmCenter(alarmDoc.alarmCenterId, {
+                                                          "active": false
+                                                        });
+                                                        await _alarmCenterViewModel.fetchAlarmCenterList(userId: _userViewModel.user.user_id);
+                                                      }catch(e){
+                                                        CustomFullScreenDialog.cancelDialog();
+                                                        Get.dialog(
+                                                          AlertDialog(
+                                                            shape: RoundedRectangleBorder(
+                                                              borderRadius: BorderRadius.circular(16),
+                                                            ),
+                                                            contentPadding: EdgeInsets.all(20),
+                                                            title: Center(
+                                                              child: Column(
+                                                                children: [
+                                                                  Image.asset(
+                                                                    'assets/imgs/imgs/img_error_1.png',
+                                                                    scale: 4,
+                                                                    width: 100,
+                                                                    height: 100,
+                                                                  ),
+                                                                  SizedBox(height: 20),
+                                                                  Text(
+                                                                    '게시글이 없습니다.',
+                                                                    style: TextStyle(
+                                                                      fontSize: 16,
+                                                                      fontWeight: FontWeight.bold,
+                                                                      color: Colors.black87,
+                                                                    ),
+                                                                    textAlign: TextAlign.center,
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        );
+                                                        await _alarmCenterViewModel.deleteAlarmCenter(alarmDoc.alarmCenterId);
+                                                        await _alarmCenterViewModel.fetchAlarmCenterList(userId: _userViewModel.user.user_id);
+                                                      }
                                                     }
                                                     else if(alarmDoc.alarmInfo.alarmInfoId == 5) {
-                                                      CustomFullScreenDialog.showDialog();
-                                                      await _communityDetailViewModel.fetchCommunityDetail(alarmDoc.pkCommentFleamarket!, _userViewModel.user.user_id);
-                                                      CustomFullScreenDialog.cancelDialog();
-                                                      Get.toNamed(AppRoutes.bulletinDetail);
-                                                      await _alarmCenterViewModel.updateAlarmCenter(alarmDoc.alarmCenterId, {
-                                                        "active": false
-                                                      });
-                                                      await _alarmCenterViewModel.fetchAlarmCenterList(userId: _userViewModel.user.user_id);
+                                                      //커뮤니티 댓글
+                                                      try {
+                                                        CustomFullScreenDialog.showDialog();
+                                                        await _communityDetailViewModel.fetchCommunityDetail(alarmDoc.pkCommentFleamarket!, _userViewModel.user.user_id);
+                                                        CustomFullScreenDialog.cancelDialog();
+                                                        Get.toNamed(AppRoutes.bulletinDetail);
+                                                        await _alarmCenterViewModel.updateAlarmCenter(alarmDoc.alarmCenterId, {
+                                                          "active": false
+                                                        });
+                                                        await _alarmCenterViewModel.fetchAlarmCenterList(userId: _userViewModel.user.user_id);
+                                                      }catch(e){
+                                                        CustomFullScreenDialog.cancelDialog();
+                                                        Get.dialog(
+                                                          AlertDialog(
+                                                            shape: RoundedRectangleBorder(
+                                                              borderRadius: BorderRadius.circular(16),
+                                                            ),
+                                                            contentPadding: EdgeInsets.all(20),
+                                                            title: Center(
+                                                              child: Column(
+                                                                children: [
+                                                                  Image.asset(
+                                                                    'assets/imgs/imgs/img_error_1.png',
+                                                                    scale: 4,
+                                                                    width: 100,
+                                                                    height: 100,
+                                                                  ),
+                                                                  SizedBox(height: 20),
+                                                                  Text(
+                                                                    '게시글이 없습니다.',
+                                                                    style: TextStyle(
+                                                                      fontSize: 16,
+                                                                      fontWeight: FontWeight.bold,
+                                                                      color: Colors.black87,
+                                                                    ),
+                                                                    textAlign: TextAlign.center,
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        );
+                                                        await _alarmCenterViewModel.deleteAlarmCenter(alarmDoc.alarmCenterId);
+                                                        await _alarmCenterViewModel.fetchAlarmCenterList(userId: _userViewModel.user.user_id);
+                                                      }
+
                                                     }
                                                     else if(alarmDoc.alarmInfo.alarmInfoId == 6) {
-                                                      if(alarmDoc.pkReplyCommunity != null){
-                                                        CustomFullScreenDialog.showDialog();
-                                                        await _communityCommentDetailViewModel.fetchCommunityCommentDetail(commentId: alarmDoc.pkReplyCommunity!);
-                                                        Get.toNamed(AppRoutes.bulletinCommentDetail);
-                                                        CustomFullScreenDialog.cancelDialog();
-                                                      }else{
-                                                        CustomFullScreenDialog.showDialog();
-                                                        await _fleamarketCommentDetailViewModel.fetchFleamarketCommentDetail(commentId: alarmDoc.pkReplyFleamarket!);
-                                                        Get.toNamed(AppRoutes.fleamarketCommentDetail);
-                                                        CustomFullScreenDialog.cancelDialog();
+                                                      //답글
+                                                      try{
+                                                        if(alarmDoc.pkReplyCommunity != null){
+                                                          CustomFullScreenDialog.showDialog();
+                                                          await _communityCommentDetailViewModel.fetchCommunityCommentDetail(commentId: alarmDoc.pkReplyCommunity!);
+                                                          CustomFullScreenDialog.cancelDialog();
+                                                          Get.toNamed(AppRoutes.bulletinCommentDetail);
+                                                        }else{
+                                                          CustomFullScreenDialog.showDialog();
+                                                          await _fleamarketCommentDetailViewModel.fetchFleamarketCommentDetail(commentId: alarmDoc.pkReplyFleamarket!);
+                                                          CustomFullScreenDialog.cancelDialog();
+                                                          Get.toNamed(AppRoutes.fleamarketCommentDetail);
+                                                        }
+                                                        await _alarmCenterViewModel.updateAlarmCenter(alarmDoc.alarmCenterId, {
+                                                          "active": false
+                                                        });
+                                                        await _alarmCenterViewModel.fetchAlarmCenterList(userId: _userViewModel.user.user_id);
+                                                      }catch(e){
+                                                        Get.dialog(
+                                                          AlertDialog(
+                                                            shape: RoundedRectangleBorder(
+                                                              borderRadius: BorderRadius.circular(16),
+                                                            ),
+                                                            contentPadding: EdgeInsets.all(20),
+                                                            title: Center(
+                                                              child: Column(
+                                                                children: [
+                                                                  Image.asset(
+                                                                    'assets/imgs/imgs/img_error_1.png',
+                                                                    scale: 4,
+                                                                    width: 100,
+                                                                    height: 100,
+                                                                  ),
+                                                                  SizedBox(height: 20),
+                                                                  Text(
+                                                                    '게시글이 없습니다.',
+                                                                    style: TextStyle(
+                                                                      fontSize: 16,
+                                                                      fontWeight: FontWeight.bold,
+                                                                      color: Colors.black87,
+                                                                    ),
+                                                                    textAlign: TextAlign.center,
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        );
+                                                        await _alarmCenterViewModel.deleteAlarmCenter(alarmDoc.alarmCenterId);
+                                                        await _alarmCenterViewModel.fetchAlarmCenterList(userId: _userViewModel.user.user_id);
                                                       }
-                                                      await _alarmCenterViewModel.updateAlarmCenter(alarmDoc.alarmCenterId, {
-                                                        "active": false
-                                                      });
-                                                      await _alarmCenterViewModel.fetchAlarmCenterList(userId: _userViewModel.user.user_id);
                                                     }
                                                   },
                                                   child: Stack(

@@ -77,7 +77,7 @@ class CrewSettingView extends StatelessWidget {
                   CustomFullScreenDialog.showDialog();
                   await _setCrewViewModel.setCrewLogoAsCroppedFile();
                   await _setCrewViewModel.initializeColor();
-                   _setCrewViewModel.initializeCrewName();
+                  _setCrewViewModel.initializeCrewName();
                   CustomFullScreenDialog.cancelDialog();
                   Get.toNamed(AppRoutes.updateCrewImageAndColor);
                 }),
@@ -92,7 +92,7 @@ class CrewSettingView extends StatelessWidget {
               if(_crewMemberListViewModel.getMemberRole(_userViewModel.user.user_id) == '크루장' ||
                   (_crewMemberListViewModel.getMemberRole(_userViewModel.user.user_id) == '운영진' &&
                       _crewDetailViewModel.permission_join== true))
-                _buildSettingsItem('가입 신청 목록', onTap: () async{
+                _buildSettingsItem('가입 신청 관리', onTap: () async{
                   Get.toNamed(AppRoutes.crewApplicationCrew);
                   await _crewApplyViewModel.fetchCrewApplyList(
                       _crewDetailViewModel.crewDetailInfo.crewId!
@@ -109,179 +109,179 @@ class CrewSettingView extends StatelessWidget {
             ]),
           _buildSettingsSection('일반', [
             if(_crewMemberListViewModel.getMemberRole(_userViewModel.user.user_id) != '크루장')
-            _buildSettingsItem('크루 탈퇴', onTap: () async{
-              showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return AlertDialog(
-                    contentPadding: EdgeInsets.only(bottom: 0, left: 28, right: 28, top: 36),
-                    elevation: 0,
-                    backgroundColor: SDSColor.snowliveWhite,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16)),
-                    buttonPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
-                    content: Container(
-                      height: 40,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Text(
-                            '정말 탈퇴하시겠어요?',
-                            textAlign: TextAlign.center,
-                            style: SDSTextStyle.bold.copyWith(
-                                color: SDSColor.gray900,
-                                fontSize: 16
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    actions: [
-                      Padding(
-                        padding: EdgeInsets.only(top: 10, left: 16, right: 16),
-                        child: Row(
+              _buildSettingsItem('크루 탈퇴', onTap: () async{
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      contentPadding: EdgeInsets.only(bottom: 0, left: 28, right: 28, top: 36),
+                      elevation: 0,
+                      backgroundColor: SDSColor.snowliveWhite,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16)),
+                      buttonPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+                      content: Container(
+                        height: 40,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            Expanded(
-                              child: Container(
-                                child: TextButton(
-                                  onPressed: () {
-                                    Get.back(); // 팝업 닫기
-                                  },
-                                  style: TextButton.styleFrom(
-                                    backgroundColor: Colors.transparent, // 배경색 투명
-                                    splashFactory: NoSplash.splashFactory, // 터치 시 효과 제거
-                                  ),
-                                  child: Text('취소',
-                                    style: SDSTextStyle.bold.copyWith(
-                                      fontSize: 17,
-                                      color: SDSColor.gray500,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      Expanded(
-                        child: Container(
-                          child: TextButton(
-                            onPressed: () async{
-                              Navigator.pop(context);
-                              CustomFullScreenDialog.showDialog();
-                              await _crewMemberListViewModel.withdrawCrew(
-                                  crewMemberUserId: _userViewModel.user.user_id
-                              );
-                            },
-                            style: TextButton.styleFrom(
-                              backgroundColor: Colors.transparent, // 배경색 투명
-                              splashFactory: NoSplash.splashFactory, // 터치 시 효과 제거
-                            ),
-                            child: Text('삭제하기',
+                            Text(
+                              '정말 탈퇴하시겠어요?',
+                              textAlign: TextAlign.center,
                               style: SDSTextStyle.bold.copyWith(
-                                fontSize: 17,
-                                color: SDSColor.red,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  );
-                },
-              );
-            }),
-            if(_crewMemberListViewModel.getMemberRole(_userViewModel.user.user_id) == '크루장')
-            _buildSettingsItem('크루 삭제', onTap: () async{
-              showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return AlertDialog(
-                    contentPadding: EdgeInsets.only(bottom: 0, left: 28, right: 28, top: 36),
-                    elevation: 0,
-                    backgroundColor: SDSColor.snowliveWhite,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16)),
-                    buttonPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
-                    content: Container(
-                      height: 40,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Text(
-                            '정말 탈퇴하시겠어요?',
-                            textAlign: TextAlign.center,
-                            style: SDSTextStyle.bold.copyWith(
-                                color: SDSColor.gray900,
-                                fontSize: 16
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    actions: [
-                      Padding(
-                        padding: EdgeInsets.only(top: 10, left: 16, right: 16),
-                        child: Row(
-                          children: [
-                            Expanded(
-                              child: Container(
-                                child: TextButton(
-                                  onPressed: () {
-                                    Get.back(); // 팝업 닫기
-                                  },
-                                  style: TextButton.styleFrom(
-                                    backgroundColor: Colors.transparent, // 배경색 투명
-                                    splashFactory: NoSplash.splashFactory, // 터치 시 효과 제거
-                                  ),
-                                  child: Text('취소',
-                                    style: SDSTextStyle.bold.copyWith(
-                                      fontSize: 17,
-                                      color: SDSColor.gray500,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                            SizedBox(
-                              width: 10,
-                            ),
-                            Expanded(
-                              child: Container(
-                                child: TextButton(
-                                  onPressed: () async{
-                                    Navigator.pop(context);
-                                    CustomFullScreenDialog.showDialog();
-                                    await _crewDetailViewModel.deleteCrew(
-                                        _crewDetailViewModel.crewDetailInfo.crewId!,
-                                        _userViewModel.user.user_id.toString()
-                                    );
-                                  },
-                                  style: TextButton.styleFrom(
-                                    backgroundColor: Colors.transparent, // 배경색 투명
-                                    splashFactory: NoSplash.splashFactory, // 터치 시 효과 제거
-                                  ),
-                                  child: Text('삭제하기',
-                                    style: SDSTextStyle.bold.copyWith(
-                                      fontSize: 17,
-                                      color: SDSColor.red,
-                                    ),
-                                  ),
-                                ),
+                                  color: SDSColor.gray900,
+                                  fontSize: 16
                               ),
                             ),
                           ],
                         ),
                       ),
+                      actions: [
+                        Padding(
+                          padding: EdgeInsets.only(top: 10, left: 16, right: 16),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: Container(
+                                  child: TextButton(
+                                    onPressed: () {
+                                      Get.back(); // 팝업 닫기
+                                    },
+                                    style: TextButton.styleFrom(
+                                      backgroundColor: Colors.transparent, // 배경색 투명
+                                      splashFactory: NoSplash.splashFactory, // 터치 시 효과 제거
+                                    ),
+                                    child: Text('취소',
+                                      style: SDSTextStyle.bold.copyWith(
+                                        fontSize: 17,
+                                        color: SDSColor.gray500,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              SizedBox(
+                                width: 10,
+                              ),
+                              Expanded(
+                                child: Container(
+                                  child: TextButton(
+                                    onPressed: () async{
+                                      Navigator.pop(context);
+                                      CustomFullScreenDialog.showDialog();
+                                      await _crewMemberListViewModel.withdrawCrew(
+                                          crewMemberUserId: _userViewModel.user.user_id
+                                      );
+                                    },
+                                    style: TextButton.styleFrom(
+                                      backgroundColor: Colors.transparent, // 배경색 투명
+                                      splashFactory: NoSplash.splashFactory, // 터치 시 효과 제거
+                                    ),
+                                    child: Text('탈퇴하기',
+                                      style: SDSTextStyle.bold.copyWith(
+                                        fontSize: 17,
+                                        color: SDSColor.red,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    );
+                  },
+                );
+              }),
+            if(_crewMemberListViewModel.getMemberRole(_userViewModel.user.user_id) == '크루장')
+              _buildSettingsItem('크루 삭제', onTap: () async{
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      contentPadding: EdgeInsets.only(bottom: 0, left: 28, right: 28, top: 36),
+                      elevation: 0,
+                      backgroundColor: SDSColor.snowliveWhite,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16)),
+                      buttonPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+                      content: Container(
+                        height: 40,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Text(
+                              '정말 삭제하시겠어요?',
+                              textAlign: TextAlign.center,
+                              style: SDSTextStyle.bold.copyWith(
+                                  color: SDSColor.gray900,
+                                  fontSize: 16
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      actions: [
+                        Padding(
+                          padding: EdgeInsets.only(top: 10, left: 16, right: 16),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: Container(
+                                  child: TextButton(
+                                    onPressed: () {
+                                      Get.back(); // 팝업 닫기
+                                    },
+                                    style: TextButton.styleFrom(
+                                      backgroundColor: Colors.transparent, // 배경색 투명
+                                      splashFactory: NoSplash.splashFactory, // 터치 시 효과 제거
+                                    ),
+                                    child: Text('취소',
+                                      style: SDSTextStyle.bold.copyWith(
+                                        fontSize: 17,
+                                        color: SDSColor.gray500,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              SizedBox(
+                                width: 10,
+                              ),
+                              Expanded(
+                                child: Container(
+                                  child: TextButton(
+                                    onPressed: () async{
+                                      Navigator.pop(context);
+                                      CustomFullScreenDialog.showDialog();
+                                      await _crewDetailViewModel.deleteCrew(
+                                          _crewDetailViewModel.crewDetailInfo.crewId!,
+                                          _userViewModel.user.user_id.toString()
+                                      );
+                                    },
+                                    style: TextButton.styleFrom(
+                                      backgroundColor: Colors.transparent, // 배경색 투명
+                                      splashFactory: NoSplash.splashFactory, // 터치 시 효과 제거
+                                    ),
+                                    child: Text('삭제하기',
+                                      style: SDSTextStyle.bold.copyWith(
+                                        fontSize: 17,
+                                        color: SDSColor.red,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
 
-                    ],
-                  );
-                },
-              );
-            }),
+                      ],
+                    );
+                  },
+                );
+              }),
           ]),
 
 

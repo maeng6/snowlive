@@ -22,6 +22,7 @@ class Crew {
   bool? revealInSearch;
   String? description;
   String? createdDate;
+  int? crewLeaderUserId; // 크루 리더 필드 추가
 
   Crew({
     this.crewId,
@@ -33,6 +34,7 @@ class Crew {
     this.revealInSearch,
     this.description,
     this.createdDate,
+    this.crewLeaderUserId, // 크루 리더 필드 추가
   });
 
   Crew.fromJson(Map<String, dynamic> json) {
@@ -45,9 +47,9 @@ class Crew {
     revealInSearch = json['reveal_in_search'];
     description = json['description'];
     createdDate = json['created_date'];
+    crewLeaderUserId = json['crew_leader_user_id']; // 크루 리더 필드 초기화
   }
 }
-
 
 List<Color?> crewColorList = [
   Color(0xFFEA4E4E),

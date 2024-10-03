@@ -671,7 +671,7 @@ class _FleaMarketDetailViewState extends State<FleaMarketDetailView> {
                     children: [
                       RefreshIndicator(
                         strokeWidth: 2,
-                        edgeOffset: 40,
+                        edgeOffset: 60,
                         backgroundColor: SDSColor.snowliveBlue,
                         color: SDSColor.snowliveWhite,
                         onRefresh: () async{
@@ -1779,6 +1779,7 @@ class _FleaMarketDetailViewState extends State<FleaMarketDetailView> {
                                                                                                                                 isLoading_indi: true,
                                                                                                                               );
                                                                                                                               CustomFullScreenDialog.cancelDialog();
+                                                                                                                              await _fleamarketDetailViewModel.fetchFleamarketDetailFromAPI(fleamarketId: _fleamarketDetailViewModel.fleamarketDetail.fleaId!, userId: _userViewModel.user.user_id);
                                                                                                                               await _fleamarketListViewModel.fetchAllFleamarket();
                                                                                                                             },
                                                                                                                             style: TextButton.styleFrom(

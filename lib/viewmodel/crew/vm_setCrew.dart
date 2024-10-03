@@ -177,11 +177,13 @@ class SetCrewViewModel extends GetxController {
         print('Error parsing color: $e');
       }
     }
+    currentColor.value = Color(0XFFEA4E4E);
+    currentColorBackground.value = Color(0XFFEA4E4E).withOpacity(0.2);
   }
 
   void initializeCrewName() {
     if (_crewDetailViewModel.color.isNotEmpty) {
-        _crewName.value = _crewDetailViewModel.crewName;
+      _crewName.value = _crewDetailViewModel.crewName;
     }
   }
 
@@ -243,8 +245,8 @@ class SetCrewViewModel extends GetxController {
     isNextButtonEnabled.value = false;
     _imageFile.value = null;
     _croppedFile.value = null;
-    currentColor.value = Color(0XFFFFA835);
-    currentColorBackground.value = Color(0XFFFFA835).withOpacity(0.2);
+    currentColor.value = Color(0XFFEA4E4E);
+    currentColorBackground.value = Color(0XFFEA4E4E).withOpacity(0.2);
   }
 
   // 이미지와 색상 초기화
