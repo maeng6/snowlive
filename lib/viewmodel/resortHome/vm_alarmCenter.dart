@@ -1,35 +1,32 @@
 import 'package:com.snowlive/api/api_alarmcenter..dart';
-import 'package:com.snowlive/viewmodel/vm_user.dart';
+import 'package:com.snowlive/model/m_alarmCenterList.dart';
 import 'package:get/get.dart';
 
 class AlarmCenterViewModel extends GetxController {
   var isLoading = false.obs;
-  var _alarmCenterList = [].obs;
+  var _alarmCenterList = <AlarmCenterModel>[].obs;
   var _deleteSuccess = false.obs;
   var _updateSuccess = false.obs;
 
-  List<dynamic> get alarmCenterList => _alarmCenterList;
+  List<AlarmCenterModel> get alarmCenterList => _alarmCenterList;
   bool get deleteSuccess => _deleteSuccess.value;
   bool get updateSuccess => _updateSuccess.value;
 
-  UserViewModel _userViewModel = Get.find<UserViewModel>();
-
   @override
-  void onInit() async{
+  void onInit() {
     super.onInit();
-    await fetchAlarmCenterList(userId:  _userViewModel.user.user_id);
   }
 
   // 알람 센터 리스트 불러오기
-  Future<void> fetchAlarmCenterList({required int userId, int? alarminfoId}) async {
+  Future<void> fetchAlarmCenterList(int userId, {int? alarminfoId}) async {
     isLoading(true);
     try {
       final response = await AlarmCenterAPI().fetchAlarmCenterList(userId: userId, alarminfoId: alarminfoId);
 
       if (response.success && response.data != null) {
-        _alarmCenterList.value = response.data as List<dynamic>;
-
-        print('알센 패치 성공');
+        // 데이터를 AlarmCenterModel 리스트로 변환
+        final List<dynamic> dataList = response.data as List<dynamic>;
+        _alarmCenterList.value = dataList.map((data) => AlarmCenterModel.fromJson(data)).toList();
       } else {
         _alarmCenterList.value = []; // 빈 리스트로 처리
         print('알람 센터 리스트 불러오기 실패: ${response.error}');
@@ -49,7 +46,7 @@ class AlarmCenterViewModel extends GetxController {
       if (response.success) {
         _deleteSuccess.value = true;
         print("알람 센터 삭제 성공");
-        await fetchAlarmCenterList(userId: _userViewModel.user.user_id);
+        // 삭제 후 알람 센터 리스트를 다시 불러올 수 있음
       } else {
         _deleteSuccess.value = false;
         print("알람 센터 삭제 실패: ${response.error}");
@@ -70,7 +67,7 @@ class AlarmCenterViewModel extends GetxController {
       if (response.success) {
         _updateSuccess.value = true;
         print("알람 센터 수정 성공");
-        await fetchAlarmCenterList(userId: _userViewModel.user.user_id);
+        // 수정 후 알람 센터 리스트를 다시 불러올 수 있음
       } else {
         _updateSuccess.value = false;
         print("알람 센터 수정 실패: ${response.error}");

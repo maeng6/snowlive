@@ -739,8 +739,8 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                 Stack(
                   children: [
                     IconButton(
-                      onPressed: () async{
-
+                      onPressed: () {
+                        Get.toNamed(AppRoutes.alarmCenter);
                       },
                       icon: Image.asset(
                         'assets/imgs/icons/icon_noti_off.png',

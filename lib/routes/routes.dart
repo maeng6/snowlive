@@ -23,6 +23,7 @@ import 'package:com.snowlive/view/friend/v_friendBlockList.dart';
 import 'package:com.snowlive/view/friend/v_invitation_friend.dart';
 import 'package:com.snowlive/view/moreTab/v_setting_moreTab.dart';
 import 'package:com.snowlive/view/ranking/history/v_ranking_history_home.dart';
+import 'package:com.snowlive/view/resortHome/v_alarmCenter.dart';
 import 'package:com.snowlive/view/v_profileImageScreen.dart';
 import 'package:com.snowlive/view/crew/v_crewHome.dart';
 import 'package:com.snowlive/view/crew/v_crewMain.dart';
@@ -96,6 +97,7 @@ class AppRoutes {
   static const String rankingHistoryHome = '/rankingHistoryHome';
   static const String rankingIndivHistoryHome = '/rankingIndivHistoryHome';
   static const String setting_moreTab = '/setting_moreTab';
+  static const String alarmCenter = '/alarmCenter';
 
 
 
@@ -318,6 +320,10 @@ class AppRoutes {
       name: setting_moreTab,
       page: () => Setting_moreTabView(),
       binding: Setting_moreTabBinding()
+    ),
+    GetPage(
+      name: alarmCenter,
+      page: () => AlarmCenterView(),
     ),
   ];
 }

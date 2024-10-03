@@ -17,6 +17,7 @@ class CrewApply {
   int? crewId;
   int? applicantUserId;
   ApplicantUserInfo? applicantUserInfo;
+  CrewInfo? crewInfo; // crewinfo를 추가
 
   CrewApply({
     this.applyCrewId,
@@ -25,6 +26,7 @@ class CrewApply {
     this.crewId,
     this.applicantUserId,
     this.applicantUserInfo,
+    this.crewInfo, // 추가
   });
 
   CrewApply.fromJson(Map<String, dynamic> json) {
@@ -36,6 +38,7 @@ class CrewApply {
     applicantUserInfo = json['applicant_user_info'] != null
         ? ApplicantUserInfo.fromJson(json['applicant_user_info'])
         : null;
+    crewInfo = json['crewinfo'] != null ? CrewInfo.fromJson(json['crewinfo']) : null; // crewinfo 추가
   }
 }
 
@@ -57,5 +60,32 @@ class ApplicantUserInfo {
     displayName = json['display_name'];
     profileImageUrlUser = json['profile_image_url_user'];
     favoriteResortNickname = json['favorite_resort_nickname'];
+  }
+}
+
+class CrewInfo {
+  int? crewId;
+  String? crewName;
+  String? crewLogoUrl;
+  String? color;
+  String? description;
+  int? baseResortId;
+
+  CrewInfo({
+    this.crewId,
+    this.crewName,
+    this.crewLogoUrl,
+    this.color,
+    this.description,
+    this.baseResortId,
+  });
+
+  CrewInfo.fromJson(Map<String, dynamic> json) {
+    crewId = json['crew_id'];
+    crewName = json['crew_name'];
+    crewLogoUrl = json['crew_logo_url'];
+    color = json['color'];
+    description = json['description'];
+    baseResortId = json['base_resort_id'];
   }
 }

@@ -59,25 +59,9 @@ class CrewApplicationCrewView extends StatelessWidget {
               return Column(
                 children: [
                   (_crewApplyViewModel.crewApplyList.isNotEmpty)
-                  ? Expanded(
+                      ? Expanded(
                     child: ListView(
                       children: _crewApplyViewModel.crewApplyList.map((user) {
-                        // 유저 정보 가져오기
-                        if (!_friendDetailViewModel.findFriendInfo.containsKey(user.applicantUserId)) {
-                          _friendDetailViewModel.findFriendDetails(
-                              _userViewModel.user.user_id,
-                              user.applicantUserId!,
-                              _friendDetailViewModel.seasonDate
-                          );
-                        }
-
-                        var userInfo = _friendDetailViewModel.findFriendInfo[user.applicantUserId!] ?? {
-                          'displayName': '',
-                          'profileImageUrlUser': '',
-                        };
-
-                        print('ApplicantUserId 2: ${user.applicantUserId}');
-                        print('UserInfo 2: $userInfo');
 
                         return Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
@@ -86,7 +70,7 @@ class CrewApplicationCrewView extends StatelessWidget {
                               Row(
                                 children: [
                                   // 프로필 이미지
-                                  if (userInfo['profileImageUrlUser']!.isNotEmpty)
+                                  if (user.applicantUserInfo!.profileImageUrlUser!.isNotEmpty)
                                     GestureDetector(
                                       onTap: () async {
                                         CustomFullScreenDialog.showDialog();
@@ -102,7 +86,7 @@ class CrewApplicationCrewView extends StatelessWidget {
                                         width: 40,
                                         height: 40,
                                         child: ExtendedImage.network(
-                                          userInfo['profileImageUrlUser']!,
+                                          user.applicantUserInfo?.profileImageUrlUser?? '',
                                           enableMemoryCache: true,
                                           shape: BoxShape.circle,
                                           borderRadius: BorderRadius.circular(10),
@@ -141,10 +125,10 @@ class CrewApplicationCrewView extends StatelessWidget {
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                          '${userInfo['displayName']!}',
+                                          '${user.applicantUserInfo?.displayName??''}',
                                           style: SDSTextStyle.regular.copyWith(
-                                            fontSize: 15,
-                                            color: SDSColor.gray900
+                                              fontSize: 15,
+                                              color: SDSColor.gray900
                                           ),
                                           overflow: TextOverflow.ellipsis,
                                           maxLines: 1,
@@ -433,7 +417,7 @@ class CrewApplicationCrewView extends StatelessWidget {
                       }).toList(),
                     ),
                   )
-                  : Expanded(
+                      : Expanded(
                     child: Container(
                       child: Padding(
                         padding: EdgeInsets.only(bottom: 50),
