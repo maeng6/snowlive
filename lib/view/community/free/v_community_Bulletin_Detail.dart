@@ -9,6 +9,7 @@ import 'package:com.snowlive/viewmodel/community/vm_communityCommentDetail.dart'
 import 'package:com.snowlive/viewmodel/community/vm_communityDetail.dart';
 import 'package:com.snowlive/viewmodel/community/vm_communityUpdate.dart';
 import 'package:com.snowlive/viewmodel/friend/vm_friendDetail.dart';
+import 'package:com.snowlive/viewmodel/resortHome/vm_alarmCenter.dart';
 import 'package:com.snowlive/viewmodel/vm_user.dart';
 import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 import 'package:extended_image/extended_image.dart';
@@ -32,6 +33,7 @@ class CommunityBulletinDetailView extends StatelessWidget {
   final CommunityCommentDetailViewModel _communityCommentDetailViewModel = Get.find<CommunityCommentDetailViewModel>();
   final CommunityUpdateViewModel _communityUpdateViewModel = Get.find<CommunityUpdateViewModel>();
   final CommunityBulletinListViewModel _communityBulletinListViewModel = Get.find<CommunityBulletinListViewModel>();
+  final AlarmCenterViewModel _alarmCenterViewModel = Get.find<AlarmCenterViewModel>();
 
   FocusNode textFocus = FocusNode();
 
@@ -374,10 +376,10 @@ class CommunityBulletinDetailView extends StatelessWidget {
                                         onTap: () async {
                                           Navigator.pop(context);
                                           await _communityUpdateViewModel.fetchCommunityUpdateData(
-                                            textEditingController_title: _communityDetailViewModel.communityDetail.title!,
-                                            selectedCategorySub2:  _communityDetailViewModel.communityDetail.categorySub2!,
-                                            selectedCategorySub:  _communityDetailViewModel.communityDetail.categorySub!,
-                                            description:  jsonEncode(_communityDetailViewModel.communityDetail.description!.toDelta().toJson()),
+                                              textEditingController_title: _communityDetailViewModel.communityDetail.title!,
+                                              selectedCategorySub2:  _communityDetailViewModel.communityDetail.categorySub2!,
+                                              selectedCategorySub:  _communityDetailViewModel.communityDetail.categorySub!,
+                                              description:  jsonEncode(_communityDetailViewModel.communityDetail.description!.toDelta().toJson()),
                                               textEditingController_snsUrl: _communityDetailViewModel.communityDetail.snsUrl??''
                                           );
                                           Get.toNamed(AppRoutes.bulletinDetailUpdate);
@@ -543,7 +545,7 @@ class CommunityBulletinDetailView extends StatelessWidget {
                         controller: _communityDetailViewModel.scrollController,
                         child: ConstrainedBox(
                           constraints: BoxConstraints(
-                            minHeight: _size.height - _statusBarSize - 44
+                              minHeight: _size.height - _statusBarSize - 44
                           ),
                           child: Container(
                             child: Column(
@@ -813,32 +815,32 @@ class CommunityBulletinDetailView extends StatelessWidget {
                                       ),
                                       //SNS버튼
                                       if(_communityDetailViewModel.communityDetail.snsUrl != null
-                                      && _communityDetailViewModel.communityDetail.snsUrl != '')
-                                      Padding(
-                                        padding: EdgeInsets.symmetric(horizontal: 16),
-                                        child: ElevatedButton(
-                                          onPressed: () async {
-                                            otherShare(contents: _communityDetailViewModel.communityDetail.snsUrl!);
-                                          },
-                                          child: Text(
-                                            'SNS 바로가기',
-                                            style: SDSTextStyle.bold.copyWith(color: SDSColor.gray900, fontSize: 15),
-                                          ),
-                                          style: TextButton.styleFrom(
-                                            shape: RoundedRectangleBorder(
-                                              side: BorderSide(
-                                                color: SDSColor.gray100,
-                                                width: 1
-                                              ),
-                                              borderRadius: BorderRadius.all(Radius.circular(6)),
+                                          && _communityDetailViewModel.communityDetail.snsUrl != '')
+                                        Padding(
+                                          padding: EdgeInsets.symmetric(horizontal: 16),
+                                          child: ElevatedButton(
+                                            onPressed: () async {
+                                              otherShare(contents: _communityDetailViewModel.communityDetail.snsUrl!);
+                                            },
+                                            child: Text(
+                                              'SNS 바로가기',
+                                              style: SDSTextStyle.bold.copyWith(color: SDSColor.gray900, fontSize: 15),
                                             ),
-                                            elevation: 0,
-                                            splashFactory: InkRipple.splashFactory,
-                                            minimumSize: Size(double.infinity, 48),
-                                            backgroundColor: SDSColor.snowliveWhite,
+                                            style: TextButton.styleFrom(
+                                              shape: RoundedRectangleBorder(
+                                                side: BorderSide(
+                                                    color: SDSColor.gray100,
+                                                    width: 1
+                                                ),
+                                                borderRadius: BorderRadius.all(Radius.circular(6)),
+                                              ),
+                                              elevation: 0,
+                                              splashFactory: InkRipple.splashFactory,
+                                              minimumSize: Size(double.infinity, 48),
+                                              backgroundColor: SDSColor.snowliveWhite,
+                                            ),
                                           ),
                                         ),
-                                      ),
                                       Divider(
                                         color: SDSColor.gray50,
                                         height: 60,
@@ -1491,30 +1493,30 @@ class CommunityBulletinDetailView extends StatelessWidget {
                                                 ))
                                                     : Container(
                                                   height: _size.height - 546,
-                                                      child: Center(
-                                                        child: Padding(
-                                                          padding: EdgeInsets.only(bottom: 60),
-                                                          child: Column(
-                                                            mainAxisAlignment: MainAxisAlignment.center,
-                                                            crossAxisAlignment: CrossAxisAlignment.center,
-                                                            children: [
-                                                              Image.asset(
-                                                                'assets/imgs/icons/icon_friendsTalk_nodata.png',
-                                                                width: 74,
-                                                              ),
-                                                              SizedBox(
-                                                                height: 4,
-                                                              ),
-                                                              Text('댓글이 없어요',
-                                                                style: SDSTextStyle.regular.copyWith(
-                                                                    fontSize: 14,
-                                                                    color: SDSColor.gray500),
-                                                              ),
-                                                            ],
+                                                  child: Center(
+                                                    child: Padding(
+                                                      padding: EdgeInsets.only(bottom: 60),
+                                                      child: Column(
+                                                        mainAxisAlignment: MainAxisAlignment.center,
+                                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                                        children: [
+                                                          Image.asset(
+                                                            'assets/imgs/icons/icon_friendsTalk_nodata.png',
+                                                            width: 74,
                                                           ),
-                                                        ),
+                                                          SizedBox(
+                                                            height: 4,
+                                                          ),
+                                                          Text('댓글이 없어요',
+                                                            style: SDSTextStyle.regular.copyWith(
+                                                                fontSize: 14,
+                                                                color: SDSColor.gray500),
+                                                          ),
+                                                        ],
                                                       ),
-                                                    )
+                                                    ),
+                                                  ),
+                                                )
                                               ],
                                             ),
                                           ),
@@ -1584,6 +1586,10 @@ class CommunityBulletinDetailView extends StatelessWidget {
                                         );
                                         FocusScope.of(context).unfocus();
                                         await _communityDetailViewModel.fetchCommunityDetail(_communityDetailViewModel.communityDetail.communityId!, _userViewModel.user.user_id);
+                                        await _alarmCenterViewModel.updateNotification(
+                                            _communityDetailViewModel.communityDetail.userId!,
+                                            total: true
+                                        );
                                         CustomFullScreenDialog.cancelDialog();
                                         if(_communityBulletinListViewModel.tapName =='게시판') {
                                           await _communityBulletinListViewModel.fetchAllCommunity();

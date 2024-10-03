@@ -9,6 +9,7 @@ import 'package:com.snowlive/viewmodel/fleamarket/vm_fleamarketDetail.dart';
 import 'package:com.snowlive/viewmodel/fleamarket/vm_fleamarketList.dart';
 import 'package:com.snowlive/viewmodel/fleamarket/vm_fleamarketUpdate.dart';
 import 'package:com.snowlive/viewmodel/friend/vm_friendDetail.dart';
+import 'package:com.snowlive/viewmodel/resortHome/vm_alarmCenter.dart';
 import 'package:com.snowlive/viewmodel/vm_user.dart';
 import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 import 'package:extended_image/extended_image.dart';
@@ -33,6 +34,8 @@ class _FleaMarketDetailViewState extends State<FleaMarketDetailView> {
   final FleamarketCommentDetailViewModel _fleamarketCommentDetailViewModel = Get.find<FleamarketCommentDetailViewModel>();
   final FleamarketListViewModel _fleamarketListViewModel = Get.find<FleamarketListViewModel>();
   final FleamarketUpdateViewModel _fleamarketUpdateViewModel = Get.find<FleamarketUpdateViewModel>();
+  final AlarmCenterViewModel _alarmCenterViewModel = Get.find<AlarmCenterViewModel>();
+
   final ScrollController _scrollController = ScrollController();
   bool isAppBarCollapsed = false;
   FocusNode textFocus = FocusNode();
@@ -2017,6 +2020,10 @@ class _FleaMarketDetailViewState extends State<FleaMarketDetailView> {
                                           _fleamarketDetailViewModel.textEditingController.clear();
                                           FocusScope.of(context).unfocus();
                                           _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
+                                          await _alarmCenterViewModel.updateNotification(
+                                              _fleamarketDetailViewModel.fleamarketDetail.userId!,
+                                              total: true
+                                          );
                                           CustomFullScreenDialog.cancelDialog();
                                           await _fleamarketDetailViewModel.fetchFleamarketDetailFromAPI(fleamarketId: _fleamarketDetailViewModel.fleamarketDetail.fleaId!, userId: _userViewModel.user.user_id);
                                           await _fleamarketListViewModel.fetchAllFleamarket();

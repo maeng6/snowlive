@@ -10,6 +10,7 @@ import 'package:com.snowlive/viewmodel/crew/vm_crewMemberList.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewRecordRoom.dart';
 import 'package:com.snowlive/viewmodel/friend/vm_friendDetail.dart';
 import 'package:com.snowlive/viewmodel/friend/vm_friendDetailUpdate.dart';
+import 'package:com.snowlive/viewmodel/resortHome/vm_alarmCenter.dart';
 import 'package:com.snowlive/viewmodel/vm_user.dart';
 import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 import 'package:extended_image/extended_image.dart';
@@ -53,6 +54,7 @@ class _FriendDetailViewState extends State<FriendDetailView> {
     final CrewDetailViewModel _crewDetailViewModel = Get.find<CrewDetailViewModel>();
     final CrewMemberListViewModel _crewMemberListViewModel = Get.find<CrewMemberListViewModel>();
     final CrewRecordRoomViewModel _crewRecordRoomViewModel = Get.find<CrewRecordRoomViewModel>();
+    final AlarmCenterViewModel _alarmCenterViewModel = Get.find<AlarmCenterViewModel>();
 
     return GestureDetector(
       onTap: () {
@@ -462,7 +464,11 @@ class _FriendDetailViewState extends State<FriendDetailView> {
                                                                             "user_id": _userViewModel.user.user_id,    //필수 - 신청자 (나)
                                                                             "friend_user_id": _friendDetailViewModel.friendDetailModel.friendUserInfo.userId    //필수 - 신청받는사람
                                                                           });
-                                                                          CustomFullScreenDialog.cancelDialog();
+                                                                          await _alarmCenterViewModel.updateNotification(
+                                                                              _friendDetailViewModel.friendDetailModel.friendUserInfo.userId,
+                                                                              total: true,
+                                                                              friend: true
+                                                                          );
                                                                         },
                                                                         child: Text('보내기',
                                                                           style: TextStyle(
@@ -2523,6 +2529,10 @@ class _FriendDetailViewState extends State<FriendDetailView> {
                                       "friend_user_id": _friendDetailViewModel.friendDetailModel.friendUserInfo.userId,
                                       "content": _friendDetailViewModel.textEditingController.text,
                                     });
+                                    await _alarmCenterViewModel.updateNotification(
+                                        _friendDetailViewModel.friendDetailModel.friendUserInfo.userId,
+                                        total: true
+                                    );
                                     CustomFullScreenDialog.cancelDialog();
                                     await _friendDetailViewModel.fetchFriendsTalkList_afterFriendTalk(
                                       userId: _userViewModel.user.user_id,

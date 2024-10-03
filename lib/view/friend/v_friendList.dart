@@ -1,7 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:com.snowlive/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/routes/routes.dart';
 import 'package:com.snowlive/viewmodel/friend/vm_friendDetail.dart';
 import 'package:com.snowlive/viewmodel/friend/vm_friendList.dart';
+import 'package:com.snowlive/viewmodel/resortHome/vm_alarmCenter.dart';
 import 'package:com.snowlive/viewmodel/vm_user.dart';
 import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 import 'package:extended_image/extended_image.dart';
@@ -15,6 +17,8 @@ class FriendListView extends StatelessWidget {
   final FriendListViewModel _friendListViewModel = Get.find<FriendListViewModel>();
   final FriendDetailViewModel _friendDetailViewModel = Get.find<FriendDetailViewModel>();
   final UserViewModel _userViewModel = Get.find<UserViewModel>();
+  final AlarmCenterViewModel _alarmCenterViewModel = Get.find<AlarmCenterViewModel>();
+
 
   @override
   Widget build(BuildContext context) {
@@ -28,45 +32,65 @@ class FriendListView extends StatelessWidget {
         backgroundColor: Colors.white,
         surfaceTintColor: Colors.transparent,
         actions: [
-            Stack(
-              children: [
-                IconButton(
-                  highlightColor: Colors.transparent,
-                  onPressed: () async {
-                    Get.toNamed(AppRoutes.invitaionFriend);
-                    await _friendListViewModel.fetchFriendRequestList(_userViewModel.user.user_id);
+          StreamBuilder<QuerySnapshot>(
+            stream: FirebaseFirestore.instance
+                .collection('notificationCenter')
+                .where('uid', isEqualTo:  _userViewModel.user.user_id)
+                .snapshots(),
+            builder: (context, snapshot) {
+              if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                return IconButton(
+                  onPressed: () {
+                    Get.toNamed(AppRoutes.alarmCenter);
                   },
                   icon: Image.asset(
                     'assets/imgs/icons/icon_alarm_resortHome.png',
-                    scale: 4,
-                    width: 26,
-                    height: 26,
                   ),
-                ),
-                if (_friendListViewModel.friendsRequestList.isNotEmpty)
-                Positioned(
-                  top: 4,
-                  right: 4,
-                  child: Container(
-                    width: 20,
-                    height: 20,
-                    decoration: BoxDecoration(
-                      color: SDSColor.red,
-                      borderRadius: BorderRadius.circular(20),
+                );
+              }
+
+              var data = snapshot.data!.docs[0].data() as Map<String, dynamic>?;
+              bool isNewNotification = data?['friend'] ?? false; // Firestore 문서 필드
+
+              return Stack(
+                children: [
+                  IconButton(
+                    onPressed: () async{
+                      Get.toNamed(AppRoutes.invitaionFriend);
+                      await _alarmCenterViewModel.updateNotification(
+                        _userViewModel.user.user_id,
+                        friend: false,
+                      );
+                      await _friendListViewModel.fetchFriendRequestList(_userViewModel.user.user_id);
+                    },
+                    icon: Image.asset(
+                      'assets/imgs/icons/icon_alarm_resortHome.png',
                     ),
-                    child: Center(
-                      child: Text(
-                        'N',
-                        style: SDSTextStyle.bold.copyWith(
-                          fontSize: 12,
-                          color: SDSColor.snowliveWhite,
+                  ),
+                  if (isNewNotification)
+                    Positioned(
+                      top: 5,
+                      right: 3,
+                      child: Container(
+                        padding: EdgeInsets.symmetric(horizontal: 3, vertical: 2),
+                        decoration: BoxDecoration(
+                          color: Color(0xFFD6382B),
+                          borderRadius: BorderRadius.circular(6),
+                        ),
+                        child: Text(
+                          'NEW',
+                          style: TextStyle(
+                            fontSize: 8,
+                            fontWeight: FontWeight.bold,
+                            color: Color(0xFFFFFFFF),
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                )
-              ],
-            ),
+                ],
+              );
+            },
+          ),
           Padding(
             padding: EdgeInsets.only(right: 10),
             child: IconButton(

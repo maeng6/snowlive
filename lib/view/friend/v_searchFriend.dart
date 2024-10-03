@@ -2,6 +2,7 @@ import 'package:com.snowlive/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/routes/routes.dart';
 import 'package:com.snowlive/viewmodel/friend/vm_friendDetail.dart';
 import 'package:com.snowlive/viewmodel/friend/vm_friendList.dart';
+import 'package:com.snowlive/viewmodel/resortHome/vm_alarmCenter.dart';
 import 'package:com.snowlive/viewmodel/vm_user.dart';
 import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 import 'package:extended_image/extended_image.dart';
@@ -14,6 +15,8 @@ class SearchFriendView extends StatelessWidget {
   final FriendListViewModel _friendListViewModel = Get.find<FriendListViewModel>();
   final FriendDetailViewModel _friendDetailViewModel = Get.find<FriendDetailViewModel>();
   final UserViewModel _userViewModel = Get.find<UserViewModel>();
+  final AlarmCenterViewModel _alarmCenterViewModel = Get.find<AlarmCenterViewModel>();
+
   FocusNode textFocus = FocusNode();
 
 
@@ -462,6 +465,11 @@ class SearchFriendView extends StatelessWidget {
                                                       "user_id": _userViewModel.user.user_id.toString(),    //필수 - 신청자 (나)
                                                       "friend_user_id": _friendListViewModel.searchFriend.userId.toString()    //필수 - 신청받는사람
                                                     });
+                                                    await _alarmCenterViewModel.updateNotification(
+                                                        _friendListViewModel.searchFriend.userId!,
+                                                        total: true,
+                                                        friend: true
+                                                    );
                                                   },
                                                   style: TextButton.styleFrom(
                                                     backgroundColor: Colors.transparent, // 배경색 투명

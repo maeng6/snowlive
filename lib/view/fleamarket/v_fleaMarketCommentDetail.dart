@@ -4,6 +4,7 @@ import 'package:com.snowlive/util/util_1.dart';
 import 'package:com.snowlive/viewmodel/fleamarket/vm_fleamarketDetail.dart';
 import 'package:com.snowlive/viewmodel/fleamarket/vm_fleamarketList.dart';
 import 'package:com.snowlive/viewmodel/friend/vm_friendDetail.dart';
+import 'package:com.snowlive/viewmodel/resortHome/vm_alarmCenter.dart';
 import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
@@ -22,6 +23,7 @@ class FleamarketCommentDetailView extends StatelessWidget {
   final FleamarketListViewModel _fleamarketListViewModel = Get.find<FleamarketListViewModel>();
   final UserViewModel _userViewModel = Get.find<UserViewModel>();
   final FriendDetailViewModel _friendDetailViewModel = Get.find<FriendDetailViewModel>();
+  final AlarmCenterViewModel _alarmCenterViewModel = Get.find<AlarmCenterViewModel>();
 
   FocusNode textFocus = FocusNode();
 
@@ -99,55 +101,55 @@ class FleamarketCommentDetailView extends StatelessWidget {
                                     children: [
                                       if(_fleamarketCommentDetailViewModel.commentModel_flea.userInfo!.profileImageUrlUser != '')
                                         GestureDetector(
-                                        onTap: () async{
-                                          textFocus.unfocus();
-                                          Get.toNamed(AppRoutes.friendDetail);
-                                          await _friendDetailViewModel.fetchFriendDetailInfo(
-                                              userId: _userViewModel.user.user_id,
-                                              friendUserId:_fleamarketCommentDetailViewModel.commentModel_flea.userInfo!.userId!,
-                                              season: _friendDetailViewModel.seasonDate);
-                                        },
-                                        child:
-                                        Container(
-                                          width: 32,
-                                          height: 32,
-                                          decoration: BoxDecoration(
-                                              color: Color(0xFFDFECFF),
-                                              borderRadius: BorderRadius.circular(50)
-                                          ),
-                                          child: ExtendedImage.network(
-                                            '${_fleamarketCommentDetailViewModel.commentModel_flea.userInfo!.profileImageUrlUser}',
-                                            cache: true,
-                                            enableMemoryCache: true,
-                                            shape: BoxShape.circle,
-                                            borderRadius:
-                                            BorderRadius.circular(20),
+                                          onTap: () async{
+                                            textFocus.unfocus();
+                                            Get.toNamed(AppRoutes.friendDetail);
+                                            await _friendDetailViewModel.fetchFriendDetailInfo(
+                                                userId: _userViewModel.user.user_id,
+                                                friendUserId:_fleamarketCommentDetailViewModel.commentModel_flea.userInfo!.userId!,
+                                                season: _friendDetailViewModel.seasonDate);
+                                          },
+                                          child:
+                                          Container(
                                             width: 32,
                                             height: 32,
-                                            fit: BoxFit.cover,
-                                            loadStateChanged: (ExtendedImageState state) {
-                                              switch (state.extendedImageLoadState) {
-                                                case LoadState.loading:
-                                                  return SizedBox.shrink();
-                                                case LoadState.completed:
-                                                  return state.completedWidget;
-                                                case LoadState.failed:
-                                                  return ClipOval(
-                                                    child: Image.asset(
-                                                      'assets/imgs/profile/img_profile_default_circle.png',
-                                                      width: 32,
-                                                      height: 32,
-                                                      fit: BoxFit.cover,
-                                                    ),
-                                                  )
-                                                  ; // 예시로 에러 아이콘을 반환하고 있습니다.
-                                                default:
-                                                  return null;
-                                              }
-                                            },
+                                            decoration: BoxDecoration(
+                                                color: Color(0xFFDFECFF),
+                                                borderRadius: BorderRadius.circular(50)
+                                            ),
+                                            child: ExtendedImage.network(
+                                              '${_fleamarketCommentDetailViewModel.commentModel_flea.userInfo!.profileImageUrlUser}',
+                                              cache: true,
+                                              enableMemoryCache: true,
+                                              shape: BoxShape.circle,
+                                              borderRadius:
+                                              BorderRadius.circular(20),
+                                              width: 32,
+                                              height: 32,
+                                              fit: BoxFit.cover,
+                                              loadStateChanged: (ExtendedImageState state) {
+                                                switch (state.extendedImageLoadState) {
+                                                  case LoadState.loading:
+                                                    return SizedBox.shrink();
+                                                  case LoadState.completed:
+                                                    return state.completedWidget;
+                                                  case LoadState.failed:
+                                                    return ClipOval(
+                                                      child: Image.asset(
+                                                        'assets/imgs/profile/img_profile_default_circle.png',
+                                                        width: 32,
+                                                        height: 32,
+                                                        fit: BoxFit.cover,
+                                                      ),
+                                                    )
+                                                    ; // 예시로 에러 아이콘을 반환하고 있습니다.
+                                                  default:
+                                                    return null;
+                                                }
+                                              },
+                                            ),
                                           ),
                                         ),
-                                      ),
                                       if(_fleamarketCommentDetailViewModel.commentModel_flea.userInfo!.profileImageUrlUser == '')
                                         GestureDetector(
                                           onTap: () async{
@@ -958,6 +960,11 @@ class FleamarketCommentDetailView extends StatelessWidget {
                                               "user_id": _userViewModel.user.user_id.toString(),
                                               "secret": _fleamarketCommentDetailViewModel.isSecret
                                             });
+                                            await _alarmCenterViewModel.updateNotification(
+                                                _fleamarketCommentDetailViewModel.commentModel_flea.userId!,
+                                                total: true
+                                            );
+                                            print(_fleamarketCommentDetailViewModel.commentModel_flea.userId!);
                                             FocusScope.of(context).unfocus();
                                             _fleamarketCommentDetailViewModel.textEditingController.clear();
                                             CustomFullScreenDialog.cancelDialog();

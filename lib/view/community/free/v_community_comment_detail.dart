@@ -6,6 +6,7 @@ import 'package:com.snowlive/viewmodel/community/vm_communityBulletinList.dart';
 import 'package:com.snowlive/viewmodel/community/vm_communityCommentDetail.dart';
 import 'package:com.snowlive/viewmodel/community/vm_communityDetail.dart';
 import 'package:com.snowlive/viewmodel/friend/vm_friendDetail.dart';
+import 'package:com.snowlive/viewmodel/resortHome/vm_alarmCenter.dart';
 import 'package:com.snowlive/viewmodel/vm_user.dart';
 import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 import 'package:extended_image/extended_image.dart';
@@ -20,6 +21,8 @@ class CommunityCommentDetailView extends StatelessWidget {
   final UserViewModel _userViewModel = Get.find<UserViewModel>();
   final CommunityBulletinListViewModel _communityBulletinListViewModel = Get.find<CommunityBulletinListViewModel>();
   final FriendDetailViewModel _friendDetailViewModel = Get.find<FriendDetailViewModel>();
+  final AlarmCenterViewModel _alarmCenterViewModel = Get.find<AlarmCenterViewModel>();
+
   FocusNode textFocus = FocusNode();
 
   @override
@@ -109,7 +112,7 @@ class CommunityCommentDetailView extends StatelessWidget {
                                         ),
                                         child:
                                         (_communityCommentDetailViewModel.commentModel_community.userInfo!.profileImageUrlUser!='')
-                                        ? ExtendedImage.network(
+                                            ? ExtendedImage.network(
                                           '${_communityCommentDetailViewModel.commentModel_community.userInfo!.profileImageUrlUser}',
                                           cache: true,
                                           shape: BoxShape.circle,
@@ -138,7 +141,7 @@ class CommunityCommentDetailView extends StatelessWidget {
                                             }
                                           },
                                         )
-                                        : ClipOval(
+                                            : ClipOval(
                                           child: Image.asset(
                                             'assets/imgs/profile/img_profile_default_circle.png',
                                             width: 24,
@@ -830,6 +833,10 @@ class CommunityCommentDetailView extends StatelessWidget {
                                               "content": _communityCommentDetailViewModel.textEditingController.text,
                                               "user_id": _userViewModel.user.user_id.toString()
                                             });
+                                            await _alarmCenterViewModel.updateNotification(
+                                                _communityCommentDetailViewModel.commentModel_community.userId!,
+                                                total: true
+                                            );
                                             _communityCommentDetailViewModel.textEditingController.clear();
                                             _communityCommentDetailViewModel.scrollController.jumpTo(
                                               _communityCommentDetailViewModel.scrollController.position.maxScrollExtent,

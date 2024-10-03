@@ -7,6 +7,7 @@ import 'package:com.snowlive/view/resortHome/v_chat_resortHome.dart';
 import 'package:com.snowlive/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/viewmodel/friend/vm_friendDetail.dart';
 import 'package:com.snowlive/viewmodel/friend/vm_friendList.dart';
+import 'package:com.snowlive/viewmodel/resortHome/vm_alarmCenter.dart';
 import 'package:com.snowlive/viewmodel/resortHome/vm_resortHome.dart';
 import 'package:com.snowlive/viewmodel/resortHome/vm_setGenderAndCategory.dart';
 import 'package:com.snowlive/viewmodel/vm_user.dart';
@@ -46,6 +47,7 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
   FriendDetailViewModel _friendDetailViewModel = Get.find<FriendDetailViewModel>();
   FriendListViewModel _friendListViewModel = Get.find<FriendListViewModel>();
   GenderCategoryViewModel _genderCategoryViewModel = Get.find<GenderCategoryViewModel>();
+  AlarmCenterViewModel _alarmCenterViewModel = Get.find<AlarmCenterViewModel>();
   //TODO: Dependency Injection**************************************************
 
   @override
@@ -749,7 +751,7 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                           Get.toNamed(AppRoutes.alarmCenter);
                         },
                         icon: Image.asset(
-                          'assets/imgs/icons/icon_noti_off.png',
+                          'assets/imgs/icons/icon_alarm_resortHome.png',
                         ),
                       );
                     }
@@ -760,11 +762,15 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                     return Stack(
                       children: [
                         IconButton(
-                          onPressed: () {
+                          onPressed: () async{
+                            await _alarmCenterViewModel.updateNotification(
+                              _userViewModel.user.user_id,
+                              total: false,
+                            );
                             Get.toNamed(AppRoutes.alarmCenter);
                           },
                           icon: Image.asset(
-                            'assets/imgs/icons/icon_noti_off.png',
+                            'assets/imgs/icons/icon_alarm_resortHome.png',
                           ),
                         ),
                         if (isNewNotification)
