@@ -78,6 +78,8 @@ class CrewApplyViewModel extends GetxController {
       if (response.success) {
         CrewApplyListResponse crewApplyListResponse = CrewApplyListResponse.fromJson(response.data as List<dynamic>);
         crewApplyList.assignAll(crewApplyListResponse.crewApplyList ?? []);
+        // 데이터 로딩 성공 시 UI 갱신
+        update();
       } else {
         Get.snackbar('오류', '크루 가입 신청 목록을 불러오는데 실패했습니다.');
       }
