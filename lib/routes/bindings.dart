@@ -41,6 +41,8 @@ class MainHomeBinding extends Bindings {
   @override
   void dependencies() {
     Get.put(MainHomeViewModel());
+    Get.put(FleamarketCommentDetailViewModel());
+    Get.put(CommunityCommentDetailViewModel());
     Get.put(AlarmCenterViewModel());
     Get.put(StreamController_Banner());
     Get.put(ResortHomeViewModel());
@@ -126,7 +128,6 @@ class FleamarketSearchBinding extends Bindings {
 class FleamarketDetailBinding extends Bindings {
   @override
   void dependencies() {
-    Get.put(FleamarketCommentDetailViewModel(), permanent: true);
 
     Get.put(FleamarketUpdateViewModel(), );
   }
@@ -155,7 +156,6 @@ class BulletinUploadBinding extends Bindings {
 class BulletinDetailBinding extends Bindings {
   @override
   void dependencies() {
-    Get.put(CommunityCommentDetailViewModel());
     Get.put(CommunityUpdateViewModel());
   }
 }
