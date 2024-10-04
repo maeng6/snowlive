@@ -1135,7 +1135,7 @@ class RankingCrewView extends StatelessWidget {
                                             case LoadState.failed:
                                             // 로딩이 실패했을 때 대체 이미지 또는 다른 처리
                                               return Image.asset(
-                                                '${crewDefaultLogoUrl['${document.color}']}', // 대체 이미지 경로
+                                                'assets/imgs/profile/img_profile_default_circle.png',
                                                 width: 32,
                                                 height: 32,
                                                 fit: BoxFit.cover,
@@ -1175,7 +1175,7 @@ class RankingCrewView extends StatelessWidget {
                                             case LoadState.failed:
                                             // 로딩이 실패했을 때 대체 이미지 또는 다른 처리
                                               return Image.asset(
-                                                '${crewDefaultLogoUrl['${document.color}']}', // 대체 이미지 경로
+                                                'assets/imgs/profile/img_profile_default_circle.png',
                                                 width: 32,
                                                 height: 32,
                                                 fit: BoxFit.cover,
@@ -2245,8 +2245,7 @@ class RankingCrewView extends StatelessWidget {
                   '${_resortHomeViewModel.rankingComingSoonUrl}',
                   cache: true,
                   enableMemoryCache: true,
-                  width: _size.width -32,
-                  height: _size.height -200,
+                  width: _size.width -40,
                   fit: BoxFit.cover,
                 ),
               ],

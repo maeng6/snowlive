@@ -709,7 +709,7 @@ class CommunityBulletinDetailView extends StatelessWidget {
                                                             case LoadState.failed:
                                                             // 로딩이 실패했을 때 대체 이미지 또는 다른 처리
                                                               return Image.asset(
-                                                                '${profileImgUrlList[0].default_round}', // 대체 이미지 경로
+                                                                'assets/imgs/profile/img_profile_default_circle.png',
                                                                 width: 32,
                                                                 height: 32,
                                                                 fit: BoxFit.cover,
@@ -751,7 +751,7 @@ class CommunityBulletinDetailView extends StatelessWidget {
                                                           case LoadState.failed:
                                                           // 로딩이 실패했을 때 대체 이미지 또는 다른 처리
                                                             return Image.asset(
-                                                              '${profileImgUrlList[0].default_round}', // 대체 이미지 경로
+                                                              'assets/imgs/profile/img_profile_default_circle.png',
                                                               width: 32,
                                                               height: 32,
                                                               fit: BoxFit.cover,
@@ -985,7 +985,7 @@ class CommunityBulletinDetailView extends StatelessWidget {
                                                                               case LoadState.failed:
                                                                               // 로딩이 실패했을 때 대체 이미지 또는 다른 처리
                                                                                 return Image.asset(
-                                                                                  '${profileImgUrlList[0].default_round}', // 대체 이미지 경로
+                                                                                  'assets/imgs/profile/img_profile_default_circle.png',
                                                                                   width: 32,
                                                                                   height: 32,
                                                                                   fit: BoxFit.cover,
@@ -1041,7 +1041,7 @@ class CommunityBulletinDetailView extends StatelessWidget {
                                                                             case LoadState.failed:
                                                                             // 로딩이 실패했을 때 대체 이미지 또는 다른 처리
                                                                               return Image.asset(
-                                                                                '${profileImgUrlList[0].default_round}', // 대체 이미지 경로
+                                                                                'assets/imgs/profile/img_profile_default_circle.png',
                                                                                 width: 32,
                                                                                 height: 32,
                                                                                 fit: BoxFit.cover,

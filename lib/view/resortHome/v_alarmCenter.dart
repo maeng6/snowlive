@@ -1,11 +1,6 @@
 import 'package:com.snowlive/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/model/m_alarmCenterList.dart';
 import 'package:com.snowlive/routes/routes.dart';
-import 'package:com.snowlive/view/crew/v_crewHome.dart';
-import 'package:com.snowlive/view/crew/v_crewMember.dart';
-import 'package:com.snowlive/viewmodel/community/vm_communityBulletinList.dart';
-import 'package:com.snowlive/viewmodel/community/vm_communityCommentDetail.dart';
-import 'package:com.snowlive/viewmodel/community/vm_communityDetail.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewDetail.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_searchCrew.dart';
 import 'package:com.snowlive/viewmodel/fleamarket/vm_fleamarketCommentDetail.dart';
@@ -13,6 +8,9 @@ import 'package:com.snowlive/viewmodel/fleamarket/vm_fleamarketDetail.dart';
 import 'package:com.snowlive/viewmodel/fleamarket/vm_fleamarketList.dart';
 import 'package:com.snowlive/viewmodel/friend/vm_friendDetail.dart';
 import 'package:com.snowlive/viewmodel/friend/vm_friendList.dart';
+import 'package:com.snowlive/viewmodel/community/vm_communityBulletinList.dart';
+import 'package:com.snowlive/viewmodel/community/vm_communityCommentDetail.dart';
+import 'package:com.snowlive/viewmodel/community/vm_communityDetail.dart';
 import 'package:com.snowlive/viewmodel/resortHome/vm_alarmCenter.dart';
 import 'package:com.snowlive/viewmodel/vm_user.dart';
 import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
@@ -38,52 +36,37 @@ class AlarmCenterView extends StatelessWidget {
   final FleamarketCommentDetailViewModel _fleamarketCommentDetailViewModel = Get.find<FleamarketCommentDetailViewModel>();
 
 
-
   @override
   Widget build(BuildContext context) {
     final Size _size = MediaQuery.of(context).size;
-    final double _statusBarSize = MediaQuery.of(context).padding.top;
-
 
     return Scaffold(
       backgroundColor: Colors.white,
-      extendBodyBehindAppBar: true,
-      appBar: PreferredSize(
-        preferredSize: Size.fromHeight(44),
-        child: AppBar(
-          actions: [],
-          leading: GestureDetector(
-            child: Image.asset(
-              'assets/imgs/icons/icon_snowLive_back.png',
-              scale: 4,
-              width: 26,
-              height: 26,
-            ),
-            onTap: () async {
-              Get.back();
-            },
+      appBar: AppBar(
+        leading: GestureDetector(
+          child: Image.asset(
+            'assets/imgs/icons/icon_snowLive_back.png',
+            scale: 4,
+            width: 26,
+            height: 26,
           ),
-          centerTitle: true,
-          title: Text(
-            '알림',
-            style: SDSTextStyle.extraBold.copyWith(
-                color: SDSColor.gray900,
-                fontSize: 18),
-          ),
-          backgroundColor: SDSColor.snowliveWhite,
-          foregroundColor: SDSColor.snowliveWhite,
-          surfaceTintColor: SDSColor.snowliveWhite,
-          elevation: 0.0,
+          onTap: () async {
+            Get.back();
+          },
         ),
+        centerTitle: true,
+        title: Text(
+          '알림',
+          style: SDSTextStyle.extraBold.copyWith(
+              color: SDSColor.gray900,
+              fontSize: 18),
+        ),
+        backgroundColor: SDSColor.snowliveWhite,
+        elevation: 0.0,
       ),
       body: SafeArea(
         child: RefreshIndicator(
-          strokeWidth: 2,
-          edgeOffset: -40,
-          displacement: 40,
-          backgroundColor: SDSColor.snowliveBlue,
-          color: SDSColor.snowliveWhite,
-          onRefresh: () async{
+          onRefresh: () async {
             await _alarmCenterViewModel.fetchAlarmCenterList(userId: _userViewModel.user.user_id);
           },
           child: Column(
@@ -93,75 +76,75 @@ class AlarmCenterView extends StatelessWidget {
                     child: ListView.builder(
                       controller: _alarmCenterViewModel.scrollController_alarm,
                       physics: AlwaysScrollableScrollPhysics(),
-                      itemCount: _alarmCenterViewModel.alarmCenterList.length+1,
+                      itemCount: _alarmCenterViewModel.alarmCenterList.length + 1,
                       itemBuilder: (BuildContext context, int index) {
-                        if(_alarmCenterViewModel.alarmCenterList.isEmpty){
-                          return Container(
-                            height: _size.height - 400,
-                            child: Center(
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Image.asset(
-                                    'assets/imgs/icons/icon_nodata.png',
-                                    scale: 4,
-                                    width: 73,
-                                    height: 73,
+                        if (_alarmCenterViewModel.alarmCenterList.isEmpty) {
+                          return Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Image.asset(
+                                  'assets/imgs/icons/icon_nodata.png',
+                                  scale: 4,
+                                  width: 73,
+                                  height: 73,
+                                ),
+                                SizedBox(height: 6),
+                                Text('알림이 없습니다.',
+                                  style: SDSTextStyle.regular.copyWith(
+                                      fontSize: 14,
+                                      color: SDSColor.gray600,
+                                      fontWeight: FontWeight.bold
                                   ),
-                                  SizedBox(
-                                    height: 6,
-                                  ),
-                                  Text('알림이 없습니다.',
-                                    style: SDSTextStyle.regular.copyWith(
-                                        fontSize: 14,
-                                        color: SDSColor.gray600,
-                                        fontWeight: FontWeight.bold
-                                    ),
-                                  ),
-                                ],
-                              ),
+                                ),
+                              ],
                             ),
                           );
                         }
-                        if(index == _alarmCenterViewModel.alarmCenterList.length){
-                          return Obx(() => _alarmCenterViewModel.isLoadingNextList_alarm == true// 여기서 Obx 사용
+
+                        if (index == _alarmCenterViewModel.alarmCenterList.length) {
+                          return Obx(() => _alarmCenterViewModel.isLoadingNextList_alarm == true
                               ? Center(
                             child: Padding(
                               padding: EdgeInsets.only(top: 24),
                               child: Container(
                                 width: 24,
                                 height: 24,
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Center(
-                                      child: Container(
-                                        width: 24,
-                                        height: 24,
-                                        child: CircularProgressIndicator(
-                                          strokeWidth: 4,
-                                          backgroundColor: SDSColor.gray100,
-                                          color: SDSColor.gray300.withOpacity(0.6),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 4,
+                                  backgroundColor: SDSColor.gray100,
+                                  color: SDSColor.gray300.withOpacity(0.6),
                                 ),
                               ),
                             ),
                           )
                               : SizedBox.shrink());
-                        }else{
-                          AlarmCenterModel alarmDoc = _alarmCenterViewModel.alarmCenterList[index];
-                          String _time = TimeStamp().getAgo(alarmDoc.date);
-                          return InkWell(
-                            highlightColor: Colors.transparent,
-                            splashColor: Colors.transparent,
+                        }
+
+                        AlarmCenterModel alarmDoc = _alarmCenterViewModel.alarmCenterList[index];
+                        String _time = TimeStamp().getAgo(alarmDoc.date);
+
+                        return Dismissible(
+                          key: Key(alarmDoc.alarmCenterId.toString()),
+                          direction: DismissDirection.endToStart,
+                          onDismissed: (direction) async {
+                            HapticFeedback.lightImpact();
+                            CustomFullScreenDialog.showDialog();
+                            await _alarmCenterViewModel.deleteAlarmCenter(alarmDoc.alarmCenterId);
+
+                            // 알림 삭제 후 목록 업데이트
+                            await _alarmCenterViewModel.fetchAlarmCenterList(userId: _userViewModel.user.user_id);
+                          },
+                          background: Container(
+                            color: SDSColor.red,
+                            alignment: Alignment.centerRight,
+                            padding: EdgeInsets.symmetric(horizontal: 20),
+                            child: Icon(Icons.delete, color: Colors.white),
+                          ),
+                          child: InkWell(
                             onTap: () async {
                               if(alarmDoc.alarmInfo.alarmInfoId == 1) {
-                                //친구요청
                                 CustomFullScreenDialog.showDialog();
                                 await _friendListViewModel.fetchFriendRequestList(_userViewModel.user.user_id);
                                 CustomFullScreenDialog.cancelDialog();
@@ -172,17 +155,17 @@ class AlarmCenterView extends StatelessWidget {
                                 await _alarmCenterViewModel.fetchAlarmCenterList(userId: _userViewModel.user.user_id);
                               }
                               else if(alarmDoc.alarmInfo.alarmInfoId == 2) {
-                                //방명록
-                                try{Get.toNamed(AppRoutes.friendDetail);
-                                await _friendDetailViewModel.fetchFriendDetailInfo(
-                                    userId: _userViewModel.user.user_id,
-                                    friendUserId: _userViewModel.user.user_id,
-                                    season: _friendDetailViewModel.seasonDate);
-                                await _alarmCenterViewModel.updateAlarmCenter(alarmDoc.alarmCenterId, {
-                                  "active": false
-                                });
-                                await _alarmCenterViewModel.fetchAlarmCenterList(userId: _userViewModel.user.user_id);
-                                }catch (e){
+                                try {
+                                  Get.toNamed(AppRoutes.friendDetail);
+                                  await _friendDetailViewModel.fetchFriendDetailInfo(
+                                      userId: _userViewModel.user.user_id,
+                                      friendUserId: _userViewModel.user.user_id,
+                                      season: _friendDetailViewModel.seasonDate);
+                                  await _alarmCenterViewModel.updateAlarmCenter(alarmDoc.alarmCenterId, {
+                                    "active": false
+                                  });
+                                  await _alarmCenterViewModel.fetchAlarmCenterList(userId: _userViewModel.user.user_id);
+                                } catch (e) {
                                   Get.dialog(
                                     AlertDialog(
                                       shape: RoundedRectangleBorder(
@@ -214,10 +197,8 @@ class AlarmCenterView extends StatelessWidget {
                                     ),
                                   );
                                 }
-
                               }
                               else if(alarmDoc.alarmInfo.alarmInfoId == 3) {
-                                //크루 가입신청
                                 if(alarmDoc.crewLeaderUserId == _userViewModel.user.user_id) {
                                   Get.toNamed(AppRoutes.crewApplicationCrew);
                                   await _friendDetailViewModel.fetchFriendDetailInfo(
@@ -262,8 +243,7 @@ class AlarmCenterView extends StatelessWidget {
                                 await _alarmCenterViewModel.fetchAlarmCenterList(userId: _userViewModel.user.user_id);
                               }
                               else if(alarmDoc.alarmInfo.alarmInfoId == 4) {
-                                //스노우마켓 댓글
-                                try{
+                                try {
                                   CustomFullScreenDialog.showDialog();
                                   await _fleamarketDetailViewModel.fetchFleamarketDetailFromAPI(fleamarketId: alarmDoc.pkFleamarket!, userId: _userViewModel.user.user_id);
                                   CustomFullScreenDialog.cancelDialog();
@@ -272,7 +252,7 @@ class AlarmCenterView extends StatelessWidget {
                                     "active": false
                                   });
                                   await _alarmCenterViewModel.fetchAlarmCenterList(userId: _userViewModel.user.user_id);
-                                }catch(e){
+                                } catch(e) {
                                   CustomFullScreenDialog.cancelDialog();
                                   Get.dialog(
                                     AlertDialog(
@@ -309,7 +289,6 @@ class AlarmCenterView extends StatelessWidget {
                                 }
                               }
                               else if(alarmDoc.alarmInfo.alarmInfoId == 5) {
-                                //커뮤니티 댓글
                                 try {
                                   CustomFullScreenDialog.showDialog();
                                   await _communityDetailViewModel.fetchCommunityDetail(alarmDoc.pkCommunity!, _userViewModel.user.user_id);
@@ -319,7 +298,7 @@ class AlarmCenterView extends StatelessWidget {
                                     "active": false
                                   });
                                   await _alarmCenterViewModel.fetchAlarmCenterList(userId: _userViewModel.user.user_id);
-                                }catch(e){
+                                } catch(e) {
                                   CustomFullScreenDialog.cancelDialog();
                                   Get.dialog(
                                     AlertDialog(
@@ -354,17 +333,15 @@ class AlarmCenterView extends StatelessWidget {
                                   await _alarmCenterViewModel.deleteAlarmCenter(alarmDoc.alarmCenterId);
                                   await _alarmCenterViewModel.fetchAlarmCenterList(userId: _userViewModel.user.user_id);
                                 }
-
                               }
                               else if(alarmDoc.alarmInfo.alarmInfoId == 6) {
-                                //답글
-                                try{
-                                  if(alarmDoc.pkCommentCommunity != null){
+                                try {
+                                  if(alarmDoc.pkCommentCommunity != null) {
                                     CustomFullScreenDialog.showDialog();
                                     await _communityCommentDetailViewModel.fetchCommunityCommentDetail(commentId: alarmDoc.pkCommentCommunity!);
                                     CustomFullScreenDialog.cancelDialog();
                                     Get.toNamed(AppRoutes.bulletinCommentDetail);
-                                  }else{
+                                  } else {
                                     CustomFullScreenDialog.showDialog();
                                     await _fleamarketCommentDetailViewModel.fetchFleamarketCommentDetail(commentId: alarmDoc.pkCommentFleamarket!);
                                     CustomFullScreenDialog.cancelDialog();
@@ -374,7 +351,7 @@ class AlarmCenterView extends StatelessWidget {
                                     "active": false
                                   });
                                   await _alarmCenterViewModel.fetchAlarmCenterList(userId: _userViewModel.user.user_id);
-                                }catch(e){
+                                } catch(e) {
                                   Get.dialog(
                                     AlertDialog(
                                       shape: RoundedRectangleBorder(
@@ -525,30 +502,6 @@ class AlarmCenterView extends StatelessWidget {
                                                 ],
                                               ),
                                             ),
-                                            SizedBox(width: 10,),
-                                            Padding(
-                                              padding: EdgeInsets.only(left: 16),
-                                              child: GestureDetector(
-                                                onTap:() async{
-                                                  HapticFeedback.lightImpact();
-                                                  CustomFullScreenDialog.showDialog();
-                                                  await _alarmCenterViewModel.deleteAlarmCenter(alarmDoc.alarmCenterId);
-                                                },
-                                                child: Container(
-                                                  height: 40,
-                                                  child: Column(
-                                                    mainAxisAlignment: MainAxisAlignment.start,
-                                                    children: [
-                                                      Icon(
-                                                        Icons.clear,
-                                                        color: SDSColor.gray300,
-                                                        size: 18,
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
                                           ],
                                         ),
                                       ),
@@ -572,13 +525,13 @@ class AlarmCenterView extends StatelessWidget {
                                   )
                               ],
                             ),
-                          );
-
-                        }
+                          ),
+                        );
                       },
                       padding: EdgeInsets.only(bottom: 80),
                     ),
-                  ),),
+                  ),
+              ),
             ],
           ),
         ),
