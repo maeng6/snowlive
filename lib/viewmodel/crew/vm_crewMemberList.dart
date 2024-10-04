@@ -14,6 +14,7 @@ class CrewMemberListViewModel extends GetxController {
   var crewMemberListResponse = CrewMemberListResponse().obs;  // Rx로 변경
 
   // totalMemberCount와 liveMemberCount를 모델에서 바로 가져옴
+
   int get totalMemberCount => crewMemberListResponse.value.totalMemberCount ?? 0;
   int get liveMemberCount => crewMemberListResponse.value.liveMemberCount ?? 0;
   List<CrewMember> get crewMembersList => crewMemberListResponse.value.crewMembers ?? [];
@@ -21,6 +22,7 @@ class CrewMemberListViewModel extends GetxController {
 
   // 로딩 상태 관리
   RxBool isLoading = false.obs;
+  RxBool isCalc = false.obs;
 
   // 크루장 이름을 관리할 Rx 변수
   RxString crewLeaderName = ''.obs;
@@ -48,10 +50,12 @@ class CrewMemberListViewModel extends GetxController {
 
   // 작성자의 역할을 찾아주는 메서드
   String getMemberRole(int userId) {
+    isCalc.value = true;
     final member = crewMembersList.firstWhere(
           (member) => member.userInfo?.userId == userId,
       orElse: () => CrewMember(status: '크루원'), // 기본 값은 크루원
     );
+    isCalc.value = false;
     return member.status ?? '크루원'; // 상태가 null일 경우 기본값으로 '크루원' 반환
   }
 

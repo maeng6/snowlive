@@ -11,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:shimmer/shimmer.dart';
 
 class CommunityBulletinFreeListView extends StatelessWidget {
 
@@ -368,10 +369,24 @@ class CommunityBulletinFreeListView extends StatelessWidget {
                                                       loadStateChanged: (ExtendedImageState state) {
                                                         switch (state.extendedImageLoadState) {
                                                           case LoadState.loading:
-                                                            return SizedBox.shrink();
+                                                          // 로딩 중일 때 로딩 인디케이터를 표시
+                                                            return Shimmer.fromColors(
+                                                              baseColor: SDSColor.gray200!,
+                                                              highlightColor: SDSColor.gray50!,
+                                                              child: Container(
+                                                                width: 32,
+                                                                height: 32,
+                                                                decoration: BoxDecoration(
+                                                                  color: Colors.white,
+                                                                  borderRadius: BorderRadius.circular(8),
+                                                                ),
+                                                              ),
+                                                            );
                                                           case LoadState.completed:
+                                                          // 로딩이 완료되었을 때 이미지 반환
                                                             return state.completedWidget;
                                                           case LoadState.failed:
+                                                          // 로딩이 실패했을 때 대체 이미지 또는 다른 처리
                                                             return ExtendedImage.network(
                                                               'https://i.esdrop.com/d/f/yytYSNBROy/kVsZwVhd1f.png',
                                                               shape: BoxShape.rectangle,
@@ -383,8 +398,6 @@ class CommunityBulletinFreeListView extends StatelessWidget {
                                                               cache: true,
                                                               fit: BoxFit.cover,
                                                             );
-                                                          default:
-                                                            return null;
                                                         }
                                                       },
                                                     ),

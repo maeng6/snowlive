@@ -29,10 +29,12 @@ class CrewDetailInfo {
   bool? permissionNotice;
   bool? permissionSche;
   int? baseResortId;
+  String? baseResortNickname; // 리조트 별명 필드 추가
+  String? baseResortFullname; // 리조트 전체 이름 필드 추가
   int? crewMemberTotal;
   String? notice;
   int? crewLeaderUserId;
-  String? crewLeaderDisplayName; // 크루 리더 display_name 필드 추가
+  String? crewLeaderDisplayName;
 
   CrewDetailInfo({
     this.crewId,
@@ -49,10 +51,12 @@ class CrewDetailInfo {
     this.permissionNotice,
     this.permissionSche,
     this.baseResortId,
+    this.baseResortNickname, // 리조트 별명 필드 추가
+    this.baseResortFullname, // 리조트 전체 이름 필드 추가
     this.crewMemberTotal,
     this.notice,
-    this.crewLeaderUserId, // 크루 리더 user_id 필드 추가
-    this.crewLeaderDisplayName, // 크루 리더 display_name 필드 추가
+    this.crewLeaderUserId,
+    this.crewLeaderDisplayName,
   });
 
   CrewDetailInfo.fromJson(Map<String, dynamic> json) {
@@ -70,10 +74,12 @@ class CrewDetailInfo {
     permissionNotice = json['permission_notice'];
     permissionSche = json['permission_sche'];
     baseResortId = json['base_resort_id'];
+    baseResortNickname = json['base_resort_nickname']; // 리조트 별명 초기화
+    baseResortFullname = json['base_resort_fullname']; // 리조트 전체 이름 초기화
     crewMemberTotal = json['crew_member_total'];
     notice = json['notice'];
-    crewLeaderUserId = json['crew_leader_user_id']; // 크루 리더 user_id 초기화
-    crewLeaderDisplayName = json['crew_leader_display_name']; // 크루 리더 display_name 초기화
+    crewLeaderUserId = json['crew_leader_user_id'];
+    crewLeaderDisplayName = json['crew_leader_display_name'];
   }
 }
 
