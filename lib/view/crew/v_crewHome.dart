@@ -223,7 +223,7 @@ class CrewHomeView extends StatelessWidget {
                                         Row(
                                           children: [
                                             Text(
-                                              '${_crewDetailViewModel.crewDetailInfo.crewLeaderDisplayName} • ${_crewDetailViewModel.resortName}',
+                                              '${_crewDetailViewModel.crewDetailInfo.crewLeaderDisplayName} • ${_crewDetailViewModel.crewDetailInfo.baseResortFullname}',
                                               style: SDSTextStyle.regular.copyWith(
                                                   fontSize: 13,
                                                   color: SDSColor.snowliveWhite),

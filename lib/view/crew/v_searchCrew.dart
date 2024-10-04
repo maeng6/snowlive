@@ -285,9 +285,9 @@ class _SearchCrewViewState extends State<SearchCrewView> {
                           onTap: () async {
                             textFocus.unfocus();
                             Get.toNamed(AppRoutes.crewMain);
+                            await _crewMemberListViewModel.fetchCrewMembers(crewId: data.crewId!);
                             await _crewDetailViewModel.fetchCrewDetail(
                                 data.crewId!, _friendDetailViewModel.seasonDate);
-                            await _crewMemberListViewModel.fetchCrewMembers(crewId: data.crewId!);
                             if(_userViewModel.user.crew_id == data.crewId!)
                               await _crewRecordRoomViewModel.fetchCrewRidingRecords(
                                   data.crewId!,
@@ -314,10 +314,9 @@ class _SearchCrewViewState extends State<SearchCrewView> {
                                               onTap: () async{
                                                 textFocus.unfocus();
                                                 Get.toNamed(AppRoutes.crewMain);
+                                                await _crewMemberListViewModel.fetchCrewMembers(crewId: data.crewId!);
                                                 await _crewDetailViewModel.fetchCrewDetail(
                                                     data.crewId!, _friendDetailViewModel.seasonDate);
-
-                                                await _crewMemberListViewModel.fetchCrewMembers(crewId: data.crewId!);
                                                 if(_userViewModel.user.crew_id == _crewDetailViewModel.crewDetailInfo.crewId!)
                                                   await _crewRecordRoomViewModel.fetchCrewRidingRecords(
                                                       _crewDetailViewModel.crewDetailInfo.crewId!,
@@ -350,10 +349,10 @@ class _SearchCrewViewState extends State<SearchCrewView> {
                                               onTap: () async{
                                                 textFocus.unfocus();
                                                 Get.toNamed(AppRoutes.crewMain);
+                                                await _crewMemberListViewModel.fetchCrewMembers(crewId: data.crewId!);
                                                 await _crewDetailViewModel.fetchCrewDetail(
                                                     data.crewId!, _friendDetailViewModel.seasonDate);
 
-                                                await _crewMemberListViewModel.fetchCrewMembers(crewId: data.crewId!);
                                                 if(_userViewModel.user.crew_id == _crewDetailViewModel.crewDetailInfo.crewId!)
                                                   await _crewRecordRoomViewModel.fetchCrewRidingRecords(
                                                       _crewDetailViewModel.crewDetailInfo.crewId!,

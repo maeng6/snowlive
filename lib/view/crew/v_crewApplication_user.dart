@@ -71,11 +71,12 @@ class CrewApplicationUserView extends StatelessWidget {
                           child: GestureDetector(
                             onTap: () async {
                               Get.toNamed(AppRoutes.crewMain);
+                              await _crewMemberListViewModel.fetchCrewMembers(crewId: crew.crewId!);
                               await _crewDetailViewModel.fetchCrewDetail(
                                 crew.crewId!,
                                 _friendDetailViewModel.seasonDate,
                               );
-                              await _crewMemberListViewModel.fetchCrewMembers(crewId: crew.crewId!);
+
                               if (_userViewModel.user.crew_id == crew.crewId!) {
                                 await _crewRecordRoomViewModel.fetchCrewRidingRecords(
                                     crew.crewId!,
@@ -85,62 +86,62 @@ class CrewApplicationUserView extends StatelessWidget {
                             },
                             child: Row(
                               children: [
-                                  GestureDetector(
-                                    onTap: () async {
-                                      Get.toNamed(AppRoutes.crewMain);
-                                      await _crewDetailViewModel.fetchCrewDetail(
-                                        crew.crewId!,
-                                        _friendDetailViewModel.seasonDate,
+                                GestureDetector(
+                                  onTap: () async {
+                                    Get.toNamed(AppRoutes.crewMain);
+                                    await _crewMemberListViewModel.fetchCrewMembers(crewId: crew.crewId!);
+                                    await _crewDetailViewModel.fetchCrewDetail(
+                                      crew.crewId!,
+                                      _friendDetailViewModel.seasonDate,
+                                    );
+                                    if (_userViewModel.user.crew_id == _crewDetailViewModel.crewDetailInfo.crewId!) {
+                                      await _crewRecordRoomViewModel.fetchCrewRidingRecords(
+                                          _crewDetailViewModel.crewDetailInfo.crewId!,
+                                          '${DateTime.now().year}'
                                       );
-                                      await _crewMemberListViewModel.fetchCrewMembers(crewId: crew.crewId!);
-                                      if (_userViewModel.user.crew_id == _crewDetailViewModel.crewDetailInfo.crewId!) {
-                                        await _crewRecordRoomViewModel.fetchCrewRidingRecords(
-                                            _crewDetailViewModel.crewDetailInfo.crewId!,
-                                            '${DateTime.now().year}'
-                                        );
-                                      }
-                                    },
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(12),
-                                        border: Border.all(
-                                          color: SDSColor.gray100,
-                                        ),
-                                      ),
-                                      width: 44,
-                                      height: 44,
-                                      child: ExtendedImage.network(
-                                        crew.crewInfo?.crewLogoUrl??'',
-                                        enableMemoryCache: true,
-                                        shape: BoxShape.rectangle,
-                                        borderRadius: BorderRadius.circular(10),
-                                        width: 44,
-                                        height: 44,
-                                        fit: BoxFit.cover,
-                                        loadStateChanged: (ExtendedImageState state) {
-                                          switch (state.extendedImageLoadState) {
-                                            case LoadState.loading:
-                                              return SizedBox.shrink();
-                                            case LoadState.completed:
-                                              return state.completedWidget;
-                                            case LoadState.failed:
-                                              return ExtendedImage.network(
-                                                '${crewDefaultLogoUrl['${crew.crewInfo?.color}']}',
-                                                enableMemoryCache: true,
-                                                cacheHeight: 100,
-                                                shape: BoxShape.rectangle,
-                                                borderRadius: BorderRadius.circular(10),
-                                                width: 44,
-                                                height: 44,
-                                                fit: BoxFit.cover,
-                                              );
-                                            default:
-                                              return null;
-                                          }
-                                        },
+                                    }
+                                  },
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(12),
+                                      border: Border.all(
+                                        color: SDSColor.gray100,
                                       ),
                                     ),
+                                    width: 44,
+                                    height: 44,
+                                    child: ExtendedImage.network(
+                                      crew.crewInfo?.crewLogoUrl??'',
+                                      enableMemoryCache: true,
+                                      shape: BoxShape.rectangle,
+                                      borderRadius: BorderRadius.circular(10),
+                                      width: 44,
+                                      height: 44,
+                                      fit: BoxFit.cover,
+                                      loadStateChanged: (ExtendedImageState state) {
+                                        switch (state.extendedImageLoadState) {
+                                          case LoadState.loading:
+                                            return SizedBox.shrink();
+                                          case LoadState.completed:
+                                            return state.completedWidget;
+                                          case LoadState.failed:
+                                            return ExtendedImage.network(
+                                              '${crewDefaultLogoUrl['${crew.crewInfo?.color}']}',
+                                              enableMemoryCache: true,
+                                              cacheHeight: 100,
+                                              shape: BoxShape.rectangle,
+                                              borderRadius: BorderRadius.circular(10),
+                                              width: 44,
+                                              height: 44,
+                                              fit: BoxFit.cover,
+                                            );
+                                          default:
+                                            return null;
+                                        }
+                                      },
+                                    ),
                                   ),
+                                ),
                                 SizedBox(width: 12),
                                 // 크루명 및 부가 정보
                                 Expanded(
@@ -159,15 +160,15 @@ class CrewApplicationUserView extends StatelessWidget {
                                       ),
                                       SizedBox(height: 1),
                                       if( crew.crewInfo?.description != null)
-                                      Text(
-                                        crew.crewInfo?.description??'',
-                                        style: SDSTextStyle.regular.copyWith(
-                                          fontSize: 13,
-                                          color: SDSColor.gray500,
+                                        Text(
+                                          crew.crewInfo?.description??'',
+                                          style: SDSTextStyle.regular.copyWith(
+                                            fontSize: 13,
+                                            color: SDSColor.gray500,
+                                          ),
+                                          overflow: TextOverflow.ellipsis,
+                                          maxLines: 1,
                                         ),
-                                        overflow: TextOverflow.ellipsis,
-                                        maxLines: 1,
-                                      ),
                                     ],
                                   ),
                                 ),

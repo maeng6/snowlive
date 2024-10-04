@@ -324,11 +324,11 @@ class _FriendDetailViewState extends State<FriendDetailView> {
                                                       onTap: () async{
                                                         _textFocus.unfocus();
                                                         Get.toNamed(AppRoutes.crewMain);
+                                                        await _crewMemberListViewModel.fetchCrewMembers(crewId: _friendDetailViewModel.friendDetailModel.friendUserInfo.crewId);
                                                         await _crewDetailViewModel.fetchCrewDetail(
                                                             _friendDetailViewModel.friendDetailModel.friendUserInfo.crewId,
                                                             _friendDetailViewModel.seasonDate
                                                         );
-                                                        await _crewMemberListViewModel.fetchCrewMembers(crewId: _friendDetailViewModel.friendDetailModel.friendUserInfo.crewId);
                                                         if(_userViewModel.user.crew_id == _friendDetailViewModel.friendDetailModel.friendUserInfo.crewId)
                                                           await _crewRecordRoomViewModel.fetchCrewRidingRecords(
                                                               _friendDetailViewModel.friendDetailModel.friendUserInfo.crewId,
