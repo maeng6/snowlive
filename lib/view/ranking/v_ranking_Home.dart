@@ -152,7 +152,9 @@ class RankingHomeView extends StatelessWidget {
           ),
         )),
         floatingActionButton:
-        FloatingButtonWithOptions(
+        (_rankingListViewModel.rankingListCrewList_total!.length != 0
+            && _rankingListViewModel.rankingListIndivList_total!.length != 0)
+            ? FloatingButtonWithOptions(
           selectedOption: _rankingListViewModel.dayOrTotal,
           onOptionSelected: (String value) {
             _rankingListViewModel.changeDayOrTotal(value);
@@ -163,7 +165,8 @@ class RankingHomeView extends StatelessWidget {
               _rankingListViewModel.toggleDataDayOrTotal_tapFilter(resortNum: _rankingListViewModel.selectedResortNum);
 
           },
-        ),
+        )
+        :SizedBox.shrink(),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked));
   }
 }
