@@ -1005,16 +1005,40 @@ class _FleaMarketDetailViewState extends State<FleaMarketDetailView> {
                                             //TODO: 금액
                                             Padding(
                                               padding: EdgeInsets.only(top: 8.0),
-                                              child: Container(
-                                                width: _size.width / 2 - 32,
-                                                child: Text(
-                                                  '${f.format(_fleamarketDetailViewModel.fleamarketDetail.price)}원',
-                                                  maxLines: 1,
-                                                  overflow: TextOverflow.ellipsis,
-                                                  style: SDSTextStyle.extraBold.copyWith(
-                                                      fontSize: 20,
-                                                      color: SDSColor.gray900),
-                                                ),
+                                              child: Row(
+                                                children: [
+                                                  Text(
+                                                    '${f.format(_fleamarketDetailViewModel.fleamarketDetail.price)}원',
+                                                    maxLines: 1,
+                                                    overflow: TextOverflow.ellipsis,
+                                                    style: SDSTextStyle.extraBold.copyWith(
+                                                        fontSize: 20,
+                                                        color: SDSColor.gray900),
+                                                  ),
+                                                  if(_fleamarketDetailViewModel.fleamarketDetail.negotiable == true)
+                                                  Padding(
+                                                    padding: EdgeInsets.only(left: 8),
+                                                    child: Container(
+                                                      decoration: BoxDecoration(
+                                                        borderRadius: BorderRadius.circular(6),
+                                                        border: Border.all(
+                                                            color: SDSColor.blue100,
+                                                          width: 1
+                                                        )
+                                                      ),
+                                                      width: 90,
+                                                      height: 24,
+                                                      child: Center(
+                                                        child: Text(
+                                                          '가격 제안 가능',
+                                                          style: SDSTextStyle.bold.copyWith(
+                                                              fontSize: 13,
+                                                              color: SDSColor.snowliveBlue),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
                                               ),
                                             ),
                                             //TODO: 설명
@@ -2025,6 +2049,7 @@ class _FleaMarketDetailViewState extends State<FleaMarketDetailView> {
                                           CustomFullScreenDialog.cancelDialog();
                                           await _fleamarketDetailViewModel.fetchFleamarketDetailFromAPI(fleamarketId: _fleamarketDetailViewModel.fleamarketDetail.fleaId!, userId: _userViewModel.user.user_id);
                                           await _fleamarketListViewModel.fetchAllFleamarket();
+
 
                                           if(_fleamarketDetailViewModel.fleamarketDetail.userId != _userViewModel.user.user_id)
                                           await _alarmCenterViewModel.updateNotification(

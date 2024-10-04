@@ -134,12 +134,14 @@ class FleamarketListViewModel extends GetxController {
 
   Future<void> fetchAllFleamarket() async{
     _isLoadingList_total.value = true;
+    print(_isLoadingList_total.value);
     _isLoadingList_ski.value = true;
     _isLoadingList_board.value = true;
     _isLoadingList_my.value = true;
     _isLoadingList_favorite.value = true;
     await fetchFleamarketData_total(userId: _userViewModel.user.user_id);
     _isLoadingList_total.value = false;
+    print(_isLoadingList_total.value);
     await fetchFleamarketData_ski(userId: _userViewModel.user.user_id, categoryMain:'스키');
     _isLoadingList_ski.value = false;
     await fetchFleamarketData_board(userId: _userViewModel.user.user_id, categoryMain:'스노보드');

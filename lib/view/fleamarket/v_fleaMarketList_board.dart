@@ -1572,40 +1572,6 @@ class FleaMarketListView_board extends StatelessWidget {
                   ),
                 ),
                 //TODO: 리스트
-                (_fleamarketListViewModel.isLoadingList_board==true)
-                    ? Container(
-                  height: 300,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Center(
-                        child: Container(
-                          width: 24,
-                          height: 24,
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Center(
-                                child: Container(
-                                  width: 24,
-                                  height: 24,
-                                  child: CircularProgressIndicator(
-                                    strokeWidth: 4,
-                                    backgroundColor: SDSColor.gray100,
-                                    color: SDSColor.gray300.withOpacity(0.6),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                )
-                    :
                 Expanded(
                     child: (_fleamarketListViewModel.fleamarketListBoard.length == 0)
                         ? Transform.translate(
@@ -1648,7 +1614,107 @@ class FleaMarketListView_board extends StatelessWidget {
                           itemCount: _fleamarketListViewModel.fleamarketListBoard.length + 1,
                           physics: AlwaysScrollableScrollPhysics(),
                           itemBuilder: (context, index) {
+                            if(_fleamarketListViewModel.isLoadingList_board==true){
+                              return Column(
+                                children: [
+                                  Container(
+                                    height: 110,
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Row(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Shimmer.fromColors(
+                                              baseColor: SDSColor.gray200!,
+                                              highlightColor: SDSColor.gray50!,
+                                              child: Container(
+                                                width: 110,
+                                                height: 110,
+                                                decoration: BoxDecoration(
+                                                  color: Colors.white,
+                                                  borderRadius: BorderRadius.circular(8),
+                                                ),
+                                              ),
+                                            ),
+                                            SizedBox(width: 16),
+                                            Padding(
+                                              padding: EdgeInsets.only(top: 4),
+                                              child: Column(
+                                                crossAxisAlignment: CrossAxisAlignment.end,
+                                                children: [
+                                                  Container(
+                                                    height: 91,
+                                                    child: Column(
+                                                      mainAxisAlignment: MainAxisAlignment.start,
+                                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                                      children: [
+                                                        //TODO: 타이틀
+                                                        Shimmer.fromColors(
+                                                          baseColor: SDSColor.gray200!,
+                                                          highlightColor: SDSColor.gray50!,
+                                                          child: Container(
+                                                            width: 200,
+                                                            height: 13,
+                                                            decoration: BoxDecoration(
+                                                              color: Colors.white,
+                                                              borderRadius: BorderRadius.circular(3),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        //TODO: 장소, 시간
+                                                        Padding(
+                                                          padding: const EdgeInsets.only(top: 8),
+                                                          child: Shimmer.fromColors(
+                                                            baseColor: SDSColor.gray200!,
+                                                            highlightColor: SDSColor.gray50!,
+                                                            child: Container(
+                                                              width: 200,
+                                                              height: 13,
+                                                              decoration: BoxDecoration(
+                                                                color: Colors.white,
+                                                                borderRadius: BorderRadius.circular(3),
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        SizedBox(
+                                                          height: 10,
+                                                        ),
+                                                        //TODO: 가격
+                                                        Shimmer.fromColors(
+                                                          baseColor: SDSColor.gray200!,
+                                                          highlightColor: SDSColor.gray50!,
+                                                          child: Container(
+                                                            width: 140,
+                                                            height: 14,
+                                                            decoration: BoxDecoration(
+                                                              color: Colors.white,
+                                                              borderRadius: BorderRadius.circular(3),
+                                                            ),
+                                                          ),
+                                                        ),
 
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  Divider(
+                                    color: SDSColor.gray100,
+                                    height: 32,
+                                    thickness: 1,
+                                  ),
+                                ],
+                              );
+                            }
                             if(index == _fleamarketListViewModel.fleamarketListBoard.length){
                               return Obx(() => _fleamarketListViewModel.isLoadingNextList_board == true// 여기서 Obx 사용
                                   ? Center(
