@@ -62,6 +62,7 @@ class AlarmCenterView extends StatelessWidget {
               fontSize: 18),
         ),
         backgroundColor: SDSColor.snowliveWhite,
+        surfaceTintColor: Colors.transparent,
         elevation: 0.0,
       ),
       body: SafeArea(
