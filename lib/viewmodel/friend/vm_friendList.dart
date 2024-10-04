@@ -11,6 +11,7 @@ import 'package:get/get.dart';
 
 class FriendListViewModel extends GetxController {
   var isLoading = false.obs;
+  var isLoading_block = false.obs;
   var _searchFriendSuccess = false.obs;
   var _friendList = <FriendListModel>[].obs;
   var _friendsRequestList = <RequestFriendList>[].obs;
@@ -36,6 +37,7 @@ class FriendListViewModel extends GetxController {
   }
 
   Future<void> fetchFriendList() async {
+    isLoading.value = true;
     try {
       final response = await FriendAPI().fetchFriendList(userId: _userViewModel.user.user_id, bestFriend: false);
 
@@ -50,6 +52,26 @@ class FriendListViewModel extends GetxController {
     } catch (e) {
       print('Error fetching data: $e');
     }
+    isLoading.value = false;
+  }
+
+  Future<void> fetchFriendList_refresh() async {
+
+    try {
+      final response = await FriendAPI().fetchFriendList(userId: _userViewModel.user.user_id, bestFriend: false);
+
+      if (response.success && response.data != null) {
+        print('친구리스트 불러오기 성공 & 친구 1명 이상');
+        final friendListResponse = FriendListResponse.fromJson(response.data!);
+        _friendList.value = friendListResponse.friends!;
+      } else {
+        print('친구리스트 없을 경우');
+        _friendList.value = []; // 빈 리스트로 처리
+      }
+    } catch (e) {
+      print('Error fetching data: $e');
+    }
+
   }
 
   Future<void> fetchFriendList_start() async {
@@ -118,6 +140,7 @@ class FriendListViewModel extends GetxController {
   }
 
   Future<void> fetchBlockUserList() async {
+    isLoading_block.value=true;
     try {
       final response_request = await FriendAPI().fetchBlcokListRequests(user_id: _userViewModel.user.user_id);
 
@@ -132,6 +155,7 @@ class FriendListViewModel extends GetxController {
     } catch (e) {
       print('Error fetching data: $e');
     }
+    isLoading_block.value=false;
   }
 
   Future<void> deleteFriend(body) async {

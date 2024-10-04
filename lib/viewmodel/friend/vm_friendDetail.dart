@@ -297,18 +297,17 @@ class FriendDetailViewModel extends GetxController {
 
   Future<void> toggleBestFriend(body) async {
     ApiResponse response = await FriendAPI().toggleBestFriend(body);
-    CustomFullScreenDialog.cancelDialog();
-
     if(response.success) {
       _friendDetailModel.update((model) {
         model?.friendUserInfo.bestFriend = response.data['best_friend'];
       });
+    CustomFullScreenDialog.cancelDialog();
       if(response.data['best_friend'] == true)
         print('친친등록완료');
       if(response.data['best_friend'] == false)
         print('친친해제완료');
     } else {
-
+      CustomFullScreenDialog.cancelDialog();
     }
   }
 

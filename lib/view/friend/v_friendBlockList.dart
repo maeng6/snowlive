@@ -36,8 +36,29 @@ class FriendBlockListView extends StatelessWidget {
         centerTitle: true,
         toolbarHeight: 44,
       ),
-      body: Obx(() {
-        return _friendListViewModel.blockUserList.isEmpty
+      body:Obx(()=>
+      (_friendListViewModel.isLoading_block==true)
+          ? Container(
+        height: 400,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Center(
+              child: Container(
+                width: 24,
+                height: 24,
+                child: CircularProgressIndicator(
+                  strokeWidth: 4,
+                  backgroundColor: SDSColor.gray100,
+                  color: SDSColor.gray300.withOpacity(0.6),
+                ),
+              ),
+            ),
+          ],
+        ),
+      )
+          : (_friendListViewModel.blockUserList.isEmpty)
             ? Center(
           child: Transform.translate(
             offset: Offset(0, -40),
@@ -185,8 +206,8 @@ class FriendBlockListView extends StatelessWidget {
                 ),),
             );
           },
-        );
-      }),
+        )
+      )
     );
   }
 }

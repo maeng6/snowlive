@@ -111,10 +111,8 @@ class FriendListView extends StatelessWidget {
             child: IconButton(
               highlightColor: Colors.transparent,
               onPressed: () async{
-                CustomFullScreenDialog.showDialog();
-                await _friendListViewModel.fetchBlockUserList();
-                CustomFullScreenDialog.cancelDialog();
                 Get.toNamed(AppRoutes.settingFriend);
+                await _friendListViewModel.fetchBlockUserList();
               },
               icon: Image.asset(
                 'assets/imgs/icons/icon_settings.png',
@@ -150,13 +148,35 @@ class FriendListView extends StatelessWidget {
       body: RefreshIndicator(
         strokeWidth: 2,
         edgeOffset: 70,
-        backgroundColor: SDSColor.snowliveWhite,
-        color: SDSColor.snowliveBlue,
+        backgroundColor: SDSColor.snowliveBlue,
+        color: SDSColor.snowliveWhite,
         onRefresh: () async{
-          await _friendListViewModel.fetchFriendList(
-          );
+          await _friendListViewModel.fetchFriendList_refresh();
         },
-        child: SingleChildScrollView(
+        child:
+        (_friendListViewModel.isLoading==true)
+        ? Container(
+        height: 400,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Center(
+              child: Container(
+                width: 24,
+                height: 24,
+                child: CircularProgressIndicator(
+                  strokeWidth: 4,
+                  backgroundColor: SDSColor.gray100,
+                  color: SDSColor.gray300.withOpacity(0.6),
+                ),
+              ),
+            ),
+          ],
+        ),
+      )
+            :
+        SingleChildScrollView(
           physics: AlwaysScrollableScrollPhysics(),
           child: Column(
             children: [
@@ -582,10 +602,12 @@ class FriendListView extends StatelessWidget {
                                           GestureDetector(
                                             onTap: () async {
                                               HapticFeedback.lightImpact();
+                                              CustomFullScreenDialog.showDialog();
                                               await _friendDetailViewModel.toggleBestFriend(
                                                 {"friend_id": friend.friendId},
                                               );
                                               await _friendListViewModel.fetchFriendList_afterBest();
+
                                             },
                                             child: Image.asset(
                                               'assets/imgs/icons/icon_profile_bestfriend_on.png',
@@ -744,6 +766,7 @@ class FriendListView extends StatelessWidget {
                                           GestureDetector(
                                             onTap: () async {
                                               HapticFeedback.lightImpact();
+                                              CustomFullScreenDialog.showDialog();
                                               await _friendDetailViewModel.toggleBestFriend(
                                                 {"friend_id": friend.friendId},
                                               );
@@ -840,12 +863,13 @@ class FriendListView extends StatelessWidget {
                                                                             child: Container(
                                                                               child: TextButton(
                                                                                 onPressed: () async {
+                                                                                  Navigator.pop(context);
+                                                                                  Navigator.pop(context);
                                                                                   CustomFullScreenDialog.showDialog();
                                                                                   await _friendListViewModel.deleteFriend(
                                                                                     {"friend_id": friend.friendId},
                                                                                   );
-                                                                                  CustomFullScreenDialog.cancelDialog();
-                                                                                  Navigator.pop(context);
+                                                                                  await _friendListViewModel.fetchFriendList();
                                                                                 },
                                                                                 style: TextButton.styleFrom(
                                                                                   backgroundColor: Colors.transparent, // 배경색 투명
