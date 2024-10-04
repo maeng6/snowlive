@@ -11,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:shimmer/shimmer.dart';
 
 class CommunityBulletinCrewListView extends StatelessWidget {
 
@@ -121,34 +122,286 @@ class CommunityBulletinCrewListView extends StatelessWidget {
           backgroundColor: Colors.white,
           body:
           (_communityBulletinListViewModel.isLoadingList_crew==true)
-              ? Container(
-            height: 150,
+              ? Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16),
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Center(
-                  child: Container(
-                    width: 24,
-                    height: 24,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Center(
-                          child: Container(
-                            width: 24,
-                            height: 24,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 4,
-                              backgroundColor: SDSColor.gray100,
-                              color: SDSColor.gray300.withOpacity(0.6),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      height: 50,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          SizedBox(height: 6),
+                          Shimmer.fromColors(
+                            baseColor: SDSColor.gray200!,
+                            highlightColor: SDSColor.gray50!,
+                            child: Container(
+                              width: 200,
+                              height: 14,
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(3),
+                              ),
                             ),
                           ),
+                          SizedBox(height: 10),
+                          Shimmer.fromColors(
+                            baseColor: SDSColor.gray200!,
+                            highlightColor: SDSColor.gray50!,
+                            child: Container(
+                              width: 240,
+                              height: 12,
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(3),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Divider(
+                      color: SDSColor.gray100,
+                      height: 32,
+                      thickness: 1,
+                    ),
+                  ],
+                ),
+                Stack(
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          height: 50,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              SizedBox(height: 6),
+                              Shimmer.fromColors(
+                                baseColor: SDSColor.gray200!,
+                                highlightColor: SDSColor.gray50!,
+                                child: Container(
+                                  width: 200,
+                                  height: 14,
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(3),
+                                  ),
+                                ),
+                              ),
+                              SizedBox(height: 10),
+                              Shimmer.fromColors(
+                                baseColor: SDSColor.gray200!,
+                                highlightColor: SDSColor.gray50!,
+                                child: Container(
+                                  width: 240,
+                                  height: 12,
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(3),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Divider(
+                          color: SDSColor.gray100,
+                          height: 32,
+                          thickness: 1,
                         ),
                       ],
                     ),
-                  ),
+                    Positioned(
+                      top: 0,
+                      bottom: 0,
+                      right: 0,
+                      left: 0,
+                      child: Container(
+                        color: SDSColor.snowliveWhite.withOpacity(0.2),
+                      ),
+                    )
+                  ],
+                ),
+                Stack(
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          height: 50,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              SizedBox(height: 6),
+                              Shimmer.fromColors(
+                                baseColor: SDSColor.gray200!,
+                                highlightColor: SDSColor.gray50!,
+                                child: Container(
+                                  width: 200,
+                                  height: 14,
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(3),
+                                  ),
+                                ),
+                              ),
+                              SizedBox(height: 10),
+                              Shimmer.fromColors(
+                                baseColor: SDSColor.gray200!,
+                                highlightColor: SDSColor.gray50!,
+                                child: Container(
+                                  width: 240,
+                                  height: 12,
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(3),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Divider(
+                          color: SDSColor.gray100,
+                          height: 32,
+                          thickness: 1,
+                        ),
+                      ],
+                    ),
+                    Positioned(
+                      top: 0,
+                      bottom: 0,
+                      right: 0,
+                      left: 0,
+                      child: Container(
+                        color: SDSColor.snowliveWhite.withOpacity(0.4),
+                      ),
+                    )
+                  ],
+                ),
+                Stack(
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          height: 50,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              SizedBox(height: 6),
+                              Shimmer.fromColors(
+                                baseColor: SDSColor.gray200!,
+                                highlightColor: SDSColor.gray50!,
+                                child: Container(
+                                  width: 200,
+                                  height: 14,
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(3),
+                                  ),
+                                ),
+                              ),
+                              SizedBox(height: 10),
+                              Shimmer.fromColors(
+                                baseColor: SDSColor.gray200!,
+                                highlightColor: SDSColor.gray50!,
+                                child: Container(
+                                  width: 240,
+                                  height: 12,
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(3),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Divider(
+                          color: SDSColor.gray100,
+                          height: 32,
+                          thickness: 1,
+                        ),
+                      ],
+                    ),
+                    Positioned(
+                      top: 0,
+                      bottom: 0,
+                      right: 0,
+                      left: 0,
+                      child: Container(
+                        color: SDSColor.snowliveWhite.withOpacity(0.6),
+                      ),
+                    )
+                  ],
+                ),
+                Stack(
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          height: 50,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              SizedBox(height: 6),
+                              Shimmer.fromColors(
+                                baseColor: SDSColor.gray200!,
+                                highlightColor: SDSColor.gray50!,
+                                child: Container(
+                                  width: 200,
+                                  height: 14,
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(3),
+                                  ),
+                                ),
+                              ),
+                              SizedBox(height: 10),
+                              Shimmer.fromColors(
+                                baseColor: SDSColor.gray200!,
+                                highlightColor: SDSColor.gray50!,
+                                child: Container(
+                                  width: 240,
+                                  height: 12,
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(3),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Divider(
+                          color: SDSColor.gray100,
+                          height: 32,
+                          thickness: 1,
+                        ),
+                      ],
+                    ),
+                    Positioned(
+                      top: 0,
+                      bottom: 0,
+                      right: 0,
+                      left: 0,
+                      child: Container(
+                        color: SDSColor.snowliveWhite.withOpacity(0.8),
+                      ),
+                    )
+                  ],
                 ),
               ],
             ),
