@@ -1751,10 +1751,13 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                                             Positioned(
                                               bottom: 0,
                                               right: 0,
-                                              child: Image.asset(
-                                                'assets/imgs/imgs/img_resortHome_ranking_1.png',
-                                                fit: BoxFit.cover,
-                                                width: _size.width - 60,
+                                              child: Padding(
+                                                padding: EdgeInsets.only(bottom: 12),
+                                                child: Image.asset(
+                                                  'assets/imgs/imgs/img_resortHome_ranking_1.png',
+                                                  fit: BoxFit.cover,
+                                                  width: _size.width - 60,
+                                                ),
                                               ),
                                             ),
                                             Row(
@@ -1792,42 +1795,42 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                                                           ),
                                                         ),
                                                       ),
-                                                      Padding(
-                                                        padding: const EdgeInsets.only(top: 20),
-                                                        child: GestureDetector(
-                                                          onTap: () {
-                                                            // Add your share functionality here
-                                                          },
-                                                          child: Container(
-                                                            padding: EdgeInsets.symmetric(horizontal: 12, vertical: 9),
-                                                            decoration: BoxDecoration(
-                                                              color: SDSColor.snowliveWhite,
-                                                              borderRadius: BorderRadius.circular(20),
-                                                            ),
-                                                            child: Row(
-                                                              children: [
-                                                                Padding(
-                                                                  padding: const EdgeInsets.only(right: 6),
-                                                                  child: Text(
-                                                                    '더 알아보기',
-                                                                    style: SDSTextStyle.extraBold.copyWith
-                                                                      (
-                                                                        color: Colors.black,
-                                                                        fontSize: 13
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                                Image.asset(
-                                                                  'assets/imgs/icons/icon_arrow_round_black.png',
-                                                                  fit: BoxFit.cover,
-                                                                  width: 18,
-                                                                  height: 18,
-                                                                ),
-                                                              ],
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ),
+                                                      // Padding(
+                                                      //   padding: const EdgeInsets.only(top: 20),
+                                                      //   child: GestureDetector(
+                                                      //     onTap: () {
+                                                      //       // Add your share functionality here
+                                                      //     },
+                                                      //     child: Container(
+                                                      //       padding: EdgeInsets.symmetric(horizontal: 12, vertical: 9),
+                                                      //       decoration: BoxDecoration(
+                                                      //         color: SDSColor.snowliveWhite,
+                                                      //         borderRadius: BorderRadius.circular(20),
+                                                      //       ),
+                                                      //       child: Row(
+                                                      //         children: [
+                                                      //           Padding(
+                                                      //             padding: const EdgeInsets.only(right: 6),
+                                                      //             child: Text(
+                                                      //               '더 알아보기',
+                                                      //               style: SDSTextStyle.extraBold.copyWith
+                                                      //                 (
+                                                      //                   color: Colors.black,
+                                                      //                   fontSize: 13
+                                                      //               ),
+                                                      //             ),
+                                                      //           ),
+                                                      //           Image.asset(
+                                                      //             'assets/imgs/icons/icon_arrow_round_black.png',
+                                                      //             fit: BoxFit.cover,
+                                                      //             width: 18,
+                                                      //             height: 18,
+                                                      //           ),
+                                                      //         ],
+                                                      //       ),
+                                                      //     ),
+                                                      //   ),
+                                                      // ),
                                                     ],
                                                   ),
                                                 ),
