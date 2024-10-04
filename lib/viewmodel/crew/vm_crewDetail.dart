@@ -96,7 +96,6 @@ class CrewDetailViewModel extends GetxController {
 
         // 리조트 이름 변환
         changeResortNumberToName(crewDetailResponse.value.crewDetailInfo?.baseResortId);
-        _crewMemberListViewModel.findCrewLeaderName();
         await _crewNoticeViewModel.fetchCrewNotices();
       } else {
         print('Error fetching crew details: ${response.error}');
@@ -105,7 +104,7 @@ class CrewDetailViewModel extends GetxController {
       print('Exception while fetching crew details: $e');
     } finally {
     }
-      isLoading.value = false;
+    isLoading.value = false;
   }
 
 
