@@ -39,6 +39,7 @@ class AlarmCenterView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final Size _size = MediaQuery.of(context).size;
+    double _statusBarHeight = MediaQuery.of(context).padding.top;
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -67,6 +68,11 @@ class AlarmCenterView extends StatelessWidget {
       ),
       body: SafeArea(
         child: RefreshIndicator(
+          strokeWidth: 2,
+          edgeOffset: -40,
+          displacement: 40,
+          backgroundColor: SDSColor.snowliveBlue,
+          color: SDSColor.snowliveWhite,
           onRefresh: () async {
             await _alarmCenterViewModel.fetchAlarmCenterList(userId: _userViewModel.user.user_id);
           },
@@ -80,26 +86,30 @@ class AlarmCenterView extends StatelessWidget {
                       itemCount: _alarmCenterViewModel.alarmCenterList.length + 1,
                       itemBuilder: (BuildContext context, int index) {
                         if (_alarmCenterViewModel.alarmCenterList.isEmpty) {
-                          return Center(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Image.asset(
-                                  'assets/imgs/icons/icon_nodata.png',
-                                  scale: 4,
-                                  width: 73,
-                                  height: 73,
-                                ),
-                                SizedBox(height: 6),
-                                Text('알림이 없습니다.',
-                                  style: SDSTextStyle.regular.copyWith(
-                                      fontSize: 14,
-                                      color: SDSColor.gray600,
-                                      fontWeight: FontWeight.bold
+                          return ConstrainedBox(
+                            constraints: BoxConstraints(
+                              minHeight: _size.height - _statusBarHeight - 160
+                            ),
+                            child: Center(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Image.asset(
+                                    'assets/imgs/icons/icon_nodata.png',
+                                    scale: 4,
+                                    width: 73,
+                                    height: 73,
                                   ),
-                                ),
-                              ],
+                                  SizedBox(height: 6),
+                                  Text('알림이 없습니다',
+                                    style: SDSTextStyle.regular.copyWith(
+                                        fontSize: 14,
+                                        color: SDSColor.gray600,
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                           );
                         }
