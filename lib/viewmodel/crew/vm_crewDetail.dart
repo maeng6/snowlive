@@ -38,13 +38,12 @@ class CrewDetailViewModel extends GetxController {
   // 그래프 토글
   RxBool isSlopeGraph = true.obs;
 
-  // 리조트 이름 저장용 변수 (리조트 변환 로직 필요)
-  final RxString _resortName = ''.obs;
 
   // 각 크루의 ID에 대한 정보(로고, 이름, 디스크립션)를 저장할 맵
   var crewDetails = <int, Map<String, String>>{}.obs;
 
   RxBool _isCrewIntroExpanded = false.obs;
+
 
 
   CrewDetailInfo get crewDetailInfo => crewDetailResponse.value.crewDetailInfo ?? CrewDetailInfo(); // Null-safe 처리
@@ -56,7 +55,6 @@ class CrewDetailViewModel extends GetxController {
   String get createdDate => crewDetailInfo.createdDate ?? '';
   int get crewMemberTotal => crewDetailInfo.crewMemberTotal ?? 0;
   String get color => crewDetailInfo.color ?? 'FFFFFF';
-  String get resortName => _resortName.value;
   String get notice => crewDetailInfo.notice ?? '';
   bool get permission_join => crewDetailInfo.permissionJoin ?? true;
   bool get permission_desc => crewDetailInfo.permissionDesc ?? true;
@@ -90,13 +88,15 @@ class CrewDetailViewModel extends GetxController {
     isLoading.value = true;
     try {
       // 시즌 정보 함께 전달
-      final response = await CrewAPI().getCrewDetails(crewId, season: season);
-      if (response.success) {
-        crewDetailResponse.value = CrewDetailResponse.fromJson(response.data!);
 
-        // 리조트 이름 변환
-        changeResortNumberToName(crewDetailResponse.value.crewDetailInfo?.baseResortId);
+      final response = await CrewAPI().getCrewDetails(crewId, season: season);
+
+      if (response.success) {
+
+        crewDetailResponse.value = CrewDetailResponse.fromJson(response.data!);
         await _crewNoticeViewModel.fetchCrewNotices();
+
+
       } else {
         print('Error fetching crew details: ${response.error}');
       }
@@ -105,18 +105,6 @@ class CrewDetailViewModel extends GetxController {
     } finally {
     }
     isLoading.value = false;
-  }
-
-
-  // 리조트 번호를 리조트 이름으로 변환
-  void changeResortNumberToName(int? selectedResortId) {
-    int adjustedResortId = selectedResortId! - 1;  // 서버 인덱스가 1부터 시작하면 -1 해주기
-
-    if (adjustedResortId >= 0 && adjustedResortId < resortNameList.length) {
-      _resortName.value = resortNameList[adjustedResortId] ?? "Unknown Resort";
-    } else {
-      _resortName.value = "Unknown Resort";
-    }
   }
 
 

@@ -37,6 +37,7 @@ class ResortHomeViewModel extends GetxController {
   final Lock _lock = Lock();
   RxString _rankingGuideUrl_ios = ''.obs;
   RxString _rankingGuideUrl_aos = ''.obs;
+  RxString _rankingComingSoonUrl = ''.obs;
   RxDouble _latitude = 0.0.obs;
   RxDouble _longitude = 0.0.obs;
   RxDouble _initialHeightFriend = 0.0.obs;
@@ -58,6 +59,9 @@ class ResortHomeViewModel extends GetxController {
 
   StreamSubscription<Position>? _positionStreamSubscription;
 
+  String get rankingGuideUrl_ios => _rankingGuideUrl_ios.value;
+  String get rankingGuideUrl_aos => _rankingGuideUrl_aos.value;
+  String get rankingComingSoonUrl => _rankingComingSoonUrl.value;
   dynamic get resortHomeModel => _resortHomeModel.value;
   double get latitude => _latitude.value;
   double get longitude => _longitude.value;
@@ -185,7 +189,8 @@ class ResortHomeViewModel extends GetxController {
         .get();
     _rankingGuideUrl_aos.value = snapshot.docs[0]['url_android'];
     _rankingGuideUrl_ios.value = snapshot.docs[0]['url_iOS'];
-    print('가이드 url 불러오기 완료');
+    _rankingComingSoonUrl.value = snapshot.docs[0]['url_rankingComingSoon'];
+    print('랭킹 url 불러오기 완료');
   }
 
   Future<void> liveOff(Map<String, dynamic> body,user_id) async {

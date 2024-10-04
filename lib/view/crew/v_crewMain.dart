@@ -27,7 +27,6 @@ class CrewMainView extends StatelessWidget {
     final Size _size = MediaQuery.of(context).size;
     final double _statusBarSize = MediaQuery.of(context).padding.top;
 
-
     return Scaffold(
       backgroundColor: Colors.white,
       extendBodyBehindAppBar: true,
@@ -35,11 +34,11 @@ class CrewMainView extends StatelessWidget {
         preferredSize: Size.fromHeight(44),
         child: Obx(() => AppBar(
           actions: [
-            (_crewDetailViewModel.isLoading == true && _crewMemberListViewModel.isCalc == true)
+            (_crewMemberListViewModel.isLoading == true || _crewDetailViewModel.isLoading == true)
                 ? SizedBox.shrink()
                 : Row(children: [
-                  if(_userViewModel.user.crew_id != null && _userViewModel.user.crew_id == _crewDetailViewModel.crewDetailInfo.crewId)
-                    IconButton(
+              if(_userViewModel.user.crew_id != null && _userViewModel.user.crew_id == _crewDetailViewModel.crewDetailInfo.crewId)
+                IconButton(
                     onPressed: () {
                       _searchCrewViewModel.textEditingController.clear();
                       _searchCrewViewModel.crewList.clear();
@@ -54,104 +53,104 @@ class CrewMainView extends StatelessWidget {
                     ),
                     highlightColor: Colors.transparent
                 ),
-              if(_crewMemberListViewModel.getMemberRole(_userViewModel.user.user_id) == '크루장' ||
-                  (_crewMemberListViewModel.getMemberRole(_userViewModel.user.user_id) == '운영진' && _crewDetailViewModel.permission_join== true))
+              if(_crewMemberListViewModel.myRole == '크루장' ||
+                  (_crewMemberListViewModel.myRole == '운영진' && _crewDetailViewModel.permission_join== true))
                 StreamBuilder<QuerySnapshot>(
-                    stream: FirebaseFirestore.instance
-                        .collection('notificationCenter')
-                        .where('uid', isEqualTo:  _userViewModel.user.user_id)
-                        .snapshots(),
-                    builder: (context, snapshot) {
-                      if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                        return IconButton(
-                            onPressed: () {
-                              Get.toNamed(AppRoutes.alarmCenter);
-                            },
-                            icon: Image.asset(
-                              'assets/imgs/icons/icon_alarm_resortHome.png',
-                              width: 26,
-                              height: 26,
-                            ),
-                            highlightColor: Colors.transparent
-                        );
-                      }
-
-                      var data = snapshot.data!.docs[0].data() as Map<String, dynamic>?;
-                      bool isNewNotification = data?['crew'] ?? false; // Firestore 문서 필드
-
-                      return Stack(
-                        children: [
-                          IconButton(
-                            onPressed: () async{
-                              Get.toNamed(AppRoutes.crewApplicationCrew);
-                              await _alarmCenterViewModel.updateNotification(
-                                _userViewModel.user.user_id,
-                                crew: false,
-                              );
-                              await _crewApplyViewModel.fetchCrewApplyList(
-                                  _crewDetailViewModel.crewDetailInfo.crewId!
-                              );
-                            },
-                            icon: Image.asset(
-                              'assets/imgs/icons/icon_alarm_resortHome.png',
-                              width: 26,
-                              height: 26,
-                            ),
+                  stream: FirebaseFirestore.instance
+                      .collection('notificationCenter')
+                      .where('uid', isEqualTo:  _userViewModel.user.user_id)
+                      .snapshots(),
+                  builder: (context, snapshot) {
+                    if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                      return IconButton(
+                          onPressed: () {
+                            Get.toNamed(AppRoutes.alarmCenter);
+                          },
+                          icon: Image.asset(
+                            'assets/imgs/icons/icon_alarm_resortHome.png',
+                            width: 26,
+                            height: 26,
                           ),
-                          if (isNewNotification)
-                            Positioned(
-                              top: 5,
-                              right: 5,
-                              child: GestureDetector(
-                                onTap: () async {
-                                  Get.toNamed(AppRoutes.crewApplicationCrew);
-                                  await _alarmCenterViewModel.updateNotification(
-                                    _userViewModel.user.user_id,
-                                    crew: false,
-                                  );
-                                  await _crewApplyViewModel.fetchCrewApplyList(
-                                      _crewDetailViewModel.crewDetailInfo.crewId!
-                                  );
-                                },
-                                child: Container(
-                                  width: 20,
-                                  height: 20,
-                                  padding: EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                                  decoration: BoxDecoration(
-                                    color: Color(0xFFD6382B),
-                                    borderRadius: BorderRadius.circular(20),
-                                  ),
-                                  child: Text(
-                                    'N',
-                                    style: SDSTextStyle.extraBold.copyWith(
-                                      fontSize: 11,
-                                      fontWeight: FontWeight.bold,
-                                      color: Color(0xFFFFFFFF),
-                                    ),
+                          highlightColor: Colors.transparent
+                      );
+                    }
+
+                    var data = snapshot.data!.docs[0].data() as Map<String, dynamic>?;
+                    bool isNewNotification = data?['crew'] ?? false; // Firestore 문서 필드
+
+                    return Stack(
+                      children: [
+                        IconButton(
+                          onPressed: () async{
+                            Get.toNamed(AppRoutes.crewApplicationCrew);
+                            await _alarmCenterViewModel.updateNotification(
+                              _userViewModel.user.user_id,
+                              crew: false,
+                            );
+                            await _crewApplyViewModel.fetchCrewApplyList(
+                                _crewDetailViewModel.crewDetailInfo.crewId!
+                            );
+                          },
+                          icon: Image.asset(
+                            'assets/imgs/icons/icon_alarm_resortHome.png',
+                            width: 26,
+                            height: 26,
+                          ),
+                        ),
+                        if (isNewNotification)
+                          Positioned(
+                            top: 5,
+                            right: 5,
+                            child: GestureDetector(
+                              onTap: () async {
+                                Get.toNamed(AppRoutes.crewApplicationCrew);
+                                await _alarmCenterViewModel.updateNotification(
+                                  _userViewModel.user.user_id,
+                                  crew: false,
+                                );
+                                await _crewApplyViewModel.fetchCrewApplyList(
+                                    _crewDetailViewModel.crewDetailInfo.crewId!
+                                );
+                              },
+                              child: Container(
+                                width: 20,
+                                height: 20,
+                                padding: EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                decoration: BoxDecoration(
+                                  color: Color(0xFFD6382B),
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                child: Text(
+                                  'N',
+                                  style: SDSTextStyle.extraBold.copyWith(
+                                    fontSize: 11,
+                                    fontWeight: FontWeight.bold,
+                                    color: Color(0xFFFFFFFF),
                                   ),
                                 ),
                               ),
                             ),
-                        ],
-                      );
-                    },
-                  ),
+                          ),
+                      ],
+                    );
+                  },
+                ),
               if(_userViewModel.user.crew_id == _crewDetailViewModel.crewDetailInfo.crewId)
                 Padding(
-              padding: EdgeInsets.only(right: 8),
-              child: IconButton(
-                  onPressed: () {
-                    Get.toNamed(AppRoutes.crewSetting);
-                  },
-                  icon: Image.asset(
-                    'assets/imgs/icons/icon_settings.png',
-                    scale: 4,
-                    width: 26,
-                    height: 26,
+                  padding: EdgeInsets.only(right: 8),
+                  child: IconButton(
+                      onPressed: () {
+                        Get.toNamed(AppRoutes.crewSetting);
+                      },
+                      icon: Image.asset(
+                        'assets/imgs/icons/icon_settings.png',
+                        scale: 4,
+                        width: 26,
+                        height: 26,
+                      ),
+                      highlightColor: Colors.transparent
                   ),
-                  highlightColor: Colors.transparent
-              ),
-            )
+                )
             ],)
           ],
           leading: GestureDetector(
@@ -208,7 +207,7 @@ class CrewMainView extends StatelessWidget {
             ),
             Obx(()=> Expanded(
               child:
-              (_crewDetailViewModel.isLoading == true)
+              (_crewMemberListViewModel.isLoading == true || _crewDetailViewModel.isLoading == true)
                   ? Center(
                 child: Container(
                   height: 150,

@@ -217,13 +217,14 @@ class RankingBetaView extends StatelessWidget {
                               child: GestureDetector(
                                 onTap: () async {
                                   Get.toNamed(AppRoutes.crewMain);
+                                  await _crewMemberListViewModel.fetchCrewMembers(
+                                    crewId: document.crewInfo!.crewId!,
+                                  );
                                   await _crewDetailViewModel.fetchCrewDetail(
                                     document.crewInfo!.crewId!,
                                     _friendDetailViewModel.seasonDate,
                                   );
-                                  await _crewMemberListViewModel.fetchCrewMembers(
-                                    crewId: document.crewInfo!.crewId!,
-                                  );
+
                                   if(_userViewModel.user.crew_id == document.crewInfo!.crewId!)
                                     await _crewRecordRoomViewModel.fetchCrewRidingRecords(
                                         document.crewInfo!.crewId!,

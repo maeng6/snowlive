@@ -203,11 +203,11 @@ class MoreTabMainView extends StatelessWidget {
                           CustomFullScreenDialog.cancelDialog();
                           if(_userViewModel.user.crew_id != null){
                             Get.toNamed(AppRoutes.crewMain);
+                            await _crewMemberListViewModel.fetchCrewMembers(crewId: _userViewModel.user.crew_id);
                             await _crewDetailViewModel.fetchCrewDetail(
                                 _userViewModel.user.crew_id,
                                 _friendDetailViewModel.seasonDate
                             );
-                            await _crewMemberListViewModel.fetchCrewMembers(crewId: _userViewModel.user.crew_id);
                             await _crewRecordRoomViewModel.fetchCrewRidingRecords(
                                 _userViewModel.user.crew_id,
                                 '${DateTime.now().year}'
@@ -218,11 +218,11 @@ class MoreTabMainView extends StatelessWidget {
                         }
                         else{
                           Get.toNamed(AppRoutes.crewMain);
+                          await _crewMemberListViewModel.fetchCrewMembers(crewId: _userViewModel.user.crew_id);
                           await _crewDetailViewModel.fetchCrewDetail(
                               _userViewModel.user.crew_id,
                               _friendDetailViewModel.seasonDate
                           );
-                          await _crewMemberListViewModel.fetchCrewMembers(crewId: _userViewModel.user.crew_id);
                           await _crewRecordRoomViewModel.fetchCrewRidingRecords(
                               _userViewModel.user.crew_id,
                               '${DateTime.now().year}'

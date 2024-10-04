@@ -4,6 +4,7 @@ import 'package:com.snowlive/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/routes/routes.dart';
 import 'package:com.snowlive/viewmodel/friend/vm_friendDetail.dart';
 import 'package:com.snowlive/viewmodel/ranking/vm_rankingList.dart';
+import 'package:com.snowlive/viewmodel/resortHome/vm_resortHome.dart';
 import 'package:com.snowlive/viewmodel/vm_user.dart';
 import 'package:com.snowlive/widget/w_verticalDivider.dart';
 import 'package:extended_image/extended_image.dart';
@@ -21,6 +22,7 @@ class RankingIndiView extends StatelessWidget {
   final FriendDetailViewModel _friendDetailViewModel = Get.find<FriendDetailViewModel>();
 
   final RankingListViewModel _rankingListViewModel = Get.find<RankingListViewModel>();
+  final ResortHomeViewModel _resortHomeViewModel = Get.find<ResortHomeViewModel>();
 
   @override
   Widget build(BuildContext context) {
@@ -2216,7 +2218,7 @@ class RankingIndiView extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 ExtendedImage.network(
-                  'https://thumbnews.nateimg.co.kr/view610///news.nateimg.co.kr/orgImg/nn/2023/05/24/202305240740131810_51.jpg',
+                  '${_resortHomeViewModel.rankingComingSoonUrl}',
                   cache: true,
                   enableMemoryCache: true,
                   width: _size.width -32,
