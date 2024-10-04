@@ -102,7 +102,8 @@ class CrewRecordRoomView extends StatelessWidget {
                   // 년도별 탭을 선택했을 때 기존 화면을 보여줌
                   return RefreshIndicator(
                     strokeWidth: 2,
-                    edgeOffset: 40,
+                    edgeOffset: -40,
+                    displacement: 40,
                     backgroundColor: SDSColor.snowliveBlue,
                     color: SDSColor.snowliveWhite,
                     onRefresh: () async {
@@ -545,12 +546,12 @@ class CrewRecordRoomView extends StatelessWidget {
                   width: 32,
                   height: 32,
                   decoration: BoxDecoration(
-                    color: Colors.transparent,
-                    borderRadius: BorderRadius.circular(50),
-                    border: Border.all(
-                      color: SDSColor.gray100,
-                      width: 1
-                    )
+                      color: Colors.transparent,
+                      borderRadius: BorderRadius.circular(50),
+                      border: Border.all(
+                          color: SDSColor.gray100,
+                          width: 1
+                      )
                   ),
                   child: GestureDetector(
                     onTap: () async{
@@ -825,7 +826,7 @@ class CrewRecordRoomView extends StatelessWidget {
                 height: 14,
                 width: (size.width - 166) * barWidthRatio,  // 너비 비율 적용
                 decoration: BoxDecoration(
-                  color: SDSColor.blue200,
+                    color: SDSColor.blue200,
                     borderRadius: BorderRadius.only(
                         topRight: Radius.circular(4),
                         bottomRight: Radius.circular(4)
@@ -879,7 +880,7 @@ class CrewRecordRoomView extends StatelessWidget {
                 width: 16,
                 height: 140 * barHeightRatio,  // 높이 비율 적용
                 decoration: BoxDecoration(
-                  color: SDSColor.blue200,
+                    color: SDSColor.blue200,
                     borderRadius: BorderRadius.only(
                         topRight: Radius.circular(4), topLeft: Radius.circular(4)
                     )
@@ -891,8 +892,8 @@ class CrewRecordRoomView extends StatelessWidget {
                 child: Text(
                   timeSlot,
                   style: SDSTextStyle.regular.copyWith(
-                    fontSize: 11,
-                    color: SDSColor.sBlue600,
+                      fontSize: 11,
+                      color: SDSColor.sBlue600,
                       height: 1.2
                   ),
                 ),

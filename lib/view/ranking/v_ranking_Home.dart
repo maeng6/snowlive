@@ -44,6 +44,7 @@ class RankingHomeView extends StatelessWidget {
                           padding: EdgeInsets.only(left: 16, right: 12),
                           child: ElevatedButton(
                             onPressed: () async {
+                              HapticFeedback.lightImpact();
                               _rankingListViewModel.changeTap('크루랭킹');
                               _rankingListViewModel.changeDayOrTotal('누적');
                               _rankingListViewModel.changeResortOrTotal('전체스키장');
@@ -51,6 +52,8 @@ class RankingHomeView extends StatelessWidget {
                               _rankingListViewModel.changeMyBoxText();
                             },
                             style: ElevatedButton.styleFrom(
+                              shadowColor: Colors.transparent,
+                              overlayColor: Colors.transparent,
                               padding: EdgeInsets.only(top: 0),
                               minimumSize: Size(40, 10),
                               backgroundColor: Color(0xFFFFFFFF),
@@ -82,6 +85,7 @@ class RankingHomeView extends StatelessWidget {
                                   fontSize: 18),
                             ),
                             onPressed: () async {
+                              HapticFeedback.lightImpact();
                               _rankingListViewModel.changeTap('개인랭킹');
                               _rankingListViewModel.changeDayOrTotal('누적');
                               _rankingListViewModel.changeResortOrTotal('전체스키장');
@@ -89,6 +93,8 @@ class RankingHomeView extends StatelessWidget {
                               _rankingListViewModel.changeMyBoxText();
                             },
                             style: ElevatedButton.styleFrom(
+                              shadowColor: Colors.transparent,
+                              overlayColor: Colors.transparent,
                               padding: EdgeInsets.only(top: 0),
                               minimumSize: Size(40, 10),
                               backgroundColor: Color(0xFFFFFFFF),
@@ -141,7 +147,7 @@ class RankingHomeView extends StatelessWidget {
                     child: RankingIndiView()),
               if (_rankingListViewModel.tapName=='크루랭킹')
                 Expanded(
-                  child: RankingCrewView()),
+                    child: RankingCrewView()),
             ],
           ),
         )),
@@ -152,7 +158,7 @@ class RankingHomeView extends StatelessWidget {
             _rankingListViewModel.changeDayOrTotal(value);
             _rankingListViewModel.changeMyBoxText();
             if(_rankingListViewModel.selectedResortNum == 99)
-            _rankingListViewModel.toggleDataDayOrTotal_tapFilter();
+              _rankingListViewModel.toggleDataDayOrTotal_tapFilter();
             if(_rankingListViewModel.selectedResortNum != 99)
               _rankingListViewModel.toggleDataDayOrTotal_tapFilter(resortNum: _rankingListViewModel.selectedResortNum);
 

@@ -124,80 +124,81 @@ class FleaMarketListView_favorite extends StatelessWidget {
           ),
           floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
           backgroundColor: Colors.white,
-          body: Obx(()=>RefreshIndicator(
-            strokeWidth: 2,
-            edgeOffset: 40,
-            backgroundColor: SDSColor.snowliveBlue,
-            color: SDSColor.snowliveWhite,
-            onRefresh: _fleamarketListViewModel.onRefresh_flea_favorite,
-            child: Padding(
-              padding: const EdgeInsets.only(top: 12),
-              child: Column(
-                children: [
-                  //TODO: 리스트
-                  (_fleamarketListViewModel.isLoadingList_favorite==true)
-                      ? Container(
-                    height: 300,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Center(
-                          child: Container(
-                            width: 24,
-                            height: 24,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Center(
-                                  child: Container(
-                                    width: 24,
-                                    height: 24,
-                                    child: CircularProgressIndicator(
-                                      strokeWidth: 4,
-                                      backgroundColor: SDSColor.gray100,
-                                      color: SDSColor.gray300.withOpacity(0.6),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  )
-                      :
-                  Expanded(
-                      child: (_fleamarketListViewModel.fleamarketListFavorite.length == 0)
-                          ? Transform.translate(
-                        offset: Offset(0, -40),
-                        child: Center(
+          body: Obx(()=>Padding(
+            padding: const EdgeInsets.only(top: 12),
+            child: Column(
+              children: [
+                //TODO: 리스트
+                (_fleamarketListViewModel.isLoadingList_favorite==true)
+                    ? Container(
+                  height: 300,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Center(
+                        child: Container(
+                          width: 24,
+                          height: 24,
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              Image.asset(
-                                'assets/imgs/icons/icon_nodata.png',
-                                scale: 4,
-                                width: 73,
-                                height: 73,
-                              ),
-                              SizedBox(
-                                height: 6,
-                              ),
-                              Text('게시판에 글이 없습니다.',
-                                style: SDSTextStyle.regular.copyWith(
-                                    fontSize: 14,
-                                    color: SDSColor.gray600
+                              Center(
+                                child: Container(
+                                  width: 24,
+                                  height: 24,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 4,
+                                    backgroundColor: SDSColor.gray100,
+                                    color: SDSColor.gray300.withOpacity(0.6),
+                                  ),
                                 ),
                               ),
                             ],
                           ),
                         ),
-                      )
-                          : Scrollbar(
+                      ),
+                    ],
+                  ),
+                )
+                    :
+                Expanded(
+                    child: (_fleamarketListViewModel.fleamarketListFavorite.length == 0)
+                        ? Transform.translate(
+                      offset: Offset(0, -40),
+                      child: Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Image.asset(
+                              'assets/imgs/icons/icon_nodata.png',
+                              scale: 4,
+                              width: 73,
+                              height: 73,
+                            ),
+                            SizedBox(
+                              height: 6,
+                            ),
+                            Text('게시판에 글이 없습니다.',
+                              style: SDSTextStyle.regular.copyWith(
+                                  fontSize: 14,
+                                  color: SDSColor.gray600
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    )
+                        : RefreshIndicator(
+                      strokeWidth: 2,
+                      edgeOffset: -140,
+                      displacement: 140,
+                      backgroundColor: SDSColor.snowliveBlue,
+                      color: SDSColor.snowliveWhite,
+                      onRefresh: _fleamarketListViewModel.onRefresh_flea_favorite,
+                      child: Scrollbar(
                         controller: _fleamarketListViewModel.scrollController_favorite,
                         child: ListView.builder(
                           controller: _fleamarketListViewModel.scrollController_favorite, // ScrollController 연결
@@ -562,10 +563,10 @@ class FleaMarketListView_favorite extends StatelessWidget {
                           },
                           padding: EdgeInsets.only(bottom: 80),
                         ),
-                      )
-                  ),
-                ],
-              ),
+                      ),
+                    )
+                ),
+              ],
             ),
           )),
         ),

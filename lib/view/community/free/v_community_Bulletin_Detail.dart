@@ -531,7 +531,8 @@ class CommunityBulletinDetailView extends StatelessWidget {
                   Expanded(
                     child: RefreshIndicator(
                       strokeWidth: 2,
-                      edgeOffset: 40,
+                      edgeOffset: -40,
+                      displacement: 40,
                       backgroundColor: SDSColor.snowliveBlue,
                       color: SDSColor.snowliveWhite,
                       onRefresh: () async{
@@ -1593,10 +1594,10 @@ class CommunityBulletinDetailView extends StatelessWidget {
                                           await _communityBulletinListViewModel.fetchEventCommunity();
                                         }
                                         if(_communityDetailViewModel.communityDetail.userId != _userViewModel.user.user_id)
-                                        await _alarmCenterViewModel.updateNotification(
-                                            _communityDetailViewModel.communityDetail.userId!,
-                                            total: true
-                                        );
+                                          await _alarmCenterViewModel.updateNotification(
+                                              _communityDetailViewModel.communityDetail.userId!,
+                                              total: true
+                                          );
                                       },
                                       icon: (_communityDetailViewModel.isCommentButtonEnabled.value == false)
                                           ? Image.asset(

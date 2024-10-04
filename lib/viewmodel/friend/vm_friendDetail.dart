@@ -125,13 +125,15 @@ class FriendDetailViewModel extends GetxController {
     _isEditing.value = !_isEditing.value;
   }
 
-  Future<void> fetchFriendDetailInfo({required int userId, required int friendUserId, required String season}) async {
+  Future<void> fetchFriendDetailInfo({required int userId, required int friendUserId, required String season, bool isFromRefresh = false,}) async {
     isLoading(true);
     ApiResponse response = await FriendDetailAPI().fetchFriendDetail(userId,friendUserId,season);
     if(response.success) {
       isLoading(false);
       _friendDetailModel.value = response.data as FriendDetailModel;
-      changeMainTab(0);
+      if (!isFromRefresh) {  // isFromRefresh가 false일 때만 탭을 변경
+        changeMainTab(0);
+      }
       await fetchFriendsTalkList(userId: userId, friendUserId: friendUserId);
     }
     else {

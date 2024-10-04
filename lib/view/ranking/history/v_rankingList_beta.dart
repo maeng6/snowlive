@@ -16,6 +16,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:shimmer/shimmer.dart';
 
 class RankingBetaView extends StatelessWidget {
   final UserViewModel _userViewModel = Get.find<UserViewModel>();
@@ -90,9 +91,12 @@ class RankingBetaView extends StatelessWidget {
                                           children: [
                                             ElevatedButton(
                                               onPressed: () {
+                                                HapticFeedback.lightImpact();
                                                 _rankingListBetaViewModel.changeCrewOrIndiv('크루');
                                               },
                                               style: ElevatedButton.styleFrom(
+                                                shadowColor: Colors.transparent,
+                                                overlayColor: Colors.transparent,
                                                 padding: EdgeInsets.only(
                                                     right: 12, left: 12, top: 2, bottom: 2),
                                                 side: BorderSide(
@@ -129,9 +133,12 @@ class RankingBetaView extends StatelessWidget {
                                         children: [
                                           ElevatedButton(
                                             onPressed: () {
+                                              HapticFeedback.lightImpact();
                                               _rankingListBetaViewModel.changeCrewOrIndiv('개인');
                                             },
                                             style: ElevatedButton.styleFrom(
+                                              shadowColor: Colors.transparent,
+                                              overlayColor: Colors.transparent,
                                               padding: EdgeInsets.only(
                                                   right: 12, left: 12, top: 2, bottom: 2),
                                               side: BorderSide(
@@ -285,22 +292,30 @@ class RankingBetaView extends StatelessWidget {
                                         loadStateChanged: (ExtendedImageState state) {
                                           switch (state.extendedImageLoadState) {
                                             case LoadState.loading:
-                                              return SizedBox.shrink();
+                                            // 로딩 중일 때 로딩 인디케이터를 표시
+                                              return Shimmer.fromColors(
+                                                baseColor: SDSColor.gray200!,
+                                                highlightColor: SDSColor.gray50!,
+                                                child: Container(
+                                                  width: 32,
+                                                  height: 32,
+                                                  decoration: BoxDecoration(
+                                                    color: Colors.white,
+                                                    borderRadius: BorderRadius.circular(8),
+                                                  ),
+                                                ),
+                                              );
                                             case LoadState.completed:
+                                            // 로딩이 완료되었을 때 이미지 반환
                                               return state.completedWidget;
                                             case LoadState.failed:
-                                              return ExtendedImage.network(
-                                                '${crewDefaultLogoUrl['${document.crewInfo!.color}']}',
-                                                enableMemoryCache: true,
-                                                cacheHeight: 100,
-                                                shape: BoxShape.rectangle,
-                                                borderRadius: BorderRadius.circular(10),
+                                            // 로딩이 실패했을 때 대체 이미지 또는 다른 처리
+                                              return Image.asset(
+                                                '${crewDefaultLogoUrl['${document.crewInfo!.color}']}', // 대체 이미지 경로
                                                 width: 32,
                                                 height: 32,
                                                 fit: BoxFit.cover,
                                               );
-                                            default:
-                                              return null;
                                           }
                                         },
                                       )
@@ -313,6 +328,35 @@ class RankingBetaView extends StatelessWidget {
                                         width: 32,
                                         height: 32,
                                         fit: BoxFit.cover,
+                                        loadStateChanged: (ExtendedImageState state) {
+                                          switch (state.extendedImageLoadState) {
+                                            case LoadState.loading:
+                                            // 로딩 중일 때 로딩 인디케이터를 표시
+                                              return Shimmer.fromColors(
+                                                baseColor: SDSColor.gray200!,
+                                                highlightColor: SDSColor.gray50!,
+                                                child: Container(
+                                                  width: 32,
+                                                  height: 32,
+                                                  decoration: BoxDecoration(
+                                                    color: Colors.white,
+                                                    borderRadius: BorderRadius.circular(8),
+                                                  ),
+                                                ),
+                                              );
+                                            case LoadState.completed:
+                                            // 로딩이 완료되었을 때 이미지 반환
+                                              return state.completedWidget;
+                                            case LoadState.failed:
+                                            // 로딩이 실패했을 때 대체 이미지 또는 다른 처리
+                                              return Image.asset(
+                                                '${crewDefaultLogoUrl['${document.crewInfo!.color}']}', // 대체 이미지 경로
+                                                width: 32,
+                                                height: 32,
+                                                fit: BoxFit.cover,
+                                              );
+                                          }
+                                        },
                                       ),
                                     ),
                                     SizedBox(width: 10),
@@ -491,6 +535,35 @@ class RankingBetaView extends StatelessWidget {
                                         height: 32,
                                         cacheWidth: 100,
                                         fit: BoxFit.cover,
+                                        loadStateChanged: (ExtendedImageState state) {
+                                          switch (state.extendedImageLoadState) {
+                                            case LoadState.loading:
+                                            // 로딩 중일 때 로딩 인디케이터를 표시
+                                              return Shimmer.fromColors(
+                                                baseColor: SDSColor.gray200!,
+                                                highlightColor: SDSColor.gray50!,
+                                                child: Container(
+                                                  width: 32,
+                                                  height: 32,
+                                                  decoration: BoxDecoration(
+                                                    color: Colors.white,
+                                                    borderRadius: BorderRadius.circular(8),
+                                                  ),
+                                                ),
+                                              );
+                                            case LoadState.completed:
+                                            // 로딩이 완료되었을 때 이미지 반환
+                                              return state.completedWidget;
+                                            case LoadState.failed:
+                                            // 로딩이 실패했을 때 대체 이미지 또는 다른 처리
+                                              return Image.asset(
+                                                '${profileImgUrlList[0].default_round}', // 대체 이미지 경로
+                                                width: 32,
+                                                height: 32,
+                                                fit: BoxFit.cover,
+                                              );
+                                          }
+                                        },
                                       )
                                           : ExtendedImage.network(
                                         '${profileImgUrlList[0].default_round}',
@@ -502,6 +575,35 @@ class RankingBetaView extends StatelessWidget {
                                         height: 32,
                                         cacheWidth: 100,
                                         fit: BoxFit.cover,
+                                        loadStateChanged: (ExtendedImageState state) {
+                                          switch (state.extendedImageLoadState) {
+                                            case LoadState.loading:
+                                            // 로딩 중일 때 로딩 인디케이터를 표시
+                                              return Shimmer.fromColors(
+                                                baseColor: SDSColor.gray200!,
+                                                highlightColor: SDSColor.gray50!,
+                                                child: Container(
+                                                  width: 32,
+                                                  height: 32,
+                                                  decoration: BoxDecoration(
+                                                    color: Colors.white,
+                                                    borderRadius: BorderRadius.circular(8),
+                                                  ),
+                                                ),
+                                              );
+                                            case LoadState.completed:
+                                            // 로딩이 완료되었을 때 이미지 반환
+                                              return state.completedWidget;
+                                            case LoadState.failed:
+                                            // 로딩이 실패했을 때 대체 이미지 또는 다른 처리
+                                              return Image.asset(
+                                                '${profileImgUrlList[0].default_round}', // 대체 이미지 경로
+                                                width: 32,
+                                                height: 32,
+                                                fit: BoxFit.cover,
+                                              );
+                                          }
+                                        },
                                       ),
                                     ),
                                     SizedBox(width: 10),

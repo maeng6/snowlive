@@ -22,7 +22,7 @@ class FloatingButtonWithOptions extends StatelessWidget {
           BoxShadow(
             color: Color(0xFF000000).withOpacity(0.25),
             blurRadius: 10,
-            offset: Offset(0,5)
+            offset: Offset(0, 5),
           ),
         ],
       ),
@@ -39,7 +39,7 @@ class FloatingButtonWithOptions extends StatelessWidget {
   Widget _buildOption(BuildContext context, String option) {
     final isSelected = option == selectedOption;
     return GestureDetector(
-      onTap: (){
+      onTap: () {
         HapticFeedback.lightImpact();
         onOptionSelected(option);
       },
@@ -49,16 +49,16 @@ class FloatingButtonWithOptions extends StatelessWidget {
           color: isSelected ? Colors.white : Colors.black, // 선택된 옵션의 배경을 흰색으로 설정
           borderRadius: BorderRadius.circular(30.0),
         ),
-        padding: EdgeInsets.symmetric(vertical: 12, horizontal: 20),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
+        padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center, // 세로 가운데 정렬
           children: [
             Text(
               option,
               style: SDSTextStyle.extraBold.copyWith(
                 color: isSelected ? Color(0xFF111111) : Colors.white.withOpacity(0.5), // 선택된 옵션의 텍스트 색상 설정
                 fontWeight: isSelected ? FontWeight.w800 : FontWeight.normal,
-                fontSize: 14
+                fontSize: 14,
               ),
             ),
           ],

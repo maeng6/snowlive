@@ -126,1004 +126,528 @@ class FleaMarketListView_ski extends StatelessWidget {
           ),
           floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
           backgroundColor: Colors.white,
-          body: Obx(()=>RefreshIndicator(
-            strokeWidth: 2,
-            edgeOffset: 40,
-            backgroundColor: SDSColor.snowliveBlue,
-            color: SDSColor.snowliveWhite,
-            onRefresh: _fleamarketListViewModel.onRefresh_flea_ski,
-            child: Padding(
-              padding: const EdgeInsets.only(top: 12),
-              child: Column(
-                children: [
-                  //TODO: 필터
-                  Padding(
-                    padding: EdgeInsets.only(bottom: 16),
-                    child: Row(
-                      children: [
-                        Padding(
-                          padding: EdgeInsets.only(right: 8),
-                          child: Stack(
-                            children: [
-                              ElevatedButton(
-                                  onPressed: () async {
-                                    showModalBottomSheet(
-                                        enableDrag: false,
-                                        isScrollControlled: true,
-                                        backgroundColor: Colors.transparent,
-                                        context: context,
-                                        builder: (context) {
-                                          return SafeArea(
-                                            child: Padding(
-                                              padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 4),
-                                              child: Container(
-                                                margin: EdgeInsets.only(
-                                                  left: 16,
-                                                  right: 16,
-                                                  top: 16,
-                                                ),
-                                                padding: EdgeInsets.all(16),
-                                                decoration: BoxDecoration(
-                                                  color: Colors.white,
-                                                  borderRadius: BorderRadius.circular(16),
-                                                ),
-                                                child: SingleChildScrollView(
-                                                  child: Wrap(
-                                                    children: [
-                                                      ListTile(
-                                                        contentPadding: EdgeInsets.zero,
-                                                        title: Center(
-                                                          child: Text(
-                                                            '${FleamarketCategory_sub.total.korean}',
-                                                            style: SDSTextStyle.bold.copyWith(
-                                                                fontSize: 15,
-                                                                color: SDSColor.gray900
-                                                            ),
+          body: Obx(()=>Padding(
+            padding: const EdgeInsets.only(top: 12),
+            child: Column(
+              children: [
+                //TODO: 필터
+                Padding(
+                  padding: EdgeInsets.only(bottom: 16),
+                  child: Row(
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.only(right: 8),
+                        child: Stack(
+                          children: [
+                            ElevatedButton(
+                                onPressed: () async {
+                                  HapticFeedback.lightImpact();
+                                  showModalBottomSheet(
+                                      enableDrag: false,
+                                      isScrollControlled: true,
+                                      backgroundColor: Colors.transparent,
+                                      context: context,
+                                      builder: (context) {
+                                        return SafeArea(
+                                          child: Padding(
+                                            padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 4),
+                                            child: Container(
+                                              margin: EdgeInsets.only(
+                                                left: 16,
+                                                right: 16,
+                                                top: 16,
+                                              ),
+                                              padding: EdgeInsets.all(16),
+                                              decoration: BoxDecoration(
+                                                color: Colors.white,
+                                                borderRadius: BorderRadius.circular(16),
+                                              ),
+                                              child: SingleChildScrollView(
+                                                child: Wrap(
+                                                  children: [
+                                                    ListTile(
+                                                      contentPadding: EdgeInsets.zero,
+                                                      title: Center(
+                                                        child: Text(
+                                                          '${FleamarketCategory_sub.total.korean}',
+                                                          style: SDSTextStyle.bold.copyWith(
+                                                              fontSize: 15,
+                                                              color: SDSColor.gray900
                                                           ),
                                                         ),
-                                                        //selected: _isSelected[index]!,
-                                                        onTap: () async {
-                                                          Navigator.pop(context);
-                                                          CustomFullScreenDialog.showDialog();
-                                                          _fleamarketListViewModel.changeCategory_sub_ski('${FleamarketCategory_sub.total.korean}');
-                                                          await _fleamarketListViewModel.fetchFleamarketData_ski(
-                                                            userId: _userViewModel.user.user_id,
-                                                            categoryMain: '스키',
-                                                            spot:
-                                                            (_fleamarketListViewModel.selectedCategory_spot_ski == '전체 거래장소')
-                                                                ? null
-                                                                :_fleamarketListViewModel.selectedCategory_spot_ski,
-                                                          );
-                                                          CustomFullScreenDialog.cancelDialog();
+                                                      ),
+                                                      //selected: _isSelected[index]!,
+                                                      onTap: () async {
+                                                        Navigator.pop(context);
+                                                        CustomFullScreenDialog.showDialog();
+                                                        _fleamarketListViewModel.changeCategory_sub_ski('${FleamarketCategory_sub.total.korean}');
+                                                        await _fleamarketListViewModel.fetchFleamarketData_ski(
+                                                          userId: _userViewModel.user.user_id,
+                                                          categoryMain: '스키',
+                                                          spot:
+                                                          (_fleamarketListViewModel.selectedCategory_spot_ski == '전체 거래장소')
+                                                              ? null
+                                                              :_fleamarketListViewModel.selectedCategory_spot_ski,
+                                                        );
+                                                        CustomFullScreenDialog.cancelDialog();
 
-                                                        },
-                                                        shape: RoundedRectangleBorder(
-                                                            borderRadius:
-                                                            BorderRadius.circular(16)),
-                                                      ),
-                                                      ListTile(
-                                                        contentPadding: EdgeInsets.zero,
-                                                        title: Center(
-                                                          child: Text(
-                                                            '${FleamarketCategory_sub.binding.korean}',
-                                                            style: SDSTextStyle.bold.copyWith(
-                                                                fontSize: 15,
-                                                                color: SDSColor.gray900
-                                                            ),
+                                                      },
+                                                      shape: RoundedRectangleBorder(
+                                                          borderRadius:
+                                                          BorderRadius.circular(16)),
+                                                    ),
+                                                    ListTile(
+                                                      contentPadding: EdgeInsets.zero,
+                                                      title: Center(
+                                                        child: Text(
+                                                          '${FleamarketCategory_sub.binding.korean}',
+                                                          style: SDSTextStyle.bold.copyWith(
+                                                              fontSize: 15,
+                                                              color: SDSColor.gray900
                                                           ),
                                                         ),
-                                                        //selected: _isSelected[index]!,
-                                                        onTap: () async {
-                                                          Navigator.pop(context);
-                                                          CustomFullScreenDialog.showDialog();
-                                                          _fleamarketListViewModel.changeCategory_sub_ski('${FleamarketCategory_sub.binding.korean}');
-                                                          await _fleamarketListViewModel.fetchFleamarketData_ski(
-                                                            userId: _userViewModel.user.user_id,
-                                                            categoryMain: '스키',
-                                                            categorySub:_fleamarketListViewModel.selectedCategory_sub_ski,
-                                                            spot:
-                                                            (_fleamarketListViewModel.selectedCategory_spot_ski == '전체 거래장소')
-                                                                ? null
-                                                                :_fleamarketListViewModel.selectedCategory_spot_ski,
-                                                          );
-                                                          CustomFullScreenDialog.cancelDialog();
-                                                        },
-                                                        shape: RoundedRectangleBorder(
-                                                            borderRadius:
-                                                            BorderRadius.circular(16)),
                                                       ),
-                                                      ListTile(
-                                                        contentPadding: EdgeInsets.zero,
-                                                        title: Center(
-                                                          child: Text(
-                                                            '${FleamarketCategory_sub.boots.korean}',
-                                                            style: SDSTextStyle.bold.copyWith(
-                                                                fontSize: 15,
-                                                                color: SDSColor.gray900
-                                                            ),
+                                                      //selected: _isSelected[index]!,
+                                                      onTap: () async {
+                                                        Navigator.pop(context);
+                                                        CustomFullScreenDialog.showDialog();
+                                                        _fleamarketListViewModel.changeCategory_sub_ski('${FleamarketCategory_sub.binding.korean}');
+                                                        await _fleamarketListViewModel.fetchFleamarketData_ski(
+                                                          userId: _userViewModel.user.user_id,
+                                                          categoryMain: '스키',
+                                                          categorySub:_fleamarketListViewModel.selectedCategory_sub_ski,
+                                                          spot:
+                                                          (_fleamarketListViewModel.selectedCategory_spot_ski == '전체 거래장소')
+                                                              ? null
+                                                              :_fleamarketListViewModel.selectedCategory_spot_ski,
+                                                        );
+                                                        CustomFullScreenDialog.cancelDialog();
+                                                      },
+                                                      shape: RoundedRectangleBorder(
+                                                          borderRadius:
+                                                          BorderRadius.circular(16)),
+                                                    ),
+                                                    ListTile(
+                                                      contentPadding: EdgeInsets.zero,
+                                                      title: Center(
+                                                        child: Text(
+                                                          '${FleamarketCategory_sub.boots.korean}',
+                                                          style: SDSTextStyle.bold.copyWith(
+                                                              fontSize: 15,
+                                                              color: SDSColor.gray900
                                                           ),
                                                         ),
-                                                        //selected: _isSelected[index]!,
-                                                        onTap: () async {
-                                                          Navigator.pop(context);
-                                                          CustomFullScreenDialog.showDialog();
-                                                          _fleamarketListViewModel.changeCategory_sub_ski('${FleamarketCategory_sub.boots.korean}');
-                                                          await _fleamarketListViewModel.fetchFleamarketData_ski(
-                                                            userId: _userViewModel.user.user_id,
-                                                            categoryMain: '스키',
-                                                            categorySub:_fleamarketListViewModel.selectedCategory_sub_ski,
-                                                            spot:
-                                                            (_fleamarketListViewModel.selectedCategory_spot_ski == '전체 거래장소')
-                                                                ? null
-                                                                :_fleamarketListViewModel.selectedCategory_spot_ski,
-                                                          );
-                                                          CustomFullScreenDialog.cancelDialog();
-                                                        },
-                                                        shape: RoundedRectangleBorder(
-                                                            borderRadius:
-                                                            BorderRadius.circular(16)),
                                                       ),
-                                                      ListTile(
-                                                        contentPadding: EdgeInsets.zero,
-                                                        title: Center(
-                                                          child: Text(
-                                                            '${FleamarketCategory_sub.cloth.korean}',
-                                                            style: SDSTextStyle.bold.copyWith(
-                                                                fontSize: 15,
-                                                                color: SDSColor.gray900
-                                                            ),
+                                                      //selected: _isSelected[index]!,
+                                                      onTap: () async {
+                                                        Navigator.pop(context);
+                                                        CustomFullScreenDialog.showDialog();
+                                                        _fleamarketListViewModel.changeCategory_sub_ski('${FleamarketCategory_sub.boots.korean}');
+                                                        await _fleamarketListViewModel.fetchFleamarketData_ski(
+                                                          userId: _userViewModel.user.user_id,
+                                                          categoryMain: '스키',
+                                                          categorySub:_fleamarketListViewModel.selectedCategory_sub_ski,
+                                                          spot:
+                                                          (_fleamarketListViewModel.selectedCategory_spot_ski == '전체 거래장소')
+                                                              ? null
+                                                              :_fleamarketListViewModel.selectedCategory_spot_ski,
+                                                        );
+                                                        CustomFullScreenDialog.cancelDialog();
+                                                      },
+                                                      shape: RoundedRectangleBorder(
+                                                          borderRadius:
+                                                          BorderRadius.circular(16)),
+                                                    ),
+                                                    ListTile(
+                                                      contentPadding: EdgeInsets.zero,
+                                                      title: Center(
+                                                        child: Text(
+                                                          '${FleamarketCategory_sub.cloth.korean}',
+                                                          style: SDSTextStyle.bold.copyWith(
+                                                              fontSize: 15,
+                                                              color: SDSColor.gray900
                                                           ),
                                                         ),
-                                                        //selected: _isSelected[index]!,
-                                                        onTap: () async {
-                                                          Navigator.pop(context);
-                                                          CustomFullScreenDialog.showDialog();
-                                                          _fleamarketListViewModel.changeCategory_sub_ski('${FleamarketCategory_sub.cloth.korean}');
-                                                          await _fleamarketListViewModel.fetchFleamarketData_ski(
-                                                            userId: _userViewModel.user.user_id,
-                                                            categoryMain: '스키',
-                                                            categorySub:_fleamarketListViewModel.selectedCategory_sub_ski,
-                                                            spot:
-                                                            (_fleamarketListViewModel.selectedCategory_spot_ski == '전체 거래장소')
-                                                                ? null
-                                                                :_fleamarketListViewModel.selectedCategory_spot_ski,
-                                                          );
-                                                          CustomFullScreenDialog.cancelDialog();
-                                                        },
-                                                        shape: RoundedRectangleBorder(
-                                                            borderRadius:
-                                                            BorderRadius.circular(16)),
                                                       ),
-                                                      ListTile(
-                                                        contentPadding: EdgeInsets.zero,
-                                                        title: Center(
-                                                          child: Text(
-                                                            '${FleamarketCategory_sub.plate.korean}',
-                                                            style: SDSTextStyle.bold.copyWith(
-                                                                fontSize: 15,
-                                                                color: SDSColor.gray900
-                                                            ),
+                                                      //selected: _isSelected[index]!,
+                                                      onTap: () async {
+                                                        Navigator.pop(context);
+                                                        CustomFullScreenDialog.showDialog();
+                                                        _fleamarketListViewModel.changeCategory_sub_ski('${FleamarketCategory_sub.cloth.korean}');
+                                                        await _fleamarketListViewModel.fetchFleamarketData_ski(
+                                                          userId: _userViewModel.user.user_id,
+                                                          categoryMain: '스키',
+                                                          categorySub:_fleamarketListViewModel.selectedCategory_sub_ski,
+                                                          spot:
+                                                          (_fleamarketListViewModel.selectedCategory_spot_ski == '전체 거래장소')
+                                                              ? null
+                                                              :_fleamarketListViewModel.selectedCategory_spot_ski,
+                                                        );
+                                                        CustomFullScreenDialog.cancelDialog();
+                                                      },
+                                                      shape: RoundedRectangleBorder(
+                                                          borderRadius:
+                                                          BorderRadius.circular(16)),
+                                                    ),
+                                                    ListTile(
+                                                      contentPadding: EdgeInsets.zero,
+                                                      title: Center(
+                                                        child: Text(
+                                                          '${FleamarketCategory_sub.plate.korean}',
+                                                          style: SDSTextStyle.bold.copyWith(
+                                                              fontSize: 15,
+                                                              color: SDSColor.gray900
                                                           ),
                                                         ),
-                                                        //selected: _isSelected[index]!,
-                                                        onTap: () async {
-                                                          Navigator.pop(context);
-                                                          CustomFullScreenDialog.showDialog();
-                                                          _fleamarketListViewModel.changeCategory_sub_ski('${FleamarketCategory_sub.plate.korean}');
-                                                          await _fleamarketListViewModel.fetchFleamarketData_ski(
-                                                            userId: _userViewModel.user.user_id,
-                                                            categoryMain: '스키',
-                                                            categorySub:_fleamarketListViewModel.selectedCategory_sub_ski,
-                                                            spot:
-                                                            (_fleamarketListViewModel.selectedCategory_spot_ski == '전체 거래장소')
-                                                                ? null
-                                                                :_fleamarketListViewModel.selectedCategory_spot_ski,
-                                                          );
-                                                          CustomFullScreenDialog.cancelDialog();
-                                                        },
-                                                        shape: RoundedRectangleBorder(
-                                                            borderRadius:
-                                                            BorderRadius.circular(16)),
                                                       ),
-                                                      ListTile(
-                                                        contentPadding: EdgeInsets.zero,
-                                                        title: Center(
-                                                          child: Text(
-                                                            '${FleamarketCategory_sub.etc.korean}',
-                                                            style: SDSTextStyle.bold.copyWith(
-                                                                fontSize: 15,
-                                                                color: SDSColor.gray900
-                                                            ),
+                                                      //selected: _isSelected[index]!,
+                                                      onTap: () async {
+                                                        Navigator.pop(context);
+                                                        CustomFullScreenDialog.showDialog();
+                                                        _fleamarketListViewModel.changeCategory_sub_ski('${FleamarketCategory_sub.plate.korean}');
+                                                        await _fleamarketListViewModel.fetchFleamarketData_ski(
+                                                          userId: _userViewModel.user.user_id,
+                                                          categoryMain: '스키',
+                                                          categorySub:_fleamarketListViewModel.selectedCategory_sub_ski,
+                                                          spot:
+                                                          (_fleamarketListViewModel.selectedCategory_spot_ski == '전체 거래장소')
+                                                              ? null
+                                                              :_fleamarketListViewModel.selectedCategory_spot_ski,
+                                                        );
+                                                        CustomFullScreenDialog.cancelDialog();
+                                                      },
+                                                      shape: RoundedRectangleBorder(
+                                                          borderRadius:
+                                                          BorderRadius.circular(16)),
+                                                    ),
+                                                    ListTile(
+                                                      contentPadding: EdgeInsets.zero,
+                                                      title: Center(
+                                                        child: Text(
+                                                          '${FleamarketCategory_sub.etc.korean}',
+                                                          style: SDSTextStyle.bold.copyWith(
+                                                              fontSize: 15,
+                                                              color: SDSColor.gray900
                                                           ),
                                                         ),
-                                                        //selected: _isSelected[index]!,
-                                                        onTap: () async {
-                                                          Navigator.pop(context);
-                                                          CustomFullScreenDialog.showDialog();
-                                                          _fleamarketListViewModel.changeCategory_sub_ski('${FleamarketCategory_sub.etc.korean}');
-                                                          await _fleamarketListViewModel.fetchFleamarketData_ski(
-                                                            userId: _userViewModel.user.user_id,
-                                                            categoryMain: '스키',
-                                                            categorySub:_fleamarketListViewModel.selectedCategory_sub_ski,
-                                                            spot:
-                                                            (_fleamarketListViewModel.selectedCategory_spot_ski == '전체 거래장소')
-                                                                ? null
-                                                                :_fleamarketListViewModel.selectedCategory_spot_ski,
-                                                          );
-                                                          CustomFullScreenDialog.cancelDialog();
-                                                        },
-                                                        shape: RoundedRectangleBorder(
-                                                            borderRadius:
-                                                            BorderRadius.circular(16)),
                                                       ),
-                                                    ],
-                                                  ),
+                                                      //selected: _isSelected[index]!,
+                                                      onTap: () async {
+                                                        Navigator.pop(context);
+                                                        CustomFullScreenDialog.showDialog();
+                                                        _fleamarketListViewModel.changeCategory_sub_ski('${FleamarketCategory_sub.etc.korean}');
+                                                        await _fleamarketListViewModel.fetchFleamarketData_ski(
+                                                          userId: _userViewModel.user.user_id,
+                                                          categoryMain: '스키',
+                                                          categorySub:_fleamarketListViewModel.selectedCategory_sub_ski,
+                                                          spot:
+                                                          (_fleamarketListViewModel.selectedCategory_spot_ski == '전체 거래장소')
+                                                              ? null
+                                                              :_fleamarketListViewModel.selectedCategory_spot_ski,
+                                                        );
+                                                        CustomFullScreenDialog.cancelDialog();
+                                                      },
+                                                      shape: RoundedRectangleBorder(
+                                                          borderRadius:
+                                                          BorderRadius.circular(16)),
+                                                    ),
+                                                  ],
                                                 ),
                                               ),
                                             ),
-                                          );
-                                        });
-                                  },
-                                  style: ElevatedButton.styleFrom(
-                                      padding: EdgeInsets.only(
-                                          right: 32, left: 12, top: 3, bottom: 2),
-                                      side: BorderSide(
-                                        width: 1,
-                                        color: (_fleamarketListViewModel.selectedCategory_sub_ski != '전체 카테고리') ? SDSColor.gray900 : SDSColor.gray100,
-                                      ),
-                                      backgroundColor: (_fleamarketListViewModel.selectedCategory_sub_ski != '전체 카테고리') ? SDSColor.gray900 : SDSColor.snowliveWhite,
-                                      elevation: 0,
-                                      shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(50))),
-                                  child:
-                                  Text('${_fleamarketListViewModel.selectedCategory_sub_ski}',
-                                      style: SDSTextStyle.bold.copyWith(
-                                          fontSize: 13,
-                                          color: (_fleamarketListViewModel.selectedCategory_sub_ski != '전체 카테고리') ? Color(0xFFFFFFFF) : Color(0xFF111111) ))
-                              ),
-                              Positioned(
-                                top: 16,
-                                right: 10,
-                                child: GestureDetector(
-                                  onTap: () async {
-                                    showModalBottomSheet(
-                                        enableDrag: false,
-                                        isScrollControlled: true,
-                                        backgroundColor: Colors.transparent,
-                                        context: context,
-                                        builder: (context) {
-                                          return SafeArea(
-                                            child: Padding(
-                                              padding: const EdgeInsets.symmetric(vertical: 20),
-                                              child: Container(
-                                                margin: EdgeInsets.only(
-                                                  left: 16,
-                                                  right: 16,
-                                                  top: 16,
-                                                ),
-                                                padding: EdgeInsets.all(16),
-                                                decoration: BoxDecoration(
-                                                  color: Colors.white,
-                                                  borderRadius: BorderRadius.circular(16),
-                                                ),
-                                                child: SingleChildScrollView(
-                                                  child: Wrap(
-                                                    children: [
-                                                      ListTile(
-                                                        contentPadding: EdgeInsets.zero,
-                                                        title: Center(
-                                                          child: Text(
-                                                            '${FleamarketCategory_sub.total.korean}',
-                                                            style: SDSTextStyle.bold.copyWith(
-                                                                fontSize: 15,
-                                                                color: SDSColor.gray900
-                                                            ),
+                                          ),
+                                        );
+                                      });
+                                },
+                                style: ElevatedButton.styleFrom(
+                                    shadowColor: Colors.transparent,
+                                    overlayColor: Colors.transparent,
+                                    padding: EdgeInsets.only(
+                                        right: 32, left: 12, top: 3, bottom: 2),
+                                    side: BorderSide(
+                                      width: 1,
+                                      color: (_fleamarketListViewModel.selectedCategory_sub_ski != '전체 카테고리') ? SDSColor.gray900 : SDSColor.gray100,
+                                    ),
+                                    backgroundColor: (_fleamarketListViewModel.selectedCategory_sub_ski != '전체 카테고리') ? SDSColor.gray900 : SDSColor.snowliveWhite,
+                                    elevation: 0,
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(50))),
+                                child:
+                                Text('${_fleamarketListViewModel.selectedCategory_sub_ski}',
+                                    style: SDSTextStyle.bold.copyWith(
+                                        fontSize: 13,
+                                        color: (_fleamarketListViewModel.selectedCategory_sub_ski != '전체 카테고리') ? Color(0xFFFFFFFF) : Color(0xFF111111) ))
+                            ),
+                            Positioned(
+                              top: 16,
+                              right: 10,
+                              child: GestureDetector(
+                                onTap: () async {
+                                  showModalBottomSheet(
+                                      enableDrag: false,
+                                      isScrollControlled: true,
+                                      backgroundColor: Colors.transparent,
+                                      context: context,
+                                      builder: (context) {
+                                        return SafeArea(
+                                          child: Padding(
+                                            padding: const EdgeInsets.symmetric(vertical: 20),
+                                            child: Container(
+                                              margin: EdgeInsets.only(
+                                                left: 16,
+                                                right: 16,
+                                                top: 16,
+                                              ),
+                                              padding: EdgeInsets.all(16),
+                                              decoration: BoxDecoration(
+                                                color: Colors.white,
+                                                borderRadius: BorderRadius.circular(16),
+                                              ),
+                                              child: SingleChildScrollView(
+                                                child: Wrap(
+                                                  children: [
+                                                    ListTile(
+                                                      contentPadding: EdgeInsets.zero,
+                                                      title: Center(
+                                                        child: Text(
+                                                          '${FleamarketCategory_sub.total.korean}',
+                                                          style: SDSTextStyle.bold.copyWith(
+                                                              fontSize: 15,
+                                                              color: SDSColor.gray900
                                                           ),
                                                         ),
-                                                        //selected: _isSelected[index]!,
-                                                        onTap: () async {
-                                                          Navigator.pop(context);
-                                                          CustomFullScreenDialog.showDialog();
-                                                          _fleamarketListViewModel.changeCategory_sub_ski('${FleamarketCategory_sub.total.korean}');
-                                                          await _fleamarketListViewModel.fetchFleamarketData_ski(
-                                                            userId: _userViewModel.user.user_id,
-                                                            categoryMain: '스키',
-                                                            spot:
-                                                            (_fleamarketListViewModel.selectedCategory_spot_ski == '전체 거래장소')
-                                                                ? null
-                                                                :_fleamarketListViewModel.selectedCategory_spot_ski,
-                                                          );
-                                                          CustomFullScreenDialog.cancelDialog();
-                                                        },
-                                                        shape: RoundedRectangleBorder(
-                                                            borderRadius:
-                                                            BorderRadius.circular(16)),
                                                       ),
-                                                      ListTile(
-                                                        contentPadding: EdgeInsets.zero,
-                                                        title: Center(
-                                                          child: Text(
-                                                            '${FleamarketCategory_sub.binding.korean}',
-                                                            style: SDSTextStyle.bold.copyWith(
-                                                                fontSize: 15,
-                                                                color: SDSColor.gray900
-                                                            ),
+                                                      //selected: _isSelected[index]!,
+                                                      onTap: () async {
+                                                        Navigator.pop(context);
+                                                        CustomFullScreenDialog.showDialog();
+                                                        _fleamarketListViewModel.changeCategory_sub_ski('${FleamarketCategory_sub.total.korean}');
+                                                        await _fleamarketListViewModel.fetchFleamarketData_ski(
+                                                          userId: _userViewModel.user.user_id,
+                                                          categoryMain: '스키',
+                                                          spot:
+                                                          (_fleamarketListViewModel.selectedCategory_spot_ski == '전체 거래장소')
+                                                              ? null
+                                                              :_fleamarketListViewModel.selectedCategory_spot_ski,
+                                                        );
+                                                        CustomFullScreenDialog.cancelDialog();
+                                                      },
+                                                      shape: RoundedRectangleBorder(
+                                                          borderRadius:
+                                                          BorderRadius.circular(16)),
+                                                    ),
+                                                    ListTile(
+                                                      contentPadding: EdgeInsets.zero,
+                                                      title: Center(
+                                                        child: Text(
+                                                          '${FleamarketCategory_sub.binding.korean}',
+                                                          style: SDSTextStyle.bold.copyWith(
+                                                              fontSize: 15,
+                                                              color: SDSColor.gray900
                                                           ),
                                                         ),
-                                                        //selected: _isSelected[index]!,
-                                                        onTap: () async {
-                                                          print('${_fleamarketListViewModel.selectedCategory_spot_ski }');
-                                                          Navigator.pop(context);
-                                                          CustomFullScreenDialog.showDialog();
-                                                          _fleamarketListViewModel.changeCategory_sub_ski('${FleamarketCategory_sub.binding.korean}');
-                                                          await _fleamarketListViewModel.fetchFleamarketData_ski(
-                                                            userId: _userViewModel.user.user_id,
-                                                            categorySub:_fleamarketListViewModel.selectedCategory_sub_ski,
-                                                            spot:
-                                                            (_fleamarketListViewModel.selectedCategory_spot_ski == '전체 거래장소')
-                                                                ? null
-                                                                :_fleamarketListViewModel.selectedCategory_spot_ski,
-                                                          );
-                                                          CustomFullScreenDialog.cancelDialog();
-                                                        },
-                                                        shape: RoundedRectangleBorder(
-                                                            borderRadius:
-                                                            BorderRadius.circular(16)),
                                                       ),
-                                                      ListTile(
-                                                        contentPadding: EdgeInsets.zero,
-                                                        title: Center(
-                                                          child: Text(
-                                                            '${FleamarketCategory_sub.boots.korean}',
-                                                            style: SDSTextStyle.bold.copyWith(
-                                                                fontSize: 15,
-                                                                color: SDSColor.gray900
-                                                            ),
+                                                      //selected: _isSelected[index]!,
+                                                      onTap: () async {
+                                                        print('${_fleamarketListViewModel.selectedCategory_spot_ski }');
+                                                        Navigator.pop(context);
+                                                        CustomFullScreenDialog.showDialog();
+                                                        _fleamarketListViewModel.changeCategory_sub_ski('${FleamarketCategory_sub.binding.korean}');
+                                                        await _fleamarketListViewModel.fetchFleamarketData_ski(
+                                                          userId: _userViewModel.user.user_id,
+                                                          categorySub:_fleamarketListViewModel.selectedCategory_sub_ski,
+                                                          spot:
+                                                          (_fleamarketListViewModel.selectedCategory_spot_ski == '전체 거래장소')
+                                                              ? null
+                                                              :_fleamarketListViewModel.selectedCategory_spot_ski,
+                                                        );
+                                                        CustomFullScreenDialog.cancelDialog();
+                                                      },
+                                                      shape: RoundedRectangleBorder(
+                                                          borderRadius:
+                                                          BorderRadius.circular(16)),
+                                                    ),
+                                                    ListTile(
+                                                      contentPadding: EdgeInsets.zero,
+                                                      title: Center(
+                                                        child: Text(
+                                                          '${FleamarketCategory_sub.boots.korean}',
+                                                          style: SDSTextStyle.bold.copyWith(
+                                                              fontSize: 15,
+                                                              color: SDSColor.gray900
                                                           ),
                                                         ),
-                                                        //selected: _isSelected[index]!,
-                                                        onTap: () async {
-                                                          print('${_fleamarketListViewModel.selectedCategory_spot_ski }');
-                                                          Navigator.pop(context);
-                                                          CustomFullScreenDialog.showDialog();
-                                                          _fleamarketListViewModel.changeCategory_sub_ski('${FleamarketCategory_sub.boots.korean}');
-                                                          await _fleamarketListViewModel.fetchFleamarketData_ski(
-                                                            userId: _userViewModel.user.user_id,
-                                                            categoryMain: '스키',
-                                                            categorySub:_fleamarketListViewModel.selectedCategory_sub_ski,
-                                                            spot:
-                                                            (_fleamarketListViewModel.selectedCategory_spot_ski == '전체 거래장소')
-                                                                ? null
-                                                                :_fleamarketListViewModel.selectedCategory_spot_ski,
-                                                          );
-                                                          CustomFullScreenDialog.cancelDialog();
-                                                        },
-                                                        shape: RoundedRectangleBorder(
-                                                            borderRadius:
-                                                            BorderRadius.circular(16)),
                                                       ),
-                                                      ListTile(
-                                                        contentPadding: EdgeInsets.zero,
-                                                        title: Center(
-                                                          child: Text(
-                                                            '${FleamarketCategory_sub.cloth.korean}',
-                                                            style: SDSTextStyle.bold.copyWith(
-                                                                fontSize: 15,
-                                                                color: SDSColor.gray900
-                                                            ),
+                                                      //selected: _isSelected[index]!,
+                                                      onTap: () async {
+                                                        print('${_fleamarketListViewModel.selectedCategory_spot_ski }');
+                                                        Navigator.pop(context);
+                                                        CustomFullScreenDialog.showDialog();
+                                                        _fleamarketListViewModel.changeCategory_sub_ski('${FleamarketCategory_sub.boots.korean}');
+                                                        await _fleamarketListViewModel.fetchFleamarketData_ski(
+                                                          userId: _userViewModel.user.user_id,
+                                                          categoryMain: '스키',
+                                                          categorySub:_fleamarketListViewModel.selectedCategory_sub_ski,
+                                                          spot:
+                                                          (_fleamarketListViewModel.selectedCategory_spot_ski == '전체 거래장소')
+                                                              ? null
+                                                              :_fleamarketListViewModel.selectedCategory_spot_ski,
+                                                        );
+                                                        CustomFullScreenDialog.cancelDialog();
+                                                      },
+                                                      shape: RoundedRectangleBorder(
+                                                          borderRadius:
+                                                          BorderRadius.circular(16)),
+                                                    ),
+                                                    ListTile(
+                                                      contentPadding: EdgeInsets.zero,
+                                                      title: Center(
+                                                        child: Text(
+                                                          '${FleamarketCategory_sub.cloth.korean}',
+                                                          style: SDSTextStyle.bold.copyWith(
+                                                              fontSize: 15,
+                                                              color: SDSColor.gray900
                                                           ),
                                                         ),
-                                                        //selected: _isSelected[index]!,
-                                                        onTap: () async {
-                                                          print('${_fleamarketListViewModel.selectedCategory_spot_ski }');
-                                                          Navigator.pop(context);
-                                                          CustomFullScreenDialog.showDialog();
-                                                          _fleamarketListViewModel.changeCategory_sub_ski('${FleamarketCategory_sub.cloth.korean}');
-                                                          await _fleamarketListViewModel.fetchFleamarketData_ski(
-                                                            userId: _userViewModel.user.user_id,
-                                                            categoryMain: '스키',
-                                                            categorySub:_fleamarketListViewModel.selectedCategory_sub_ski,
-                                                            spot:
-                                                            (_fleamarketListViewModel.selectedCategory_spot_ski == '전체 거래장소')
-                                                                ? null
-                                                                :_fleamarketListViewModel.selectedCategory_spot_ski,
-                                                          );
-                                                          CustomFullScreenDialog.cancelDialog();
-                                                        },
-                                                        shape: RoundedRectangleBorder(
-                                                            borderRadius:
-                                                            BorderRadius.circular(16)),
                                                       ),
-                                                      ListTile(
-                                                        contentPadding: EdgeInsets.zero,
-                                                        title: Center(
-                                                          child: Text(
-                                                            '${FleamarketCategory_sub.plate.korean}',
-                                                            style: SDSTextStyle.bold.copyWith(
-                                                                fontSize: 15,
-                                                                color: SDSColor.gray900
-                                                            ),
+                                                      //selected: _isSelected[index]!,
+                                                      onTap: () async {
+                                                        print('${_fleamarketListViewModel.selectedCategory_spot_ski }');
+                                                        Navigator.pop(context);
+                                                        CustomFullScreenDialog.showDialog();
+                                                        _fleamarketListViewModel.changeCategory_sub_ski('${FleamarketCategory_sub.cloth.korean}');
+                                                        await _fleamarketListViewModel.fetchFleamarketData_ski(
+                                                          userId: _userViewModel.user.user_id,
+                                                          categoryMain: '스키',
+                                                          categorySub:_fleamarketListViewModel.selectedCategory_sub_ski,
+                                                          spot:
+                                                          (_fleamarketListViewModel.selectedCategory_spot_ski == '전체 거래장소')
+                                                              ? null
+                                                              :_fleamarketListViewModel.selectedCategory_spot_ski,
+                                                        );
+                                                        CustomFullScreenDialog.cancelDialog();
+                                                      },
+                                                      shape: RoundedRectangleBorder(
+                                                          borderRadius:
+                                                          BorderRadius.circular(16)),
+                                                    ),
+                                                    ListTile(
+                                                      contentPadding: EdgeInsets.zero,
+                                                      title: Center(
+                                                        child: Text(
+                                                          '${FleamarketCategory_sub.plate.korean}',
+                                                          style: SDSTextStyle.bold.copyWith(
+                                                              fontSize: 15,
+                                                              color: SDSColor.gray900
                                                           ),
                                                         ),
-                                                        //selected: _isSelected[index]!,
-                                                        onTap: () async {
-                                                          print('${_fleamarketListViewModel.selectedCategory_spot_ski }');
-                                                          Navigator.pop(context);
-                                                          CustomFullScreenDialog.showDialog();
-                                                          _fleamarketListViewModel.changeCategory_sub_ski('${FleamarketCategory_sub.plate.korean}');
-                                                          await _fleamarketListViewModel.fetchFleamarketData_ski(
-                                                            userId: _userViewModel.user.user_id,
-                                                            categoryMain: '스키',
-                                                            categorySub:_fleamarketListViewModel.selectedCategory_sub_ski,
-                                                            spot:
-                                                            (_fleamarketListViewModel.selectedCategory_spot_ski == '전체 거래장소')
-                                                                ? null
-                                                                :_fleamarketListViewModel.selectedCategory_spot_ski,
-                                                          );
-                                                          CustomFullScreenDialog.cancelDialog();
-                                                        },
-                                                        shape: RoundedRectangleBorder(
-                                                            borderRadius:
-                                                            BorderRadius.circular(16)),
                                                       ),
-                                                      ListTile(
-                                                        contentPadding: EdgeInsets.zero,
-                                                        title: Center(
-                                                          child: Text(
-                                                            '${FleamarketCategory_sub.etc.korean}',
-                                                            style: SDSTextStyle.bold.copyWith(
-                                                                fontSize: 15,
-                                                                color: SDSColor.gray900
-                                                            ),
+                                                      //selected: _isSelected[index]!,
+                                                      onTap: () async {
+                                                        print('${_fleamarketListViewModel.selectedCategory_spot_ski }');
+                                                        Navigator.pop(context);
+                                                        CustomFullScreenDialog.showDialog();
+                                                        _fleamarketListViewModel.changeCategory_sub_ski('${FleamarketCategory_sub.plate.korean}');
+                                                        await _fleamarketListViewModel.fetchFleamarketData_ski(
+                                                          userId: _userViewModel.user.user_id,
+                                                          categoryMain: '스키',
+                                                          categorySub:_fleamarketListViewModel.selectedCategory_sub_ski,
+                                                          spot:
+                                                          (_fleamarketListViewModel.selectedCategory_spot_ski == '전체 거래장소')
+                                                              ? null
+                                                              :_fleamarketListViewModel.selectedCategory_spot_ski,
+                                                        );
+                                                        CustomFullScreenDialog.cancelDialog();
+                                                      },
+                                                      shape: RoundedRectangleBorder(
+                                                          borderRadius:
+                                                          BorderRadius.circular(16)),
+                                                    ),
+                                                    ListTile(
+                                                      contentPadding: EdgeInsets.zero,
+                                                      title: Center(
+                                                        child: Text(
+                                                          '${FleamarketCategory_sub.etc.korean}',
+                                                          style: SDSTextStyle.bold.copyWith(
+                                                              fontSize: 15,
+                                                              color: SDSColor.gray900
                                                           ),
                                                         ),
-                                                        //selected: _isSelected[index]!,
-                                                        onTap: () async {
-                                                          print('${_fleamarketListViewModel.selectedCategory_spot_ski }');
-                                                          Navigator.pop(context);
-                                                          CustomFullScreenDialog.showDialog();
-                                                          _fleamarketListViewModel.changeCategory_sub_ski('${FleamarketCategory_sub.etc.korean}');
-                                                          await _fleamarketListViewModel.fetchFleamarketData_ski(
-                                                            userId: _userViewModel.user.user_id,
-                                                            categoryMain: '스키',
-                                                            categorySub:_fleamarketListViewModel.selectedCategory_sub_ski,
-                                                            spot:
-                                                            (_fleamarketListViewModel.selectedCategory_spot_ski == '전체 거래장소')
-                                                                ? null
-                                                                :_fleamarketListViewModel.selectedCategory_spot_ski,
-                                                          );
-                                                          CustomFullScreenDialog.cancelDialog();
-                                                        },
-                                                        shape: RoundedRectangleBorder(
-                                                            borderRadius:
-                                                            BorderRadius.circular(16)),
                                                       ),
-                                                    ],
-                                                  ),
+                                                      //selected: _isSelected[index]!,
+                                                      onTap: () async {
+                                                        print('${_fleamarketListViewModel.selectedCategory_spot_ski }');
+                                                        Navigator.pop(context);
+                                                        CustomFullScreenDialog.showDialog();
+                                                        _fleamarketListViewModel.changeCategory_sub_ski('${FleamarketCategory_sub.etc.korean}');
+                                                        await _fleamarketListViewModel.fetchFleamarketData_ski(
+                                                          userId: _userViewModel.user.user_id,
+                                                          categoryMain: '스키',
+                                                          categorySub:_fleamarketListViewModel.selectedCategory_sub_ski,
+                                                          spot:
+                                                          (_fleamarketListViewModel.selectedCategory_spot_ski == '전체 거래장소')
+                                                              ? null
+                                                              :_fleamarketListViewModel.selectedCategory_spot_ski,
+                                                        );
+                                                        CustomFullScreenDialog.cancelDialog();
+                                                      },
+                                                      shape: RoundedRectangleBorder(
+                                                          borderRadius:
+                                                          BorderRadius.circular(16)),
+                                                    ),
+                                                  ],
                                                 ),
                                               ),
                                             ),
-                                          );
-                                        });
-                                  },
-                                  child: (_fleamarketListViewModel.selectedCategory_sub_ski != '전체 카테고리') ? Image.asset(
-                                    'assets/imgs/icons/icon_check_round.png',
-                                    fit: BoxFit.cover,
-                                    width: 16,
-                                    height: 16,
-                                  ) : Image.asset(
-                                    'assets/imgs/icons/icon_check_round_black.png',
-                                    fit: BoxFit.cover,
-                                    width: 16,
-                                    height: 16,
-                                  ),
+                                          ),
+                                        );
+                                      });
+                                },
+                                child: (_fleamarketListViewModel.selectedCategory_sub_ski != '전체 카테고리') ? Image.asset(
+                                  'assets/imgs/icons/icon_check_round.png',
+                                  fit: BoxFit.cover,
+                                  width: 16,
+                                  height: 16,
+                                ) : Image.asset(
+                                  'assets/imgs/icons/icon_check_round_black.png',
+                                  fit: BoxFit.cover,
+                                  width: 16,
+                                  height: 16,
                                 ),
                               ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
-                        Padding(
-                          padding: EdgeInsets.only(right: 8),
-                          child: Stack(
-                            children: [
-                              ElevatedButton(
-                                  onPressed: () async {
-                                    showModalBottomSheet(
-                                        enableDrag: false,
-                                        isScrollControlled: true,
-                                        backgroundColor: Colors.transparent,
-                                        context: context,
-                                        builder: (context) {
-                                          return SafeArea(
-                                            child: Padding(
-                                              padding: const EdgeInsets.symmetric(vertical: 20),
-                                              child: Container(
-                                                margin: EdgeInsets.only(
-                                                  left: 16,
-                                                  right: 16,
-                                                  top: 16,
-                                                ),
-                                                height: MediaQuery.of(context).size.height * 0.6,
-                                                padding: EdgeInsets.all(16),
-                                                decoration: BoxDecoration(
-                                                  color: Colors.white,
-                                                  borderRadius: BorderRadius.circular(16),
-                                                ),
-                                                child: Scrollbar(
-                                                  child: SingleChildScrollView(
-                                                    child: Wrap(
-                                                      children: [
-                                                        ListTile(
-                                                          contentPadding: EdgeInsets.zero,
-                                                          title: Center(
-                                                            child: Text(
-                                                              '${FleamarketCategory_spot.total.korean}',
-                                                              style: SDSTextStyle.bold.copyWith(
-                                                                  fontSize: 15,
-                                                                  color: SDSColor.gray900
-                                                              ),
-                                                            ),
-                                                          ),
-                                                          //selected: _isSelected[index]!,
-                                                          onTap: () async {
-                                                            Navigator.pop(context);
-                                                            CustomFullScreenDialog.showDialog();
-                                                            _fleamarketListViewModel.changeCategory_spot_ski('${FleamarketCategory_spot.total.korean}');
-                                                            await _fleamarketListViewModel.fetchFleamarketData_ski(
-                                                              userId: _userViewModel.user.user_id,
-                                                              categoryMain: '스키',
-                                                              categorySub: (_fleamarketListViewModel.selectedCategory_sub_ski == '전체 카테고리')
-                                                                  ? null
-                                                                  :_fleamarketListViewModel.selectedCategory_sub_ski,
-                                                            );
-                                                            CustomFullScreenDialog.cancelDialog();
-                                                          },
-                                                          shape: RoundedRectangleBorder(
-                                                              borderRadius:
-                                                              BorderRadius.circular(16)),
-                                                        ),
-                                                        ListTile(
-                                                          contentPadding: EdgeInsets.zero,
-                                                          title: Center(
-                                                            child: Text(
-                                                              '${FleamarketCategory_spot.konjiam.korean}',
-                                                              style: SDSTextStyle.bold.copyWith(
-                                                                  fontSize: 15,
-                                                                  color: SDSColor.gray900
-                                                              ),
-                                                            ),
-                                                          ),
-                                                          //selected: _isSelected[index]!,
-                                                          onTap: () async {
-                                                            Navigator.pop(context);
-                                                            CustomFullScreenDialog.showDialog();
-                                                            _fleamarketListViewModel.changeCategory_spot_ski('${FleamarketCategory_spot.konjiam.korean}');
-                                                            await _fleamarketListViewModel.fetchFleamarketData_ski(
-                                                              userId: _userViewModel.user.user_id,
-                                                              categoryMain: '스키',
-                                                              categorySub: (_fleamarketListViewModel.selectedCategory_sub_ski == '전체 카테고리')
-                                                                  ? null
-                                                                  :_fleamarketListViewModel.selectedCategory_sub_ski,
-                                                              spot: _fleamarketListViewModel.selectedCategory_spot_ski,
-                                                            );
-                                                            CustomFullScreenDialog.cancelDialog();
-                                                          },
-                                                          shape: RoundedRectangleBorder(
-                                                              borderRadius:
-                                                              BorderRadius.circular(16)),
-                                                        ),
-                                                        ListTile(
-                                                          contentPadding: EdgeInsets.zero,
-                                                          title: Center(
-                                                            child: Text(
-                                                              '${FleamarketCategory_spot.muju.korean}',
-                                                              style: SDSTextStyle.bold.copyWith(
-                                                                  fontSize: 15,
-                                                                  color: SDSColor.gray900
-                                                              ),
-                                                            ),
-                                                          ),
-                                                          //selected: _isSelected[index]!,
-                                                          onTap: () async {
-                                                            Navigator.pop(context);
-                                                            CustomFullScreenDialog.showDialog();
-                                                            _fleamarketListViewModel.changeCategory_spot_ski('${FleamarketCategory_spot.muju.korean}');
-                                                            await _fleamarketListViewModel.fetchFleamarketData_ski(
-                                                              userId: _userViewModel.user.user_id,
-                                                              categoryMain: '스키',
-                                                              categorySub: (_fleamarketListViewModel.selectedCategory_sub_ski == '전체 카테고리')
-                                                                  ? null
-                                                                  :_fleamarketListViewModel.selectedCategory_sub_ski,
-                                                              spot: _fleamarketListViewModel.selectedCategory_spot_ski,
-                                                            );
-                                                            CustomFullScreenDialog.cancelDialog();
-                                                          },
-                                                          shape: RoundedRectangleBorder(
-                                                              borderRadius:
-                                                              BorderRadius.circular(16)),
-                                                        ),
-                                                        ListTile(
-                                                          contentPadding: EdgeInsets.zero,
-                                                          title: Center(
-                                                            child: Text(
-                                                              '${FleamarketCategory_spot.vivaldi.korean}',
-                                                              style: SDSTextStyle.bold.copyWith(
-                                                                  fontSize: 15,
-                                                                  color: SDSColor.gray900
-                                                              ),
-                                                            ),
-                                                          ),
-                                                          //selected: _isSelected[index]!,
-                                                          onTap: () async {
-                                                            Navigator.pop(context);
-                                                            CustomFullScreenDialog.showDialog();
-                                                            _fleamarketListViewModel.changeCategory_spot_ski('${FleamarketCategory_spot.vivaldi.korean}');
-                                                            await _fleamarketListViewModel.fetchFleamarketData_ski(
-                                                              userId: _userViewModel.user.user_id,
-                                                              categoryMain: '스키',
-                                                              categorySub: (_fleamarketListViewModel.selectedCategory_sub_ski == '전체 카테고리')
-                                                                  ? null
-                                                                  :_fleamarketListViewModel.selectedCategory_sub_ski,
-                                                              spot: _fleamarketListViewModel.selectedCategory_spot_ski,
-                                                            );
-                                                            CustomFullScreenDialog.cancelDialog();
-                                                          },
-                                                          shape: RoundedRectangleBorder(
-                                                              borderRadius:
-                                                              BorderRadius.circular(16)),
-                                                        ),
-                                                        ListTile(
-                                                          contentPadding: EdgeInsets.zero,
-                                                          title: Center(
-                                                            child: Text(
-                                                              '${FleamarketCategory_spot.alphen.korean}',
-                                                              style: SDSTextStyle.bold.copyWith(
-                                                                  fontSize: 15,
-                                                                  color: SDSColor.gray900
-                                                              ),
-                                                            ),
-                                                          ),
-                                                          //selected: _isSelected[index]!,
-                                                          onTap: () async {
-                                                            Navigator.pop(context);
-                                                            CustomFullScreenDialog.showDialog();
-                                                            _fleamarketListViewModel.changeCategory_spot_ski('${FleamarketCategory_spot.alphen.korean}');
-                                                            await _fleamarketListViewModel.fetchFleamarketData_ski(
-                                                              userId: _userViewModel.user.user_id,
-                                                              categoryMain: '스키',
-                                                              categorySub: (_fleamarketListViewModel.selectedCategory_sub_ski == '전체 카테고리')
-                                                                  ? null
-                                                                  :_fleamarketListViewModel.selectedCategory_sub_ski,
-                                                              spot: _fleamarketListViewModel.selectedCategory_spot_ski,
-                                                            );
-                                                            CustomFullScreenDialog.cancelDialog();
-                                                          },
-                                                          shape: RoundedRectangleBorder(
-                                                              borderRadius:
-                                                              BorderRadius.circular(16)),
-                                                        ),
-                                                        ListTile(
-                                                          contentPadding: EdgeInsets.zero,
-                                                          title: Center(
-                                                            child: Text(
-                                                              '${FleamarketCategory_spot.gangchon.korean}',
-                                                              style: SDSTextStyle.bold.copyWith(
-                                                                  fontSize: 15,
-                                                                  color: SDSColor.gray900
-                                                              ),
-                                                            ),
-                                                          ),
-                                                          //selected: _isSelected[index]!,
-                                                          onTap: () async {
-                                                            Navigator.pop(context);
-                                                            CustomFullScreenDialog.showDialog();
-                                                            _fleamarketListViewModel.changeCategory_spot_ski('${FleamarketCategory_spot.gangchon.korean}');
-                                                            await _fleamarketListViewModel.fetchFleamarketData_ski(
-                                                              userId: _userViewModel.user.user_id,
-                                                              categoryMain: '스키',
-                                                              categorySub: (_fleamarketListViewModel.selectedCategory_sub_ski == '전체 카테고리')
-                                                                  ? null
-                                                                  :_fleamarketListViewModel.selectedCategory_sub_ski,
-                                                              spot: _fleamarketListViewModel.selectedCategory_spot_ski,
-                                                            );
-                                                            CustomFullScreenDialog.cancelDialog();
-                                                          },
-                                                          shape: RoundedRectangleBorder(
-                                                              borderRadius:
-                                                              BorderRadius.circular(16)),
-                                                        ),
-                                                        ListTile(
-                                                          contentPadding: EdgeInsets.zero,
-                                                          title: Center(
-                                                            child: Text(
-                                                              '${FleamarketCategory_spot.oak.korean}',
-                                                              style: SDSTextStyle.bold.copyWith(
-                                                                  fontSize: 15,
-                                                                  color: SDSColor.gray900
-                                                              ),
-                                                            ),
-                                                          ),
-                                                          //selected: _isSelected[index]!,
-                                                          onTap: () async {
-                                                            Navigator.pop(context);
-                                                            CustomFullScreenDialog.showDialog();
-                                                            _fleamarketListViewModel.changeCategory_spot_ski('${FleamarketCategory_spot.oak.korean}');
-                                                            await _fleamarketListViewModel.fetchFleamarketData_ski(
-                                                              userId: _userViewModel.user.user_id,
-                                                              categoryMain: '스키',
-                                                              categorySub: (_fleamarketListViewModel.selectedCategory_sub_ski == '전체 카테고리')
-                                                                  ? null
-                                                                  :_fleamarketListViewModel.selectedCategory_sub_ski,
-                                                              spot: _fleamarketListViewModel.selectedCategory_spot_ski,
-                                                            );
-                                                            CustomFullScreenDialog.cancelDialog();
-                                                          },
-                                                          shape: RoundedRectangleBorder(
-                                                              borderRadius:
-                                                              BorderRadius.circular(16)),
-                                                        ),
-                                                        ListTile(
-                                                          contentPadding: EdgeInsets.zero,
-                                                          title: Center(
-                                                            child: Text(
-                                                              '${FleamarketCategory_spot.o2.korean}',
-                                                              style: SDSTextStyle.bold.copyWith(
-                                                                  fontSize: 15,
-                                                                  color: SDSColor.gray900
-                                                              ),
-                                                            ),
-                                                          ),
-                                                          //selected: _isSelected[index]!,
-                                                          onTap: () async {
-                                                            Navigator.pop(context);
-                                                            CustomFullScreenDialog.showDialog();
-                                                            _fleamarketListViewModel.changeCategory_spot_ski('${FleamarketCategory_spot.o2.korean}');
-                                                            await _fleamarketListViewModel.fetchFleamarketData_ski(
-                                                              userId: _userViewModel.user.user_id,
-                                                              categoryMain: '스키',
-                                                              categorySub: (_fleamarketListViewModel.selectedCategory_sub_ski == '전체 카테고리')
-                                                                  ? null
-                                                                  :_fleamarketListViewModel.selectedCategory_sub_ski,
-                                                              spot: _fleamarketListViewModel.selectedCategory_spot_ski,
-                                                            );
-                                                            CustomFullScreenDialog.cancelDialog();
-                                                          },
-                                                          shape: RoundedRectangleBorder(
-                                                              borderRadius:
-                                                              BorderRadius.circular(16)),
-                                                        ),
-                                                        ListTile(
-                                                          contentPadding: EdgeInsets.zero,
-                                                          title: Center(
-                                                            child: Text(
-                                                              '${FleamarketCategory_spot.yongpyong.korean}',
-                                                              style: SDSTextStyle.bold.copyWith(
-                                                                  fontSize: 15,
-                                                                  color: SDSColor.gray900
-                                                              ),
-                                                            ),
-                                                          ),
-                                                          //selected: _isSelected[index]!,
-                                                          onTap: () async {
-                                                            Navigator.pop(context);
-                                                            CustomFullScreenDialog.showDialog();
-                                                            _fleamarketListViewModel.changeCategory_spot_ski('${FleamarketCategory_spot.yongpyong.korean}');
-                                                            await _fleamarketListViewModel.fetchFleamarketData_ski(
-                                                              userId: _userViewModel.user.user_id,
-                                                              categoryMain: '스키',
-                                                              categorySub: (_fleamarketListViewModel.selectedCategory_sub_ski == '전체 카테고리')
-                                                                  ? null
-                                                                  :_fleamarketListViewModel.selectedCategory_sub_ski,
-                                                              spot: _fleamarketListViewModel.selectedCategory_spot_ski,
-                                                            );
-                                                            CustomFullScreenDialog.cancelDialog();
-                                                          },
-                                                          shape: RoundedRectangleBorder(
-                                                              borderRadius:
-                                                              BorderRadius.circular(16)),
-                                                        ),
-                                                        ListTile(
-                                                          contentPadding: EdgeInsets.zero,
-                                                          title: Center(
-                                                            child: Text(
-                                                              '${FleamarketCategory_spot.welli.korean}',
-                                                              style: SDSTextStyle.bold.copyWith(
-                                                                  fontSize: 15,
-                                                                  color: SDSColor.gray900
-                                                              ),
-                                                            ),
-                                                          ),
-                                                          //selected: _isSelected[index]!,
-                                                          onTap: () async {
-                                                            Navigator.pop(context);
-                                                            CustomFullScreenDialog.showDialog();
-                                                            _fleamarketListViewModel.changeCategory_spot_ski('${FleamarketCategory_spot.welli.korean}');
-                                                            await _fleamarketListViewModel.fetchFleamarketData_ski(
-                                                              userId: _userViewModel.user.user_id,
-                                                              categoryMain: '스키',
-                                                              categorySub: (_fleamarketListViewModel.selectedCategory_sub_ski == '전체 카테고리')
-                                                                  ? null
-                                                                  :_fleamarketListViewModel.selectedCategory_sub_ski,
-                                                              spot: _fleamarketListViewModel.selectedCategory_spot_ski,
-                                                            );
-                                                            CustomFullScreenDialog.cancelDialog();
-                                                          },
-                                                          shape: RoundedRectangleBorder(
-                                                              borderRadius:
-                                                              BorderRadius.circular(16)),
-                                                        ),
-                                                        ListTile(
-                                                          contentPadding: EdgeInsets.zero,
-                                                          title: Center(
-                                                            child: Text(
-                                                              '${FleamarketCategory_spot.jisan.korean}',
-                                                              style: SDSTextStyle.bold.copyWith(
-                                                                  fontSize: 15,
-                                                                  color: SDSColor.gray900
-                                                              ),
-                                                            ),
-                                                          ),
-                                                          //selected: _isSelected[index]!,
-                                                          onTap: () async {
-                                                            Navigator.pop(context);
-                                                            CustomFullScreenDialog.showDialog();
-                                                            _fleamarketListViewModel.changeCategory_spot_ski('${FleamarketCategory_spot.jisan.korean}');
-                                                            await _fleamarketListViewModel.fetchFleamarketData_ski(
-                                                              userId: _userViewModel.user.user_id,
-                                                              categoryMain: '스키',
-                                                              categorySub: (_fleamarketListViewModel.selectedCategory_sub_ski == '전체 카테고리')
-                                                                  ? null
-                                                                  :_fleamarketListViewModel.selectedCategory_sub_ski,
-                                                              spot: _fleamarketListViewModel.selectedCategory_spot_ski,
-                                                            );
-                                                            CustomFullScreenDialog.cancelDialog();
-                                                          },
-                                                          shape: RoundedRectangleBorder(
-                                                              borderRadius:
-                                                              BorderRadius.circular(16)),
-                                                        ),
-                                                        ListTile(
-                                                          contentPadding: EdgeInsets.zero,
-                                                          title: Center(
-                                                            child: Text(
-                                                              '${FleamarketCategory_spot.high1.korean}',
-                                                              style: SDSTextStyle.bold.copyWith(
-                                                                  fontSize: 15,
-                                                                  color: SDSColor.gray900
-                                                              ),
-                                                            ),
-                                                          ),
-                                                          //selected: _isSelected[index]!,
-                                                          onTap: () async {
-                                                            Navigator.pop(context);
-                                                            CustomFullScreenDialog.showDialog();
-                                                            _fleamarketListViewModel.changeCategory_spot_ski('${FleamarketCategory_spot.high1.korean}');
-                                                            await _fleamarketListViewModel.fetchFleamarketData_ski(
-                                                              userId: _userViewModel.user.user_id,
-                                                              categoryMain: '스키',
-                                                              categorySub: (_fleamarketListViewModel.selectedCategory_sub_ski == '전체 카테고리')
-                                                                  ? null
-                                                                  :_fleamarketListViewModel.selectedCategory_sub_ski,
-                                                              spot: _fleamarketListViewModel.selectedCategory_spot_ski,
-                                                            );
-                                                            CustomFullScreenDialog.cancelDialog();
-                                                          },
-                                                          shape: RoundedRectangleBorder(
-                                                              borderRadius:
-                                                              BorderRadius.circular(16)),
-                                                        ),
-                                                        ListTile(
-                                                          contentPadding: EdgeInsets.zero,
-                                                          title: Center(
-                                                            child: Text(
-                                                              '${FleamarketCategory_spot.phoenix.korean}',
-                                                              style: SDSTextStyle.bold.copyWith(
-                                                                  fontSize: 15,
-                                                                  color: SDSColor.gray900
-                                                              ),
-                                                            ),
-                                                          ),
-                                                          //selected: _isSelected[index]!,
-                                                          onTap: () async {
-                                                            Navigator.pop(context);
-                                                            CustomFullScreenDialog.showDialog();
-                                                            _fleamarketListViewModel.changeCategory_spot_ski('${FleamarketCategory_spot.phoenix.korean}');
-                                                            await _fleamarketListViewModel.fetchFleamarketData_ski(
-                                                              userId: _userViewModel.user.user_id,
-                                                              categoryMain: '스키',
-                                                              categorySub: (_fleamarketListViewModel.selectedCategory_sub_ski == '전체 카테고리')
-                                                                  ? null
-                                                                  :_fleamarketListViewModel.selectedCategory_sub_ski,
-                                                              spot: _fleamarketListViewModel.selectedCategory_spot_ski,
-                                                            );
-                                                            CustomFullScreenDialog.cancelDialog();
-                                                          },
-                                                          shape: RoundedRectangleBorder(
-                                                              borderRadius:
-                                                              BorderRadius.circular(16)),
-                                                        ),
-                                                        ListTile(
-                                                          contentPadding: EdgeInsets.zero,
-                                                          title: Center(
-                                                            child: Text(
-                                                              '${FleamarketCategory_spot.etc.korean}',
-                                                              style: SDSTextStyle.bold.copyWith(
-                                                                  fontSize: 15,
-                                                                  color: SDSColor.gray900
-                                                              ),
-                                                            ),
-                                                          ),
-                                                          //selected: _isSelected[index]!,
-                                                          onTap: () async {
-                                                            Navigator.pop(context);
-                                                            CustomFullScreenDialog.showDialog();
-                                                            _fleamarketListViewModel.changeCategory_spot_ski('${FleamarketCategory_spot.etc.korean}');
-                                                            await _fleamarketListViewModel.fetchFleamarketData_ski(
-                                                              userId: _userViewModel.user.user_id,
-                                                              categoryMain: '스키',
-                                                              categorySub: (_fleamarketListViewModel.selectedCategory_sub_ski == '전체 카테고리')
-                                                                  ? null
-                                                                  :_fleamarketListViewModel.selectedCategory_sub_ski,
-                                                              spot: _fleamarketListViewModel.selectedCategory_spot_ski,
-                                                            );
-                                                            CustomFullScreenDialog.cancelDialog();
-                                                          },
-                                                          shape: RoundedRectangleBorder(
-                                                              borderRadius:
-                                                              BorderRadius.circular(16)),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(right: 8),
+                        child: Stack(
+                          children: [
+                            ElevatedButton(
+                                onPressed: () async {
+                                  HapticFeedback.lightImpact();
+                                  showModalBottomSheet(
+                                      enableDrag: false,
+                                      isScrollControlled: true,
+                                      backgroundColor: Colors.transparent,
+                                      context: context,
+                                      builder: (context) {
+                                        return SafeArea(
+                                          child: Padding(
+                                            padding: const EdgeInsets.symmetric(vertical: 20),
+                                            child: Container(
+                                              margin: EdgeInsets.only(
+                                                left: 16,
+                                                right: 16,
+                                                top: 16,
                                               ),
-                                            ),
-                                          );
-                                        });
-                                  },
-                                  style: ElevatedButton.styleFrom(
-                                      padding: EdgeInsets.only(
-                                          right: 32, left: 12, top: 3, bottom: 2),
-                                      side: BorderSide(
-                                        width: 1,
-                                        color: (_fleamarketListViewModel.selectedCategory_spot_ski != '전체 거래장소') ? SDSColor.gray900 : SDSColor.gray100,
-                                      ),
-                                      backgroundColor: (_fleamarketListViewModel.selectedCategory_spot_ski != '전체 거래장소') ? SDSColor.gray900 : SDSColor.snowliveWhite,
-                                      elevation: 0,
-                                      shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(50))),
-                                  child:
-                                  Text('${_fleamarketListViewModel.selectedCategory_spot_ski}',
-                                      style: SDSTextStyle.bold.copyWith(
-                                          fontSize: 13,
-                                          color: (_fleamarketListViewModel.selectedCategory_spot_ski != '전체 거래장소') ? Color(0xFFFFFFFF) : Color(0xFF111111)))
-                              ),
-                              Positioned(
-                                top: 16,
-                                right: 10,
-                                child: GestureDetector(
-                                  onTap: () async {
-                                    showModalBottomSheet(
-                                        enableDrag: false,
-                                        isScrollControlled: true,
-                                        backgroundColor: Colors.transparent,
-                                        context: context,
-                                        builder: (context) {
-                                          return SafeArea(
-                                            child: Padding(
-                                              padding: const EdgeInsets.symmetric(vertical: 20),
-                                              child: Container(
-                                                margin: EdgeInsets.only(
-                                                  left: 16,
-                                                  right: 16,
-                                                  top: 16,
-                                                ),
-                                                height: MediaQuery.of(context).size.height * 0.5,
-                                                padding: EdgeInsets.all(16),
-                                                decoration: BoxDecoration(
-                                                  color: Colors.white,
-                                                  borderRadius: BorderRadius.circular(16),
-                                                ),
+                                              height: MediaQuery.of(context).size.height * 0.6,
+                                              padding: EdgeInsets.all(16),
+                                              decoration: BoxDecoration(
+                                                color: Colors.white,
+                                                borderRadius: BorderRadius.circular(16),
+                                              ),
+                                              child: Scrollbar(
                                                 child: SingleChildScrollView(
                                                   child: Wrap(
                                                     children: [
@@ -1551,92 +1075,575 @@ class FleaMarketListView_ski extends StatelessWidget {
                                                 ),
                                               ),
                                             ),
-                                          );
-                                        });
-                                  },
-                                  child: (_fleamarketListViewModel.selectedCategory_spot_ski != '전체 거래장소') ? Image.asset(
-                                    'assets/imgs/icons/icon_check_round.png',
-                                    fit: BoxFit.cover,
-                                    width: 16,
-                                    height: 16,
-                                  ) : Image.asset(
-                                    'assets/imgs/icons/icon_check_round_black.png',
-                                    fit: BoxFit.cover,
-                                    width: 16,
-                                    height: 16,
-                                  ),
+                                          ),
+                                        );
+                                      });
+                                },
+                                style: ElevatedButton.styleFrom(
+                                    shadowColor: Colors.transparent,
+                                    overlayColor: Colors.transparent,
+                                    padding: EdgeInsets.only(
+                                        right: 32, left: 12, top: 3, bottom: 2),
+                                    side: BorderSide(
+                                      width: 1,
+                                      color: (_fleamarketListViewModel.selectedCategory_spot_ski != '전체 거래장소') ? SDSColor.gray900 : SDSColor.gray100,
+                                    ),
+                                    backgroundColor: (_fleamarketListViewModel.selectedCategory_spot_ski != '전체 거래장소') ? SDSColor.gray900 : SDSColor.snowliveWhite,
+                                    elevation: 0,
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(50))),
+                                child:
+                                Text('${_fleamarketListViewModel.selectedCategory_spot_ski}',
+                                    style: SDSTextStyle.bold.copyWith(
+                                        fontSize: 13,
+                                        color: (_fleamarketListViewModel.selectedCategory_spot_ski != '전체 거래장소') ? Color(0xFFFFFFFF) : Color(0xFF111111)))
+                            ),
+                            Positioned(
+                              top: 16,
+                              right: 10,
+                              child: GestureDetector(
+                                onTap: () async {
+                                  showModalBottomSheet(
+                                      enableDrag: false,
+                                      isScrollControlled: true,
+                                      backgroundColor: Colors.transparent,
+                                      context: context,
+                                      builder: (context) {
+                                        return SafeArea(
+                                          child: Padding(
+                                            padding: const EdgeInsets.symmetric(vertical: 20),
+                                            child: Container(
+                                              margin: EdgeInsets.only(
+                                                left: 16,
+                                                right: 16,
+                                                top: 16,
+                                              ),
+                                              height: MediaQuery.of(context).size.height * 0.5,
+                                              padding: EdgeInsets.all(16),
+                                              decoration: BoxDecoration(
+                                                color: Colors.white,
+                                                borderRadius: BorderRadius.circular(16),
+                                              ),
+                                              child: SingleChildScrollView(
+                                                child: Wrap(
+                                                  children: [
+                                                    ListTile(
+                                                      contentPadding: EdgeInsets.zero,
+                                                      title: Center(
+                                                        child: Text(
+                                                          '${FleamarketCategory_spot.total.korean}',
+                                                          style: SDSTextStyle.bold.copyWith(
+                                                              fontSize: 15,
+                                                              color: SDSColor.gray900
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      //selected: _isSelected[index]!,
+                                                      onTap: () async {
+                                                        Navigator.pop(context);
+                                                        CustomFullScreenDialog.showDialog();
+                                                        _fleamarketListViewModel.changeCategory_spot_ski('${FleamarketCategory_spot.total.korean}');
+                                                        await _fleamarketListViewModel.fetchFleamarketData_ski(
+                                                          userId: _userViewModel.user.user_id,
+                                                          categoryMain: '스키',
+                                                          categorySub: (_fleamarketListViewModel.selectedCategory_sub_ski == '전체 카테고리')
+                                                              ? null
+                                                              :_fleamarketListViewModel.selectedCategory_sub_ski,
+                                                        );
+                                                        CustomFullScreenDialog.cancelDialog();
+                                                      },
+                                                      shape: RoundedRectangleBorder(
+                                                          borderRadius:
+                                                          BorderRadius.circular(16)),
+                                                    ),
+                                                    ListTile(
+                                                      contentPadding: EdgeInsets.zero,
+                                                      title: Center(
+                                                        child: Text(
+                                                          '${FleamarketCategory_spot.konjiam.korean}',
+                                                          style: SDSTextStyle.bold.copyWith(
+                                                              fontSize: 15,
+                                                              color: SDSColor.gray900
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      //selected: _isSelected[index]!,
+                                                      onTap: () async {
+                                                        Navigator.pop(context);
+                                                        CustomFullScreenDialog.showDialog();
+                                                        _fleamarketListViewModel.changeCategory_spot_ski('${FleamarketCategory_spot.konjiam.korean}');
+                                                        await _fleamarketListViewModel.fetchFleamarketData_ski(
+                                                          userId: _userViewModel.user.user_id,
+                                                          categoryMain: '스키',
+                                                          categorySub: (_fleamarketListViewModel.selectedCategory_sub_ski == '전체 카테고리')
+                                                              ? null
+                                                              :_fleamarketListViewModel.selectedCategory_sub_ski,
+                                                          spot: _fleamarketListViewModel.selectedCategory_spot_ski,
+                                                        );
+                                                        CustomFullScreenDialog.cancelDialog();
+                                                      },
+                                                      shape: RoundedRectangleBorder(
+                                                          borderRadius:
+                                                          BorderRadius.circular(16)),
+                                                    ),
+                                                    ListTile(
+                                                      contentPadding: EdgeInsets.zero,
+                                                      title: Center(
+                                                        child: Text(
+                                                          '${FleamarketCategory_spot.muju.korean}',
+                                                          style: SDSTextStyle.bold.copyWith(
+                                                              fontSize: 15,
+                                                              color: SDSColor.gray900
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      //selected: _isSelected[index]!,
+                                                      onTap: () async {
+                                                        Navigator.pop(context);
+                                                        CustomFullScreenDialog.showDialog();
+                                                        _fleamarketListViewModel.changeCategory_spot_ski('${FleamarketCategory_spot.muju.korean}');
+                                                        await _fleamarketListViewModel.fetchFleamarketData_ski(
+                                                          userId: _userViewModel.user.user_id,
+                                                          categoryMain: '스키',
+                                                          categorySub: (_fleamarketListViewModel.selectedCategory_sub_ski == '전체 카테고리')
+                                                              ? null
+                                                              :_fleamarketListViewModel.selectedCategory_sub_ski,
+                                                          spot: _fleamarketListViewModel.selectedCategory_spot_ski,
+                                                        );
+                                                        CustomFullScreenDialog.cancelDialog();
+                                                      },
+                                                      shape: RoundedRectangleBorder(
+                                                          borderRadius:
+                                                          BorderRadius.circular(16)),
+                                                    ),
+                                                    ListTile(
+                                                      contentPadding: EdgeInsets.zero,
+                                                      title: Center(
+                                                        child: Text(
+                                                          '${FleamarketCategory_spot.vivaldi.korean}',
+                                                          style: SDSTextStyle.bold.copyWith(
+                                                              fontSize: 15,
+                                                              color: SDSColor.gray900
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      //selected: _isSelected[index]!,
+                                                      onTap: () async {
+                                                        Navigator.pop(context);
+                                                        CustomFullScreenDialog.showDialog();
+                                                        _fleamarketListViewModel.changeCategory_spot_ski('${FleamarketCategory_spot.vivaldi.korean}');
+                                                        await _fleamarketListViewModel.fetchFleamarketData_ski(
+                                                          userId: _userViewModel.user.user_id,
+                                                          categoryMain: '스키',
+                                                          categorySub: (_fleamarketListViewModel.selectedCategory_sub_ski == '전체 카테고리')
+                                                              ? null
+                                                              :_fleamarketListViewModel.selectedCategory_sub_ski,
+                                                          spot: _fleamarketListViewModel.selectedCategory_spot_ski,
+                                                        );
+                                                        CustomFullScreenDialog.cancelDialog();
+                                                      },
+                                                      shape: RoundedRectangleBorder(
+                                                          borderRadius:
+                                                          BorderRadius.circular(16)),
+                                                    ),
+                                                    ListTile(
+                                                      contentPadding: EdgeInsets.zero,
+                                                      title: Center(
+                                                        child: Text(
+                                                          '${FleamarketCategory_spot.alphen.korean}',
+                                                          style: SDSTextStyle.bold.copyWith(
+                                                              fontSize: 15,
+                                                              color: SDSColor.gray900
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      //selected: _isSelected[index]!,
+                                                      onTap: () async {
+                                                        Navigator.pop(context);
+                                                        CustomFullScreenDialog.showDialog();
+                                                        _fleamarketListViewModel.changeCategory_spot_ski('${FleamarketCategory_spot.alphen.korean}');
+                                                        await _fleamarketListViewModel.fetchFleamarketData_ski(
+                                                          userId: _userViewModel.user.user_id,
+                                                          categoryMain: '스키',
+                                                          categorySub: (_fleamarketListViewModel.selectedCategory_sub_ski == '전체 카테고리')
+                                                              ? null
+                                                              :_fleamarketListViewModel.selectedCategory_sub_ski,
+                                                          spot: _fleamarketListViewModel.selectedCategory_spot_ski,
+                                                        );
+                                                        CustomFullScreenDialog.cancelDialog();
+                                                      },
+                                                      shape: RoundedRectangleBorder(
+                                                          borderRadius:
+                                                          BorderRadius.circular(16)),
+                                                    ),
+                                                    ListTile(
+                                                      contentPadding: EdgeInsets.zero,
+                                                      title: Center(
+                                                        child: Text(
+                                                          '${FleamarketCategory_spot.gangchon.korean}',
+                                                          style: SDSTextStyle.bold.copyWith(
+                                                              fontSize: 15,
+                                                              color: SDSColor.gray900
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      //selected: _isSelected[index]!,
+                                                      onTap: () async {
+                                                        Navigator.pop(context);
+                                                        CustomFullScreenDialog.showDialog();
+                                                        _fleamarketListViewModel.changeCategory_spot_ski('${FleamarketCategory_spot.gangchon.korean}');
+                                                        await _fleamarketListViewModel.fetchFleamarketData_ski(
+                                                          userId: _userViewModel.user.user_id,
+                                                          categoryMain: '스키',
+                                                          categorySub: (_fleamarketListViewModel.selectedCategory_sub_ski == '전체 카테고리')
+                                                              ? null
+                                                              :_fleamarketListViewModel.selectedCategory_sub_ski,
+                                                          spot: _fleamarketListViewModel.selectedCategory_spot_ski,
+                                                        );
+                                                        CustomFullScreenDialog.cancelDialog();
+                                                      },
+                                                      shape: RoundedRectangleBorder(
+                                                          borderRadius:
+                                                          BorderRadius.circular(16)),
+                                                    ),
+                                                    ListTile(
+                                                      contentPadding: EdgeInsets.zero,
+                                                      title: Center(
+                                                        child: Text(
+                                                          '${FleamarketCategory_spot.oak.korean}',
+                                                          style: SDSTextStyle.bold.copyWith(
+                                                              fontSize: 15,
+                                                              color: SDSColor.gray900
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      //selected: _isSelected[index]!,
+                                                      onTap: () async {
+                                                        Navigator.pop(context);
+                                                        CustomFullScreenDialog.showDialog();
+                                                        _fleamarketListViewModel.changeCategory_spot_ski('${FleamarketCategory_spot.oak.korean}');
+                                                        await _fleamarketListViewModel.fetchFleamarketData_ski(
+                                                          userId: _userViewModel.user.user_id,
+                                                          categoryMain: '스키',
+                                                          categorySub: (_fleamarketListViewModel.selectedCategory_sub_ski == '전체 카테고리')
+                                                              ? null
+                                                              :_fleamarketListViewModel.selectedCategory_sub_ski,
+                                                          spot: _fleamarketListViewModel.selectedCategory_spot_ski,
+                                                        );
+                                                        CustomFullScreenDialog.cancelDialog();
+                                                      },
+                                                      shape: RoundedRectangleBorder(
+                                                          borderRadius:
+                                                          BorderRadius.circular(16)),
+                                                    ),
+                                                    ListTile(
+                                                      contentPadding: EdgeInsets.zero,
+                                                      title: Center(
+                                                        child: Text(
+                                                          '${FleamarketCategory_spot.o2.korean}',
+                                                          style: SDSTextStyle.bold.copyWith(
+                                                              fontSize: 15,
+                                                              color: SDSColor.gray900
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      //selected: _isSelected[index]!,
+                                                      onTap: () async {
+                                                        Navigator.pop(context);
+                                                        CustomFullScreenDialog.showDialog();
+                                                        _fleamarketListViewModel.changeCategory_spot_ski('${FleamarketCategory_spot.o2.korean}');
+                                                        await _fleamarketListViewModel.fetchFleamarketData_ski(
+                                                          userId: _userViewModel.user.user_id,
+                                                          categoryMain: '스키',
+                                                          categorySub: (_fleamarketListViewModel.selectedCategory_sub_ski == '전체 카테고리')
+                                                              ? null
+                                                              :_fleamarketListViewModel.selectedCategory_sub_ski,
+                                                          spot: _fleamarketListViewModel.selectedCategory_spot_ski,
+                                                        );
+                                                        CustomFullScreenDialog.cancelDialog();
+                                                      },
+                                                      shape: RoundedRectangleBorder(
+                                                          borderRadius:
+                                                          BorderRadius.circular(16)),
+                                                    ),
+                                                    ListTile(
+                                                      contentPadding: EdgeInsets.zero,
+                                                      title: Center(
+                                                        child: Text(
+                                                          '${FleamarketCategory_spot.yongpyong.korean}',
+                                                          style: SDSTextStyle.bold.copyWith(
+                                                              fontSize: 15,
+                                                              color: SDSColor.gray900
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      //selected: _isSelected[index]!,
+                                                      onTap: () async {
+                                                        Navigator.pop(context);
+                                                        CustomFullScreenDialog.showDialog();
+                                                        _fleamarketListViewModel.changeCategory_spot_ski('${FleamarketCategory_spot.yongpyong.korean}');
+                                                        await _fleamarketListViewModel.fetchFleamarketData_ski(
+                                                          userId: _userViewModel.user.user_id,
+                                                          categoryMain: '스키',
+                                                          categorySub: (_fleamarketListViewModel.selectedCategory_sub_ski == '전체 카테고리')
+                                                              ? null
+                                                              :_fleamarketListViewModel.selectedCategory_sub_ski,
+                                                          spot: _fleamarketListViewModel.selectedCategory_spot_ski,
+                                                        );
+                                                        CustomFullScreenDialog.cancelDialog();
+                                                      },
+                                                      shape: RoundedRectangleBorder(
+                                                          borderRadius:
+                                                          BorderRadius.circular(16)),
+                                                    ),
+                                                    ListTile(
+                                                      contentPadding: EdgeInsets.zero,
+                                                      title: Center(
+                                                        child: Text(
+                                                          '${FleamarketCategory_spot.welli.korean}',
+                                                          style: SDSTextStyle.bold.copyWith(
+                                                              fontSize: 15,
+                                                              color: SDSColor.gray900
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      //selected: _isSelected[index]!,
+                                                      onTap: () async {
+                                                        Navigator.pop(context);
+                                                        CustomFullScreenDialog.showDialog();
+                                                        _fleamarketListViewModel.changeCategory_spot_ski('${FleamarketCategory_spot.welli.korean}');
+                                                        await _fleamarketListViewModel.fetchFleamarketData_ski(
+                                                          userId: _userViewModel.user.user_id,
+                                                          categoryMain: '스키',
+                                                          categorySub: (_fleamarketListViewModel.selectedCategory_sub_ski == '전체 카테고리')
+                                                              ? null
+                                                              :_fleamarketListViewModel.selectedCategory_sub_ski,
+                                                          spot: _fleamarketListViewModel.selectedCategory_spot_ski,
+                                                        );
+                                                        CustomFullScreenDialog.cancelDialog();
+                                                      },
+                                                      shape: RoundedRectangleBorder(
+                                                          borderRadius:
+                                                          BorderRadius.circular(16)),
+                                                    ),
+                                                    ListTile(
+                                                      contentPadding: EdgeInsets.zero,
+                                                      title: Center(
+                                                        child: Text(
+                                                          '${FleamarketCategory_spot.jisan.korean}',
+                                                          style: SDSTextStyle.bold.copyWith(
+                                                              fontSize: 15,
+                                                              color: SDSColor.gray900
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      //selected: _isSelected[index]!,
+                                                      onTap: () async {
+                                                        Navigator.pop(context);
+                                                        CustomFullScreenDialog.showDialog();
+                                                        _fleamarketListViewModel.changeCategory_spot_ski('${FleamarketCategory_spot.jisan.korean}');
+                                                        await _fleamarketListViewModel.fetchFleamarketData_ski(
+                                                          userId: _userViewModel.user.user_id,
+                                                          categoryMain: '스키',
+                                                          categorySub: (_fleamarketListViewModel.selectedCategory_sub_ski == '전체 카테고리')
+                                                              ? null
+                                                              :_fleamarketListViewModel.selectedCategory_sub_ski,
+                                                          spot: _fleamarketListViewModel.selectedCategory_spot_ski,
+                                                        );
+                                                        CustomFullScreenDialog.cancelDialog();
+                                                      },
+                                                      shape: RoundedRectangleBorder(
+                                                          borderRadius:
+                                                          BorderRadius.circular(16)),
+                                                    ),
+                                                    ListTile(
+                                                      contentPadding: EdgeInsets.zero,
+                                                      title: Center(
+                                                        child: Text(
+                                                          '${FleamarketCategory_spot.high1.korean}',
+                                                          style: SDSTextStyle.bold.copyWith(
+                                                              fontSize: 15,
+                                                              color: SDSColor.gray900
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      //selected: _isSelected[index]!,
+                                                      onTap: () async {
+                                                        Navigator.pop(context);
+                                                        CustomFullScreenDialog.showDialog();
+                                                        _fleamarketListViewModel.changeCategory_spot_ski('${FleamarketCategory_spot.high1.korean}');
+                                                        await _fleamarketListViewModel.fetchFleamarketData_ski(
+                                                          userId: _userViewModel.user.user_id,
+                                                          categoryMain: '스키',
+                                                          categorySub: (_fleamarketListViewModel.selectedCategory_sub_ski == '전체 카테고리')
+                                                              ? null
+                                                              :_fleamarketListViewModel.selectedCategory_sub_ski,
+                                                          spot: _fleamarketListViewModel.selectedCategory_spot_ski,
+                                                        );
+                                                        CustomFullScreenDialog.cancelDialog();
+                                                      },
+                                                      shape: RoundedRectangleBorder(
+                                                          borderRadius:
+                                                          BorderRadius.circular(16)),
+                                                    ),
+                                                    ListTile(
+                                                      contentPadding: EdgeInsets.zero,
+                                                      title: Center(
+                                                        child: Text(
+                                                          '${FleamarketCategory_spot.phoenix.korean}',
+                                                          style: SDSTextStyle.bold.copyWith(
+                                                              fontSize: 15,
+                                                              color: SDSColor.gray900
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      //selected: _isSelected[index]!,
+                                                      onTap: () async {
+                                                        Navigator.pop(context);
+                                                        CustomFullScreenDialog.showDialog();
+                                                        _fleamarketListViewModel.changeCategory_spot_ski('${FleamarketCategory_spot.phoenix.korean}');
+                                                        await _fleamarketListViewModel.fetchFleamarketData_ski(
+                                                          userId: _userViewModel.user.user_id,
+                                                          categoryMain: '스키',
+                                                          categorySub: (_fleamarketListViewModel.selectedCategory_sub_ski == '전체 카테고리')
+                                                              ? null
+                                                              :_fleamarketListViewModel.selectedCategory_sub_ski,
+                                                          spot: _fleamarketListViewModel.selectedCategory_spot_ski,
+                                                        );
+                                                        CustomFullScreenDialog.cancelDialog();
+                                                      },
+                                                      shape: RoundedRectangleBorder(
+                                                          borderRadius:
+                                                          BorderRadius.circular(16)),
+                                                    ),
+                                                    ListTile(
+                                                      contentPadding: EdgeInsets.zero,
+                                                      title: Center(
+                                                        child: Text(
+                                                          '${FleamarketCategory_spot.etc.korean}',
+                                                          style: SDSTextStyle.bold.copyWith(
+                                                              fontSize: 15,
+                                                              color: SDSColor.gray900
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      //selected: _isSelected[index]!,
+                                                      onTap: () async {
+                                                        Navigator.pop(context);
+                                                        CustomFullScreenDialog.showDialog();
+                                                        _fleamarketListViewModel.changeCategory_spot_ski('${FleamarketCategory_spot.etc.korean}');
+                                                        await _fleamarketListViewModel.fetchFleamarketData_ski(
+                                                          userId: _userViewModel.user.user_id,
+                                                          categoryMain: '스키',
+                                                          categorySub: (_fleamarketListViewModel.selectedCategory_sub_ski == '전체 카테고리')
+                                                              ? null
+                                                              :_fleamarketListViewModel.selectedCategory_sub_ski,
+                                                          spot: _fleamarketListViewModel.selectedCategory_spot_ski,
+                                                        );
+                                                        CustomFullScreenDialog.cancelDialog();
+                                                      },
+                                                      shape: RoundedRectangleBorder(
+                                                          borderRadius:
+                                                          BorderRadius.circular(16)),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        );
+                                      });
+                                },
+                                child: (_fleamarketListViewModel.selectedCategory_spot_ski != '전체 거래장소') ? Image.asset(
+                                  'assets/imgs/icons/icon_check_round.png',
+                                  fit: BoxFit.cover,
+                                  width: 16,
+                                  height: 16,
+                                ) : Image.asset(
+                                  'assets/imgs/icons/icon_check_round_black.png',
+                                  fit: BoxFit.cover,
+                                  width: 16,
+                                  height: 16,
                                 ),
                               ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  //TODO: 리스트
-                  (_fleamarketListViewModel.isLoadingList_ski==true)
-                      ? Container(
-                    height: 300,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Center(
-                          child: Container(
-                            width: 24,
-                            height: 24,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Center(
-                                  child: Container(
-                                    width: 24,
-                                    height: 24,
-                                    child: CircularProgressIndicator(
-                                      strokeWidth: 4,
-                                      backgroundColor: SDSColor.gray100,
-                                      color: SDSColor.gray300.withOpacity(0.6),
-                                    ),
-                                  ),
-                                ),
-                              ],
                             ),
-                          ),
+                          ],
                         ),
-                      ],
-                    ),
-                  )
-                      :
-                  Expanded(
-                      child: (_fleamarketListViewModel.fleamarketListSki.length == 0)
-                          ? Transform.translate(
-                        offset: Offset(0, -40),
-                        child: Center(
+                      ),
+                    ],
+                  ),
+                ),
+                //TODO: 리스트
+                (_fleamarketListViewModel.isLoadingList_ski==true)
+                    ? Container(
+                  height: 300,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Center(
+                        child: Container(
+                          width: 24,
+                          height: 24,
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              Image.asset(
-                                'assets/imgs/icons/icon_nodata.png',
-                                scale: 4,
-                                width: 73,
-                                height: 73,
-                              ),
-                              SizedBox(
-                                height: 6,
-                              ),
-                              Text('게시판에 글이 없습니다.',
-                                style: SDSTextStyle.regular.copyWith(
-                                    fontSize: 14,
-                                    color: SDSColor.gray600
+                              Center(
+                                child: Container(
+                                  width: 24,
+                                  height: 24,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 4,
+                                    backgroundColor: SDSColor.gray100,
+                                    color: SDSColor.gray300.withOpacity(0.6),
+                                  ),
                                 ),
                               ),
                             ],
                           ),
                         ),
-                      )
-                          : Scrollbar(
+                      ),
+                    ],
+                  ),
+                )
+                    :
+                Expanded(
+                    child: (_fleamarketListViewModel.fleamarketListSki.length == 0)
+                        ? Transform.translate(
+                      offset: Offset(0, -40),
+                      child: Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Image.asset(
+                              'assets/imgs/icons/icon_nodata.png',
+                              scale: 4,
+                              width: 73,
+                              height: 73,
+                            ),
+                            SizedBox(
+                              height: 6,
+                            ),
+                            Text('게시판에 글이 없습니다.',
+                              style: SDSTextStyle.regular.copyWith(
+                                  fontSize: 14,
+                                  color: SDSColor.gray600
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    )
+                        : RefreshIndicator(
+                      strokeWidth: 2,
+                      edgeOffset: -160,
+                      displacement: 160,
+                      backgroundColor: SDSColor.snowliveBlue,
+                      color: SDSColor.snowliveWhite,
+                      onRefresh: _fleamarketListViewModel.onRefresh_flea_ski,
+                      child: Scrollbar(
                         controller: _fleamarketListViewModel.scrollController_ski,
                         child: ListView.builder(
                           controller: _fleamarketListViewModel.scrollController_ski, // ScrollController 연결
@@ -1997,10 +2004,10 @@ class FleaMarketListView_ski extends StatelessWidget {
                           },
                           padding: EdgeInsets.only(bottom: 80),
                         ),
-                      )
-                  ),
-                ],
-              ),
+                      ),
+                    )
+                ),
+              ],
             ),
           )),
         ),

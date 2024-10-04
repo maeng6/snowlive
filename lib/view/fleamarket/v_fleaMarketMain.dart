@@ -121,10 +121,11 @@ class FleaMarketMainView extends StatelessWidget {
                                         _fleamarketViewModel.changeTap('전체');
                                       },
                                       style: ElevatedButton.styleFrom(
+                                        shadowColor: Colors.transparent,
+                                        overlayColor: Colors.transparent,
                                         padding: EdgeInsets.only(top: 0),
                                         minimumSize: Size(40, 10),
                                         backgroundColor: SDSColor.snowliveWhite,
-                                        overlayColor: Colors.transparent,
                                         shape: RoundedRectangleBorder(
                                             borderRadius:
                                             BorderRadius.circular(8)),
@@ -169,10 +170,11 @@ class FleaMarketMainView extends StatelessWidget {
                                         _fleamarketViewModel.changeTap('스키');
                                       },
                                       style: ElevatedButton.styleFrom(
+                                        shadowColor: Colors.transparent,
+                                        overlayColor: Colors.transparent,
                                         padding: EdgeInsets.only(top: 0),
                                         minimumSize: Size(40, 10),
                                         backgroundColor: SDSColor.snowliveWhite,
-                                        overlayColor: Colors.transparent,
                                         shape: RoundedRectangleBorder(
                                             borderRadius:
                                             BorderRadius.circular(8)),
@@ -217,10 +219,11 @@ class FleaMarketMainView extends StatelessWidget {
                                         _fleamarketViewModel.changeTap('스노보드');
                                       },
                                       style: ElevatedButton.styleFrom(
+                                        shadowColor: Colors.transparent,
+                                        overlayColor: Colors.transparent,
                                         padding: EdgeInsets.only(top: 0),
                                         minimumSize: Size(40, 10),
                                         backgroundColor: SDSColor.snowliveWhite,
-                                        overlayColor: Colors.transparent,
                                         shape: RoundedRectangleBorder(
                                             borderRadius:
                                             BorderRadius.circular(8)),
@@ -265,10 +268,11 @@ class FleaMarketMainView extends StatelessWidget {
                                         _fleamarketViewModel.changeTap('찜 목록');
                                       },
                                       style: ElevatedButton.styleFrom(
+                                        shadowColor: Colors.transparent,
+                                        overlayColor: Colors.transparent,
                                         padding: EdgeInsets.only(top: 0),
                                         minimumSize: Size(40, 10),
                                         backgroundColor: SDSColor.snowliveWhite,
-                                        overlayColor: Colors.transparent,
                                         shape: RoundedRectangleBorder(
                                             borderRadius:
                                             BorderRadius.circular(8)),
@@ -313,10 +317,11 @@ class FleaMarketMainView extends StatelessWidget {
                                         _fleamarketViewModel.changeTap('내 게시글');
                                       },
                                       style: ElevatedButton.styleFrom(
+                                        shadowColor: Colors.transparent,
+                                        overlayColor: Colors.transparent,
                                         padding: EdgeInsets.only(top: 0),
                                         minimumSize: Size(40, 10),
                                         backgroundColor: SDSColor.snowliveWhite,
-                                        overlayColor: Colors.transparent,
                                         shape: RoundedRectangleBorder(
                                             borderRadius:
                                             BorderRadius.circular(8)),

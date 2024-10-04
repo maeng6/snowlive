@@ -102,7 +102,7 @@ class SnowliveDetailPage extends StatelessWidget {
                   SizedBox(
                     height: 16,
                   ),
-                  Text('스노우라이브 공식계정입니다.\n카카오 채널을 통해\n실시간 문의가 가능합니다.',
+                  Text('카카오 채널을 통해\n실시간 문의가 가능합니다.',
                     textAlign: TextAlign.center,
                     style: TextStyle(fontSize: 14, fontWeight: FontWeight.normal, color: Color(0xFF949494)),),
                   SizedBox(

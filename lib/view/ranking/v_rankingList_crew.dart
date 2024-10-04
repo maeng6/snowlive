@@ -16,6 +16,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:get/get.dart';
+import 'package:shimmer/shimmer.dart';
 
 class RankingCrewView extends StatelessWidget {
 
@@ -62,7 +63,8 @@ class RankingCrewView extends StatelessWidget {
             (_rankingListViewModel.rankingListCrewList_total!.length != 0 )
                 ? RefreshIndicator(
                 strokeWidth: 2,
-                edgeOffset: 20,
+                edgeOffset: -40,
+                displacement: 40,
                 backgroundColor: SDSColor.snowliveBlue,
                 color: SDSColor.snowliveWhite,
                 onRefresh: () async {
@@ -110,9 +112,9 @@ class RankingCrewView extends StatelessWidget {
                                                 await _crewMemberListViewModel.fetchCrewMembers(crewId: _rankingListViewModel.rankingListCrewMy_view!.crewId!);
                                                 if(_userViewModel.user.crew_id == _rankingListViewModel.rankingListCrewMy_view!.crewId!)
                                                   await _crewRecordRoomViewModel.fetchCrewRidingRecords(
-                                                    _rankingListViewModel.rankingListCrewMy_view!.crewId!,
-                                                    '${DateTime.now().year}'
-                                                );
+                                                      _rankingListViewModel.rankingListCrewMy_view!.crewId!,
+                                                      '${DateTime.now().year}'
+                                                  );
                                               },
                                               child: Padding(
                                                 padding: EdgeInsets.only(left: 8.0),
@@ -276,6 +278,7 @@ class RankingCrewView extends StatelessWidget {
                                               children: [
                                                 ElevatedButton(
                                                     onPressed: () async {
+                                                      HapticFeedback.lightImpact();
                                                       _rankingListViewModel.changeCategory_resort('${RankingFilter_resort.initial.korean}');
                                                       _rankingListViewModel.changeResortOrTotal('전체스키장');
                                                       _rankingListViewModel.changeResortNum(99);
@@ -283,6 +286,8 @@ class RankingCrewView extends StatelessWidget {
                                                       await _rankingListViewModel.toggleDataDayOrTotal_tapFilter();
                                                     },
                                                     style: ElevatedButton.styleFrom(
+                                                        shadowColor: Colors.transparent,
+                                                        overlayColor: Colors.transparent,
                                                         padding: EdgeInsets.only(
                                                             right: 12, left: 12, top: 2, bottom: 2),
                                                         side: BorderSide(
@@ -315,6 +320,7 @@ class RankingCrewView extends StatelessWidget {
                                               children: [
                                                 ElevatedButton(
                                                     onPressed: () async {
+                                                      HapticFeedback.lightImpact();
                                                       showModalBottomSheet(
                                                           enableDrag: false,
                                                           isScrollControlled: true,
@@ -638,6 +644,8 @@ class RankingCrewView extends StatelessWidget {
                                                           });
                                                     },
                                                     style: ElevatedButton.styleFrom(
+                                                        shadowColor: Colors.transparent,
+                                                        overlayColor: Colors.transparent,
                                                         padding: EdgeInsets.only(
                                                             right: 32, left: 12, top: 3, bottom: 2),
                                                         side: BorderSide(
@@ -1041,10 +1049,10 @@ class RankingCrewView extends StatelessWidget {
                                   );
                                   await _crewMemberListViewModel.fetchCrewMembers(crewId: document.crewId!);
                                   if(_userViewModel.user.crew_id ==   _crewDetailViewModel.crewDetailInfo.crewId!)
-                                  await _crewRecordRoomViewModel.fetchCrewRidingRecords(
-                                      _crewDetailViewModel.crewDetailInfo.crewId!,
-                                      '${DateTime.now().year}'
-                                  );
+                                    await _crewRecordRoomViewModel.fetchCrewRidingRecords(
+                                        _crewDetailViewModel.crewDetailInfo.crewId!,
+                                        '${DateTime.now().year}'
+                                    );
                                 },
                                 child: Row(
                                   children: [
@@ -1103,6 +1111,36 @@ class RankingCrewView extends StatelessWidget {
                                         width: 32,
                                         height: 32,
                                         fit: BoxFit.cover,
+                                        loadStateChanged: (ExtendedImageState state) {
+                                          switch (state.extendedImageLoadState) {
+                                            case LoadState.loading:
+                                            // 로딩 중일 때 로딩 인디케이터를 표시
+                                              return Shimmer.fromColors(
+                                                baseColor: SDSColor.gray200!,
+                                                highlightColor: SDSColor.gray50!,
+                                                child: Container(
+                                                  width: 32,
+                                                  height: 32,
+                                                  decoration: BoxDecoration(
+                                                    color: Colors.white,
+                                                    borderRadius: BorderRadius.circular(8),
+                                                  ),
+                                                ),
+                                              );
+                                            case LoadState.completed:
+                                            // 로딩이 완료되었을 때 이미지 반환
+                                              return state.completedWidget;
+                                            case LoadState.failed:
+                                            // 로딩이 실패했을 때 대체 이미지 또는 다른 처리
+                                              return Image.asset(
+                                                '${crewDefaultLogoUrl['${document.color}']}', // 대체 이미지 경로
+                                                width: 32,
+                                                height: 32,
+                                                fit: BoxFit.cover,
+                                              );
+                                          }
+                                        },
+
                                       )
                                           : ExtendedImage.network(
                                         '${crewDefaultLogoUrl['${document.color}']}',
@@ -1113,6 +1151,35 @@ class RankingCrewView extends StatelessWidget {
                                         width: 32,
                                         height: 32,
                                         fit: BoxFit.cover,
+                                        loadStateChanged: (ExtendedImageState state) {
+                                          switch (state.extendedImageLoadState) {
+                                            case LoadState.loading:
+                                            // 로딩 중일 때 로딩 인디케이터를 표시
+                                              return Shimmer.fromColors(
+                                                baseColor: SDSColor.gray200!,
+                                                highlightColor: SDSColor.gray50!,
+                                                child: Container(
+                                                  width: 32,
+                                                  height: 32,
+                                                  decoration: BoxDecoration(
+                                                    color: Colors.white,
+                                                    borderRadius: BorderRadius.circular(8),
+                                                  ),
+                                                ),
+                                              );
+                                            case LoadState.completed:
+                                            // 로딩이 완료되었을 때 이미지 반환
+                                              return state.completedWidget;
+                                            case LoadState.failed:
+                                            // 로딩이 실패했을 때 대체 이미지 또는 다른 처리
+                                              return Image.asset(
+                                                '${crewDefaultLogoUrl['${document.color}']}', // 대체 이미지 경로
+                                                width: 32,
+                                                height: 32,
+                                                fit: BoxFit.cover,
+                                              );
+                                          }
+                                        },
                                       ),
                                     ),
                                     SizedBox(width: 10),
@@ -2168,38 +2235,19 @@ class RankingCrewView extends StatelessWidget {
                 )
 
             )
-                : Container(
-              height: _size.height - 420,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Container(
-                    width: 72,
-                    child: Image.asset('assets/imgs/icons/icon_nodata_rankin_all.png',
-                    ),
-                  ),
-                  SizedBox(
-                    height: 6,
-                  ),
-                  Center(
-                    child: Text('랭킹전 기록이 없어요',
-                      style: SDSTextStyle.regular.copyWith(
-                        color: SDSColor.gray500,
-                        fontSize: 14,
-                      ),
-                    ),
-                  ),
-                  Center(
-                    child: Text('지금 바로 랭킹전에 참여해 보세요',
-                      style: SDSTextStyle.regular.copyWith(
-                        color: SDSColor.gray500,
-                        fontSize: 14,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+                : Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                ExtendedImage.network(
+                  'https://thumbnews.nateimg.co.kr/view610///news.nateimg.co.kr/orgImg/nn/2023/05/24/202305240740131810_51.jpg',
+                  cache: true,
+                  enableMemoryCache: true,
+                  width: _size.width -32,
+                  height: _size.height -200,
+                  fit: BoxFit.cover,
+                ),
+              ],
             ),
           ],
         ),

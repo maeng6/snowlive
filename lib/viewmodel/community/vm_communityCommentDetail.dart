@@ -46,11 +46,6 @@ class CommunityCommentDetailViewModel extends GetxController {
 
   Future<void> _scrollListener() async {}
 
-  @override
-  void onClose() {
-    textEditingController.dispose(); // 메모리 누수를 방지하기 위해 컨트롤러 해제
-    super.onClose();
-  }
 
   Future<void> fetchCommunityCommentDetail({
     required int commentId
@@ -76,9 +71,9 @@ class CommunityCommentDetailViewModel extends GetxController {
     required CommentModel_community commentModel_community
   }) async {
     try {
-        _commentModel_community.value = CommentModel_community.fromJson_model(commentModel_community);
-        _time.value = GetDatetime().getAgoString(_commentModel_community.value.uploadTime!);
-        print("댓글 디테일 패치 완료");
+      _commentModel_community.value = CommentModel_community.fromJson_model(commentModel_community);
+      _time.value = GetDatetime().getAgoString(_commentModel_community.value.uploadTime!);
+      print("댓글 디테일 패치 완료");
     } catch (e) {
       print('Error fetching data: $e');
     } finally {
@@ -107,16 +102,16 @@ class CommunityCommentDetailViewModel extends GetxController {
 
   Future<void> reportReply({required int userId, required int replyId}) async {
 
-      ApiResponse response = await CommunityAPI().reportReply(userId: userId, replyId: replyId);
-      CustomFullScreenDialog.cancelDialog();
-      if (response.success) {
-        if(response.data['message']=='Reply has been reported.') {
-          Get.snackbar('신고 완료', '신고 내역이 접수되었습니다.');
-        }
-        if(response.data['message']=='You have already reported this reply.'){
-          Get.snackbar('신고 중복', '이미 신고한 글입니다.');
-        }
+    ApiResponse response = await CommunityAPI().reportReply(userId: userId, replyId: replyId);
+    CustomFullScreenDialog.cancelDialog();
+    if (response.success) {
+      if(response.data['message']=='Reply has been reported.') {
+        Get.snackbar('신고 완료', '신고 내역이 접수되었습니다.');
       }
+      if(response.data['message']=='You have already reported this reply.'){
+        Get.snackbar('신고 중복', '이미 신고한 글입니다.');
+      }
+    }
   }
 
   Future<void> deleteComment({
@@ -124,16 +119,16 @@ class CommunityCommentDetailViewModel extends GetxController {
     required int userId,
   }) async {
     isLoading(true);
-      ApiResponse response = await CommunityAPI().deleteComment(
+    ApiResponse response = await CommunityAPI().deleteComment(
         commentId, userId
-      );
+    );
 
-      if (response.success) {
-        print('댓글 삭제 완료');
-      } else {
-        Get.snackbar('Error', '댓글 삭제 실패');
-      }
-      isLoading(false);
+    if (response.success) {
+      print('댓글 삭제 완료');
+    } else {
+      Get.snackbar('Error', '댓글 삭제 실패');
+    }
+    isLoading(false);
   }
 
   Future<void> updateComment({
@@ -145,8 +140,8 @@ class CommunityCommentDetailViewModel extends GetxController {
 
     try {
       ApiResponse response = await CommunityAPI().updateComment(
-        commentId,
-        body
+          commentId,
+          body
       );
       if (response.success) {
         print('Comment 업데이트 완료');
@@ -165,7 +160,7 @@ class CommunityCommentDetailViewModel extends GetxController {
     ApiResponse response = await CommunityAPI().createReply(body);
     if(response.success)
       _commentModel_community.value = CommentModel_community.fromJson(response.data!);
-      print('답글 업로드 완료');
+    print('답글 업로드 완료');
     if(!response.success)
       Get.snackbar('Error', '답글 업로드 실패');
   }

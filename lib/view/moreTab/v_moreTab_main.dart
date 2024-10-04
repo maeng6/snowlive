@@ -198,7 +198,23 @@ class MoreTabMainView extends StatelessWidget {
                       contentPadding: EdgeInsets.symmetric(horizontal: 16),
                       onTap: () async {
                         if(_userViewModel.user.crew_id == null){
-                          Get.toNamed(AppRoutes.onBoardingCrewMain);
+                          CustomFullScreenDialog.showDialog();
+                          await _userViewModel.updateUserModel_api(_userViewModel.user.user_id);
+                          CustomFullScreenDialog.cancelDialog();
+                          if(_userViewModel.user.crew_id != null){
+                            Get.toNamed(AppRoutes.crewMain);
+                            await _crewDetailViewModel.fetchCrewDetail(
+                                _userViewModel.user.crew_id,
+                                _friendDetailViewModel.seasonDate
+                            );
+                            await _crewMemberListViewModel.fetchCrewMembers(crewId: _userViewModel.user.crew_id);
+                            await _crewRecordRoomViewModel.fetchCrewRidingRecords(
+                                _userViewModel.user.crew_id,
+                                '${DateTime.now().year}'
+                            );
+                          } else if(_userViewModel.user.crew_id == null){
+                            Get.toNamed(AppRoutes.onBoardingCrewMain);
+                          }
                         }
                         else{
                           Get.toNamed(AppRoutes.crewMain);
@@ -207,8 +223,7 @@ class MoreTabMainView extends StatelessWidget {
                               _friendDetailViewModel.seasonDate
                           );
                           await _crewMemberListViewModel.fetchCrewMembers(crewId: _userViewModel.user.crew_id);
-                          if(_userViewModel.user.crew_id == _userViewModel.user.crew_id)
-                            await _crewRecordRoomViewModel.fetchCrewRidingRecords(
+                          await _crewRecordRoomViewModel.fetchCrewRidingRecords(
                               _userViewModel.user.crew_id,
                               '${DateTime.now().year}'
                           );

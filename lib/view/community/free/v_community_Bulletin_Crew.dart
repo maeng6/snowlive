@@ -155,7 +155,8 @@ class CommunityBulletinCrewListView extends StatelessWidget {
           )
               : RefreshIndicator(
             strokeWidth: 2,
-            edgeOffset: 40,
+            edgeOffset: -100,
+            displacement: 100,
             backgroundColor: SDSColor.snowliveBlue,
             color: SDSColor.snowliveWhite,
             onRefresh: _communityBulletinListViewModel.onRefresh_bulletin_crew,

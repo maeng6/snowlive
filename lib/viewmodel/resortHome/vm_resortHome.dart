@@ -161,6 +161,7 @@ class ResortHomeViewModel extends GetxController {
   Future<void> changeInstantResort(Map<String, dynamic> body, user_id) async {
 
     isLoading(true);
+    isLoading_weather(true);
     ApiResponse response_updateUser = await UserAPI().updateUserInfo(body);
     if(response_updateUser.success) {
       ApiResponse response_fetchResortHome = await ResortHomeAPI().fetchResortHomeData(user_id);
@@ -170,6 +171,7 @@ class ResortHomeViewModel extends GetxController {
     } else {
       Get.snackbar('Error', '데이터 로딩 실패');
       isLoading(false);
+      isLoading_weather(false);
     }
   }
 

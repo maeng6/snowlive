@@ -403,6 +403,8 @@ class CrewHomeView extends StatelessWidget {
                               Get.toNamed(AppRoutes.crewRecordRoom);
                             },
                             style: ElevatedButton.styleFrom(
+                              shadowColor: Colors.transparent,
+                              overlayColor: Colors.transparent,
                               padding: EdgeInsets.symmetric(horizontal: 10, vertical: 3),
                               minimumSize: Size(36, 32),
                               backgroundColor: SDSColor.snowliveWhite,

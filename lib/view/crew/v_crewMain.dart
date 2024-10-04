@@ -37,33 +37,35 @@ class CrewMainView extends StatelessWidget {
           actions: [
             (_userViewModel.user.crew_id != null && _userViewModel.user.crew_id == _crewDetailViewModel.crewDetailInfo.crewId)
                 ? IconButton(
-              onPressed: () {
-                _searchCrewViewModel.textEditingController.clear();
-                _searchCrewViewModel.crewList.clear();
-                _searchCrewViewModel.showRecentSearch.value = true;
-                Get.toNamed(AppRoutes.searchCrew);
-              },
-              icon: Image.asset(
-                'assets/imgs/icons/icon_appBar_search.png',
-                scale: 4,
-                width: 25,
-                height: 25,
-              ),
+                onPressed: () {
+                  _searchCrewViewModel.textEditingController.clear();
+                  _searchCrewViewModel.crewList.clear();
+                  _searchCrewViewModel.showRecentSearch.value = true;
+                  Get.toNamed(AppRoutes.searchCrew);
+                },
+                icon: Image.asset(
+                  'assets/imgs/icons/icon_appBar_search.png',
+                  scale: 4,
+                  width: 25,
+                  height: 25,
+                ),
+                highlightColor: Colors.transparent
             )
                 : Container(),
             if(_userViewModel.user.crew_id == _crewDetailViewModel.crewDetailInfo.crewId)
               (_crewDetailViewModel.isLoading == true)
                   ? SizedBox.shrink()
                   : IconButton(
-                onPressed: () {
-                  Get.toNamed(AppRoutes.crewSetting);
-                },
-                icon: Image.asset(
-                  'assets/imgs/icons/icon_settings.png',
-                  scale: 4,
-                  width: 26,
-                  height: 26,
-                ),
+                  onPressed: () {
+                    Get.toNamed(AppRoutes.crewSetting);
+                  },
+                  icon: Image.asset(
+                    'assets/imgs/icons/icon_settings.png',
+                    scale: 4,
+                    width: 26,
+                    height: 26,
+                  ),
+                  highlightColor: Colors.transparent
               ),
             if(_crewMemberListViewModel.getMemberRole(_userViewModel.user.user_id) == '크루장' ||
                 (_crewMemberListViewModel.getMemberRole(_userViewModel.user.user_id) == '운영진' &&
@@ -78,14 +80,15 @@ class CrewMainView extends StatelessWidget {
                   builder: (context, snapshot) {
                     if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
                       return IconButton(
-                        onPressed: () {
-                          Get.toNamed(AppRoutes.alarmCenter);
-                        },
-                        icon: Image.asset(
-                          'assets/imgs/icons/icon_alarm_resortHome.png',
+                          onPressed: () {
+                            Get.toNamed(AppRoutes.alarmCenter);
+                          },
+                          icon: Image.asset(
+                            'assets/imgs/icons/icon_alarm_resortHome.png',
                             width: 26,
                             height: 26,
-                        ),
+                          ),
+                          highlightColor: Colors.transparent
                       );
                     }
 
@@ -125,7 +128,7 @@ class CrewMainView extends StatelessWidget {
                                 await _crewApplyViewModel.fetchCrewApplyList(
                                     _crewDetailViewModel.crewDetailInfo.crewId!
                                 );
-                                },
+                              },
                               child: Container(
                                 width: 20,
                                 height: 20,

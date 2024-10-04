@@ -79,6 +79,8 @@ class AlarmCenterView extends StatelessWidget {
       body: SafeArea(
         child: RefreshIndicator(
           strokeWidth: 2,
+          edgeOffset: -40,
+          displacement: 40,
           backgroundColor: SDSColor.snowliveBlue,
           color: SDSColor.snowliveWhite,
           onRefresh: () async{
