@@ -201,12 +201,17 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                                   content:
                                   Container(
                                     width: 288,
-                                    height: 80,
+                                    height: 190,
                                     child: Column(
                                       crossAxisAlignment: CrossAxisAlignment.center,
                                       children: [
+                                        Image.asset(
+                                          'assets/imgs/imgs/img_get_point_1.png',
+                                          scale: 4,
+                                          width: 100,
+                                        ),
                                         Padding(
-                                          padding: const EdgeInsets.only(bottom: 6),
+                                          padding: const EdgeInsets.only(top: 20, bottom: 6),
                                           child: Row(
                                             mainAxisAlignment: MainAxisAlignment.center,
                                             children: [

@@ -1,4 +1,5 @@
 import 'package:animated_splash_screen/animated_splash_screen.dart';
+import 'package:com.snowlive/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/routes/routes.dart';
 import 'package:com.snowlive/viewmodel/onboarding_login/vm_authcheck.dart';
 import 'package:extended_image/extended_image.dart';
@@ -24,12 +25,13 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return AnimatedSplashScreen(
-        curve: Curves.easeInCirc,
+        curve: Curves.easeOut,
+        backgroundColor: SDSColor.snowliveBlue,
         splashIconSize: double.maxFinite,
         duration: 1500,
         splash: ExtendedImage.network(
           widget.imageUrl,
-          fit: BoxFit.fitHeight,
+          fit: BoxFit.cover,
           enableMemoryCache: true,
         ),
       nextScreen: Builder(

@@ -576,55 +576,45 @@ class ResortHomeViewModel extends GetxController {
               return false;
             },
             child: AlertDialog(
-              contentPadding: EdgeInsets.zero,
+              backgroundColor: SDSColor.snowliveWhite,
+              contentPadding: EdgeInsets.only(bottom: 0, left: 28, right: 28, top: 30),
               elevation: 0,
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16),
-              ),
-              actionsPadding:
-              EdgeInsets.only(top: 0, right: 20, left: 20, bottom: 20),
+                  borderRadius: BorderRadius.circular(16)),
+              buttonPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
               content: Container(
-                height: 330,
+                height: 300,
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Image.asset(
-                      'assets/imgs/imgs/img_app_update.png',
+                      'assets/imgs/imgs/img_app_update_new.png',
                       scale: 4,
-                      fit: BoxFit.fitHeight,
-                      width: MediaQuery.of(Get.context!).size.width,
+                      width: 200,
                     ),
                     Padding(
-                      padding: const EdgeInsets.only(
-                        top: 20,
-                        right: 20,
-                        left: 20,
-                        bottom: 24,
-                      ),
+                      padding: EdgeInsets.only(top: 20),
                       child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                '새로운 버전이 업데이트 되었습니다',
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: Color(0xFF111111),
-                                  fontSize: 18,
-                                ),
-                              ),
-                              SizedBox(
-                                height: 6,
-                              ),
-                              Text(
-                                '최신 버전 앱으로 업데이트를 위해 스토어로 이동합니다.',
-                                style: TextStyle(
-                                  fontWeight: FontWeight.normal,
-                                  color: Color(0xFF949494),
-                                  fontSize: 15,
-                                ),
-                              ),
-                            ],
+                          Text(
+                            '새로운 버전이 업데이트 되었습니다',
+                            textAlign: TextAlign.center,
+                            style: SDSTextStyle.bold.copyWith(
+                                color: SDSColor.gray900,
+                                fontSize: 16
+                            ),
+                          ),
+                          SizedBox(
+                            height: 6,
+                          ),
+                          Text(
+                            '최신 버전 앱으로 업데이트를 위해 스토어로 이동합니다.',
+                            textAlign: TextAlign.center,
+                            style: SDSTextStyle.regular.copyWith(
+                              color: SDSColor.gray500,
+                              fontSize: 14,
+                            ),
                           ),
                         ],
                       ),
@@ -649,15 +639,15 @@ class ResortHomeViewModel extends GetxController {
                       }
                     },
                     child: Text(
-                      '업데이트',
-                      style: TextStyle(
-                        fontSize: 15,
-                        color: Colors.white,
+                      '업데이트하기',
+                      style: SDSTextStyle.bold.copyWith(
+                        fontSize: 16,
+                        color: SDSColor.snowliveWhite,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Color(0xFF3D83ED),
+                      backgroundColor: SDSColor.snowliveBlue,
                       elevation: 0,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),
