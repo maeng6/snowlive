@@ -41,7 +41,6 @@ class Setting_moreTabView extends StatelessWidget {
       body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             ListView(
               shrinkWrap: true,
@@ -250,7 +249,7 @@ class Setting_moreTabView extends StatelessWidget {
               ],
             ),
             Padding(
-              padding: EdgeInsets.only(left: 5, bottom: 30),
+              padding: EdgeInsets.only(left: 5, top: 8),
               child: TextButton(
                 style: TextButton.styleFrom(
                   surfaceTintColor: Colors.transparent,

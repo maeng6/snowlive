@@ -64,7 +64,7 @@ class FriendDetailUpdateViewModel extends GetxController {
     _profileImageUrl.value = ''; // Also reset the profile image URL
   }
 
-  Future<void> fetchFriendDetailUpdateData({
+  void fetchFriendDetailUpdateData({
     required displayName,
     required state_msg,
     required profileImageUrl,
@@ -73,12 +73,12 @@ class FriendDetailUpdateViewModel extends GetxController {
     required selectedSkiOrBoard,
     required selectedSex,
     required bool hideProfile
-  }) async {
+  })  {
     // Update text controllers and selected values
     this.textEditingController_displayName.text = displayName;
-    this.textEditingController_stateMsg.text = state_msg;
+    this.textEditingController_stateMsg.text = state_msg??'';
     this._displayName.value = displayName;
-    this._profileImageUrl.value = profileImageUrl;
+    this._profileImageUrl.value = profileImageUrl??'';
     this._selectedResortName.value = selectedResortName;
     this._selectedResortIndex.value = selectedResortIndex;
     this._selectedSkiOrBoard.value = selectedSkiOrBoard;

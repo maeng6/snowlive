@@ -382,8 +382,8 @@ class _FriendDetailViewState extends State<FriendDetailView> {
                                             //친구추가 버튼
                                             if(_userViewModel.user.user_id == _friendDetailViewModel.friendDetailModel.friendUserInfo.userId)
                                               ElevatedButton(
-                                                onPressed: () async{
-
+                                                onPressed: () {
+                                                  print(_friendDetailViewModel.friendDetailModel.friendUserInfo.sex);
                                                   _friendDetailUpdateViewModel.fetchFriendDetailUpdateData(
                                                     displayName: _friendDetailViewModel.friendDetailModel.friendUserInfo.displayName,
                                                     state_msg: _friendDetailViewModel.friendDetailModel.friendUserInfo.stateMsg,
