@@ -296,12 +296,17 @@ class FleamarketUploadView extends StatelessWidget {
                                     FocusScope.of(context).unfocus();
                                     selectedCategory_main = await showModalBottomSheet<String>(
                                       constraints: BoxConstraints(
-                                        maxHeight: 300,
+                                        maxHeight: 330,
                                       ),
                                       backgroundColor: Colors.transparent,
                                       context: context,
                                       isScrollControlled: true,
-                                      builder: (context) => CategoryMainFleamarketWidget(),
+                                      builder: (context) => Container(
+                                          decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.only(topLeft: Radius.circular(16), topRight: Radius.circular(16)),
+                                            color: Colors.white,
+                                          ),
+                                          child: SafeArea(child: CategoryMainFleamarketWidget())),
                                     );
                                     if(_fleamarketUploadViewModel.isCategorySelected==true)
                                       _fleamarketUploadViewModel.resetCategorySub();
@@ -377,12 +382,18 @@ class FleamarketUploadView extends StatelessWidget {
                                     if( _fleamarketUploadViewModel.selectedCategoryMain == '스키'){
                                       selectedCategory_sub = await showModalBottomSheet<String>(
                                         constraints: BoxConstraints(
-                                          maxHeight: 480,
+                                          maxHeight: 500,
                                         ),
                                         backgroundColor: Colors.transparent,
                                         context: context,
                                         isScrollControlled: true,
-                                        builder: (context) => CategorySubSkiFleamarketWidget(),
+                                        builder: (context) => Container(
+                                            decoration: BoxDecoration(
+                                              borderRadius: BorderRadius.only(topLeft: Radius.circular(16), topRight: Radius.circular(16)),
+                                              color: Colors.white,
+                                            ),
+                                            child: SafeArea(
+                                                child: CategorySubSkiFleamarketWidget())),
                                       );
                                       if(selectedCategory_sub != null) {
                                         _fleamarketUploadViewModel.selectCategorySub(selectedCategory_sub!);
@@ -392,12 +403,17 @@ class FleamarketUploadView extends StatelessWidget {
                                     }else if(_fleamarketUploadViewModel.selectedCategoryMain == '스노보드'){
                                       selectedCategory_sub = await showModalBottomSheet<String>(
                                         constraints: BoxConstraints(
-                                          maxHeight: 480,
+                                          maxHeight: 500,
                                         ),
                                         backgroundColor: Colors.transparent,
                                         context: context,
                                         isScrollControlled: true,
-                                        builder: (context) => CategorySubBoardFleamarketWidget(),
+                                        builder: (context) => Container(
+                                            decoration: BoxDecoration(
+                                              borderRadius: BorderRadius.only(topLeft: Radius.circular(16), topRight: Radius.circular(16)),
+                                              color: Colors.white,
+                                            ),
+                                            child: SafeArea(child: CategorySubBoardFleamarketWidget())),
                                       );
                                       if(selectedCategory_sub != null) {
                                         _fleamarketUploadViewModel.selectCategorySub(selectedCategory_sub!);
@@ -947,12 +963,17 @@ class FleamarketUploadView extends StatelessWidget {
                                     descFocusNode.unfocus();
                                     selectedCategory_tradeMethod = await showModalBottomSheet<String>(
                                       constraints: BoxConstraints(
-                                        maxHeight: 360,
+                                        maxHeight: 390,
                                       ),
                                       backgroundColor: Colors.transparent,
                                       context: context,
                                       isScrollControlled: true,
-                                      builder: (context) => TradeMethodFleamarketWidget(),
+                                      builder: (context) => Container(
+                                          decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.only(topLeft: Radius.circular(16), topRight: Radius.circular(16)),
+                                            color: Colors.white,
+                                          ),
+                                          child: SafeArea(child: TradeMethodFleamarketWidget())),
                                     );
                                     if(selectedCategory_tradeMethod != null)
                                       _fleamarketUploadViewModel.selectTradeMethod(selectedCategory_tradeMethod!);
@@ -1029,7 +1050,12 @@ class FleamarketUploadView extends StatelessWidget {
                                       backgroundColor: Colors.transparent,
                                       context: context,
                                       isScrollControlled: true,
-                                      builder: (context) => TradeSpotFleamarketWidget(),
+                                      builder: (context) => Container(
+                                          decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.only(topLeft: Radius.circular(16), topRight: Radius.circular(16)),
+                                            color: Colors.white,
+                                          ),
+                                          child: SafeArea(child: TradeSpotFleamarketWidget())),
                                     );
                                     if(selectedCategory_tradeSpot != null)
                                       _fleamarketUploadViewModel.selectTradeSpot(selectedCategory_tradeSpot!);

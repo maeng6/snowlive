@@ -79,94 +79,102 @@ class FriendDetailUpdateView extends StatelessWidget {
                           showModalBottomSheet(
                             backgroundColor: Colors.transparent,
                             context: context,
-                            builder: (context) => SafeArea(
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.only(topLeft: Radius.circular(16), topRight: Radius.circular(16)),
-                                  color: SDSColor.snowliveWhite,
-                                ),
-                                padding: EdgeInsets.only(bottom: 20, right: 20, left: 20, top: 12),
-                                height: 210,
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Column(
-                                      crossAxisAlignment: CrossAxisAlignment.center,
-                                      mainAxisAlignment: MainAxisAlignment.start,
-                                      children: [
-                                        Padding(
-                                          padding: const EdgeInsets.only(bottom: 20),
-                                          child: Container(
-                                            height: 4,
-                                            width: 36,
-                                            decoration: BoxDecoration(
-                                              borderRadius: BorderRadius.circular(10),
-                                              color: SDSColor.gray200,
+                            builder: (context) => Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.only(topLeft: Radius.circular(16), topRight: Radius.circular(16)),
+                                color: SDSColor.snowliveWhite,
+                              ),
+                              child: SafeArea(
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.only(topLeft: Radius.circular(16), topRight: Radius.circular(16)),
+                                    color: SDSColor.snowliveWhite,
+                                  ),
+                                  padding: EdgeInsets.only(bottom: 20, right: 20, left: 20, top: 12),
+                                  height: 210,
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: [
+                                      Column(
+                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                        mainAxisAlignment: MainAxisAlignment.start,
+                                        children: [
+                                          Padding(
+                                            padding: const EdgeInsets.only(bottom: 20),
+                                            child: Container(
+                                              height: 4,
+                                              width: 36,
+                                              decoration: BoxDecoration(
+                                                borderRadius: BorderRadius.circular(10),
+                                                color: SDSColor.gray200,
+                                              ),
                                             ),
                                           ),
-                                        ),
-                                        Text(
-                                          '업로드 방법을 선택해주세요.',
-                                          style: SDSTextStyle.bold.copyWith(fontSize: 16, color: SDSColor.gray900),
-                                          textAlign: TextAlign.center,
-                                        ),
-                                        SizedBox(height: 8),
-                                        Text(
-                                          '프로필 이미지를 나중에 설정 하시려면,\n기본 이미지로 설정해주세요.',
-                                          style: SDSTextStyle.regular.copyWith(fontSize: 14, color: SDSColor.gray500, height: 1.4),
-                                          textAlign: TextAlign.center,
-                                        ),
-                                      ],
-                                    ),
-                                    Expanded(child: Container()),
-                                    Row(
-                                      mainAxisAlignment:
-                                      MainAxisAlignment.spaceEvenly,
-                                      children: [
-                                        Expanded(
-                                          child: ElevatedButton(
-                                            onPressed:
-                                                () => _friendDetailUpdateViewModel.uploadImage(ImageSource.camera),
-                                            child: Text(
-                                              '사진 촬영',
-                                              style: SDSTextStyle.bold.copyWith(
-                                                  color: SDSColor.snowliveWhite,
-                                                  fontSize: 16),
+                                          Text(
+                                            '업로드 방법을 선택해주세요.',
+                                            style: SDSTextStyle.bold.copyWith(fontSize: 16, color: SDSColor.gray900),
+                                            textAlign: TextAlign.center,
+                                          ),
+                                          SizedBox(height: 8),
+                                          Text(
+                                            '프로필 이미지를 나중에 설정 하시려면,\n기본 이미지로 설정해주세요.',
+                                            style: SDSTextStyle.regular.copyWith(fontSize: 14, color: SDSColor.gray500, height: 1.4),
+                                            textAlign: TextAlign.center,
+                                          ),
+                                        ],
+                                      ),
+                                      Expanded(child: Container()),
+                                      Row(
+                                        mainAxisAlignment:
+                                        MainAxisAlignment.spaceEvenly,
+                                        children: [
+                                          Expanded(
+                                            child: ElevatedButton(
+                                              onPressed:
+                                                  () => _friendDetailUpdateViewModel.uploadImage(ImageSource.camera),
+                                              child: Text(
+                                                '사진 촬영',
+                                                style: SDSTextStyle.bold.copyWith(
+                                                    color: SDSColor.snowliveWhite,
+                                                    fontSize: 16),
+                                              ),
+                                              style: TextButton.styleFrom(
+                                                  shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(6))),
+                                                  splashFactory: InkRipple.splashFactory,
+                                                  elevation: 0,
+                                                  minimumSize: Size(100, 48),
+                                                  backgroundColor: SDSColor.sBlue500
+                                              ),
                                             ),
-                                            style: TextButton.styleFrom(
+                                          ),
+                                          SizedBox(
+                                            width: 10,
+                                          ),
+                                          Expanded(
+                                            child: ElevatedButton(
+                                              onPressed: () {
+                                                Navigator.pop(context);
+                                                _friendDetailUpdateViewModel.uploadImage(ImageSource.gallery);
+                                              },
+                                              child: Text(
+                                                '앨범에서 선택',
+                                                style: SDSTextStyle.bold.copyWith(
+                                                    color: SDSColor.snowliveWhite,
+                                                    fontSize: 16),
+                                              ),
+                                              style: TextButton.styleFrom(
+                                                shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(6))),
                                                 splashFactory: InkRipple.splashFactory,
                                                 elevation: 0,
                                                 minimumSize: Size(100, 48),
-                                                backgroundColor: SDSColor.sBlue500
+                                                backgroundColor: SDSColor.snowliveBlue,
+                                              ),
                                             ),
                                           ),
-                                        ),
-                                        SizedBox(
-                                          width: 10,
-                                        ),
-                                        Expanded(
-                                          child: ElevatedButton(
-                                            onPressed: () {
-                                              Navigator.pop(context);
-                                              _friendDetailUpdateViewModel.uploadImage(ImageSource.gallery);
-                                            },
-                                            child: Text(
-                                              '앨범에서 선택',
-                                              style: SDSTextStyle.bold.copyWith(
-                                                  color: SDSColor.snowliveWhite,
-                                                  fontSize: 16),
-                                            ),
-                                            style: TextButton.styleFrom(
-                                              splashFactory: InkRipple.splashFactory,
-                                              elevation: 0,
-                                              minimumSize: Size(100, 48),
-                                              backgroundColor: SDSColor.snowliveBlue,
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
+                                        ],
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),
@@ -501,7 +509,12 @@ class FriendDetailUpdateView extends StatelessWidget {
                                       isScrollControlled: true,
                                       enableDrag: true,
                                       isDismissible: true,
-                                      builder: (context) => FavoriteResortWidget(),
+                                      builder: (context) => Container(
+                                          decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.only(topLeft: Radius.circular(16), topRight: Radius.circular(16)),
+                                            color: SDSColor.snowliveWhite,
+                                          ),
+                                          child: SafeArea(child: FavoriteResortWidget())),
                                     );
                                     if(selectedIndex != null)
                                       _friendDetailUpdateViewModel.selectResortInfo(selectedIndex!);
@@ -557,14 +570,19 @@ class FriendDetailUpdateView extends StatelessWidget {
                                   onTap: () async {
                                     selectedSkiOrBoard = await showModalBottomSheet<String>(
                                       constraints: BoxConstraints(
-                                        maxHeight: 300,
+                                        maxHeight: 340,
                                       ),
                                       backgroundColor: Colors.transparent,
                                       context: context,
                                       isDismissible: true,
                                       enableDrag: true,
                                       isScrollControlled: true,
-                                      builder: (context) => SkiorboardWidget(),
+                                      builder: (context) => Container(
+                                          decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.only(topLeft: Radius.circular(16), topRight: Radius.circular(16)),
+                                            color: SDSColor.snowliveWhite,
+                                          ),
+                                          child: SafeArea(child: SkiorboardWidget())),
                                     );
                                     if(selectedSkiOrBoard != null)
                                       _friendDetailUpdateViewModel.selectSkiOrBoard(selectedSkiOrBoard!);
@@ -610,14 +628,19 @@ class FriendDetailUpdateView extends StatelessWidget {
                                   onTap: () async {
                                     selectedSex = await showModalBottomSheet<String>(
                                       constraints: BoxConstraints(
-                                        maxHeight: 300,
+                                        maxHeight: 340,
                                       ),
                                       backgroundColor: Colors.transparent,
                                       context: context,
                                       isDismissible: true,
                                       enableDrag: true,
                                       isScrollControlled: true,
-                                      builder: (context) => SexWidget(),
+                                      builder: (context) => Container(
+                                          decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.only(topLeft: Radius.circular(16), topRight: Radius.circular(16)),
+                                            color: SDSColor.snowliveWhite,
+                                          ),
+                                          child: SafeArea(child: SexWidget())),
                                     );
                                     if(selectedSex != null)
                                       _friendDetailUpdateViewModel.selectSex(selectedSex!);

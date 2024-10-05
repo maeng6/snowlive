@@ -287,12 +287,17 @@ class FleamarketUpdateView extends StatelessWidget {
                                     FocusScope.of(context).unfocus();
                                     selectedCategory_main = await showModalBottomSheet<String>(
                                       constraints: BoxConstraints(
-                                        maxHeight: 300,
+                                        maxHeight: 330,
                                       ),
                                       backgroundColor: Colors.transparent,
                                       context: context,
                                       isScrollControlled: true,
-                                      builder: (context) => CategoryMainFleamarketWidget(),
+                                      builder: (context) => Container(
+                                          decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.only(topLeft: Radius.circular(16), topRight: Radius.circular(16)),
+                                            color: Colors.white,
+                                          ),
+                                          child: SafeArea(child: CategoryMainFleamarketWidget())),
                                     );
                                     if(_fleamarketUpdateViewModel.isCategorySelected==true)
                                       _fleamarketUpdateViewModel.resetCategorySub();
@@ -367,12 +372,17 @@ class FleamarketUpdateView extends StatelessWidget {
                                     if( _fleamarketUpdateViewModel.selectedCategoryMain == '스키'){
                                       selectedCategory_sub = await showModalBottomSheet<String>(
                                         constraints: BoxConstraints(
-                                          maxHeight: 480,
+                                          maxHeight: 500,
                                         ),
                                         backgroundColor: Colors.transparent,
                                         context: context,
                                         isScrollControlled: true,
-                                        builder: (context) => CategorySubSkiFleamarketWidget(),
+                                        builder: (context) => Container(
+                                            decoration: BoxDecoration(
+                                              borderRadius: BorderRadius.only(topLeft: Radius.circular(16), topRight: Radius.circular(16)),
+                                              color: Colors.white,
+                                            ),
+                                            child: SafeArea(child: CategorySubSkiFleamarketWidget())),
                                       );
                                       if(selectedCategory_sub != null) {
                                         _fleamarketUpdateViewModel.selectCategorySub(selectedCategory_sub!);
@@ -382,12 +392,17 @@ class FleamarketUpdateView extends StatelessWidget {
                                     }else if(_fleamarketUpdateViewModel.selectedCategoryMain == '스노보드'){
                                       selectedCategory_sub = await showModalBottomSheet<String>(
                                         constraints: BoxConstraints(
-                                          maxHeight: 480,
+                                          maxHeight: 500,
                                         ),
                                         backgroundColor: Colors.transparent,
                                         context: context,
                                         isScrollControlled: true,
-                                        builder: (context) => CategorySubBoardFleamarketWidget(),
+                                        builder: (context) => Container(
+                                            decoration: BoxDecoration(
+                                              borderRadius: BorderRadius.only(topLeft: Radius.circular(16), topRight: Radius.circular(16)),
+                                              color: Colors.white,
+                                            ),
+                                            child: SafeArea(child: CategorySubBoardFleamarketWidget())),
                                       );
                                       if(selectedCategory_sub != null) {
                                         _fleamarketUpdateViewModel.selectCategorySub(selectedCategory_sub!);
@@ -936,12 +951,17 @@ class FleamarketUpdateView extends StatelessWidget {
                                     descFocusNode.unfocus();
                                     selectedCategory_tradeMethod = await showModalBottomSheet<String>(
                                       constraints: BoxConstraints(
-                                        maxHeight: 360,
+                                        maxHeight: 390,
                                       ),
                                       backgroundColor: Colors.transparent,
                                       context: context,
                                       isScrollControlled: true,
-                                      builder: (context) => TradeMethodFleamarketWidget(),
+                                      builder: (context) => Container(
+                                          decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.only(topLeft: Radius.circular(16), topRight: Radius.circular(16)),
+                                            color: Colors.white,
+                                          ),
+                                          child: SafeArea(child: TradeMethodFleamarketWidget())),
                                     );
                                     if(selectedCategory_tradeMethod != null)
                                       _fleamarketUpdateViewModel.selectTradeMethod(selectedCategory_tradeMethod!);
@@ -1017,7 +1037,12 @@ class FleamarketUpdateView extends StatelessWidget {
                                       backgroundColor: Colors.transparent,
                                       context: context,
                                       isScrollControlled: true,
-                                      builder: (context) => TradeSpotFleamarketWidget(),
+                                      builder: (context) => Container(
+                                          decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.only(topLeft: Radius.circular(16), topRight: Radius.circular(16)),
+                                            color: Colors.white,
+                                          ),
+                                          child: SafeArea(child: TradeSpotFleamarketWidget())),
                                     );
                                     if(selectedCategory_tradeSpot != null)
                                       _fleamarketUpdateViewModel.selectTradeSpot(selectedCategory_tradeSpot!);
