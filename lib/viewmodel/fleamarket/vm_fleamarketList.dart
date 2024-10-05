@@ -171,6 +171,9 @@ class FleamarketListViewModel extends GetxController {
   }
 
   Future<void> fetchAllFleamarket_afterUpload() async{
+    changeCategory_sub_total('${FleamarketCategory_sub.total.korean}');
+    changeCategory_spot_total('${FleamarketCategory_spot.total.korean}');
+    changeTap('전체');
     _isLoadingList_total.value = true;
     _isLoadingList_ski.value = true;
     _isLoadingList_board.value = true;
