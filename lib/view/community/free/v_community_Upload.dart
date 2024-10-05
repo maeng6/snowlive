@@ -302,12 +302,18 @@ class CommunityBulletinUpload extends StatelessWidget {
                                                   onTap: () async {
                                                     selectedCategory_sub = await showModalBottomSheet<String>(
                                                       constraints: BoxConstraints(
-                                                        maxHeight: 360,
+                                                        maxHeight: 520,
                                                       ),
                                                       backgroundColor: Colors.transparent,
                                                       context: context,
                                                       isScrollControlled: true,
-                                                      builder: (context) => CategoryMainCommuEventWidget(),
+                                                      builder: (context) => Container(
+                                                        decoration: BoxDecoration(
+                                                          borderRadius: BorderRadius.only(topLeft: Radius.circular(16), topRight: Radius.circular(16)),
+                                                          color: Colors.white,
+                                                        ),
+                                                          child: SafeArea(
+                                                              child: CategoryMainCommuEventWidget())),
                                                     );
                                                     if(_communityUploadViewModel.isCategorySelected==true)
                                                       _communityUploadViewModel.resetCategorySub2();
