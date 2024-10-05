@@ -68,18 +68,30 @@ class ImageController extends GetxController {
 
     return compressedFile;
   }
-
-  Future<String> setNewImage_Crew({required XFile newImage,required crewID}) async {
+  Future<String> setNewImage_Crew({required XFile newImage, required crewID}) async {
     String? uid = await FlutterSecureStorage().read(key: 'uid');
     var metaData = SettableMetadata(contentType: 'image/jpeg');
     String downloadUrl = '';
+
     if (newImage != null) {
-      Reference ref = FirebaseStorage.instance.ref('crewLogo/$crewID.jpg');
-      await ref.putFile(File(newImage.path), metaData);
-      downloadUrl = await ref.getDownloadURL();
+      try {
+        // 이미지 압축 작업
+        File compressedImage = await _compressImage(File(newImage.path));
+
+        // Firebase Storage에 이미지 업로드
+        Reference ref = FirebaseStorage.instance.ref('crewLogo/$crewID.jpg');
+        await ref.putFile(compressedImage, metaData);
+
+        // 다운로드 URL 가져오기
+        downloadUrl = await ref.getDownloadURL();
+        print('Download URL: $downloadUrl');
+      } catch (e) {
+        print('Error uploading image: $e');
+      }
     } else {
       CustomFullScreenDialog.cancelDialog();
     }
+
     return downloadUrl;
   }
 
@@ -211,16 +223,25 @@ class ImageController extends GetxController {
       print('Error: User ID is null');
       return '';
     }
+
     var metaData = SettableMetadata(contentType: 'image/jpeg');
     String downloadUrl = '';
+
     try {
+      // 이미지 압축 작업
+      File compressedImage = await _compressImage(File(newImage.path));
+
+      // Firebase Storage에 이미지 업로드
       Reference ref = FirebaseStorage.instance.ref('user_profile/$uid.jpg');
-      await ref.putFile(File(newImage.path), metaData);
+      await ref.putFile(compressedImage, metaData);
+
+      // 다운로드 URL 가져오기
       downloadUrl = await ref.getDownloadURL();
-      print('Download URL: $downloadUrl'); // 디버깅 메시지 추가
+      print('Download URL: $downloadUrl');
     } catch (e) {
-      print('Error uploading image: $e'); // 에러 메시지 출력
+      print('Error uploading image: $e');
     }
+
     return downloadUrl;
   }
 

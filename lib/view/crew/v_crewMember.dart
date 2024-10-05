@@ -73,7 +73,7 @@ class CrewMemberListView extends StatelessWidget {
                                                 borderRadius: BorderRadius.circular(100),
                                                 border: (_crewMemberListViewModel.crewMembersList[index].userInfo!.withinBoundary == true
                                                     && _crewMemberListViewModel.crewMembersList[index].userInfo!.revealWb == true
-                                                &&  _crewDetailViewModel.crewDetailInfo.crewId == _userViewModel.user.crew_id)
+                                                    &&  _crewDetailViewModel.crewDetailInfo.crewId == _userViewModel.user.crew_id)
                                                     ? Border.all(
                                                   color: SDSColor.snowliveBlue,
                                                   width: 2,
@@ -124,7 +124,7 @@ class CrewMemberListView extends StatelessWidget {
                                               )),
                                           if(_crewMemberListViewModel.crewMembersList[index].userInfo!.withinBoundary == true
                                               && _crewMemberListViewModel.crewMembersList[index].userInfo!.revealWb == true
-                                          && _crewDetailViewModel.crewDetailInfo.crewId == _userViewModel.user.crew_id
+                                              && _crewDetailViewModel.crewDetailInfo.crewId == _userViewModel.user.crew_id
                                           )
                                             Positioned(
                                               right: 0,
@@ -146,7 +146,8 @@ class CrewMemberListView extends StatelessWidget {
                                             decoration: BoxDecoration(
                                               borderRadius: BorderRadius.circular(100),
                                               border: (_crewMemberListViewModel.crewMembersList[index].userInfo!.withinBoundary == true
-                                                  && _crewMemberListViewModel.crewMembersList[index].userInfo!.revealWb == true)
+                                                  && _crewMemberListViewModel.crewMembersList[index].userInfo!.revealWb == true
+                                                  &&  _crewDetailViewModel.crewDetailInfo.crewId == _userViewModel.user.crew_id)
                                                   ? Border.all(
                                                 color: SDSColor.snowliveBlue,
                                                 width: 2,
@@ -169,6 +170,7 @@ class CrewMemberListView extends StatelessWidget {
                                           ),
                                           if(_crewMemberListViewModel.crewMembersList[index].userInfo!.withinBoundary == true
                                               && _crewMemberListViewModel.crewMembersList[index].userInfo!.revealWb == true
+                                              && _crewDetailViewModel.crewDetailInfo.crewId == _userViewModel.user.crew_id
                                           )
                                             Positioned(
                                               right: 0,

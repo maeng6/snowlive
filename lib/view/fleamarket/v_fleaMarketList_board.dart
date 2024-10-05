@@ -454,6 +454,7 @@ class FleaMarketListView_board extends StatelessWidget {
                                                         _fleamarketListViewModel.changeCategory_sub_board('${FleamarketCategory_sub.deck.korean}');
                                                         await _fleamarketListViewModel.fetchFleamarketData_board(
                                                           userId: _userViewModel.user.user_id,
+                                                          categoryMain: '스노보드',
                                                           categorySub:_fleamarketListViewModel.selectedCategory_sub_board,
                                                           spot:
                                                           (_fleamarketListViewModel.selectedCategory_spot_board == '전체 거래장소')
@@ -485,6 +486,7 @@ class FleaMarketListView_board extends StatelessWidget {
                                                         _fleamarketListViewModel.changeCategory_sub_board('${FleamarketCategory_sub.binding.korean}');
                                                         await _fleamarketListViewModel.fetchFleamarketData_board(
                                                           userId: _userViewModel.user.user_id,
+                                                          categoryMain: '스키',
                                                           categorySub:_fleamarketListViewModel.selectedCategory_sub_board,
                                                           spot:
                                                           (_fleamarketListViewModel.selectedCategory_spot_board == '전체 거래장소')

@@ -242,9 +242,12 @@ class FleaMarketListView_total extends StatelessWidget {
                                                         CustomFullScreenDialog.showDialog();
                                                         _fleamarketListViewModel.changeCategory_sub_total('${FleamarketCategory_sub.binding.korean}');
                                                         await _fleamarketListViewModel.fetchFleamarketData_total(
-                                                            userId: _userViewModel.user.user_id,
-                                                            categoryMain: _fleamarketListViewModel.selectedCategory_sub_total,
-                                                            categorySub: _fleamarketListViewModel.selectedCategory_spot_total
+                                                          userId: _userViewModel.user.user_id,
+                                                          categorySub:_fleamarketListViewModel.selectedCategory_sub_total,
+                                                          spot:
+                                                          (_fleamarketListViewModel.selectedCategory_spot_total == '전체 거래장소')
+                                                              ? null
+                                                              :_fleamarketListViewModel.selectedCategory_spot_total,
                                                         );
                                                         CustomFullScreenDialog.cancelDialog();
                                                       },

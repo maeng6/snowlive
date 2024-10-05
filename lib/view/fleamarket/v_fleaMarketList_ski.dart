@@ -455,6 +455,7 @@ class FleaMarketListView_ski extends StatelessWidget {
                                                         _fleamarketListViewModel.changeCategory_sub_ski('${FleamarketCategory_sub.binding.korean}');
                                                         await _fleamarketListViewModel.fetchFleamarketData_ski(
                                                           userId: _userViewModel.user.user_id,
+                                                          categoryMain: '스키',
                                                           categorySub:_fleamarketListViewModel.selectedCategory_sub_ski,
                                                           spot:
                                                           (_fleamarketListViewModel.selectedCategory_spot_ski == '전체 거래장소')

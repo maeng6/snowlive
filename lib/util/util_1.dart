@@ -92,7 +92,7 @@ class GetDatetime{
 
   String getDateTime(){
     var now = DateTime.now();
-    return DateFormat('yyyy.MM.dd E').format(now);
+    return DateFormat('yyyy.MM.dd (E)', 'ko').format(now);
   }
 
 }

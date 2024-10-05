@@ -108,6 +108,29 @@ class CrewDetailViewModel extends GetxController {
   }
 
 
+  Future<void> fetchCrewDetail_refresh(int crewId, String season) async {
+
+    try {
+      // 시즌 정보 함께 전달
+
+      final response = await CrewAPI().getCrewDetails(crewId, season: season);
+
+      if (response.success) {
+
+        crewDetailResponse.value = CrewDetailResponse.fromJson(response.data!);
+        await _crewNoticeViewModel.fetchCrewNotices();
+
+
+      } else {
+        print('Error fetching crew details: ${response.error}');
+      }
+    } catch (e) {
+      print('Exception while fetching crew details: $e');
+    } finally {
+    }
+
+  }
+
   // 그래프 토글 함수
   void toggleGraph() {
     isSlopeGraph.value = !isSlopeGraph.value;

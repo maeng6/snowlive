@@ -7,6 +7,7 @@ import 'package:com.snowlive/viewmodel/crew/vm_crewDetail.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewMemberList.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewNotice.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewRecordRoom.dart';
+import 'package:com.snowlive/viewmodel/friend/vm_friendDetail.dart';
 import 'package:com.snowlive/viewmodel/resortHome/vm_alarmCenter.dart';
 import 'package:com.snowlive/viewmodel/vm_user.dart';
 import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
@@ -28,6 +29,7 @@ class CrewHomeView extends StatelessWidget {
   final CrewApplyViewModel _crewApplyViewModel = Get.find<CrewApplyViewModel>();
   final CrewNoticeViewModel _crewNoticeViewModel = Get.find<CrewNoticeViewModel>();
   final AlarmCenterViewModel _alarmCenterViewModel = Get.find<AlarmCenterViewModel>();
+  final FriendDetailViewModel _friendDetailViewModel = Get.find<FriendDetailViewModel>();
 
 
   @override
@@ -92,682 +94,693 @@ class CrewHomeView extends StatelessWidget {
         children: [
           Container(
             width: _size.width,
-            child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SizedBox(height: 20,),
-                  if(_crewNoticeViewModel.noticeList.isNotEmpty
-                      && _userViewModel.user.crew_id == _crewDetailViewModel.crewDetailInfo.crewId)
-                    GestureDetector(
-                      onTap: () async{
-                        Get.toNamed(AppRoutes.crewNoticeList);
-                        await _crewNoticeViewModel.fetchCrewNotices();
-                      },
-                      child: Padding(
-                        padding: EdgeInsets.only(left: 20, right: 20, bottom: 16),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Image.asset(
-                                  'assets/imgs/icons/icon_liveCrew_notice.png',
-                                  width: 22,
-                                  height: 22,
-                                ),
-                                SizedBox(width: 4),
-                                Container(
-                                  width: _size.width - 70,
-                                  child: Text(
-                                    _crewNoticeViewModel.noticeList.first.notice!,
-                                    style: SDSTextStyle.regular.copyWith(
-                                      fontSize: 14,
-                                      color: SDSColor.gray900,
-                                    ),
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
+            child: RefreshIndicator(
+              strokeWidth: 2,
+              edgeOffset: -160,
+              displacement: 160,
+              backgroundColor: SDSColor.snowliveBlue,
+              color: SDSColor.snowliveWhite,
+              onRefresh: () async {
+                await  _crewDetailViewModel.fetchCrewDetail_refresh(_crewDetailViewModel.crewDetailInfo.crewId!, _friendDetailViewModel.seasonDate);
+              },
+              child: SingleChildScrollView(
+                physics: AlwaysScrollableScrollPhysics(),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(height: 20,),
+                    if(_crewNoticeViewModel.noticeList.isNotEmpty
+                        && _userViewModel.user.crew_id == _crewDetailViewModel.crewDetailInfo.crewId)
+                      GestureDetector(
+                        onTap: () async{
+                          Get.toNamed(AppRoutes.crewNoticeList);
+                          await _crewNoticeViewModel.fetchCrewNotices();
+                        },
+                        child: Padding(
+                          padding: EdgeInsets.only(left: 20, right: 20, bottom: 16),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Image.asset(
+                                    'assets/imgs/icons/icon_liveCrew_notice.png',
+                                    width: 22,
+                                    height: 22,
                                   ),
-                                )
-                              ],
-                            ),
-                          ],
+                                  SizedBox(width: 4),
+                                  Container(
+                                    width: _size.width - 70,
+                                    child: Text(
+                                      _crewNoticeViewModel.noticeList.first.notice!,
+                                      style: SDSTextStyle.regular.copyWith(
+                                        fontSize: 14,
+                                        color: SDSColor.gray900,
+                                      ),
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 16, right: 16),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(16),
-                      child: Container(
-                        color: Color(int.parse(_crewDetailViewModel.color.replaceFirst('0X', ''), radix: 16)),
-                        padding: EdgeInsets.only(top: 20, bottom: (_crewDetailViewModel.isCrewIntroExpanded == false) ? 12 : 20, left: 24, right: 24),
-                        child: Column(
-                          children: [
-                            Column(
-                              children: [
-                                Row(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    if (_crewDetailViewModel.crewLogoUrl.isNotEmpty)
-                                      GestureDetector(
-                                        onTap: () {
-                                        },
-                                        child: Container(
-                                          decoration: const BoxDecoration(
-                                            boxShadow: [
-                                              BoxShadow(
-                                                color: Colors.black12,
-                                                spreadRadius: 0,
-                                                blurRadius: 16,
-                                                offset: Offset(0, 2),
-                                              ),
-                                            ],
-                                          ),
-                                          width: 48,
-                                          height: 48,
-                                          child: ExtendedImage.network(
-                                            _crewDetailViewModel.crewLogoUrl,
-                                            enableMemoryCache: true,
-                                            shape: BoxShape.rectangle,
-                                            borderRadius: BorderRadius.circular(10),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 16, right: 16),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(16),
+                        child: Container(
+                          color: Color(int.parse(_crewDetailViewModel.color.replaceFirst('0X', ''), radix: 16)),
+                          padding: EdgeInsets.only(top: 20, bottom: (_crewDetailViewModel.isCrewIntroExpanded == false) ? 12 : 20, left: 24, right: 24),
+                          child: Column(
+                            children: [
+                              Column(
+                                children: [
+                                  Row(
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: [
+                                      if (_crewDetailViewModel.crewLogoUrl.isNotEmpty)
+                                        GestureDetector(
+                                          onTap: () {
+                                          },
+                                          child: Container(
+                                            decoration: const BoxDecoration(
+                                              boxShadow: [
+                                                BoxShadow(
+                                                  color: Colors.black12,
+                                                  spreadRadius: 0,
+                                                  blurRadius: 16,
+                                                  offset: Offset(0, 2),
+                                                ),
+                                              ],
+                                            ),
                                             width: 48,
                                             height: 48,
-                                            fit: BoxFit.cover,
+                                            child: ExtendedImage.network(
+                                              _crewDetailViewModel.crewLogoUrl,
+                                              enableMemoryCache: true,
+                                              shape: BoxShape.rectangle,
+                                              borderRadius: BorderRadius.circular(10),
+                                              width: 48,
+                                              height: 48,
+                                              fit: BoxFit.cover,
+                                            ),
                                           ),
-                                        ),
-                                      )
-                                    else
-                                      GestureDetector(
-                                        onTap: () {},
-                                        child: Container(
-                                          decoration: const BoxDecoration(
-                                            boxShadow: [
-                                              BoxShadow(
-                                                color: Colors.black12,
-                                                spreadRadius: 0,
-                                                blurRadius: 16,
-                                                offset: Offset(0, 2),
-                                              ),
-                                            ],
-                                          ),
-                                          width: 48,
-                                          height: 48,
-                                          child: ExtendedImage.network(
-                                            '${crewDefaultLogoUrl['${_crewDetailViewModel.color}']}',
-                                            enableMemoryCache: true,
-                                            shape: BoxShape.rectangle,
-                                            borderRadius: BorderRadius.circular(10),
+                                        )
+                                      else
+                                        GestureDetector(
+                                          onTap: () {},
+                                          child: Container(
+                                            decoration: const BoxDecoration(
+                                              boxShadow: [
+                                                BoxShadow(
+                                                  color: Colors.black12,
+                                                  spreadRadius: 0,
+                                                  blurRadius: 16,
+                                                  offset: Offset(0, 2),
+                                                ),
+                                              ],
+                                            ),
                                             width: 48,
                                             height: 48,
-                                            fit: BoxFit.cover,
-                                          ),
+                                            child: ExtendedImage.network(
+                                              '${crewDefaultLogoUrl['${_crewDetailViewModel.color}']}',
+                                              enableMemoryCache: true,
+                                              shape: BoxShape.rectangle,
+                                              borderRadius: BorderRadius.circular(10),
+                                              width: 48,
+                                              height: 48,
+                                              fit: BoxFit.cover,
+                                            ),
 
-                                        ),
-                                      ),
-                                    SizedBox(width: 12),
-                                    Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: [
-                                        Text(
-                                          _crewDetailViewModel.crewName,
-                                          style: SDSTextStyle.bold.copyWith(
-                                            fontSize: 16,
-                                            color: SDSColor.snowliveWhite,
                                           ),
-                                          overflow: TextOverflow.ellipsis,
-                                          maxLines: 1,
                                         ),
-                                        Row(
-                                          children: [
-                                            Text(
-                                              '${_crewDetailViewModel.crewDetailInfo.crewLeaderDisplayName} • ${_crewDetailViewModel.crewDetailInfo.baseResortFullname}',
-                                              style: SDSTextStyle.regular.copyWith(
-                                                  fontSize: 13,
-                                                  color: SDSColor.snowliveWhite),
-                                              overflow: TextOverflow.ellipsis,
-                                              maxLines: 1,
-                                            ),
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                    Expanded(child: SizedBox()),
-                                    RichText(
-                                      text: TextSpan(
+                                      SizedBox(width: 12),
+                                      Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        mainAxisAlignment: MainAxisAlignment.center,
                                         children: [
-                                          TextSpan(
-                                            text: '${_crewMemberListViewModel.totalMemberCount}',
-                                            style: GoogleFonts.bebasNeue(
+                                          Text(
+                                            _crewDetailViewModel.crewName,
+                                            style: SDSTextStyle.bold.copyWith(
+                                              fontSize: 16,
                                               color: SDSColor.snowliveWhite,
-                                              fontSize: 36,
                                             ),
+                                            overflow: TextOverflow.ellipsis,
+                                            maxLines: 1,
                                           ),
-                                          TextSpan(
-                                            text: ' 명',
-                                            style: GoogleFonts.bebasNeue(
-                                              color: SDSColor.snowliveWhite.withOpacity(0.6),
-                                              fontSize: 15,
-                                            ),
+                                          Row(
+                                            children: [
+                                              Text(
+                                                '${_crewDetailViewModel.crewDetailInfo.crewLeaderDisplayName} • ${_crewDetailViewModel.crewDetailInfo.baseResortFullname}',
+                                                style: SDSTextStyle.regular.copyWith(
+                                                    fontSize: 13,
+                                                    color: SDSColor.snowliveWhite),
+                                                overflow: TextOverflow.ellipsis,
+                                                maxLines: 1,
+                                              ),
+                                            ],
                                           ),
                                         ],
                                       ),
-                                    ),
-                                  ],
-                                ),
-                                if (_crewDetailViewModel.description.isNotEmpty)
-                                  Column(
-                                    children: [
-                                      SizedBox(
-                                        height: 16,
-                                      ),
-                                      Divider(
-                                        color: SDSColor.snowliveBlack.withOpacity(0.1),
-                                        thickness: 1.0,
-                                      ),
-                                      SizedBox(
-                                        height: 2,
-                                      ),
-                                      LayoutBuilder(
-                                        builder: (context, constraints) {
-                                          // 텍스트의 크기를 계산하기 위한 TextPainter
-                                          TextPainter textPainter = TextPainter(
-                                            text: TextSpan(
-                                              text: _crewDetailViewModel.description,
-                                              style: SDSTextStyle.regular.copyWith(
-                                                fontSize: 14,
+                                      Expanded(child: SizedBox()),
+                                      RichText(
+                                        text: TextSpan(
+                                          children: [
+                                            TextSpan(
+                                              text: '${_crewMemberListViewModel.totalMemberCount}',
+                                              style: GoogleFonts.bebasNeue(
                                                 color: SDSColor.snowliveWhite,
+                                                fontSize: 36,
                                               ),
                                             ),
-                                            maxLines: 1,
-                                            textDirection: TextDirection.ltr,
-                                          );
+                                            TextSpan(
+                                              text: ' 명',
+                                              style: GoogleFonts.bebasNeue(
+                                                color: SDSColor.snowliveWhite.withOpacity(0.6),
+                                                fontSize: 15,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  if (_crewDetailViewModel.description.isNotEmpty)
+                                    Column(
+                                      children: [
+                                        SizedBox(
+                                          height: 16,
+                                        ),
+                                        Divider(
+                                          color: SDSColor.snowliveBlack.withOpacity(0.1),
+                                          thickness: 1.0,
+                                        ),
+                                        SizedBox(
+                                          height: 2,
+                                        ),
+                                        LayoutBuilder(
+                                          builder: (context, constraints) {
+                                            // 텍스트의 크기를 계산하기 위한 TextPainter
+                                            TextPainter textPainter = TextPainter(
+                                              text: TextSpan(
+                                                text: _crewDetailViewModel.description,
+                                                style: SDSTextStyle.regular.copyWith(
+                                                  fontSize: 14,
+                                                  color: SDSColor.snowliveWhite,
+                                                ),
+                                              ),
+                                              maxLines: 1,
+                                              textDirection: TextDirection.ltr,
+                                            );
 
-                                          // 부모 위젯의 너비에 맞추어 텍스트를 레이아웃
-                                          textPainter.layout(maxWidth: constraints.maxWidth - 110);
+                                            // 부모 위젯의 너비에 맞추어 텍스트를 레이아웃
+                                            textPainter.layout(maxWidth: constraints.maxWidth - 110);
 
-                                          // 텍스트가 한 줄을 넘는지 확인
-                                          bool isTextOverflowing = textPainter.didExceedMaxLines;
+                                            // 텍스트가 한 줄을 넘는지 확인
+                                            bool isTextOverflowing = textPainter.didExceedMaxLines;
 
-                                          return Obx(()=>Row(
-                                            crossAxisAlignment: (_crewDetailViewModel.isCrewIntroExpanded == false) ? CrossAxisAlignment.center : CrossAxisAlignment.start,
-                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Container(
-                                                width: _size.width - 120,
-                                                child: (_crewDetailViewModel.isCrewIntroExpanded == false)
-                                                    ? Text(
-                                                  _crewDetailViewModel.description,
-                                                  style: SDSTextStyle.regular.copyWith(
-                                                    fontSize: 14,
-                                                    color: SDSColor.snowliveWhite,
-                                                  ),
-                                                  overflow: TextOverflow.ellipsis,
-                                                  maxLines: 1,
-                                                )
-                                                    : Padding(
-                                                  padding: EdgeInsets.only(top: (_crewDetailViewModel.isCrewIntroExpanded == false) ? 0 : 10),
-                                                  child: Text(
+                                            return Obx(()=>Row(
+                                              crossAxisAlignment: (_crewDetailViewModel.isCrewIntroExpanded == false) ? CrossAxisAlignment.center : CrossAxisAlignment.start,
+                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                              children: [
+                                                Container(
+                                                  width: _size.width - 120,
+                                                  child: (_crewDetailViewModel.isCrewIntroExpanded == false)
+                                                      ? Text(
                                                     _crewDetailViewModel.description,
                                                     style: SDSTextStyle.regular.copyWith(
                                                       fontSize: 14,
                                                       color: SDSColor.snowliveWhite,
                                                     ),
+                                                    overflow: TextOverflow.ellipsis,
+                                                    maxLines: 1,
+                                                  )
+                                                      : Padding(
+                                                    padding: EdgeInsets.only(top: (_crewDetailViewModel.isCrewIntroExpanded == false) ? 0 : 10),
+                                                    child: Text(
+                                                      _crewDetailViewModel.description,
+                                                      style: SDSTextStyle.regular.copyWith(
+                                                        fontSize: 14,
+                                                        color: SDSColor.snowliveWhite,
+                                                      ),
+                                                    ),
                                                   ),
                                                 ),
-                                              ),
-                                              // 텍스트가 한 줄 이상일 경우에만 아이콘을 표시
-                                              if (isTextOverflowing)
-                                                (_crewDetailViewModel.isCrewIntroExpanded == false)
-                                                    ? GestureDetector(
-                                                  onTap:(){
-                                                    _crewDetailViewModel.toggleExpandCrewIntro();
-                                                  },
-                                                  child: Stack(
-                                                    children: [
-                                                      Container(
-                                                        width: 40,
-                                                        height: 40,
-                                                        color: Colors.transparent,
-                                                      ),
-                                                      Positioned(
-                                                        top: 10,
-                                                        right: 0,
-                                                        child: Image.asset(
-                                                          'assets/imgs/icons/icon_plus_round.png',
-                                                          width: 20,
-                                                          height: 20,
+                                                // 텍스트가 한 줄 이상일 경우에만 아이콘을 표시
+                                                if (isTextOverflowing)
+                                                  (_crewDetailViewModel.isCrewIntroExpanded == false)
+                                                      ? GestureDetector(
+                                                    onTap:(){
+                                                      _crewDetailViewModel.toggleExpandCrewIntro();
+                                                    },
+                                                    child: Stack(
+                                                      children: [
+                                                        Container(
+                                                          width: 40,
+                                                          height: 40,
+                                                          color: Colors.transparent,
                                                         ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                )
-                                                    : GestureDetector(
-                                                  onTap:(){
-                                                    _crewDetailViewModel.toggleExpandCrewIntro();
-                                                  },
-                                                  child: Stack (
-                                                    children: [
-                                                      Container(
-                                                        width: 40,
-                                                        height: 40,
-                                                        color: Colors.transparent,
-                                                      ),
-                                                      Positioned(
-                                                        top: 10,
-                                                        right: 0,
-                                                        child: Image.asset(
-                                                          'assets/imgs/icons/icon_minus_round.png',
-                                                          width: 20,
-                                                          height: 20,
+                                                        Positioned(
+                                                          top: 10,
+                                                          right: 0,
+                                                          child: Image.asset(
+                                                            'assets/imgs/icons/icon_plus_round.png',
+                                                            width: 20,
+                                                            height: 20,
+                                                          ),
                                                         ),
-                                                      ),
-                                                    ],
+                                                      ],
+                                                    ),
+                                                  )
+                                                      : GestureDetector(
+                                                    onTap:(){
+                                                      _crewDetailViewModel.toggleExpandCrewIntro();
+                                                    },
+                                                    child: Stack (
+                                                      children: [
+                                                        Container(
+                                                          width: 40,
+                                                          height: 40,
+                                                          color: Colors.transparent,
+                                                        ),
+                                                        Positioned(
+                                                          top: 10,
+                                                          right: 0,
+                                                          child: Image.asset(
+                                                            'assets/imgs/icons/icon_minus_round.png',
+                                                            width: 20,
+                                                            height: 20,
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
                                                   ),
-                                                ),
-                                            ],
-                                          ));
-                                        },
+                                              ],
+                                            ));
+                                          },
+                                        ),
+                                      ],
+                                    ),
+                                  if (_crewDetailViewModel.description.isEmpty)
+                                    SizedBox(height: 8,)
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 24),
+                    Padding(
+                      padding: EdgeInsets.only(left: 20, right: 20),
+                      child: Row(
+                        children: [
+                          Text(
+                            '크루 라이딩 통계',
+                            style: SDSTextStyle.bold.copyWith(
+                              fontSize: 15,
+                              color: SDSColor.gray900,
+                            ),
+                          ),
+                          Expanded(child: SizedBox()),
+                          if(_userViewModel.user.crew_id == _crewDetailViewModel.crewDetailInfo.crewId)
+                            (_crewDetailViewModel.isLoading == true)
+                                ? SizedBox.shrink()
+                                : TextButton(
+                              onPressed: () async{
+                                Get.toNamed(AppRoutes.crewRecordRoom);
+                              },
+                              style: ElevatedButton.styleFrom(
+                                shadowColor: Colors.transparent,
+                                overlayColor: Colors.transparent,
+                                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 3),
+                                minimumSize: Size(36, 32),
+                                backgroundColor: SDSColor.snowliveWhite,
+                                side: BorderSide(
+                                    color: SDSColor.gray200
+                                ),
+                                elevation: 0,
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(5)),
+                              ),
+                              child: Text(
+                                '기록실',
+                                style: SDSTextStyle.bold.copyWith(fontSize: 13, color: SDSColor.gray900),
+
+                              ),
+                            ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: 6),
+                    Padding(
+                      padding: EdgeInsets.only(left: 16, right: 16),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Container(
+                            width: _size.width - 32,
+                            height: 76,
+                            decoration: BoxDecoration(
+                              color: SDSColor.gray50, // 선택된 옵션의 배경을 흰색으로 설정
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Expanded(
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        '${_crewDetailViewModel.overallRank}',
+                                        style: SDSTextStyle.bold.copyWith(
+                                            fontSize: 18,
+                                            color: SDSColor.gray900
+                                        ),
+                                      ),
+                                      Text(
+                                        '통합 랭킹',
+                                        style: SDSTextStyle.regular.copyWith(
+                                          color: SDSColor.gray900.withOpacity(0.5),
+                                          fontSize: 13,
+                                        ),
                                       ),
                                     ],
                                   ),
-                                if (_crewDetailViewModel.description.isEmpty)
-                                  SizedBox(height: 8,)
+                                ),
+                                buildVerticalDivider_ranking_indi_Screen(),
+                                Expanded(
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        '${_crewDetailViewModel.overallTotalScore.toStringAsFixed(0)}',
+                                        style: SDSTextStyle.bold.copyWith(
+                                            fontSize: 18,
+                                            color: SDSColor.gray900
+                                        ),
+                                      ),
+                                      Text(
+                                        '총 점수',
+                                        style: SDSTextStyle.regular.copyWith(
+                                          color: SDSColor.gray900.withOpacity(0.5),
+                                          fontSize: 13,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
                               ],
                             ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: 20),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 16, right: 16),
+                      child: Container(
+                        padding: const EdgeInsets.only(top: 20, right: 20, left: 20, bottom: 10),
+                        width: MediaQuery.of(context).size.width,
+                        decoration: BoxDecoration(
+                          color: SDSColor.blue50,
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                // 슬로프별, 시간대별 버튼
+                                Container(
+                                  decoration: BoxDecoration(
+                                    color: Color(0xFFD2DFF4).withOpacity(0.7),
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 4),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Expanded(
+                                        child: GestureDetector(
+                                          onTap: () {
+                                            HapticFeedback.lightImpact();
+                                            _crewDetailViewModel.toggleGraph();
+                                          },
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                              color: _crewDetailViewModel.isSlopeGraph.value
+                                                  ? SDSColor.snowliveWhite
+                                                  : Colors.transparent,
+                                              borderRadius: BorderRadius.circular(8),
+                                            ),
+                                            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                                            alignment: Alignment.center,
+                                            child: Text(
+                                              '슬로프별',
+                                              style: SDSTextStyle.regular.copyWith(
+                                                color: _crewDetailViewModel.isSlopeGraph.value
+                                                    ? SDSColor.gray900
+                                                    : Color(0xFF809FCF).withOpacity(0.8),
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      SizedBox(width: 10),
+                                      Expanded(
+                                        child: GestureDetector(
+                                          onTap: () {
+                                            HapticFeedback.lightImpact();
+                                            _crewDetailViewModel.toggleGraph();
+                                          },
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                              color: !_crewDetailViewModel.isSlopeGraph.value
+                                                  ? SDSColor.snowliveWhite
+                                                  : Colors.transparent,
+                                              borderRadius: BorderRadius.circular(8),
+                                            ),
+                                            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                                            alignment: Alignment.center,
+                                            child: Text(
+                                              '시간대별',
+                                              style: SDSTextStyle.regular.copyWith(
+                                                color: !_crewDetailViewModel.isSlopeGraph.value
+                                                    ? SDSColor.gray900
+                                                    : Color(0xFF809FCF).withOpacity(0.8),
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 14,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                SizedBox(height: 20),
+                                Text(
+                                  '총 라이딩 횟수',
+                                  style: SDSTextStyle.regular.copyWith(
+                                      color: SDSColor.gray900.withOpacity(0.5),
+                                      fontSize: 14
+                                  ),
+                                ),
+                                Text(
+                                  '${_crewDetailViewModel.totalSlopeCount}',
+                                  style: SDSTextStyle.extraBold.copyWith(
+                                      color: SDSColor.gray900,
+                                      fontSize: 30
+                                  ),
+                                ),
+                                SizedBox(height: 10),
+                                if (_crewDetailViewModel.totalSlopeCount == 0)
+                                  Center(
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(bottom: 60),
+                                      child: Column(
+                                        children: [
+                                          Image.asset(
+                                            'assets/imgs/imgs/img_resoreHome_nodata.png',
+                                            fit: BoxFit.cover,
+                                            width: 72,
+                                            height: 72,
+                                          ),
+                                          Text(
+                                            '라이딩 기록이 없어요',
+                                            style: SDSTextStyle.regular.copyWith(
+                                              fontSize: 14,
+                                              color: SDSColor.gray600,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  )
+                                else
+                                  Obx(() => _crewDetailViewModel.isSlopeGraph.value
+                                      ? Container(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: _crewDetailViewModel.countInfo.map<Widget>((slopeData) {
+                                        String slopeName = slopeData.slope ?? '';
+                                        int passCount = slopeData.count ?? 0;
+
+                                        double barWidthRatio = (passCount / (_crewDetailViewModel.countInfo.map((e) => e.count ?? 0).reduce((a, b) => a > b ? a : b)));
+
+                                        return Padding(
+                                          padding: (slopeData != _crewDetailViewModel.countInfo.last)
+                                              ? EdgeInsets.only(bottom: 8, top: 4)
+                                              : EdgeInsets.only(bottom: 0, top: 4),
+                                          child: Row(
+                                            children: [
+                                              Container(
+                                                width: 44,
+                                                child: Text(
+                                                  slopeName,
+                                                  style: SDSTextStyle.regular.copyWith(
+                                                    fontSize: 11,
+                                                    color: SDSColor.sBlue600,
+                                                  ),
+                                                ),
+                                              ),
+                                              Container(
+                                                height: 14,
+                                                width: (_size.width - 166) * barWidthRatio,
+                                                decoration: BoxDecoration(
+                                                  color: (slopeData == _crewDetailViewModel.countInfo.first)
+                                                      ? SDSColor.snowliveBlue
+                                                      : SDSColor.blue200,
+                                                  borderRadius: BorderRadius.only(
+                                                    topRight: Radius.circular(4),
+                                                    bottomRight: Radius.circular(4),
+                                                  ),
+                                                ),
+                                              ),
+                                              Padding(
+                                                padding: (slopeData == _crewDetailViewModel.countInfo.first)
+                                                    ? EdgeInsets.only(left: 6)
+                                                    : EdgeInsets.only(left: 2),
+                                                child: Container(
+                                                  child: Column(
+                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                    mainAxisAlignment: MainAxisAlignment.center,
+                                                    children: [
+                                                      Container(
+                                                        decoration: BoxDecoration(
+                                                          borderRadius: BorderRadius.circular(20),
+                                                          color: (slopeData == _crewDetailViewModel.countInfo.first)
+                                                              ? SDSColor.gray900
+                                                              : Colors.transparent,
+                                                        ),
+                                                        padding: EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                                                        child: Text(
+                                                          '$passCount',
+                                                          style: SDSTextStyle.extraBold.copyWith(
+                                                              fontSize: 12,
+                                                              fontWeight: (slopeData == _crewDetailViewModel.countInfo.first)
+                                                                  ? FontWeight.w900
+                                                                  : FontWeight.w300,
+                                                              color: (slopeData == _crewDetailViewModel.countInfo.first)
+                                                                  ? SDSColor.snowliveWhite
+                                                                  : SDSColor.gray900
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        );
+                                      }).toList(),
+                                    ),
+                                  )
+                                      : Container(
+                                    child: _crewDetailViewModel.seasonRankingInfo.timeCountInfo != null
+                                        ? Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      crossAxisAlignment: CrossAxisAlignment.end,
+                                      children: _crewDetailViewModel.seasonRankingInfo.timeCountInfo!.entries.map<Widget>((entry) {
+                                        String slotName = entry.key; // 시간대 이름 (ex: "00-08", "08-10")
+                                        int passCount = entry.value; // 시간대별 횟수
+                                        int maxCount = _crewDetailViewModel.seasonRankingInfo.timeCountInfo!.values.reduce((a, b) => a > b ? a : b); // 최대 값 계산
+                                        double barHeightRatio = passCount / maxCount; // 비율 계산
+
+                                        return Container(
+                                          width: 30,
+                                          child: Column(
+                                            mainAxisAlignment: MainAxisAlignment.end,
+                                            children: [
+                                              // 횟수가 0이 아닐 때만 표시
+                                              AutoSizeText(
+                                                passCount != 0 ? '$passCount' : '',
+                                                style: SDSTextStyle.regular.copyWith(
+                                                  fontSize: 12,
+                                                  color: SDSColor.gray900,
+                                                ),
+                                                minFontSize: 6,
+                                                maxLines: 1,
+                                                overflow: TextOverflow.visible,
+                                              ),
+                                              Padding(
+                                                padding: EdgeInsets.only(top: 4),
+                                                child: Container(
+                                                  width: 16,
+                                                  height: 140 * barHeightRatio,
+                                                  decoration: BoxDecoration(
+                                                      color: SDSColor.blue200,
+                                                      borderRadius: BorderRadius.only(
+                                                          topRight: Radius.circular(4), topLeft: Radius.circular(4)
+                                                      )
+                                                  ),
+                                                ),
+                                              ),
+                                              Padding(
+                                                padding: const EdgeInsets.only(top: 8),
+                                                child: Container(
+                                                  width: 20,
+                                                  child: Text(
+                                                    slotName, // 시간대 텍스트
+                                                    style: SDSTextStyle.regular.copyWith(
+                                                        fontSize: 11,
+                                                        color: SDSColor.sBlue600,
+                                                        height: 1.2
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        );
+                                      }).toList(),
+                                    )
+                                        : Center(child: Text('No data available')), // null일 때 표시할 기본 값
+                                  ),
+                                  ),
+                              ],
+                            ),
+                            SizedBox(height: 16),
                           ],
                         ),
                       ),
                     ),
-                  ),
-                  SizedBox(height: 24),
-                  Padding(
-                    padding: EdgeInsets.only(left: 20, right: 20),
-                    child: Row(
-                      children: [
-                        Text(
-                          '크루 라이딩 통계',
-                          style: SDSTextStyle.bold.copyWith(
-                            fontSize: 15,
-                            color: SDSColor.gray900,
-                          ),
-                        ),
-                        Expanded(child: SizedBox()),
-                        if(_userViewModel.user.crew_id == _crewDetailViewModel.crewDetailInfo.crewId)
-                          (_crewDetailViewModel.isLoading == true)
-                              ? SizedBox.shrink()
-                              : TextButton(
-                            onPressed: () async{
-                              Get.toNamed(AppRoutes.crewRecordRoom);
-                            },
-                            style: ElevatedButton.styleFrom(
-                              shadowColor: Colors.transparent,
-                              overlayColor: Colors.transparent,
-                              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 3),
-                              minimumSize: Size(36, 32),
-                              backgroundColor: SDSColor.snowliveWhite,
-                              side: BorderSide(
-                                  color: SDSColor.gray200
-                              ),
-                              elevation: 0,
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(5)),
-                            ),
-                            child: Text(
-                              '기록실',
-                              style: SDSTextStyle.bold.copyWith(fontSize: 13, color: SDSColor.gray900),
-
-                            ),
-                          ),
-                      ],
-                    ),
-                  ),
-                  SizedBox(height: 6),
-                  Padding(
-                    padding: EdgeInsets.only(left: 16, right: 16),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Container(
-                          width: _size.width - 32,
-                          height: 76,
-                          decoration: BoxDecoration(
-                            color: SDSColor.gray50, // 선택된 옵션의 배경을 흰색으로 설정
-                            borderRadius: BorderRadius.circular(16),
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Expanded(
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Text(
-                                      '${_crewDetailViewModel.overallRank}',
-                                      style: SDSTextStyle.bold.copyWith(
-                                          fontSize: 18,
-                                          color: SDSColor.gray900
-                                      ),
-                                    ),
-                                    Text(
-                                      '통합 랭킹',
-                                      style: SDSTextStyle.regular.copyWith(
-                                        color: SDSColor.gray900.withOpacity(0.5),
-                                        fontSize: 13,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              buildVerticalDivider_ranking_indi_Screen(),
-                              Expanded(
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Text(
-                                      '${_crewDetailViewModel.overallTotalScore.toStringAsFixed(0)}',
-                                      style: SDSTextStyle.bold.copyWith(
-                                          fontSize: 18,
-                                          color: SDSColor.gray900
-                                      ),
-                                    ),
-                                    Text(
-                                      '총 점수',
-                                      style: SDSTextStyle.regular.copyWith(
-                                        color: SDSColor.gray900.withOpacity(0.5),
-                                        fontSize: 13,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  SizedBox(height: 20),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 16, right: 16),
-                    child: Container(
-                      padding: const EdgeInsets.only(top: 20, right: 20, left: 20, bottom: 10),
-                      width: MediaQuery.of(context).size.width,
-                      decoration: BoxDecoration(
-                        color: SDSColor.blue50,
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              // 슬로프별, 시간대별 버튼
-                              Container(
-                                decoration: BoxDecoration(
-                                  color: Color(0xFFD2DFF4).withOpacity(0.7),
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                                padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 4),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Expanded(
-                                      child: GestureDetector(
-                                        onTap: () {
-                                          HapticFeedback.lightImpact();
-                                          _crewDetailViewModel.toggleGraph();
-                                        },
-                                        child: Container(
-                                          decoration: BoxDecoration(
-                                            color: _crewDetailViewModel.isSlopeGraph.value
-                                                ? SDSColor.snowliveWhite
-                                                : Colors.transparent,
-                                            borderRadius: BorderRadius.circular(8),
-                                          ),
-                                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                                          alignment: Alignment.center,
-                                          child: Text(
-                                            '슬로프별',
-                                            style: SDSTextStyle.regular.copyWith(
-                                              color: _crewDetailViewModel.isSlopeGraph.value
-                                                  ? SDSColor.gray900
-                                                  : Color(0xFF809FCF).withOpacity(0.8),
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                    SizedBox(width: 10),
-                                    Expanded(
-                                      child: GestureDetector(
-                                        onTap: () {
-                                          HapticFeedback.lightImpact();
-                                          _crewDetailViewModel.toggleGraph();
-                                        },
-                                        child: Container(
-                                          decoration: BoxDecoration(
-                                            color: !_crewDetailViewModel.isSlopeGraph.value
-                                                ? SDSColor.snowliveWhite
-                                                : Colors.transparent,
-                                            borderRadius: BorderRadius.circular(8),
-                                          ),
-                                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                                          alignment: Alignment.center,
-                                          child: Text(
-                                            '시간대별',
-                                            style: SDSTextStyle.regular.copyWith(
-                                              color: !_crewDetailViewModel.isSlopeGraph.value
-                                                  ? SDSColor.gray900
-                                                  : Color(0xFF809FCF).withOpacity(0.8),
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 14,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              SizedBox(height: 20),
-                              Text(
-                                '총 라이딩 횟수',
-                                style: SDSTextStyle.regular.copyWith(
-                                    color: SDSColor.gray900.withOpacity(0.5),
-                                    fontSize: 14
-                                ),
-                              ),
-                              Text(
-                                '${_crewDetailViewModel.totalSlopeCount}',
-                                style: SDSTextStyle.extraBold.copyWith(
-                                    color: SDSColor.gray900,
-                                    fontSize: 30
-                                ),
-                              ),
-                              SizedBox(height: 10),
-                              if (_crewDetailViewModel.totalSlopeCount == 0)
-                                Center(
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(bottom: 60),
-                                    child: Column(
-                                      children: [
-                                        Image.asset(
-                                          'assets/imgs/imgs/img_resoreHome_nodata.png',
-                                          fit: BoxFit.cover,
-                                          width: 72,
-                                          height: 72,
-                                        ),
-                                        Text(
-                                          '라이딩 기록이 없어요',
-                                          style: SDSTextStyle.regular.copyWith(
-                                            fontSize: 14,
-                                            color: SDSColor.gray600,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                )
-                              else
-                                Obx(() => _crewDetailViewModel.isSlopeGraph.value
-                                    ? Container(
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: _crewDetailViewModel.countInfo.map<Widget>((slopeData) {
-                                      String slopeName = slopeData.slope ?? '';
-                                      int passCount = slopeData.count ?? 0;
-
-                                      double barWidthRatio = (passCount / (_crewDetailViewModel.countInfo.map((e) => e.count ?? 0).reduce((a, b) => a > b ? a : b)));
-
-                                      return Padding(
-                                        padding: (slopeData != _crewDetailViewModel.countInfo.last)
-                                            ? EdgeInsets.only(bottom: 8, top: 4)
-                                            : EdgeInsets.only(bottom: 0, top: 4),
-                                        child: Row(
-                                          children: [
-                                            Container(
-                                              width: 44,
-                                              child: Text(
-                                                slopeName,
-                                                style: SDSTextStyle.regular.copyWith(
-                                                  fontSize: 11,
-                                                  color: SDSColor.sBlue600,
-                                                ),
-                                              ),
-                                            ),
-                                            Container(
-                                              height: 14,
-                                              width: (_size.width - 166) * barWidthRatio,
-                                              decoration: BoxDecoration(
-                                                color: (slopeData == _crewDetailViewModel.countInfo.first)
-                                                    ? SDSColor.snowliveBlue
-                                                    : SDSColor.blue200,
-                                                borderRadius: BorderRadius.only(
-                                                  topRight: Radius.circular(4),
-                                                  bottomRight: Radius.circular(4),
-                                                ),
-                                              ),
-                                            ),
-                                            Padding(
-                                              padding: (slopeData == _crewDetailViewModel.countInfo.first)
-                                                  ? EdgeInsets.only(left: 6)
-                                                  : EdgeInsets.only(left: 2),
-                                              child: Container(
-                                                child: Column(
-                                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                                  mainAxisAlignment: MainAxisAlignment.center,
-                                                  children: [
-                                                    Container(
-                                                      decoration: BoxDecoration(
-                                                        borderRadius: BorderRadius.circular(20),
-                                                        color: (slopeData == _crewDetailViewModel.countInfo.first)
-                                                            ? SDSColor.gray900
-                                                            : Colors.transparent,
-                                                      ),
-                                                      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                                                      child: Text(
-                                                        '$passCount',
-                                                        style: SDSTextStyle.extraBold.copyWith(
-                                                            fontSize: 12,
-                                                            fontWeight: (slopeData == _crewDetailViewModel.countInfo.first)
-                                                                ? FontWeight.w900
-                                                                : FontWeight.w300,
-                                                            color: (slopeData == _crewDetailViewModel.countInfo.first)
-                                                                ? SDSColor.snowliveWhite
-                                                                : SDSColor.gray900
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      );
-                                    }).toList(),
-                                  ),
-                                )
-                                    : Container(
-                                  child: _crewDetailViewModel.seasonRankingInfo.timeCountInfo != null
-                                      ? Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    crossAxisAlignment: CrossAxisAlignment.end,
-                                    children: _crewDetailViewModel.seasonRankingInfo.timeCountInfo!.entries.map<Widget>((entry) {
-                                      String slotName = entry.key; // 시간대 이름 (ex: "00-08", "08-10")
-                                      int passCount = entry.value; // 시간대별 횟수
-                                      int maxCount = _crewDetailViewModel.seasonRankingInfo.timeCountInfo!.values.reduce((a, b) => a > b ? a : b); // 최대 값 계산
-                                      double barHeightRatio = passCount / maxCount; // 비율 계산
-
-                                      return Container(
-                                        width: 30,
-                                        child: Column(
-                                          mainAxisAlignment: MainAxisAlignment.end,
-                                          children: [
-                                            // 횟수가 0이 아닐 때만 표시
-                                            AutoSizeText(
-                                              passCount != 0 ? '$passCount' : '',
-                                              style: SDSTextStyle.regular.copyWith(
-                                                fontSize: 12,
-                                                color: SDSColor.gray900,
-                                              ),
-                                              minFontSize: 6,
-                                              maxLines: 1,
-                                              overflow: TextOverflow.visible,
-                                            ),
-                                            Padding(
-                                              padding: EdgeInsets.only(top: 4),
-                                              child: Container(
-                                                width: 16,
-                                                height: 140 * barHeightRatio,
-                                                decoration: BoxDecoration(
-                                                    color: SDSColor.blue200,
-                                                    borderRadius: BorderRadius.only(
-                                                        topRight: Radius.circular(4), topLeft: Radius.circular(4)
-                                                    )
-                                                ),
-                                              ),
-                                            ),
-                                            Padding(
-                                              padding: const EdgeInsets.only(top: 8),
-                                              child: Container(
-                                                width: 20,
-                                                child: Text(
-                                                  slotName, // 시간대 텍스트
-                                                  style: SDSTextStyle.regular.copyWith(
-                                                      fontSize: 11,
-                                                      color: SDSColor.sBlue600,
-                                                      height: 1.2
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      );
-                                    }).toList(),
-                                  )
-                                      : Center(child: Text('No data available')), // null일 때 표시할 기본 값
-                                ),
-                                ),
-                            ],
-                          ),
-                          SizedBox(height: 16),
-                        ],
-                      ),
-                    ),
-                  ),
-                  (_userViewModel.user.crew_id == null)
-                      ? SizedBox(height: 100)
-                      : SizedBox(height: 40),
-                ],
+                    (_userViewModel.user.crew_id == null)
+                        ? SizedBox(height: 100)
+                        : SizedBox(height: 40),
+                  ],
+                ),
               ),
             ),
           ),
