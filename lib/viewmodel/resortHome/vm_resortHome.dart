@@ -336,7 +336,7 @@ class ResortHomeViewModel extends GetxController {
     await bg.BackgroundGeolocation.ready(bg.Config(
       desiredAccuracy: bg.Config.DESIRED_ACCURACY_HIGH,
       preventSuspend: true,
-      heartbeatInterval: 5,
+      disableMotionActivityUpdates: true,
       stopOnStationary: false,
       distanceFilter: 0,
       isMoving: true,

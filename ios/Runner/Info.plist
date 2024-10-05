@@ -6,8 +6,6 @@
 	<string>위치를 항상 사용하시면 라이브 기능을 통해 랭킹 서비스를 이용할 수 있고, 친구와 라이브 상태를 공유할 수 있어요.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>위치를 사용하시면 라이브 기능을 통해 랭킹 서비스를 이용할 수 있고, 친구와 라이브 상태를 공유할 수 있어요.</string>
-	<key>NSMotionUsageDescription</key>
-	<string>This app needs access to motion sensor for tracking movement.</string>
 	<key>BGTaskSchedulerPermittedIdentifiers</key>
 	<array>
 		<string>com.transistorsoft.fetch</string>
