@@ -225,10 +225,10 @@ class RankingCrewView extends StatelessWidget {
                                             width: 80,
                                             height: 80,
                                             decoration: BoxDecoration(
-                                              color: Color(int.parse(_rankingListViewModel.rankingListCrewMy_view!.color!)).withOpacity(0.3),
+                                              color: SDSColor.gray100,
                                               borderRadius: BorderRadius.circular(16),
                                             ),
-                                            padding: EdgeInsets.all(2),
+                                            padding: EdgeInsets.all(1),
                                             child: Transform.translate(
                                               offset: Offset(0, 0),
                                               child: Container(
@@ -1065,14 +1065,7 @@ class RankingCrewView extends StatelessWidget {
                                       child: Row(
                                         mainAxisAlignment: MainAxisAlignment.center,
                                         children: [
-                                          if (index == 1) ...[
-                                            Image.asset('assets/imgs/icons/icon_medal_1.png', width: 24),
-                                          ] else if (index == 2) ...[
-                                            Image.asset('assets/imgs/icons/icon_medal_2.png', width: 24),
-                                          ] else if (index == 3) ...[
-                                            Image.asset('assets/imgs/icons/icon_medal_3.png', width: 24),
-                                          ] else ...[
-                                            Expanded(
+                                          Expanded(
                                               child: Center(
                                                 child: AutoSizeText(
                                                   (_rankingListViewModel.resortOrTotal=='개별스키장')
@@ -1087,7 +1080,7 @@ class RankingCrewView extends StatelessWidget {
                                                 ),
                                               ),
                                             ),
-                                          ],
+
                                         ],
                                       ),
                                     ),

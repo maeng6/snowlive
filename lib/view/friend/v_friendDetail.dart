@@ -131,7 +131,7 @@ class _FriendDetailViewState extends State<FriendDetailView> {
           backgroundColor: SDSColor.snowliveBlue,
           color: SDSColor.snowliveWhite,
           onRefresh: () async {
-            await _friendDetailViewModel.fetchFriendDetailInfo(
+            await _friendDetailViewModel.fetchFriendDetailInfo_refresh(
                 userId: _userViewModel.user.user_id,
                 friendUserId: _friendDetailViewModel.friendDetailModel.friendUserInfo.userId,
                 season: _friendDetailViewModel.seasonDate,

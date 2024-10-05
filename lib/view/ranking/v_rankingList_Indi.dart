@@ -1044,13 +1044,6 @@ class RankingIndiView extends StatelessWidget {
                                     child: Row(
                                       mainAxisAlignment: MainAxisAlignment.center,
                                       children: [
-                                        if (index == 1) ...[
-                                          Image.asset('assets/imgs/icons/icon_medal_1.png', width: 24),
-                                        ] else if (index == 2) ...[
-                                          Image.asset('assets/imgs/icons/icon_medal_2.png', width: 24),
-                                        ] else if (index == 3) ...[
-                                          Image.asset('assets/imgs/icons/icon_medal_3.png', width: 24),
-                                        ] else ...[
                                           Expanded(
                                             child: Center(
                                               child:
@@ -1067,7 +1060,7 @@ class RankingIndiView extends StatelessWidget {
                                               ),
                                             ),
                                           ),
-                                        ],
+
                                       ],
                                     ),
                                   ),

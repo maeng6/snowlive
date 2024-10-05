@@ -681,7 +681,7 @@ class FleamarketCommentDetailView extends StatelessWidget {
                                                                                                         backgroundColor: Colors.transparent, // 배경색 투명
                                                                                                         splashFactory: NoSplash.splashFactory, // 터치 시 효과 제거
                                                                                                       ),
-                                                                                                      child: Text('신고하기',
+                                                                                                      child: Text('숨기기',
                                                                                                         style: SDSTextStyle.bold.copyWith(
                                                                                                           fontSize: 17,
                                                                                                           color: SDSColor.snowliveBlue,

@@ -42,20 +42,18 @@ class MainHomeView extends StatelessWidget {
                   backgroundColor: Colors.transparent,
                   icon: Stack(
                     children: [
-                      ImageIcon(
-                        AssetImage('assets/imgs/icons/icon_home_off.png'),
-                        size: 36,
-                        color: SDSColor.gray900,
-                      ),
+                      Image.asset('assets/imgs/icons/icon_home_off.png',
+                        width: 32,
+                        height: 32,
+                      )
                     ],
                   ),
                   activeIcon: Stack(
                     children: [
-                      ImageIcon(
-                        AssetImage('assets/imgs/icons/icon_home_on.png'),
-                        size: 36,
-                        color: SDSColor.gray900,
-                      ),
+                      Image.asset('assets/imgs/icons/icon_home_on.png',
+                        width: 32,
+                        height: 32,
+                      )
                     ],
                   ),
                   label: '홈',
@@ -63,69 +61,56 @@ class MainHomeView extends StatelessWidget {
                 BottomNavigationBarItem(
                   backgroundColor: Colors.transparent,
 
-                  icon: ImageIcon(
-                    AssetImage('assets/imgs/icons/icon_market_off.png'),
-                    size: 36,
-                    color: SDSColor.gray900,
+                  icon:
+                  Image.asset('assets/imgs/icons/icon_market_off.png',
+                    width: 32,
+                    height: 32,
                   ),
-                  activeIcon: ImageIcon(
-                    AssetImage('assets/imgs/icons/icon_market_on.png'),
-                    size: 36,
-                    color: SDSColor.gray900,
+                  activeIcon:
+                  Image.asset('assets/imgs/icons/icon_market_on.png',
+                    width: 32,
+                    height: 32,
                   ),
                   label: '스노우마켓',
                 ),
                 BottomNavigationBarItem(
                   backgroundColor: Colors.transparent,
-                  icon: ImageIcon(
-                    AssetImage('assets/imgs/icons/icon_discover_off.png'),
-                    size: 36,
-                    color: SDSColor.gray900,
+                  icon:
+                  Image.asset('assets/imgs/icons/icon_discover_off.png',
+                    width: 32,
+                    height: 32,
                   ),
-                  activeIcon: ImageIcon(
-                    AssetImage('assets/imgs/icons/icon_discover_on.png'),
-                    size: 36,
-                    color: SDSColor.gray900,
+                  activeIcon:
+                  Image.asset('assets/imgs/icons/icon_discover_on.png',
+                    width: 32,
+                    height: 32,
                   ),
                   label: '랭킹',
                 ),
                 BottomNavigationBarItem(
                   backgroundColor: Colors.transparent,
-                  icon: Stack(
-                    children: [
-                      ImageIcon(
-                        AssetImage('assets/imgs/icons/icon_community_off.png'),
-                        size: 36,
-                        color: SDSColor.gray900,
-                      ),
-                    ],
+                  icon: Image.asset('assets/imgs/icons/icon_community_off.png',
+                    width: 32,
+                    height: 32,
                   ),
-                  activeIcon: ImageIcon(
-                    AssetImage('assets/imgs/icons/icon_community_on.png'),
-                    size: 36,
-                    color: SDSColor.gray900,
+                  activeIcon:
+                  Image.asset('assets/imgs/icons/icon_community_on.png',
+                    width: 32,
+                    height: 32,
                   ),
                   label: '커뮤니티',
                 ),
                 BottomNavigationBarItem(
                   backgroundColor: Colors.transparent,
-                  icon: Stack(
-                    children: [
-                      ImageIcon(
-                        AssetImage('assets/imgs/icons/icon_more_off.png'),
-                        size: 36,
-                        color: SDSColor.gray900,
-                      ),
-                    ],
+                  icon:
+                  Image.asset('assets/imgs/icons/icon_more_off.png',
+                    width: 32,
+                    height: 32,
                   ),
-                  activeIcon: Stack(
-                    children: [
-                      ImageIcon(
-                        AssetImage('assets/imgs/icons/icon_more_on.png'),
-                        size: 36,
-                        color: SDSColor.gray900,
-                      ),
-                    ],
+                  activeIcon:
+                  Image.asset('assets/imgs/icons/icon_more_on.png',
+                    width: 32,
+                    height: 32,
                   ),
                   label: '더보기',
                 ),

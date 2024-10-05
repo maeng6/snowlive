@@ -142,6 +142,23 @@ class FriendDetailViewModel extends GetxController {
     }
   }
 
+  Future<void> fetchFriendDetailInfo_refresh({required int userId, required int friendUserId, required String season, bool isFromRefresh = false,}) async {
+
+    ApiResponse response = await FriendDetailAPI().fetchFriendDetail(userId,friendUserId,season);
+    if(response.success) {
+
+      _friendDetailModel.value = response.data as FriendDetailModel;
+      if (!isFromRefresh) {  // isFromRefresh가 false일 때만 탭을 변경
+        changeMainTab(0);
+      }
+      await fetchFriendsTalkList(userId: userId, friendUserId: friendUserId);
+    }
+    else {
+      Get.back();
+      Get.snackbar('Error', '데이터 로딩 실패');
+    }
+  }
+
   Future<void> fetchFriendsTalkList_refresh({required int userId, required int friendUserId}) async {
 
     ApiResponse response_talk = await FriendDetailAPI().fetchFriendsTalkList(userId,friendUserId);
