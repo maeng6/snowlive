@@ -2135,7 +2135,7 @@ class FleaMarketListView_ski extends StatelessWidget {
                                                               mainAxisAlignment: MainAxisAlignment.start,
                                                               children: [
                                                                 Text(
-                                                                  ' ${data.spot!} · ',
+                                                                  '${data.spot!} · ',
                                                                   style: SDSTextStyle.regular.copyWith(
                                                                       fontSize: 13,
                                                                       color: SDSColor.gray500

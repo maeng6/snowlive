@@ -10,6 +10,7 @@ import 'package:flutter/services.dart';
 class SetCrewNameAndResortView extends StatelessWidget {
   // 뷰모델 선언
   final SetCrewViewModel _setCrewViewModel = Get.find<SetCrewViewModel>();
+  FocusNode _textfocus = FocusNode();
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +18,10 @@ class SetCrewNameAndResortView extends StatelessWidget {
     final double _statusBarSize = MediaQuery.of(context).padding.top;
 
     return GestureDetector(
-      onTap: () => FocusScope.of(context).unfocus(),
+      onTap: () {
+        _textfocus.unfocus();
+        FocusScope.of(context).unfocus();
+      },
       child: Scaffold(
         backgroundColor: Colors.white,
         extendBodyBehindAppBar: true,
@@ -57,8 +61,8 @@ class SetCrewNameAndResortView extends StatelessWidget {
                 Text(
                   '라이브크루 정보를 입력해 주세요.',
                   style: SDSTextStyle.bold.copyWith(
-                    fontSize: 22,
-                    color: SDSColor.gray900
+                      fontSize: 22,
+                      color: SDSColor.gray900
                   ),
                 ),
                 SizedBox(height: 8),
@@ -104,6 +108,7 @@ class SetCrewNameAndResortView extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             TextFormField(
+                              focusNode: _textfocus,
                               textAlignVertical: TextAlignVertical.center,
                               cursorColor: SDSColor.snowliveBlue,
                               cursorHeight: 16,
@@ -169,6 +174,7 @@ class SetCrewNameAndResortView extends StatelessWidget {
                           ),
                           onPressed: (_setCrewViewModel.crewName.isNotEmpty && !_setCrewViewModel.isCrewNameChecked)
                               ? () async {
+                            _textfocus.unfocus();
                             CustomFullScreenDialog.showDialog();
                             await _setCrewViewModel.checkCrewName();
                             if (!_setCrewViewModel.isCrewNameChecked) {
@@ -226,6 +232,7 @@ class SetCrewNameAndResortView extends StatelessWidget {
                 SizedBox(height: 8),
                 GestureDetector(
                   onTap: () async {
+                    _textfocus.unfocus();
                     int? selectedIndex = await showModalBottomSheet<int>(
                       constraints: BoxConstraints(
                         maxHeight: _size.height - _statusBarSize - 44,
@@ -317,14 +324,14 @@ class SetCrewNameAndResortView extends StatelessWidget {
                   ),
                 ),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: _setCrewViewModel.isNextButtonEnabled.value
-                      ? SDSColor.snowliveBlue
-                      : SDSColor.gray300,
-                  minimumSize: Size(double.infinity, 48),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(6),
-                  ),
-                  elevation: 0
+                    backgroundColor: _setCrewViewModel.isNextButtonEnabled.value
+                        ? SDSColor.snowliveBlue
+                        : SDSColor.gray300,
+                    minimumSize: Size(double.infinity, 48),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(6),
+                    ),
+                    elevation: 0
                 ),
               );
             }),
