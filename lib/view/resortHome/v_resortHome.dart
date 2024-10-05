@@ -1433,7 +1433,7 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                                                   color: SDSColor.gray900
                                               ),
                                             ),
-                                          if((_resortHomeViewModel.resortHomeModel.dailyTotalCount != 0 && _userViewModel.user.within_boundary == true))
+                                          if(_userViewModel.user.within_boundary == true)
                                             Row(
                                               children: [
                                                 Padding(
