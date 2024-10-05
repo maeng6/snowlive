@@ -260,6 +260,7 @@ class CrewDetailViewModel extends GetxController {
       return ApiResponse.success(null);
     } else {
       CustomFullScreenDialog.cancelDialog();
+      Get.snackbar('삭제 실패', '크루 멤버가 있는 상태에서는 크루 삭제가 불가합니다');
       return ApiResponse.error(json.decode(utf8.decode(response.bodyBytes)));
     }
   }

@@ -96,7 +96,7 @@ class RankingCrewView extends StatelessWidget {
                                       Padding(
                                         padding: EdgeInsets.only(left: 4, right: 6),
                                         child: Row(
-                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          mainAxisAlignment: MainAxisAlignment.start,
                                           children: [
                                             Text(_rankingListViewModel.myBox_title,
                                               style: SDSTextStyle.bold.copyWith(
@@ -126,7 +126,7 @@ class RankingCrewView extends StatelessWidget {
                                                     Text(
                                                       '${_rankingListViewModel.rankingListCrewMy_view!.crewName ?? ''}',
                                                       style: SDSTextStyle.regular.copyWith(
-                                                        fontSize: 13,
+                                                        fontSize: 14,
                                                         color: SDSColor.gray900,
                                                       ),
                                                     ),
@@ -136,8 +136,8 @@ class RankingCrewView extends StatelessWidget {
                                                     Image.asset(
                                                       'assets/imgs/icons/icon_arrow_round_black.png',
                                                       fit: BoxFit.cover,
-                                                      width: 15,
-                                                      height: 15,
+                                                      width: 14,
+                                                      height: 14,
                                                     ),
                                                   ],
                                                 ),
@@ -1204,23 +1204,20 @@ class RankingCrewView extends StatelessWidget {
                                                       color: SDSColor.gray500
                                                   ),
                                                 ),
-                                                Text('·',
-                                                  style: SDSTextStyle.regular.copyWith(
-                                                      fontSize: 12,
-                                                      color: SDSColor.gray500
-                                                  ),
-                                                ),
                                                 Expanded(
                                                   child: Container(
-                                                    child: Text(
+                                                    child:
+                                                    (document.description != null)
+                                                    ? Text(
                                                       maxLines: 1,
                                                       overflow: TextOverflow.ellipsis,
-                                                      document.description??'',
+                                                      ' · ${document.description}',
                                                       style: SDSTextStyle.regular.copyWith(
                                                           fontSize: 12,
                                                           color: SDSColor.gray500
                                                       ),
-                                                    ),
+                                                    )
+                                                    : Container(),
                                                   ),
                                                 ),
                                               ],
