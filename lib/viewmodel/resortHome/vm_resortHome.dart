@@ -58,7 +58,9 @@ class ResortHomeViewModel extends GetxController {
   final Rxn<Stream<QuerySnapshot<Map<String, dynamic>>>> _rankingGuideUrl = Rxn<Stream<QuerySnapshot<Map<String, dynamic>>>>();
 
   StreamSubscription<Position>? _positionStreamSubscription;
-
+  DateTime? _lastCountMethodCall;
+  DateTime? _lastResetMethodCall;
+  DateTime? _lastRespawnMethodCall;
   String get rankingGuideUrl_ios => _rankingGuideUrl_ios.value;
   String get rankingGuideUrl_aos => _rankingGuideUrl_aos.value;
   String get rankingComingSoonUrl => _rankingComingSoonUrl.value;
@@ -252,6 +254,7 @@ class ResortHomeViewModel extends GetxController {
   Future<void> startForegroundLocationService({required user_id}) async {
     bool serviceEnabled;
     LocationPermission permission;
+    DateTime now = DateTime.now();
 
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
@@ -281,7 +284,8 @@ class ResortHomeViewModel extends GetxController {
 
     if (response.success) {
       _positionStreamSubscription = Geolocator.getPositionStream().listen((Position position) async {
-        try {
+        // 동시성 제어를 위해 lock 사용
+        await _lock.synchronized(() async {
           bool withinBoundary = _checkPositionWithinBoundary(
               position.latitude,
               position.longitude,
@@ -289,50 +293,63 @@ class ResortHomeViewModel extends GetxController {
               _resort_info['coordinates']['longitude'],
               _resort_info['radius']
           );
-          if (withinBoundary) {
-            Map<String, dynamic>? passPointInfo = checkPositionInAreas(position, slope_info, reset_point, respawn_point);
 
-            // 동시성 제어를 위해 lock 사용
-            await _lock.synchronized(() async {
-              if (passPointInfo != null && passPointInfo['type'] == 'slope_info') {
-                await RankingAPI().addCheckPoint({
+          DateTime now = DateTime.now();
+
+          if (withinBoundary) {
+            Map<String, dynamic>? passPointInfo = checkPositionInAreas(position, _slope_info, _reset_point, _respawn_point);
+
+            if (passPointInfo != null && passPointInfo['type'] == 'slope_info') {
+              if (_lastCountMethodCall == null || now.difference(_lastCountMethodCall!).inSeconds > 10) {
+                print('포어 체크포인트 실행');
+                final response = await RankingAPI().addCheckPoint({
                   "user_id": user_id,
                   "slope_id": passPointInfo['id'],
                   "coordinates": "${position.latitude}, ${position.longitude}"
                 });
-              }
 
-              if (passPointInfo != null && passPointInfo['type'] == 'reset_point') {
+                if(response.statusCode == 201){
+                  print('포어 상태코드 ${response.statusCode}');
+                  print('포어 체크포인트 업데이트 통신 성공');
+                  _lastCountMethodCall = now;
+                }else if(response.statusCode==416){
+                  print('포어 상태코드 ${response.statusCode}');
+                  _lastCountMethodCall = now;
+                } else{
+                  _lastCountMethodCall = null;
+                  print('포어 상태코드 ${response.statusCode}');
+                  print('포어 체크포인트 업데이트 통신 실패');
+                }
+              }
+            }
+
+            if (passPointInfo != null && passPointInfo['type'] == 'reset_point') {
+              if (_lastResetMethodCall == null || now.difference(_lastResetMethodCall!).inSeconds > 10) {
+                _lastResetMethodCall = now;
                 await RankingAPI().reset({"user_id": user_id});
               }
+            }
 
-              if (passPointInfo != null && passPointInfo['type'] == 'respawn_point') {
+            if (passPointInfo != null && passPointInfo['type'] == 'respawn_point') {
+              if (_lastRespawnMethodCall == null || now.difference(_lastRespawnMethodCall!).inSeconds > 10) {
+                _lastRespawnMethodCall = now;
                 await RankingAPI().respawn({"user_id": user_id});
               }
-            });
+            }
           } else {
             await stopForegroundLocationService();
             await stopBackgroundLocationService();
             await liveOff({"user_id": user_id}, user_id);
-            CustomFullScreenDialog.cancelDialog();
           }
-        } catch (e, stackTrace) {
-          await stopForegroundLocationService();
-          await stopBackgroundLocationService();
-          CustomFullScreenDialog.cancelDialog();
-          print('위치 서비스 오류: $e');
-          print('Stack trace: $stackTrace');
-        }
+        });
       });
-    } else {
-      await stopForegroundLocationService();
-      await stopBackgroundLocationService();
-      CustomFullScreenDialog.cancelDialog();
-      print('라이브 불가 지역');
     }
   }
 
+
+
   Future<void> startBackgroundLocationService({required user_id}) async {
+    DateTime now = DateTime.now();
     await bg.BackgroundGeolocation.ready(bg.Config(
       desiredAccuracy: bg.Config.DESIRED_ACCURACY_HIGH,
       preventSuspend: true,
@@ -376,7 +393,7 @@ class ResortHomeViewModel extends GetxController {
         headingAccuracy: 0,
       );
 
-      try {
+      await _lock.synchronized(() async {
         bool withinBoundary = _checkPositionWithinBoundary(
             position.latitude,
             position.longitude,
@@ -384,40 +401,57 @@ class ResortHomeViewModel extends GetxController {
             _resort_info['coordinates']['longitude'],
             _resort_info['radius']
         );
-        if (withinBoundary) {
-          Map<String, dynamic>? passPointInfo = checkPositionInAreas(position, slope_info, reset_point, respawn_point);
 
-          // 동시성 제어를 위해 lock 사용
-          await _lock.synchronized(() async {
-            if (passPointInfo != null && passPointInfo['type'] == 'slope_info') {
-              await RankingAPI().addCheckPoint({
+        DateTime now = DateTime.now();
+
+        if (withinBoundary) {
+          Map<String, dynamic>? passPointInfo = checkPositionInAreas(position, _slope_info, _reset_point, _respawn_point);
+
+          if (passPointInfo != null && passPointInfo['type'] == 'slope_info') {
+            if (_lastCountMethodCall == null || now.difference(_lastCountMethodCall!).inSeconds > 10) {
+              print('백 체크포인트 실행');
+              final response = await RankingAPI().addCheckPoint({
                 "user_id": user_id,
                 "slope_id": passPointInfo['id'],
                 "coordinates": "${position.latitude}, ${position.longitude}"
               });
-            }
 
-            if (passPointInfo != null && passPointInfo['type'] == 'reset_point') {
+              if(response.statusCode == 201){
+                print('백 상태코드 ${response.statusCode}');
+                print('백 체크포인트 업데이트 통신 성공');
+                _lastCountMethodCall = now;
+              }else if(response.statusCode==416){
+                print('백 상태코드 ${response.statusCode}');
+                _lastCountMethodCall = now;
+              } else{
+                _lastCountMethodCall = null;
+                print('백 상태코드 ${response.statusCode}');
+                print('백 체크포인트 업데이트 통신 실패');
+              }
+
+            }
+          }
+
+          if (passPointInfo != null && passPointInfo['type'] == 'reset_point') {
+            if (_lastResetMethodCall == null || now.difference(_lastResetMethodCall!).inSeconds > 10) {
+              _lastResetMethodCall = now;
               await RankingAPI().reset({"user_id": user_id});
             }
+          }
 
-            if (passPointInfo != null && passPointInfo['type'] == 'respawn_point') {
+          if (passPointInfo != null && passPointInfo['type'] == 'respawn_point') {
+            if (_lastRespawnMethodCall == null || now.difference(_lastRespawnMethodCall!).inSeconds > 10) {
+              _lastRespawnMethodCall = now;
               await RankingAPI().respawn({"user_id": user_id});
             }
-          });
+          }
         } else {
           await stopForegroundLocationService();
           await stopBackgroundLocationService();
           await liveOff({"user_id": user_id}, user_id);
-          CustomFullScreenDialog.cancelDialog();
         }
-      } catch (e, stackTrace) {
-        await stopForegroundLocationService();
-        await stopBackgroundLocationService();
-        CustomFullScreenDialog.cancelDialog();
-        print('위치 서비스 오류: $e');
-        print('Stack trace: $stackTrace');
-      }
+      });
+
 
     }, (bg.LocationError error) async{
       await stopForegroundLocationService();

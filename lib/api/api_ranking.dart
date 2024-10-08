@@ -37,20 +37,13 @@ class RankingAPI {
     }
   }
 
-  Future<ApiResponse> addCheckPoint(Map<String, dynamic> body) async {
+  Future<http.Response> addCheckPoint(Map<String, dynamic> body) async {
     final response = await http.post(
       Uri.parse('$baseUrl/add-check-point/'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode(body),
     );
-
-    if (response.statusCode == 201) {
-      final data = json.decode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
-      return ApiResponse.success(data);
-    } else {
-      final data = json.decode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
-      return ApiResponse.error(data);
-    }
+    return response; // 응답을 그대로 반환
   }
 
   Future<ApiResponse> respawn(Map<String, dynamic> body) async {

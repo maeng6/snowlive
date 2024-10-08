@@ -119,6 +119,7 @@ class RankingHomeView extends StatelessWidget {
                             IconButton(
                               highlightColor: Colors.transparent,
                               onPressed: () async{
+                                HapticFeedback.lightImpact();
                                 Get.toNamed(AppRoutes.rankingHistoryHome);
                               },
                               icon: Image.asset(
@@ -166,7 +167,7 @@ class RankingHomeView extends StatelessWidget {
 
           },
         )
-        :SizedBox.shrink(),
+            :SizedBox.shrink(),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked));
   }
 }

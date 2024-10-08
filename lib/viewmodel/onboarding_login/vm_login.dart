@@ -6,7 +6,6 @@ import 'package:com.snowlive/routes/routes.dart';
 import 'package:com.snowlive/viewmodel/vm_user.dart';
 import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:get/get.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -31,7 +30,6 @@ class LoginViewModel extends GetxController {
   final auth = FirebaseAuth.instance;
   final storage = FlutterSecureStorage();
   final googleSignIn = GoogleSignIn();
-  final facebookAuth = FacebookAuth.instance;
   final loginAPI = LoginAPI();
   RxString signInMethod = ''.obs;
   RxString? loginUid = ''.obs;
@@ -105,101 +103,6 @@ class LoginViewModel extends GetxController {
     final digest = sha256.convert(bytes); // 해싱
     return digest.toString();
   }
-
-  Future<void> signInWithFacebook_android() async {
-    print('1');
-    final LoginResult loginResult = await facebookAuth.login();
-    if (loginResult == null) {
-      CustomFullScreenDialog.cancelDialog();
-    } else {
-      print('2');
-      OAuthCredential facebookAuthCredential = FacebookAuthProvider.credential(loginResult.accessToken!.tokenString);
-      print('3');
-      await auth.signInWithCredential(facebookAuthCredential);
-      print('4');
-      User? currentUser = auth.currentUser;
-      if (currentUser != null) {
-        loginUid!.value = currentUser.uid;
-        await storage.write(key: 'signInMethod', value: 'facebook');
-        await getLocalSignInMethod();
-        await FlutterSecureStorage().write(key: 'localUid', value: loginUid!.value);
-        await FlutterSecureStorage().write(key: 'device_id', value: device_id!.value);
-        await FlutterSecureStorage().write(key: 'device_token', value: device_token!.value);
-      }
-    }
-  }
-
-  Future<void> signInWithFacebook() async {
-    CustomFullScreenDialog.showDialog();
-    try {
-      // Nonce 생성 및 SHA256 해시화
-      final rawNonce = generateNonce();
-      final nonce = sha256ofString(rawNonce);
-
-      // 페이스북 로그인 시도, LoginTracking을 Limited로 설정하고 nonce 포함
-      final LoginResult loginResult = await facebookAuth.login(
-        loginTracking: LoginTracking.limited,
-        nonce: nonce,
-      );
-
-      if (loginResult.status == LoginStatus.success) {
-        // 액세스 토큰이 LimitedToken인 경우 처리
-        final AccessToken? accessToken = await loginResult.accessToken;
-
-        if (accessToken != null && accessToken is LimitedToken) {
-          // LimitedToken에서 tokenString 가져오기
-          final String? tokenString = await accessToken.tokenString;
-
-          // Firebase OAuth 자격 증명 생성
-          final OAuthCredential facebookAuthCredential = OAuthCredential(
-            providerId: 'facebook.com',
-            signInMethod: 'oauth',
-            idToken: tokenString,
-            rawNonce: rawNonce,
-          );
-
-          // Firebase에 자격 증명으로 로그인 시도
-          final UserCredential userCredential = await auth.signInWithCredential(facebookAuthCredential);
-
-          final User? currentUser = userCredential.user;
-
-          if (currentUser != null) {
-            // 로그인 성공 시 로컬 스토리지에 저장
-            loginUid!.value = currentUser.uid;
-            await storage.write(key: 'signInMethod', value: 'facebook');
-            await getLocalSignInMethod();
-            await FlutterSecureStorage().write(key: 'localUid', value: loginUid!.value);
-            await FlutterSecureStorage().write(key: 'device_id', value: device_id!.value);
-            await FlutterSecureStorage().write(key: 'device_token', value: device_token!.value);
-
-            await findUserAPI();
-            CustomFullScreenDialog.cancelDialog();
-            await getLocalSignInMethod();
-          } else {
-            CustomFullScreenDialog.cancelDialog();
-            print('로그인에 실패했습니다. 사용자 정보를 가져오지 못했습니다.');
-          }
-        } else {
-          CustomFullScreenDialog.cancelDialog();
-          print('Facebook 로그인 실패: LimitedToken을 가져오지 못했습니다.');
-        }
-      } else if (loginResult.status == LoginStatus.cancelled) {
-        // 사용자가 로그인 취소
-        CustomFullScreenDialog.cancelDialog();
-        print('사용자가 Facebook 로그인을 취소했습니다.');
-      } else if (loginResult.status == LoginStatus.failed) {
-        // 로그인 실패
-        CustomFullScreenDialog.cancelDialog();
-        print('Facebook 로그인 실패: ${loginResult.message}');
-      }
-    } catch (e) {
-      // 예외 처리: 로그인 시 발생하는 모든 에러 처리
-      CustomFullScreenDialog.cancelDialog();
-      print('Facebook 로그인 중 에러 발생: $e');
-    }
-  }
-
-
 
 
   //로컬에 signInMethod 저장

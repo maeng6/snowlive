@@ -125,7 +125,8 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
         },
         child: Obx(()=>Scaffold(
           floatingActionButton:
-          SizedBox(
+          (_friendDetailViewModel.isDateWithinSeason(DateTime.now()) == true)
+              ?SizedBox(
             width: _size.width - 32,
             height: 56,
             child: Stack(
@@ -354,7 +355,8 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                 ),
               ],
             ),
-          ),
+          )
+              :SizedBox.shrink(),
           floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
           backgroundColor: Colors.white,
           extendBodyBehindAppBar: true,

@@ -33,6 +33,10 @@ target 'Runner' do
 
   flutter_install_all_ios_pods File.dirname(File.realpath(__FILE__))
 
+  # Firebase SDK 추가
+  pod 'Firebase/Analytics'
+  pod 'Firebase/Firestore'
+
 #   target 'RunnerTests' do
 #     inherit! :search_paths
 #   end

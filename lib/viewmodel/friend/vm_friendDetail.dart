@@ -318,7 +318,7 @@ class FriendDetailViewModel extends GetxController {
       _friendDetailModel.update((model) {
         model?.friendUserInfo.bestFriend = response.data['best_friend'];
       });
-    CustomFullScreenDialog.cancelDialog();
+      CustomFullScreenDialog.cancelDialog();
       if(response.data['best_friend'] == true)
         print('친친등록완료');
       if(response.data['best_friend'] == false)
@@ -403,6 +403,17 @@ class FriendDetailViewModel extends GetxController {
       'profileImageUrlUser': _friendDetailModel.value.friendUserInfo.profileImageUrlUser ?? '',
     };
   }
+
+  bool isDateWithinSeason(DateTime date) {
+    // 시즌 시작일과 종료일을 DateTime으로 변환
+    DateTime seasonStart = DateTime.parse(_seasonStartDate.value);
+    DateTime seasonEnd = DateTime.parse(_seasonEndDate.value);
+
+    // 주어진 날짜가 시즌 시작일과 종료일 사이에 있는지 확인
+    return (date.isAfter(seasonStart) && date.isBefore(seasonEnd)) ||
+        date.isAtSameMomentAs(seasonStart) || date.isAtSameMomentAs(seasonEnd);
+  }
+
 
 
 }

@@ -10,6 +10,7 @@ import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:shimmer/shimmer.dart';
 
 class FriendListView extends StatelessWidget {
   FriendListView({Key? key}) : super(key: key);
@@ -76,11 +77,11 @@ class FriendListView extends StatelessWidget {
                       child: GestureDetector(
                         onTap: () async {
                           Get.toNamed(AppRoutes.invitaionFriend);
-                        await _alarmCenterViewModel.updateNotification(
-                          _userViewModel.user.user_id,
-                          friend: false,
-                        );
-                        await _friendListViewModel.fetchFriendRequestList(_userViewModel.user.user_id);
+                          await _alarmCenterViewModel.updateNotification(
+                            _userViewModel.user.user_id,
+                            friend: false,
+                          );
+                          await _friendListViewModel.fetchFriendRequestList(_userViewModel.user.user_id);
 
                         },
                         child: Container(
@@ -155,26 +156,26 @@ class FriendListView extends StatelessWidget {
         },
         child:
         (_friendListViewModel.isLoading==true)
-        ? Container(
-        height: 400,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Center(
-              child: Container(
-                width: 24,
-                height: 24,
-                child: CircularProgressIndicator(
-                  strokeWidth: 4,
-                  backgroundColor: SDSColor.gray100,
-                  color: SDSColor.gray300.withOpacity(0.6),
+            ? Container(
+          height: 400,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Center(
+                child: Container(
+                  width: 24,
+                  height: 24,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 4,
+                    backgroundColor: SDSColor.gray100,
+                    color: SDSColor.gray300.withOpacity(0.6),
+                  ),
                 ),
               ),
-            ),
-          ],
-        ),
-      )
+            ],
+          ),
+        )
             :
         SingleChildScrollView(
           physics: AlwaysScrollableScrollPhysics(),
@@ -283,6 +284,35 @@ class FriendListView extends StatelessWidget {
                                   width: 56,
                                   height: 56,
                                   fit: BoxFit.cover,
+                                  loadStateChanged: (ExtendedImageState state) {
+                                    switch (state.extendedImageLoadState) {
+                                      case LoadState.loading:
+                                      // 로딩 중일 때 로딩 인디케이터를 표시
+                                        return Shimmer.fromColors(
+                                          baseColor: SDSColor.gray200!,
+                                          highlightColor: SDSColor.gray50!,
+                                          child: Container(
+                                            width: 32,
+                                            height: 32,
+                                            decoration: BoxDecoration(
+                                              color: Colors.white,
+                                              borderRadius: BorderRadius.circular(8),
+                                            ),
+                                          ),
+                                        );
+                                      case LoadState.completed:
+                                      // 로딩이 완료되었을 때 이미지 반환
+                                        return state.completedWidget;
+                                      case LoadState.failed:
+                                      // 로딩이 실패했을 때 대체 이미지 또는 다른 처리
+                                        return Image.asset(
+                                          'assets/imgs/profile/img_profile_default_circle.png',
+                                          width: 32,
+                                          height: 32,
+                                          fit: BoxFit.cover,
+                                        );
+                                    }
+                                  },
                                 ),
                               ),
                               if (_userViewModel.user.within_boundary == true &&
@@ -502,6 +532,35 @@ class FriendListView extends StatelessWidget {
                                                 width: 48,
                                                 height: 48,
                                                 fit: BoxFit.cover,
+                                                loadStateChanged: (ExtendedImageState state) {
+                                                  switch (state.extendedImageLoadState) {
+                                                    case LoadState.loading:
+                                                    // 로딩 중일 때 로딩 인디케이터를 표시
+                                                      return Shimmer.fromColors(
+                                                        baseColor: SDSColor.gray200!,
+                                                        highlightColor: SDSColor.gray50!,
+                                                        child: Container(
+                                                          width: 32,
+                                                          height: 32,
+                                                          decoration: BoxDecoration(
+                                                            color: Colors.white,
+                                                            borderRadius: BorderRadius.circular(8),
+                                                          ),
+                                                        ),
+                                                      );
+                                                    case LoadState.completed:
+                                                    // 로딩이 완료되었을 때 이미지 반환
+                                                      return state.completedWidget;
+                                                    case LoadState.failed:
+                                                    // 로딩이 실패했을 때 대체 이미지 또는 다른 처리
+                                                      return Image.asset(
+                                                        'assets/imgs/profile/img_profile_default_circle.png',
+                                                        width: 32,
+                                                        height: 32,
+                                                        fit: BoxFit.cover,
+                                                      );
+                                                  }
+                                                },
                                               ),
                                             ),
                                             if (friend.friendInfo.withinBoundary == true &&

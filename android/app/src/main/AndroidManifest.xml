@@ -59,9 +59,6 @@
             android:name="flutterEmbedding"
             android:value="2" />
 
-        <!-- Facebook SDK 설정 -->
-        <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_app_id"/>
-        <meta-data android:name="com.facebook.sdk.ClientToken" android:value="@string/facebook_client_token"/>
         <meta-data android:name="com.transistorsoft.locationmanager.license" android:value="50381855bd42ab868e695ed0505c45399dccb50b20bd97a791994898b1fcf8eb"/>
 
         <!-- 기타 액티비티 설정 -->
@@ -69,24 +66,18 @@
             android:name="com.yalantis.ucrop.UCropActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
-        <activity android:name="com.facebook.FacebookActivity"
-            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
-            android:label="@string/app_name" />
-        <activity
-            android:name="com.facebook.CustomTabActivity"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="@string/fb_login_protocol_scheme" />
-            </intent-filter>
-        </activity>
 
-        <!-- 구글 지도 API 키 설정 -->
-        <meta-data android:name="com.google.android.geo.API_KEY" android:value="AIzaSyDEuLDEweTVgZzBPEILr6PP7VbOOSMImhQ"/>
+        <!-- 포어그라운드 서비스 설정 -->
+        <service
+            android:name="com.pravera.flutter_foreground_task.service.ForegroundService"
+            android:permission="android.permission.BIND_JOB_SERVICE"
+            android:foregroundServiceType="location" />
+
+        <!-- 알림 채널 설정 (포어그라운드 서비스용) -->
+        <meta-data
+            android:name="com.google.android.gms.location"
+            android:value="default_notification_channel_id" />
 
     </application>
 
-    <!-- 권한 설정 반복 제거 -->
 </manifest>
