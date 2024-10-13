@@ -203,6 +203,7 @@ class ResortHomeViewModel extends GetxController {
       ApiResponse response_fetchResortHome = await ResortHomeAPI().fetchResortHomeData(user_id);
       if (response_fetchResortHome.success)
         _resortHomeModel.value = ResortHomeModel.fromJson(response_fetchResortHome.data);
+      await _userViewModel.updateUserModel_api(_userViewModel.user.user_id);
       print('liveOff 완료');
     }
     else {
@@ -454,9 +455,6 @@ class ResortHomeViewModel extends GetxController {
 
 
     }, (bg.LocationError error) async{
-      await stopForegroundLocationService();
-      await stopBackgroundLocationService();
-      CustomFullScreenDialog.cancelDialog();
       print('[onLocation] ERROR: $error 리조트 구역 벗어남');
     });
   }
