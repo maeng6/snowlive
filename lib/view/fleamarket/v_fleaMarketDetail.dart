@@ -851,21 +851,30 @@ class _FleaMarketDetailViewState extends State<FleaMarketDetailView> {
                                                                 loadStateChanged: (ExtendedImageState state) {
                                                                   switch (state.extendedImageLoadState) {
                                                                     case LoadState.loading:
-                                                                      return SizedBox.shrink();
-                                                                    case LoadState.completed:
-                                                                      return state.completedWidget;
-                                                                    case LoadState.failed:
-                                                                      return ClipOval(
-                                                                        child: Image.asset(
-                                                                          'assets/imgs/profile/img_profile_default_circle.png',
+                                                                    // 로딩 중일 때 로딩 인디케이터를 표시
+                                                                      return Shimmer.fromColors(
+                                                                        baseColor: SDSColor.gray200!,
+                                                                        highlightColor: SDSColor.gray50!,
+                                                                        child: Container(
                                                                           width: 32,
                                                                           height: 32,
-                                                                          fit: BoxFit.cover,
+                                                                          decoration: BoxDecoration(
+                                                                            color: Colors.white,
+                                                                            borderRadius: BorderRadius.circular(8),
+                                                                          ),
                                                                         ),
-                                                                      )
-                                                                      ; // 예시로 에러 아이콘을 반환하고 있습니다.
-                                                                    default:
-                                                                      return null;
+                                                                      );
+                                                                    case LoadState.completed:
+                                                                    // 로딩이 완료되었을 때 이미지 반환
+                                                                      return state.completedWidget;
+                                                                    case LoadState.failed:
+                                                                    // 로딩이 실패했을 때 대체 이미지 또는 다른 처리
+                                                                      return Image.asset(
+                                                                        '${profileImgUrlList[0].default_round}', // 대체 이미지 경로
+                                                                        width: 32,
+                                                                        height: 32,
+                                                                        fit: BoxFit.cover,
+                                                                      );
                                                                   }
                                                                 },
                                                               ),
@@ -1016,28 +1025,28 @@ class _FleaMarketDetailViewState extends State<FleaMarketDetailView> {
                                                         color: SDSColor.gray900),
                                                   ),
                                                   if(_fleamarketDetailViewModel.fleamarketDetail.negotiable == true)
-                                                  Padding(
-                                                    padding: EdgeInsets.only(left: 8),
-                                                    child: Container(
-                                                      decoration: BoxDecoration(
-                                                        borderRadius: BorderRadius.circular(6),
-                                                        border: Border.all(
-                                                            color: SDSColor.blue100,
-                                                          width: 1
-                                                        )
-                                                      ),
-                                                      width: 90,
-                                                      height: 24,
-                                                      child: Center(
-                                                        child: Text(
-                                                          '가격 제안 가능',
-                                                          style: SDSTextStyle.bold.copyWith(
-                                                              fontSize: 13,
-                                                              color: SDSColor.snowliveBlue),
+                                                    Padding(
+                                                      padding: EdgeInsets.only(left: 8),
+                                                      child: Container(
+                                                        decoration: BoxDecoration(
+                                                            borderRadius: BorderRadius.circular(6),
+                                                            border: Border.all(
+                                                                color: SDSColor.blue100,
+                                                                width: 1
+                                                            )
+                                                        ),
+                                                        width: 90,
+                                                        height: 24,
+                                                        child: Center(
+                                                          child: Text(
+                                                            '가격 제안 가능',
+                                                            style: SDSTextStyle.bold.copyWith(
+                                                                fontSize: 13,
+                                                                color: SDSColor.snowliveBlue),
+                                                          ),
                                                         ),
                                                       ),
                                                     ),
-                                                  ),
                                                 ],
                                               ),
                                             ),
@@ -1390,6 +1399,35 @@ class _FleaMarketDetailViewState extends State<FleaMarketDetailView> {
                                                                           width: 32,
                                                                           height: 32,
                                                                           fit: BoxFit.cover,
+                                                                          loadStateChanged: (ExtendedImageState state) {
+                                                                            switch (state.extendedImageLoadState) {
+                                                                              case LoadState.loading:
+                                                                              // 로딩 중일 때 로딩 인디케이터를 표시
+                                                                                return Shimmer.fromColors(
+                                                                                  baseColor: SDSColor.gray200!,
+                                                                                  highlightColor: SDSColor.gray50!,
+                                                                                  child: Container(
+                                                                                    width: 32,
+                                                                                    height: 32,
+                                                                                    decoration: BoxDecoration(
+                                                                                      color: Colors.white,
+                                                                                      borderRadius: BorderRadius.circular(8),
+                                                                                    ),
+                                                                                  ),
+                                                                                );
+                                                                              case LoadState.completed:
+                                                                              // 로딩이 완료되었을 때 이미지 반환
+                                                                                return state.completedWidget;
+                                                                              case LoadState.failed:
+                                                                              // 로딩이 실패했을 때 대체 이미지 또는 다른 처리
+                                                                                return Image.asset(
+                                                                                  '${profileImgUrlList[0].default_round}', // 대체 이미지 경로
+                                                                                  width: 32,
+                                                                                  height: 32,
+                                                                                  fit: BoxFit.cover,
+                                                                                );
+                                                                            }
+                                                                          },
                                                                         ),
                                                                       ),
                                                                     ),
@@ -2052,10 +2090,10 @@ class _FleaMarketDetailViewState extends State<FleaMarketDetailView> {
 
 
                                           if(_fleamarketDetailViewModel.fleamarketDetail.userId != _userViewModel.user.user_id)
-                                          await _alarmCenterViewModel.updateNotification(
-                                              _fleamarketDetailViewModel.fleamarketDetail.userId!,
-                                              total: true
-                                          );
+                                            await _alarmCenterViewModel.updateNotification(
+                                                _fleamarketDetailViewModel.fleamarketDetail.userId!,
+                                                total: true
+                                            );
                                         },
                                         icon: (_fleamarketDetailViewModel.isCommentButtonEnabled.value == false)
                                             ? Image.asset(

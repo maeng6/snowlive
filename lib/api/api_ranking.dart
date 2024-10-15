@@ -21,6 +21,21 @@ class RankingAPI {
     }
   }
 
+  Future<ApiResponse> participate_treasure_hunt(Map<String, dynamic> body) async {
+    final response = await http.post(
+      Uri.parse('$baseUrl/participate/'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode(body),
+    );
+
+    if (response.statusCode == 201) {
+      final data = json.decode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
+      return ApiResponse.success(data);
+    } else {
+      final data = json.decode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
+      return ApiResponse.error(data);
+    }
+  }
   Future<ApiResponse> liveOff(Map<String, dynamic> body) async {
     final response = await http.post(
       Uri.parse('$baseUrl/live-off/'),
@@ -77,6 +92,26 @@ class RankingAPI {
       return ApiResponse.error(data);
     }
   }
+
+  Future<ApiResponse> createTreasureRecord(Map<String, dynamic> body) async {
+    final response = await http.post(
+      Uri.parse('$baseUrl/treasure-record/'),  // baseUrl을 환경에 맞게 설정
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode(body),
+    );
+
+    if (response.statusCode == 201) {
+      // 성공적인 응답 처리 (201 Created)
+      final data = json.decode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
+      return ApiResponse.success(data);
+    } else {
+      // 오류 처리
+      final data = json.decode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
+      return ApiResponse.error(data);
+    }
+  }
+
+
 
   Future<ApiResponse> fetchRankingData_indiv({
     required int userId,

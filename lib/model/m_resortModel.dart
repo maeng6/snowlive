@@ -107,23 +107,6 @@ List<ResortModel> resortList = [
 
   ),//알펜_0.6
   ResortModel(
-      index:4,
-      resortName: '에덴밸리리조트',
-      resortAddress: '양산시 원동면',
-      resortUrl: 'http://www.edenvalley.co.kr/',
-      webcamUrl: 'http://www.edenvalley.co.kr/CS/cam_pop1.asp',
-      slopeUrl: '',
-      naverUrl: 'https://weather.naver.com/today/03330320?cpName=KMA',
-      latitude: 35.4246065,
-      longitude: 128.9847481,
-      nX: 95,
-      nY: 80,
-      resortNickname: '에덴밸리',
-      resortLogo: 'assets/imgs/resort/img_resort_logo_5.png',
-      busUrl: ''
-
-  ),//에덴_0.8
-  ResortModel(
       index:5,
       resortName: '엘리시안강촌',
       resortAddress: '춘천시 남산면',
@@ -275,7 +258,6 @@ List<String?> resortNameList = [
   resortList[9].resortName,
   resortList[10].resortName,
   resortList[11].resortName,
-  resortList[12].resortName,
 ];
 
 List<String?> resortAddressList = [
@@ -291,7 +273,6 @@ List<String?> resortAddressList = [
   resortList[9].resortAddress,
   resortList[10].resortAddress,
   resortList[11].resortAddress,
-  resortList[12].resortAddress,
 ];
 
 List<String?> naverUrlList = [
@@ -307,7 +288,6 @@ List<String?> naverUrlList = [
   resortList[9].naverUrl,
   resortList[10].naverUrl,
   resortList[11].naverUrl,
-  resortList[12].naverUrl,
 ];
 
 List<String?> webcamUrlList = [
@@ -323,7 +303,6 @@ List<String?> webcamUrlList = [
   resortList[9].webcamUrl,
   resortList[10].webcamUrl,
   resortList[11].webcamUrl,
-  resortList[12].webcamUrl,
 ];
 
 List<String?> slopeUrlList = [
@@ -339,7 +318,6 @@ List<String?> slopeUrlList = [
   resortList[9].slopeUrl,
   resortList[10].slopeUrl,
   resortList[11].slopeUrl,
-  resortList[12].slopeUrl,
 ];
 
 List<dynamic> nxList = [
@@ -355,7 +333,6 @@ List<dynamic> nxList = [
   resortList[9].nX,
   resortList[10].nX,
   resortList[11].nX,
-  resortList[12].nX,
 ];
 
 List<dynamic> nyList = [
@@ -371,7 +348,6 @@ List<dynamic> nyList = [
   resortList[9].nY,
   resortList[10].nY,
   resortList[11].nY,
-  resortList[12].nY,
 ];
 
 
@@ -388,7 +364,6 @@ List<dynamic> nicknameList = [
   resortList[9].resortNickname,
   resortList[10].resortNickname,
   resortList[11].resortNickname,
-  resortList[12].resortNickname,
 ];
 
 
@@ -405,7 +380,6 @@ List<String?> resortLogoList = [
   resortList[9].resortLogo,
   resortList[10].resortLogo,
   resortList[11].resortLogo,
-  resortList[12].resortLogo,
 ];
 
 List<dynamic> resortFullNameList = [
@@ -413,7 +387,6 @@ List<dynamic> resortFullNameList = [
   '무주덕유산리조트',
   '비발디파크',
   '알펜시아',
-  '에덴밸리리조트',
   '엘리시안강촌',
   '오크밸리리조트',
   '오투리조트',

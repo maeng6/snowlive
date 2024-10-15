@@ -44,6 +44,7 @@ class ResortHomeViewModel extends GetxController {
   RxMap _resort_info = {}.obs;
   RxMap _weatherInfo = {}.obs;
   RxList<Map<String, dynamic>> _slope_info = <Map<String, dynamic>>[].obs;
+  RxList<Map<String, dynamic>> _treasure_hunt_info = <Map<String, dynamic>>[].obs;
   RxList<Map<String, dynamic>> _reset_point = <Map<String, dynamic>>[].obs;
   RxList<Map<String, dynamic>> _respawn_point = <Map<String, dynamic>>[].obs;
   RxList<FriendListModel> _bestFriendList = <FriendListModel>[].obs;
@@ -51,6 +52,7 @@ class ResortHomeViewModel extends GetxController {
   RxBool _isWeatherInfoExpanded = false.obs;
   RxBool _isVisible_resortHome_openchat = false.obs;
   RxBool _showRecentButton_resortHome_openchat = true.obs;
+  RxBool _isParticipate_treasure_hunt = false.obs;
 
   dynamic weatherColors;
   dynamic weatherIcons;
@@ -73,11 +75,13 @@ class ResortHomeViewModel extends GetxController {
   bool get isSnackbarShown => _isSnackbarShown.value;
   bool get isWeatherInfoExpanded => _isWeatherInfoExpanded.value;
   List<Map<String, dynamic>> get slope_info => _slope_info;
+  List<Map<String, dynamic>> get treasure_hunt_info => _treasure_hunt_info;
   List<Map<String, dynamic>> get reset_point => _reset_point;
   List<Map<String, dynamic>> get respawn_point => _respawn_point;
   List<FriendListModel> get bestFriendList => _bestFriendList;
   bool get isVisible_resortHome_openchat  => _isVisible_resortHome_openchat .value;
   bool get showRecentButton_resortHome_openchat => _showRecentButton_resortHome_openchat.value;
+  bool get isParticipate_treasure_hunt => _isParticipate_treasure_hunt.value;
 
   UserViewModel _userViewModel = Get.find<UserViewModel>();
   ScrollController scrollController_resortHome_openchat = ScrollController();
@@ -219,8 +223,10 @@ class ResortHomeViewModel extends GetxController {
       if (response.success) {
         _resort_info.value = response.data['resort_info'];
         _slope_info.value = List<Map<String, dynamic>>.from(response.data['slope_info']);
+        _treasure_hunt_info.value = List<Map<String, dynamic>>.from(response.data['treasure_hunt_info']);
         _reset_point.value = List<Map<String, dynamic>>.from(response.data['reset_point']);
         _respawn_point.value = List<Map<String, dynamic>>.from(response.data['respawn_point']);
+        _isParticipate_treasure_hunt.value = response.data['participant'];
         return response;
       } else {
         await stopForegroundLocationService();
@@ -236,6 +242,26 @@ class ResortHomeViewModel extends GetxController {
       return ApiResponse.error('An error occurred: $e'); // 에러 응답 반환
     } finally {
       isLoading(false); // 성공/실패/예외 발생 여부와 상관없이 로딩 상태 종료
+    }
+  }
+
+  Future<ApiResponse> participate(Map<String, dynamic> body) async {
+    try {
+      isLoading(true);
+      ApiResponse response = await RankingAPI().participate_treasure_hunt(body);
+      if (response.success) {
+        _isParticipate_treasure_hunt.value = true;
+        return response;
+      } else {
+        _isParticipate_treasure_hunt.value = false;
+        return response;
+      }
+    } catch (e) {
+      _isParticipate_treasure_hunt.value = false;
+      print('Error in liveOn: $e');
+      return ApiResponse.error('An error occurred: $e');
+    } finally {
+      isLoading(false);
     }
   }
 
@@ -298,7 +324,7 @@ class ResortHomeViewModel extends GetxController {
           DateTime now = DateTime.now();
 
           if (withinBoundary) {
-            Map<String, dynamic>? passPointInfo = checkPositionInAreas(position, _slope_info, _reset_point, _respawn_point);
+            Map<String, dynamic>? passPointInfo = checkPositionInAreas(position, _slope_info,_treasure_hunt_info, _reset_point, _respawn_point);
 
             if (passPointInfo != null && passPointInfo['type'] == 'slope_info') {
               if (_lastCountMethodCall == null || now.difference(_lastCountMethodCall!).inSeconds > 10) {
@@ -322,6 +348,17 @@ class ResortHomeViewModel extends GetxController {
                   print('포어 체크포인트 업데이트 통신 실패');
                 }
               }
+            }
+
+            if (passPointInfo != null
+                && passPointInfo['type'] == 'treasure_hunt_info'
+                && resort_info['treasure_hunt'] == true
+                && isParticipate_treasure_hunt ==true) {
+                await RankingAPI().createTreasureRecord({
+                  "user_id": user_id,
+                  "slope_id": passPointInfo['id'],
+                  "coordinates": "${position.latitude}, ${position.longitude}"
+                });
             }
 
             if (passPointInfo != null && passPointInfo['type'] == 'reset_point') {
@@ -406,7 +443,7 @@ class ResortHomeViewModel extends GetxController {
         DateTime now = DateTime.now();
 
         if (withinBoundary) {
-          Map<String, dynamic>? passPointInfo = checkPositionInAreas(position, _slope_info, _reset_point, _respawn_point);
+          Map<String, dynamic>? passPointInfo = checkPositionInAreas(position, _slope_info,_treasure_hunt_info, _reset_point, _respawn_point);
 
           if (passPointInfo != null && passPointInfo['type'] == 'slope_info') {
             if (_lastCountMethodCall == null || now.difference(_lastCountMethodCall!).inSeconds > 10) {
@@ -465,11 +502,17 @@ class ResortHomeViewModel extends GetxController {
     return distanceInMeters <= radius;
   }
 
-  Map<String, dynamic>? checkPositionInAreas(Position position, List<Map<String, dynamic>> slopeInfo, List<Map<String, dynamic>> resetPoint, List<Map<String, dynamic>> respawnPoint) {
+  Map<String, dynamic>? checkPositionInAreas(Position position, List<Map<String, dynamic>> slopeInfo, List<Map<String, dynamic>> treasure_hunt_info, List<Map<String, dynamic>> resetPoint, List<Map<String, dynamic>> respawnPoint) {
     // 순서대로 검사
     for (var slope in slopeInfo) {
       if (_isWithinRadius(position, slope['coordinates'], slope['radius'])) {
         return {'type': 'slope_info', 'id': slope['slope_id']};
+      }
+    }
+
+    for (var treasure_hunt_info in treasure_hunt_info) {
+      if (_isWithinRadius(position, treasure_hunt_info['coordinates'], treasure_hunt_info['radius'])) {
+        return {'type': 'treasure_hunt_info', 'id': treasure_hunt_info['slope_id']};
       }
     }
 

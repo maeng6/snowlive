@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:com.snowlive/data/imgaUrls/Data_url_image.dart';
 import 'package:com.snowlive/routes/routes.dart';
 import 'package:com.snowlive/util/util_1.dart';
 import 'package:com.snowlive/view/resortHome/v_chat_resortHome.dart';
@@ -22,6 +23,7 @@ import 'package:get/get_core/src/get_main.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:com.snowlive/view/moreTab/v_banner_resortHome.dart';
 import 'package:lottie/lottie.dart';
+import 'package:shimmer/shimmer.dart';
 
 class ResortHomeView extends StatefulWidget {
   @override
@@ -413,7 +415,7 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                                         style: SDSTextStyle.regular.copyWith(fontSize: 14, color: SDSColor.gray500),
                                       ),
                                       Text(
-                                        '실시간으로 정보를 공유해 보세요',
+                                        '익명으로 실시간 채팅을 즐겨 보세요',
                                         style: SDSTextStyle.regular.copyWith(fontSize: 14, color: SDSColor.gray500),
                                       ),
                                     ],
@@ -612,20 +614,30 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                                                                 loadStateChanged: (ExtendedImageState state) {
                                                                   switch (state.extendedImageLoadState) {
                                                                     case LoadState.loading:
-                                                                      return SizedBox.shrink();
-                                                                    case LoadState.completed:
-                                                                      return state.completedWidget;
-                                                                    case LoadState.failed:
-                                                                      return ClipOval(
-                                                                        child: Image.asset(
-                                                                          'assets/imgs/profile/img_profile_default_circle.png',
-                                                                          width: 68,
-                                                                          height: 68,
-                                                                          fit: BoxFit.cover,
+                                                                    // 로딩 중일 때 로딩 인디케이터를 표시
+                                                                      return Shimmer.fromColors(
+                                                                        baseColor: SDSColor.gray200!,
+                                                                        highlightColor: SDSColor.gray50!,
+                                                                        child: Container(
+                                                                          width: 32,
+                                                                          height: 32,
+                                                                          decoration: BoxDecoration(
+                                                                            color: Colors.white,
+                                                                            borderRadius: BorderRadius.circular(8),
+                                                                          ),
                                                                         ),
                                                                       );
-                                                                    default:
-                                                                      return null;
+                                                                    case LoadState.completed:
+                                                                    // 로딩이 완료되었을 때 이미지 반환
+                                                                      return state.completedWidget;
+                                                                    case LoadState.failed:
+                                                                    // 로딩이 실패했을 때 대체 이미지 또는 다른 처리
+                                                                      return Image.asset(
+                                                                        '${profileImgUrlList[0].default_round}', // 대체 이미지 경로
+                                                                        width: 32,
+                                                                        height: 32,
+                                                                        fit: BoxFit.cover,
+                                                                      );
                                                                   }
                                                                 },
                                                               )
@@ -855,6 +867,7 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
             color: SDSColor.snowliveWhite,
             onRefresh: _resortHomeViewModel.onRefresh_resortHome,
             child: SingleChildScrollView(
+              physics: AlwaysScrollableScrollPhysics(),
               child: Column(
                 children: [
                   SizedBox(

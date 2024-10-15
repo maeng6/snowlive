@@ -122,11 +122,11 @@ class CommunityBulletinUpdateView extends StatelessWidget {
                                       style: SDSTextStyle.regular.copyWith(fontSize: 15),
                                       strutStyle: StrutStyle(fontSize: 14, leading: 0),
                                       decoration: InputDecoration(
-                                          floatingLabelBehavior: FloatingLabelBehavior.never,
-                                          errorMaxLines: 2,
-                                          errorStyle: SDSTextStyle.regular.copyWith(fontSize: 12, color: SDSColor.red),
-                                          labelStyle: SDSTextStyle.regular.copyWith(color: SDSColor.gray400, fontSize: 14),
-                                          hintStyle: SDSTextStyle.regular.copyWith(color: SDSColor.gray400, fontSize: 14),
+                                        floatingLabelBehavior: FloatingLabelBehavior.never,
+                                        errorMaxLines: 2,
+                                        errorStyle: SDSTextStyle.regular.copyWith(fontSize: 12, color: SDSColor.red),
+                                        labelStyle: SDSTextStyle.regular.copyWith(color: SDSColor.gray400, fontSize: 14),
+                                        hintStyle: SDSTextStyle.regular.copyWith(color: SDSColor.gray400, fontSize: 14),
                                         hintText: '글 제목을 입력해 주세요. (최대 50자)',
                                         labelText: '글 제목',
                                         contentPadding: EdgeInsets.only(
@@ -152,19 +152,19 @@ class CommunityBulletinUpdateView extends StatelessWidget {
                                       ),
                                       validator: (val) {
                                         WidgetsBinding.instance.addPostFrameCallback((_) {
+                                          if (val!.length <= 30 && val.length >= 1) {
+                                            _communityUpdateViewModel.changeTitleWritten(true);
+                                          } else {
+                                            _communityUpdateViewModel.changeTitleWritten(false);
+                                          }
+                                        });
                                         if (val!.length <= 30 && val.length >= 1) {
-                                          _communityUpdateViewModel.changeTitleWritten(true);
+                                          return null;
+                                        } else if (val.length == 0) {
+                                          return '글 제목을 입력해주세요.';
                                         } else {
-                                          _communityUpdateViewModel.changeTitleWritten(false);
+                                          return '최대 입력 가능한 글자 수를 초과했습니다.';
                                         }
-                                      });
-                                      if (val!.length <= 30 && val.length >= 1) {
-                                        return null;
-                                      } else if (val.length == 0) {
-                                        return '글 제목을 입력해주세요.';
-                                      } else {
-                                        return '최대 입력 가능한 글자 수를 초과했습니다.';
-                                      }
                                       },
                                     ),
                                     Padding(
@@ -430,6 +430,15 @@ class CommunityBulletinUpdateView extends StatelessWidget {
                                           color: SDSColor.gray900
                                       ),),
                                     ),
+                                    Padding(
+                                      padding: EdgeInsets.only(left: 4, top: 4),
+                                      child: Text('* 사진 용량이 클 경우, 업로드 시간이 다소 길어질 수 있습니다.',
+                                        style: SDSTextStyle.regular.copyWith(
+                                          fontSize: 12,
+                                          color: SDSColor.gray500,
+                                        ),
+                                      ),
+                                    ),
                                     SizedBox(height: 8),
                                     if (!_communityUpdateViewModel.isReadOnly)
                                       BulletinQuillToolbar(
@@ -474,9 +483,9 @@ class CommunityBulletinUpdateView extends StatelessWidget {
                             if(_communityUpdateViewModel.isTitleWritten == true
                                 && _communityUpdateViewModel.selectedCategorySub != '상위 카테고리'
                                 && (_communityUpdateViewModel.selectedCategorySub != '시즌방' || (_communityUpdateViewModel.selectedCategorySub == '시즌방'&&_communityUpdateViewModel.selectedCategorySub2 != '하위 카테고리'))
-                                ){
+                            ){
 
-                            CustomFullScreenDialog.showDialog();
+                              CustomFullScreenDialog.showDialog();
                               await _communityUpdateViewModel.updateCommunityPost(
                                   _communityDetailViewModel.communityDetail.communityId,
                                   {
@@ -507,12 +516,12 @@ class CommunityBulletinUpdateView extends StatelessWidget {
                                     "thumb_img_url": _communityUpdateViewModel.findFirstInsertedImage(_communityUpdateViewModel.quillController.document.toDelta().toList()),
                                     "description" : jsonString
                                   });
-                            await _communityDetailViewModel.fetchCommunityDetail(_communityDetailViewModel.communityDetail.communityId!,_userViewModel.user.user_id);
-                            CustomFullScreenDialog.cancelDialog();
-                            Navigator.pop(context);
-                            (_communityBulletinListViewModel.tapName=='게시판')
-                                ? await _communityBulletinListViewModel.fetchAllCommunity()
-                                :await _communityBulletinListViewModel.fetchEventCommunity();
+                              await _communityDetailViewModel.fetchCommunityDetail(_communityDetailViewModel.communityDetail.communityId!,_userViewModel.user.user_id);
+                              CustomFullScreenDialog.cancelDialog();
+                              Navigator.pop(context);
+                              (_communityBulletinListViewModel.tapName=='게시판')
+                                  ? await _communityBulletinListViewModel.fetchAllCommunity()
+                                  :await _communityBulletinListViewModel.fetchEventCommunity();
                             }
 
                           },
@@ -528,8 +537,8 @@ class CommunityBulletinUpdateView extends StatelessWidget {
                                 && _communityUpdateViewModel.selectedCategorySub != '상위 카테고리'
                                 && (_communityUpdateViewModel.selectedCategorySub != '시즌방' || (_communityUpdateViewModel.selectedCategorySub == '시즌방'&&_communityUpdateViewModel.selectedCategorySub2 != '하위 카테고리'))
                             )
-                            ?SDSColor.snowliveBlue
-                            :SDSColor.gray200,
+                                ?SDSColor.snowliveBlue
+                                :SDSColor.gray200,
                           ),
                           child: Text('수정 완료',
                             style: SDSTextStyle.bold.copyWith(
@@ -538,8 +547,8 @@ class CommunityBulletinUpdateView extends StatelessWidget {
                                     && _communityUpdateViewModel.selectedCategorySub != '상위 카테고리'
                                     && (_communityUpdateViewModel.selectedCategorySub != '시즌방' || (_communityUpdateViewModel.selectedCategorySub == '시즌방'&&_communityUpdateViewModel.selectedCategorySub2 != '하위 카테고리'))
                                 )
-                                ?SDSColor.snowliveWhite
-                                :SDSColor.gray400,
+                                    ?SDSColor.snowliveWhite
+                                    :SDSColor.gray400,
                                 fontSize: 16),
                           ),
                         ),

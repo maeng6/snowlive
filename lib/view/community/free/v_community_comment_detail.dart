@@ -13,6 +13,7 @@ import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:get/get.dart';
+import 'package:shimmer/shimmer.dart';
 
 class CommunityCommentDetailView extends StatelessWidget {
 
@@ -124,20 +125,30 @@ class CommunityCommentDetailView extends StatelessWidget {
                                           loadStateChanged: (ExtendedImageState state) {
                                             switch (state.extendedImageLoadState) {
                                               case LoadState.loading:
-                                                return SizedBox.shrink();
+                                              // 로딩 중일 때 로딩 인디케이터를 표시
+                                                return Shimmer.fromColors(
+                                                  baseColor: SDSColor.gray200!,
+                                                  highlightColor: SDSColor.gray50!,
+                                                  child: Container(
+                                                    width: 32,
+                                                    height: 32,
+                                                    decoration: BoxDecoration(
+                                                      color: Colors.white,
+                                                      borderRadius: BorderRadius.circular(8),
+                                                    ),
+                                                  ),
+                                                );
                                               case LoadState.completed:
+                                              // 로딩이 완료되었을 때 이미지 반환
                                                 return state.completedWidget;
                                               case LoadState.failed:
-                                                return ClipOval(
-                                                  child: Image.asset(
-                                                    'assets/imgs/profile/img_profile_default_circle.png',
-                                                    width: 24,
-                                                    height: 24,
-                                                    fit: BoxFit.cover,
-                                                  ),
-                                                ); // 예시로 에러 아이콘을 반환하고 있습니다.
-                                              default:
-                                                return null;
+                                              // 로딩이 실패했을 때 대체 이미지 또는 다른 처리
+                                                return Image.asset(
+                                                  '${profileImgUrlList[0].default_round}', // 대체 이미지 경로
+                                                  width: 32,
+                                                  height: 32,
+                                                  fit: BoxFit.cover,
+                                                );
                                             }
                                           },
                                         )
@@ -279,20 +290,30 @@ class CommunityCommentDetailView extends StatelessWidget {
                                                             loadStateChanged: (ExtendedImageState state) {
                                                               switch (state.extendedImageLoadState) {
                                                                 case LoadState.loading:
-                                                                  return SizedBox.shrink();
+                                                                // 로딩 중일 때 로딩 인디케이터를 표시
+                                                                  return Shimmer.fromColors(
+                                                                    baseColor: SDSColor.gray200!,
+                                                                    highlightColor: SDSColor.gray50!,
+                                                                    child: Container(
+                                                                      width: 32,
+                                                                      height: 32,
+                                                                      decoration: BoxDecoration(
+                                                                        color: Colors.white,
+                                                                        borderRadius: BorderRadius.circular(8),
+                                                                      ),
+                                                                    ),
+                                                                  );
                                                                 case LoadState.completed:
+                                                                // 로딩이 완료되었을 때 이미지 반환
                                                                   return state.completedWidget;
                                                                 case LoadState.failed:
-                                                                  return ExtendedImage.network(
-                                                                    '${profileImgUrlList[0].default_round}',
-                                                                    shape: BoxShape.circle,
-                                                                    borderRadius: BorderRadius.circular(20),
-                                                                    width: 26,
-                                                                    height: 26,
+                                                                // 로딩이 실패했을 때 대체 이미지 또는 다른 처리
+                                                                  return Image.asset(
+                                                                    '${profileImgUrlList[0].default_round}', // 대체 이미지 경로
+                                                                    width: 32,
+                                                                    height: 32,
                                                                     fit: BoxFit.cover,
                                                                   );
-                                                                default:
-                                                                  return null;
                                                               }
                                                             },
                                                           ),
@@ -317,6 +338,35 @@ class CommunityCommentDetailView extends StatelessWidget {
                                                             width: 26,
                                                             height: 26,
                                                             fit: BoxFit.cover,
+                                                            loadStateChanged: (ExtendedImageState state) {
+                                                              switch (state.extendedImageLoadState) {
+                                                                case LoadState.loading:
+                                                                // 로딩 중일 때 로딩 인디케이터를 표시
+                                                                  return Shimmer.fromColors(
+                                                                    baseColor: SDSColor.gray200!,
+                                                                    highlightColor: SDSColor.gray50!,
+                                                                    child: Container(
+                                                                      width: 32,
+                                                                      height: 32,
+                                                                      decoration: BoxDecoration(
+                                                                        color: Colors.white,
+                                                                        borderRadius: BorderRadius.circular(8),
+                                                                      ),
+                                                                    ),
+                                                                  );
+                                                                case LoadState.completed:
+                                                                // 로딩이 완료되었을 때 이미지 반환
+                                                                  return state.completedWidget;
+                                                                case LoadState.failed:
+                                                                // 로딩이 실패했을 때 대체 이미지 또는 다른 처리
+                                                                  return Image.asset(
+                                                                    '${profileImgUrlList[0].default_round}', // 대체 이미지 경로
+                                                                    width: 32,
+                                                                    height: 32,
+                                                                    fit: BoxFit.cover,
+                                                                  );
+                                                              }
+                                                            },
                                                           ),
                                                         ),
                                                       ),
@@ -844,10 +894,10 @@ class CommunityCommentDetailView extends StatelessWidget {
                                                 isLoading_indi: true);
                                             await _communityBulletinListViewModel.fetchAllCommunity();
                                             if(_communityCommentDetailViewModel.commentModel_community.userId != _userViewModel.user.user_id)
-                                            await _alarmCenterViewModel.updateNotification(
-                                                _communityCommentDetailViewModel.commentModel_community.userId!,
-                                                total: true
-                                            );
+                                              await _alarmCenterViewModel.updateNotification(
+                                                  _communityCommentDetailViewModel.commentModel_community.userId!,
+                                                  total: true
+                                              );
                                           },
                                           icon: (_communityCommentDetailViewModel.isCommentButtonEnabled.value == false)
                                               ? Image.asset(
