@@ -2161,7 +2161,7 @@ class FleaMarketListView_board extends StatelessWidget {
                                                               Container(
                                                                   constraints: BoxConstraints(maxWidth: _size.width - 106),
                                                                   child: Text(
-                                                                    f.format(data.price) + ' 원',
+                                                                    f.format(data.price) + '원',
                                                                     maxLines: 1,
                                                                     overflow: TextOverflow.ellipsis,
                                                                     style: SDSTextStyle.bold.copyWith(

@@ -450,6 +450,7 @@ class CommunityBulletinListViewModel extends GetxController {
 
       if (response.success) {
         final communityResponse = CommunityListResponse.fromJson(response.data!);
+        print('이벤트완료');
 
         if (url == null) {
           // 초기 호출일 경우
@@ -527,18 +528,38 @@ class CommunityBulletinListViewModel extends GetxController {
 
   Future<void> onRefresh_bulletin_total() async {
     await fetchCommunityList_total(userId:  _userViewModel.user.user_id,categoryMain: '게시판');
+     fetchCommunityList_free(userId:  _userViewModel.user.user_id,categoryMain: '게시판',categorySub: Community_Category_sub_bulletin.free.korean);
+     fetchCommunityList_room(userId:  _userViewModel.user.user_id,categoryMain: '게시판',categorySub: Community_Category_sub_bulletin.room.korean);
+     fetchCommunityList_crew(userId:  _userViewModel.user.user_id,categoryMain: '게시판',categorySub: Community_Category_sub_bulletin.crew.korean);
+     fetchCommunityList_event(userId:  _userViewModel.user.user_id,categoryMain: '이벤트');
   }
   Future<void> onRefresh_bulletin_free() async {
     await fetchCommunityList_free(userId:  _userViewModel.user.user_id,categoryMain: '게시판',categorySub: Community_Category_sub_bulletin.free.korean);
+    fetchCommunityList_total(userId:  _userViewModel.user.user_id,categoryMain: '게시판');
+    fetchCommunityList_room(userId:  _userViewModel.user.user_id,categoryMain: '게시판',categorySub: Community_Category_sub_bulletin.room.korean);
+    fetchCommunityList_crew(userId:  _userViewModel.user.user_id,categoryMain: '게시판',categorySub: Community_Category_sub_bulletin.crew.korean);
+    fetchCommunityList_event(userId:  _userViewModel.user.user_id,categoryMain: '이벤트');
   }
   Future<void> onRefresh_bulletin_room() async {
     await fetchCommunityList_room(userId:  _userViewModel.user.user_id,categoryMain: '게시판',categorySub: Community_Category_sub_bulletin.room.korean);
+    fetchCommunityList_total(userId:  _userViewModel.user.user_id,categoryMain: '게시판');
+    fetchCommunityList_free(userId:  _userViewModel.user.user_id,categoryMain: '게시판',categorySub: Community_Category_sub_bulletin.free.korean);
+    fetchCommunityList_crew(userId:  _userViewModel.user.user_id,categoryMain: '게시판',categorySub: Community_Category_sub_bulletin.crew.korean);
+    fetchCommunityList_event(userId:  _userViewModel.user.user_id,categoryMain: '이벤트');
   }
   Future<void> onRefresh_bulletin_crew() async {
     await fetchCommunityList_crew(userId:  _userViewModel.user.user_id,categoryMain: '게시판',categorySub: Community_Category_sub_bulletin.crew.korean);
+    fetchCommunityList_total(userId:  _userViewModel.user.user_id,categoryMain: '게시판');
+    fetchCommunityList_free(userId:  _userViewModel.user.user_id,categoryMain: '게시판',categorySub: Community_Category_sub_bulletin.free.korean);
+    fetchCommunityList_room(userId:  _userViewModel.user.user_id,categoryMain: '게시판',categorySub: Community_Category_sub_bulletin.room.korean);
+    fetchCommunityList_event(userId:  _userViewModel.user.user_id,categoryMain: '이벤트');
   }
   Future<void> onRefresh_bulletin_event() async {
     await fetchCommunityList_event(userId:  _userViewModel.user.user_id,categoryMain: '이벤트');
+    fetchCommunityList_total(userId:  _userViewModel.user.user_id,categoryMain: '게시판');
+    fetchCommunityList_free(userId:  _userViewModel.user.user_id,categoryMain: '게시판',categorySub: Community_Category_sub_bulletin.free.korean);
+    fetchCommunityList_room(userId:  _userViewModel.user.user_id,categoryMain: '게시판',categorySub: Community_Category_sub_bulletin.room.korean);
+    fetchCommunityList_crew(userId:  _userViewModel.user.user_id,categoryMain: '게시판',categorySub: Community_Category_sub_bulletin.crew.korean);
   }
 }
 

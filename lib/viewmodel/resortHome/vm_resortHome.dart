@@ -164,7 +164,7 @@ class ResortHomeViewModel extends GetxController {
 
   Future<void> onRefresh_resortHome() async {
     await fetchResortHome(_userViewModel.user.user_id);
-    await fetchWeatherModel();
+    fetchWeatherModel();
   }
 
 
@@ -468,6 +468,17 @@ class ResortHomeViewModel extends GetxController {
               }
 
             }
+          }
+
+          if (passPointInfo != null
+              && passPointInfo['type'] == 'treasure_hunt_info'
+              && resort_info['treasure_hunt'] == true
+              && isParticipate_treasure_hunt ==true) {
+            await RankingAPI().createTreasureRecord({
+              "user_id": user_id,
+              "slope_id": passPointInfo['id'],
+              "coordinates": "${position.latitude}, ${position.longitude}"
+            });
           }
 
           if (passPointInfo != null && passPointInfo['type'] == 'reset_point') {
