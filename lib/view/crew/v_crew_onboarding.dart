@@ -53,7 +53,7 @@ class OnBoardingCrewMainView extends StatelessWidget {
                   style: SDSTextStyle.regular.copyWith(fontSize: 14, color: SDSColor.gray500),
                 ),
                 Text(
-                  '새로운 라이브크루를 만드시려면 생성하기를 선택해 주세요.',
+                  '새로운 라이브크루를 만드시려면 만들기를 선택해 주세요.',
                   textAlign: TextAlign.center,
                   style: SDSTextStyle.regular.copyWith(fontSize: 14, color: SDSColor.gray500),
                 ),

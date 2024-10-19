@@ -97,186 +97,7 @@ class ResortHomeViewModel extends GetxController {
     await checkForUpdate();
   }
 
-  Future<void> fetchResortHome(int userId) async {
-    isLoading(true);
-    ApiResponse response = await ResortHomeAPI().fetchResortHomeData(userId);
-    if(response.success)
-      _resortHomeModel.value = ResortHomeModel.fromJson(response.data);
-    print('리조트홈 패치 완료');
-    if(!response.success)
-      Get.snackbar('Error', '데이터 로딩 실패');
-    isLoading(false);
-  }
-
-  Future<void> fetchWeatherModel() async {
-    isLoading_weather(true);
-    try {
-      _weatherInfo.value = await WeatherModel().parseWeatherData(
-          _resortHomeModel.value.nx, _resortHomeModel.value.ny);
-      print('날씨정보 패치 완료');
-      weatherColors = WeatherModel().getWeatherColor(_weatherInfo['pty'], _weatherInfo['sky']);
-      weatherIcons = WeatherModel().getWeatherIcon(_weatherInfo['pty'], _weatherInfo['sky']);
-    }catch(e) {
-      print(e);
-      isLoading_weather(false);
-      Get.snackbar('날씨 정보 수신 지연', '잠시후 다시 시도해주세요');
-    }
-    isLoading_weather(false);
-  }
-
-
-  Future<void> fetchBestFriendList({required int user_id}) async {
-    isLoading_bestFriend(true);
-    ApiResponse response = await FriendAPI().fetchFriendList(userId: user_id, bestFriend: true);
-
-    if (response.success) {
-      try {
-        // JSON 데이터를 List<Map<String, dynamic>>로 변환
-        List<dynamic> dataList = response.data as List<dynamic>;
-
-        // List<Map<String, dynamic>>를 List<BestFriendListModel>로 변환
-        List<FriendListModel> friendList = dataList
-            .map((e) => FriendListModel.fromJson(e as Map<String, dynamic>))
-            .toList();
-
-        // _bestFriendList를 업데이트
-        _bestFriendList.value = friendList;
-
-        // 초기 높이 설정
-        if (_bestFriendList.length < 5) {
-          _initialHeightFriend.value = 0.38;
-        } else {
-          _initialHeightFriend.value = 0.525;
-        }
-
-      } catch (e) {
-        print('Error parsing friend list: $e');
-      }
-    } else {
-      print('친구없는놈');
-    }
-
-    isLoading_bestFriend(false);
-  }
-
-
-
-
-  Future<void> onRefresh_resortHome() async {
-    await fetchResortHome(_userViewModel.user.user_id);
-    fetchWeatherModel();
-  }
-
-
-  Future<void> changeInstantResort(Map<String, dynamic> body, user_id) async {
-
-    isLoading(true);
-    isLoading_weather(true);
-    ApiResponse response_updateUser = await UserAPI().updateUserInfo(body);
-    if(response_updateUser.success) {
-      ApiResponse response_fetchResortHome = await ResortHomeAPI().fetchResortHomeData(user_id);
-      if (response_fetchResortHome.success)
-        _resortHomeModel.value = ResortHomeModel.fromJson(response_fetchResortHome.data);
-      await fetchWeatherModel();
-    } else {
-      Get.snackbar('Error', '데이터 로딩 실패');
-      isLoading(false);
-      isLoading_weather(false);
-    }
-  }
-
-  void toggleExpandWeatherInfo() async {
-    _isWeatherInfoExpanded.value = !_isWeatherInfoExpanded.value;
-  }
-
-  Future<void> getRankingGuideUrl() async {
-    final snapshot = await FirebaseFirestore.instance
-        .collection('Ranking_guideUrl')
-        .get();
-    _rankingGuideUrl_aos.value = snapshot.docs[0]['url_android'];
-    _rankingGuideUrl_ios.value = snapshot.docs[0]['url_iOS'];
-    _rankingComingSoonUrl.value = snapshot.docs[0]['url_rankingComingSoon'];
-    print('랭킹 url 불러오기 완료');
-  }
-
-  Future<void> liveOff(Map<String, dynamic> body,user_id) async {
-
-    isLoading(true);
-    ApiResponse response_off = await RankingAPI().liveOff(body);
-    if(response_off.success) {
-      ApiResponse response_fetchResortHome = await ResortHomeAPI().fetchResortHomeData(user_id);
-      if (response_fetchResortHome.success)
-        _resortHomeModel.value = ResortHomeModel.fromJson(response_fetchResortHome.data);
-      await _userViewModel.updateUserModel_api(_userViewModel.user.user_id);
-      print('liveOff 완료');
-    }
-    else {
-      CustomFullScreenDialog.cancelDialog();
-    }
-    isLoading(false);
-  }
-
-  Future<ApiResponse> liveOn(Map<String, dynamic> body) async {
-    try {
-      isLoading(true);
-      ApiResponse response = await RankingAPI().check_wb(body);
-      if (response.success) {
-        _resort_info.value = response.data['resort_info'];
-        _slope_info.value = List<Map<String, dynamic>>.from(response.data['slope_info']);
-        _treasure_hunt_info.value = List<Map<String, dynamic>>.from(response.data['treasure_hunt_info']);
-        _reset_point.value = List<Map<String, dynamic>>.from(response.data['reset_point']);
-        _respawn_point.value = List<Map<String, dynamic>>.from(response.data['respawn_point']);
-        _isParticipate_treasure_hunt.value = response.data['participant'];
-        return response;
-      } else {
-        await stopForegroundLocationService();
-        await stopBackgroundLocationService();
-        CustomFullScreenDialog.cancelDialog();
-        return response;
-      }
-    } catch (e) {
-      await stopForegroundLocationService();
-      await stopBackgroundLocationService();
-      CustomFullScreenDialog.cancelDialog();
-      print('Error in liveOn: $e'); // 예외 발생 시 출력
-      return ApiResponse.error('An error occurred: $e'); // 에러 응답 반환
-    } finally {
-      isLoading(false); // 성공/실패/예외 발생 여부와 상관없이 로딩 상태 종료
-    }
-  }
-
-  Future<ApiResponse> participate(Map<String, dynamic> body) async {
-    try {
-      isLoading(true);
-      ApiResponse response = await RankingAPI().participate_treasure_hunt(body);
-      if (response.success) {
-        _isParticipate_treasure_hunt.value = true;
-        return response;
-      } else {
-        _isParticipate_treasure_hunt.value = false;
-        return response;
-      }
-    } catch (e) {
-      _isParticipate_treasure_hunt.value = false;
-      print('Error in liveOn: $e');
-      return ApiResponse.error('An error occurred: $e');
-    } finally {
-      isLoading(false);
-    }
-  }
-
-
-  Future<void> stopForegroundLocationService() async {
-    await _positionStreamSubscription?.cancel();
-    _positionStreamSubscription = null;
-    print('stopForegroundLocationService 완료');
-  }
-
-  Future<void> stopBackgroundLocationService() async {
-    await bg.BackgroundGeolocation.stop();
-    bg.BackgroundGeolocation.removeListeners();
-    print('stopBackgroundLocationService 완료');
-  }
+  //TODO: 라이브온 관련 메소드****************************************************
 
   Future<void> startForegroundLocationService({required user_id}) async {
     bool serviceEnabled;
@@ -354,11 +175,11 @@ class ResortHomeViewModel extends GetxController {
                 && passPointInfo['type'] == 'treasure_hunt_info'
                 && resort_info['treasure_hunt'] == true
                 && isParticipate_treasure_hunt ==true) {
-                await RankingAPI().createTreasureRecord({
-                  "user_id": user_id,
-                  "slope_id": passPointInfo['id'],
-                  "coordinates": "${position.latitude}, ${position.longitude}"
-                });
+              await RankingAPI().createTreasureRecord({
+                "user_id": user_id,
+                "slope_id": passPointInfo['id'],
+                "coordinates": "${position.latitude}, ${position.longitude}"
+              });
             }
 
             if (passPointInfo != null && passPointInfo['type'] == 'reset_point') {
@@ -383,8 +204,6 @@ class ResortHomeViewModel extends GetxController {
       });
     }
   }
-
-
 
   Future<void> startBackgroundLocationService({required user_id}) async {
     DateTime now = DateTime.now();
@@ -474,6 +293,10 @@ class ResortHomeViewModel extends GetxController {
               && passPointInfo['type'] == 'treasure_hunt_info'
               && resort_info['treasure_hunt'] == true
               && isParticipate_treasure_hunt ==true) {
+            print(user_id);
+            print(passPointInfo['id']);
+            print("${position.latitude}, ${position.longitude}");
+
             await RankingAPI().createTreasureRecord({
               "user_id": user_id,
               "slope_id": passPointInfo['id'],
@@ -507,6 +330,17 @@ class ResortHomeViewModel extends GetxController {
     });
   }
 
+  Future<void> stopForegroundLocationService() async {
+    await _positionStreamSubscription?.cancel();
+    _positionStreamSubscription = null;
+    print('stopForegroundLocationService 완료');
+  }
+
+  Future<void> stopBackgroundLocationService() async {
+    await bg.BackgroundGeolocation.stop();
+    bg.BackgroundGeolocation.removeListeners();
+    print('stopBackgroundLocationService 완료');
+  }
 
   bool _checkPositionWithinBoundary(lat, lon, lat_resort_info, lon_resort_info, radius) {
     double distanceInMeters = Geolocator.distanceBetween(lat, lon, lat_resort_info, lon_resort_info);
@@ -557,6 +391,250 @@ class ResortHomeViewModel extends GetxController {
 
     return distance <= radius;
   }
+
+  Future<void> liveOff(Map<String, dynamic> body,user_id) async {
+
+    isLoading(true);
+    ApiResponse response_off = await RankingAPI().liveOff(body);
+    if(response_off.success) {
+      ApiResponse response_fetchResortHome = await ResortHomeAPI().fetchResortHomeData(user_id);
+      if (response_fetchResortHome.success)
+        _resortHomeModel.value = ResortHomeModel.fromJson(response_fetchResortHome.data);
+      await _userViewModel.updateUserModel_api(_userViewModel.user.user_id);
+      print('liveOff 완료');
+    }
+    else {
+      CustomFullScreenDialog.cancelDialog();
+    }
+    isLoading(false);
+  }
+
+  Future<ApiResponse> liveOn(Map<String, dynamic> body) async {
+    try {
+      isLoading(true);
+      ApiResponse response = await RankingAPI().check_wb(body);
+      if (response.success) {
+        _resort_info.value = response.data['resort_info'];
+        _slope_info.value = List<Map<String, dynamic>>.from(response.data['slope_info']);
+        _treasure_hunt_info.value = List<Map<String, dynamic>>.from(response.data['treasure_hunt_info']);
+        _reset_point.value = List<Map<String, dynamic>>.from(response.data['reset_point']);
+        _respawn_point.value = List<Map<String, dynamic>>.from(response.data['respawn_point']);
+        _isParticipate_treasure_hunt.value = response.data['participant'];
+        return response;
+      } else {
+        await stopForegroundLocationService();
+        await stopBackgroundLocationService();
+        CustomFullScreenDialog.cancelDialog();
+        return response;
+      }
+    } catch (e) {
+      await stopForegroundLocationService();
+      await stopBackgroundLocationService();
+      CustomFullScreenDialog.cancelDialog();
+      print('Error in liveOn: $e'); // 예외 발생 시 출력
+      return ApiResponse.error('An error occurred: $e'); // 에러 응답 반환
+    } finally {
+      isLoading(false); // 성공/실패/예외 발생 여부와 상관없이 로딩 상태 종료
+    }
+  }
+
+  //TODO: 라이브온 관련 메소드****************************************************
+
+
+  //TODO: 보물찾기 관련 메소드****************************************************
+
+  Future<void> checkAndShowTreasureHuntPopup({required int userId, int? userCrewId}) async {
+    try {
+      // Firebase에서 treasure_hunt 문서 가져오기
+      DocumentSnapshot<Map<String, dynamic>> treasureHuntDoc = await FirebaseFirestore.instance
+          .collection('treasure_hunt')
+          .doc('treasure_hunt')
+          .get();
+
+      if (treasureHuntDoc.exists) {
+        final data = treasureHuntDoc.data();
+
+        // open 필드가 true인지 확인
+        bool isOpen = data?['open'] ?? false;
+
+        // to_everyone 필드가 true인지 확인
+        bool isToEveryone = data?['to_everyone'] ?? false;
+
+        // crew_list 필드가 리스트인지 확인하고, 유저의 크루가 리스트에 포함되어 있는지 확인
+        List<dynamic> crewList = data?['crew_list'] ?? [];
+        bool isUserInCrewList = userCrewId != null && crewList.contains(userCrewId);
+
+        // 팝업을 띄울 조건 확인: open이 true이고, to_everyone이 true이거나 유저의 크루가 포함된 경우
+        if (isOpen && (isToEveryone || isUserInCrewList)) {
+          // 이미 참여 중인 경우 팝업을 띄우지 않음
+          if (!_isParticipate_treasure_hunt.value) {
+            // 조건을 만족하면 보물찾기 참여 팝업 띄우기
+            Get.dialog(
+              AlertDialog(
+                title: Text('보물찾기 참여하기'),
+                content: Text('보물찾기 이벤트에 참여하시겠습니까?'),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      Get.back();
+                    },
+                    child: Text('취소'),
+                  ),
+                  TextButton(
+                    onPressed: () async {
+                      // 참여하기 버튼 클릭 시 participate 메소드를 호출하고 바디 전달
+                      Map<String, dynamic> body = {
+                        "user_id": _userViewModel.user.user_id,
+                        "resort_id": _resort_info['resort_id']
+                      };
+                      print(body);
+                      await participate(body);
+                      Get.back(); // 팝업 닫기
+                    },
+                    child: Text('참여하기'),
+                  ),
+                ],
+              ),
+            );
+          }
+        }
+      } else {
+        print('Treasure hunt 문서가 존재하지 않습니다.');
+      }
+    } catch (e) {
+      print('보물찾기 정보 조회 중 오류 발생: $e');
+    }
+  }
+
+
+  Future<ApiResponse> participate(Map<String, dynamic> body) async {
+    try {
+      isLoading(true);
+      ApiResponse response = await RankingAPI().participate_treasure_hunt(body);
+      CustomFullScreenDialog.cancelDialog();
+      if (response.success) {
+        _isParticipate_treasure_hunt.value = true;
+        print('보물찾기 참가 등록 성공');
+        return response;
+      } else {
+        _isParticipate_treasure_hunt.value = false;
+        return response;
+      }
+    } catch (e) {
+      _isParticipate_treasure_hunt.value = false;
+      print('Error in liveOn: $e');
+      return ApiResponse.error('An error occurred: $e');
+    } finally {
+      isLoading(false);
+    }
+  }
+
+  //TODO: 보물찾기 관련 메소드****************************************************
+
+
+  Future<void> fetchResortHome(int userId) async {
+    isLoading(true);
+    ApiResponse response = await ResortHomeAPI().fetchResortHomeData(userId);
+    if(response.success)
+      _resortHomeModel.value = ResortHomeModel.fromJson(response.data);
+    print('리조트홈 패치 완료');
+    if(!response.success)
+      Get.snackbar('Error', '데이터 로딩 실패');
+    isLoading(false);
+  }
+
+  Future<void> fetchWeatherModel() async {
+    isLoading_weather(true);
+    try {
+      _weatherInfo.value = await WeatherModel().parseWeatherData(
+          _resortHomeModel.value.nx, _resortHomeModel.value.ny);
+      print('날씨정보 패치 완료');
+      weatherColors = WeatherModel().getWeatherColor(_weatherInfo['pty'], _weatherInfo['sky']);
+      weatherIcons = WeatherModel().getWeatherIcon(_weatherInfo['pty'], _weatherInfo['sky']);
+    }catch(e) {
+      print(e);
+      isLoading_weather(false);
+      Get.snackbar('날씨 정보 수신 지연', '잠시후 다시 시도해주세요');
+    }
+    isLoading_weather(false);
+  }
+
+  Future<void> fetchBestFriendList({required int user_id}) async {
+    isLoading_bestFriend(true);
+    ApiResponse response = await FriendAPI().fetchFriendList(userId: user_id, bestFriend: true);
+
+    if (response.success) {
+      try {
+        // JSON 데이터를 List<Map<String, dynamic>>로 변환
+        List<dynamic> dataList = response.data as List<dynamic>;
+
+        // List<Map<String, dynamic>>를 List<BestFriendListModel>로 변환
+        List<FriendListModel> friendList = dataList
+            .map((e) => FriendListModel.fromJson(e as Map<String, dynamic>))
+            .toList();
+
+        // _bestFriendList를 업데이트
+        _bestFriendList.value = friendList;
+
+        // 초기 높이 설정
+        if (_bestFriendList.length < 5) {
+          _initialHeightFriend.value = 0.38;
+        } else {
+          _initialHeightFriend.value = 0.525;
+        }
+
+      } catch (e) {
+        print('Error parsing friend list: $e');
+      }
+    } else {
+      print('친구없는놈');
+    }
+
+    isLoading_bestFriend(false);
+  }
+
+  Future<void> onRefresh_resortHome() async {
+    await fetchResortHome(_userViewModel.user.user_id);
+    fetchWeatherModel();
+  }
+
+  Future<void> changeInstantResort(Map<String, dynamic> body, user_id) async {
+
+    isLoading(true);
+    isLoading_weather(true);
+    ApiResponse response_updateUser = await UserAPI().updateUserInfo(body);
+    if(response_updateUser.success) {
+      ApiResponse response_fetchResortHome = await ResortHomeAPI().fetchResortHomeData(user_id);
+      if (response_fetchResortHome.success)
+        _resortHomeModel.value = ResortHomeModel.fromJson(response_fetchResortHome.data);
+      await fetchWeatherModel();
+    } else {
+      Get.snackbar('Error', '데이터 로딩 실패');
+      isLoading(false);
+      isLoading_weather(false);
+    }
+  }
+
+  void toggleExpandWeatherInfo() async {
+    _isWeatherInfoExpanded.value = !_isWeatherInfoExpanded.value;
+  }
+
+  Future<void> getRankingGuideUrl() async {
+    final snapshot = await FirebaseFirestore.instance
+        .collection('Ranking_guideUrl')
+        .get();
+    _rankingGuideUrl_aos.value = snapshot.docs[0]['url_android'];
+    _rankingGuideUrl_ios.value = snapshot.docs[0]['url_iOS'];
+    _rankingComingSoonUrl.value = snapshot.docs[0]['url_rankingComingSoon'];
+    print('랭킹 url 불러오기 완료');
+  }
+
+
+
+
+
+
+
 
   Color? getWeatherColor(String pty, String sky) {
     String _timeString = DateFormat('HH').format(DateTime.now());

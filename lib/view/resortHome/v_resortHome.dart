@@ -315,6 +315,16 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                             await _resortHomeViewModel.startBackgroundLocationService(user_id: _userViewModel.user.user_id);
                             await _userViewModel.updateUserModel_api(_userViewModel.user.user_id);
                             CustomFullScreenDialog.cancelDialog();
+                            if (_userViewModel.user.crew_id != null) {
+                              await _resortHomeViewModel.checkAndShowTreasureHuntPopup(
+                                userId: _userViewModel.user.user_id!,
+                                userCrewId: _userViewModel.user.crew_id,
+                              );
+                            } else {
+                              await _resortHomeViewModel.checkAndShowTreasureHuntPopup(
+                                userId: _userViewModel.user.user_id!,
+                              );
+                            }
 
                             if(_userViewModel.user.within_boundary == false){
                               Get.snackbar(

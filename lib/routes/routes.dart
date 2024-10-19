@@ -28,7 +28,7 @@ import 'package:com.snowlive/view/v_profileImageScreen.dart';
 import 'package:com.snowlive/view/crew/v_crewHome.dart';
 import 'package:com.snowlive/view/crew/v_crewMain.dart';
 import 'package:com.snowlive/view/crew/v_crewMember.dart';
-import 'package:com.snowlive/view/crew/v_onboarding.dart';
+import 'package:com.snowlive/view/crew/v_crew_onboarding.dart';
 import 'package:com.snowlive/view/crew/v_recordRoom.dart';
 import 'package:com.snowlive/view/crew/v_setCrewImageAndColor.dart';
 import 'package:com.snowlive/view/crew/v_setCrewNameAndResort.dart';
