@@ -178,7 +178,7 @@ class ResortHomeViewModel extends GetxController {
               await RankingAPI().createTreasureRecord({
                 "user_id": user_id,
                 "slope_id": passPointInfo['id'],
-                "coordinates": "${position.latitude}, ${position.longitude}"
+                "coordinates": "POINT (${position.longitude} ${position.latitude})"
               });
             }
 
@@ -300,7 +300,7 @@ class ResortHomeViewModel extends GetxController {
             await RankingAPI().createTreasureRecord({
               "user_id": user_id,
               "slope_id": passPointInfo['id'],
-              "coordinates": "${position.latitude}, ${position.longitude}"
+              "coordinates": "POINT (${position.longitude} ${position.latitude})"
             });
           }
 
