@@ -465,7 +465,7 @@ class ResortHomeViewModel extends GetxController {
         bool isUserInCrewList = userCrewId != null && crewList.contains(userCrewId);
 
         // 팝업을 띄울 조건 확인: open이 true이고, to_everyone이 true이거나 유저의 크루가 포함된 경우
-        if (isOpen && (isToEveryone || isUserInCrewList)) {
+        if (_resort_info['treasure_hunt'] == true && isOpen && (isToEveryone || isUserInCrewList)) {
           // 이미 참여 중인 경우 팝업을 띄우지 않음
           if (!_isParticipate_treasure_hunt.value) {
             // 조건을 만족하면 보물찾기 참여 팝업 띄우기
