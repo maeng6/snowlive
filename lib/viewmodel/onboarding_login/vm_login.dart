@@ -58,7 +58,9 @@ class LoginViewModel extends GetxController {
   //로컬에 signInMethod 저장
   Future<void> signInWithGoogle() async {
     CustomFullScreenDialog.showDialog();
+    print('11');
     GoogleSignInAccount? googleSignInAccount = await googleSignIn.signIn();
+    print('22');
     if (googleSignInAccount == null) {
       CustomFullScreenDialog.cancelDialog();
     } else {
