@@ -23,6 +23,9 @@ import 'package:com.snowlive/view/friend/v_friendBlockList.dart';
 import 'package:com.snowlive/view/friend/v_invitation_friend.dart';
 import 'package:com.snowlive/view/moreTab/v_setting_moreTab.dart';
 import 'package:com.snowlive/view/ranking/history/v_ranking_history_home.dart';
+import 'package:com.snowlive/view/ranking/v_rankingGuide.dart';
+import 'package:com.snowlive/view/ranking/v_settingGuide_android.dart';
+import 'package:com.snowlive/view/ranking/v_settingGuide_ios.dart';
 import 'package:com.snowlive/view/resortHome/v_alarmCenter.dart';
 import 'package:com.snowlive/view/v_profileImageScreen.dart';
 import 'package:com.snowlive/view/crew/v_crewHome.dart';
@@ -98,10 +101,9 @@ class AppRoutes {
   static const String rankingIndivHistoryHome = '/rankingIndivHistoryHome';
   static const String setting_moreTab = '/setting_moreTab';
   static const String alarmCenter = '/alarmCenter';
-
-
-
-
+  static const String rankingGuideMain = '/rankingGuideMain';
+  static const String androidSettingGuide = '/androidSettingGuide';
+  static const String iosSettingGuide = '/iosSettingGuide';
 
 
 
@@ -312,18 +314,30 @@ class AppRoutes {
       page: () => RankingHistoryHomeView(),
     ),
     GetPage(
-      name: rankingIndivHistoryHome,
-      page: () => RankingIndivHistoryHomeView(),
-      binding: IndivHistoryHome()
+        name: rankingIndivHistoryHome,
+        page: () => RankingIndivHistoryHomeView(),
+        binding: IndivHistoryHome()
     ),
     GetPage(
-      name: setting_moreTab,
-      page: () => Setting_moreTabView(),
-      binding: Setting_moreTabBinding()
+        name: setting_moreTab,
+        page: () => Setting_moreTabView(),
+        binding: Setting_moreTabBinding()
     ),
     GetPage(
       name: alarmCenter,
       page: () => AlarmCenterView(),
+    ),
+    GetPage(
+      name: rankingGuideMain,
+      page: () => RankingGuideMainView(),
+    ),
+    GetPage(
+      name: androidSettingGuide,
+      page: () => AndroidSettingGuideView(),
+    ),
+    GetPage(
+      name: iosSettingGuide,
+      page: () => IosSettingGuideView(),
     ),
   ];
 }

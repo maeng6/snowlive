@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:com.snowlive/data/imgaUrls/Data_url_image.dart';
 import 'package:com.snowlive/routes/routes.dart';
 import 'package:com.snowlive/util/util_1.dart';
+import 'package:com.snowlive/view/banner/v_banner_resortHome.dart';
 import 'package:com.snowlive/view/resortHome/v_chat_resortHome.dart';
 import 'package:com.snowlive/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/viewmodel/friend/vm_friendDetail.dart';
@@ -21,7 +22,6 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:com.snowlive/view/moreTab/v_banner_resortHome.dart';
 import 'package:lottie/lottie.dart';
 import 'package:shimmer/shimmer.dart';
 
@@ -1425,9 +1425,10 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                                 ),
                               ),
                             ),
+                            SizedBox(height: 30,),
                             //TODO: 배너
                             Padding(
-                              padding: EdgeInsets.only(bottom: 30, left: 16, right: 16),
+                              padding: EdgeInsets.only(left: 16, right: 16),
                               child: Banner_resortHome(),
                             ),
                             //TODO: 구분선
@@ -1820,42 +1821,42 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                                                           ),
                                                         ),
                                                       ),
-                                                      // Padding(
-                                                      //   padding: const EdgeInsets.only(top: 20),
-                                                      //   child: GestureDetector(
-                                                      //     onTap: () {
-                                                      //       // Add your share functionality here
-                                                      //     },
-                                                      //     child: Container(
-                                                      //       padding: EdgeInsets.symmetric(horizontal: 12, vertical: 9),
-                                                      //       decoration: BoxDecoration(
-                                                      //         color: SDSColor.snowliveWhite,
-                                                      //         borderRadius: BorderRadius.circular(20),
-                                                      //       ),
-                                                      //       child: Row(
-                                                      //         children: [
-                                                      //           Padding(
-                                                      //             padding: const EdgeInsets.only(right: 6),
-                                                      //             child: Text(
-                                                      //               '더 알아보기',
-                                                      //               style: SDSTextStyle.extraBold.copyWith
-                                                      //                 (
-                                                      //                   color: Colors.black,
-                                                      //                   fontSize: 13
-                                                      //               ),
-                                                      //             ),
-                                                      //           ),
-                                                      //           Image.asset(
-                                                      //             'assets/imgs/icons/icon_arrow_round_black.png',
-                                                      //             fit: BoxFit.cover,
-                                                      //             width: 18,
-                                                      //             height: 18,
-                                                      //           ),
-                                                      //         ],
-                                                      //       ),
-                                                      //     ),
-                                                      //   ),
-                                                      // ),
+                                                      Padding(
+                                                        padding: const EdgeInsets.only(top: 20),
+                                                        child: GestureDetector(
+                                                          onTap: () {
+                                                            Get.toNamed(AppRoutes.rankingGuideMain);
+                                                          },
+                                                          child: Container(
+                                                            padding: EdgeInsets.symmetric(horizontal: 12, vertical: 9),
+                                                            decoration: BoxDecoration(
+                                                              color: SDSColor.snowliveWhite,
+                                                              borderRadius: BorderRadius.circular(20),
+                                                            ),
+                                                            child: Row(
+                                                              children: [
+                                                                Padding(
+                                                                  padding: const EdgeInsets.only(right: 6),
+                                                                  child: Text(
+                                                                    '더 알아보기',
+                                                                    style: SDSTextStyle.extraBold.copyWith
+                                                                      (
+                                                                        color: Colors.black,
+                                                                        fontSize: 13
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                                Image.asset(
+                                                                  'assets/imgs/icons/icon_arrow_round_black.png',
+                                                                  fit: BoxFit.cover,
+                                                                  width: 18,
+                                                                  height: 18,
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ),
                                                     ],
                                                   ),
                                                 ),

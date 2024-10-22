@@ -2,6 +2,7 @@ import 'package:com.snowlive/data/imgaUrls/Data_url_image.dart';
 import 'package:com.snowlive/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/routes/routes.dart';
 import 'package:com.snowlive/util/util_1.dart';
+import 'package:com.snowlive/view/banner/v_banner_moreTab.dart';
 import 'package:com.snowlive/view/moreTab/v_noticeListPage.dart';
 import 'package:com.snowlive/view/moreTab/v_resortTab.dart';
 import 'package:com.snowlive/view/moreTab/v_snowliveDetailPage.dart';
@@ -314,6 +315,31 @@ class MoreTabMainView extends StatelessWidget {
                       ),
                     ),
                   ),
+                  SizedBox(height: 8),
+                  Container(
+                    height: 52,
+                    child: ListTile(
+                      contentPadding: EdgeInsets.symmetric(horizontal: 16),
+                      onTap: () {
+                        Get.toNamed(AppRoutes.rankingGuideMain);
+                      },
+                      leading: Image.asset('assets/imgs/icons/icon_crown_circle.png', width: 30,),
+                      title: Transform.translate(
+                        offset: Offset(-8, 0),
+                        child: Text(
+                          '랭킹 가이드',
+                          style: SDSTextStyle.regular.copyWith(
+                              fontSize: 15,
+                              color: SDSColor.gray900),
+                        ),
+                      ),
+                      trailing: Image.asset(
+                        'assets/imgs/icons/icon_arrow_g.png',
+                        height: 24,
+                        width: 24,
+                      ),
+                    ),
+                  ),
                   SizedBox(height: 30),
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 20),
@@ -397,7 +423,7 @@ class MoreTabMainView extends StatelessWidget {
                       ),
                     ),
                   ),
-                  SizedBox(height: 40),
+                  Banner_moreTab(),
 
 
 

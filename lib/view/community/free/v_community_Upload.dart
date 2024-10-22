@@ -367,7 +367,7 @@ class CommunityBulletinUpload extends StatelessWidget {
                                       child: Row(
                                         crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
-                                          Text('카카오 오픈채팅 URL', style: SDSTextStyle.regular.copyWith(
+                                          Text('SNS URL', style: SDSTextStyle.regular.copyWith(
                                               fontSize: 13,
                                               color: SDSColor.gray900
                                           ),),

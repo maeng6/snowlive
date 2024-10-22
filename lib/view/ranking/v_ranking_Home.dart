@@ -1,5 +1,6 @@
 import 'package:com.snowlive/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/routes/routes.dart';
+import 'package:com.snowlive/view/banner/v_banner_ranking.dart';
 import 'package:com.snowlive/view/ranking/v_rankingList_Indi.dart';
 import 'package:com.snowlive/view/ranking/history/v_rankingList_beta.dart';
 import 'package:com.snowlive/view/ranking/v_rankingList_crew.dart';
@@ -143,6 +144,7 @@ class RankingHomeView extends StatelessWidget {
                   ],
                 ),
               ),
+              Banner_ranking(),
               if (_rankingListViewModel.tapName=='개인랭킹')
                 Expanded(
                     child: RankingIndiView()),

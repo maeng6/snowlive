@@ -1,3 +1,4 @@
+
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:com.snowlive/api/ApiResponse.dart';
@@ -11,7 +12,6 @@ import 'package:com.snowlive/model/m_weatherModel.dart';
 import 'package:com.snowlive/util/util_1.dart';
 import 'package:com.snowlive/viewmodel/vm_user.dart';
 import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
-import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_background_geolocation/flutter_background_geolocation.dart';
@@ -38,6 +38,7 @@ class ResortHomeViewModel extends GetxController {
   RxString _rankingGuideUrl_ios = ''.obs;
   RxString _rankingGuideUrl_aos = ''.obs;
   RxString _rankingComingSoonUrl = ''.obs;
+  RxString _rankingGuideUrl_main = ''.obs;
   RxDouble _latitude = 0.0.obs;
   RxDouble _longitude = 0.0.obs;
   RxDouble _initialHeightFriend = 0.0.obs;
@@ -57,7 +58,8 @@ class ResortHomeViewModel extends GetxController {
   dynamic weatherColors;
   dynamic weatherIcons;
 
-  final Rxn<Stream<QuerySnapshot<Map<String, dynamic>>>> _rankingGuideUrl = Rxn<Stream<QuerySnapshot<Map<String, dynamic>>>>();
+  Rxn<Stream<DocumentSnapshot<Map<String, dynamic>>>> bannerStream = Rxn<Stream<DocumentSnapshot<Map<String, dynamic>>>>();
+
 
   StreamSubscription<Position>? _positionStreamSubscription;
   DateTime? _lastCountMethodCall;
@@ -66,6 +68,7 @@ class ResortHomeViewModel extends GetxController {
   String get rankingGuideUrl_ios => _rankingGuideUrl_ios.value;
   String get rankingGuideUrl_aos => _rankingGuideUrl_aos.value;
   String get rankingComingSoonUrl => _rankingComingSoonUrl.value;
+  String get rankingGuideUrl_main => _rankingGuideUrl_main.value;
   dynamic get resortHomeModel => _resortHomeModel.value;
   double get latitude => _latitude.value;
   double get longitude => _longitude.value;
@@ -626,15 +629,9 @@ class ResortHomeViewModel extends GetxController {
     _rankingGuideUrl_aos.value = snapshot.docs[0]['url_android'];
     _rankingGuideUrl_ios.value = snapshot.docs[0]['url_iOS'];
     _rankingComingSoonUrl.value = snapshot.docs[0]['url_rankingComingSoon'];
+    _rankingGuideUrl_main.value = snapshot.docs[0]['url_rankingGuide'];
     print('랭킹 url 불러오기 완료');
   }
-
-
-
-
-
-
-
 
   Color? getWeatherColor(String pty, String sky) {
     String _timeString = DateFormat('HH').format(DateTime.now());
@@ -861,6 +858,14 @@ class ResortHomeViewModel extends GetxController {
     await documentReference.get();
     bool useUpdatePopup = documentSnapshot.get('useUpdatePopup');
     return useUpdatePopup;
+  }
+
+  Future<void> getBanner(String accountName) async {
+
+    bannerStream.value = FirebaseFirestore.instance
+        .collection('banner')
+        .doc(accountName)
+        .snapshots();
   }
 
 }

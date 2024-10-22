@@ -4,6 +4,7 @@ import 'package:com.snowlive/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/model/m_communityList.dart';
 import 'package:com.snowlive/routes/routes.dart';
 import 'package:com.snowlive/util/util_1.dart';
+import 'package:com.snowlive/view/banner/v_banner_community_detail.dart';
 import 'package:com.snowlive/viewmodel/community/vm_communityBulletinList.dart';
 import 'package:com.snowlive/viewmodel/community/vm_communityCommentDetail.dart';
 import 'package:com.snowlive/viewmodel/community/vm_communityDetail.dart';
@@ -880,6 +881,7 @@ class CommunityBulletinDetailView extends StatelessWidget {
                                             ),
                                           ),
                                         ),
+                                      Banner_community_detail(),
                                       Divider(
                                         color: SDSColor.gray50,
                                         height: 60,

@@ -5,23 +5,26 @@ import 'package:com.snowlive/view/moreTab/v_moreTab_main.dart';
 import 'package:com.snowlive/view/ranking/v_ranking_Home.dart';
 import 'package:com.snowlive/view/resortHome/v_resortHome.dart';
 import 'package:com.snowlive/viewmodel/vm_mainHome.dart';
+import 'package:com.snowlive/viewmodel/vm_user.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class MainHomeView extends StatelessWidget {
   final MainHomeViewModel _MainHomeViewModel = Get.find<MainHomeViewModel>();
+  final UserViewModel _userViewModel = Get.find<UserViewModel>();
 
   @override
   Widget build(BuildContext context) {
     return Obx(() => Scaffold(
         bottomNavigationBar: Container(
           decoration: BoxDecoration(
-            border: Border(
-              top: BorderSide(
-                color: SDSColor.gray50,
-                width: 1
+              border: Border(
+                  top: BorderSide(
+                      color: SDSColor.gray50,
+                      width: 1
+                  )
               )
-            )
           ),
           child: Theme(
             data: ThemeData(
@@ -36,7 +39,49 @@ class MainHomeView extends StatelessWidget {
               elevation: 0,
               type: BottomNavigationBarType.fixed,
               currentIndex: _MainHomeViewModel.currentPage!,
-              onTap: _MainHomeViewModel.onItemTapped,
+              onTap: (index) {
+                // 페이지 전환
+                _MainHomeViewModel.onItemTapped(index);
+
+                // Google Analytics 트래킹 이벤트 발생
+                switch (index) {
+                  case 0:
+                    FirebaseAnalytics.instance.logEvent(
+                      name: 'visit_resortHome',
+                      parameters: <String, Object>{
+                        'user_id': _userViewModel.user.user_id,
+                        'user_name': _userViewModel.user.display_name,},);
+                    break;
+                  case 1:
+                    FirebaseAnalytics.instance.logEvent(
+                      name: 'visit_fleaMarket',
+                      parameters: <String, Object>{
+                        'user_id': _userViewModel.user.user_id,
+                        'user_name': _userViewModel.user.display_name,},);
+                    break;
+                  case 2:
+                    FirebaseAnalytics.instance.logEvent(
+                      name: 'visit_rankingHome',
+                      parameters: <String, Object>{
+                        'user_id': _userViewModel.user.user_id,
+                        'user_name': _userViewModel.user.display_name,},);
+                    break;
+                  case 3:
+                    FirebaseAnalytics.instance.logEvent(
+                      name: 'visit_community',
+                      parameters: <String, Object>{
+                        'user_id': _userViewModel.user.user_id,
+                        'user_name': _userViewModel.user.display_name,},);
+                    break;
+                  case 4:
+                    FirebaseAnalytics.instance.logEvent(
+                      name: 'visit_moreTab',
+                      parameters: <String, Object>{
+                        'user_id': _userViewModel.user.user_id,
+                        'user_name': _userViewModel.user.display_name,},);
+                    break;
+                }
+              },
               items: [
                 BottomNavigationBarItem(
                   backgroundColor: Colors.transparent,

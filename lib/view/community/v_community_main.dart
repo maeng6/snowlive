@@ -1,4 +1,5 @@
 import 'package:com.snowlive/data/snowliveDesignStyle.dart';
+import 'package:com.snowlive/view/banner/v_banner_community.dart';
 import 'package:com.snowlive/view/community/free/v_community_Bulletin_Crew.dart';
 import 'package:com.snowlive/view/community/free/v_community_Event.dart';
 import 'package:com.snowlive/view/community/free/v_community_Bulletin_Free.dart';
@@ -79,12 +80,12 @@ class CommunityMainView extends StatelessWidget {
                                     _communityBulletinListViewModel.changeTap('게시판');
                                   },
                                   style: ElevatedButton.styleFrom(
-                                      padding: EdgeInsets.only(top: 0),
-                                      minimumSize: Size(40, 10),
-                                      backgroundColor: SDSColor.snowliveWhite,
-                                      shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(8)),
-                                      elevation: 0,
+                                    padding: EdgeInsets.only(top: 0),
+                                    minimumSize: Size(40, 10),
+                                    backgroundColor: SDSColor.snowliveWhite,
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(8)),
+                                    elevation: 0,
                                     shadowColor: Colors.transparent,
                                     overlayColor: Colors.transparent,
                                     surfaceTintColor: Colors.transparent,
@@ -124,13 +125,13 @@ class CommunityMainView extends StatelessWidget {
                                     _communityBulletinListViewModel.changeTap('행사·클리닉');
                                   },
                                   style: ElevatedButton.styleFrom(
-                                      splashFactory: NoSplash.splashFactory,
-                                      padding: EdgeInsets.only(top: 0),
-                                      minimumSize: Size(40, 10),
-                                      backgroundColor: SDSColor.snowliveWhite,
-                                      shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(8)),
-                                      elevation: 0,
+                                    splashFactory: NoSplash.splashFactory,
+                                    padding: EdgeInsets.only(top: 0),
+                                    minimumSize: Size(40, 10),
+                                    backgroundColor: SDSColor.snowliveWhite,
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(8)),
+                                    elevation: 0,
                                     shadowColor: Colors.transparent,
                                     overlayColor: Colors.transparent,
                                     surfaceTintColor: Colors.transparent,
@@ -150,124 +151,125 @@ class CommunityMainView extends StatelessWidget {
                     ),
                   ),
                   if(_communityBulletinListViewModel.tapName=='게시판')
-                  Padding(
-                    padding: const EdgeInsets.only(top: 16, bottom: 16, left: 0),
-                    child: Container(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Expanded(
-                            child: SingleChildScrollView(
-                              scrollDirection: Axis.horizontal,
-                              child: Row(
-                                children: [
-                                  GestureDetector(
-                                    onTap: (){
-                                      HapticFeedback.lightImpact();
-                                      _communityBulletinListViewModel.changeChip(Community_Category_sub_bulletin.total.korean);
-                                    },
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(left: 16),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 16, bottom: 16, left: 0),
+                      child: Container(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Expanded(
+                              child: SingleChildScrollView(
+                                scrollDirection: Axis.horizontal,
+                                child: Row(
+                                  children: [
+                                    GestureDetector(
+                                      onTap: (){
+                                        HapticFeedback.lightImpact();
+                                        _communityBulletinListViewModel.changeChip(Community_Category_sub_bulletin.total.korean);
+                                      },
+                                      child: Padding(
+                                        padding: const EdgeInsets.only(left: 16),
+                                        child: Container(
+                                            decoration: BoxDecoration(
+                                              color: (_communityBulletinListViewModel.chipName==Community_Category_sub_bulletin.total.korean)
+                                                  ? SDSColor.gray900 : SDSColor.snowliveWhite,
+                                              borderRadius: BorderRadius.circular(30.0),
+                                              border: Border.all(
+                                                  color: (_communityBulletinListViewModel.chipName==Community_Category_sub_bulletin.total.korean)
+                                                      ? SDSColor.gray900 : SDSColor.gray100),
+                                            ),
+                                            padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                                            height: 36,
+                                            child: Text('${Community_Category_sub_bulletin.total.korean}',
+                                              style: SDSTextStyle.bold.copyWith(
+                                                  fontSize: 13,
+                                                  fontWeight: (_communityBulletinListViewModel.chipName==Community_Category_sub_bulletin.total.korean) ? FontWeight.bold : FontWeight.w300,
+                                                  color: (_communityBulletinListViewModel.chipName==Community_Category_sub_bulletin.total.korean) ? SDSColor.snowliveWhite : SDSColor.snowliveBlack
+                                              ),)
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(width: 6),
+                                    GestureDetector(
+                                      onTap: (){
+                                        HapticFeedback.lightImpact();
+                                        _communityBulletinListViewModel.changeChip(Community_Category_sub_bulletin.free.korean);
+                                      },
                                       child: Container(
                                           decoration: BoxDecoration(
-                                            color: (_communityBulletinListViewModel.chipName==Community_Category_sub_bulletin.total.korean)
-                                                ? SDSColor.gray900 : SDSColor.snowliveWhite,
+                                            color: (_communityBulletinListViewModel.chipName==Community_Category_sub_bulletin.free.korean) ? SDSColor.gray900 : SDSColor.snowliveWhite,
                                             borderRadius: BorderRadius.circular(30.0),
                                             border: Border.all(
-                                                color: (_communityBulletinListViewModel.chipName==Community_Category_sub_bulletin.total.korean)
-                                                    ? SDSColor.gray900 : SDSColor.gray100),
+                                                color: (_communityBulletinListViewModel.chipName==Community_Category_sub_bulletin.free.korean) ? SDSColor.gray900 : SDSColor.gray100),
                                           ),
                                           padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                                           height: 36,
-                                          child: Text('${Community_Category_sub_bulletin.total.korean}',
+                                          child: Text('${Community_Category_sub_bulletin.free.korean}',
                                             style: SDSTextStyle.bold.copyWith(
                                                 fontSize: 13,
-                                                fontWeight: (_communityBulletinListViewModel.chipName==Community_Category_sub_bulletin.total.korean) ? FontWeight.bold : FontWeight.w300,
-                                                color: (_communityBulletinListViewModel.chipName==Community_Category_sub_bulletin.total.korean) ? SDSColor.snowliveWhite : SDSColor.snowliveBlack
+                                                fontWeight: (_communityBulletinListViewModel.chipName==Community_Category_sub_bulletin.free.korean) ? FontWeight.bold : FontWeight.w300,
+                                                color: (_communityBulletinListViewModel.chipName==Community_Category_sub_bulletin.free.korean) ? SDSColor.snowliveWhite : SDSColor.snowliveBlack
                                             ),)
                                       ),
                                     ),
-                                  ),
-                                  SizedBox(width: 6),
-                                  GestureDetector(
-                                    onTap: (){
-                                      HapticFeedback.lightImpact();
-                                      _communityBulletinListViewModel.changeChip(Community_Category_sub_bulletin.free.korean);
-                                    },
-                                    child: Container(
-                                        decoration: BoxDecoration(
-                                          color: (_communityBulletinListViewModel.chipName==Community_Category_sub_bulletin.free.korean) ? SDSColor.gray900 : SDSColor.snowliveWhite,
-                                          borderRadius: BorderRadius.circular(30.0),
-                                          border: Border.all(
-                                              color: (_communityBulletinListViewModel.chipName==Community_Category_sub_bulletin.free.korean) ? SDSColor.gray900 : SDSColor.gray100),
-                                        ),
-                                        padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                                        height: 36,
-                                        child: Text('${Community_Category_sub_bulletin.free.korean}',
-                                          style: SDSTextStyle.bold.copyWith(
-                                              fontSize: 13,
-                                              fontWeight: (_communityBulletinListViewModel.chipName==Community_Category_sub_bulletin.free.korean) ? FontWeight.bold : FontWeight.w300,
-                                              color: (_communityBulletinListViewModel.chipName==Community_Category_sub_bulletin.free.korean) ? SDSColor.snowliveWhite : SDSColor.snowliveBlack
-                                          ),)
+                                    SizedBox(width: 6),
+                                    GestureDetector(
+                                      onTap: (){
+                                        HapticFeedback.lightImpact();
+                                        _communityBulletinListViewModel.changeChip(Community_Category_sub_bulletin.room.korean);
+                                      },
+                                      child: Container(
+                                          decoration: BoxDecoration(
+                                            color: (_communityBulletinListViewModel.chipName==Community_Category_sub_bulletin.room.korean) ? SDSColor.gray900 : SDSColor.snowliveWhite,
+                                            borderRadius: BorderRadius.circular(30.0),
+                                            border: Border.all(
+                                                color: (_communityBulletinListViewModel.chipName==Community_Category_sub_bulletin.room.korean) ? SDSColor.gray900 : SDSColor.gray100),
+                                          ),
+                                          padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                                          height: 36,
+                                          child: Text('${Community_Category_sub_bulletin.room.korean}',
+                                            style: SDSTextStyle.bold.copyWith(
+                                                fontSize: 13,
+                                                fontWeight: (_communityBulletinListViewModel.chipName==Community_Category_sub_bulletin.room.korean) ? FontWeight.bold : FontWeight.w300,
+                                                color: (_communityBulletinListViewModel.chipName==Community_Category_sub_bulletin.room.korean) ? SDSColor.snowliveWhite : SDSColor.snowliveBlack
+                                            ),)
+                                      ),
                                     ),
-                                  ),
-                                  SizedBox(width: 6),
-                                  GestureDetector(
-                                    onTap: (){
-                                      HapticFeedback.lightImpact();
-                                      _communityBulletinListViewModel.changeChip(Community_Category_sub_bulletin.room.korean);
-                                    },
-                                    child: Container(
-                                        decoration: BoxDecoration(
-                                          color: (_communityBulletinListViewModel.chipName==Community_Category_sub_bulletin.room.korean) ? SDSColor.gray900 : SDSColor.snowliveWhite,
-                                          borderRadius: BorderRadius.circular(30.0),
-                                          border: Border.all(
-                                              color: (_communityBulletinListViewModel.chipName==Community_Category_sub_bulletin.room.korean) ? SDSColor.gray900 : SDSColor.gray100),
-                                        ),
-                                        padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                                        height: 36,
-                                        child: Text('${Community_Category_sub_bulletin.room.korean}',
-                                          style: SDSTextStyle.bold.copyWith(
-                                              fontSize: 13,
-                                              fontWeight: (_communityBulletinListViewModel.chipName==Community_Category_sub_bulletin.room.korean) ? FontWeight.bold : FontWeight.w300,
-                                              color: (_communityBulletinListViewModel.chipName==Community_Category_sub_bulletin.room.korean) ? SDSColor.snowliveWhite : SDSColor.snowliveBlack
-                                          ),)
+                                    SizedBox(width: 6),
+                                    GestureDetector(
+                                      onTap: (){
+                                        HapticFeedback.lightImpact();
+                                        _communityBulletinListViewModel.changeChip(Community_Category_sub_bulletin.crew.korean);
+                                      },
+                                      child: Container(
+                                          decoration: BoxDecoration(
+                                            color: (_communityBulletinListViewModel.chipName==Community_Category_sub_bulletin.crew.korean) ? SDSColor.gray900 : SDSColor.snowliveWhite,
+                                            borderRadius: BorderRadius.circular(30.0),
+                                            border: Border.all(
+                                                color: (_communityBulletinListViewModel.chipName==Community_Category_sub_bulletin.crew.korean) ? SDSColor.gray900 : SDSColor.gray100),
+                                          ),
+                                          padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                                          height: 36,
+                                          child: Text('${Community_Category_sub_bulletin.crew.korean}',
+                                            style: SDSTextStyle.bold.copyWith(
+                                                fontSize: 13,
+                                                fontWeight: (_communityBulletinListViewModel.chipName==Community_Category_sub_bulletin.crew.korean) ? FontWeight.bold : FontWeight.w300,
+                                                color: (_communityBulletinListViewModel.chipName==Community_Category_sub_bulletin.crew.korean) ? SDSColor.snowliveWhite : SDSColor.snowliveBlack
+                                            ),)
+                                      ),
                                     ),
-                                  ),
-                                  SizedBox(width: 6),
-                                  GestureDetector(
-                                    onTap: (){
-                                      HapticFeedback.lightImpact();
-                                      _communityBulletinListViewModel.changeChip(Community_Category_sub_bulletin.crew.korean);
-                                    },
-                                    child: Container(
-                                        decoration: BoxDecoration(
-                                          color: (_communityBulletinListViewModel.chipName==Community_Category_sub_bulletin.crew.korean) ? SDSColor.gray900 : SDSColor.snowliveWhite,
-                                          borderRadius: BorderRadius.circular(30.0),
-                                          border: Border.all(
-                                              color: (_communityBulletinListViewModel.chipName==Community_Category_sub_bulletin.crew.korean) ? SDSColor.gray900 : SDSColor.gray100),
-                                        ),
-                                        padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                                        height: 36,
-                                        child: Text('${Community_Category_sub_bulletin.crew.korean}',
-                                          style: SDSTextStyle.bold.copyWith(
-                                              fontSize: 13,
-                                              fontWeight: (_communityBulletinListViewModel.chipName==Community_Category_sub_bulletin.crew.korean) ? FontWeight.bold : FontWeight.w300,
-                                              color: (_communityBulletinListViewModel.chipName==Community_Category_sub_bulletin.crew.korean) ? SDSColor.snowliveWhite : SDSColor.snowliveBlack
-                                          ),)
-                                    ),
-                                  ),
-                                  SizedBox(width: 6),
-                                ],
+                                    SizedBox(width: 6),
+                                  ],
+                                ),
                               ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
-                  ),
+                  Banner_community(),
                   if(_communityBulletinListViewModel.tapName=='게시판'
-                  && _communityBulletinListViewModel.chipName == Community_Category_sub_bulletin.total.korean)
+                      && _communityBulletinListViewModel.chipName == Community_Category_sub_bulletin.total.korean)
                     Expanded(child: CommunityBulletinTotalListView()),
                   if(_communityBulletinListViewModel.tapName=='게시판'
                       && _communityBulletinListViewModel.chipName == Community_Category_sub_bulletin.free.korean)
