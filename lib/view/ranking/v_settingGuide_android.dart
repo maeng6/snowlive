@@ -14,6 +14,7 @@ class AndroidSettingGuideView extends StatelessWidget {
   Widget build(BuildContext context) {
     Size _size = MediaQuery.of(context).size;
     return Scaffold(
+      backgroundColor: Color(0xFF222222),
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(44),
         child: AppBar(
@@ -23,6 +24,7 @@ class AndroidSettingGuideView extends StatelessWidget {
               scale: 4,
               width: 26,
               height: 26,
+              color: SDSColor.snowliveWhite,
             ),
             onTap: () {
               Get.back();
@@ -35,7 +37,7 @@ class AndroidSettingGuideView extends StatelessWidget {
                 Text(
                   '설정 가이드',
                   style: SDSTextStyle.extraBold.copyWith(
-                      color: SDSColor.gray900,
+                      color: SDSColor.snowliveWhite,
                       fontSize: 18),
                 ),
               ],
@@ -43,7 +45,7 @@ class AndroidSettingGuideView extends StatelessWidget {
           ),
           centerTitle: true,
           titleSpacing: 0,
-          backgroundColor: SDSColor.snowliveWhite,
+          backgroundColor: Color(0xFF222222),
           foregroundColor: Colors.transparent,
           surfaceTintColor: Colors.transparent,
           elevation: 0.0,

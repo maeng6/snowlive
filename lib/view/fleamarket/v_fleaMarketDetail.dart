@@ -37,7 +37,7 @@ class _FleaMarketDetailViewState extends State<FleaMarketDetailView> {
   final AlarmCenterViewModel _alarmCenterViewModel = Get.find<AlarmCenterViewModel>();
 
   final ScrollController _scrollController = ScrollController();
-  bool isAppBarCollapsed = false;
+  bool _isAppBarCollapsed = false;
   FocusNode textFocus = FocusNode();
 
 
@@ -46,13 +46,13 @@ class _FleaMarketDetailViewState extends State<FleaMarketDetailView> {
   void initState() {
     super.initState();
     _scrollController.addListener(() {
-      if (_scrollController.offset > 300 && !isAppBarCollapsed) {
+      if (_scrollController.offset > 300 && !_isAppBarCollapsed) {
         setState(() {
-          isAppBarCollapsed = true;
+          _isAppBarCollapsed = true;
         });
-      } else if (_scrollController.offset <= 300 && isAppBarCollapsed) {
+      } else if (_scrollController.offset <= 300 && _isAppBarCollapsed) {
         setState(() {
-          isAppBarCollapsed = false;
+          _isAppBarCollapsed = false;
         });
       }
     });
@@ -87,7 +87,7 @@ class _FleaMarketDetailViewState extends State<FleaMarketDetailView> {
                 AppBar(
                   backgroundColor:
                   (_fleamarketDetailViewModel.fleamarketDetail.photos!.isNotEmpty)
-                      ? isAppBarCollapsed ? SDSColor.snowliveWhite : Colors.transparent
+                      ? _isAppBarCollapsed ? SDSColor.snowliveWhite : Colors.transparent
                       : SDSColor.snowliveWhite,
                   foregroundColor: Colors.transparent,
                   surfaceTintColor: Colors.transparent,
@@ -98,7 +98,7 @@ class _FleaMarketDetailViewState extends State<FleaMarketDetailView> {
                         end: Alignment.bottomCenter,
                         colors:
                         (_fleamarketDetailViewModel.fleamarketDetail.photos!.isNotEmpty)
-                            ? isAppBarCollapsed ? [Colors.transparent, Colors.transparent,] : [Colors.black.withOpacity(0.4), Colors.transparent,]
+                            ? _isAppBarCollapsed ? [Colors.transparent, Colors.transparent,] : [Colors.black.withOpacity(0.4), Colors.transparent,]
                             : [Colors.transparent, Colors.transparent,],
                       ),
                     ),
@@ -112,7 +112,7 @@ class _FleaMarketDetailViewState extends State<FleaMarketDetailView> {
                       height: 26,
                       color:
                       (_fleamarketDetailViewModel.fleamarketDetail.photos!.isNotEmpty)
-                          ? isAppBarCollapsed ? SDSColor.gray900 : SDSColor.snowliveWhite
+                          ? _isAppBarCollapsed ? SDSColor.gray900 : SDSColor.snowliveWhite
                           : SDSColor.gray900,
                     ),
                     onTap: () async{
@@ -142,7 +142,7 @@ class _FleaMarketDetailViewState extends State<FleaMarketDetailView> {
                             width: 26,
                             height: 26,
                             color: (_fleamarketDetailViewModel.fleamarketDetail.photos!.isNotEmpty)
-                                ? isAppBarCollapsed ? SDSColor.gray900 : SDSColor.snowliveWhite
+                                ? _isAppBarCollapsed ? SDSColor.gray900 : SDSColor.snowliveWhite
                                 : SDSColor.gray900,
                           ),
                         ),
@@ -169,7 +169,7 @@ class _FleaMarketDetailViewState extends State<FleaMarketDetailView> {
                             width: 26,
                             height: 26,
                             color: (_fleamarketDetailViewModel.fleamarketDetail.photos!.isNotEmpty)
-                                ? isAppBarCollapsed ? SDSColor.gray900 : SDSColor.snowliveWhite
+                                ? _isAppBarCollapsed ? SDSColor.gray900 : SDSColor.snowliveWhite
                                 : SDSColor.gray900,
                           ),
                         ),
@@ -461,7 +461,7 @@ class _FleaMarketDetailViewState extends State<FleaMarketDetailView> {
                           width: 26,
                           height: 26,
                           color: (_fleamarketDetailViewModel.fleamarketDetail.photos!.isNotEmpty)
-                              ? isAppBarCollapsed ? SDSColor.gray900 : SDSColor.snowliveWhite
+                              ? _isAppBarCollapsed ? SDSColor.gray900 : SDSColor.snowliveWhite
                               : SDSColor.gray900,
                         ),
                       ),
@@ -652,7 +652,7 @@ class _FleaMarketDetailViewState extends State<FleaMarketDetailView> {
                           width: 26,
                           height: 26,
                           color: (_fleamarketDetailViewModel.fleamarketDetail.photos!.isNotEmpty)
-                              ? isAppBarCollapsed ? SDSColor.gray900 : SDSColor.snowliveWhite
+                              ? _isAppBarCollapsed ? SDSColor.gray900 : SDSColor.snowliveWhite
                               : SDSColor.gray900,
                         ),
                       ),

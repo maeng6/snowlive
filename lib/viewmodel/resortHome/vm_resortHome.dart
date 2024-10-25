@@ -1,4 +1,3 @@
-
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:com.snowlive/api/ApiResponse.dart';
@@ -59,7 +58,8 @@ class ResortHomeViewModel extends GetxController {
   dynamic weatherIcons;
 
   Rxn<Stream<DocumentSnapshot<Map<String, dynamic>>>> bannerStream = Rxn<Stream<DocumentSnapshot<Map<String, dynamic>>>>();
-
+  Rxn<Stream<DocumentSnapshot<Map<String, dynamic>>>> infoStream_treasureHunt = Rxn<Stream<DocumentSnapshot<Map<String, dynamic>>>>();
+  Rxn<Stream<QuerySnapshot<Map<String, dynamic>>>> infoStream_treasureHunt_findList = Rxn<Stream<QuerySnapshot<Map<String, dynamic>>>>();
 
   StreamSubscription<Position>? _positionStreamSubscription;
   DateTime? _lastCountMethodCall;
@@ -98,6 +98,8 @@ class ResortHomeViewModel extends GetxController {
     await fetchResortHome(_userViewModel.user.user_id!);
     await fetchWeatherModel();
     await checkForUpdate();
+    await getInfo_treasureHunt();
+    await getInfo_treasureHunt_findList();
   }
 
   //TODO: 라이브온 관련 메소드****************************************************
@@ -509,7 +511,6 @@ class ResortHomeViewModel extends GetxController {
     }
   }
 
-
   Future<ApiResponse> participate(Map<String, dynamic> body) async {
     try {
       isLoading(true);
@@ -530,6 +531,23 @@ class ResortHomeViewModel extends GetxController {
     } finally {
       isLoading(false);
     }
+  }
+
+  Future<void> getInfo_treasureHunt() async {
+
+    infoStream_treasureHunt.value = FirebaseFirestore.instance
+        .collection('treasure_hunt')
+        .doc('treasure_hunt')
+        .snapshots();
+  }
+
+  Future<void> getInfo_treasureHunt_findList() async {
+
+    infoStream_treasureHunt_findList.value = FirebaseFirestore.instance
+        .collection('treasure_hunt')
+        .doc('treasure_hunt')
+        .collection('find_list')
+        .snapshots();
   }
 
   //TODO: 보물찾기 관련 메소드****************************************************
