@@ -25,6 +25,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
 import 'package:shimmer/shimmer.dart';
 
+import '../banner/v_banner_treasureHunt.dart';
+
 class ResortHomeView extends StatefulWidget {
   @override
   State<ResortHomeView> createState() => _ResortHomeViewState();
@@ -1425,16 +1427,25 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                                 ),
                               ),
                             ),
-                            SizedBox(height: 30,),
                             //TODO: 배너
                             Padding(
-                              padding: EdgeInsets.only(left: 16, right: 16),
+                              padding: EdgeInsets.only(left: 16, right: 16, top: 30),
                               child: Banner_resortHome(),
+                            ),
+                            //TODO: 보물찾기 진입 배너
+                            GestureDetector(
+                              onTap: (){
+                                Get.toNamed(AppRoutes.treasureHunt);
+                              },
+                              child: Padding(
+                                padding: EdgeInsets.only(left: 16, right: 16, top: 8),
+                                child: Banner_treasureHunt(),
+                              ),
                             ),
                             //TODO: 구분선
                             if((_resortHomeViewModel.resortHomeModel.dailyTotalCount != 0 || _userViewModel.user.within_boundary == true))
                               Padding(
-                                padding: const EdgeInsets.only(bottom: 30),
+                                padding: const EdgeInsets.only(top: 30, bottom: 30),
                                 child: Container(
                                   width: _size.width,
                                   height: 10,
@@ -1766,103 +1777,106 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                                         ],
                                       ),
                                     if(_resortHomeViewModel.resortHomeModel.dailyTotalCount == 0 && _userViewModel.user.within_boundary == false)
-                                      Container(
-                                        height: _size.width,
-                                        decoration: BoxDecoration(
-                                          color: Color(0xFFF5F2F7),
-                                          borderRadius: BorderRadius.circular(10),
-                                        ),
-                                        child: Stack (
-                                          children: [
-                                            Positioned(
-                                              bottom: 0,
-                                              right: 0,
-                                              child: Padding(
-                                                padding: EdgeInsets.only(bottom: 12),
-                                                child: Image.asset(
-                                                  'assets/imgs/imgs/img_resortHome_ranking_1.png',
-                                                  fit: BoxFit.cover,
-                                                  width: _size.width - 60,
-                                                ),
-                                              ),
-                                            ),
-                                            Row(
-                                              children: [
-                                                Padding(
-                                                  padding: const EdgeInsets.only(left: 24, top: 30, right: 24),
-                                                  child: Column(
-                                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                                    mainAxisAlignment: MainAxisAlignment.start,
-                                                    children: [
-                                                      Text(
-                                                        '지금 바로 랭킹에 참여해보세요!',
-                                                        style: SDSTextStyle.bold.copyWith(
-                                                          fontSize: 18,
-                                                          color: SDSColor.gray900,
-                                                        ),
-                                                      ),
-                                                      Padding(
-                                                        padding: const EdgeInsets.only(top: 4),
-                                                        child: Text(
-                                                          '친구들의 라이브 상태도 확인하고',
-                                                          style: SDSTextStyle.regular.copyWith(
-                                                            fontSize: 14,
-                                                            color: SDSColor.gray600,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                      Padding(
-                                                        padding: const EdgeInsets.only(top: 2),
-                                                        child: Text(
-                                                          '다른 유저들과 경쟁해보세요!',
-                                                          style: SDSTextStyle.regular.copyWith(
-                                                            fontSize: 14,
-                                                            color: SDSColor.gray600,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                      Padding(
-                                                        padding: const EdgeInsets.only(top: 20),
-                                                        child: GestureDetector(
-                                                          onTap: () {
-                                                            Get.toNamed(AppRoutes.rankingGuideMain);
-                                                          },
-                                                          child: Container(
-                                                            padding: EdgeInsets.symmetric(horizontal: 12, vertical: 9),
-                                                            decoration: BoxDecoration(
-                                                              color: SDSColor.snowliveWhite,
-                                                              borderRadius: BorderRadius.circular(20),
-                                                            ),
-                                                            child: Row(
-                                                              children: [
-                                                                Padding(
-                                                                  padding: const EdgeInsets.only(right: 6),
-                                                                  child: Text(
-                                                                    '더 알아보기',
-                                                                    style: SDSTextStyle.extraBold.copyWith
-                                                                      (
-                                                                        color: Colors.black,
-                                                                        fontSize: 13
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                                Image.asset(
-                                                                  'assets/imgs/icons/icon_arrow_round_black.png',
-                                                                  fit: BoxFit.cover,
-                                                                  width: 18,
-                                                                  height: 18,
-                                                                ),
-                                                              ],
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ],
+                                      Padding(
+                                        padding: EdgeInsets.only(top: 20),
+                                        child: Container(
+                                          height: _size.width,
+                                          decoration: BoxDecoration(
+                                            color: Color(0xFFF5F2F7),
+                                            borderRadius: BorderRadius.circular(10),
+                                          ),
+                                          child: Stack (
+                                            children: [
+                                              Positioned(
+                                                bottom: 0,
+                                                right: 0,
+                                                child: Padding(
+                                                  padding: EdgeInsets.only(bottom: 12),
+                                                  child: Image.asset(
+                                                    'assets/imgs/imgs/img_resortHome_ranking_1.png',
+                                                    fit: BoxFit.cover,
+                                                    width: _size.width - 60,
                                                   ),
                                                 ),
-                                              ],
-                                            ),
-                                          ],
+                                              ),
+                                              Row(
+                                                children: [
+                                                  Padding(
+                                                    padding: const EdgeInsets.only(left: 24, top: 30, right: 24),
+                                                    child: Column(
+                                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                                      mainAxisAlignment: MainAxisAlignment.start,
+                                                      children: [
+                                                        Text(
+                                                          '지금 바로 랭킹에 참여해보세요!',
+                                                          style: SDSTextStyle.bold.copyWith(
+                                                            fontSize: 18,
+                                                            color: SDSColor.gray900,
+                                                          ),
+                                                        ),
+                                                        Padding(
+                                                          padding: const EdgeInsets.only(top: 4),
+                                                          child: Text(
+                                                            '친구들의 라이브 상태도 확인하고',
+                                                            style: SDSTextStyle.regular.copyWith(
+                                                              fontSize: 14,
+                                                              color: SDSColor.gray600,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        Padding(
+                                                          padding: const EdgeInsets.only(top: 2),
+                                                          child: Text(
+                                                            '다른 유저들과 경쟁해보세요!',
+                                                            style: SDSTextStyle.regular.copyWith(
+                                                              fontSize: 14,
+                                                              color: SDSColor.gray600,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        Padding(
+                                                          padding: EdgeInsets.only(top: 12),
+                                                          child: GestureDetector(
+                                                            onTap: () {
+                                                              Get.toNamed(AppRoutes.rankingGuideMain);
+                                                            },
+                                                            child: Container(
+                                                              padding: EdgeInsets.symmetric(horizontal: 12, vertical: 9),
+                                                              decoration: BoxDecoration(
+                                                                color: SDSColor.snowliveWhite,
+                                                                borderRadius: BorderRadius.circular(20),
+                                                              ),
+                                                              child: Row(
+                                                                children: [
+                                                                  Padding(
+                                                                    padding: const EdgeInsets.only(right: 6),
+                                                                    child: Text(
+                                                                      '더 알아보기',
+                                                                      style: SDSTextStyle.extraBold.copyWith
+                                                                        (
+                                                                          color: Colors.black,
+                                                                          fontSize: 13
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                  Image.asset(
+                                                                    'assets/imgs/icons/icon_arrow_round_black.png',
+                                                                    fit: BoxFit.cover,
+                                                                    width: 18,
+                                                                    height: 18,
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ],
+                                          ),
                                         ),
                                       )
                                   ],

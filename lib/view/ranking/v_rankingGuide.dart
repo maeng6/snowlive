@@ -5,7 +5,6 @@ import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shimmer/shimmer.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class RankingGuideMainView extends StatelessWidget {
 
@@ -15,6 +14,7 @@ class RankingGuideMainView extends StatelessWidget {
   Widget build(BuildContext context) {
     Size _size = MediaQuery.of(context).size;
     return Scaffold(
+      backgroundColor: SDSColor.snowliveWhite,
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(44),
         child: AppBar(
@@ -50,89 +50,105 @@ class RankingGuideMainView extends StatelessWidget {
           elevation: 0.0,
         ),
       ),
-      body: SingleChildScrollView(
-        child: Column(
+      body: SafeArea(
+        child: Stack(
           children: [
-            Container(
-              child: ExtendedImage.network(
-                _resortHomeViewModel.rankingGuideUrl_main,
-                cache: true,
-                scale: 1,
-                width: _size.width, // 화면의 가로 전체를 차지하게 설정
-                loadStateChanged: (ExtendedImageState state) {
-                  switch (state.extendedImageLoadState) {
-                    case LoadState.loading:
-                      return Shimmer.fromColors(
-                        baseColor: SDSColor.gray200,
-                        highlightColor: SDSColor.gray50,
-                        child: Container(
-                          width: double.infinity,
-                          height: double.infinity,
-                          color: Colors.white,
+            SingleChildScrollView(
+              child: Column(
+                children: [
+                  Container(
+                    color: SDSColor.snowliveWhite,
+                    child: ExtendedImage.network(
+                      _resortHomeViewModel.rankingGuideUrl_main,
+                      cache: true,
+                      scale: 4,
+                      width: _size.width,
+                      fit: BoxFit.cover,
+                      loadStateChanged: (ExtendedImageState state) {
+                        switch (state.extendedImageLoadState) {
+                          case LoadState.loading:
+                            return Shimmer.fromColors(
+                              baseColor: SDSColor.gray200,
+                              highlightColor: SDSColor.gray50,
+                              child: Container(
+                                width: double.infinity,
+                                height: double.infinity,
+                                color: Colors.white,
+                              ),
+                            );
+                          case LoadState.completed:
+                            return state.completedWidget;
+                          case LoadState.failed:
+                            return Center(child: Text('Failed to load image'));
+                        }
+                      },
+                    ),
+                  ),
+                  SizedBox(height: 80),
+                ],
+              ),
+            ),
+            Positioned(
+              bottom: 0,
+              left: 0,
+              right: 0,
+              child: Container(
+                width: _size.width,
+                color: Colors.white,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(
+                        child: GestureDetector(
+                          onTap: () {
+                            Get.toNamed(AppRoutes.iosSettingGuide);
+                          },
+                          child: Container(
+                            padding: EdgeInsets.symmetric(vertical: 16),
+                            decoration: BoxDecoration(
+                              color: SDSColor.gray50,
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  'iOS 설정방법',
+                                  style: SDSTextStyle.bold.copyWith(
+                                      color: SDSColor.gray700,
+                                      fontSize: 16),
+                                ),
+                              ],
+                            ),
+                          ),
                         ),
-                      );
-                    case LoadState.completed:
-                      return state.completedWidget;
-                    case LoadState.failed:
-                      return Center(child: Text('Failed to load image'));
-                  }
-                },
-              ),
-            ),
-            SizedBox(height: 100,),
-          ],
-        ),
-      ),
-      floatingActionButton: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Expanded(
-              child: GestureDetector(
-                onTap: () {
-                  Get.toNamed(AppRoutes.androidSettingGuide);
-                },
-                child: Container(
-                  padding: EdgeInsets.symmetric(vertical: 16),
-                  decoration: BoxDecoration(
-                    color: SDSColor.snowliveBlue,
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(Icons.android, color: Colors.white),
-                      SizedBox(width: 8),
-                      Text(
-                        'Android 가이드',
-                        style: SDSTextStyle.bold.copyWith(color: Colors.white),
                       ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-            SizedBox(width: 16),
-            Expanded(
-              child: GestureDetector(
-                onTap: () {
-                  Get.toNamed(AppRoutes.iosSettingGuide);
-                },
-                child: Container(
-                  padding: EdgeInsets.symmetric(vertical: 16),
-                  decoration: BoxDecoration(
-                    color: SDSColor.snowliveBlue,
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(Icons.apple, color: Colors.white),
                       SizedBox(width: 8),
-                      Text(
-                        'iOS 가이드',
-                        style: SDSTextStyle.bold.copyWith(color: Colors.white),
+                      Expanded(
+                        child: GestureDetector(
+                          onTap: () {
+                            Get.toNamed(AppRoutes.androidSettingGuide);
+                          },
+                          child: Container(
+                            padding: EdgeInsets.symmetric(vertical: 16),
+                            decoration: BoxDecoration(
+                              color: SDSColor.gray50,
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text('Android 설정방법',
+                                  style: SDSTextStyle.bold.copyWith(
+                                      color: SDSColor.gray700,
+                                      fontSize: 16),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
                       ),
                     ],
                   ),
@@ -142,7 +158,6 @@ class RankingGuideMainView extends StatelessWidget {
           ],
         ),
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
 }
