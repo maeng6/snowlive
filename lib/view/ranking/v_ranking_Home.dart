@@ -144,7 +144,10 @@ class RankingHomeView extends StatelessWidget {
                   ],
                 ),
               ),
-              Banner_ranking(),
+              Padding(
+                padding: EdgeInsets.only(top: 6),
+                child: Banner_ranking(),
+              ),
               if (_rankingListViewModel.tapName=='개인랭킹')
                 Expanded(
                     child: RankingIndiView()),

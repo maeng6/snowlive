@@ -94,7 +94,7 @@ class _Banner_moreTabState extends State<Banner_moreTab> {
 
             return Padding(
               padding: bannerWidgets.length > 0
-                  ? EdgeInsets.only(top: 15.0)
+                  ? EdgeInsets.only(top: 0)
                   : EdgeInsets.only(top: 0),
               child: Container(
                 width: _size.width,
@@ -105,7 +105,7 @@ class _Banner_moreTabState extends State<Banner_moreTab> {
                     autoPlay: autoPlay, // 배너가 1개일 때 롤링 비활성화
                     autoPlayInterval: Duration(seconds: 5),
                     viewportFraction: 1.0,
-                    aspectRatio: 16 / 4,
+                    aspectRatio: 390 / 72,
                     enableInfiniteScroll: autoPlay, // 배너가 1개일 때 롤링 비활성화
                     scrollPhysics: NeverScrollableScrollPhysics(), // 스크롤 비활성화
                     enlargeCenterPage: false, // 중앙 배너 강조 해제

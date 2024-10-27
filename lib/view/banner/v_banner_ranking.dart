@@ -77,11 +77,14 @@ class _Banner_rankingState extends State<Banner_ranking> {
                       print('Stack trace: $stackTrace');
                     }
                   },
-                  child: Container(
-                    width: _size.width,
-                    child: ExtendedImage.network(
-                      imageUrls[i],
-                      cache: true,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(12),
+                    child: Container(
+                      width: _size.width,
+                      child: ExtendedImage.network(
+                        imageUrls[i],
+                        cache: true,
+                      ),
                     ),
                   ),
                 ),
@@ -94,8 +97,8 @@ class _Banner_rankingState extends State<Banner_ranking> {
 
             return Padding(
               padding: bannerWidgets.length > 0
-                  ? EdgeInsets.only(left: 16, right: 16, bottom: 15.0)
-                  : EdgeInsets.only(left: 16, right: 16, bottom: 0),
+                  ? EdgeInsets.only(left: 12, right: 12, bottom: 15.0)
+                  : EdgeInsets.only(left: 12, right: 12, bottom: 0),
               child: Container(
                 width: _size.width,
                 child: CarouselSlider(
@@ -105,7 +108,7 @@ class _Banner_rankingState extends State<Banner_ranking> {
                     autoPlay: autoPlay, // 배너가 1개일 때 롤링 비활성화
                     autoPlayInterval: Duration(seconds: 5),
                     viewportFraction: 1.0,
-                    aspectRatio: 16 / 4,
+                    aspectRatio: 390 / 72,
                     enableInfiniteScroll: autoPlay, // 배너가 1개일 때 롤링 비활성화
                     scrollPhysics: NeverScrollableScrollPhysics(), // 스크롤 비활성화
                     enlargeCenterPage: false, // 중앙 배너 강조 해제

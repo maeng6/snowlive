@@ -267,16 +267,27 @@ class CommunityMainView extends StatelessWidget {
                         ),
                       ),
                     ),
-                  Banner_community(),
+                  if(_communityBulletinListViewModel.tapName=='게시판'
+                      && _communityBulletinListViewModel.chipName == Community_Category_sub_bulletin.total.korean)
+                    Banner_community(),
                   if(_communityBulletinListViewModel.tapName=='게시판'
                       && _communityBulletinListViewModel.chipName == Community_Category_sub_bulletin.total.korean)
                     Expanded(child: CommunityBulletinTotalListView()),
                   if(_communityBulletinListViewModel.tapName=='게시판'
                       && _communityBulletinListViewModel.chipName == Community_Category_sub_bulletin.free.korean)
+                    Banner_community(),
+                  if(_communityBulletinListViewModel.tapName=='게시판'
+                      && _communityBulletinListViewModel.chipName == Community_Category_sub_bulletin.free.korean)
                     Expanded(child: CommunityBulletinFreeListView()),
                   if(_communityBulletinListViewModel.tapName=='게시판'
                       && _communityBulletinListViewModel.chipName == Community_Category_sub_bulletin.room.korean)
+                    Banner_community(),
+                  if(_communityBulletinListViewModel.tapName=='게시판'
+                      && _communityBulletinListViewModel.chipName == Community_Category_sub_bulletin.room.korean)
                     Expanded(child: CommunityBulletinRoomListView()),
+                  if(_communityBulletinListViewModel.tapName=='게시판'
+                      && _communityBulletinListViewModel.chipName == Community_Category_sub_bulletin.crew.korean)
+                  Banner_community(),
                   if(_communityBulletinListViewModel.tapName=='게시판'
                       && _communityBulletinListViewModel.chipName == Community_Category_sub_bulletin.crew.korean)
                     Expanded(child: CommunityBulletinCrewListView()),
