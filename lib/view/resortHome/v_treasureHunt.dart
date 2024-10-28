@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:com.snowlive/data/imgaUrls/Data_url_image.dart';
 import 'package:com.snowlive/data/snowliveDesignStyle.dart';
+import 'package:com.snowlive/routes/routes.dart';
 import 'package:com.snowlive/viewmodel/resortHome/vm_resortHome.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
@@ -21,15 +22,31 @@ class _TreasureHuntViewState extends State<TreasureHuntView> {
   String _seconds = '00';
   DateTime? _currentEndTime;
 
+  final ScrollController _scrollController = ScrollController();
+  bool _isAppBarCollapsed = false;
+
   @override
   void initState() {
     super.initState();
     _resortHomeViewModel.getInfo_treasureHunt();
     _resortHomeViewModel.getInfo_treasureHunt_findList();
+
+    _scrollController.addListener(() {
+      if (_scrollController.offset > 300 && !_isAppBarCollapsed) {
+        setState(() {
+          _isAppBarCollapsed = true;
+        });
+      } else if (_scrollController.offset <= 300 && _isAppBarCollapsed) {
+        setState(() {
+          _isAppBarCollapsed = false;
+        });
+      }
+    });
   }
 
   @override
   void dispose() {
+    _scrollController.dispose();
     _timer?.cancel();
     super.dispose();
   }
@@ -98,23 +115,29 @@ class _TreasureHuntViewState extends State<TreasureHuntView> {
     Size _size = MediaQuery.of(context).size;
 
     return Scaffold(
-      appBar: AppBar(
-        leading: GestureDetector(
-          child: Image.asset(
-            'assets/imgs/icons/icon_snowLive_back.png',
-            scale: 4,
-            width: 26,
-            height: 26,
+      extendBodyBehindAppBar: true,
+      backgroundColor: Colors.white,
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(44),
+        child: AppBar(
+          leading: GestureDetector(
+            child: Image.asset(
+              'assets/imgs/icons/icon_snowLive_back.png',
+              scale: 4,
+              width: 26,
+              height: 26,
+              color: _isAppBarCollapsed ? SDSColor.gray900 : SDSColor.snowliveWhite,
+            ),
+            onTap: () {
+              Get.back();
+            },
           ),
-          onTap: () {
-            Get.back();
-          },
+          titleSpacing: 0,
+          backgroundColor: _isAppBarCollapsed ? SDSColor.snowliveWhite : Colors.transparent,
+          foregroundColor: Colors.transparent,
+          surfaceTintColor: Colors.transparent,
+          elevation: 0.0,
         ),
-        titleSpacing: 0,
-        backgroundColor: SDSColor.snowliveWhite,
-        foregroundColor: Colors.transparent,
-        surfaceTintColor: Colors.transparent,
-        elevation: 0.0,
       ),
       body: StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
         stream: _resortHomeViewModel.infoStream_treasureHunt.value,
@@ -158,7 +181,7 @@ class _TreasureHuntViewState extends State<TreasureHuntView> {
 
                       // 참가자 및 남은 보물 정보
                       Positioned(
-                        bottom: 30, // 하단에 배치
+                        bottom: 30,
                         left: 0,
                         right: 0,
                         child: Container(
@@ -301,7 +324,7 @@ class _TreasureHuntViewState extends State<TreasureHuntView> {
                   // 버튼
                   GestureDetector(
                     onTap: () {
-                      // Navigate to found treasures screen
+                      Get.toNamed(AppRoutes.treasureHuntList);
                     },
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16),

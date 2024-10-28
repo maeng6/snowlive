@@ -28,6 +28,7 @@ import 'package:com.snowlive/view/ranking/v_settingGuide_android.dart';
 import 'package:com.snowlive/view/ranking/v_settingGuide_ios.dart';
 import 'package:com.snowlive/view/resortHome/v_alarmCenter.dart';
 import 'package:com.snowlive/view/resortHome/v_treasureHunt.dart';
+import 'package:com.snowlive/view/resortHome/v_treasureHunt_list.dart';
 import 'package:com.snowlive/view/v_profileImageScreen.dart';
 import 'package:com.snowlive/view/crew/v_crewHome.dart';
 import 'package:com.snowlive/view/crew/v_crewMain.dart';
@@ -106,6 +107,7 @@ class AppRoutes {
   static const String androidSettingGuide = '/androidSettingGuide';
   static const String iosSettingGuide = '/iosSettingGuide';
   static const String treasureHunt = '/treasureHunt';
+  static const String treasureHuntList = '/treasureHuntList';
 
 
 
@@ -344,6 +346,10 @@ class AppRoutes {
     GetPage(
       name: treasureHunt,
       page: () => TreasureHuntView(),
+    ),
+    GetPage(
+      name: treasureHuntList,
+      page: () => TreasureHuntListView(),
     ),
   ];
 }
