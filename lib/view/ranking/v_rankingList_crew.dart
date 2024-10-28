@@ -2235,7 +2235,7 @@ class RankingCrewView extends StatelessWidget {
                   '${_resortHomeViewModel.rankingComingSoonUrl}',
                   cache: true,
                   enableMemoryCache: true,
-                  width: _size.width -40,
+                  width: _size.width,
                   fit: BoxFit.cover,
                 ),
               ],

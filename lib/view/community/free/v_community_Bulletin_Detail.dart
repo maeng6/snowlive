@@ -881,11 +881,17 @@ class CommunityBulletinDetailView extends StatelessWidget {
                                             ),
                                           ),
                                         ),
+                                      SizedBox(
+                                        height: 20,
+                                      ),
                                       Banner_community_detail(),
-                                      Divider(
+                                      Container(
+                                        width: _size.width,
+                                        height: 8,
                                         color: SDSColor.gray50,
-                                        height: 60,
-                                        thickness: 8,
+                                      ),
+                                      SizedBox(
+                                        height: 30,
                                       ),
                                       //댓글
                                       Obx(()=> Column(

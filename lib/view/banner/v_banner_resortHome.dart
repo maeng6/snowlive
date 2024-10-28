@@ -31,7 +31,7 @@ class _Banner_resortHomeState extends State<Banner_resortHome> {
     Size _size = MediaQuery.of(context).size;
 
     return StreamBuilder(
-      stream: _resortHomeViewModel.bannerStream.value,
+      stream: _resortHomeViewModel.bannerStream_home.value,
       builder: (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
         // 데이터 로드 중이라면
         if (snapshot.connectionState == ConnectionState.waiting) {

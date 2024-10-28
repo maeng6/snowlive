@@ -900,7 +900,7 @@ class FleamarketUpdateView extends StatelessWidget {
                                   ),
                                 ),
                                 Padding(
-                                  padding: EdgeInsets.only(top: 4),
+                                  padding: EdgeInsets.only(top: 6),
                                   child: Text('대표 사진은 처음 선택한 사진으로 자동 등록됩니다.',
                                     style: SDSTextStyle.regular.copyWith(
                                       fontSize: 12,
@@ -909,8 +909,8 @@ class FleamarketUpdateView extends StatelessWidget {
                                   ),
                                 ),
                                 Padding(
-                                  padding: EdgeInsets.only(top: 4),
-                                  child: Text('* 사진 용량이 클 경우, 업로드 시간이 다소 길어질 수 있습니다.',
+                                  padding: EdgeInsets.only(top: 2),
+                                  child: Text('사진 용량이 클 경우, 업로드 시간이 다소 길어질 수 있습니다.',
                                     style: SDSTextStyle.regular.copyWith(
                                       fontSize: 12,
                                       color: SDSColor.gray500,
