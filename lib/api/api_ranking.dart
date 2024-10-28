@@ -129,6 +129,23 @@ class RankingAPI {
     }
   }
 
+  Future<ApiResponse> fetchTreasureRecords(Map<String, dynamic> body) async {
+    final response = await http.post(
+      Uri.parse('$baseUrl/treasure-record-list/'), // baseUrl과 경로를 환경에 맞게 설정
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode(body),
+    );
+
+    if (response.statusCode == 200) {
+      // 성공적인 응답 처리 (200 OK)
+      final data = json.decode(utf8.decode(response.bodyBytes)) as List<dynamic>;
+      return ApiResponse.success(data);
+    } else {
+      // 오류 처리
+      final data = json.decode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
+      return ApiResponse.error(data['error'] ?? 'An error occurred');
+    }
+  }
 
 
 

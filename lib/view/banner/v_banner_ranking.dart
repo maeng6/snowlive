@@ -31,7 +31,7 @@ class _Banner_rankingState extends State<Banner_ranking> {
     Size _size = MediaQuery.of(context).size;
 
     return StreamBuilder(
-      stream: _resortHomeViewModel.bannerStream.value,
+      stream: _resortHomeViewModel.bannerStream_ranking.value,
       builder: (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
         // 데이터 로드 중이라면
         if (snapshot.connectionState == ConnectionState.waiting) {

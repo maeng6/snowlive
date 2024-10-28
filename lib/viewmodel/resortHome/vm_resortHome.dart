@@ -7,6 +7,7 @@ import 'package:com.snowlive/api/api_resortHome.dart';
 import 'package:com.snowlive/api/api_user.dart';
 import 'package:com.snowlive/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/model/m_bestFriendListModel.dart';
+import 'package:com.snowlive/model/m_treasure_record.dart';
 import 'package:com.snowlive/model/m_weatherModel.dart';
 import 'package:com.snowlive/util/util_1.dart';
 import 'package:com.snowlive/viewmodel/vm_user.dart';
@@ -53,11 +54,20 @@ class ResortHomeViewModel extends GetxController {
   RxBool _isVisible_resortHome_openchat = false.obs;
   RxBool _showRecentButton_resortHome_openchat = true.obs;
   RxBool _isParticipate_treasure_hunt = false.obs;
+  RxList<TreasureRecord> _treasureRecordList = <TreasureRecord>[].obs;
+  RxBool isLoadingTreasureRecords = false.obs;
+  RxBool isLoadingTreasureRecordUpdate = false.obs;
+
 
   dynamic weatherColors;
   dynamic weatherIcons;
 
-  Rxn<Stream<DocumentSnapshot<Map<String, dynamic>>>> bannerStream = Rxn<Stream<DocumentSnapshot<Map<String, dynamic>>>>();
+  Rxn<Stream<DocumentSnapshot<Map<String, dynamic>>>> bannerStream_home = Rxn<Stream<DocumentSnapshot<Map<String, dynamic>>>>();
+  Rxn<Stream<DocumentSnapshot<Map<String, dynamic>>>> bannerStream_fleaMarket = Rxn<Stream<DocumentSnapshot<Map<String, dynamic>>>>();
+  Rxn<Stream<DocumentSnapshot<Map<String, dynamic>>>> bannerStream_moreTab = Rxn<Stream<DocumentSnapshot<Map<String, dynamic>>>>();
+  Rxn<Stream<DocumentSnapshot<Map<String, dynamic>>>> bannerStream_community = Rxn<Stream<DocumentSnapshot<Map<String, dynamic>>>>();
+  Rxn<Stream<DocumentSnapshot<Map<String, dynamic>>>> bannerStream_community_detail = Rxn<Stream<DocumentSnapshot<Map<String, dynamic>>>>();
+  Rxn<Stream<DocumentSnapshot<Map<String, dynamic>>>> bannerStream_ranking = Rxn<Stream<DocumentSnapshot<Map<String, dynamic>>>>();
   Rxn<Stream<DocumentSnapshot<Map<String, dynamic>>>> infoStream_treasureHunt = Rxn<Stream<DocumentSnapshot<Map<String, dynamic>>>>();
   Rxn<Stream<QuerySnapshot<Map<String, dynamic>>>> infoStream_treasureHunt_findList = Rxn<Stream<QuerySnapshot<Map<String, dynamic>>>>();
 
@@ -82,6 +92,7 @@ class ResortHomeViewModel extends GetxController {
   List<Map<String, dynamic>> get reset_point => _reset_point;
   List<Map<String, dynamic>> get respawn_point => _respawn_point;
   List<FriendListModel> get bestFriendList => _bestFriendList;
+  List<TreasureRecord> get treasureRecordList => _treasureRecordList;
   bool get isVisible_resortHome_openchat  => _isVisible_resortHome_openchat .value;
   bool get showRecentButton_resortHome_openchat => _showRecentButton_resortHome_openchat.value;
   bool get isParticipate_treasure_hunt => _isParticipate_treasure_hunt.value;
@@ -879,11 +890,84 @@ class ResortHomeViewModel extends GetxController {
   }
 
   Future<void> getBanner(String accountName) async {
-
-    bannerStream.value = FirebaseFirestore.instance
+    Stream<DocumentSnapshot<Map<String, dynamic>>> stream = FirebaseFirestore.instance
         .collection('banner')
         .doc(accountName)
         .snapshots();
+
+    switch (accountName) {
+      case 'home':
+        bannerStream_home.value = stream;
+        break;
+      case 'fleaMarket':
+        bannerStream_fleaMarket.value = stream;
+        break;
+      case 'moreTab':
+        bannerStream_moreTab.value = stream;
+        break;
+      case 'community':
+        bannerStream_community.value = stream;
+        break;
+      case 'community_detail':
+        bannerStream_community_detail.value = stream;
+        break;
+      case 'ranking':
+        bannerStream_ranking.value = stream;
+        break;
+      default:
+        print('알 수 없는 accountName: $accountName');
+    }
   }
+
+  Future<void> fetchTreasureRecords({int? userId, int? treasureHuntNum}) async {
+    try {
+      isLoadingTreasureRecords(true);
+
+      final response = await RankingAPI().fetchTreasureRecords({
+        'user_id': userId,
+        'treasure_hunt_num': treasureHuntNum,
+      });
+
+      if (response.success) {
+        final treasureRecordResponse = TreasureRecordResponse.fromJson(response.data!);
+
+        // 데이터가 있으면 리스트에 추가 또는 새로 할당
+        if (_treasureRecordList.isEmpty) {
+          _treasureRecordList.value = treasureRecordResponse.treasureRecords;
+        } else {
+          _treasureRecordList.addAll(treasureRecordResponse.treasureRecords);
+        }
+      } else {
+        print('Failed to load treasure records: ${response.error}');
+      }
+    } catch (e) {
+      print('Error fetching treasure records: $e');
+    } finally {
+      isLoadingTreasureRecords(false);
+    }
+  }
+
+  Future<void> updateTreasureRecord({
+    required int treasureRecordId,
+    required bool active,
+    int? userId,
+  }) async {
+    try {
+      // 로딩 상태 true로 설정
+      isLoadingTreasureRecordUpdate(true);
+
+      final response = await RankingAPI().updateTreasureRecord({
+        'treasure_record_id': treasureRecordId,
+        'active': active,
+        'user_id': userId,
+      });
+
+      if (response.success) {} else {}
+      }finally {
+      // 로딩 상태 false로 설정
+      isLoadingTreasureRecordUpdate(false);
+    }
+  }
+
 
 }
