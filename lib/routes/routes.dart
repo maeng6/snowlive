@@ -107,7 +107,7 @@ class AppRoutes {
   static const String androidSettingGuide = '/androidSettingGuide';
   static const String iosSettingGuide = '/iosSettingGuide';
   static const String treasureHunt = '/treasureHunt';
-  static const String treasureHuntList = '/treasureHuntList';
+  static const String treasureHuntMyPage = '/treasureHuntList';
 
 
 
@@ -348,8 +348,8 @@ class AppRoutes {
       page: () => TreasureHuntView(),
     ),
     GetPage(
-      name: treasureHuntList,
-      page: () => TreasureHuntListView(),
+      name: treasureHuntMyPage,
+      page: () => TreasureHuntMyPageView(),
     ),
   ];
 }

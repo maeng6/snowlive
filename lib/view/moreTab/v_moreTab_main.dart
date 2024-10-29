@@ -124,7 +124,7 @@ class MoreTabMainView extends StatelessWidget {
                                               return state.completedWidget;
                                             case LoadState.failed:
                                             // 로딩이 실패했을 때 대체 이미지 또는 다른 처리
-                                              return Image.asset(
+                                              return ExtendedImage.network(
                                                 '${profileImgUrlList[0].default_round}', // 대체 이미지 경로
                                                 width: 32,
                                                 height: 32,

@@ -4,6 +4,7 @@ import 'package:com.snowlive/data/imgaUrls/Data_url_image.dart';
 import 'package:com.snowlive/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/routes/routes.dart';
 import 'package:com.snowlive/viewmodel/resortHome/vm_resortHome.dart';
+import 'package:com.snowlive/viewmodel/vm_user.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -16,14 +17,15 @@ class TreasureHuntView extends StatefulWidget {
 
 class _TreasureHuntViewState extends State<TreasureHuntView> {
   ResortHomeViewModel _resortHomeViewModel = Get.find<ResortHomeViewModel>();
+  UserViewModel _userViewModel = Get.find<UserViewModel>();
   Timer? _timer;
   String _hours = '00';
   String _minutes = '00';
   String _seconds = '00';
   DateTime? _currentEndTime;
 
-  final ScrollController _scrollController = ScrollController();
-  bool _isAppBarCollapsed = false;
+  final ScrollController _scrollController_treasure = ScrollController();
+  bool _isAppBarCollapsed_treasure = false;
 
   @override
   void initState() {
@@ -31,22 +33,57 @@ class _TreasureHuntViewState extends State<TreasureHuntView> {
     _resortHomeViewModel.getInfo_treasureHunt();
     _resortHomeViewModel.getInfo_treasureHunt_findList();
 
-    _scrollController.addListener(() {
-      if (_scrollController.offset > 300 && !_isAppBarCollapsed) {
+    _scrollController_treasure.addListener(() {
+      if (_scrollController_treasure.offset > 300 && !_isAppBarCollapsed_treasure) {
         setState(() {
-          _isAppBarCollapsed = true;
+          _isAppBarCollapsed_treasure = true;
         });
-      } else if (_scrollController.offset <= 300 && _isAppBarCollapsed) {
+      } else if (_scrollController_treasure.offset <= 300 && _isAppBarCollapsed_treasure) {
         setState(() {
-          _isAppBarCollapsed = false;
+          _isAppBarCollapsed_treasure = false;
         });
       }
     });
+    _checkUserTreasureStatusAndShowPopup();
+  }
+
+  Future<void> _checkUserTreasureStatusAndShowPopup() async {
+    final hasActiveTreasure = await _resortHomeViewModel.checkUserTreasureStatus();
+    if (hasActiveTreasure) {
+      showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text('보물 찾기 성공!'),
+            content: Text('내가 찾은 보물이 무엇인지 확인하러 가볼까요?'),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text('취소'),
+              ),
+              TextButton(
+                onPressed: () async {
+                  Navigator.of(context).pop();
+                  Get.toNamed(AppRoutes.treasureHuntMyPage);
+                  await _resortHomeViewModel.fetchTreasureRecords(
+                    userId: _userViewModel.user.user_id,
+                  );
+                  await _resortHomeViewModel.updateAllActiveToFalse();
+                },
+                child: Text('이동하기'),
+              ),
+            ],
+          );
+        },
+      );
+    }
   }
 
   @override
   void dispose() {
-    _scrollController.dispose();
+    _scrollController_treasure.dispose();
     _timer?.cancel();
     super.dispose();
   }
@@ -114,7 +151,7 @@ class _TreasureHuntViewState extends State<TreasureHuntView> {
   Widget build(BuildContext context) {
     Size _size = MediaQuery.of(context).size;
 
-    return Scaffold(
+    return Obx(()=> Scaffold(
       extendBodyBehindAppBar: true,
       backgroundColor: Colors.white,
       appBar: PreferredSize(
@@ -126,14 +163,14 @@ class _TreasureHuntViewState extends State<TreasureHuntView> {
               scale: 4,
               width: 26,
               height: 26,
-              color: _isAppBarCollapsed ? SDSColor.gray900 : SDSColor.snowliveWhite,
+              color: _isAppBarCollapsed_treasure ? SDSColor.gray900 : SDSColor.snowliveWhite,
             ),
             onTap: () {
               Get.back();
             },
           ),
           titleSpacing: 0,
-          backgroundColor: _isAppBarCollapsed ? SDSColor.snowliveWhite : Colors.transparent,
+          backgroundColor: _isAppBarCollapsed_treasure ? SDSColor.snowliveWhite : Colors.transparent,
           foregroundColor: Colors.transparent,
           surfaceTintColor: Colors.transparent,
           elevation: 0.0,
@@ -165,6 +202,7 @@ class _TreasureHuntViewState extends State<TreasureHuntView> {
             }
 
             return SingleChildScrollView(
+              controller: _scrollController_treasure,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -309,6 +347,35 @@ class _TreasureHuntViewState extends State<TreasureHuntView> {
                                 width: 32,
                                 height: 32,
                                 fit: BoxFit.cover,
+                                loadStateChanged: (ExtendedImageState state) {
+                                  switch (state.extendedImageLoadState) {
+                                    case LoadState.loading:
+                                    // 로딩 중일 때 로딩 인디케이터를 표시
+                                      return Shimmer.fromColors(
+                                        baseColor: SDSColor.gray200!,
+                                        highlightColor: SDSColor.gray50!,
+                                        child: Container(
+                                          width: 32,
+                                          height: 32,
+                                          decoration: BoxDecoration(
+                                            color: Colors.white,
+                                            borderRadius: BorderRadius.circular(8),
+                                          ),
+                                        ),
+                                      );
+                                    case LoadState.completed:
+                                    // 로딩이 완료되었을 때 이미지 반환
+                                      return state.completedWidget;
+                                    case LoadState.failed:
+                                    // 로딩이 실패했을 때 대체 이미지 또는 다른 처리
+                                      return  ExtendedImage.network(
+                                        '${profileImgUrlList[0].default_round}', // 대체 이미지 경로
+                                        width: 32,
+                                        height: 32,
+                                        fit: BoxFit.cover,
+                                      );
+                                  }
+                                },
                               ),
                               title: Text(displayName),
                               subtitle: Text(prizeName),
@@ -323,8 +390,12 @@ class _TreasureHuntViewState extends State<TreasureHuntView> {
                   ),
                   // 버튼
                   GestureDetector(
-                    onTap: () {
-                      Get.toNamed(AppRoutes.treasureHuntList);
+                    onTap: () async{
+                      Get.toNamed(AppRoutes.treasureHuntMyPage);
+                      await _resortHomeViewModel.fetchTreasureRecords(
+                        userId: _userViewModel.user.user_id,
+                      );
+                      await _resortHomeViewModel.updateAllActiveToFalse();
                     },
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -356,6 +427,6 @@ class _TreasureHuntViewState extends State<TreasureHuntView> {
           }
         },
       ),
-    );
+    ));
   }
 }

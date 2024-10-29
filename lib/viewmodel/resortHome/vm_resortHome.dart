@@ -561,6 +561,91 @@ class ResortHomeViewModel extends GetxController {
         .snapshots();
   }
 
+  Future<void> fetchTreasureRecords({required int userId,}) async {
+    try {
+      isLoadingTreasureRecords(true);
+
+      // API 호출
+      final response = await RankingAPI().fetchTreasureRecords({
+        'user_id': userId,
+        'treasure_hunt_num': 1,
+      });
+
+      if (response.success) {
+        // 응답을 Map<String, dynamic>으로 변환
+        final data = response.data as Map<String, dynamic>;
+
+        // treasure_records 키에서 리스트 가져오기
+        if (data['treasure_records'] is List) {
+          final treasureRecordsData = data['treasure_records'] as List<dynamic>;
+
+          // treasure_records 리스트를 TreasureRecord 객체 리스트로 변환하여 할당
+          _treasureRecordList.value = treasureRecordsData.map((record) {
+            return TreasureRecord.fromJson(record as Map<String, dynamic>);
+          }).toList();
+        } else {
+          print('Unexpected data format for treasure_records: $data');
+          _treasureRecordList.clear(); // 데이터가 없을 경우 빈 리스트로 초기화
+        }
+      } else {
+        print('Failed to load treasure records: ${response.error}');
+      }
+    } catch (e) {
+      print('Error fetching treasure records: $e');
+    } finally {
+      isLoadingTreasureRecords(false);
+    }
+  }
+
+  Future<void> updateTreasureRecord({
+    required int treasureRecordId,
+    required bool active,
+    int? userId,
+  }) async {
+    try {
+      // 로딩 상태 true로 설정
+      isLoadingTreasureRecordUpdate(true);
+
+      final response = await RankingAPI().updateTreasureRecord({
+        'treasure_record_id': treasureRecordId,
+        'active': active,
+        'user_id': userId,
+      });
+
+      if (response.success) {} else {}
+    }finally {
+      // 로딩 상태 false로 설정
+      isLoadingTreasureRecordUpdate(false);
+    }
+  }
+
+  Future<bool> checkUserTreasureStatus() async {
+    // Firestore에서 find_list 컬렉션에 active가 true인 문서가 있는지 확인
+    final querySnapshot = await FirebaseFirestore.instance
+        .collection('treasure_hunt')
+        .doc('treasure_hunt')
+        .collection('find_list')
+        .where('user_id', isEqualTo: _userViewModel.user.user_id)
+        .where('active', isEqualTo: true)
+        .get();
+
+    return querySnapshot.docs.isNotEmpty;
+  }
+
+  Future<void> updateAllActiveToFalse() async {
+    final querySnapshot = await FirebaseFirestore.instance
+        .collection('treasure_hunt')
+        .doc('treasure_hunt')
+        .collection('find_list')
+        .where('user_id', isEqualTo: _userViewModel.user.user_id)
+        .where('active', isEqualTo: true)
+        .get();
+
+    for (var doc in querySnapshot.docs) {
+      await doc.reference.update({'active': false});
+    }
+  }
+
   //TODO: 보물찾기 관련 메소드****************************************************
 
 
@@ -916,56 +1001,6 @@ class ResortHomeViewModel extends GetxController {
         break;
       default:
         print('알 수 없는 accountName: $accountName');
-    }
-  }
-
-  Future<void> fetchTreasureRecords({int? userId, int? treasureHuntNum}) async {
-    try {
-      isLoadingTreasureRecords(true);
-
-      final response = await RankingAPI().fetchTreasureRecords({
-        'user_id': userId,
-        'treasure_hunt_num': treasureHuntNum,
-      });
-
-      if (response.success) {
-        final treasureRecordResponse = TreasureRecordResponse.fromJson(response.data!);
-
-        // 데이터가 있으면 리스트에 추가 또는 새로 할당
-        if (_treasureRecordList.isEmpty) {
-          _treasureRecordList.value = treasureRecordResponse.treasureRecords;
-        } else {
-          _treasureRecordList.addAll(treasureRecordResponse.treasureRecords);
-        }
-      } else {
-        print('Failed to load treasure records: ${response.error}');
-      }
-    } catch (e) {
-      print('Error fetching treasure records: $e');
-    } finally {
-      isLoadingTreasureRecords(false);
-    }
-  }
-
-  Future<void> updateTreasureRecord({
-    required int treasureRecordId,
-    required bool active,
-    int? userId,
-  }) async {
-    try {
-      // 로딩 상태 true로 설정
-      isLoadingTreasureRecordUpdate(true);
-
-      final response = await RankingAPI().updateTreasureRecord({
-        'treasure_record_id': treasureRecordId,
-        'active': active,
-        'user_id': userId,
-      });
-
-      if (response.success) {} else {}
-      }finally {
-      // 로딩 상태 false로 설정
-      isLoadingTreasureRecordUpdate(false);
     }
   }
 
