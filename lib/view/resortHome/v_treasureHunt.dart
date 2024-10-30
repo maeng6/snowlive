@@ -416,7 +416,20 @@ class _TreasureHuntViewState extends State<TreasureHuntView> {
                           stream: _resortHomeViewModel.infoStream_treasureHunt_findList.value,
                           builder: (context, findListSnapshot) {
                             if (findListSnapshot.connectionState == ConnectionState.waiting) {
-                              return Center(child: CircularProgressIndicator());
+                              return Center(
+                                child: Padding(
+                                  padding: EdgeInsets.only(bottom: 80),
+                                  child: Container(
+                                    width: 30,
+                                    height: 30,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 6,
+                                      backgroundColor: SDSColor.gray100,
+                                      color: SDSColor.gray300.withOpacity(0.6),
+                                    ),
+                                  ),
+                                ),
+                              );
                             }
 
                             if (findListSnapshot.hasError) {
