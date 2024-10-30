@@ -4,11 +4,9 @@ import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shimmer/shimmer.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class IosSettingGuideView extends StatelessWidget {
-
-  ResortHomeViewModel _resortHomeViewModel = Get.find<ResortHomeViewModel>();
+  final ResortHomeViewModel _resortHomeViewModel = Get.find<ResortHomeViewModel>();
 
   @override
   Widget build(BuildContext context) {
@@ -32,15 +30,12 @@ class IosSettingGuideView extends StatelessWidget {
           ),
           title: Padding(
             padding: const EdgeInsets.only(left: 0),
-            child: Column(
-              children: [
-                Text(
-                  '설정 가이드',
-                  style: SDSTextStyle.extraBold.copyWith(
-                      color: SDSColor.snowliveWhite,
-                      fontSize: 18),
-                ),
-              ],
+            child: Text(
+              '설정 가이드',
+              style: SDSTextStyle.extraBold.copyWith(
+                color: SDSColor.snowliveWhite,
+                fontSize: 18,
+              ),
             ),
           ),
           centerTitle: true,
@@ -52,28 +47,30 @@ class IosSettingGuideView extends StatelessWidget {
         ),
       ),
       body: SingleChildScrollView(
-        child: ExtendedImage.network(
-          _resortHomeViewModel.rankingGuideUrl_ios,
-          cache: true,
-          fit: BoxFit.contain,
-          loadStateChanged: (ExtendedImageState state) {
-            switch (state.extendedImageLoadState) {
-              case LoadState.loading:
-                return Shimmer.fromColors(
-                  baseColor: SDSColor.gray200,
-                  highlightColor: SDSColor.gray50,
-                  child: Container(
-                    width: double.infinity,
-                    height: double.infinity,
-                    color: Colors.white,
-                  ),
-                );
-              case LoadState.completed:
-                return state.completedWidget;
-              case LoadState.failed:
-                return Center(child: Text('Failed to load image'));
-            }
-          },
+        child: Container(
+          child: ExtendedImage.network(
+            _resortHomeViewModel.rankingGuideUrl_ios,
+            cache: true,
+            fit: BoxFit.cover,
+            loadStateChanged: (ExtendedImageState state) {
+              switch (state.extendedImageLoadState) {
+                case LoadState.loading:
+                  return Shimmer.fromColors(
+                    baseColor: SDSColor.gray200,
+                    highlightColor: SDSColor.gray50,
+                    child: Container(
+                      width: double.infinity,
+                      height: 300, // 로딩 시 임시 높이 설정
+                      color: Colors.white,
+                    ),
+                  );
+                case LoadState.completed:
+                  return state.completedWidget;
+                case LoadState.failed:
+                  return Center(child: Text('Failed to load image'));
+              }
+            },
+          ),
         ),
       ),
     );

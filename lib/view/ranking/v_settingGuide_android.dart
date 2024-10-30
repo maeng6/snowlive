@@ -4,11 +4,9 @@ import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shimmer/shimmer.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class AndroidSettingGuideView extends StatelessWidget {
-
-  ResortHomeViewModel _resortHomeViewModel = Get.find<ResortHomeViewModel>();
+  final ResortHomeViewModel _resortHomeViewModel = Get.find<ResortHomeViewModel>();
 
   @override
   Widget build(BuildContext context) {
@@ -32,15 +30,12 @@ class AndroidSettingGuideView extends StatelessWidget {
           ),
           title: Padding(
             padding: const EdgeInsets.only(left: 0),
-            child: Column(
-              children: [
-                Text(
-                  '설정 가이드',
-                  style: SDSTextStyle.extraBold.copyWith(
-                      color: SDSColor.snowliveWhite,
-                      fontSize: 18),
-                ),
-              ],
+            child: Text(
+              '설정 가이드',
+              style: SDSTextStyle.extraBold.copyWith(
+                color: SDSColor.snowliveWhite,
+                fontSize: 18,
+              ),
             ),
           ),
           centerTitle: true,
@@ -53,11 +48,11 @@ class AndroidSettingGuideView extends StatelessWidget {
       ),
       body: SingleChildScrollView(
         child: Container(
+          width: _size.width, // 화면 가로 크기에 맞추어 설정
           child: ExtendedImage.network(
             _resortHomeViewModel.rankingGuideUrl_aos,
             cache: true,
-            scale: 1,
-            width: _size.width, // 화면의 가로 전체를 차지하게 설정
+            fit: BoxFit.cover, // 이미지를 부모 너비에 맞추어 조정
             loadStateChanged: (ExtendedImageState state) {
               switch (state.extendedImageLoadState) {
                 case LoadState.loading:
@@ -66,7 +61,7 @@ class AndroidSettingGuideView extends StatelessWidget {
                     highlightColor: SDSColor.gray50,
                     child: Container(
                       width: double.infinity,
-                      height: double.infinity,
+                      height: 300, // 로딩 중 기본 높이 설정
                       color: Colors.white,
                     ),
                   );

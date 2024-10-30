@@ -3,6 +3,7 @@ import 'package:com.snowlive/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/model/m_treasure_record.dart';
 import 'package:com.snowlive/viewmodel/resortHome/vm_resortHome.dart';
 import 'package:com.snowlive/viewmodel/vm_user.dart';
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -15,7 +16,11 @@ class TreasureHuntMyPageView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    Size _size = MediaQuery.of(context).size;
+
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         title: Text('내가 찾은 보물',
           style: TextStyle(
@@ -42,11 +47,49 @@ class TreasureHuntMyPageView extends StatelessWidget {
       ),
       body: Obx(() {
         if (_resortHomeViewModel.isLoadingTreasureRecords.value) {
-          return Center(child: CircularProgressIndicator());
+          return Center(
+            child: Padding(
+              padding: EdgeInsets.only(bottom: 80),
+              child: Container(
+                width: 30,
+                height: 30,
+                child: CircularProgressIndicator(
+                  strokeWidth: 6,
+                  backgroundColor: SDSColor.gray100,
+                  color: SDSColor.gray300.withOpacity(0.6),
+                ),
+              ),
+            ),
+          );
         }
 
         if (_resortHomeViewModel.treasureRecordList.isEmpty) {
-          return Center(child: Text('No treasures found'));
+          return Transform.translate(
+            offset: Offset(0, -40),
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Image.asset(
+                    'assets/imgs/icons/icon_nodata_treasure.png',
+                    scale: 4,
+                    width: 73,
+                    height: 73,
+                  ),
+                  SizedBox(
+                    height: 6,
+                  ),
+                  Text('찾은 보물이 아직 없어요',
+                    style: SDSTextStyle.regular.copyWith(
+                        fontSize: 14,
+                        color: SDSColor.gray600
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
         }
 
         return ListView.builder(
@@ -56,65 +99,152 @@ class TreasureHuntMyPageView extends StatelessWidget {
             final received = !record.active; // active가 false면 '수령완료'
 
             return ListTile(
+              leading: ExtendedImage.asset(
+                'assets/imgs/icons/icon_treasure_gold.png',
+                        width: 32,
+                        fit: BoxFit.cover,
+                      ),
               title: Text(
                 record.prize,
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black,
+                style: SDSTextStyle.bold.copyWith(
+                  fontSize: 15,
+                  color: SDSColor.snowliveBlack,
                 ),
               ),
               subtitle: Text(
-                '${record.passTime.year}-${record.passTime.month}-${record.passTime.day} ${record.passTime.hour}:${record.passTime.minute}:${record.passTime.second}',
+                '${record.passTime.year}.${record.passTime.month}.${record.passTime.day} ${record.passTime.hour}:${record.passTime.minute}:${record.passTime.second}',
+                  style: SDSTextStyle.regular.copyWith(
+                    fontSize: 13,
+                    color: SDSColor.gray500
+                  ),
               ),
               trailing: received
-                  ? Text(
-                '수령완료',
-                style: TextStyle(color: Colors.green, fontWeight: FontWeight.bold),
+                  ? Container(
+                padding: EdgeInsets.symmetric(vertical: 6, horizontal: 12),
+                decoration: BoxDecoration(
+                  color: SDSColor.snowliveBlack,
+                  borderRadius: BorderRadius.circular(40),
+                ),
+                child: Text(
+                  '수령완료',
+                  style: SDSTextStyle.bold.copyWith(fontSize: 13, color: SDSColor.snowliveWhite),
+                )
               )
                   : GestureDetector(
                 onTap: () => showDialog(
                   context: context,
                   builder: (BuildContext context) {
-                    return AlertDialog(
-                      title: Text('${record.prize} 수령하기'),
-                      content: Text('경품 수령처로 이동하여\n스태프에게 화면을 보여주고\n경품을 수령하세요!'),
-                      actions: [
-                        TextButton(
-                          onPressed: () => Navigator.of(context).pop(),
-                          child: Text('돌아가기'),
+                    return
+                      AlertDialog(
+                        backgroundColor: SDSColor.snowliveWhite,
+                        contentPadding: EdgeInsets.only(bottom: 0, left: 28, right: 28, top: 30),
+                        elevation: 0,
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                        buttonPadding: EdgeInsets.symmetric(horizontal: 24, vertical: 0),
+                        content:
+                        Container(
+                          width: 288,
+                          height: 154,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Image.asset(
+                                'assets/imgs/icons/icon_treasure_gold.png',
+                                width: 60,
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(top: 20, bottom: 6),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      '${record.prize} 수령하기',
+                                      style: SDSTextStyle.bold.copyWith(fontSize: 18, height: 1.4, color: SDSColor.gray900),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Text(
+                                '경품 수령처로 이동하여 스태프에게 화면을 보여주고 경품을 수령하세요!',
+                                style: SDSTextStyle.regular.copyWith(fontSize: 14, height: 1.4, color: SDSColor.gray600),
+                                textAlign: TextAlign.center,
+                              ),
+                            ],
+                          ),
                         ),
-                        TextButton(
-                          onPressed: () async {
-                            Navigator.of(context).pop();
-                            await _resortHomeViewModel.updateTreasureRecord(
-                              treasureRecordId: record.treasureRecordId,
-                              active: false, // 수령 완료로 상태 변경
-                              userId: _userViewModel.user.user_id,
-                            );
-                            await _resortHomeViewModel.fetchTreasureRecords(
-                              userId: _userViewModel.user.user_id,
-                            );
-                          },
-                          child: Text('수령완료(스태프용)'),
-                        ),
-                      ],
-                    );
+                        actions: [
+                          Padding(
+                            padding: const EdgeInsets.only(top: 16),
+                            child: Column(
+                              children: [
+                                Container(
+                                  width: _size.width,
+                                  height: 48,
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(5),
+                                      color: SDSColor.snowliveBlack
+                                  ),
+                                  child: TextButton(
+                                    onPressed: () async {
+                                      Navigator.of(context).pop();
+                                      await _resortHomeViewModel.updateTreasureRecord(
+                                        treasureRecordId: record.treasureRecordId,
+                                        active: false, // 수령 완료로 상태 변경
+                                        userId: _userViewModel.user.user_id,
+                                      );
+                                      await _resortHomeViewModel.fetchTreasureRecords(
+                                        userId: _userViewModel.user.user_id,
+                                      );
+                                    },
+                                    child: Text(
+                                      '수령하기(스태프용)',
+                                      style: SDSTextStyle.bold.copyWith(
+                                        fontSize: 16,
+                                        color: SDSColor.snowliveWhite,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 8.0),
+                                  child: Container(
+                                    width: _size.width,
+                                    height: 48,
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(5),
+                                        color: SDSColor.snowliveWhite
+                                    ),
+                                    child: TextButton(
+                                      onPressed: () => Navigator.of(context).pop(),
+                                      child: Text(
+                                        '돌아가기',
+                                        style: SDSTextStyle.bold.copyWith(
+                                          fontSize: 16,
+                                          color: SDSColor.gray900,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                              mainAxisAlignment: MainAxisAlignment.center,
+                            ),
+                          ),
+                        ],
+                      );
                   },
                 ),
                 child: Container(
-                  padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                  padding: EdgeInsets.symmetric(vertical: 6, horizontal: 12),
                   decoration: BoxDecoration(
-                    color: Colors.blue,
-                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(
+                      color: SDSColor.gray200
+                    ),
+                    borderRadius: BorderRadius.circular(40),
                   ),
                   child: Text(
                     '수령확인',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
+                    style: SDSTextStyle.bold.copyWith(fontSize: 13, color: SDSColor.gray900),),
                 ),
               ),
             );

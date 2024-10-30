@@ -327,7 +327,7 @@ class MoreTabMainView extends StatelessWidget {
                             onTap: () {
                               Get.toNamed(AppRoutes.rankingGuideMain);
                             },
-                            leading: Image.asset('assets/imgs/icons/icon_crown_circle.png', width: 30,),
+                            leading: Image.asset('assets/imgs/icons/icon_moretab_doc.png', width: 30,),
                             title: Transform.translate(
                               offset: Offset(-8, 0),
                               child: Text(

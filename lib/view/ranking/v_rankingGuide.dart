@@ -7,12 +7,12 @@ import 'package:get/get.dart';
 import 'package:shimmer/shimmer.dart';
 
 class RankingGuideMainView extends StatelessWidget {
-
-  ResortHomeViewModel _resortHomeViewModel = Get.find<ResortHomeViewModel>();
+  final ResortHomeViewModel _resortHomeViewModel = Get.find<ResortHomeViewModel>();
 
   @override
   Widget build(BuildContext context) {
     Size _size = MediaQuery.of(context).size;
+
     return Scaffold(
       backgroundColor: SDSColor.snowliveWhite,
       appBar: PreferredSize(
@@ -31,15 +31,12 @@ class RankingGuideMainView extends StatelessWidget {
           ),
           title: Padding(
             padding: const EdgeInsets.only(left: 0),
-            child: Column(
-              children: [
-                Text(
-                  '랭킹 가이드',
-                  style: SDSTextStyle.extraBold.copyWith(
-                      color: SDSColor.gray900,
-                      fontSize: 18),
-                ),
-              ],
+            child: Text(
+              '랭킹 가이드',
+              style: SDSTextStyle.extraBold.copyWith(
+                color: SDSColor.gray900,
+                fontSize: 18,
+              ),
             ),
           ),
           centerTitle: true,
@@ -61,7 +58,6 @@ class RankingGuideMainView extends StatelessWidget {
                     child: ExtendedImage.network(
                       _resortHomeViewModel.rankingGuideUrl_main,
                       cache: true,
-                      scale: 4,
                       width: _size.width,
                       fit: BoxFit.cover,
                       loadStateChanged: (ExtendedImageState state) {
@@ -72,7 +68,7 @@ class RankingGuideMainView extends StatelessWidget {
                               highlightColor: SDSColor.gray50,
                               child: Container(
                                 width: double.infinity,
-                                height: double.infinity,
+                                height: 300, // 높이 고정
                                 color: Colors.white,
                               ),
                             );
@@ -111,16 +107,13 @@ class RankingGuideMainView extends StatelessWidget {
                               color: SDSColor.gray50,
                               borderRadius: BorderRadius.circular(8),
                             ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text(
-                                  'iOS 설정방법',
-                                  style: SDSTextStyle.bold.copyWith(
-                                      color: SDSColor.gray700,
-                                      fontSize: 16),
-                                ),
-                              ],
+                            child: Center(
+                              child: Text(
+                                'iOS 설정방법',
+                                style: SDSTextStyle.bold.copyWith(
+                                    color: SDSColor.gray700,
+                                    fontSize: 16),
+                              ),
                             ),
                           ),
                         ),
@@ -137,15 +130,14 @@ class RankingGuideMainView extends StatelessWidget {
                               color: SDSColor.gray50,
                               borderRadius: BorderRadius.circular(8),
                             ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text('Android 설정방법',
-                                  style: SDSTextStyle.bold.copyWith(
-                                      color: SDSColor.gray700,
-                                      fontSize: 16),
+                            child: Center(
+                              child: Text(
+                                'Android 설정방법',
+                                style: SDSTextStyle.bold.copyWith(
+                                  color: SDSColor.gray700,
+                                  fontSize: 16,
                                 ),
-                              ],
+                              ),
                             ),
                           ),
                         ),
