@@ -486,31 +486,98 @@ class ResortHomeViewModel extends GetxController {
           if (!_isParticipate_treasure_hunt.value) {
             // 조건을 만족하면 보물찾기 참여 팝업 띄우기
             Get.dialog(
-              AlertDialog(
-                title: Text('보물찾기 참여하기'),
-                content: Text('보물찾기 이벤트에 참여하시겠습니까?'),
-                actions: [
-                  TextButton(
-                    onPressed: () {
-                      Get.back();
-                    },
-                    child: Text('취소'),
+                Center(
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 30),
+                    child: Container(
+                      height: 460,
+                      decoration: BoxDecoration(
+                        color: SDSColor.snowliveWhite,
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      child: Stack(
+                        children: [
+                          Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(16),
+                              child: Image.asset(
+                                  'assets/imgs/imgs/img_treasure_popup.png',
+                                  fit: BoxFit.cover,
+                                  height: 460
+                              ),
+                            ),
+                          ),
+                          Positioned(
+                            bottom: 24,
+                            right: 20,
+                            left: 20,
+                            child: Padding(
+                              padding: const EdgeInsets.only(top: 16),
+                              child: Column(
+                                children: [
+                                  Container(
+                                    width: 400,
+                                    height: 48,
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(5),
+                                        color: SDSColor.snowliveWhite
+                                    ),
+                                    child: TextButton(
+                                      onPressed: () async {
+                                        // 참여하기 버튼 클릭 시 participate 메소드를 호출하고 바디 전달
+                                        Map<String, dynamic> body = {
+                                          "user_id": _userViewModel.user.user_id,
+                                          "resort_id": _resort_info['resort_id']
+                                        };
+                                        print(body);
+                                        await participate(body);
+                                        Get.back(); // 팝업 닫기
+                                      },
+                                      child: Text(
+                                        '참여하기',
+                                        style: SDSTextStyle.bold.copyWith(
+                                          fontSize: 16,
+                                          color: SDSColor.gray900,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: 8.0),
+                                    child: Container(
+                                      width: 400,
+                                      height: 48,
+                                      decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(5),
+                                          color: Colors.transparent
+                                      ),
+                                      child: TextButton(
+                                        onPressed: () {
+                                          Get.back();
+                                        },
+                                        child: Text(
+                                          '돌아가기',
+                                          style: SDSTextStyle.bold.copyWith(
+                                            fontSize: 16,
+                                            color: SDSColor.snowliveWhite,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                                mainAxisAlignment: MainAxisAlignment.center,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      ),
                   ),
-                  TextButton(
-                    onPressed: () async {
-                      // 참여하기 버튼 클릭 시 participate 메소드를 호출하고 바디 전달
-                      Map<String, dynamic> body = {
-                        "user_id": _userViewModel.user.user_id,
-                        "resort_id": _resort_info['resort_id']
-                      };
-                      print(body);
-                      await participate(body);
-                      Get.back(); // 팝업 닫기
-                    },
-                    child: Text('참여하기'),
-                  ),
-                ],
-              ),
+                ),
             );
           }
         }
