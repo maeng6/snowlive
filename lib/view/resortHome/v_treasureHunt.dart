@@ -234,7 +234,20 @@ class _TreasureHuntViewState extends State<TreasureHuntView> {
         stream: _resortHomeViewModel.infoStream_treasureHunt.value,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
+            return Center(
+              child: Padding(
+                padding: EdgeInsets.only(bottom: 80),
+                child: Container(
+                  width: 30,
+                  height: 30,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 6,
+                    backgroundColor: SDSColor.gray100,
+                    color: SDSColor.gray300.withOpacity(0.6),
+                  ),
+                ),
+              ),
+            );
           }
 
           if (snapshot.hasError) {
@@ -435,29 +448,26 @@ class _TreasureHuntViewState extends State<TreasureHuntView> {
                                 return Container(
                                   height: 240,
                                   child: Center(
-                                    child: Padding(
-                                      padding: EdgeInsets.only(bottom: 40),
-                                      child: Column(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        crossAxisAlignment: CrossAxisAlignment.center,
-                                        children: [
-                                          Image.asset(
-                                            'assets/imgs/icons/icon_nodata_treasure.png',
-                                            scale: 4,
-                                            width: 73,
-                                            height: 73,
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      children: [
+                                        Image.asset(
+                                          'assets/imgs/icons/icon_nodata_treasure.png',
+                                          scale: 4,
+                                          width: 73,
+                                          height: 73,
+                                        ),
+                                        SizedBox(
+                                          height: 6,
+                                        ),
+                                        Text('찾은 보물이 아직 없어요',
+                                          style: SDSTextStyle.regular.copyWith(
+                                              fontSize: 14,
+                                              color: SDSColor.gray600
                                           ),
-                                          SizedBox(
-                                            height: 6,
-                                          ),
-                                          Text('찾은 보물이 아직 없어요',
-                                            style: SDSTextStyle.regular.copyWith(
-                                                fontSize: 14,
-                                                color: SDSColor.gray600
-                                            ),
-                                          ),
-                                        ],
-                                      ),
+                                        ),
+                                      ],
                                     ),
                                   ),
                                 );
@@ -537,8 +547,9 @@ class _TreasureHuntViewState extends State<TreasureHuntView> {
                             }
                           },
                         ),
+                        SizedBox(height: 40),
                         if (hasMyTreasure)
-                        SizedBox(height: 100),
+                        SizedBox(height: 60),
                       ],
                     ),
                   ),
