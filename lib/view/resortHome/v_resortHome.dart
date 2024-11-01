@@ -1845,6 +1845,10 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                                                               decoration: BoxDecoration(
                                                                 color: SDSColor.snowliveWhite,
                                                                 borderRadius: BorderRadius.circular(20),
+                                                                border: Border.all(
+                                                                    color: SDSColor.gray300,
+                                                                  width: 1
+                                                                )
                                                               ),
                                                               child: Row(
                                                                 children: [
@@ -1852,10 +1856,9 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                                                                     padding: const EdgeInsets.only(right: 6),
                                                                     child: Text(
                                                                       '더 알아보기',
-                                                                      style: SDSTextStyle.extraBold.copyWith
-                                                                        (
-                                                                          color: Colors.black,
-                                                                          fontSize: 13
+                                                                      style: SDSTextStyle.extraBold.copyWith(
+                                                                          color: SDSColor.snowliveBlack,
+                                                                          fontSize: 14
                                                                       ),
                                                                     ),
                                                                   ),
