@@ -1778,7 +1778,7 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                                       ),
                                     if(_resortHomeViewModel.resortHomeModel.dailyTotalCount == 0 && _userViewModel.user.within_boundary == false)
                                       Padding(
-                                        padding: EdgeInsets.only(top: 20),
+                                        padding: EdgeInsets.only(top: 10),
                                         child: Container(
                                           height: _size.width,
                                           decoration: BoxDecoration(
