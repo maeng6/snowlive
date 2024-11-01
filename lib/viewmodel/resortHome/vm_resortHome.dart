@@ -57,6 +57,8 @@ class ResortHomeViewModel extends GetxController {
   RxList<TreasureRecord> _treasureRecordList = <TreasureRecord>[].obs;
   RxBool isLoadingTreasureRecords = false.obs;
   RxBool isLoadingTreasureRecordUpdate = false.obs;
+  RxInt _treasureHuntNum = 0.obs;
+
 
 
   dynamic weatherColors;
@@ -96,6 +98,7 @@ class ResortHomeViewModel extends GetxController {
   bool get isVisible_resortHome_openchat  => _isVisible_resortHome_openchat .value;
   bool get showRecentButton_resortHome_openchat => _showRecentButton_resortHome_openchat.value;
   bool get isParticipate_treasure_hunt => _isParticipate_treasure_hunt.value;
+  int get treasureHuntNum => _treasureHuntNum.value;
 
   UserViewModel _userViewModel = Get.find<UserViewModel>();
   ScrollController scrollController_resortHome_openchat = ScrollController();
@@ -109,8 +112,7 @@ class ResortHomeViewModel extends GetxController {
     await fetchResortHome(_userViewModel.user.user_id!);
     await fetchWeatherModel();
     await checkForUpdate();
-    await getInfo_treasureHunt();
-    await getInfo_treasureHunt_findList();
+    await fetchTreasureHuntNum();
   }
 
   //TODO: 라이브온 관련 메소드****************************************************
@@ -199,16 +201,18 @@ class ResortHomeViewModel extends GetxController {
             }
 
             if (passPointInfo != null && passPointInfo['type'] == 'reset_point') {
-              if (_lastResetMethodCall == null || now.difference(_lastResetMethodCall!).inSeconds > 10) {
+              if (_lastResetMethodCall == null || now.difference(_lastResetMethodCall!).inSeconds > 180) {
                 _lastResetMethodCall = now;
                 await RankingAPI().reset({"user_id": user_id});
+                print('포어 리셋 성공');
               }
             }
 
             if (passPointInfo != null && passPointInfo['type'] == 'respawn_point') {
-              if (_lastRespawnMethodCall == null || now.difference(_lastRespawnMethodCall!).inSeconds > 10) {
+              if (_lastRespawnMethodCall == null || now.difference(_lastRespawnMethodCall!).inSeconds > 180) {
                 _lastRespawnMethodCall = now;
                 await RankingAPI().respawn({"user_id": user_id});
+                print('포어 리스폰 성공');
               }
             }
           } else {
@@ -321,16 +325,18 @@ class ResortHomeViewModel extends GetxController {
           }
 
           if (passPointInfo != null && passPointInfo['type'] == 'reset_point') {
-            if (_lastResetMethodCall == null || now.difference(_lastResetMethodCall!).inSeconds > 10) {
+            if (_lastResetMethodCall == null || now.difference(_lastResetMethodCall!).inSeconds > 180) {
               _lastResetMethodCall = now;
               await RankingAPI().reset({"user_id": user_id});
+              print('백 리셋 성공');
             }
           }
 
           if (passPointInfo != null && passPointInfo['type'] == 'respawn_point') {
-            if (_lastRespawnMethodCall == null || now.difference(_lastRespawnMethodCall!).inSeconds > 10) {
+            if (_lastRespawnMethodCall == null || now.difference(_lastRespawnMethodCall!).inSeconds > 180) {
               _lastRespawnMethodCall = now;
               await RankingAPI().respawn({"user_id": user_id});
+              print('백 리스폰 성공');
             }
           }
         } else {
@@ -486,98 +492,98 @@ class ResortHomeViewModel extends GetxController {
           if (!_isParticipate_treasure_hunt.value) {
             // 조건을 만족하면 보물찾기 참여 팝업 띄우기
             Get.dialog(
-                Center(
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 30),
-                    child: Container(
-                      height: 460,
-                      decoration: BoxDecoration(
-                        color: SDSColor.snowliveWhite,
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                      child: Stack(
-                        children: [
-                          Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(16),
-                            ),
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(16),
-                              child: Image.asset(
-                                  'assets/imgs/imgs/img_treasure_popup.png',
-                                  fit: BoxFit.cover,
-                                  height: 460
-                              ),
+              Center(
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 30),
+                  child: Container(
+                    height: 460,
+                    decoration: BoxDecoration(
+                      color: SDSColor.snowliveWhite,
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    child: Stack(
+                      children: [
+                        Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(16),
+                            child: Image.asset(
+                                'assets/imgs/imgs/img_treasure_popup.png',
+                                fit: BoxFit.cover,
+                                height: 460
                             ),
                           ),
-                          Positioned(
-                            bottom: 24,
-                            right: 20,
-                            left: 20,
-                            child: Padding(
-                              padding: const EdgeInsets.only(top: 16),
-                              child: Column(
-                                children: [
-                                  Container(
+                        ),
+                        Positioned(
+                          bottom: 24,
+                          right: 20,
+                          left: 20,
+                          child: Padding(
+                            padding: const EdgeInsets.only(top: 16),
+                            child: Column(
+                              children: [
+                                Container(
+                                  width: 400,
+                                  height: 48,
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(5),
+                                      color: SDSColor.snowliveWhite
+                                  ),
+                                  child: TextButton(
+                                    onPressed: () async {
+                                      // 참여하기 버튼 클릭 시 participate 메소드를 호출하고 바디 전달
+                                      Map<String, dynamic> body = {
+                                        "user_id": _userViewModel.user.user_id,
+                                        "resort_id": _resort_info['resort_id']
+                                      };
+                                      print(body);
+                                      await participate(body);
+                                      Get.back(); // 팝업 닫기
+                                    },
+                                    child: Text(
+                                      '참여하기',
+                                      style: SDSTextStyle.bold.copyWith(
+                                        fontSize: 16,
+                                        color: SDSColor.gray900,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 8.0),
+                                  child: Container(
                                     width: 400,
                                     height: 48,
                                     decoration: BoxDecoration(
                                         borderRadius: BorderRadius.circular(5),
-                                        color: SDSColor.snowliveWhite
+                                        color: Colors.transparent
                                     ),
                                     child: TextButton(
-                                      onPressed: () async {
-                                        // 참여하기 버튼 클릭 시 participate 메소드를 호출하고 바디 전달
-                                        Map<String, dynamic> body = {
-                                          "user_id": _userViewModel.user.user_id,
-                                          "resort_id": _resort_info['resort_id']
-                                        };
-                                        print(body);
-                                        await participate(body);
-                                        Get.back(); // 팝업 닫기
+                                      onPressed: () {
+                                        Get.back();
                                       },
                                       child: Text(
-                                        '참여하기',
+                                        '돌아가기',
                                         style: SDSTextStyle.bold.copyWith(
                                           fontSize: 16,
-                                          color: SDSColor.gray900,
+                                          color: SDSColor.snowliveWhite,
                                         ),
                                       ),
                                     ),
                                   ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(top: 8.0),
-                                    child: Container(
-                                      width: 400,
-                                      height: 48,
-                                      decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(5),
-                                          color: Colors.transparent
-                                      ),
-                                      child: TextButton(
-                                        onPressed: () {
-                                          Get.back();
-                                        },
-                                        child: Text(
-                                          '돌아가기',
-                                          style: SDSTextStyle.bold.copyWith(
-                                            fontSize: 16,
-                                            color: SDSColor.snowliveWhite,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                                mainAxisAlignment: MainAxisAlignment.center,
-                              ),
+                                ),
+                              ],
+                              mainAxisAlignment: MainAxisAlignment.center,
                             ),
                           ),
-                        ],
-                      ),
-                      ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
+              ),
             );
           }
         }
@@ -619,6 +625,30 @@ class ResortHomeViewModel extends GetxController {
         .snapshots();
   }
 
+  Future<void> fetchTreasureHuntNum() async {
+    try {
+      DocumentSnapshot<Map<String, dynamic>> treasureHuntDoc = await FirebaseFirestore.instance
+          .collection('treasure_hunt')
+          .doc('treasure_hunt')
+          .get();
+
+      if (treasureHuntDoc.exists) {
+        final data = treasureHuntDoc.data();
+        int? num = data?['treasure_hunt_num'];
+
+        // Update observed variable
+        if (num != null) {
+          _treasureHuntNum.value = num;
+          print('Updated treasureHuntNum: $num');
+        }
+      } else {
+        print('Treasure hunt 문서가 존재하지 않습니다.');
+      }
+    } catch (e) {
+      print('Error fetching treasure hunt number: $e');
+    }
+  }
+
   Future<void> getInfo_treasureHunt_findList() async {
 
     infoStream_treasureHunt_findList.value = FirebaseFirestore.instance
@@ -635,7 +665,7 @@ class ResortHomeViewModel extends GetxController {
       // API 호출
       final response = await RankingAPI().fetchTreasureRecords({
         'user_id': userId,
-        'treasure_hunt_num': 1,
+        'treasure_hunt_num': _treasureHuntNum.value,
       });
 
       if (response.success) {
