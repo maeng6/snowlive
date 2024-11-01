@@ -24,6 +24,7 @@ class _TreasureHuntViewState extends State<TreasureHuntView> {
   String _minutes = '00';
   String _seconds = '00';
   DateTime? _currentEndTime;
+  bool hasMyTreasure = false;
 
   final ScrollController _scrollController_treasure = ScrollController();
   bool _isAppBarCollapsed_treasure = false;
@@ -33,6 +34,7 @@ class _TreasureHuntViewState extends State<TreasureHuntView> {
     super.initState();
     _resortHomeViewModel.getInfo_treasureHunt();
     _resortHomeViewModel.getInfo_treasureHunt_findList();
+
 
     _scrollController_treasure.addListener(() {
       if (_scrollController_treasure.offset > 300 && !_isAppBarCollapsed_treasure) {
@@ -366,7 +368,7 @@ class _TreasureHuntViewState extends State<TreasureHuntView> {
                                 '남은 시간',
                                 style: SDSTextStyle.regular.copyWith(
                                     fontSize: 14,
-                                color: SDSColor.gray900),
+                                    color: SDSColor.gray900),
                               ),
                               SizedBox(height: 6),
                               Row(
@@ -406,8 +408,8 @@ class _TreasureHuntViewState extends State<TreasureHuntView> {
                           child: Text(
                             '보물찾기를 완료한 탐험대원',
                             style: SDSTextStyle.bold.copyWith(
-                              color: SDSColor.gray900,
-                              fontSize: 14
+                                color: SDSColor.gray900,
+                                fontSize: 14
                             ),
                           ),
                         ),
@@ -438,6 +440,41 @@ class _TreasureHuntViewState extends State<TreasureHuntView> {
 
                             if (findListSnapshot.hasData) {
                               final docs = findListSnapshot.data!.docs;
+                              hasMyTreasure = docs.any((doc) =>
+                              doc['user_id'] == _userViewModel.user.user_id);
+
+                              if (docs.isEmpty) {
+                                // 보물찾기를 완료한 탐험대원이 없는 경우
+                                return Container(
+                                  height: 240,
+                                  child: Center(
+                                    child: Padding(
+                                      padding: EdgeInsets.only(bottom: 40),
+                                      child: Column(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                        children: [
+                                          Image.asset(
+                                            'assets/imgs/icons/icon_nodata_treasure.png',
+                                            scale: 4,
+                                            width: 73,
+                                            height: 73,
+                                          ),
+                                          SizedBox(
+                                            height: 6,
+                                          ),
+                                          Text('찾은 보물이 아직 없어요',
+                                            style: SDSTextStyle.regular.copyWith(
+                                                fontSize: 14,
+                                                color: SDSColor.gray600
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              }
 
                               return Column(
                                 children: docs.map((doc) {
@@ -488,10 +525,10 @@ class _TreasureHuntViewState extends State<TreasureHuntView> {
                                           },
                                         ),
                                         title: Text(displayName,
-                                        style: SDSTextStyle.regular.copyWith(
-                                          fontSize: 14,
-                                          color: SDSColor.gray900
-                                        ),),
+                                          style: SDSTextStyle.regular.copyWith(
+                                              fontSize: 14,
+                                              color: SDSColor.gray900
+                                          ),),
                                         subtitle: Text(prizeName,
                                           style: SDSTextStyle.regular.copyWith(
                                               fontSize: 14,
@@ -513,40 +550,43 @@ class _TreasureHuntViewState extends State<TreasureHuntView> {
                             }
                           },
                         ),
+                        if (hasMyTreasure)
                         SizedBox(height: 100),
                       ],
                     ),
                   ),
                   // 버튼
-                  Positioned(
-                    left: 0,
-                    right: 0,
-                    bottom: 0,
-                    child: Container(
-                      color: Colors.white,
-                      child: GestureDetector(
-                        onTap: () async{
-                          Get.toNamed(AppRoutes.treasureHuntMyPage);
-                          await _resortHomeViewModel.fetchTreasureRecords(
-                            userId: _userViewModel.user.user_id,
-                          );
-                          await _resortHomeViewModel.updateAllActiveToFalse();
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-                          child: Container(
-                            height: 48,
-                            decoration: BoxDecoration(
-                              color: Colors.black,
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            child: Center(
-                              child: Text(
-                                '내가 찾은 보물',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  color: SDSColor.snowliveWhite,
-                                  fontWeight: FontWeight.bold,
+                  if (hasMyTreasure)
+                    Positioned(
+                      left: 0,
+                      right: 0,
+                      bottom: 0,
+                      child: Container(
+                        color: Colors.white,
+                        child: GestureDetector(
+                          onTap: () async{
+                            Get.toNamed(AppRoutes.treasureHuntMyPage);
+                            await _resortHomeViewModel.fetchTreasureRecords(
+                              userId: _userViewModel.user.user_id,
+                            );
+                            await _resortHomeViewModel.updateAllActiveToFalse();
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                            child: Container(
+                              height: 48,
+                              decoration: BoxDecoration(
+                                color: Colors.black,
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: Center(
+                                child: Text(
+                                  '내가 찾은 보물',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    color: SDSColor.snowliveWhite,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
                               ),
                             ),
@@ -554,7 +594,6 @@ class _TreasureHuntViewState extends State<TreasureHuntView> {
                         ),
                       ),
                     ),
-                  ),
                 ],
               ),
             );
