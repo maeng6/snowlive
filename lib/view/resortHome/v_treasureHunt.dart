@@ -26,27 +26,12 @@ class _TreasureHuntViewState extends State<TreasureHuntView> {
   DateTime? _currentEndTime;
   bool hasMyTreasure = false;
 
-  final ScrollController _scrollController_treasure = ScrollController();
-  bool _isAppBarCollapsed_treasure = false;
-
   @override
   void initState() {
     super.initState();
     _resortHomeViewModel.getInfo_treasureHunt();
     _resortHomeViewModel.getInfo_treasureHunt_findList();
 
-
-    _scrollController_treasure.addListener(() {
-      if (_scrollController_treasure.offset > 300 && !_isAppBarCollapsed_treasure) {
-        setState(() {
-          _isAppBarCollapsed_treasure = true;
-        });
-      } else if (_scrollController_treasure.offset <= 300 && _isAppBarCollapsed_treasure) {
-        setState(() {
-          _isAppBarCollapsed_treasure = false;
-        });
-      }
-    });
     _checkUserTreasureStatusAndShowPopup();
   }
 
@@ -153,7 +138,6 @@ class _TreasureHuntViewState extends State<TreasureHuntView> {
 
   @override
   void dispose() {
-    _scrollController_treasure.dispose();
     _timer?.cancel();
     super.dispose();
   }
@@ -233,14 +217,14 @@ class _TreasureHuntViewState extends State<TreasureHuntView> {
               scale: 4,
               width: 26,
               height: 26,
-              color: _isAppBarCollapsed_treasure ? SDSColor.gray900 : SDSColor.snowliveWhite,
+              color: SDSColor.gray900,
             ),
             onTap: () {
               Get.back();
             },
           ),
           titleSpacing: 0,
-          backgroundColor: _isAppBarCollapsed_treasure ? SDSColor.snowliveWhite : Colors.transparent,
+          backgroundColor: SDSColor.snowliveWhite,
           foregroundColor: Colors.transparent,
           surfaceTintColor: Colors.transparent,
           elevation: 0.0,
@@ -277,10 +261,13 @@ class _TreasureHuntViewState extends State<TreasureHuntView> {
               child: Stack(
                 children: [
                   SingleChildScrollView(
-                    controller: _scrollController_treasure,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        Container(
+                          color: Color(0xFFF3AF3E),
+                          height: 50,
+                        ),
                         // 참가자 및 남은 보물 정보
                         Stack(
                           children: [
