@@ -500,7 +500,7 @@ class CommunityBulletinUpdateView extends StatelessWidget {
                                     "sns_url" : "${_communityUpdateViewModel.textEditingController_snsUrl.text}",
                                     "thumb_img_url": "",
                                     "description": jsonEncode([{
-                                      "string": "임시내용"
+                                      "insert": "임시내용"
                                     }])
                                   });
                               print('임시 수정 완료');
