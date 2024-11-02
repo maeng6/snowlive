@@ -396,11 +396,35 @@ class CommunityEventListView extends StatelessWidget {
                                                           ],
                                                         ),
                                                       ),
-                                                      Text('$_time',
-                                                        style: SDSTextStyle.regular.copyWith(
-                                                          fontSize: 12,
-                                                          color: SDSColor.gray500,
-                                                        ),
+                                                      Row(
+                                                        children: [
+                                                          Text('$_time',
+                                                            style: SDSTextStyle.regular.copyWith(
+                                                              fontSize: 12,
+                                                              color: SDSColor.gray500,
+                                                            ),
+                                                          ),
+                                                          Padding(
+                                                            padding: EdgeInsets.only(left: 8),
+                                                            child: Row(
+                                                              mainAxisAlignment: MainAxisAlignment.center,
+                                                              children: [
+                                                                Image.asset('assets/imgs/icons/icon_reply_rounded.png',
+                                                                  width: 14,
+                                                                  height: 14,),
+                                                                Padding(
+                                                                  padding: const EdgeInsets.only(left: 2),
+                                                                  child: Text('${communityData.commentCount}',
+                                                                    style: SDSTextStyle.regular.copyWith(
+                                                                      fontSize: 12,
+                                                                      color: SDSColor.gray500,
+                                                                    ),
+                                                                  ),
+                                                                )
+                                                              ],
+                                                            ),
+                                                          ),
+                                                        ],
                                                       ),
                                                     ],
                                                   ),
