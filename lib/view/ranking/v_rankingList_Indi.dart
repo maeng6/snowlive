@@ -1187,7 +1187,7 @@ class RankingIndiView extends StatelessWidget {
                                           ],
                                         ),
                                         Container(
-                                          width: _size.width - 200,
+                                          width: _size.width - 198,
                                           child: Row(
                                             children: [
                                               Text(
@@ -1196,6 +1196,8 @@ class RankingIndiView extends StatelessWidget {
                                                     fontSize: 12,
                                                     color: SDSColor.gray500
                                                 ),
+                                                maxLines: 1,
+                                                overflow: TextOverflow.ellipsis,
                                               ),
 
                                               if(document.crewName != null)

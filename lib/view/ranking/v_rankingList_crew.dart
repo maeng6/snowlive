@@ -100,7 +100,7 @@ class RankingCrewView extends StatelessWidget {
                                       Padding(
                                         padding: EdgeInsets.only(left: 4, right: 6),
                                         child: Row(
-                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          mainAxisAlignment: MainAxisAlignment.start,
                                           children: [
                                             Text(_rankingListViewModel.myBox_title,
                                               style: SDSTextStyle.bold.copyWith(
@@ -157,7 +157,7 @@ class RankingCrewView extends StatelessWidget {
                                         children: [
                                           Container(
                                             width: _size.width - 124,
-                                            height: 82,
+                                            height: 80,
                                             decoration: BoxDecoration(
                                               color: SDSColor.gray50,
                                               borderRadius: BorderRadius.circular(16),
@@ -229,10 +229,10 @@ class RankingCrewView extends StatelessWidget {
                                             width: 80,
                                             height: 80,
                                             decoration: BoxDecoration(
-                                              color: Color(int.parse(_rankingListViewModel.rankingListCrewMy_view!.color!)).withOpacity(0.3),
+                                              color: Color(0xFFDEDEDE),
                                               borderRadius: BorderRadius.circular(16),
                                             ),
-                                            padding: EdgeInsets.all(2),
+                                            padding: EdgeInsets.all(1),
                                             child: Transform.translate(
                                               offset: Offset(0, 0),
                                               child: Container(
