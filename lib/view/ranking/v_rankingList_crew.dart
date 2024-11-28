@@ -70,7 +70,11 @@ class RankingCrewView extends StatelessWidget {
                 backgroundColor: SDSColor.snowliveBlue,
                 color: SDSColor.snowliveWhite,
                 onRefresh: () async {
+                  if(_rankingListViewModel.resortOrTotal=='전체스키장')
                   await _rankingListViewModel.toggleDataDayOrTotal_refresh();
+                  if(_rankingListViewModel.resortOrTotal=='개별스키장')
+                    await _rankingListViewModel.toggleDataDayOrTotal_refresh(resortNum: _rankingListViewModel.selectedResortNum);
+
                 },
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -96,7 +100,7 @@ class RankingCrewView extends StatelessWidget {
                                       Padding(
                                         padding: EdgeInsets.only(left: 4, right: 6),
                                         child: Row(
-                                          mainAxisAlignment: MainAxisAlignment.start,
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                           children: [
                                             Text(_rankingListViewModel.myBox_title,
                                               style: SDSTextStyle.bold.copyWith(
@@ -153,7 +157,7 @@ class RankingCrewView extends StatelessWidget {
                                         children: [
                                           Container(
                                             width: _size.width - 124,
-                                            height: 80,
+                                            height: 82,
                                             decoration: BoxDecoration(
                                               color: SDSColor.gray50,
                                               borderRadius: BorderRadius.circular(16),
@@ -225,10 +229,10 @@ class RankingCrewView extends StatelessWidget {
                                             width: 80,
                                             height: 80,
                                             decoration: BoxDecoration(
-                                              color: SDSColor.gray100,
+                                              color: Color(int.parse(_rankingListViewModel.rankingListCrewMy_view!.color!)).withOpacity(0.3),
                                               borderRadius: BorderRadius.circular(16),
                                             ),
-                                            padding: EdgeInsets.all(1),
+                                            padding: EdgeInsets.all(2),
                                             child: Transform.translate(
                                               offset: Offset(0, 0),
                                               child: Container(

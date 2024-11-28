@@ -64,7 +64,11 @@ class RankingIndiView extends StatelessWidget {
               backgroundColor: SDSColor.snowliveBlue,
               color: SDSColor.snowliveWhite,
               onRefresh: () async {
-                await _rankingListViewModel.toggleDataDayOrTotal_refresh();
+                if(_rankingListViewModel.resortOrTotal=='전체스키장')
+                  await _rankingListViewModel.toggleDataDayOrTotal_refresh();
+                if(_rankingListViewModel.resortOrTotal=='개별스키장')
+                  await _rankingListViewModel.toggleDataDayOrTotal_refresh(resortNum: _rankingListViewModel.selectedResortNum);
+
               },
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),

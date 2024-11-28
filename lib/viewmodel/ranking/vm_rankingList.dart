@@ -379,7 +379,7 @@ class RankingListViewModel extends GetxController {
       _myBox_score.value = '크루 점수';
       _myBox_ranking.value = '크루 랭킹';
     } else if (tapName == '크루랭킹' && resortOrTotal == '개별스키장' && dayOrTotal == '누적'){
-      _myBox_title.value = '일간 ${nicknameList[selectedResortNum-1]}';
+      _myBox_title.value = '누적 ${nicknameList[selectedResortNum-1]}';
       _myBox_score.value = '크루 점수';
       _myBox_ranking.value = '크루 랭킹';
     } else if (tapName == '크루랭킹' && resortOrTotal == '전체스키장' && dayOrTotal == '일간'){
@@ -696,6 +696,7 @@ class RankingListViewModel extends GetxController {
 
         if (url == null) {
           // URL이 null일 경우 데이터 설정
+          print('결과 프린트 ${rankingListIndivResponse.results}');
           _rankingListIndivList_resort_daily.value = rankingListIndivResponse.results!.rankingUsers;
         } else {
           // URL이 있을 경우 리스트에 추가
@@ -767,6 +768,7 @@ class RankingListViewModel extends GetxController {
     String? url, // URL 추가
   }) async {
     print('fetchRankingDataCrew_resort 시작');
+
     try {
       isLoading(true);
       final response = await RankingAPI().fetchRankingData_crew(
