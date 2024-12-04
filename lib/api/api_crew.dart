@@ -300,4 +300,26 @@ class CrewAPI {
       return ApiResponse.error(json.decode(utf8.decode(response.bodyBytes)));
     }
   }
+
+  // 크루 랭킹 조회
+  Future<ApiResponse<Map<String, dynamic>>> getCrewRanking({
+    required int crewId,
+    required int userId,
+    required String season, // 추가된 season 파라미터
+  }) async {
+    final uri = Uri.parse('$baseUrl/crew-member-ranking/').replace(queryParameters: {
+      'crew_id': crewId.toString(),
+      'user_id': userId.toString(),
+      'season': season, // season 파라미터 추가
+    });
+
+    final response = await http.get(uri);
+
+    if (response.statusCode == 200) {
+      // JSON을 Map<String, dynamic> 타입으로 반환
+      return ApiResponse.success(json.decode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>);
+    } else {
+      return ApiResponse.error(json.decode(utf8.decode(response.bodyBytes)));
+    }
+  }
 }

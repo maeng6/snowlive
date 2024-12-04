@@ -4,6 +4,7 @@ import 'package:com.snowlive/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/routes/routes.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewDetail.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewMemberList.dart';
+import 'package:com.snowlive/viewmodel/crew/vm_crewMemberRankingList.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewRecordRoom.dart';
 import 'package:com.snowlive/viewmodel/friend/vm_friendDetail.dart';
 import 'package:com.snowlive/viewmodel/ranking/vm_rankingList.dart';
@@ -28,6 +29,7 @@ class RankingCrewView extends StatelessWidget {
   final CrewMemberListViewModel _crewMemberListViewModel = Get.find<CrewMemberListViewModel>();
   final CrewRecordRoomViewModel _crewRecordRoomViewModel = Get.find<CrewRecordRoomViewModel>();
   final ResortHomeViewModel _resortHomeViewModel = Get.find<ResortHomeViewModel>();
+  final CrewRankingListViewModel _crewRankingListViewModel = Get.find<CrewRankingListViewModel>();
 
   @override
   Widget build(BuildContext context) {
@@ -116,6 +118,10 @@ class RankingCrewView extends StatelessWidget {
                                                     _rankingListViewModel.rankingListCrewMy_view!.crewId!,
                                                     _friendDetailViewModel.seasonDate
                                                 );
+                                                await _crewRankingListViewModel.fetchCrewRankings(
+                                                    crewId: _rankingListViewModel.rankingListCrewMy_view!.crewId!,
+                                                    userId: _userViewModel.user.user_id!,
+                                                    season:  _friendDetailViewModel.seasonDate);
                                                 if(_userViewModel.user.crew_id == _rankingListViewModel.rankingListCrewMy_view!.crewId!)
                                                   await _crewRecordRoomViewModel.fetchCrewRidingRecords(
                                                       _rankingListViewModel.rankingListCrewMy_view!.crewId!,
@@ -1054,6 +1060,10 @@ class RankingCrewView extends StatelessWidget {
                                       document.crewId!,
                                       _friendDetailViewModel.seasonDate
                                   );
+                                  await _crewRankingListViewModel.fetchCrewRankings(
+                                      crewId: document.crewId!,
+                                      userId: _userViewModel.user.user_id!,
+                                      season:  _friendDetailViewModel.seasonDate);
                                   if(_userViewModel.user.crew_id ==   _crewDetailViewModel.crewDetailInfo.crewId!)
                                     await _crewRecordRoomViewModel.fetchCrewRidingRecords(
                                         _crewDetailViewModel.crewDetailInfo.crewId!,
@@ -1294,6 +1304,10 @@ class RankingCrewView extends StatelessWidget {
                                                     _rankingListViewModel.rankingListCrewMy_view!.crewId!,
                                                     _friendDetailViewModel.seasonDate
                                                 );
+                                                await _crewRankingListViewModel.fetchCrewRankings(
+                                                    crewId: _rankingListViewModel.rankingListCrewMy_view!.crewId!,
+                                                    userId: _userViewModel.user.user_id!,
+                                                    season:  _friendDetailViewModel.seasonDate);
                                                 if(_userViewModel.user.crew_id == _rankingListViewModel.rankingListCrewMy_view!.crewId!)
                                                   await _crewRecordRoomViewModel.fetchCrewRidingRecords(
                                                       _rankingListViewModel.rankingListCrewMy_view!.crewId!,
