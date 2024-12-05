@@ -60,9 +60,9 @@ class MyCrewRankingInfo {
     description = json['description'];
     color = json['color'];
     baseResortNickname = json['base_resort_nickname'];
-    resortTotalScore = json['resort_total_score']?.toInt();
+    resortTotalScore = json['resort_total_score']?.round();
     resortRank = json['resort_rank'];
-    overallTotalScore = json['overall_total_score']?.toInt();
+    overallTotalScore = json['overall_total_score']?.round();
     overallRank = json['overall_rank'];
     overallRankPercentage = json['overall_rank_percentage']?.toDouble();
     overallTierIconUrl = json['overall_tier_icon_url'];
@@ -153,11 +153,11 @@ class CrewRanking {
     description = json['description'];
     color = json['color'];
     baseResortNickname = json['base_resort_nickname'];
-    overallTotalScore = json['overall_total_score']?.toInt();
+    overallTotalScore = json['overall_total_score']?.round();
     overallRank = json['overall_rank'];
     overallRankPercentage = json['overall_rank_percentage']?.toDouble();
     overallTierIconUrl = json['overall_tier_icon_url'];
-    resortTotalScore = json['resort_total_score']?.toInt();
+    resortTotalScore = json['resort_total_score']?.round();
     resortRank = json['resort_rank'];
   }
 

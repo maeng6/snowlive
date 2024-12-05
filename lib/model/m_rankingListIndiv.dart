@@ -43,11 +43,11 @@ class MyRankingInfo {
     profileImageUrlUser = json['profile_image_url_user'] ?? ''; // 빈 문자열
     resortNickname = json['resort_nickname'] ?? '-'; // 기본값 'N/A'
     crewName = json['crew_name'] ?? ''; // 기본값 'No Crew'
-    overallTotalScore = json['overall_total_score']?.toInt() ?? 0; // 기본값 0
+    overallTotalScore = json['overall_total_score']?.round() ?? 0; // 기본값 0
     overallRank = json['overall_rank'] ?? 0; // 기본값 0
     overallRankPercentage = json['overall_rank_percentage']?.toDouble() ?? 0.0; // 기본값 0.0
     overallTierIconUrl = json['overall_tier_icon_url'] ?? ''; // 빈 문자열
-    resortTotalScore = json['resort_total_score']?.toInt() ?? 0; // 기본값 0
+    resortTotalScore = json['resort_total_score']?.round() ?? 0; // 기본값 0
     resortRank = json['resort_rank'] ?? 0; // 기본값 0
   }
 }
@@ -103,11 +103,11 @@ class RankingUser {
     profileImageUrlUser = json['profile_image_url_user'];
     resortNickname = json['resort_nickname'];
     crewName = json['crew_name'];
-    overallTotalScore = json['overall_total_score']?.toInt();
+    overallTotalScore = json['overall_total_score']?.round();
     overallRank = json['overall_rank'];
     overallRankPercentage = json['overall_rank_percentage']?.toDouble();
     overallTierIconUrl = json['overall_tier_icon_url'];
-    resortTotalScore = json['resort_total_score']?.toInt();
+    resortTotalScore = json['resort_total_score']?.round();
     resortRank = json['resort_rank'];
   }
 }

@@ -1,152 +1,255 @@
+import 'package:auto_size_text/auto_size_text.dart';
+import 'package:com.snowlive/data/imgaUrls/Data_url_image.dart';
 import 'package:com.snowlive/data/snowliveDesignStyle.dart';
+import 'package:com.snowlive/routes/routes.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewMemberRankingList.dart';
+import 'package:com.snowlive/viewmodel/friend/vm_friendDetail.dart';
+import 'package:com.snowlive/viewmodel/vm_user.dart';
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:shimmer/shimmer.dart';
 
 class CrewMemberRankingListView extends StatelessWidget {
+  final UserViewModel _userViewModel = Get.find<UserViewModel>();
   final CrewRankingListViewModel _crewRankingListViewModel = Get.find<CrewRankingListViewModel>();
+  final FriendDetailViewModel _friendDetailViewModel = Get.find<FriendDetailViewModel>();
 
   @override
   Widget build(BuildContext context) {
     final Size _size = MediaQuery.of(context).size;
 
-    return SingleChildScrollView(
-      child: Obx(() {
+    return Scaffold(
+      backgroundColor: SDSColor.gray50,
+      appBar: AppBar(
+        backgroundColor: SDSColor.gray50,
+        surfaceTintColor: Colors.transparent,
+        toolbarHeight: 44,
+        elevation: 0.0,
+        leading: GestureDetector(
+          child: Image.asset(
+            'assets/imgs/icons/icon_snowLive_back.png',
+            scale: 4,
+            width: 26,
+            height: 26,
+          ),
+          onTap: () {
+            Get.back();
+          },
+        ),
+        centerTitle: true,
+        title: Text(
+          '크루원 랭킹',
+          style: SDSTextStyle.extraBold.copyWith(
+            color: SDSColor.gray900,
+            fontSize: 18,
+          ),
+        ),
+      ),
+      body: Obx(() {
         // 로딩 중일 때 표시할 위젯
         if (_crewRankingListViewModel.isLoading.value) {
           return Center(
-            child: CircularProgressIndicator(),
+            child: Container(
+              width: 24,
+              height: 24,
+              child: CircularProgressIndicator(
+                strokeWidth: 4,
+                backgroundColor: SDSColor.gray100,
+                color: SDSColor.gray300.withOpacity(0.6),
+              ),
+            ),
           );
         }
 
         // 랭킹 리스트가 비어있을 경우
         if (_crewRankingListViewModel.crewRankings.isEmpty) {
-          return Center(
-            child: Padding(
-              padding: const EdgeInsets.only(top: 50),
-              child: Column(
-                children: [
-                  Image.asset(
-                    'assets/imgs/icons/icon_nodata.png',
+          return SizedBox(
+            height: _size.height,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Center(
+                  child: Image.asset(
+                    'assets/imgs/icons/icon_no_member.png',
                     width: 100,
                   ),
-                  SizedBox(height: 12),
-                  Text(
-                    '크루 랭킹 정보가 없습니다.',
-                    style: SDSTextStyle.regular.copyWith(
-                      fontSize: 14,
-                      color: SDSColor.gray600,
+                ),
+                SizedBox(height: 12),
+                Center(
+                  child: Padding(
+                    padding: const EdgeInsets.only(bottom: 50),
+                    child: Text(
+                      '랭킹전에 참여한 크루원이 없습니다',
+                      style: TextStyle(fontSize: 14, color: Color(0xFF666666)),
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           );
         }
 
         // 랭킹 리스트 렌더링
-        return Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-              child: Text(
-                '크루원 랭킹 (${_crewRankingListViewModel.crewRankings.length}명)',
-                style: SDSTextStyle.bold.copyWith(
-                  fontSize: 16,
-                  color: SDSColor.snowliveBlack,
-                ),
-              ),
-            ),
-            ListView.builder(
-              shrinkWrap: true,
-              physics: NeverScrollableScrollPhysics(),
-              itemCount: _crewRankingListViewModel.crewRankings.length,
-              itemBuilder: (context, index) {
-                final ranking = _crewRankingListViewModel.crewRankings[index];
+        return SingleChildScrollView(
+          child: Column(
+            children: [
+              ListView.builder(
+                shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(),
+                itemCount: _crewRankingListViewModel.crewRankings.length,
+                itemBuilder: (context, index) {
+                  final ranking = _crewRankingListViewModel.crewRankings[index];
 
-                return Column(
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                      child: Row(
-                        children: [
-                          // 순위 표시
-                          Text(
-                            '${index + 1}',
-                            style: SDSTextStyle.regular.copyWith(
-                              fontSize: 14,
-                              color: SDSColor.snowliveBlue,
-                            ),
-                          ),
-                          SizedBox(width: 16),
-                          // 프로필 이미지
-                          ranking.profileImageUrlUser?.isNotEmpty == true
-                              ? ClipOval(
-                            child: Image.network(
-                              ranking.profileImageUrlUser!,
-                              width: 40,
+                  return Column(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                        child: Row(
+                          children: [
+                            // 순위 표시
+                            Container(
+                              width: 24,
                               height: 40,
-                              fit: BoxFit.cover,
-                              errorBuilder: (context, error, stackTrace) {
-                                return Image.asset(
-                                  'assets/imgs/profile/img_profile_default_circle.png',
-                                  width: 40,
-                                  height: 40,
-                                );
-                              },
-                            ),
-                          )
-                              : Image.asset(
-                            'assets/imgs/profile/img_profile_default_circle.png',
-                            width: 40,
-                            height: 40,
-                          ),
-                          SizedBox(width: 16),
-                          // 사용자 정보
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  ranking.displayName ?? 'Unknown',
-                                  style: SDSTextStyle.regular.copyWith(
-                                    fontSize: 14,
-                                    color: SDSColor.gray900,
-                                  ),
-                                ),
-                                if (ranking.stateMsg != null && ranking.stateMsg!.isNotEmpty)
-                                  Text(
-                                    ranking.stateMsg!,
-                                    style: SDSTextStyle.regular.copyWith(
-                                      fontSize: 12,
-                                      color: SDSColor.gray700,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Expanded(
+                                    child: Center(
+                                      child: AutoSizeText(
+                                        '${index + 1}',
+                                        style: SDSTextStyle.bold.copyWith(
+                                          fontSize: 14,
+                                          color: Color(0xFF111111),
+                                        ),
+                                        maxLines: 1,
+                                        minFontSize: 6,
+                                      ),
                                     ),
                                   ),
-                              ],
+                                ],
+                              ),
                             ),
-                          ),
-                          // 점수
-                          Text(
-                            '${ranking.totalScore?.toStringAsFixed(1) ?? '0.0'}',
-                            style: SDSTextStyle.bold.copyWith(
-                              fontSize: 14,
-                              color: SDSColor.gray800,
+                            SizedBox(width: 16),
+                            // 프로필 이미지
+                            GestureDetector(
+                              onTap: () async {
+                                Get.toNamed(AppRoutes.friendDetail);
+                                await _friendDetailViewModel.fetchFriendDetailInfo(
+                                  userId: _userViewModel.user.user_id,
+                                  friendUserId: ranking.userId!,
+                                  season: _friendDetailViewModel.seasonDate,
+                                );
+                              },
+                              child: Container(
+                                width: 32,
+                                height: 32,
+                                decoration: BoxDecoration(
+                                  border: Border.all(
+                                    color: SDSColor.gray100,
+                                    width: 1,
+                                  ),
+                                  borderRadius: BorderRadius.circular(50),
+                                ),
+                                child: ranking.profileImageUrlUser?.isNotEmpty == true
+                                    ? ExtendedImage.network(
+                                  ranking.profileImageUrlUser!,
+                                  enableMemoryCache: true,
+                                  shape: BoxShape.circle,
+                                  borderRadius: BorderRadius.circular(8),
+                                  cacheHeight: 100,
+                                  width: 32,
+                                  height: 32,
+                                  cacheWidth: 100,
+                                  fit: BoxFit.cover,
+                                  loadStateChanged: (ExtendedImageState state) {
+                                    switch (state.extendedImageLoadState) {
+                                      case LoadState.loading:
+                                        return Shimmer.fromColors(
+                                          baseColor: SDSColor.gray200!,
+                                          highlightColor: SDSColor.gray50!,
+                                          child: Container(
+                                            width: 32,
+                                            height: 32,
+                                            decoration: BoxDecoration(
+                                              color: Colors.white,
+                                              borderRadius: BorderRadius.circular(8),
+                                            ),
+                                          ),
+                                        );
+                                      case LoadState.completed:
+                                        return state.completedWidget;
+                                      case LoadState.failed:
+                                        return Image.asset(
+                                          'assets/imgs/profile/img_profile_default_circle.png',
+                                          width: 32,
+                                          height: 32,
+                                          fit: BoxFit.cover,
+                                        );
+                                    }
+                                  },
+                                )
+                                    : Image.asset(
+                                  'assets/imgs/profile/img_profile_default_circle.png',
+                                  width: 32,
+                                  height: 32,
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
                             ),
-                          ),
-                        ],
+                            SizedBox(width: 16),
+                            // 사용자 정보
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    ranking.displayName ?? 'Unknown',
+                                    style: SDSTextStyle.regular.copyWith(
+                                      fontSize: 14,
+                                      color: SDSColor.gray900,
+                                    ),
+                                  ),
+                                  if (ranking.stateMsg != null && ranking.stateMsg!.isNotEmpty)
+                                    Text(
+                                      ranking.stateMsg!,
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: SDSTextStyle.regular.copyWith(
+                                        fontSize: 12,
+                                        color: SDSColor.gray500,
+                                      ),
+                                    ),
+                                ],
+                              ),
+                            ),
+                            // 점수
+                            Text(
+                              '${ranking.totalScore?.round() ?? '0'}점',
+                              style: SDSTextStyle.regular.copyWith(
+                                color: Color(0xFF111111),
+                                fontSize: 16,
+                              ),
+                            ),
+                            SizedBox(width: 12),
+                            Transform.translate(
+                              offset: Offset(4, 1),
+                              child: ExtendedImage.network(
+                                '${ranking.tierIconUrl}',
+                                enableMemoryCache: true,
+                                fit: BoxFit.cover,
+                                width: 36,
+                              ),
+                            )
+                          ],
+                        ),
                       ),
-                    ),
-                    if (index != _crewRankingListViewModel.crewRankings.length - 1)
-                      Divider(
-                        color: SDSColor.gray200,
-                        thickness: 1,
-                        height: 1,
-                      ),
-                  ],
-                );
-              },
-            ),
-          ],
+                    ],
+                  );
+                },
+              ),
+            ],
+          ),
         );
       }),
     );

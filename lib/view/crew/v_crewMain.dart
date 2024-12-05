@@ -199,7 +199,6 @@ class CrewMainView extends StatelessWidget {
                     child: Row(
                       children: [
                         _buildTabButton('홈', '홈'),
-                        _buildTabButton('랭킹', '랭킹'),
                         _buildTabButton('멤버', '멤버'),
                       ],
                     ),
@@ -244,8 +243,6 @@ class CrewMainView extends StatelessWidget {
                     () {
                   if (_crewDetailViewModel.currentTab.value == '홈') {
                     return CrewHomeView();
-                  } else if(_crewDetailViewModel.currentTab.value == '랭킹'){
-                    return CrewMemberRankingListView();
                   } else {
                     return CrewMemberListView();
                   }

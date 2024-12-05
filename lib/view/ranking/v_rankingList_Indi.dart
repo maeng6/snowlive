@@ -1048,22 +1048,22 @@ class RankingIndiView extends StatelessWidget {
                                     child: Row(
                                       mainAxisAlignment: MainAxisAlignment.center,
                                       children: [
-                                          Expanded(
-                                            child: Center(
-                                              child:
-                                              AutoSizeText(
-                                                (_rankingListViewModel.resortOrTotal=='개별스키장')
-                                                    ?'${document.resortRank??''}'
-                                                    :'${document.overallRank??''}',
-                                                style: SDSTextStyle.bold.copyWith(
-                                                    fontSize: 14,
-                                                    color: Color(0xFF111111)
-                                                ),
-                                                maxLines: 1,
-                                                minFontSize: 6,
+                                        Expanded(
+                                          child: Center(
+                                            child:
+                                            AutoSizeText(
+                                              (_rankingListViewModel.resortOrTotal=='개별스키장')
+                                                  ?'${document.resortRank??''}'
+                                                  :'${document.overallRank??''}',
+                                              style: SDSTextStyle.bold.copyWith(
+                                                  fontSize: 14,
+                                                  color: Color(0xFF111111)
                                               ),
+                                              maxLines: 1,
+                                              minFontSize: 6,
                                             ),
                                           ),
+                                        ),
 
                                       ],
                                     ),
@@ -1233,14 +1233,14 @@ class RankingIndiView extends StatelessWidget {
                                       Row(
                                         children: [
                                           if(_rankingListViewModel.resortOrTotal == '개별스키장' && document.resortTotalScore != null)
-                                            Text('${document.resortTotalScore!.toInt()}점',
+                                            Text('${document.resortTotalScore!}점',
                                               style: SDSTextStyle.regular.copyWith(
                                                 color: Color(0xFF111111),
                                                 fontSize: 16,
                                               ),
                                             ),
                                           if(_rankingListViewModel.resortOrTotal == '전체스키장' && document.overallTotalScore != null)
-                                            Text('${document.overallTotalScore!.toInt()}점',
+                                            Text('${document.overallTotalScore!}점',
                                               style: SDSTextStyle.regular.copyWith(
                                                 color: Color(0xFF111111),
                                                 fontSize: 16,

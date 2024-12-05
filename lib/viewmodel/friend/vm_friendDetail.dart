@@ -296,9 +296,9 @@ class FriendDetailViewModel extends GetxController {
     ApiResponse response = await FriendAPI().acceptFriend(body);
     CustomFullScreenDialog.cancelDialog();
     if(response.success)
-      Get.snackbar('친구수락 성공', '상대방에게도 내가 친구로 등록됩니다.');
+      print('친구수락 성공');
     if(!response.success)
-      Get.snackbar('앗!', '잠시후 다시 시도해주세요.');
+      print('친구수락 실패');
 
   }
 

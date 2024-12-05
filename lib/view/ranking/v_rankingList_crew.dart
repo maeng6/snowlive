@@ -73,7 +73,7 @@ class RankingCrewView extends StatelessWidget {
                 color: SDSColor.snowliveWhite,
                 onRefresh: () async {
                   if(_rankingListViewModel.resortOrTotal=='전체스키장')
-                  await _rankingListViewModel.toggleDataDayOrTotal_refresh();
+                    await _rankingListViewModel.toggleDataDayOrTotal_refresh();
                   if(_rankingListViewModel.resortOrTotal=='개별스키장')
                     await _rankingListViewModel.toggleDataDayOrTotal_refresh(resortNum: _rankingListViewModel.selectedResortNum);
 
@@ -118,10 +118,6 @@ class RankingCrewView extends StatelessWidget {
                                                     _rankingListViewModel.rankingListCrewMy_view!.crewId!,
                                                     _friendDetailViewModel.seasonDate
                                                 );
-                                                await _crewRankingListViewModel.fetchCrewRankings(
-                                                    crewId: _rankingListViewModel.rankingListCrewMy_view!.crewId!,
-                                                    userId: _userViewModel.user.user_id!,
-                                                    season:  _friendDetailViewModel.seasonDate);
                                                 if(_userViewModel.user.crew_id == _rankingListViewModel.rankingListCrewMy_view!.crewId!)
                                                   await _crewRecordRoomViewModel.fetchCrewRidingRecords(
                                                       _rankingListViewModel.rankingListCrewMy_view!.crewId!,
@@ -1060,10 +1056,7 @@ class RankingCrewView extends StatelessWidget {
                                       document.crewId!,
                                       _friendDetailViewModel.seasonDate
                                   );
-                                  await _crewRankingListViewModel.fetchCrewRankings(
-                                      crewId: document.crewId!,
-                                      userId: _userViewModel.user.user_id!,
-                                      season:  _friendDetailViewModel.seasonDate);
+
                                   if(_userViewModel.user.crew_id ==   _crewDetailViewModel.crewDetailInfo.crewId!)
                                     await _crewRecordRoomViewModel.fetchCrewRidingRecords(
                                         _crewDetailViewModel.crewDetailInfo.crewId!,
@@ -1080,20 +1073,20 @@ class RankingCrewView extends StatelessWidget {
                                         mainAxisAlignment: MainAxisAlignment.center,
                                         children: [
                                           Expanded(
-                                              child: Center(
-                                                child: AutoSizeText(
-                                                  (_rankingListViewModel.resortOrTotal=='개별스키장')
-                                                      ?'${(document.resortRank?? '')}'
-                                                      :'${(document.overallRank??'')}',
-                                                  style: SDSTextStyle.bold.copyWith(
-                                                      fontSize: 14,
-                                                      color: Color(0xFF111111)
-                                                  ),
-                                                  maxLines: 1,
-                                                  minFontSize: 6,
+                                            child: Center(
+                                              child: AutoSizeText(
+                                                (_rankingListViewModel.resortOrTotal=='개별스키장')
+                                                    ?'${(document.resortRank?? '')}'
+                                                    :'${(document.overallRank??'')}',
+                                                style: SDSTextStyle.bold.copyWith(
+                                                    fontSize: 14,
+                                                    color: Color(0xFF111111)
                                                 ),
+                                                maxLines: 1,
+                                                minFontSize: 6,
                                               ),
                                             ),
+                                          ),
 
                                         ],
                                       ),
@@ -1222,7 +1215,7 @@ class RankingCrewView extends StatelessWidget {
                                                   child: Container(
                                                     child:
                                                     (document.description != null)
-                                                    ? Text(
+                                                        ? Text(
                                                       maxLines: 1,
                                                       overflow: TextOverflow.ellipsis,
                                                       ' · ${document.description}',
@@ -1231,7 +1224,7 @@ class RankingCrewView extends StatelessWidget {
                                                           color: SDSColor.gray500
                                                       ),
                                                     )
-                                                    : Container(),
+                                                        : Container(),
                                                   ),
                                                 ),
                                               ],
@@ -1244,14 +1237,14 @@ class RankingCrewView extends StatelessWidget {
                                     Row(
                                       children: [
                                         if (_rankingListViewModel.resortOrTotal == '개별스키장' && document.resortTotalScore != null)
-                                          Text('${document.resortTotalScore!.toInt()}점',
+                                          Text('${document.resortTotalScore!}점',
                                             style: SDSTextStyle.regular.copyWith(
                                               color: SDSColor.gray900,
                                               fontSize: 16,
                                             ),
                                           ),
                                         if (_rankingListViewModel.resortOrTotal == '전체스키장' && document.overallTotalScore != null)
-                                          Text('${document.overallTotalScore!.toInt()}점',
+                                          Text('${document.overallTotalScore!}점',
                                             style: SDSTextStyle.regular.copyWith(
                                               color: SDSColor.gray900,
                                               fontSize: 16,
@@ -1288,7 +1281,7 @@ class RankingCrewView extends StatelessWidget {
                                       Padding(
                                         padding: EdgeInsets.only(left: 4, right: 6),
                                         child: Row(
-                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          mainAxisAlignment: MainAxisAlignment.start,
                                           children: [
                                             Text(_rankingListViewModel.myBox_title,
                                               style: SDSTextStyle.bold.copyWith(
@@ -1304,10 +1297,6 @@ class RankingCrewView extends StatelessWidget {
                                                     _rankingListViewModel.rankingListCrewMy_view!.crewId!,
                                                     _friendDetailViewModel.seasonDate
                                                 );
-                                                await _crewRankingListViewModel.fetchCrewRankings(
-                                                    crewId: _rankingListViewModel.rankingListCrewMy_view!.crewId!,
-                                                    userId: _userViewModel.user.user_id!,
-                                                    season:  _friendDetailViewModel.seasonDate);
                                                 if(_userViewModel.user.crew_id == _rankingListViewModel.rankingListCrewMy_view!.crewId!)
                                                   await _crewRecordRoomViewModel.fetchCrewRidingRecords(
                                                       _rankingListViewModel.rankingListCrewMy_view!.crewId!,
@@ -1421,7 +1410,7 @@ class RankingCrewView extends StatelessWidget {
                                             width: 80,
                                             height: 80,
                                             decoration: BoxDecoration(
-                                              color: Color(int.parse(_rankingListViewModel.rankingListCrewMy_view!.color!)).withOpacity(0.3),
+                                              color: Color(0xFFDEDEDE),
                                               borderRadius: BorderRadius.circular(16),
                                             ),
                                             padding: EdgeInsets.all(2),

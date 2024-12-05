@@ -154,6 +154,13 @@ class _MyAppState extends State<MyApp> {
               buttonColor: Colors.transparent
           ),
         ),
+        builder: (context, child) {
+          // textScaleFactor를 1.0으로 고정
+          return MediaQuery(
+            data: MediaQuery.of(context).copyWith(textScaler: TextScaler.linear(1.0)),
+            child: child!,
+          );
+        },
         home: FutureBuilder(
           future: _splashController.getSplashUrlandGotoMainHome(),
           builder: (context, snapshot){

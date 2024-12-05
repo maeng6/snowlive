@@ -23,6 +23,9 @@ class CrewRanking {
   String? stateMsg;
   bool? withinBoundary;
   bool? revealWb;
+  int? overallRank;
+  double? overallRankPercentage;
+  String? tierIconUrl;
 
   CrewRanking({
     this.userId,
@@ -32,6 +35,9 @@ class CrewRanking {
     this.stateMsg,
     this.withinBoundary,
     this.revealWb,
+    this.overallRank,
+    this.overallRankPercentage,
+    this.tierIconUrl,
   });
 
   // JSON 데이터를 파싱하는 메서드
@@ -43,5 +49,8 @@ class CrewRanking {
     stateMsg = json['state_msg'];
     withinBoundary = json['within_boundary'];
     revealWb = json['reveal_wb'];
+    overallRank = json['overall_rank'];
+    overallRankPercentage = (json['overall_rank_percentage'] as num?)?.toDouble();
+    tierIconUrl = json['tier_icon_url'];
   }
 }

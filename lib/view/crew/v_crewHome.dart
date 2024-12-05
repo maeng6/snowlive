@@ -5,9 +5,11 @@ import 'package:com.snowlive/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewApply.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewDetail.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewMemberList.dart';
+import 'package:com.snowlive/viewmodel/crew/vm_crewMemberRankingList.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewNotice.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewRecordRoom.dart';
 import 'package:com.snowlive/viewmodel/friend/vm_friendDetail.dart';
+import 'package:com.snowlive/viewmodel/ranking/vm_rankingList.dart';
 import 'package:com.snowlive/viewmodel/resortHome/vm_alarmCenter.dart';
 import 'package:com.snowlive/viewmodel/vm_user.dart';
 import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
@@ -25,11 +27,11 @@ class CrewHomeView extends StatelessWidget {
   final CrewDetailViewModel _crewDetailViewModel = Get.find<CrewDetailViewModel>();
   final UserViewModel _userViewModel = Get.find<UserViewModel>();
   final CrewMemberListViewModel _crewMemberListViewModel = Get.find<CrewMemberListViewModel>();
-  final CrewRecordRoomViewModel _crewRecordRoomViewModel = Get.find<CrewRecordRoomViewModel>();
   final CrewApplyViewModel _crewApplyViewModel = Get.find<CrewApplyViewModel>();
   final CrewNoticeViewModel _crewNoticeViewModel = Get.find<CrewNoticeViewModel>();
-  final AlarmCenterViewModel _alarmCenterViewModel = Get.find<AlarmCenterViewModel>();
   final FriendDetailViewModel _friendDetailViewModel = Get.find<FriendDetailViewModel>();
+  final RankingListViewModel _rankingListViewModel = Get.find<RankingListViewModel>();
+  final CrewRankingListViewModel _crewRankingListViewModel = Get.find<CrewRankingListViewModel>();
 
 
   @override
@@ -407,31 +409,67 @@ class CrewHomeView extends StatelessWidget {
                             ),
                           ),
                           Expanded(child: SizedBox()),
-                          if(_userViewModel.user.crew_id == _crewDetailViewModel.crewDetailInfo.crewId)
                             (_crewDetailViewModel.isLoading == true)
                                 ? SizedBox.shrink()
-                                : TextButton(
-                              onPressed: () async{
-                                Get.toNamed(AppRoutes.crewRecordRoom);
-                              },
-                              style: ElevatedButton.styleFrom(
-                                shadowColor: Colors.transparent,
-                                overlayColor: Colors.transparent,
-                                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 3),
-                                minimumSize: Size(36, 32),
-                                backgroundColor: SDSColor.snowliveWhite,
-                                side: BorderSide(
-                                    color: SDSColor.gray200
-                                ),
-                                elevation: 0,
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(5)),
-                              ),
-                              child: Text(
-                                '기록실',
-                                style: SDSTextStyle.bold.copyWith(fontSize: 13, color: SDSColor.gray900),
+                                : Row(
+                              children: [
+                                TextButton(
+                                  onPressed: () async{
+                                    Get.toNamed(AppRoutes.crewMemberRankingList);
+                                    await _crewRankingListViewModel.fetchCrewRankings(
+                                        crewId: _crewDetailViewModel.crewDetailInfo.crewId!,
+                                        userId: _userViewModel.user.user_id!,
+                                        season:  _friendDetailViewModel.seasonDate);
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    shadowColor: Colors.transparent,
+                                    overlayColor: Colors.transparent,
+                                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 3),
+                                    minimumSize: Size(36, 32),
+                                    backgroundColor: SDSColor.snowliveWhite,
+                                    side: BorderSide(
+                                        color: SDSColor.gray200
+                                    ),
+                                    elevation: 0,
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(5)),
+                                  ),
+                                  child: Text(
+                                    '크루원 랭킹',
+                                    style: SDSTextStyle.bold.copyWith(fontSize: 13, color: SDSColor.gray900),
 
-                              ),
+                                  ),
+                                ),
+                                if(_userViewModel.user.crew_id == _crewDetailViewModel.crewDetailInfo.crewId)
+                                Row(
+                                  children: [
+                                    SizedBox(width: 10,),
+                                    TextButton(
+                                      onPressed: () async{
+                                        Get.toNamed(AppRoutes.crewRecordRoom);
+                                      },
+                                      style: ElevatedButton.styleFrom(
+                                        shadowColor: Colors.transparent,
+                                        overlayColor: Colors.transparent,
+                                        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 3),
+                                        minimumSize: Size(36, 32),
+                                        backgroundColor: SDSColor.snowliveWhite,
+                                        side: BorderSide(
+                                            color: SDSColor.gray200
+                                        ),
+                                        elevation: 0,
+                                        shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(5)),
+                                      ),
+                                      child: Text(
+                                        '기록실',
+                                        style: SDSTextStyle.bold.copyWith(fontSize: 13, color: SDSColor.gray900),
+
+                                      ),
+                                    ),
+                                  ],
+                                )
+                              ],
                             ),
                         ],
                       ),

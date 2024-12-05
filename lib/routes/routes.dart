@@ -6,6 +6,7 @@ import 'package:com.snowlive/view/community/v_community_main.dart';
 import 'package:com.snowlive/view/crew/v_crewApplication_crew.dart';
 import 'package:com.snowlive/view/crew/v_crewApplication_user.dart';
 import 'package:com.snowlive/view/crew/v_crewDescription.dart';
+import 'package:com.snowlive/view/crew/v_crewMemberRanking.dart';
 import 'package:com.snowlive/view/crew/v_crewMemberSettings.dart';
 import 'package:com.snowlive/view/crew/v_crewNotice.dart';
 import 'package:com.snowlive/view/crew/v_crewNoticeList.dart';
@@ -108,6 +109,7 @@ class AppRoutes {
   static const String iosSettingGuide = '/iosSettingGuide';
   static const String treasureHunt = '/treasureHunt';
   static const String treasureHuntMyPage = '/treasureHuntList';
+  static const String crewMemberRankingList = '/crewMemberRankingList';
 
 
 
@@ -350,6 +352,10 @@ class AppRoutes {
     GetPage(
       name: treasureHuntMyPage,
       page: () => TreasureHuntMyPageView(),
+    ),
+    GetPage(
+      name: crewMemberRankingList,
+      page: () => CrewMemberRankingListView(),
     ),
   ];
 }
