@@ -192,7 +192,8 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                     borderRadius: BorderRadius.circular(50),
                     child: FloatingActionButton.extended(
                         onPressed: () async {
-                          if (_userViewModel.user.within_boundary == true) {
+                          if (_userViewModel.user.within_boundary == true &&
+                              _resortHomeViewModel.resort_info['fullname'] != null) {
                             HapticFeedback.lightImpact();
                             Get.dialog(
                               WillPopScope(
@@ -310,6 +311,128 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                               barrierDismissible: false,
                             );
                           }
+                          else if (_userViewModel.user.within_boundary == true &&
+                              _resortHomeViewModel.resort_info['fullname'] == null) {
+                            HapticFeedback.lightImpact();
+                            Get.dialog(
+                              WillPopScope(
+                                onWillPop: () async => false,
+                                child: AlertDialog(
+                                  backgroundColor: SDSColor.snowliveWhite,
+                                  contentPadding: EdgeInsets.only(bottom: 0, left: 28, right: 28, top: 30),
+                                  elevation: 0,
+                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                                  buttonPadding: EdgeInsets.symmetric(horizontal: 24, vertical: 0),
+                                  content:
+                                  Container(
+                                    width: 288,
+                                    height: 190,
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          '라이브를 재시작 하거나 종료해 주세요',
+                                          style: SDSTextStyle.regular.copyWith(fontSize: 14, height: 1.4, color: SDSColor.gray600),
+                                          textAlign: TextAlign.center,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  actions: [
+                                    Container(
+                                      width: _size.width,
+                                      height: 48,
+                                      decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(5),
+                                          color: SDSColor.snowliveBlue
+                                      ),
+                                      child: TextButton(
+                                        onPressed: () async{
+                                          HapticFeedback.lightImpact();
+                                          CustomFullScreenDialog.showDialog();
+                                          await _resortHomeViewModel.startForegroundLocationService(user_id: _userViewModel.user.user_id);
+                                          await _resortHomeViewModel.startBackgroundLocationService(user_id: _userViewModel.user.user_id);
+                                          await _userViewModel.updateUserModel_api(_userViewModel.user.user_id);
+                                          CustomFullScreenDialog.cancelDialog();
+                                          Get.back();
+                                          if (_userViewModel.user.crew_id != null) {
+                                            await _resortHomeViewModel.checkAndShowTreasureHuntPopup(
+                                              userId: _userViewModel.user.user_id!,
+                                              userCrewId: _userViewModel.user.crew_id,
+                                            );
+                                          } else {
+                                            await _resortHomeViewModel.checkAndShowTreasureHuntPopup(
+                                              userId: _userViewModel.user.user_id!,
+                                            );
+                                          }
+
+                                          if(_userViewModel.user.within_boundary == false){
+                                            Get.snackbar(
+                                              '라이브 불가 지역입니다',
+                                              '스키장 내에서만 라이브가 활성화됩니다.',
+                                              margin: EdgeInsets.only(right: 20, left: 20, bottom: 12),
+                                              snackPosition: SnackPosition.TOP,
+                                              backgroundColor: SDSColor.snowliveWhite.withOpacity(0.2),
+                                              colorText: SDSColor.snowliveBlack,
+                                              duration: Duration(milliseconds: 3000),
+                                            );
+                                          }
+                                        },
+                                        child: Text(
+                                          '라이브 재시작하기',
+                                          style: SDSTextStyle.bold.copyWith(
+                                            fontSize: 16,
+                                            color: SDSColor.snowliveWhite,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: 16),
+                                      child: Column(
+                                        children: [
+                                          Padding(
+                                            padding: const EdgeInsets.only(top: 8.0),
+                                            child: Container(
+                                              width: _size.width,
+                                              height: 48,
+                                              decoration: BoxDecoration(
+                                                  borderRadius: BorderRadius.circular(5),
+                                                  color: SDSColor.snowliveWhite
+                                              ),
+                                              child: TextButton(
+                                                onPressed: () async {
+                                                  CustomFullScreenDialog.showDialog();
+                                                  await _resortHomeViewModel.liveOff({
+                                                    "user_id":_userViewModel.user.user_id
+                                                  }, _userViewModel.user.user_id);
+                                                  await _userViewModel.updateUserModel_api(_userViewModel.user.user_id);
+                                                  await _resortHomeViewModel.stopForegroundLocationService();
+                                                  await _resortHomeViewModel.stopBackgroundLocationService();
+                                                  CustomFullScreenDialog.cancelDialog();
+                                                  Get.back();
+                                                  print('라이브 OFF');
+                                                },
+                                                child: Text(
+                                                  '라이브 종료',
+                                                  style: SDSTextStyle.bold.copyWith(
+                                                    fontSize: 16,
+                                                    color: SDSColor.gray900,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              barrierDismissible: false,
+                            );
+                          }
                           else if(_userViewModel.user.within_boundary == false) {
                             HapticFeedback.lightImpact();
                             CustomFullScreenDialog.showDialog();
@@ -349,7 +472,7 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                             ? Text(
                           (_resortHomeViewModel.resort_info['fullname'] != null)
                               ? '${_resortHomeViewModel.resortHomeModel.todayTotalScore.toInt()}점 획득'
-                              : '라이브를 다시 시작해주세요',
+                              : '라이브를 다시 시작해 주세요',
                           style: SDSTextStyle.extraBold.copyWith(
                             fontSize: 16,
                             letterSpacing: -0.1,
@@ -357,7 +480,7 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                           ),
                         )
                             : Text(
-                          '라이브온하기',
+                          '라이브 시작하기',
                           style: SDSTextStyle.extraBold.copyWith(
                             fontSize: 16,
                             letterSpacing: -0.1,
@@ -1843,12 +1966,12 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                                                             child: Container(
                                                               padding: EdgeInsets.symmetric(horizontal: 12, vertical: 9),
                                                               decoration: BoxDecoration(
-                                                                color: SDSColor.snowliveWhite,
-                                                                borderRadius: BorderRadius.circular(20),
-                                                                border: Border.all(
-                                                                    color: SDSColor.gray300,
-                                                                  width: 1
-                                                                )
+                                                                  color: SDSColor.snowliveWhite,
+                                                                  borderRadius: BorderRadius.circular(20),
+                                                                  border: Border.all(
+                                                                      color: SDSColor.gray300,
+                                                                      width: 1
+                                                                  )
                                                               ),
                                                               child: Row(
                                                                 children: [

@@ -784,7 +784,6 @@ class ResortHomeViewModel extends GetxController {
     }catch(e) {
       print(e);
       isLoading_weather(false);
-      Get.snackbar('날씨 정보 수신 지연', '잠시후 다시 시도해주세요');
     }
     isLoading_weather(false);
   }
