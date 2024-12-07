@@ -413,7 +413,7 @@ class _TreasureHuntViewState extends State<TreasureHuntView> {
                             ),
                           ),
                         ),
-                        SizedBox(height: 10),
+                        SizedBox(height: 6),
                         StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
                           stream: _resortHomeViewModel.infoStream_treasureHunt_findList.value,
                           builder: (context, findListSnapshot) {
@@ -480,62 +480,71 @@ class _TreasureHuntViewState extends State<TreasureHuntView> {
                                   final String prizeName = memberData['prize_name'];
                                   final DateTime dateTime = (memberData['datetime'] as Timestamp).toDate();
 
-                                  return Padding(
-                                    padding: EdgeInsets.only(bottom: 16),
-                                    child: Container(
-                                      height: 48,
-                                      child: ListTile(
-                                        leading: ExtendedImage.network(
-                                          memberData['profile_image_url_user'],
-                                          shape: BoxShape.circle,
-                                          width: 48,
-                                          height: 48,
-                                          fit: BoxFit.cover,
-                                          loadStateChanged: (ExtendedImageState state) {
-                                            switch (state.extendedImageLoadState) {
-                                              case LoadState.loading:
-                                              // 로딩 중일 때 로딩 인디케이터를 표시
-                                                return Shimmer.fromColors(
-                                                  baseColor: SDSColor.gray200!,
-                                                  highlightColor: SDSColor.gray50!,
-                                                  child: Container(
-                                                    width: 48,
-                                                    height: 48,
-                                                    decoration: BoxDecoration(
-                                                      color: Colors.white,
-                                                      borderRadius: BorderRadius.circular(8),
-                                                    ),
+                                  return Container(
+                                    height: 54,
+                                    child: ListTile(
+                                      leading: ExtendedImage.network(
+                                        memberData['profile_image_url_user'],
+                                        shape: BoxShape.circle,
+                                        width: 40,
+                                        height: 40,
+                                        fit: BoxFit.cover,
+                                        loadStateChanged: (ExtendedImageState state) {
+                                          switch (state.extendedImageLoadState) {
+                                            case LoadState.loading:
+                                            // 로딩 중일 때 로딩 인디케이터를 표시
+                                              return Shimmer.fromColors(
+                                                baseColor: SDSColor.gray200!,
+                                                highlightColor: SDSColor.gray50!,
+                                                child: Container(
+                                                  width: 40,
+                                                  height: 40,
+                                                  decoration: BoxDecoration(
+                                                    color: Colors.white,
+                                                    borderRadius: BorderRadius.circular(8),
                                                   ),
-                                                );
-                                              case LoadState.completed:
-                                              // 로딩이 완료되었을 때 이미지 반환
-                                                return state.completedWidget;
-                                              case LoadState.failed:
-                                              // 로딩이 실패했을 때 대체 이미지 또는 다른 처리
-                                                return  ExtendedImage.network(
-                                                  '${profileImgUrlList[0].default_round}', // 대체 이미지 경로
-                                                  width: 48,
-                                                  height: 48,
-                                                  fit: BoxFit.cover,
-                                                );
-                                            }
-                                          },
+                                                ),
+                                              );
+                                            case LoadState.completed:
+                                            // 로딩이 완료되었을 때 이미지 반환
+                                              return state.completedWidget;
+                                            case LoadState.failed:
+                                            // 로딩이 실패했을 때 대체 이미지 또는 다른 처리
+                                              return  ExtendedImage.network(
+                                                '${profileImgUrlList[0].default_round}', // 대체 이미지 경로
+                                                width: 40,
+                                                height: 40,
+                                                fit: BoxFit.cover,
+                                              );
+                                          }
+                                        },
+                                      ),
+                                      title: Text(displayName,
+                                        style: SDSTextStyle.regular.copyWith(
+                                            fontSize: 14,
+                                            color: SDSColor.gray900
                                         ),
-                                        title: Text(displayName,
-                                          style: SDSTextStyle.regular.copyWith(
-                                              fontSize: 14,
-                                              color: SDSColor.gray900
-                                          ),),
-                                        subtitle: Text(prizeName,
-                                          style: SDSTextStyle.regular.copyWith(
-                                              fontSize: 14,
-                                              color: SDSColor.gray500
-                                          ),),
-                                        trailing: Text('${dateTime.hour}:${dateTime.minute}:${dateTime.second}',
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                      subtitle: Text('${dateTime.hour}:${dateTime.minute}:${dateTime.second}',
+                                        style: SDSTextStyle.regular.copyWith(
+                                            fontSize: 13,
+                                            color: SDSColor.gray500
+                                        ),
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                      trailing: Container(
+                                        width: 140,
+                                        child: Text(prizeName,
                                           style: SDSTextStyle.bold.copyWith(
                                               fontSize: 15,
                                               color: SDSColor.gray900
                                           ),
+                                          textAlign: TextAlign.end,
+                                          maxLines: 2,
+                                          overflow: TextOverflow.ellipsis,
                                         ),
                                       ),
                                     ),

@@ -35,6 +35,7 @@ class ResortHomeViewModel extends GetxController {
   var isLoading_bestFriend = true.obs;
   var isLoading_weather = true.obs;
   final Lock _lock = Lock();
+  RxBool _fetchResortHome_finish = false.obs;
   RxString _rankingGuideUrl_ios = ''.obs;
   RxString _rankingGuideUrl_aos = ''.obs;
   RxString _rankingComingSoonUrl = ''.obs;
@@ -88,6 +89,7 @@ class ResortHomeViewModel extends GetxController {
   Map get resort_info => _resort_info;
   Map get weatherInfo => _weatherInfo;
   bool get isSnackbarShown => _isSnackbarShown.value;
+  bool get fetchResortHome_finish => _fetchResortHome_finish.value;
   bool get isWeatherInfoExpanded => _isWeatherInfoExpanded.value;
   List<Map<String, dynamic>> get slope_info => _slope_info;
   List<Map<String, dynamic>> get treasure_hunt_info => _treasure_hunt_info;
@@ -764,9 +766,11 @@ class ResortHomeViewModel extends GetxController {
 
   Future<void> fetchResortHome(int userId) async {
     isLoading(true);
+    _fetchResortHome_finish(false);
     ApiResponse response = await ResortHomeAPI().fetchResortHomeData(userId);
     if(response.success)
       _resortHomeModel.value = ResortHomeModel.fromJson(response.data);
+    _fetchResortHome_finish(true);
     print('리조트홈 패치 완료');
     if(!response.success)
       Get.snackbar('Error', '데이터 로딩 실패');
