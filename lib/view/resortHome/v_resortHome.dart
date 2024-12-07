@@ -2022,7 +2022,7 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                                                                   Padding(
                                                                     padding: const EdgeInsets.only(right: 6),
                                                                     child: Text(
-                                                                      '더 알아보기',
+                                                                      '필수 설정하러 가기',
                                                                       style: SDSTextStyle.extraBold.copyWith(
                                                                           color: SDSColor.snowliveBlack,
                                                                           fontSize: 14

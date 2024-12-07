@@ -131,29 +131,55 @@ class CommunityMainView extends StatelessWidget {
                                     }
                                   }
 
-                                  return Stack(
+                                  return Row(
                                     children: [
                                       Container(
                                         width: (_size.width - 40) / 2,
                                         height: 40,
                                         child: ElevatedButton(
-                                          child: Text(
-                                            '행사·클리닉',
-                                            style: SDSTextStyle.extraBold.copyWith(
-                                              color: (_communityBulletinListViewModel.tapName == '행사·클리닉')
-                                                  ? SDSColor.gray900
-                                                  : SDSColor.gray900.withOpacity(0.2),
-                                              fontWeight: (_communityBulletinListViewModel.tapName == '행사·클리닉')
-                                                  ? FontWeight.w900
-                                                  : FontWeight.w300,
-                                              fontSize: 16,
-                                            ),
+                                          child: Row(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            children: [
+                                              Text(
+                                                '행사·클리닉',
+                                                style: SDSTextStyle.extraBold.copyWith(
+                                                  color: (_communityBulletinListViewModel.tapName == '행사·클리닉')
+                                                      ? SDSColor.gray900
+                                                      : SDSColor.gray900.withOpacity(0.2),
+                                                  fontWeight: (_communityBulletinListViewModel.tapName == '행사·클리닉')
+                                                      ? FontWeight.w900
+                                                      : FontWeight.w300,
+                                                  fontSize: 16,
+                                                ),
+                                              ),
+                                              if (showNewBadge)
+                                                Padding(
+                                                  padding: EdgeInsets.only(left: 4),
+                                                  child: Container(
+                                                    width: 20,
+                                                    height: 20,
+                                                    decoration: BoxDecoration(
+                                                      color: Color(0xFFD6382B),
+                                                      borderRadius: BorderRadius.circular(20),
+                                                    ),
+                                                    child: Center(
+                                                      child: Text(
+                                                        'N',
+                                                        style: SDSTextStyle.extraBold.copyWith(
+                                                          fontSize: 11,
+                                                          fontWeight: FontWeight.bold,
+                                                          color: Color(0xFFFFFFFF),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                            ],
                                           ),
                                           onPressed: () async{
                                             HapticFeedback.lightImpact();
-                                            _communityBulletinListViewModel.changeTap('행사·클리닉');
                                             await _alarmCenterViewModel.updateEventTabNotice(_userViewModel.user.user_id, false);
-
+                                            _communityBulletinListViewModel.changeTap('행사·클리닉');
                                           },
                                           style: ElevatedButton.styleFrom(
                                             splashFactory: NoSplash.splashFactory,
@@ -170,36 +196,13 @@ class CommunityMainView extends StatelessWidget {
                                           ),
                                         ),
                                       ),
-                                      if (showNewBadge)
-                                        Positioned(
-                                          top: 9,
-                                          right: 35,
-                                          child: Container(
-                                            width: 20,
-                                            height: 20,
-                                            decoration: BoxDecoration(
-                                              color: Color(0xFFD6382B),
-                                              borderRadius: BorderRadius.circular(20),
-                                            ),
-                                            child: Center(
-                                              child: Text(
-                                                'N',
-                                                style: SDSTextStyle.extraBold.copyWith(
-                                                  fontSize: 11,
-                                                  fontWeight: FontWeight.bold,
-                                                  color: Color(0xFFFFFFFF),
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        ),
                                     ],
                                   );
                                 },
                               ),
                             ),
                             Container(
-                              width: 86,
+                              width: 104,
                               height: 3,
                               color: (_communityBulletinListViewModel.tapName == '행사·클리닉')
                                   ? Color(0xFF111111)
