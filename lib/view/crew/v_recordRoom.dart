@@ -437,7 +437,7 @@ class CrewRecordRoomView extends StatelessWidget {
       children: [
         Text(
           '시간대별 라이딩 횟수',
-          style: SDSTextStyle.bold.copyWith(fontSize: 14, color: SDSColor.gray900),
+          style: SDSTextStyle.regular.copyWith(fontSize: 13, color: SDSColor.gray900),
         ),
         SizedBox(height: 12),
         if (timeCountInfo.isNotEmpty)  // timeCountInfo가 비어있지 않으면 그래프 표시
@@ -458,7 +458,7 @@ class CrewRecordRoomView extends StatelessWidget {
                     // 횟수가 0이 아닐 때만 표시
                     AutoSizeText(
                       passCount != 0 ? '$passCount' : '',
-                      style: SDSTextStyle.regular.copyWith(
+                      style: SDSTextStyle.bold.copyWith(
                         fontSize: 12,
                         color: SDSColor.gray900,
                       ),
@@ -470,7 +470,7 @@ class CrewRecordRoomView extends StatelessWidget {
                       padding: EdgeInsets.only(top: 4),
                       child: Container(
                         width: 16,
-                        height: 140 * barHeightRatio,  // 막대 높이를 비율에 따라 설정
+                        height: 100 * barHeightRatio,  // 막대 높이를 비율에 따라 설정
                         decoration: BoxDecoration(
                             color: SDSColor.blue200,
                             borderRadius: BorderRadius.only(
@@ -487,7 +487,7 @@ class CrewRecordRoomView extends StatelessWidget {
                           slotName,  // 시간대 텍스트
                           style: SDSTextStyle.regular.copyWith(
                               fontSize: 11,
-                              color: SDSColor.sBlue600,
+                              color: SDSColor.gray600,
                               height: 1.2
                           ),
                         ),

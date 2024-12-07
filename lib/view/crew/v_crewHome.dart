@@ -631,7 +631,7 @@ class CrewHomeView extends StatelessWidget {
                                   '총 라이딩 횟수',
                                   style: SDSTextStyle.regular.copyWith(
                                       color: SDSColor.gray900.withOpacity(0.5),
-                                      fontSize: 14
+                                      fontSize: 13
                                   ),
                                 ),
                                 Text(
@@ -678,7 +678,7 @@ class CrewHomeView extends StatelessWidget {
 
                                         return Padding(
                                           padding: (slopeData != _crewDetailViewModel.countInfo.last)
-                                              ? EdgeInsets.only(bottom: 8, top: 4)
+                                              ? EdgeInsets.only(bottom: 2, top: 4)
                                               : EdgeInsets.only(bottom: 0, top: 4),
                                           child: Row(
                                             children: [
@@ -727,8 +727,8 @@ class CrewHomeView extends StatelessWidget {
                                                           style: SDSTextStyle.extraBold.copyWith(
                                                               fontSize: 12,
                                                               fontWeight: (slopeData == _crewDetailViewModel.countInfo.first)
-                                                                  ? FontWeight.w900
-                                                                  : FontWeight.w300,
+                                                                  ? FontWeight.bold
+                                                                  : FontWeight.bold,
                                                               color: (slopeData == _crewDetailViewModel.countInfo.first)
                                                                   ? SDSColor.snowliveWhite
                                                                   : SDSColor.gray900
@@ -764,7 +764,7 @@ class CrewHomeView extends StatelessWidget {
                                               // 횟수가 0이 아닐 때만 표시
                                               AutoSizeText(
                                                 passCount != 0 ? '$passCount' : '',
-                                                style: SDSTextStyle.regular.copyWith(
+                                                style: SDSTextStyle.bold.copyWith(
                                                   fontSize: 12,
                                                   color: SDSColor.gray900,
                                                 ),
@@ -776,7 +776,7 @@ class CrewHomeView extends StatelessWidget {
                                                 padding: EdgeInsets.only(top: 4),
                                                 child: Container(
                                                   width: 16,
-                                                  height: 140 * barHeightRatio,
+                                                  height: 100 * barHeightRatio,
                                                   decoration: BoxDecoration(
                                                       color: SDSColor.blue200,
                                                       borderRadius: BorderRadius.only(

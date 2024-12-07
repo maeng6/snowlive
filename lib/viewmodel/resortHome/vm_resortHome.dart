@@ -60,7 +60,7 @@ class ResortHomeViewModel extends GetxController {
   RxInt _treasureHuntNum = 0.obs;
 
 
-
+  dynamic weatherTextColors;
   dynamic weatherColors;
   dynamic weatherIcons;
 
@@ -781,6 +781,7 @@ class ResortHomeViewModel extends GetxController {
       print('날씨정보 패치 완료');
       weatherColors = WeatherModel().getWeatherColor(_weatherInfo['pty'], _weatherInfo['sky']);
       weatherIcons = WeatherModel().getWeatherIcon(_weatherInfo['pty'], _weatherInfo['sky']);
+      weatherTextColors = WeatherModel().getWeatherTextColor(_weatherInfo['pty'], _weatherInfo['sky']);
     }catch(e) {
       print(e);
       isLoading_weather(false);

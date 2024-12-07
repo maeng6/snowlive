@@ -85,9 +85,9 @@ class _ProfilePageCalendarState extends State<ProfilePageCalendar> {
       eventLoader: _getEventsFromDay,
       calendarStyle: CalendarStyle(
         outsideDaysVisible: false,
-        isTodayHighlighted: true,
+        isTodayHighlighted: false,
         selectedDecoration: BoxDecoration(
-          color: SDSColor.gray900,
+          color: SDSColor.gray800,
           borderRadius: BorderRadius.circular(8.0),
         ),
         selectedTextStyle: SDSTextStyle.bold.copyWith(
@@ -95,6 +95,10 @@ class _ProfilePageCalendarState extends State<ProfilePageCalendar> {
         ),
         todayTextStyle: SDSTextStyle.bold.copyWith(
             color: SDSColor.snowliveBlue),
+        outsideDecoration: BoxDecoration(
+          color: Colors.transparent,
+          borderRadius: BorderRadius.circular(8.0),
+        ),
       ),
       headerStyle: HeaderStyle(
         headerPadding: EdgeInsets.symmetric(vertical: 4, horizontal: 50),
@@ -137,8 +141,8 @@ class _ProfilePageCalendarState extends State<ProfilePageCalendar> {
         defaultBuilder: (context, date, focusedDay) {
           DateTime dateTime = DateTime(date.year, date.month, date.day);
           int? ridingCount = ridingHistory[dateTime];
-
           bool hasData = ridingHistory[dateTime] != null;
+          bool isBeforeStartDay = dateTime.isBefore(firstDay);
 
           return Container(
             margin: const EdgeInsets.all(2),
@@ -182,6 +186,7 @@ class _ProfilePageCalendarState extends State<ProfilePageCalendar> {
         markerBuilder: (context, date, _) {
           return SizedBox.shrink();
         },
+
       ),
     );
   }

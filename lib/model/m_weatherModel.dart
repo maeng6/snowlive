@@ -153,7 +153,7 @@ class WeatherModel {
         if( sky == '4' ){
           return Color(0xFF707C87);
         } else{
-          return Color(0xFF3D83ED);
+          return Color(0xFFDCEAFF);
         }
       }
     } else if (pty == '1') {
@@ -235,6 +235,37 @@ class WeatherModel {
       );
     }
   }
+
+
+  Color? getWeatherTextColor(String pty, String sky) {
+    String _timeString = DateFormat('HH').format(_now);
+    int _timeInt = int.parse(_timeString);
+    if (pty == '0' ) {
+      if (_timeInt < 7 || _timeInt > 17) {
+        return Color(0xFFFFFFFF);
+      }else {
+        if( sky == '4' ){
+          return Color(0xFFFFFFFF);
+        } else{
+          return Color(0xFF111111);
+        }
+      }
+    } else if (pty == '1') {
+      return Color(0xFFFFFFFF);
+    } else if (pty == '2') {
+      return Color(0xFFFFFFFF);
+    } else if (pty == '3') {
+      return Color(0xFFFFFFFF);
+    } else if (pty == '5') {
+      return Color(0xFFFFFFFF);
+    } else if (pty == '6') {
+      return Color(0xFFFFFFFF);
+    } else if (pty == '7') {
+      return Color(0xFFFFFFFF);
+    }
+
+
+  }
+
+
 }
-
-

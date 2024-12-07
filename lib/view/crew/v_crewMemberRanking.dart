@@ -20,9 +20,9 @@ class CrewMemberRankingListView extends StatelessWidget {
     final Size _size = MediaQuery.of(context).size;
 
     return Scaffold(
-      backgroundColor: SDSColor.gray50,
+      backgroundColor: SDSColor.snowliveWhite,
       appBar: AppBar(
-        backgroundColor: SDSColor.gray50,
+        backgroundColor: SDSColor.snowliveWhite,
         surfaceTintColor: Colors.transparent,
         toolbarHeight: 44,
         elevation: 0.0,
@@ -104,7 +104,7 @@ class CrewMemberRankingListView extends StatelessWidget {
                   return Column(
                     children: [
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                         child: Row(
                           children: [
                             // 순위 표시
@@ -130,7 +130,7 @@ class CrewMemberRankingListView extends StatelessWidget {
                                 ],
                               ),
                             ),
-                            SizedBox(width: 16),
+                            SizedBox(width: 10),
                             // 프로필 이미지
                             GestureDetector(
                               onTap: () async {
@@ -197,7 +197,7 @@ class CrewMemberRankingListView extends StatelessWidget {
                                 ),
                               ),
                             ),
-                            SizedBox(width: 16),
+                            SizedBox(width: 10),
                             // 사용자 정보
                             Expanded(
                               child: Column(
@@ -231,7 +231,7 @@ class CrewMemberRankingListView extends StatelessWidget {
                                 fontSize: 16,
                               ),
                             ),
-                            SizedBox(width: 12),
+                            SizedBox(width: 2),
                             Transform.translate(
                               offset: Offset(4, 1),
                               child: ExtendedImage.network(

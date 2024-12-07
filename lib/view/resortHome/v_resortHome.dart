@@ -71,18 +71,18 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
     ).animate(_controller);
 
     _colorAnimation2 = ColorTween(
-      begin: SDSColor.blue700,
+      begin: Color(0xFF0066FF),
       end: SDSColor.snowliveBlue,
     ).animate(_controller);
 
     _colorAnimation3 = ColorTween(
-      begin: SDSColor.gray300,
-      end: SDSColor.gray600,
+      begin: Color(0xFFEA3A2F),
+      end: Color(0xFFEA3A2F),
     ).animate(_controller);
 
     _colorAnimation4 = ColorTween(
-      begin: SDSColor.gray50,
-      end: SDSColor.gray300,
+      begin: Color(0xFFEA3A2F),
+      end: Color(0xFFEA3A2F),
     ).animate(_controller);
 
     // 성별과 종목 선택 팝업을 뷰모델을 통해 호출
@@ -140,13 +140,25 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                       padding: const EdgeInsets.only(top: 1, bottom: 3),
                       child:
                       (_userViewModel.user.within_boundary == true)
-                          ? AnimatedBuilder(
+                          ? (_resortHomeViewModel.resort_info['fullname'] != null) ? AnimatedBuilder(
                         animation: _controller,
                         builder: (context, child) {
                           return CustomPaint(
                             painter: GradientBorderPainter(
                                 LinearGradient(
                                     colors: [_colorAnimation1.value!, _colorAnimation2.value!],
+                                    begin: Alignment.topLeft,
+                                    end: Alignment.bottomRight
+                                )),
+                          );
+                        },
+                      ) : AnimatedBuilder(
+                        animation: _controller,
+                        builder: (context, child) {
+                          return CustomPaint(
+                            painter: GradientBorderPainter(
+                                LinearGradient(
+                                    colors: [_colorAnimation3.value!, _colorAnimation4.value!],
                                     begin: Alignment.topLeft,
                                     end: Alignment.bottomRight
                                 )),
@@ -159,7 +171,7 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                           return CustomPaint(
                             painter: GradientBorderPainter(
                                 LinearGradient(
-                                    colors: [_colorAnimation3.value!, _colorAnimation4.value!],
+                                    colors: [_colorAnimation1.value!, _colorAnimation2.value!],
                                     begin: Alignment.topLeft,
                                     end: Alignment.bottomRight
                                 )),
@@ -175,7 +187,7 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                     boxShadow: [
                       (_userViewModel.user.within_boundary == true)
                           ? BoxShadow(
-                        color: SDSColor.snowliveBlue.withOpacity(0.2),
+                        color: SDSColor.snowliveBlack.withOpacity(0.2),
                         spreadRadius: 4,
                         blurRadius: 12,
                         offset: Offset(0, 4),
@@ -326,16 +338,34 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                                   content:
                                   Container(
                                     width: 288,
-                                    height: 190,
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.center,
-                                      children: [
-                                        Text(
-                                          '라이브를 재시작 하거나 종료해 주세요',
-                                          style: SDSTextStyle.regular.copyWith(fontSize: 14, height: 1.4, color: SDSColor.gray600),
-                                          textAlign: TextAlign.center,
-                                        ),
-                                      ],
+                                    height: 250,
+                                    child: Container(
+                                      width: 232,
+                                      child: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Padding(
+                                            padding: EdgeInsets.only(bottom: 16),
+                                            child: Image.asset(
+                                              'assets/imgs/imgs/img_error_1.png',
+                                              scale: 4,
+                                              width: 140,
+                                            ),
+                                          ),
+                                          Text('라이브를 재시작 또는 종료해 주세요',
+                                            style: SDSTextStyle.bold.copyWith(fontSize: 16, color: SDSColor.gray900),
+                                            textAlign: TextAlign.center,
+                                          ),
+                                          Padding(
+                                            padding: EdgeInsets.only(top: 8),
+                                            child: Text(
+                                              '라이브가 켜져 있는 상태에서 앱이 강제 종료되어서, 위치 서비스가 멈췄어요! 라이브를 다시 시작하거나 종료해 주세요.',
+                                              style: SDSTextStyle.regular.copyWith(fontSize: 14, color: SDSColor.gray500),
+                                              textAlign: TextAlign.center,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   ),
                                   actions: [
@@ -381,51 +411,48 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                                         child: Text(
                                           '라이브 재시작하기',
                                           style: SDSTextStyle.bold.copyWith(
-                                            fontSize: 16,
-                                            color: SDSColor.snowliveWhite,
+                                            fontSize: 15,
+                                            color: Color(0xFFFFFFFF),
                                           ),
                                         ),
                                       ),
                                     ),
-                                    Padding(
-                                      padding: const EdgeInsets.only(top: 16),
-                                      child: Column(
-                                        children: [
-                                          Padding(
-                                            padding: const EdgeInsets.only(top: 8.0),
-                                            child: Container(
-                                              width: _size.width,
-                                              height: 48,
-                                              decoration: BoxDecoration(
-                                                  borderRadius: BorderRadius.circular(5),
-                                                  color: SDSColor.snowliveWhite
-                                              ),
-                                              child: TextButton(
-                                                onPressed: () async {
-                                                  CustomFullScreenDialog.showDialog();
-                                                  await _resortHomeViewModel.liveOff({
-                                                    "user_id":_userViewModel.user.user_id
-                                                  }, _userViewModel.user.user_id);
-                                                  await _userViewModel.updateUserModel_api(_userViewModel.user.user_id);
-                                                  await _resortHomeViewModel.stopForegroundLocationService();
-                                                  await _resortHomeViewModel.stopBackgroundLocationService();
-                                                  CustomFullScreenDialog.cancelDialog();
-                                                  Get.back();
-                                                  print('라이브 OFF');
-                                                },
-                                                child: Text(
-                                                  '라이브 종료',
-                                                  style: SDSTextStyle.bold.copyWith(
-                                                    fontSize: 16,
-                                                    color: SDSColor.gray900,
-                                                  ),
+                                    Column(
+                                      children: [
+                                        Padding(
+                                          padding: const EdgeInsets.only(top: 8.0),
+                                          child: Container(
+                                            width: _size.width,
+                                            height: 48,
+                                            decoration: BoxDecoration(
+                                                borderRadius: BorderRadius.circular(5),
+                                                color: SDSColor.snowliveWhite
+                                            ),
+                                            child: TextButton(
+                                              onPressed: () async {
+                                                CustomFullScreenDialog.showDialog();
+                                                await _resortHomeViewModel.liveOff({
+                                                  "user_id":_userViewModel.user.user_id
+                                                }, _userViewModel.user.user_id);
+                                                await _userViewModel.updateUserModel_api(_userViewModel.user.user_id);
+                                                await _resortHomeViewModel.stopForegroundLocationService();
+                                                await _resortHomeViewModel.stopBackgroundLocationService();
+                                                CustomFullScreenDialog.cancelDialog();
+                                                Get.back();
+                                                print('라이브 OFF');
+                                              },
+                                              child: Text(
+                                                '라이브 종료',
+                                                style: SDSTextStyle.bold.copyWith(
+                                                  fontSize: 16,
+                                                  color: SDSColor.gray900,
                                                 ),
                                               ),
                                             ),
                                           ),
-                                        ],
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                      ),
+                                        ),
+                                      ],
+                                      mainAxisAlignment: MainAxisAlignment.center,
                                     ),
                                   ],
                                 ),
@@ -465,18 +492,23 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                           }
                         },
                         elevation: 0,
-                        icon:   (_userViewModel.user.within_boundary == true && _resortHomeViewModel.resort_info['fullname'] != null )
-                            ? Image.asset('assets/imgs/icons/icon_live_on.png', width: 40)
-                            : Image.asset('assets/imgs/icons/icon_live_off.png', width: 40),
+                        icon:  (_userViewModel.user.within_boundary == true)
+                            ? (_resortHomeViewModel.resort_info['fullname'] != null)
+                        ? Image.asset('assets/imgs/icons/icon_live_off.png', width: 40)
+                        : Container()
+                            : Image.asset('assets/imgs/icons/icon_live_on.png', width: 40),
                         label: (_userViewModel.user.within_boundary == true)
                             ? Text(
                           (_resortHomeViewModel.resort_info['fullname'] != null)
                               ? '${_resortHomeViewModel.resortHomeModel.todayTotalScore.toInt()}점 획득'
-                              : '라이브를 다시 시작해 주세요',
+                              : '버튼을 눌러 라이브 종료 후 다시 시작해주세요',
                           style: SDSTextStyle.extraBold.copyWith(
                             fontSize: 16,
                             letterSpacing: -0.1,
-                            color: SDSColor.snowliveWhite,
+                            color:
+                            (_resortHomeViewModel.resort_info['fullname'] != null)
+                            ? SDSColor.snowliveWhite
+                            : Color(0xFF4C0000),
                           ),
                         )
                             : Text(
@@ -487,7 +519,9 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                             color: SDSColor.snowliveWhite,
                           ),
                         ),
-                        backgroundColor:  (_userViewModel.user.within_boundary == true) ? SDSColor.gray800  : SDSColor.gray800),
+                        backgroundColor: (_userViewModel.user.within_boundary == true)
+                            ? (_resortHomeViewModel.resort_info['fullname'] != null) ? SDSColor.snowliveBlue : Color(0xFFFFAAA5)
+                            : SDSColor.gray800),
                   )),
                 ),
               ],
@@ -980,8 +1014,11 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
               title: Padding(
                 padding: const EdgeInsets.only(left: 20),
                 child:  (_userViewModel.user.within_boundary == true)
-                    ? Image.asset(
+                    ? (_resortHomeViewModel.resort_info['fullname'] != null) ? Image.asset(
                   'assets/imgs/logos/snowliveLogo_main_new_blue.png',
+                  height: 38,
+                ) : Image.asset(
+                  'assets/imgs/logos/snowliveLogo_main_new.png',
                   height: 38,
                 )
                     : Image.asset(
@@ -1053,7 +1090,7 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                                                       : Text(
                                                     '${_resortHomeViewModel.resortHomeModel.instantResortName}',
                                                     style: SDSTextStyle.bold.copyWith(
-                                                        color: SDSColor.snowliveWhite,
+                                                        color: _resortHomeViewModel.weatherTextColors,
                                                         fontSize: 16),
                                                   ),
                                                 ),
@@ -1066,7 +1103,7 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                                                   'assets/imgs/icons/icon_dropdown.png',
                                                   width: 18,
                                                   height: 18,
-                                                  color: SDSColor.snowliveWhite,
+                                                  color: _resortHomeViewModel.weatherTextColors,
                                                 )
                                               ],
                                             ),
@@ -1103,14 +1140,17 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                                                   (_resortHomeViewModel.isLoading_weather == true)
                                                       ? Text(' ',
                                                     style: SDSTextStyle.regular.copyWith(
-                                                        color: SDSColor.snowliveWhite.withOpacity(0.6),
+                                                        color: _resortHomeViewModel.weatherTextColors,
                                                         fontSize: 13),
                                                   )
-                                                      : Text('${GetDatetime().getDateTime()}',
-                                                    style: SDSTextStyle.regular.copyWith(
-                                                        color: SDSColor.snowliveWhite.withOpacity(0.6),
-                                                        fontSize: 13),
-                                                  ),
+                                                      : Opacity(
+                                                  opacity: 0.5,
+                                                        child: Text('${GetDatetime().getDateTime()}',
+                                                          style: SDSTextStyle.regular.copyWith(
+                                                          color: _resortHomeViewModel.weatherTextColors,
+                                                          fontSize: 13),
+                                                        ),
+                                                      ),
                                                 ],
                                               ),
                                             ),
@@ -1149,7 +1189,7 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                                                   child: Text('${_resortHomeViewModel.weatherInfo['temp']??'-'}', //u00B0
                                                     style: GoogleFonts.bebasNeue(
                                                         fontSize: 44,
-                                                        color: Colors.white,
+                                                        color: _resortHomeViewModel.weatherTextColors,
                                                         height: 1.3
                                                     ),
                                                   ),
@@ -1172,7 +1212,7 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                                                   child: Text('\u00B0',
                                                     style: GoogleFonts.bebasNeue(
                                                         fontSize: 36,
-                                                        color: Colors.white),
+                                                        color: _resortHomeViewModel.weatherTextColors),
                                                   ),
                                                 ),
                                                 ),
@@ -1244,10 +1284,13 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                                     children: [
                                       Column(
                                         children: [
-                                          Text('바람',
-                                            style: SDSTextStyle.regular.copyWith(
-                                                color: SDSColor.snowliveWhite.withOpacity(0.6),
-                                                fontSize: 12),
+                                          Opacity(
+                                            opacity: 0.5,
+                                            child: Text('바람',
+                                              style: SDSTextStyle.regular.copyWith(
+                                                  color: _resortHomeViewModel.weatherTextColors,
+                                                  fontSize: 12),
+                                            ),
                                           ),
                                           Row(
                                             crossAxisAlignment: CrossAxisAlignment.end,
@@ -1259,7 +1302,7 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                                                   '${_resortHomeViewModel.weatherInfo['wind']??'-'}',
                                                   style: GoogleFonts.bebasNeue(
                                                       fontSize: 24,
-                                                      color: SDSColor.snowliveWhite),
+                                                      color: _resortHomeViewModel.weatherTextColors),
                                                 ),
                                               ),
                                               ),
@@ -1269,7 +1312,7 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                                                 child: Text('M/S',
                                                   style: GoogleFonts.bebasNeue(
                                                       fontSize: 16,
-                                                      color: SDSColor.snowliveWhite),
+                                                      color: _resortHomeViewModel.weatherTextColors),
                                                 ),
                                               ),
                                             ],
@@ -1278,11 +1321,14 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                                       ),
                                       Column(
                                         children: [
-                                          Text(
-                                            '습도',
-                                            style: SDSTextStyle.regular.copyWith(
-                                                color: SDSColor.snowliveWhite.withOpacity(0.6),
-                                                fontSize: 12),
+                                          Opacity(
+                                      opacity: 0.5,
+                                            child: Text(
+                                              '습도',
+                                              style: SDSTextStyle.regular.copyWith(
+                                                  color: _resortHomeViewModel.weatherTextColors,
+                                                  fontSize: 12),
+                                            ),
                                           ),
 
                                           Row(
@@ -1296,7 +1342,7 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                                                     '${_resortHomeViewModel.weatherInfo['wet']??'-'}',
                                                     style: GoogleFonts.bebasNeue(
                                                         fontSize: 24,
-                                                        color: SDSColor.snowliveWhite),
+                                                        color: _resortHomeViewModel.weatherTextColors),
                                                   ),
                                                 ),
                                               ),
@@ -1306,7 +1352,7 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                                                 child: Text('%',
                                                   style: GoogleFonts.bebasNeue(
                                                       fontSize: 16,
-                                                      color: SDSColor.snowliveWhite),
+                                                      color: _resortHomeViewModel.weatherTextColors),
                                                 ),
                                               ),
                                             ],
@@ -1315,11 +1361,14 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                                       ),
                                       Column(
                                         children: [
-                                          Text(
-                                            '강수',
-                                            style: SDSTextStyle.regular.copyWith(
-                                                color: SDSColor.snowliveWhite.withOpacity(0.6),
-                                                fontSize: 12),
+                                          Opacity(
+                                      opacity: 0.5,
+                                            child: Text(
+                                              '강수',
+                                              style: SDSTextStyle.regular.copyWith(
+                                                  color: _resortHomeViewModel.weatherTextColors,
+                                                  fontSize: 12),
+                                            ),
                                           ),
 
                                           Row(
@@ -1331,7 +1380,7 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                                                   child: Text('${_resortHomeViewModel.weatherInfo['rain']??'-'}',
                                                     style: GoogleFonts.bebasNeue(
                                                         fontSize: 24,
-                                                        color: SDSColor.snowliveWhite),
+                                                        color: _resortHomeViewModel.weatherTextColors),
                                                   ),
                                                 ),
                                               ),
@@ -1341,7 +1390,7 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                                                 child: Text('MM',
                                                   style: GoogleFonts.bebasNeue(
                                                       fontSize: 16,
-                                                      color: SDSColor.snowliveWhite),
+                                                      color: _resortHomeViewModel.weatherTextColors),
                                                 ),
                                               ),
                                             ],
@@ -1350,11 +1399,14 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                                       ),
                                       Column(
                                         children: [
-                                          Text(
-                                            '최저/최고기온',
-                                            style: SDSTextStyle.regular.copyWith(
-                                                color: SDSColor.snowliveWhite.withOpacity(0.6),
-                                                fontSize: 12),
+                                          Opacity(
+                                            opacity: 0.5,
+                                            child: Text(
+                                              '최저/최고기온',
+                                              style: SDSTextStyle.regular.copyWith(
+                                                  color: _resortHomeViewModel.weatherTextColors,
+                                                  fontSize: 12),
+                                            ),
                                           ),
 
                                           Obx(
@@ -1365,7 +1417,7 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                                                   '${_resortHomeViewModel.weatherInfo['minTemp']??'-'}',
                                                   style: GoogleFonts.bebasNeue(
                                                       fontSize: 24,
-                                                      color: SDSColor.snowliveWhite),
+                                                      color: _resortHomeViewModel.weatherTextColors),
                                                 ),
                                                 Padding(
                                                   padding:
@@ -1375,14 +1427,14 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                                                     '/',
                                                     style: GoogleFonts.bebasNeue(
                                                         fontSize: 16,
-                                                        color: SDSColor.snowliveWhite),
+                                                        color: _resortHomeViewModel.weatherTextColors),
                                                   ),
                                                 ),
                                                 Text(
                                                   '${_resortHomeViewModel.weatherInfo['maxTemp']??'-'}',
                                                   style: GoogleFonts.bebasNeue(
                                                       fontSize: 24,
-                                                      color: SDSColor.snowliveWhite),
+                                                      color: _resortHomeViewModel.weatherTextColors),
                                                 ),
                                               ],
                                             ),
@@ -1408,7 +1460,7 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                               decoration: BoxDecoration(
                                 color: Colors.white,),
                               child: Padding(
-                                padding: const EdgeInsets.only(right: 28, left: 28, top: 24),
+                                padding: const EdgeInsets.only(right: 28, left: 28, top: 20),
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
@@ -1552,7 +1604,7 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                             ),
                             //TODO: 배너
                             Padding(
-                              padding: EdgeInsets.only(left: 16, right: 16, top: 30),
+                              padding: EdgeInsets.only(left: 16, right: 16, top: 28),
                               child: Banner_resortHome(),
                             ),
                             //TODO: 보물찾기 진입 배너
@@ -1568,7 +1620,7 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                             //TODO: 구분선
                             if((_resortHomeViewModel.resortHomeModel.dailyTotalCount != 0 || _userViewModel.user.within_boundary == true))
                               Padding(
-                                padding: const EdgeInsets.only(top: 30, bottom: 30),
+                                padding: const EdgeInsets.only(top: 20, bottom: 24),
                                 child: Container(
                                   width: _size.width,
                                   height: 10,
@@ -1657,21 +1709,21 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                                                   padding: EdgeInsets.only(top: 24, right: 20, left: 20, bottom: 30),
                                                   width: _size.width,
                                                   decoration: BoxDecoration(
-                                                    color: SDSColor.blue50,
+                                                    color: SDSColor.gray50,
                                                     borderRadius: BorderRadius.circular(16),
                                                   ),
                                                   child: Column(
                                                     crossAxisAlignment: CrossAxisAlignment.start,
                                                     children: [
-                                                      Text('오늘 탄 슬로프',
+                                                      Text('오늘 총 라이딩 횟수',
                                                         style: SDSTextStyle.regular.copyWith(
-                                                            color: SDSColor.gray900.withOpacity(0.5),
-                                                            fontSize: 14
+                                                            color: SDSColor.gray900,
+                                                            fontSize: 13
                                                         ),
                                                       ),
                                                       Padding(
-                                                        padding: const EdgeInsets.only(top: 4),
-                                                        child: Text('${_resortHomeViewModel.resortHomeModel.slopeCountInfoToday.length}',
+                                                        padding: const EdgeInsets.only(bottom: 6),
+                                                        child: Text('${_resortHomeViewModel.resortHomeModel.dailyTotalCount}',
                                                           style: SDSTextStyle.extraBold.copyWith(
                                                               color: SDSColor.gray900,
                                                               fontSize: 30
@@ -1679,80 +1731,188 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                                                         ),
                                                       ),
                                                       if(_resortHomeViewModel.resortHomeModel.slopeCountInfoToday.length != 0)
-                                                        Container(
-                                                            child: Column(
-                                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                                              children: _resortHomeViewModel.resortHomeModel.slopeCountInfoToday.map<Widget>((data)  {
-                                                                String slopeName = data.slope;
-                                                                int passCount = data.count;
-                                                                double barWidthRatio = data.ratio;
-                                                                return Padding(
-                                                                  padding: (data != _resortHomeViewModel.resortHomeModel.slopeCountInfoToday.last)
-                                                                      ? EdgeInsets.only(bottom: 8, top: 4)
-                                                                      : EdgeInsets.only(bottom: 0, top: 4),
-                                                                  child: Row(
-                                                                    children: [
-                                                                      Container(
-                                                                        width: 44,
-                                                                        child: Text(
-                                                                          slopeName,
-                                                                          style: SDSTextStyle.regular.copyWith(
-                                                                            fontSize: 11,
-                                                                            color: SDSColor.sBlue600,
+                                                        Column(
+                                                          children: [
+                                                            Container(
+                                                                child: Column(
+                                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                                  children: _resortHomeViewModel.resortHomeModel.slopeCountInfoToday.map<Widget>((data)  {
+                                                                    String slopeName = data.slope;
+                                                                    int passCount = data.count;
+                                                                    double barWidthRatio = data.ratio;
+                                                                    return Padding(
+                                                                      padding: (data != _resortHomeViewModel.resortHomeModel.slopeCountInfoToday.last)
+                                                                          ? EdgeInsets.only(bottom: 2, top: 4)
+                                                                          : EdgeInsets.only(bottom: 0, top: 4),
+                                                                      child: Row(
+                                                                        children: [
+                                                                          Container(
+                                                                            width: 44,
+                                                                            child: Text(
+                                                                              slopeName,
+                                                                              style: SDSTextStyle.regular.copyWith(
+                                                                                fontSize: 11,
+                                                                                color: SDSColor.gray600,
+                                                                              ),
+                                                                            ),
                                                                           ),
-                                                                        ),
+                                                                          Container(
+                                                                            height: 14,
+                                                                            width: (_size.width - 166) * barWidthRatio,
+                                                                            decoration: BoxDecoration(
+                                                                                color:
+                                                                                (data == _resortHomeViewModel.resortHomeModel.slopeCountInfoToday.first)
+                                                                                    ? SDSColor.snowliveBlue
+                                                                                    : SDSColor.gray200,
+                                                                                borderRadius: BorderRadius.only(
+                                                                                    topRight: Radius.circular(4),
+                                                                                    bottomRight: Radius.circular(4)
+                                                                                )
+                                                                            ),
+                                                                          ),
+                                                                          Padding(
+                                                                            padding: (data == _resortHomeViewModel.resortHomeModel.slopeCountInfoToday.first)
+                                                                                ? EdgeInsets.only(left: 6)
+                                                                                : EdgeInsets.only(left: 2),
+                                                                            child: Container(
+                                                                              child: Column(
+                                                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                                                children: [
+                                                                                  Container(
+                                                                                    decoration: BoxDecoration(
+                                                                                      borderRadius: BorderRadius.circular(20),
+                                                                                      color: (data == _resortHomeViewModel.resortHomeModel.slopeCountInfoToday.first)
+                                                                                          ? SDSColor.gray900
+                                                                                          : Colors.transparent,
+                                                                                    ),
+                                                                                    padding: EdgeInsets.symmetric(horizontal: 6, vertical: 1),
+                                                                                    child: Text('$passCount',
+                                                                                      style: SDSTextStyle.bold.copyWith(
+                                                                                        fontSize: 12,
+                                                                                        fontWeight: (data == _resortHomeViewModel.resortHomeModel.slopeCountInfoToday.first)
+                                                                                            ? FontWeight.bold : FontWeight.bold,
+                                                                                        color: (data == _resortHomeViewModel.resortHomeModel.slopeCountInfoToday.first)
+                                                                                            ? SDSColor.snowliveWhite : SDSColor.gray900,
+                                                                                      ),
+                                                                                    ),
+                                                                                  ),
+                                                                                ],
+                                                                              ),
+                                                                            ),
+                                                                          ),
+                                                                        ],
                                                                       ),
-                                                                      Container(
-                                                                        height: 14,
-                                                                        width: (_size.width - 166) * barWidthRatio,
-                                                                        decoration: BoxDecoration(
-                                                                            color:
-                                                                            (data == _resortHomeViewModel.resortHomeModel.slopeCountInfoToday.first)
-                                                                                ? SDSColor.snowliveBlue
-                                                                                : SDSColor.blue200,
-                                                                            borderRadius: BorderRadius.only(
-                                                                                topRight: Radius.circular(4),
-                                                                                bottomRight: Radius.circular(4)
-                                                                            )
-                                                                        ),
-                                                                      ),
-                                                                      Padding(
-                                                                        padding: (data == _resortHomeViewModel.resortHomeModel.slopeCountInfoToday.first)
-                                                                            ? EdgeInsets.only(left: 6)
-                                                                            : EdgeInsets.only(left: 2),
-                                                                        child: Container(
-                                                                          child: Column(
-                                                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                                                            mainAxisAlignment: MainAxisAlignment.center,
-                                                                            children: [
-                                                                              Container(
-                                                                                decoration: BoxDecoration(
-                                                                                  borderRadius: BorderRadius.circular(20),
-                                                                                  color: (data == _resortHomeViewModel.resortHomeModel.slopeCountInfoToday.first)
-                                                                                      ? SDSColor.gray900
-                                                                                      : Colors.transparent,
-                                                                                ),
-                                                                                padding: EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                                                                                child: Text('$passCount',
-                                                                                  style: SDSTextStyle.extraBold.copyWith(
+                                                                    );
+                                                                  }).toList(),
+                                                                )
+                                                            ),
+                                                            Padding(
+                                                              padding: EdgeInsets.symmetric(vertical: 24),
+                                                              child: Container(
+                                                                height: 1,
+                                                                  width: _size.width - 80,
+                                                                color: SDSColor.snowliveBlack.withOpacity(0.05),
+                                                              ),
+                                                            ),
+                                                            if(_resortHomeViewModel.resortHomeModel.dailyTotalCount != 0)
+                                                            Column(
+                                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                                              children: [
+                                                                Text('시간대별 기록',
+                                                                  style: SDSTextStyle.regular.copyWith(
+                                                                      color: SDSColor.gray900,
+                                                                      fontSize: 13
+                                                                  ),
+                                                                ),
+                                                                if(_resortHomeViewModel.resortHomeModel.dailyTotalCount != 0)
+                                                                  Padding(
+                                                                    padding: EdgeInsets.only(top: 10),
+                                                                    child: Container(
+                                                                      child: Row(
+                                                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                                        crossAxisAlignment: CrossAxisAlignment.end,
+                                                                        children: _resortHomeViewModel.resortHomeModel.timeCountInfoToday.entries.map<Widget>((entry) {
+                                                                          String slotName = entry.key;
+                                                                          int passCount = entry.value;
+                                                                          int maxCount = _resortHomeViewModel.resortHomeModel.timeInfo_maxCount;
+                                                                          double barHeightRatio =  passCount/maxCount;
+                                                                          return Container(
+                                                                            width: 30,
+                                                                            child: Column(
+                                                                              mainAxisAlignment: MainAxisAlignment.end,
+                                                                              children: [
+                                                                                AutoSizeText(
+                                                                                  passCount != 0 ? '$passCount' : '',
+                                                                                  style: SDSTextStyle.bold.copyWith(
                                                                                     fontSize: 12,
-                                                                                    fontWeight: (data == _resortHomeViewModel.resortHomeModel.slopeCountInfoToday.first)
-                                                                                        ? FontWeight.w900 : FontWeight.w300,
-                                                                                    color: (data == _resortHomeViewModel.resortHomeModel.slopeCountInfoToday.first)
-                                                                                        ? SDSColor.snowliveWhite : SDSColor.gray900,
+                                                                                    color: SDSColor.gray900,
+                                                                                  ),
+                                                                                  minFontSize: 6,
+                                                                                  maxLines: 1,
+                                                                                  overflow: TextOverflow.visible,
+                                                                                ),
+                                                                                Padding(
+                                                                                  padding: EdgeInsets.only(top: 4),
+                                                                                  child: Container(
+                                                                                    width: 16,
+                                                                                    height: 100 * barHeightRatio,
+                                                                                    decoration: BoxDecoration(
+                                                                                        color: SDSColor.gray200,
+                                                                                        borderRadius: BorderRadius.only(
+                                                                                            topRight: Radius.circular(4), topLeft: Radius.circular(4)
+                                                                                        )
+                                                                                    ),
                                                                                   ),
                                                                                 ),
-                                                                              ),
-                                                                            ],
-                                                                          ),
-                                                                        ),
+                                                                                Padding(
+                                                                                  padding: const EdgeInsets.only(top: 8),
+                                                                                  child: Container(
+                                                                                    width: 20,
+                                                                                    child: Text(
+                                                                                      slotName,
+                                                                                      style: SDSTextStyle.regular.copyWith(
+                                                                                          fontSize: 11,
+                                                                                          color: SDSColor.gray600,
+                                                                                          height: 1.2
+                                                                                      ),
+                                                                                    ),
+                                                                                  ),
+                                                                                ),
+                                                                              ],
+                                                                            ),
+                                                                          );
+                                                                        }).toList(),
                                                                       ),
-                                                                    ],
+                                                                    ),
                                                                   ),
-                                                                );
-                                                              }).toList(),
-                                                            )
-                                                        ),
+                                                                if(_resortHomeViewModel.resortHomeModel.dailyTotalCount == 0)
+                                                                  Center(
+                                                                    child: Padding(
+                                                                      padding: const EdgeInsets.only(bottom: 30),
+                                                                      child: Column(
+                                                                        children: [
+                                                                          Image.asset(
+                                                                            'assets/imgs/icons/icon_nodata.png',
+                                                                            fit: BoxFit.cover,
+                                                                            width: 72,
+                                                                            height: 72,
+                                                                          ),
+                                                                          Text('라이딩 기록이 없어요',
+                                                                            style: SDSTextStyle.regular.copyWith(
+                                                                                fontSize: 14,
+                                                                                color: SDSColor.gray600
+                                                                            ),
+                                                                          ),
+                                                                        ],
+                                                                      ),
+                                                                    ),
+                                                                  )
+                                                              ],
+                                                            ),
+                                                          ],
+                                                        ), 
+                                                      
                                                       if(_resortHomeViewModel.resortHomeModel.slopeCountInfoToday.length == 0)
                                                         Center(
                                                           child: Padding(
@@ -1760,123 +1920,7 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                                                             child: Column(
                                                               children: [
                                                                 Image.asset(
-                                                                  'assets/imgs/imgs/img_resoreHome_nodata.png',
-                                                                  fit: BoxFit.cover,
-                                                                  width: 72,
-                                                                  height: 72,
-                                                                ),
-                                                                Text('라이딩 기록이 없어요',
-                                                                  style: SDSTextStyle.regular.copyWith(
-                                                                      fontSize: 14,
-                                                                      color: SDSColor.gray600
-                                                                  ),
-                                                                ),
-                                                              ],
-                                                            ),
-                                                          ),
-                                                        )
-                                                    ],
-                                                  ),
-                                                ),
-                                              ),
-                                              Padding(
-                                                padding: const EdgeInsets.only(top: 16),
-                                                child: Container(
-                                                  padding: EdgeInsets.only(top: 24, right: 20, left: 20, bottom: 30),
-                                                  width: _size.width,
-                                                  decoration: BoxDecoration(
-                                                    color: SDSColor.blue50,
-                                                    borderRadius: BorderRadius.circular(16),
-                                                  ),
-                                                  child: Column(
-                                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                                    children: [
-                                                      Column(
-                                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                                        children: [
-                                                          Text('오늘 총 라이딩 횟수',
-                                                            style: SDSTextStyle.regular.copyWith(
-                                                                color: SDSColor.gray900.withOpacity(0.5),
-                                                                fontSize: 14
-                                                            ),
-                                                          ),
-                                                          Padding(
-                                                            padding: const EdgeInsets.only(top: 4, bottom: 10),
-                                                            child: Text('${_resortHomeViewModel.resortHomeModel.dailyTotalCount}',
-                                                              style: SDSTextStyle.extraBold.copyWith(
-                                                                  color: SDSColor.gray900,
-                                                                  fontSize: 30
-                                                              ),
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                      if(_resortHomeViewModel.resortHomeModel.dailyTotalCount != 0)
-                                                        Container(
-                                                          child: Row(
-                                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                            crossAxisAlignment: CrossAxisAlignment.end,
-                                                            children: _resortHomeViewModel.resortHomeModel.timeCountInfoToday.entries.map<Widget>((entry) {
-                                                              String slotName = entry.key;
-                                                              int passCount = entry.value;
-                                                              int maxCount = _resortHomeViewModel.resortHomeModel.timeInfo_maxCount;
-                                                              double barHeightRatio =  passCount/maxCount;
-                                                              return Container(
-                                                                width: 30,
-                                                                child: Column(
-                                                                  mainAxisAlignment: MainAxisAlignment.end,
-                                                                  children: [
-                                                                    AutoSizeText(
-                                                                      passCount != 0 ? '$passCount' : '',
-                                                                      style: SDSTextStyle.regular.copyWith(
-                                                                        fontSize: 12,
-                                                                        color: SDSColor.gray900,
-                                                                      ),
-                                                                      minFontSize: 6,
-                                                                      maxLines: 1,
-                                                                      overflow: TextOverflow.visible,
-                                                                    ),
-                                                                    Padding(
-                                                                      padding: EdgeInsets.only(top: 4),
-                                                                      child: Container(
-                                                                        width: 16,
-                                                                        height: 140 * barHeightRatio,
-                                                                        decoration: BoxDecoration(
-                                                                            color: SDSColor.blue200,
-                                                                            borderRadius: BorderRadius.only(
-                                                                                topRight: Radius.circular(4), topLeft: Radius.circular(4)
-                                                                            )
-                                                                        ),
-                                                                      ),
-                                                                    ),
-                                                                    Padding(
-                                                                      padding: const EdgeInsets.only(top: 8),
-                                                                      child: Container(
-                                                                        width: 20,
-                                                                        child: Text(
-                                                                          slotName,
-                                                                          style: SDSTextStyle.regular.copyWith(
-                                                                              fontSize: 11,
-                                                                              color: SDSColor.sBlue600,
-                                                                              height: 1.2
-                                                                          ),
-                                                                        ),
-                                                                      ),
-                                                                    ),
-                                                                  ],
-                                                                ),
-                                                              );
-                                                            }).toList(),
-                                                          ),
-                                                        ),
-                                                      if(_resortHomeViewModel.resortHomeModel.dailyTotalCount == 0)
-                                                        Center(
-                                                          child: Padding(
-                                                            padding: const EdgeInsets.only(bottom: 30),
-                                                            child: Column(
-                                                              children: [
-                                                                Image.asset(
-                                                                  'assets/imgs/imgs/img_resoreHome_nodata.png',
+                                                                  'assets/imgs/icons/icon_nodata.png',
                                                                   fit: BoxFit.cover,
                                                                   width: 72,
                                                                   height: 72,
