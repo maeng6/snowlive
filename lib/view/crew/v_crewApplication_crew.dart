@@ -336,6 +336,7 @@ class CrewApplicationCrewView extends StatelessWidget {
                                                               _userViewModel.user.user_id,
                                                             );
                                                             _crewApplyViewModel.crewApplyList.remove(user); // 개별 항목만 삭제
+                                                            await _crewApplyViewModel.fetchCrewApplyList(_userViewModel.user.crew_id!);
                                                             CustomFullScreenDialog.cancelDialog();
                                                           },
                                                           child: Text('거절하기',

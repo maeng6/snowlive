@@ -248,6 +248,9 @@ class CrewMemberRankingListView extends StatelessWidget {
                   );
                 },
               ),
+              Container(
+                height: 24,
+              )
             ],
           ),
         );

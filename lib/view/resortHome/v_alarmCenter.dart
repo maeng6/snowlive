@@ -1,6 +1,7 @@
 import 'package:com.snowlive/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/model/m_alarmCenterList.dart';
 import 'package:com.snowlive/routes/routes.dart';
+import 'package:com.snowlive/viewmodel/crew/vm_crewApply.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewDetail.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_searchCrew.dart';
 import 'package:com.snowlive/viewmodel/fleamarket/vm_fleamarketCommentDetail.dart';
@@ -34,6 +35,7 @@ class AlarmCenterView extends StatelessWidget {
   final CommunityDetailViewModel _communityDetailViewModel = Get.find<CommunityDetailViewModel>();
   final CommunityCommentDetailViewModel _communityCommentDetailViewModel = Get.find<CommunityCommentDetailViewModel>();
   final FleamarketCommentDetailViewModel _fleamarketCommentDetailViewModel = Get.find<FleamarketCommentDetailViewModel>();
+  final CrewApplyViewModel _crewApplyViewModel = Get.find<CrewApplyViewModel>();
 
 
   @override
@@ -88,7 +90,7 @@ class AlarmCenterView extends StatelessWidget {
                         if (_alarmCenterViewModel.alarmCenterList.isEmpty) {
                           return ConstrainedBox(
                             constraints: BoxConstraints(
-                              minHeight: _size.height - _statusBarHeight - 160
+                                minHeight: _size.height - _statusBarHeight - 160
                             ),
                             child: Center(
                               child: Column(
@@ -104,8 +106,8 @@ class AlarmCenterView extends StatelessWidget {
                                   SizedBox(height: 6),
                                   Text('알림이 없습니다',
                                     style: SDSTextStyle.regular.copyWith(
-                                        fontSize: 14,
-                                        color: SDSColor.gray600,
+                                      fontSize: 14,
+                                      color: SDSColor.gray600,
                                     ),
                                   ),
                                 ],
@@ -212,10 +214,9 @@ class AlarmCenterView extends StatelessWidget {
                               else if(alarmDoc.alarmInfo.alarmInfoId == 3) {
                                 if(alarmDoc.crewLeaderUserId == _userViewModel.user.user_id) {
                                   Get.toNamed(AppRoutes.crewApplicationCrew);
-                                  await _friendDetailViewModel.fetchFriendDetailInfo(
-                                      userId: _userViewModel.user.user_id,
-                                      friendUserId: _userViewModel.user.user_id,
-                                      season: _friendDetailViewModel.seasonDate);
+                                  await _crewApplyViewModel.fetchCrewApplyList(
+                                      _userViewModel.user.crew_id!
+                                  );
                                 }else{
                                   Get.dialog(
                                     AlertDialog(
@@ -429,7 +430,7 @@ class AlarmCenterView extends StatelessWidget {
                                             ),
                                             SizedBox(width: 10,),
                                             Container(
-                                              width: _size.width - 112,
+                                              width: _size.width - 70,
                                               child: Column(
                                                 crossAxisAlignment: CrossAxisAlignment.start,
                                                 children: [
@@ -457,7 +458,7 @@ class AlarmCenterView extends StatelessWidget {
                                                     height: 2,
                                                   ),
                                                   Container(
-                                                    width: _size.width - 112,
+                                                    width: _size.width - 70,
                                                     child: Row(
                                                       children: [
                                                         Text(
@@ -480,7 +481,7 @@ class AlarmCenterView extends StatelessWidget {
                                                             Padding(
                                                               padding: EdgeInsets.only(top: 2),
                                                               child: Container(
-                                                                width: _size.width - 112,
+                                                                width: _size.width - 70,
                                                                 child: Text('${alarmDoc.textMain}',
                                                                   style: SDSTextStyle.regular.copyWith(
                                                                       fontSize: 14,
@@ -493,7 +494,7 @@ class AlarmCenterView extends StatelessWidget {
                                                             ),
                                                           if(alarmDoc.textSub != '' && alarmDoc.textSub != null)
                                                             Container(
-                                                              width: _size.width - 112,
+                                                              width: _size.width - 70,
                                                               child: Padding(
                                                                 padding: EdgeInsets.only(top: 2),
                                                                 child: Text(': ${alarmDoc.textSub}',
