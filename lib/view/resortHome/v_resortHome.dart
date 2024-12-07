@@ -1270,7 +1270,7 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                                       : Padding(
                                     padding: const EdgeInsets.symmetric(horizontal: 24),
                                     child: Container(
-                                      color: SDSColor.snowliveBlack.withOpacity(0.1),
+                                      color: SDSColor.snowliveBlack.withOpacity(0.08),
                                       height: 1,
                                       width: _size.width,
                                     ),
