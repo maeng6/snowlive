@@ -358,8 +358,8 @@ class ResortHomeViewModel extends GetxController {
         });
 
       }catch(e){
-        await stopForegroundLocationService();
-        await stopBackgroundLocationService();
+        // await stopForegroundLocationService();
+        // await stopBackgroundLocationService();
       }
     }, (bg.LocationError error) async{
       await stopForegroundLocationService();
