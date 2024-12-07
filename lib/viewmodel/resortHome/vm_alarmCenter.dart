@@ -201,4 +201,46 @@ class AlarmCenterViewModel extends GetxController {
       print('문서 업데이트 또는 생성 중 오류 발생: $e');
     }
   }
+
+
+  Future<void> updateEventTabNotice(int uid, bool isNew) async {
+    try {
+      // `eventTab_notice` 컬렉션에서 `notice` 문서 가져오기
+      DocumentSnapshot documentSnapshot = await FirebaseFirestore.instance
+          .collection('eventTab_notice')
+          .doc('notice')
+          .get();
+
+      if (documentSnapshot.exists) {
+        // `isNew` 값에 따라 동작 분기
+        if (isNew) {
+          // `isNew`가 true일 경우, `uid` 필드 초기화
+          await documentSnapshot.reference.update({'uid': []});
+          print('모든 UID 제거 완료');
+        } else {
+          // `isNew`가 false일 경우, `uid` 필드에 새로운 UID 추가
+          List<dynamic> uidList = documentSnapshot['uid'] ?? [];
+          if (!uidList.contains(uid)) {
+            uidList.add(uid);
+            await documentSnapshot.reference.update({'uid': uidList});
+            print('UID 추가 완료');
+          } else {
+            print('UID가 이미 존재합니다');
+          }
+        }
+      } else {
+        // 문서가 존재하지 않을 경우
+        if (!isNew) {
+          await FirebaseFirestore.instance.collection('eventTab_notice').doc('notice').set({
+            'uid': [uid],
+          });
+          print('새 문서 생성 및 UID 추가 완료');
+        } else {
+          print('문서가 존재하지 않아 초기화 작업을 수행할 수 없습니다');
+        }
+      }
+    } catch (e) {
+      print('이벤트 탭 알림 업데이트 중 오류 발생: $e');
+    }
+  }
 }

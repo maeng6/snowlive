@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:com.snowlive/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/view/banner/v_banner_community.dart';
 import 'package:com.snowlive/view/community/free/v_community_Bulletin_Crew.dart';
@@ -6,6 +7,8 @@ import 'package:com.snowlive/view/community/free/v_community_Bulletin_Free.dart'
 import 'package:com.snowlive/view/community/free/v_community_Bulletin_Total.dart';
 import 'package:com.snowlive/view/community/free/v_community_Bulletin_Room.dart';
 import 'package:com.snowlive/viewmodel/community/vm_communityBulletinList.dart';
+import 'package:com.snowlive/viewmodel/resortHome/vm_alarmCenter.dart';
+import 'package:com.snowlive/viewmodel/vm_user.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -13,6 +16,8 @@ import 'package:get/get.dart';
 class CommunityMainView extends StatelessWidget {
 
   final CommunityBulletinListViewModel _communityBulletinListViewModel = Get.find<CommunityBulletinListViewModel>();
+  final AlarmCenterViewModel _alarmCenterViewModel = Get.find<AlarmCenterViewModel>();
+  UserViewModel _userViewModel = Get.find<UserViewModel>();
 
   @override
   Widget build(BuildContext context) {
@@ -105,48 +110,103 @@ class CommunityMainView extends StatelessWidget {
                           children: [
                             Padding(
                               padding: EdgeInsets.only(bottom: 2),
-                              child: Container(
-                                width: (_size.width - 40) / 2 ,
-                                height: 40,
-                                child: ElevatedButton(
-                                  child: Text(
-                                    '행사·클리닉',
-                                    style: SDSTextStyle.extraBold.copyWith(
-                                        color: (_communityBulletinListViewModel.tapName=='행사·클리닉')
-                                            ? SDSColor.gray900
-                                            : SDSColor.gray900.withOpacity(0.2),
-                                        fontWeight: (_communityBulletinListViewModel.tapName=='행사·클리닉')
-                                            ? FontWeight.w900
-                                            : FontWeight.w300,
-                                        fontSize: 16),
-                                  ),
-                                  onPressed: () {
-                                    HapticFeedback.lightImpact();
-                                    _communityBulletinListViewModel.changeTap('행사·클리닉');
-                                  },
-                                  style: ElevatedButton.styleFrom(
-                                    splashFactory: NoSplash.splashFactory,
-                                    padding: EdgeInsets.only(top: 0),
-                                    minimumSize: Size(40, 10),
-                                    backgroundColor: SDSColor.snowliveWhite,
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(8)),
-                                    elevation: 0,
-                                    shadowColor: Colors.transparent,
-                                    overlayColor: Colors.transparent,
-                                    surfaceTintColor: Colors.transparent,
-                                  ),
-                                ),
+                              child: StreamBuilder<QuerySnapshot>(
+                                stream: FirebaseFirestore.instance
+                                    .collection('eventTab_notice')
+                                    .snapshots(),
+                                builder: (context, snapshot) {
+                                  bool showNewBadge = false; // 기본적으로 NEW 배지를 숨김
+
+                                  // 스냅샷 데이터가 있을 경우 처리
+                                  if (snapshot.connectionState == ConnectionState.active && snapshot.hasData) {
+                                    for (var doc in snapshot.data!.docs) {
+                                      final data = doc.data() as Map<String, dynamic>;
+                                      final uidList = List<int>.from(data['uid'] ?? []);
+
+                                      // uidList에 현재 사용자의 user_id가 없을 경우 NEW 배지 표시
+                                      if (!uidList.contains(_userViewModel.user.user_id)) {
+                                        showNewBadge = true;
+                                        break;
+                                      }
+                                    }
+                                  }
+
+                                  return Stack(
+                                    children: [
+                                      Container(
+                                        width: (_size.width - 40) / 2,
+                                        height: 40,
+                                        child: ElevatedButton(
+                                          child: Text(
+                                            '행사·클리닉',
+                                            style: SDSTextStyle.extraBold.copyWith(
+                                              color: (_communityBulletinListViewModel.tapName == '행사·클리닉')
+                                                  ? SDSColor.gray900
+                                                  : SDSColor.gray900.withOpacity(0.2),
+                                              fontWeight: (_communityBulletinListViewModel.tapName == '행사·클리닉')
+                                                  ? FontWeight.w900
+                                                  : FontWeight.w300,
+                                              fontSize: 16,
+                                            ),
+                                          ),
+                                          onPressed: () async{
+                                            HapticFeedback.lightImpact();
+                                            _communityBulletinListViewModel.changeTap('행사·클리닉');
+                                            await _alarmCenterViewModel.updateEventTabNotice(_userViewModel.user.user_id, false);
+
+                                          },
+                                          style: ElevatedButton.styleFrom(
+                                            splashFactory: NoSplash.splashFactory,
+                                            padding: EdgeInsets.only(top: 0),
+                                            minimumSize: Size(40, 10),
+                                            backgroundColor: SDSColor.snowliveWhite,
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.circular(8),
+                                            ),
+                                            elevation: 0,
+                                            shadowColor: Colors.transparent,
+                                            overlayColor: Colors.transparent,
+                                            surfaceTintColor: Colors.transparent,
+                                          ),
+                                        ),
+                                      ),
+                                      if (showNewBadge)
+                                        Positioned(
+                                          top: 9,
+                                          right: 35,
+                                          child: Container(
+                                            width: 20,
+                                            height: 20,
+                                            decoration: BoxDecoration(
+                                              color: Color(0xFFD6382B),
+                                              borderRadius: BorderRadius.circular(20),
+                                            ),
+                                            child: Center(
+                                              child: Text(
+                                                'N',
+                                                style: SDSTextStyle.extraBold.copyWith(
+                                                  fontSize: 11,
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Color(0xFFFFFFFF),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                    ],
+                                  );
+                                },
                               ),
                             ),
                             Container(
                               width: 86,
                               height: 3,
-                              color:
-                              (_communityBulletinListViewModel.tapName=='행사·클리닉') ? Color(0xFF111111) : Colors.transparent,
-                            )
+                              color: (_communityBulletinListViewModel.tapName == '행사·클리닉')
+                                  ? Color(0xFF111111)
+                                  : Colors.transparent,
+                            ),
                           ],
-                        ),//클리닉
+                        ), //클리닉
                       ],
                     ),
                   ),
@@ -287,7 +347,7 @@ class CommunityMainView extends StatelessWidget {
                     Expanded(child: CommunityBulletinRoomListView()),
                   if(_communityBulletinListViewModel.tapName=='게시판'
                       && _communityBulletinListViewModel.chipName == Community_Category_sub_bulletin.crew.korean)
-                  Banner_community(),
+                    Banner_community(),
                   if(_communityBulletinListViewModel.tapName=='게시판'
                       && _communityBulletinListViewModel.chipName == Community_Category_sub_bulletin.crew.korean)
                     Expanded(child: CommunityBulletinCrewListView()),

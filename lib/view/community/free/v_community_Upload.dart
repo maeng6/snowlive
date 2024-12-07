@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:com.snowlive/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/viewmodel/community/vm_communityBulletinList.dart';
 import 'package:com.snowlive/viewmodel/community/vm_communityUpload.dart';
+import 'package:com.snowlive/viewmodel/resortHome/vm_alarmCenter.dart';
 import 'package:com.snowlive/viewmodel/vm_user.dart';
 import 'package:com.snowlive/widget/w_bulletin_quill_toolbar.dart';
 import 'package:com.snowlive/widget/w_category_sub_commu_bulletin.dart';
@@ -20,6 +21,7 @@ class CommunityBulletinUpload extends StatelessWidget {
   final UserViewModel _userViewModel = Get.find<UserViewModel>();
   final CommunityUploadViewModel _communityUploadViewModel = Get.find<CommunityUploadViewModel>();
   final CommunityBulletinListViewModel _communityBulletinListViewModel = Get.find<CommunityBulletinListViewModel>();
+  final AlarmCenterViewModel _alarmCenterViewModel = Get.find<AlarmCenterViewModel>();
 
   final FocusNode urlFocusNode = FocusNode();
 
@@ -524,6 +526,8 @@ class CommunityBulletinUpload extends StatelessWidget {
                                 (_communityBulletinListViewModel.tapName=='게시판')
                                     ? await _communityBulletinListViewModel.fetchAllCommunity()
                                     :await _communityBulletinListViewModel.fetchEventCommunity();
+                                if(_communityBulletinListViewModel.tapName=='행사·클리닉')
+                                await _alarmCenterViewModel.updateEventTabNotice(_userViewModel.user.user_id, true);
                               }
 
 
