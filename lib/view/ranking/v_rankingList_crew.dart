@@ -232,25 +232,17 @@ class RankingCrewView extends StatelessWidget {
                                             height: 80,
                                             decoration: BoxDecoration(
                                               color: Color(0xFFDEDEDE),
-                                              borderRadius: BorderRadius.circular(16),
+                                              borderRadius: BorderRadius.circular(17),
                                             ),
                                             padding: EdgeInsets.all(1),
                                             child: Transform.translate(
                                               offset: Offset(0, 0),
                                               child: Container(
                                                 decoration: BoxDecoration(
-                                                  // boxShadow: [
-                                                  //   BoxShadow(
-                                                  //     color: Colors.black.withOpacity(0.06),
-                                                  //     spreadRadius: 2,
-                                                  //     blurRadius: 2,
-                                                  //     offset: Offset(0, 2),
-                                                  //   ),
-                                                  // ],
-                                                  borderRadius: BorderRadius.circular(14),
+                                                  borderRadius: BorderRadius.circular(15),
                                                 ),
                                                 child: ClipRRect(
-                                                  borderRadius: BorderRadius.circular(14),
+                                                  borderRadius: BorderRadius.circular(15),
                                                   child: ExtendedImage.network(
                                                     '${_rankingListViewModel.rankingListCrewMy_view!.crewLogoUrl
                                                         ?? crewDefaultLogoUrl['${_rankingListViewModel.rankingListCrewMy_view!.color}']}',
@@ -1411,25 +1403,17 @@ class RankingCrewView extends StatelessWidget {
                                             height: 80,
                                             decoration: BoxDecoration(
                                               color: Color(0xFFDEDEDE),
-                                              borderRadius: BorderRadius.circular(16),
+                                              borderRadius: BorderRadius.circular(17),
                                             ),
-                                            padding: EdgeInsets.all(2),
+                                            padding: EdgeInsets.all(1),
                                             child: Transform.translate(
                                               offset: Offset(0, 0),
                                               child: Container(
                                                 decoration: BoxDecoration(
-                                                  // boxShadow: [
-                                                  //   BoxShadow(
-                                                  //     color: Colors.black.withOpacity(0.06),
-                                                  //     spreadRadius: 2,
-                                                  //     blurRadius: 2,
-                                                  //     offset: Offset(0, 2),
-                                                  //   ),
-                                                  // ],
-                                                  borderRadius: BorderRadius.circular(14),
+                                                  borderRadius: BorderRadius.circular(15),
                                                 ),
                                                 child: ClipRRect(
-                                                  borderRadius: BorderRadius.circular(14),
+                                                  borderRadius: BorderRadius.circular(15),
                                                   child: ExtendedImage.network(
                                                     '${_rankingListViewModel.rankingListCrewMy_view!.crewLogoUrl
                                                         ?? crewDefaultLogoUrl['${_rankingListViewModel.rankingListCrewMy_view!.color}']}',
