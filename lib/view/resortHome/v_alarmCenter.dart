@@ -68,7 +68,7 @@ class AlarmCenterView extends StatelessWidget {
         surfaceTintColor: Colors.transparent,
         elevation: 0.0,
       ),
-      body: SafeArea(
+      body: Obx(()=>SafeArea(
         child: RefreshIndicator(
           strokeWidth: 2,
           edgeOffset: -40,
@@ -78,7 +78,29 @@ class AlarmCenterView extends StatelessWidget {
           onRefresh: () async {
             await _alarmCenterViewModel.fetchAlarmCenterList(userId: _userViewModel.user.user_id);
           },
-          child: Column(
+          child:
+          (_alarmCenterViewModel.isLoading==true)
+              ? Container(
+            height: 400,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Center(
+                  child: Container(
+                    width: 24,
+                    height: 24,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 4,
+                      backgroundColor: SDSColor.gray100,
+                      color: SDSColor.gray300.withOpacity(0.6),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          )
+              : Column(
             children: [
               Obx(() =>
                   Expanded(
@@ -547,7 +569,7 @@ class AlarmCenterView extends StatelessWidget {
             ],
           ),
         ),
-      ),
+      )),
     );
   }
 }

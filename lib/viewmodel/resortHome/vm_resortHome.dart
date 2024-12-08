@@ -673,6 +673,7 @@ class ResortHomeViewModel extends GetxController {
         .collection('treasure_hunt')
         .doc('treasure_hunt')
         .collection('find_list')
+        .orderBy('datetime', descending: false)
         .snapshots();
   }
 

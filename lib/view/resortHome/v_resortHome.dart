@@ -958,13 +958,14 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                             highlightColor: Colors.transparent,
                             splashColor: Colors.transparent,
                             onPressed: () async{
+                              CustomFullScreenDialog.showDialog();
+                              await _alarmCenterViewModel.fetchAlarmCenterList(userId: _userViewModel.user.user_id);
+                              CustomFullScreenDialog.cancelDialog();
                               Get.toNamed(AppRoutes.alarmCenter);
                               await _alarmCenterViewModel.updateNotification(
                                 _userViewModel.user.user_id,
                                 total: false,
                               );
-                              await _alarmCenterViewModel.fetchAlarmCenterList(userId: _userViewModel.user.user_id);
-
                             },
                             icon: Image.asset(
                               'assets/imgs/icons/icon_alarm_resortHome.png',
@@ -976,12 +977,14 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                               right: 5,
                               child: GestureDetector(
                                 onTap: () async {
+                                  CustomFullScreenDialog.showDialog();
+                                  await _alarmCenterViewModel.fetchAlarmCenterList(userId: _userViewModel.user.user_id);
+                                  CustomFullScreenDialog.cancelDialog();
                                   Get.toNamed(AppRoutes.alarmCenter);
                                   await _alarmCenterViewModel.updateNotification(
                                     _userViewModel.user.user_id,
                                     total: false,
                                   );
-                                  await _alarmCenterViewModel.fetchAlarmCenterList(userId: _userViewModel.user.user_id);
                                 },
                                 child: Container(
                                   width: 20,
