@@ -122,42 +122,84 @@ class ResortHomeViewModel extends GetxController {
   Future<void> startForegroundLocationService({required user_id}) async {
     bool serviceEnabled;
     LocationPermission permission;
-    DateTime now = DateTime.now();
 
+    // 위치 서비스 활성화 확인
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
       return Future.error('Location services are disabled.');
     }
 
+    // 위치 권한 확인 및 요청
     permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
       if (permission == LocationPermission.deniedForever) {
-        return Future.error('Location permissions are permanently denied, we cannot request permissions.');
+        return Future.error('Location permissions are permanently denied.');
       }
 
       if (permission == LocationPermission.denied) {
-        return Future.error('Location permissions are denied');
+        return Future.error('Location permissions are denied.');
       }
     }
 
-    // 일회성으로 현재 위치 정보를 가져옴
+    // 현재 위치 가져오기
     Position currentPosition = await Geolocator.getCurrentPosition();
     _latitude.value = currentPosition.latitude;
     _longitude.value = currentPosition.longitude;
+
+    // 서버에 라이브 시작 요청
     ApiResponse response = await liveOn({
       "user_id": user_id,
       "coordinates": "POINT (${_longitude.value} ${_latitude.value})"
     });
 
     if (response.success) {
-      _positionStreamSubscription = Geolocator.getPositionStream().listen((Position position) async {
-        // 동시성 제어를 위해 lock 사용
-        try{
+      // BackgroundGeolocation 설정
+      await bg.BackgroundGeolocation.ready(bg.Config(
+        desiredAccuracy: bg.Config.DESIRED_ACCURACY_HIGH,
+        stopOnTerminate: false, // 앱 종료 후에도 실행 유지
+        startOnBoot: true, // 디바이스 재부팅 후에도 실행 유지
+        distanceFilter: 10, // 최소 위치 변경 거리
+        notification: bg.Notification(
+          title: "Location Tracking Active",
+          text: "Tracking your location in the background.",
+          channelName: "Location Tracking",
+          smallIcon: "drawable/ic_launcher",
+          color: "#FF0000",
+          priority: bg.Config.NOTIFICATION_PRIORITY_HIGH,
+        ),
+        logLevel: bg.Config.LOG_LEVEL_VERBOSE,
+        debug: true,
+        preventSuspend: true, // OS 중단 방지
+        heartbeatInterval: 60, // Heartbeat 이벤트 발생 주기
+      ));
+
+      // 위치 추적 시작
+      await bg.BackgroundGeolocation.start();
+
+      // 위치 변경 이벤트 리스너
+      bg.BackgroundGeolocation.onLocation((bg.Location location) async {
+        double latitude = location.coords.latitude;
+        double longitude = location.coords.longitude;
+
+        Position position = Position(
+          latitude: latitude,
+          longitude: longitude,
+          accuracy: location.coords.accuracy,
+          altitude: location.coords.altitude,
+          heading: location.coords.heading,
+          speed: location.coords.speed,
+          speedAccuracy: location.coords.speedAccuracy,
+          timestamp: DateTime.parse(location.timestamp),
+          altitudeAccuracy: 0,
+          headingAccuracy: 0,
+        );
+
+        try {
           await _lock.synchronized(() async {
             bool withinBoundary = _checkPositionWithinBoundary(
-                position.latitude,
-                position.longitude,
+                latitude,
+                longitude,
                 _resort_info['coordinates']['latitude'],
                 _resort_info['coordinates']['longitude'],
                 _resort_info['radius']
@@ -166,28 +208,25 @@ class ResortHomeViewModel extends GetxController {
             DateTime now = DateTime.now();
 
             if (withinBoundary) {
-              Map<String, dynamic>? passPointInfo = checkPositionInAreas(position, _slope_info,_treasure_hunt_info, _reset_point, _respawn_point);
+              Map<String, dynamic>? passPointInfo = checkPositionInAreas(
+                  position,
+                  _slope_info,
+                  _treasure_hunt_info,
+                  _reset_point,
+                  _respawn_point
+              );
 
               if (passPointInfo != null && passPointInfo['type'] == 'slope_info') {
                 if (_lastCountMethodCall == null || now.difference(_lastCountMethodCall!).inSeconds > 10) {
-                  print('포어 체크포인트 실행');
                   final response = await RankingAPI().addCheckPoint({
                     "user_id": user_id,
                     "slope_id": passPointInfo['id'],
-                    "coordinates": "${position.latitude}, ${position.longitude}"
+                    "coordinates": "${latitude}, ${longitude}"
                   });
 
-                  if(response.statusCode == 201){
-                    print('포어 상태코드 ${response.statusCode}');
-                    print('포어 체크포인트 업데이트 통신 성공');
+                  if (response.statusCode == 201) {
+                    print('CheckPoint Update Successful');
                     _lastCountMethodCall = now;
-                  }else if(response.statusCode==416){
-                    print('포어 상태코드 ${response.statusCode}');
-                    _lastCountMethodCall = now;
-                  } else{
-                    _lastCountMethodCall = null;
-                    print('포어 상태코드 ${response.statusCode}');
-                    print('포어 체크포인트 업데이트 통신 실패');
                   }
                 }
               }
@@ -195,11 +234,11 @@ class ResortHomeViewModel extends GetxController {
               if (passPointInfo != null
                   && passPointInfo['type'] == 'treasure_hunt_info'
                   && resort_info['treasure_hunt'] == true
-                  && isParticipate_treasure_hunt ==true) {
+                  && isParticipate_treasure_hunt == true) {
                 await RankingAPI().createTreasureRecord({
                   "user_id": user_id,
                   "slope_id": passPointInfo['id'],
-                  "coordinates": "POINT (${position.longitude} ${position.latitude})"
+                  "coordinates": "POINT (${longitude} ${latitude})"
                 });
               }
 
@@ -207,7 +246,7 @@ class ResortHomeViewModel extends GetxController {
                 if (_lastResetMethodCall == null || now.difference(_lastResetMethodCall!).inSeconds > 180) {
                   _lastResetMethodCall = now;
                   await RankingAPI().reset({"user_id": user_id});
-                  print('포어 리셋 성공');
+                  print('Reset Successful');
                 }
               }
 
@@ -215,7 +254,7 @@ class ResortHomeViewModel extends GetxController {
                 if (_lastRespawnMethodCall == null || now.difference(_lastRespawnMethodCall!).inSeconds > 180) {
                   _lastRespawnMethodCall = now;
                   await RankingAPI().respawn({"user_id": user_id});
-                  print('포어 리스폰 성공');
+                  print('Respawn Successful');
                 }
               }
             } else {
@@ -224,51 +263,54 @@ class ResortHomeViewModel extends GetxController {
               await liveOff({"user_id": user_id}, user_id);
             }
           });
-        }catch(e){
+        } catch (e) {
           await stopForegroundLocationService();
           await stopBackgroundLocationService();
           await liveOff({"user_id": user_id}, user_id);
+          print('Location Service Error: $e');
         }
+      }, (bg.LocationError error) {
+        print('[onLocation] ERROR: $error');
       });
-    }else{
+    } else {
       await stopForegroundLocationService();
       await stopBackgroundLocationService();
-      print('라이브 불가 지역');
+      print('Unable to Start Live Tracking');
     }
   }
 
   Future<void> startBackgroundLocationService({required user_id}) async {
     DateTime now = DateTime.now();
+
+    // BackgroundGeolocation 설정
     await bg.BackgroundGeolocation.ready(bg.Config(
       desiredAccuracy: bg.Config.DESIRED_ACCURACY_HIGH,
-      preventSuspend: true,
-      disableMotionActivityUpdates: true,
-      stopOnStationary: false,
-      distanceFilter: 0,
-      isMoving: true,
-      disableElasticity: true,
-      stopOnTerminate: true,
-      startOnBoot: false,
-      stationaryRadius: 25,
-      logLevel: bg.Config.LOG_LEVEL_VERBOSE,
-      locationUpdateInterval: 5000,
-      disableLocationAuthorizationAlert: true,
-      showsBackgroundLocationIndicator: true,
-      backgroundPermissionRationale: PermissionRationale(
-        title: "{applicationName}가 종료되거나 사용하지 않을 때 위치에 접근하도록 허용하시겠습니까?",
-        message: "위치 서비스를 사용하시면 라이브 기능을 통해 랭킹 서비스를 이용할 수 있고, 친구와 라이브 상태를 공유할 수 있습니다. 이 앱은 항상 허용을 하면 앱이 사용 중이 아닐 때도 위치 데이터를 수집하여 라이브 서비스 기능을 지원합니다.",
-        positiveAction: '{backgroundPermissionOptionLabel}',
-        negativeAction: '취소',
+      stopOnTerminate: false, // 앱 종료 후에도 서비스 유지
+      startOnBoot: true, // 디바이스 재부팅 후에도 서비스 유지
+      distanceFilter: 10, // 최소 위치 변경 거리
+      notification: bg.Notification(
+        title: "Background Location Active",
+        text: "Tracking your location in the background.",
+        channelName: "Background Location",
+        smallIcon: "drawable/ic_launcher", // Android 알림 아이콘
+        color: "#FF0000", // 알림 색상
+        priority: bg.Config.NOTIFICATION_PRIORITY_HIGH,
       ),
+      preventSuspend: true, // 서비스가 OS에 의해 중단되지 않도록 설정
+      heartbeatInterval: 60, // heartbeat 이벤트 주기 (초)
+      logLevel: bg.Config.LOG_LEVEL_VERBOSE,
+      debug: true, // 디버깅용 로그 활성화
     ));
 
+    // 위치 추적 시작
     await bg.BackgroundGeolocation.start();
 
+    // 위치 변경 이벤트 리스너
     bg.BackgroundGeolocation.onLocation((bg.Location location) async {
-
       double latitude = location.coords.latitude;
       double longitude = location.coords.longitude;
 
+      // 위치 정보 Position 객체로 변환
       Position position = Position(
         latitude: latitude,
         longitude: longitude,
@@ -282,54 +324,41 @@ class ResortHomeViewModel extends GetxController {
         headingAccuracy: 0,
       );
 
-      try{
+      try {
         await _lock.synchronized(() async {
           bool withinBoundary = _checkPositionWithinBoundary(
-              position.latitude,
-              position.longitude,
-              _resort_info['coordinates']['latitude'],
-              _resort_info['coordinates']['longitude'],
-              _resort_info['radius']
+            position.latitude,
+            position.longitude,
+            _resort_info['coordinates']['latitude'],
+            _resort_info['coordinates']['longitude'],
+            _resort_info['radius'],
           );
 
           DateTime now = DateTime.now();
 
           if (withinBoundary) {
-            Map<String, dynamic>? passPointInfo = checkPositionInAreas(position, _slope_info,_treasure_hunt_info, _reset_point, _respawn_point);
+            Map<String, dynamic>? passPointInfo = checkPositionInAreas(
+                position, _slope_info, _treasure_hunt_info, _reset_point, _respawn_point);
 
             if (passPointInfo != null && passPointInfo['type'] == 'slope_info') {
               if (_lastCountMethodCall == null || now.difference(_lastCountMethodCall!).inSeconds > 10) {
-                print('백 체크포인트 실행');
                 final response = await RankingAPI().addCheckPoint({
                   "user_id": user_id,
                   "slope_id": passPointInfo['id'],
                   "coordinates": "${position.latitude}, ${position.longitude}"
                 });
 
-                if(response.statusCode == 201){
-                  print('백 상태코드 ${response.statusCode}');
-                  print('백 체크포인트 업데이트 통신 성공');
+                if (response.statusCode == 201) {
+                  print('Background CheckPoint Update Successful');
                   _lastCountMethodCall = now;
-                }else if(response.statusCode==416){
-                  print('백 상태코드 ${response.statusCode}');
-                  _lastCountMethodCall = now;
-                } else{
-                  _lastCountMethodCall = null;
-                  print('백 상태코드 ${response.statusCode}');
-                  print('백 체크포인트 업데이트 통신 실패');
                 }
-
               }
             }
 
             if (passPointInfo != null
                 && passPointInfo['type'] == 'treasure_hunt_info'
                 && resort_info['treasure_hunt'] == true
-                && isParticipate_treasure_hunt ==true) {
-              print(user_id);
-              print(passPointInfo['id']);
-              print("${position.latitude}, ${position.longitude}");
-
+                && isParticipate_treasure_hunt == true) {
               await RankingAPI().createTreasureRecord({
                 "user_id": user_id,
                 "slope_id": passPointInfo['id'],
@@ -341,7 +370,7 @@ class ResortHomeViewModel extends GetxController {
               if (_lastResetMethodCall == null || now.difference(_lastResetMethodCall!).inSeconds > 180) {
                 _lastResetMethodCall = now;
                 await RankingAPI().reset({"user_id": user_id});
-                print('백 리셋 성공');
+                print('Background Reset Successful');
               }
             }
 
@@ -349,7 +378,7 @@ class ResortHomeViewModel extends GetxController {
               if (_lastRespawnMethodCall == null || now.difference(_lastRespawnMethodCall!).inSeconds > 180) {
                 _lastRespawnMethodCall = now;
                 await RankingAPI().respawn({"user_id": user_id});
-                print('백 리스폰 성공');
+                print('Background Respawn Successful');
               }
             }
           } else {
@@ -358,17 +387,22 @@ class ResortHomeViewModel extends GetxController {
             await liveOff({"user_id": user_id}, user_id);
           }
         });
-
-      }catch(e){
-        // await stopForegroundLocationService();
-        // await stopBackgroundLocationService();
+      } catch (e) {
+        await stopForegroundLocationService();
+        await stopBackgroundLocationService();
+        print('Background Location Error: $e');
       }
-    }, (bg.LocationError error) async{
-      await stopForegroundLocationService();
-      await stopBackgroundLocationService();
-      print('[onLocation] ERROR: $error 리조트 구역 벗어남');
+    }, (bg.LocationError error) {
+      print('[BackgroundGeolocation.onLocation] ERROR: $error');
+    });
+
+    // Heartbeat 이벤트 처리
+    bg.BackgroundGeolocation.onHeartbeat((bg.HeartbeatEvent event) async {
+      print("[Heartbeat] $event");
+      // 백그라운드에서 추가적인 작업이 필요하면 여기에 작성
     });
   }
+
 
   Future<void> stopForegroundLocationService() async {
     await _positionStreamSubscription?.cancel();
