@@ -80,7 +80,7 @@ class CrewNoticeCreateView extends StatelessWidget {
                       errorStyle: SDSTextStyle.regular.copyWith(fontSize: 12, color: SDSColor.red),
                       labelStyle: SDSTextStyle.regular.copyWith(color: SDSColor.gray400, fontSize: 14),
                       hintStyle: SDSTextStyle.regular.copyWith(color: SDSColor.gray400, fontSize: 14),
-                      hintText: '공지사항을 입력해 주세요. (최대 100자 이내)',
+                      hintText: '공지사항을 입력해 주세요.(최대 200자 이내)\n공지사항은 크루원만 볼 수 있습니다.',
                       hintMaxLines: 20,
                       contentPadding: EdgeInsets.only(top: 10, bottom: 10, left: 12, right: 12),
                       fillColor: SDSColor.gray50,

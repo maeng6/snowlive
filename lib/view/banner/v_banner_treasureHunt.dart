@@ -17,7 +17,7 @@ class _Banner_treasureHuntState extends State<Banner_treasureHunt> {
   @override
   void initState() {
     super.initState();
-    _resortHomeViewModel.getInfo_treasureHunt(); // Firebase에서 banner 가져오는 함수
+    _resortHomeViewModel.getInfo_treasureHunt_banner(); // Firebase에서 banner 가져오는 함수
   }
 
   @override
@@ -25,7 +25,7 @@ class _Banner_treasureHuntState extends State<Banner_treasureHunt> {
     Size _size = MediaQuery.of(context).size;
 
     return StreamBuilder(
-      stream: _resortHomeViewModel.infoStream_treasureHunt.value,
+      stream: _resortHomeViewModel.infoStream_treasureHunt_banner.value,
       builder: (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
         // 데이터 로드 중이라면
         if (snapshot.connectionState == ConnectionState.waiting) {

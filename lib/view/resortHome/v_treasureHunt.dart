@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:com.snowlive/data/imgaUrls/Data_url_image.dart';
 import 'package:com.snowlive/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/routes/routes.dart';
+import 'package:com.snowlive/viewmodel/friend/vm_friendDetail.dart';
 import 'package:com.snowlive/viewmodel/resortHome/vm_resortHome.dart';
 import 'package:com.snowlive/viewmodel/vm_user.dart';
 import 'package:extended_image/extended_image.dart';
@@ -19,6 +20,7 @@ class TreasureHuntView extends StatefulWidget {
 class _TreasureHuntViewState extends State<TreasureHuntView> {
   ResortHomeViewModel _resortHomeViewModel = Get.find<ResortHomeViewModel>();
   UserViewModel _userViewModel = Get.find<UserViewModel>();
+  FriendDetailViewModel _friendDetailViewModel = Get.find<FriendDetailViewModel>();
   Timer? _timer;
   String _hours = '00';
   String _minutes = '00';
@@ -483,41 +485,51 @@ class _TreasureHuntViewState extends State<TreasureHuntView> {
                                   return Container(
                                     height: 54,
                                     child: ListTile(
-                                      leading: ExtendedImage.network(
-                                        memberData['profile_image_url_user'],
-                                        shape: BoxShape.circle,
-                                        width: 40,
-                                        height: 40,
-                                        fit: BoxFit.cover,
-                                        loadStateChanged: (ExtendedImageState state) {
-                                          switch (state.extendedImageLoadState) {
-                                            case LoadState.loading:
-                                            // 로딩 중일 때 로딩 인디케이터를 표시
-                                              return Shimmer.fromColors(
-                                                baseColor: SDSColor.gray200!,
-                                                highlightColor: SDSColor.gray50!,
-                                                child: Container(
+                                      leading: GestureDetector(
+                                        onTap: () async{
+                                          Get.toNamed(AppRoutes.friendDetail);
+                                          await _friendDetailViewModel.fetchFriendDetailInfo(
+                                            userId: _userViewModel.user.user_id,
+                                            friendUserId: memberData['user_id'],
+                                            season: _friendDetailViewModel.seasonDate,
+                                          );
+                                        },
+                                        child: ExtendedImage.network(
+                                          memberData['profile_image_url_user'],
+                                          shape: BoxShape.circle,
+                                          width: 40,
+                                          height: 40,
+                                          fit: BoxFit.cover,
+                                          loadStateChanged: (ExtendedImageState state) {
+                                            switch (state.extendedImageLoadState) {
+                                              case LoadState.loading:
+                                              // 로딩 중일 때 로딩 인디케이터를 표시
+                                                return Shimmer.fromColors(
+                                                  baseColor: SDSColor.gray200!,
+                                                  highlightColor: SDSColor.gray50!,
+                                                  child: Container(
+                                                    width: 40,
+                                                    height: 40,
+                                                    decoration: BoxDecoration(
+                                                      color: Colors.white,
+                                                      borderRadius: BorderRadius.circular(8),
+                                                    ),
+                                                  ),
+                                                );
+                                              case LoadState.completed:
+                                              // 로딩이 완료되었을 때 이미지 반환
+                                                return state.completedWidget;
+                                              case LoadState.failed:
+                                              // 로딩이 실패했을 때 대체 이미지 또는 다른 처리
+                                                return  ExtendedImage.network(
+                                                  '${profileImgUrlList[0].default_round}', // 대체 이미지 경로
                                                   width: 40,
                                                   height: 40,
-                                                  decoration: BoxDecoration(
-                                                    color: Colors.white,
-                                                    borderRadius: BorderRadius.circular(8),
-                                                  ),
-                                                ),
-                                              );
-                                            case LoadState.completed:
-                                            // 로딩이 완료되었을 때 이미지 반환
-                                              return state.completedWidget;
-                                            case LoadState.failed:
-                                            // 로딩이 실패했을 때 대체 이미지 또는 다른 처리
-                                              return  ExtendedImage.network(
-                                                '${profileImgUrlList[0].default_round}', // 대체 이미지 경로
-                                                width: 40,
-                                                height: 40,
-                                                fit: BoxFit.cover,
-                                              );
-                                          }
-                                        },
+                                                  fit: BoxFit.cover,
+                                                );
+                                            }
+                                          },
+                                        ),
                                       ),
                                       title: Text(displayName,
                                         style: SDSTextStyle.regular.copyWith(
@@ -558,7 +570,7 @@ class _TreasureHuntViewState extends State<TreasureHuntView> {
                         ),
                         SizedBox(height: 40),
                         if (hasMyTreasure)
-                        SizedBox(height: 60),
+                          SizedBox(height: 60),
                       ],
                     ),
                   ),

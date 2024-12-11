@@ -32,7 +32,9 @@ class ResortHomeView extends StatefulWidget {
   State<ResortHomeView> createState() => _ResortHomeViewState();
 }
 
-class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAliveClientMixin, SingleTickerProviderStateMixin {
+class _ResortHomeViewState extends State<ResortHomeView> with
+    AutomaticKeepAliveClientMixin,
+    SingleTickerProviderStateMixin{
 
   bool get wantKeepAlive => true;
   int? selectedIndex;
@@ -57,7 +59,6 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
   @override
   void initState() {
     super.initState();
-
 
     print('내 유저아이디 : ${_userViewModel.user.user_id}');
     _controller = AnimationController(
@@ -100,6 +101,7 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
 
   @override
   void dispose() {
+
     _controller.dispose();
     super.dispose();
   }
@@ -380,8 +382,7 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                                         onPressed: () async{
                                           HapticFeedback.lightImpact();
                                           CustomFullScreenDialog.showDialog();
-                                          await _resortHomeViewModel.startForegroundLocationService(user_id: _userViewModel.user.user_id);
-                                          await _resortHomeViewModel.startBackgroundLocationService(user_id: _userViewModel.user.user_id);
+                                          await _resortHomeViewModel.startLiveLocationService(user_id: _userViewModel.user.user_id);
                                           await _userViewModel.updateUserModel_api(_userViewModel.user.user_id);
                                           CustomFullScreenDialog.cancelDialog();
                                           Get.back();
@@ -463,8 +464,7 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                           else if(_userViewModel.user.within_boundary == false) {
                             HapticFeedback.lightImpact();
                             CustomFullScreenDialog.showDialog();
-                            await _resortHomeViewModel.startForegroundLocationService(user_id: _userViewModel.user.user_id);
-                            await _resortHomeViewModel.startBackgroundLocationService(user_id: _userViewModel.user.user_id);
+                            await _resortHomeViewModel.startLiveLocationService(user_id: _userViewModel.user.user_id);
                             await _userViewModel.updateUserModel_api(_userViewModel.user.user_id);
                             CustomFullScreenDialog.cancelDialog();
                             if (_userViewModel.user.crew_id != null) {
@@ -1611,16 +1611,15 @@ class _ResortHomeViewState extends State<ResortHomeView> with AutomaticKeepAlive
                               child: Banner_resortHome(),
                             ),
                             //TODO: 보물찾기 진입 배너
-                            if(_resortHomeViewModel.fetchResortHome_finish == true)
-                              GestureDetector(
-                                onTap: (){
-                                  Get.toNamed(AppRoutes.treasureHunt);
-                                },
-                                child: Padding(
-                                  padding: EdgeInsets.only(left: 16, right: 16, top: 8),
-                                  child: Banner_treasureHunt(),
-                                ),
+                            GestureDetector(
+                              onTap: (){
+                                Get.toNamed(AppRoutes.treasureHunt);
+                              },
+                              child: Padding(
+                                padding: EdgeInsets.only(left: 16, right: 16, top: 8),
+                                child: Banner_treasureHunt(),
                               ),
+                            ),
                             //TODO: 구분선
                             if((_resortHomeViewModel.resortHomeModel.dailyTotalCount != 0 || _userViewModel.user.within_boundary == true))
                               Padding(

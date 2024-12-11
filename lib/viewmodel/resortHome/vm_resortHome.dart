@@ -35,7 +35,6 @@ class ResortHomeViewModel extends GetxController {
   var isLoading_bestFriend = true.obs;
   var isLoading_weather = true.obs;
   final Lock _lock = Lock();
-  RxBool _fetchResortHome_finish = false.obs;
   RxString _rankingGuideUrl_ios = ''.obs;
   RxString _rankingGuideUrl_aos = ''.obs;
   RxString _rankingComingSoonUrl = ''.obs;
@@ -72,6 +71,7 @@ class ResortHomeViewModel extends GetxController {
   Rxn<Stream<DocumentSnapshot<Map<String, dynamic>>>> bannerStream_community_detail = Rxn<Stream<DocumentSnapshot<Map<String, dynamic>>>>();
   Rxn<Stream<DocumentSnapshot<Map<String, dynamic>>>> bannerStream_ranking = Rxn<Stream<DocumentSnapshot<Map<String, dynamic>>>>();
   Rxn<Stream<DocumentSnapshot<Map<String, dynamic>>>> infoStream_treasureHunt = Rxn<Stream<DocumentSnapshot<Map<String, dynamic>>>>();
+  Rxn<Stream<DocumentSnapshot<Map<String, dynamic>>>> infoStream_treasureHunt_banner = Rxn<Stream<DocumentSnapshot<Map<String, dynamic>>>>();
   Rxn<Stream<QuerySnapshot<Map<String, dynamic>>>> infoStream_treasureHunt_findList = Rxn<Stream<QuerySnapshot<Map<String, dynamic>>>>();
 
   StreamSubscription<Position>? _positionStreamSubscription;
@@ -89,7 +89,6 @@ class ResortHomeViewModel extends GetxController {
   Map get resort_info => _resort_info;
   Map get weatherInfo => _weatherInfo;
   bool get isSnackbarShown => _isSnackbarShown.value;
-  bool get fetchResortHome_finish => _fetchResortHome_finish.value;
   bool get isWeatherInfoExpanded => _isWeatherInfoExpanded.value;
   List<Map<String, dynamic>> get slope_info => _slope_info;
   List<Map<String, dynamic>> get treasure_hunt_info => _treasure_hunt_info;
@@ -119,121 +118,134 @@ class ResortHomeViewModel extends GetxController {
 
   //TODO: 라이브온 관련 메소드****************************************************
 
-  Future<void> startForegroundLocationService({required user_id}) async {
-    bool serviceEnabled;
-    LocationPermission permission;
-    DateTime now = DateTime.now();
+  Future<void> startLiveLocationService({required user_id}) async {
+    try {
+      // 포그라운드 서비스 실행 및 성공 여부 확인
+      bool foregroundSuccess = await startForegroundLocationService(user_id: user_id);
 
-    serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      return Future.error('Location services are disabled.');
+      if (foregroundSuccess) {
+        print('포그라운드 서비스 실행 성공, 백그라운드 서비스 시작');
+        await startBackgroundLocationService(user_id: user_id);
+      } else {
+        print('포그라운드 서비스 실패로 백그라운드 실행 중단');
+      }
+    } catch (error) {
+      // 포그라운드 실행 실패 및 모든 서비스 정리
+      await stopForegroundLocationService();
+      await stopBackgroundLocationService();
+      await liveOff({"user_id": user_id}, user_id);
+      print('라이브 위치 서비스 실행 실패: $error');
     }
+  }
 
-    permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.deniedForever) {
-        return Future.error('Location permissions are permanently denied, we cannot request permissions.');
+  Future<bool> startForegroundLocationService({required user_id}) async {
+    try {
+      bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+      if (!serviceEnabled) {
+        throw Exception('Location services are disabled.');
       }
 
+      LocationPermission permission = await Geolocator.checkPermission();
       if (permission == LocationPermission.denied) {
-        return Future.error('Location permissions are denied');
+        permission = await Geolocator.requestPermission();
+        if (permission == LocationPermission.deniedForever) {
+          throw Exception('Location permissions are permanently denied.');
+        }
+        if (permission == LocationPermission.denied) {
+          throw Exception('Location permissions are denied.');
+        }
       }
-    }
 
-    // 일회성으로 현재 위치 정보를 가져옴
-    Position currentPosition = await Geolocator.getCurrentPosition();
-    _latitude.value = currentPosition.latitude;
-    _longitude.value = currentPosition.longitude;
-    ApiResponse response = await liveOn({
-      "user_id": user_id,
-      "coordinates": "POINT (${_longitude.value} ${_latitude.value})"
-    });
+      // 현재 위치 가져오기
+      Position currentPosition = await Geolocator.getCurrentPosition();
+      _latitude.value = currentPosition.latitude;
+      _longitude.value = currentPosition.longitude;
 
-    if (response.success) {
-      _positionStreamSubscription = Geolocator.getPositionStream().listen((Position position) async {
-        // 동시성 제어를 위해 lock 사용
-        try{
+      // 서버와 라이브 상태 동기화
+      ApiResponse response = await liveOn({
+        "user_id": user_id,
+        "coordinates": "POINT (${_longitude.value} ${_latitude.value})"
+      });
+
+      if (response.success) {
+        _positionStreamSubscription = Geolocator.getPositionStream().listen((Position position) async {
           await _lock.synchronized(() async {
             bool withinBoundary = _checkPositionWithinBoundary(
-                position.latitude,
-                position.longitude,
-                _resort_info['coordinates']['latitude'],
-                _resort_info['coordinates']['longitude'],
-                _resort_info['radius']
+              position.latitude,
+              position.longitude,
+              _resort_info['coordinates']['latitude'],
+              _resort_info['coordinates']['longitude'],
+              _resort_info['radius'],
             );
 
-            DateTime now = DateTime.now();
-
             if (withinBoundary) {
-              Map<String, dynamic>? passPointInfo = checkPositionInAreas(position, _slope_info,_treasure_hunt_info, _reset_point, _respawn_point);
+              Map<String, dynamic>? passPointInfo = checkPositionInAreas(
+                position,
+                _slope_info,
+                _treasure_hunt_info,
+                _reset_point,
+                _respawn_point,
+              );
 
               if (passPointInfo != null && passPointInfo['type'] == 'slope_info') {
-                if (_lastCountMethodCall == null || now.difference(_lastCountMethodCall!).inSeconds > 10) {
-                  print('포어 체크포인트 실행');
+                if (_lastCountMethodCall == null || DateTime.now().difference(_lastCountMethodCall!).inSeconds > 10) {
                   final response = await RankingAPI().addCheckPoint({
                     "user_id": user_id,
                     "slope_id": passPointInfo['id'],
                     "coordinates": "${position.latitude}, ${position.longitude}"
                   });
 
-                  if(response.statusCode == 201){
-                    print('포어 상태코드 ${response.statusCode}');
-                    print('포어 체크포인트 업데이트 통신 성공');
-                    _lastCountMethodCall = now;
-                  }else if(response.statusCode==416){
-                    print('포어 상태코드 ${response.statusCode}');
-                    _lastCountMethodCall = now;
-                  } else{
-                    _lastCountMethodCall = null;
-                    print('포어 상태코드 ${response.statusCode}');
-                    print('포어 체크포인트 업데이트 통신 실패');
+                  if (response.statusCode == 201 || response.statusCode == 416) {
+                    _lastCountMethodCall = DateTime.now();
+                    print('체크포인트 업데이트 성공');
+                  } else {
+                    print('체크포인트 업데이트 실패: ${response.statusCode}');
                   }
                 }
               }
 
-              if (passPointInfo != null
-                  && passPointInfo['type'] == 'treasure_hunt_info'
-                  && resort_info['treasure_hunt'] == true
-                  && isParticipate_treasure_hunt ==true) {
-                await RankingAPI().createTreasureRecord({
-                  "user_id": user_id,
-                  "slope_id": passPointInfo['id'],
-                  "coordinates": "POINT (${position.longitude} ${position.latitude})"
-                });
+              if (passPointInfo != null && passPointInfo['type'] == 'treasure_hunt_info') {
+                if (resort_info['treasure_hunt'] == true && isParticipate_treasure_hunt == true) {
+                  await RankingAPI().createTreasureRecord({
+                    "user_id": user_id,
+                    "slope_id": passPointInfo['id'],
+                    "coordinates": "POINT (${position.longitude} ${position.latitude})"
+                  });
+                  print('보물찾기 기록 성공');
+                }
               }
 
               if (passPointInfo != null && passPointInfo['type'] == 'reset_point') {
-                if (_lastResetMethodCall == null || now.difference(_lastResetMethodCall!).inSeconds > 180) {
-                  _lastResetMethodCall = now;
+                if (_lastResetMethodCall == null || DateTime.now().difference(_lastResetMethodCall!).inSeconds > 180) {
+                  _lastResetMethodCall = DateTime.now();
                   await RankingAPI().reset({"user_id": user_id});
-                  print('포어 리셋 성공');
+                  print('리셋 성공');
                 }
               }
 
               if (passPointInfo != null && passPointInfo['type'] == 'respawn_point') {
-                if (_lastRespawnMethodCall == null || now.difference(_lastRespawnMethodCall!).inSeconds > 180) {
-                  _lastRespawnMethodCall = now;
+                if (_lastRespawnMethodCall == null || DateTime.now().difference(_lastRespawnMethodCall!).inSeconds > 180) {
+                  _lastRespawnMethodCall = DateTime.now();
                   await RankingAPI().respawn({"user_id": user_id});
-                  print('포어 리스폰 성공');
+                  print('리스폰 성공');
                 }
               }
             } else {
+              print('포그라운드 경계 외부');
               await stopForegroundLocationService();
-              await stopBackgroundLocationService();
               await liveOff({"user_id": user_id}, user_id);
             }
           });
-        }catch(e){
-          await stopForegroundLocationService();
-          await stopBackgroundLocationService();
-          await liveOff({"user_id": user_id}, user_id);
-        }
-      });
-    }else{
-      await stopForegroundLocationService();
-      await stopBackgroundLocationService();
-      print('라이브 불가 지역');
+        });
+        print('포그라운드 서비스 실행 성공');
+        return true; // 성공 반환
+      } else {
+        print('라이브 서비스 불가 지역');
+        return false; // 실패 반환
+      }
+    } catch (error) {
+      print('포그라운드 서비스 실행 실패: $error');
+      return false; // 실패 반환
     }
   }
 
@@ -282,91 +294,84 @@ class ResortHomeViewModel extends GetxController {
         headingAccuracy: 0,
       );
 
-      try{
-        await _lock.synchronized(() async {
-          bool withinBoundary = _checkPositionWithinBoundary(
-              position.latitude,
-              position.longitude,
-              _resort_info['coordinates']['latitude'],
-              _resort_info['coordinates']['longitude'],
-              _resort_info['radius']
-          );
+      await _lock.synchronized(() async {
+        bool withinBoundary = _checkPositionWithinBoundary(
+            position.latitude,
+            position.longitude,
+            _resort_info['coordinates']['latitude'],
+            _resort_info['coordinates']['longitude'],
+            _resort_info['radius']
+        );
 
-          DateTime now = DateTime.now();
+        DateTime now = DateTime.now();
 
-          if (withinBoundary) {
-            Map<String, dynamic>? passPointInfo = checkPositionInAreas(position, _slope_info,_treasure_hunt_info, _reset_point, _respawn_point);
+        if (withinBoundary) {
+          Map<String, dynamic>? passPointInfo = checkPositionInAreas(position, _slope_info,_treasure_hunt_info, _reset_point, _respawn_point);
 
-            if (passPointInfo != null && passPointInfo['type'] == 'slope_info') {
-              if (_lastCountMethodCall == null || now.difference(_lastCountMethodCall!).inSeconds > 10) {
-                print('백 체크포인트 실행');
-                final response = await RankingAPI().addCheckPoint({
-                  "user_id": user_id,
-                  "slope_id": passPointInfo['id'],
-                  "coordinates": "${position.latitude}, ${position.longitude}"
-                });
-
-                if(response.statusCode == 201){
-                  print('백 상태코드 ${response.statusCode}');
-                  print('백 체크포인트 업데이트 통신 성공');
-                  _lastCountMethodCall = now;
-                }else if(response.statusCode==416){
-                  print('백 상태코드 ${response.statusCode}');
-                  _lastCountMethodCall = now;
-                } else{
-                  _lastCountMethodCall = null;
-                  print('백 상태코드 ${response.statusCode}');
-                  print('백 체크포인트 업데이트 통신 실패');
-                }
-
-              }
-            }
-
-            if (passPointInfo != null
-                && passPointInfo['type'] == 'treasure_hunt_info'
-                && resort_info['treasure_hunt'] == true
-                && isParticipate_treasure_hunt ==true) {
-              print(user_id);
-              print(passPointInfo['id']);
-              print("${position.latitude}, ${position.longitude}");
-
-              await RankingAPI().createTreasureRecord({
+          if (passPointInfo != null && passPointInfo['type'] == 'slope_info') {
+            if (_lastCountMethodCall == null || now.difference(_lastCountMethodCall!).inSeconds > 10) {
+              print('백 체크포인트 실행');
+              final response = await RankingAPI().addCheckPoint({
                 "user_id": user_id,
                 "slope_id": passPointInfo['id'],
-                "coordinates": "POINT (${position.longitude} ${position.latitude})"
+                "coordinates": "${position.latitude}, ${position.longitude}"
               });
-            }
 
-            if (passPointInfo != null && passPointInfo['type'] == 'reset_point') {
-              if (_lastResetMethodCall == null || now.difference(_lastResetMethodCall!).inSeconds > 180) {
-                _lastResetMethodCall = now;
-                await RankingAPI().reset({"user_id": user_id});
-                print('백 리셋 성공');
+              if(response.statusCode == 201){
+                print('백 상태코드 ${response.statusCode}');
+                print('백 체크포인트 업데이트 통신 성공');
+                _lastCountMethodCall = now;
+              }else if(response.statusCode==416){
+                print('백 상태코드 ${response.statusCode}');
+                _lastCountMethodCall = now;
+              } else{
+                _lastCountMethodCall = null;
+                print('백 상태코드 ${response.statusCode}');
+                print('백 체크포인트 업데이트 통신 실패');
               }
-            }
 
-            if (passPointInfo != null && passPointInfo['type'] == 'respawn_point') {
-              if (_lastRespawnMethodCall == null || now.difference(_lastRespawnMethodCall!).inSeconds > 180) {
-                _lastRespawnMethodCall = now;
-                await RankingAPI().respawn({"user_id": user_id});
-                print('백 리스폰 성공');
-              }
             }
-          } else {
-            await stopForegroundLocationService();
-            await stopBackgroundLocationService();
-            await liveOff({"user_id": user_id}, user_id);
           }
-        });
 
-      }catch(e){
-        // await stopForegroundLocationService();
-        // await stopBackgroundLocationService();
-      }
+          if (passPointInfo != null
+              && passPointInfo['type'] == 'treasure_hunt_info'
+              && resort_info['treasure_hunt'] == true
+              && isParticipate_treasure_hunt ==true) {
+            print(user_id);
+            print(passPointInfo['id']);
+            print("${position.latitude}, ${position.longitude}");
+
+            await RankingAPI().createTreasureRecord({
+              "user_id": user_id,
+              "slope_id": passPointInfo['id'],
+              "coordinates": "POINT (${position.longitude} ${position.latitude})"
+            });
+          }
+
+          if (passPointInfo != null && passPointInfo['type'] == 'reset_point') {
+            if (_lastResetMethodCall == null || now.difference(_lastResetMethodCall!).inSeconds > 180) {
+              _lastResetMethodCall = now;
+              await RankingAPI().reset({"user_id": user_id});
+              print('백 리셋 성공');
+            }
+          }
+
+          if (passPointInfo != null && passPointInfo['type'] == 'respawn_point') {
+            if (_lastRespawnMethodCall == null || now.difference(_lastRespawnMethodCall!).inSeconds > 180) {
+              _lastRespawnMethodCall = now;
+              await RankingAPI().respawn({"user_id": user_id});
+              print('백 리스폰 성공');
+            }
+          }
+        } else {
+          await stopForegroundLocationService();
+          await stopBackgroundLocationService();
+          await liveOff({"user_id": user_id}, user_id);
+        }
+      });
+
     }, (bg.LocationError error) async{
-      await stopForegroundLocationService();
-      await stopBackgroundLocationService();
-      print('[onLocation] ERROR: $error 리조트 구역 벗어남');
+      print('[onLocation] ERROR: $error');
     });
   }
 
@@ -463,13 +468,11 @@ class ResortHomeViewModel extends GetxController {
         return response;
       } else {
         await stopForegroundLocationService();
-        await stopBackgroundLocationService();
         CustomFullScreenDialog.cancelDialog();
         return response;
       }
     } catch (e) {
       await stopForegroundLocationService();
-      await stopBackgroundLocationService();
       CustomFullScreenDialog.cancelDialog();
       print('Error in liveOn: $e'); // 예외 발생 시 출력
       return ApiResponse.error('An error occurred: $e'); // 에러 응답 반환
@@ -643,6 +646,14 @@ class ResortHomeViewModel extends GetxController {
         .snapshots();
   }
 
+  Future<void> getInfo_treasureHunt_banner() async {
+
+    infoStream_treasureHunt_banner.value = FirebaseFirestore.instance
+        .collection('treasure_hunt')
+        .doc('treasure_hunt')
+        .snapshots();
+  }
+
   Future<void> fetchTreasureHuntNum() async {
     try {
       DocumentSnapshot<Map<String, dynamic>> treasureHuntDoc = await FirebaseFirestore.instance
@@ -673,7 +684,7 @@ class ResortHomeViewModel extends GetxController {
         .collection('treasure_hunt')
         .doc('treasure_hunt')
         .collection('find_list')
-        .orderBy('datetime', descending: false)
+        .orderBy('datetime', descending: true)
         .snapshots();
   }
 
@@ -767,11 +778,9 @@ class ResortHomeViewModel extends GetxController {
 
   Future<void> fetchResortHome(int userId) async {
     isLoading(true);
-    _fetchResortHome_finish(false);
     ApiResponse response = await ResortHomeAPI().fetchResortHomeData(userId);
     if(response.success)
       _resortHomeModel.value = ResortHomeModel.fromJson(response.data);
-    _fetchResortHome_finish(true);
     print('리조트홈 패치 완료');
     if(!response.success)
       Get.snackbar('Error', '데이터 로딩 실패');
