@@ -1,2073 +1,1134 @@
-import 'dart:io';
-import 'package:auto_size_text/auto_size_text.dart';
+import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:com.snowlive/data/imgaUrls/Data_url_image.dart';
-import 'package:com.snowlive/routes/routes.dart';
-import 'package:com.snowlive/util/util_1.dart';
-import 'package:com.snowlive/view/banner/v_banner_resortHome.dart';
-import 'package:com.snowlive/view/resortHome/v_chat_resortHome.dart';
+import 'package:com.snowlive/api/ApiResponse.dart';
+import 'package:com.snowlive/api/api_friend.dart';
+import 'package:com.snowlive/api/api_ranking.dart';
+import 'package:com.snowlive/api/api_resortHome.dart';
+import 'package:com.snowlive/api/api_user.dart';
 import 'package:com.snowlive/data/snowliveDesignStyle.dart';
-import 'package:com.snowlive/viewmodel/friend/vm_friendDetail.dart';
-import 'package:com.snowlive/viewmodel/friend/vm_friendList.dart';
-import 'package:com.snowlive/viewmodel/resortHome/vm_alarmCenter.dart';
-import 'package:com.snowlive/viewmodel/resortHome/vm_resortHome.dart';
-import 'package:com.snowlive/viewmodel/resortHome/vm_setGenderAndCategory.dart';
+import 'package:com.snowlive/model/m_bestFriendListModel.dart';
+import 'package:com.snowlive/model/m_treasure_record.dart';
+import 'package:com.snowlive/model/m_weatherModel.dart';
+import 'package:com.snowlive/util/util_1.dart';
 import 'package:com.snowlive/viewmodel/vm_user.dart';
 import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
-import 'package:com.snowlive/widget/w_liveOn_animatedGradient.dart';
-import 'package:com.snowlive/widget/w_selectResort.dart';
-import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:flutter/rendering.dart';
+import 'package:flutter_background_geolocation/flutter_background_geolocation.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:lottie/lottie.dart';
-import 'package:shimmer/shimmer.dart';
+import 'package:com.snowlive/model/m_resortHome.dart';
+import 'package:get/get_rx/get_rx.dart';
+import 'package:get/get_rx/src/rx_types/rx_types.dart';
+import 'package:get/state_manager.dart';
+import 'package:intl/intl.dart';
+import 'package:package_info_plus/package_info_plus.dart';
+import 'package:synchronized/synchronized.dart';
+import 'package:flutter_background_geolocation/flutter_background_geolocation.dart' as bg;
+import 'dart:io';
 
-import '../banner/v_banner_treasureHunt.dart';
+final ref = FirebaseFirestore.instance;
 
-class ResortHomeView extends StatefulWidget {
-  @override
-  State<ResortHomeView> createState() => _ResortHomeViewState();
-}
+class ResortHomeViewModel extends GetxController {
+  var _resortHomeModel = ResortHomeModel().obs;
+  var isLoading = true.obs;
+  var isLoading_bestFriend = true.obs;
+  var isLoading_weather = true.obs;
+  final Lock _lock = Lock();
+  RxString _rankingGuideUrl_ios = ''.obs;
+  RxString _rankingGuideUrl_aos = ''.obs;
+  RxString _rankingComingSoonUrl = ''.obs;
+  RxString _rankingGuideUrl_main = ''.obs;
+  RxDouble _latitude = 0.0.obs;
+  RxDouble _longitude = 0.0.obs;
+  RxDouble _initialHeightFriend = 0.0.obs;
+  RxMap _resort_info = {}.obs;
+  RxMap _weatherInfo = {}.obs;
+  RxList<Map<String, dynamic>> _slope_info = <Map<String, dynamic>>[].obs;
+  RxList<Map<String, dynamic>> _treasure_hunt_info = <Map<String, dynamic>>[].obs;
+  RxList<Map<String, dynamic>> _reset_point = <Map<String, dynamic>>[].obs;
+  RxList<Map<String, dynamic>> _respawn_point = <Map<String, dynamic>>[].obs;
+  RxList<FriendListModel> _bestFriendList = <FriendListModel>[].obs;
+  RxBool _isSnackbarShown = false.obs;
+  RxBool _isWeatherInfoExpanded = false.obs;
+  RxBool _isVisible_resortHome_openchat = false.obs;
+  RxBool _showRecentButton_resortHome_openchat = true.obs;
+  RxBool _isParticipate_treasure_hunt = false.obs;
+  RxList<TreasureRecord> _treasureRecordList = <TreasureRecord>[].obs;
+  RxBool isLoadingTreasureRecords = false.obs;
+  RxBool isLoadingTreasureRecordUpdate = false.obs;
+  RxInt _treasureHuntNum = 0.obs;
 
-class _ResortHomeViewState extends State<ResortHomeView> with
-    AutomaticKeepAliveClientMixin,
-    SingleTickerProviderStateMixin{
 
-  bool get wantKeepAlive => true;
-  int? selectedIndex;
+  dynamic weatherTextColors;
+  dynamic weatherColors;
+  dynamic weatherIcons;
 
-  late AnimationController _controller;
-  late Animation<Color?> _colorAnimation1;
-  late Animation<Color?> _colorAnimation2;
-  late Animation<Color?> _colorAnimation3;
-  late Animation<Color?> _colorAnimation4;
+  Rxn<Stream<DocumentSnapshot<Map<String, dynamic>>>> bannerStream_home = Rxn<Stream<DocumentSnapshot<Map<String, dynamic>>>>();
+  Rxn<Stream<DocumentSnapshot<Map<String, dynamic>>>> bannerStream_fleaMarket = Rxn<Stream<DocumentSnapshot<Map<String, dynamic>>>>();
+  Rxn<Stream<DocumentSnapshot<Map<String, dynamic>>>> bannerStream_moreTab = Rxn<Stream<DocumentSnapshot<Map<String, dynamic>>>>();
+  Rxn<Stream<DocumentSnapshot<Map<String, dynamic>>>> bannerStream_community = Rxn<Stream<DocumentSnapshot<Map<String, dynamic>>>>();
+  Rxn<Stream<DocumentSnapshot<Map<String, dynamic>>>> bannerStream_community_detail = Rxn<Stream<DocumentSnapshot<Map<String, dynamic>>>>();
+  Rxn<Stream<DocumentSnapshot<Map<String, dynamic>>>> bannerStream_ranking = Rxn<Stream<DocumentSnapshot<Map<String, dynamic>>>>();
+  Rxn<Stream<DocumentSnapshot<Map<String, dynamic>>>> infoStream_treasureHunt = Rxn<Stream<DocumentSnapshot<Map<String, dynamic>>>>();
+  Rxn<Stream<DocumentSnapshot<Map<String, dynamic>>>> infoStream_treasureHunt_banner = Rxn<Stream<DocumentSnapshot<Map<String, dynamic>>>>();
+  Rxn<Stream<QuerySnapshot<Map<String, dynamic>>>> infoStream_treasureHunt_findList = Rxn<Stream<QuerySnapshot<Map<String, dynamic>>>>();
 
+  StreamSubscription<Position>? _positionStreamSubscription;
+  DateTime? _lastCountMethodCall;
+  DateTime? _lastResetMethodCall;
+  DateTime? _lastRespawnMethodCall;
+  String get rankingGuideUrl_ios => _rankingGuideUrl_ios.value;
+  String get rankingGuideUrl_aos => _rankingGuideUrl_aos.value;
+  String get rankingComingSoonUrl => _rankingComingSoonUrl.value;
+  String get rankingGuideUrl_main => _rankingGuideUrl_main.value;
+  dynamic get resortHomeModel => _resortHomeModel.value;
+  double get latitude => _latitude.value;
+  double get longitude => _longitude.value;
+  double get initialHeightFriend => _initialHeightFriend.value;
+  Map get resort_info => _resort_info;
+  Map get weatherInfo => _weatherInfo;
+  bool get isSnackbarShown => _isSnackbarShown.value;
+  bool get isWeatherInfoExpanded => _isWeatherInfoExpanded.value;
+  List<Map<String, dynamic>> get slope_info => _slope_info;
+  List<Map<String, dynamic>> get treasure_hunt_info => _treasure_hunt_info;
+  List<Map<String, dynamic>> get reset_point => _reset_point;
+  List<Map<String, dynamic>> get respawn_point => _respawn_point;
+  List<FriendListModel> get bestFriendList => _bestFriendList;
+  List<TreasureRecord> get treasureRecordList => _treasureRecordList;
+  bool get isVisible_resortHome_openchat  => _isVisible_resortHome_openchat .value;
+  bool get showRecentButton_resortHome_openchat => _showRecentButton_resortHome_openchat.value;
+  bool get isParticipate_treasure_hunt => _isParticipate_treasure_hunt.value;
+  int get treasureHuntNum => _treasureHuntNum.value;
 
-
-  //TODO: Dependency Injection**************************************************
-  ResortHomeViewModel _resortHomeViewModel = Get.find<ResortHomeViewModel>();
   UserViewModel _userViewModel = Get.find<UserViewModel>();
-  FriendDetailViewModel _friendDetailViewModel = Get.find<FriendDetailViewModel>();
-  FriendListViewModel _friendListViewModel = Get.find<FriendListViewModel>();
-  GenderCategoryViewModel _genderCategoryViewModel = Get.find<GenderCategoryViewModel>();
-  AlarmCenterViewModel _alarmCenterViewModel = Get.find<AlarmCenterViewModel>();
-  //TODO: Dependency Injection**************************************************
+  ScrollController scrollController_resortHome_openchat = ScrollController();
 
   @override
-  void initState() {
-    super.initState();
+  void onInit() async{
+    super.onInit();
+    final UserViewModel _userViewModel = Get.find<UserViewModel>();
+    await fetchBestFriendList(user_id: _userViewModel.user.user_id);
+    await getRankingGuideUrl();
+    await fetchResortHome(_userViewModel.user.user_id!);
+    await fetchWeatherModel();
+    await checkForUpdate();
+    await fetchTreasureHuntNum();
+  }
 
-    print('내 유저아이디 : ${_userViewModel.user.user_id}');
-    _controller = AnimationController(
-      vsync: this,
-      duration: Duration(milliseconds: 1500),
-    )..repeat(reverse: true);
+  //TODO: 라이브온 관련 메소드****************************************************
 
-    _colorAnimation1 = ColorTween(
-      begin: SDSColor.snowliveBlue,
-      end: SDSColor.blue100,
-    ).animate(_controller);
+  Future<void> startLiveLocationService({required user_id}) async {
+    try {
+      // 포그라운드 서비스 실행 및 성공 여부 확인
+      bool foregroundSuccess = await startForegroundLocationService(user_id: user_id);
 
-    _colorAnimation2 = ColorTween(
-      begin: Color(0xFF0066FF),
-      end: SDSColor.snowliveBlue,
-    ).animate(_controller);
-
-    _colorAnimation3 = ColorTween(
-      begin: Color(0xFFEA3A2F),
-      end: Color(0xFFEA3A2F),
-    ).animate(_controller);
-
-    _colorAnimation4 = ColorTween(
-      begin: Color(0xFFEA3A2F),
-      end: Color(0xFFEA3A2F),
-    ).animate(_controller);
-
-    // 성별과 종목 선택 팝업을 뷰모델을 통해 호출
-    if(_userViewModel.user.sex == null ||
-        _userViewModel.user.skiorboard == null
-    ){
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        _genderCategoryViewModel.showGenderAndCategoryPopup();
-      });
+      if (foregroundSuccess) {
+        print('포그라운드 서비스 실행 성공, 백그라운드 서비스 시작');
+        await startBackgroundLocationService(user_id: user_id);
+      } else {
+        print('포그라운드 서비스 실패로 백그라운드 실행 중단');
+      }
+    } catch (error) {
+      // 포그라운드 실행 실패 및 모든 서비스 정리
+      await stopForegroundLocationService();
+      await stopBackgroundLocationService();
+      await liveOff({"user_id": user_id}, user_id);
+      print('라이브 위치 서비스 실행 실패: $error');
     }
-
-
   }
 
+  Future<bool> startForegroundLocationService({required user_id}) async {
+    try {
+      bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+      if (!serviceEnabled) {
+        throw Exception('Location services are disabled.');
+      }
 
-  @override
-  void dispose() {
+      LocationPermission permission = await Geolocator.checkPermission();
+      if (permission == LocationPermission.denied) {
+        permission = await Geolocator.requestPermission();
+        if (permission == LocationPermission.deniedForever) {
+          throw Exception('Location permissions are permanently denied.');
+        }
+        if (permission == LocationPermission.denied) {
+          throw Exception('Location permissions are denied.');
+        }
+      }
 
-    _controller.dispose();
-    super.dispose();
+      // 현재 위치 가져오기
+      Position currentPosition = await Geolocator.getCurrentPosition();
+      _latitude.value = currentPosition.latitude;
+      _longitude.value = currentPosition.longitude;
+
+      // 서버와 라이브 상태 동기화
+      ApiResponse response = await liveOn({
+        "user_id": user_id,
+        "coordinates": "POINT (${_longitude.value} ${_latitude.value})"
+      });
+
+      if (response.success) {
+        _positionStreamSubscription = Geolocator.getPositionStream().listen((Position position) async {
+          await _lock.synchronized(() async {
+            bool withinBoundary = _checkPositionWithinBoundary(
+              position.latitude,
+              position.longitude,
+              _resort_info['coordinates']['latitude'],
+              _resort_info['coordinates']['longitude'],
+              _resort_info['radius'],
+            );
+
+            if (withinBoundary) {
+              Map<String, dynamic>? passPointInfo = checkPositionInAreas(
+                position,
+                _slope_info,
+                _treasure_hunt_info,
+                _reset_point,
+                _respawn_point,
+              );
+
+              if (passPointInfo != null && passPointInfo['type'] == 'slope_info') {
+                if (_lastCountMethodCall == null || DateTime.now().difference(_lastCountMethodCall!).inSeconds > 10) {
+                  final response = await RankingAPI().addCheckPoint({
+                    "user_id": user_id,
+                    "slope_id": passPointInfo['id'],
+                    "coordinates": "${position.latitude}, ${position.longitude}"
+                  });
+
+                  if (response.statusCode == 201 || response.statusCode == 416) {
+                    _lastCountMethodCall = DateTime.now();
+                    print('체크포인트 업데이트 성공');
+                  } else {
+                    print('체크포인트 업데이트 실패: ${response.statusCode}');
+                  }
+                }
+              }
+
+              if (passPointInfo != null && passPointInfo['type'] == 'treasure_hunt_info') {
+                if (resort_info['treasure_hunt'] == true && isParticipate_treasure_hunt == true) {
+                  await RankingAPI().createTreasureRecord({
+                    "user_id": user_id,
+                    "slope_id": passPointInfo['id'],
+                    "coordinates": "POINT (${position.longitude} ${position.latitude})"
+                  });
+                  print('보물찾기 기록 성공');
+                }
+              }
+
+              if (passPointInfo != null && passPointInfo['type'] == 'reset_point') {
+                if (_lastResetMethodCall == null || DateTime.now().difference(_lastResetMethodCall!).inSeconds > 180) {
+                  _lastResetMethodCall = DateTime.now();
+                  await RankingAPI().reset({"user_id": user_id});
+                  print('리셋 성공');
+                }
+              }
+
+              if (passPointInfo != null && passPointInfo['type'] == 'respawn_point') {
+                if (_lastRespawnMethodCall == null || DateTime.now().difference(_lastRespawnMethodCall!).inSeconds > 180) {
+                  _lastRespawnMethodCall = DateTime.now();
+                  await RankingAPI().respawn({"user_id": user_id});
+                  print('리스폰 성공');
+                }
+              }
+            } else {
+              print('포그라운드 경계 외부');
+              await stopForegroundLocationService();
+              await stopBackgroundLocationService();
+              await liveOff({"user_id": user_id}, user_id);
+            }
+          });
+        });
+        print('포그라운드 서비스 실행 성공');
+        return true; // 성공 반환
+      } else {
+        print('라이브 서비스 불가 지역');
+        return false; // 실패 반환
+      }
+    } catch (error) {
+      print('포그라운드 서비스 실행 실패: $error');
+      return false; // 실패 반환
+    }
   }
 
-  @override
-  Widget build(BuildContext context) {
-
-    final Size _size = MediaQuery.of(context).size;
-    final double _statusBarSize = MediaQuery.of(context).padding.top;
-    super.build(context);
-
-    SystemChrome.setEnabledSystemUIMode(
-      SystemUiMode.manual,
-      overlays: [SystemUiOverlay.top, SystemUiOverlay.bottom],
-    ); // 상단 StatusBar 생성
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark.copyWith(
-        statusBarColor: Colors.white, // Color for Android
-        statusBarIconBrightness: Brightness.dark,
-        statusBarBrightness: (Platform.isAndroid)
-            ? Brightness.light
-            : Brightness.dark //ios:dark, android:light
+  Future<void> startBackgroundLocationService({required user_id}) async {
+    DateTime now = DateTime.now();
+    await bg.BackgroundGeolocation.ready(bg.Config(
+      desiredAccuracy: bg.Config.DESIRED_ACCURACY_HIGH,
+      preventSuspend: true,
+      disableMotionActivityUpdates: true,
+      stopOnStationary: false,
+      distanceFilter: 0,
+      isMoving: true,
+      disableElasticity: true,
+      stopOnTerminate: true,
+      startOnBoot: false,
+      stationaryRadius: 25,
+      logLevel: bg.Config.LOG_LEVEL_VERBOSE,
+      locationUpdateInterval: 5000,
+      disableLocationAuthorizationAlert: true,
+      showsBackgroundLocationIndicator: true,
+      backgroundPermissionRationale: PermissionRationale(
+        title: "{applicationName}가 종료되거나 사용하지 않을 때 위치에 접근하도록 허용하시겠습니까?",
+        message: "위치 서비스를 사용하시면 라이브 기능을 통해 랭킹 서비스를 이용할 수 있고, 친구와 라이브 상태를 공유할 수 있습니다. 이 앱은 항상 허용을 하면 앱이 사용 중이 아닐 때도 위치 데이터를 수집하여 라이브 서비스 기능을 지원합니다.",
+        positiveAction: '{backgroundPermissionOptionLabel}',
+        negativeAction: '취소',
+      ),
     ));
 
-    return WillPopScope(
-        onWillPop: () {
-          return Future(() => false);
-        },
-        child: Obx(()=>Scaffold(
-          floatingActionButton:
-          (_friendDetailViewModel.isDateWithinSeason(DateTime.now()) == true)
-              ?SizedBox(
-            width: _size.width - 32,
-            height: 56,
-            child: Stack(
-              children: [
-                Positioned.fill(
-                  child: Padding(
-                      padding: const EdgeInsets.only(top: 1, bottom: 3),
-                      child:
-                      (_userViewModel.user.within_boundary == true)
-                          ? (_resortHomeViewModel.resort_info['fullname'] != null) ? AnimatedBuilder(
-                        animation: _controller,
-                        builder: (context, child) {
-                          return CustomPaint(
-                            painter: GradientBorderPainter(
-                                LinearGradient(
-                                    colors: [_colorAnimation1.value!, _colorAnimation2.value!],
-                                    begin: Alignment.topLeft,
-                                    end: Alignment.bottomRight
-                                )),
-                          );
-                        },
-                      ) : AnimatedBuilder(
-                        animation: _controller,
-                        builder: (context, child) {
-                          return CustomPaint(
-                            painter: GradientBorderPainter(
-                                LinearGradient(
-                                    colors: [_colorAnimation3.value!, _colorAnimation4.value!],
-                                    begin: Alignment.topLeft,
-                                    end: Alignment.bottomRight
-                                )),
-                          );
-                        },
-                      )
-                          : AnimatedBuilder(
-                        animation: _controller,
-                        builder: (context, child) {
-                          return CustomPaint(
-                            painter: GradientBorderPainter(
-                                LinearGradient(
-                                    colors: [_colorAnimation1.value!, _colorAnimation2.value!],
-                                    begin: Alignment.topLeft,
-                                    end: Alignment.bottomRight
-                                )),
-                          );
-                        },
-                      )
-                  ),
-                ),
-                Container(
-                  padding: EdgeInsets.only(top: 3, bottom: 5, right: 2, left: 2),
-                  width: _size.width - 32,
-                  decoration: BoxDecoration(
-                    boxShadow: [
-                      (_userViewModel.user.within_boundary == true)
-                          ? BoxShadow(
-                        color: SDSColor.snowliveBlack.withOpacity(0.2),
-                        spreadRadius: 4,
-                        blurRadius: 12,
-                        offset: Offset(0, 4),
-                      )
-                          : BoxShadow(
-                        color: SDSColor.snowliveBlack.withOpacity(0.2),
-                        spreadRadius: 4,
-                        blurRadius: 12,
-                        offset: Offset(0, 4),
-                      )
-                    ],
-                  ),
-                  child: Obx(()=>ClipRRect(
-                    borderRadius: BorderRadius.circular(50),
-                    child: FloatingActionButton.extended(
-                        onPressed: () async {
-                          if (_userViewModel.user.within_boundary == true &&
-                              _resortHomeViewModel.resort_info['fullname'] != null) {
-                            HapticFeedback.lightImpact();
-                            Get.dialog(
-                              WillPopScope(
-                                onWillPop: () async => false,
-                                child: AlertDialog(
-                                  backgroundColor: SDSColor.snowliveWhite,
-                                  contentPadding: EdgeInsets.only(bottom: 0, left: 28, right: 28, top: 30),
-                                  elevation: 0,
-                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-                                  buttonPadding: EdgeInsets.symmetric(horizontal: 24, vertical: 0),
-                                  content:
-                                  Container(
-                                    width: 288,
-                                    height: 190,
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.center,
-                                      children: [
-                                        Image.asset(
-                                          'assets/imgs/imgs/img_get_point_1.png',
-                                          scale: 4,
-                                          width: 100,
-                                        ),
-                                        Padding(
-                                          padding: const EdgeInsets.only(top: 20, bottom: 6),
-                                          child: Row(
-                                            mainAxisAlignment: MainAxisAlignment.center,
-                                            children: [
-                                              Text(
-                                                '오늘 ',
-                                                style: SDSTextStyle.bold.copyWith(fontSize: 18, height: 1.4, color: SDSColor.gray900),
-                                              ),
-                                              Text(
-                                                '${_resortHomeViewModel.resortHomeModel.todayTotalScore.round()}',
-                                                style: SDSTextStyle.bold.copyWith(fontSize: 18, height: 1.4, color: SDSColor.snowliveBlue),
-                                              ),
-                                              Text(
-                                                '점을 획득했어요!',
-                                                style: SDSTextStyle.bold.copyWith(fontSize: 18, height: 1.4, color: SDSColor.gray900),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                        Text(
-                                          '라이브를 종료하시려면 하단에 라이브온 종료 버튼을 눌러주세요.',
-                                          style: SDSTextStyle.regular.copyWith(fontSize: 14, height: 1.4, color: SDSColor.gray600),
-                                          textAlign: TextAlign.center,
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  actions: [
-                                    Padding(
-                                      padding: const EdgeInsets.only(top: 16),
-                                      child: Column(
-                                        children: [
-                                          Container(
-                                            width: _size.width,
-                                            height: 48,
-                                            decoration: BoxDecoration(
-                                                borderRadius: BorderRadius.circular(5),
-                                                color: SDSColor.snowliveBlue
-                                            ),
-                                            child: TextButton(
-                                              onPressed: () {
-                                                Get.back();
-                                              },
-                                              child: Text(
-                                                '계속 타기',
-                                                style: SDSTextStyle.bold.copyWith(
-                                                  fontSize: 16,
-                                                  color: SDSColor.snowliveWhite,
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                          Padding(
-                                            padding: const EdgeInsets.only(top: 8.0),
-                                            child: Container(
-                                              width: _size.width,
-                                              height: 48,
-                                              decoration: BoxDecoration(
-                                                  borderRadius: BorderRadius.circular(5),
-                                                  color: SDSColor.snowliveWhite
-                                              ),
-                                              child: TextButton(
-                                                onPressed: () async {
-                                                  CustomFullScreenDialog.showDialog();
-                                                  await _resortHomeViewModel.liveOff({
-                                                    "user_id":_userViewModel.user.user_id
-                                                  }, _userViewModel.user.user_id);
-                                                  await _userViewModel.updateUserModel_api(_userViewModel.user.user_id);
-                                                  await _resortHomeViewModel.stopForegroundLocationService();
-                                                  await _resortHomeViewModel.stopBackgroundLocationService();
-                                                  CustomFullScreenDialog.cancelDialog();
-                                                  Get.back();
-                                                  print('라이브 OFF');
-                                                },
-                                                child: Text(
-                                                  '라이브온 종료',
-                                                  style: SDSTextStyle.bold.copyWith(
-                                                    fontSize: 16,
-                                                    color: SDSColor.gray900,
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              barrierDismissible: false,
-                            );
-                          }
-                          else if (_userViewModel.user.within_boundary == true &&
-                              _resortHomeViewModel.resort_info['fullname'] == null) {
-                            HapticFeedback.lightImpact();
-                            Get.dialog(
-                              WillPopScope(
-                                onWillPop: () async => false,
-                                child: AlertDialog(
-                                  backgroundColor: SDSColor.snowliveWhite,
-                                  contentPadding: EdgeInsets.only(bottom: 0, left: 28, right: 28, top: 30),
-                                  elevation: 0,
-                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-                                  buttonPadding: EdgeInsets.symmetric(horizontal: 24, vertical: 0),
-                                  content:
-                                  Container(
-                                    width: 288,
-                                    height: 250,
-                                    child: Container(
-                                      width: 232,
-                                      child: Column(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          Padding(
-                                            padding: EdgeInsets.only(bottom: 16),
-                                            child: Image.asset(
-                                              'assets/imgs/imgs/img_error_1.png',
-                                              scale: 4,
-                                              width: 140,
-                                            ),
-                                          ),
-                                          Text('라이브를 재시작 또는 종료해 주세요',
-                                            style: SDSTextStyle.bold.copyWith(fontSize: 16, color: SDSColor.gray900),
-                                            textAlign: TextAlign.center,
-                                          ),
-                                          Padding(
-                                            padding: EdgeInsets.only(top: 8),
-                                            child: Text(
-                                              '라이브가 켜져 있는 상태에서 앱이 강제 종료되어서, 위치 서비스가 멈췄어요! 라이브를 다시 시작하거나 종료해 주세요.',
-                                              style: SDSTextStyle.regular.copyWith(fontSize: 14, color: SDSColor.gray500),
-                                              textAlign: TextAlign.center,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                  actions: [
-                                    Container(
-                                      width: _size.width,
-                                      height: 48,
-                                      decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(5),
-                                          color: SDSColor.snowliveBlue
-                                      ),
-                                      child: TextButton(
-                                        onPressed: () async{
-                                          HapticFeedback.lightImpact();
-                                          CustomFullScreenDialog.showDialog();
-                                          await _resortHomeViewModel.startLiveLocationService(user_id: _userViewModel.user.user_id);
-                                          await _userViewModel.updateUserModel_api(_userViewModel.user.user_id);
-                                          CustomFullScreenDialog.cancelDialog();
-                                          Get.back();
-                                          if (_userViewModel.user.crew_id != null) {
-                                            await _resortHomeViewModel.checkAndShowTreasureHuntPopup(
-                                              userId: _userViewModel.user.user_id!,
-                                              userCrewId: _userViewModel.user.crew_id,
-                                            );
-                                          } else {
-                                            await _resortHomeViewModel.checkAndShowTreasureHuntPopup(
-                                              userId: _userViewModel.user.user_id!,
-                                            );
-                                          }
+    await bg.BackgroundGeolocation.start();
 
-                                          if(_userViewModel.user.within_boundary == false){
-                                            Get.snackbar(
-                                              '라이브 불가 지역입니다',
-                                              '스키장 내에서만 라이브가 활성화됩니다.',
-                                              margin: EdgeInsets.only(right: 20, left: 20, bottom: 12),
-                                              snackPosition: SnackPosition.TOP,
-                                              backgroundColor: SDSColor.snowliveWhite.withOpacity(0.2),
-                                              colorText: SDSColor.snowliveBlack,
-                                              duration: Duration(milliseconds: 3000),
-                                            );
-                                          }
-                                        },
-                                        child: Text(
-                                          '라이브 재시작하기',
-                                          style: SDSTextStyle.bold.copyWith(
-                                            fontSize: 15,
-                                            color: Color(0xFFFFFFFF),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                    Column(
-                                      children: [
-                                        Padding(
-                                          padding: const EdgeInsets.only(top: 8.0),
-                                          child: Container(
-                                            width: _size.width,
-                                            height: 48,
-                                            decoration: BoxDecoration(
-                                                borderRadius: BorderRadius.circular(5),
-                                                color: SDSColor.snowliveWhite
-                                            ),
-                                            child: TextButton(
-                                              onPressed: () async {
-                                                CustomFullScreenDialog.showDialog();
-                                                await _resortHomeViewModel.liveOff({
-                                                  "user_id":_userViewModel.user.user_id
-                                                }, _userViewModel.user.user_id);
-                                                await _userViewModel.updateUserModel_api(_userViewModel.user.user_id);
-                                                await _resortHomeViewModel.stopForegroundLocationService();
-                                                await _resortHomeViewModel.stopBackgroundLocationService();
-                                                CustomFullScreenDialog.cancelDialog();
-                                                Get.back();
-                                                print('라이브 OFF');
-                                              },
-                                              child: Text(
-                                                '라이브 종료',
-                                                style: SDSTextStyle.bold.copyWith(
-                                                  fontSize: 16,
-                                                  color: SDSColor.gray900,
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              barrierDismissible: false,
-                            );
-                          }
-                          else if(_userViewModel.user.within_boundary == false) {
-                            HapticFeedback.lightImpact();
-                            CustomFullScreenDialog.showDialog();
-                            await _resortHomeViewModel.startLiveLocationService(user_id: _userViewModel.user.user_id);
-                            await _userViewModel.updateUserModel_api(_userViewModel.user.user_id);
-                            CustomFullScreenDialog.cancelDialog();
-                            if (_userViewModel.user.crew_id != null) {
-                              await _resortHomeViewModel.checkAndShowTreasureHuntPopup(
-                                userId: _userViewModel.user.user_id!,
-                                userCrewId: _userViewModel.user.crew_id,
-                              );
-                            } else {
-                              await _resortHomeViewModel.checkAndShowTreasureHuntPopup(
-                                userId: _userViewModel.user.user_id!,
-                              );
-                            }
+    bg.BackgroundGeolocation.onLocation((bg.Location location) async {
 
-                            if(_userViewModel.user.within_boundary == false){
-                              Get.snackbar(
-                                '라이브 불가 지역입니다',
-                                '스키장 내에서만 라이브가 활성화됩니다.',
-                                margin: EdgeInsets.only(right: 20, left: 20, bottom: 12),
-                                snackPosition: SnackPosition.TOP,
-                                backgroundColor: SDSColor.snowliveWhite.withOpacity(0.2),
-                                colorText: SDSColor.snowliveBlack,
-                                duration: Duration(milliseconds: 3000),
-                              );
-                            }
-                          }
-                        },
-                        elevation: 0,
-                        icon:  (_userViewModel.user.within_boundary == true)
-                            ? (_resortHomeViewModel.resort_info['fullname'] != null)
-                            ? Image.asset('assets/imgs/icons/icon_live_off.png', width: 40)
-                            : Container()
-                            : Image.asset('assets/imgs/icons/icon_live_on.png', width: 40),
-                        label: (_userViewModel.user.within_boundary == true)
-                            ? Text(
-                          (_resortHomeViewModel.resort_info['fullname'] != null)
-                              ? '${_resortHomeViewModel.resortHomeModel.todayTotalScore.round()}점 획득'
-                              : '버튼을 눌러 라이브 종료 후 다시 시작해주세요',
-                          style: SDSTextStyle.extraBold.copyWith(
-                            fontSize: 16,
-                            letterSpacing: -0.1,
-                            color:
-                            (_resortHomeViewModel.resort_info['fullname'] != null)
-                                ? SDSColor.snowliveWhite
-                                : Color(0xFF4C0000),
+      double latitude = location.coords.latitude;
+      double longitude = location.coords.longitude;
+
+      Position position = Position(
+        latitude: latitude,
+        longitude: longitude,
+        accuracy: location.coords.accuracy,
+        altitude: location.coords.altitude,
+        heading: location.coords.heading,
+        speed: location.coords.speed,
+        speedAccuracy: location.coords.speedAccuracy,
+        timestamp: DateTime.parse(location.timestamp),
+        altitudeAccuracy: 0,
+        headingAccuracy: 0,
+      );
+
+      await _lock.synchronized(() async {
+        bool withinBoundary = _checkPositionWithinBoundary(
+            position.latitude,
+            position.longitude,
+            _resort_info['coordinates']['latitude'],
+            _resort_info['coordinates']['longitude'],
+            _resort_info['radius']
+        );
+
+        DateTime now = DateTime.now();
+
+        if (withinBoundary) {
+          Map<String, dynamic>? passPointInfo = checkPositionInAreas(position, _slope_info,_treasure_hunt_info, _reset_point, _respawn_point);
+
+          if (passPointInfo != null && passPointInfo['type'] == 'slope_info') {
+            if (_lastCountMethodCall == null || now.difference(_lastCountMethodCall!).inSeconds > 10) {
+              print('백 체크포인트 실행');
+              final response = await RankingAPI().addCheckPoint({
+                "user_id": user_id,
+                "slope_id": passPointInfo['id'],
+                "coordinates": "${position.latitude}, ${position.longitude}"
+              });
+
+              if(response.statusCode == 201){
+                print('백 상태코드 ${response.statusCode}');
+                print('백 체크포인트 업데이트 통신 성공');
+                _lastCountMethodCall = now;
+              }else if(response.statusCode==416){
+                print('백 상태코드 ${response.statusCode}');
+                _lastCountMethodCall = now;
+              } else{
+                _lastCountMethodCall = null;
+                print('백 상태코드 ${response.statusCode}');
+                print('백 체크포인트 업데이트 통신 실패');
+              }
+
+            }
+          }
+
+          if (passPointInfo != null
+              && passPointInfo['type'] == 'treasure_hunt_info'
+              && resort_info['treasure_hunt'] == true
+              && isParticipate_treasure_hunt ==true) {
+            print(user_id);
+            print(passPointInfo['id']);
+            print("${position.latitude}, ${position.longitude}");
+
+            await RankingAPI().createTreasureRecord({
+              "user_id": user_id,
+              "slope_id": passPointInfo['id'],
+              "coordinates": "POINT (${position.longitude} ${position.latitude})"
+            });
+          }
+
+          if (passPointInfo != null && passPointInfo['type'] == 'reset_point') {
+            if (_lastResetMethodCall == null || now.difference(_lastResetMethodCall!).inSeconds > 180) {
+              _lastResetMethodCall = now;
+              await RankingAPI().reset({"user_id": user_id});
+              print('백 리셋 성공');
+            }
+          }
+
+          if (passPointInfo != null && passPointInfo['type'] == 'respawn_point') {
+            if (_lastRespawnMethodCall == null || now.difference(_lastRespawnMethodCall!).inSeconds > 180) {
+              _lastRespawnMethodCall = now;
+              await RankingAPI().respawn({"user_id": user_id});
+              print('백 리스폰 성공');
+            }
+          }
+        } else {
+          await stopForegroundLocationService();
+          await stopBackgroundLocationService();
+          await liveOff({"user_id": user_id}, user_id);
+        }
+      });
+
+    }, (bg.LocationError error) async{
+      print('[onLocation] ERROR: $error');
+    });
+  }
+
+  Future<void> stopForegroundLocationService() async {
+    await _positionStreamSubscription?.cancel();
+    _positionStreamSubscription = null;
+    print('stopForegroundLocationService 완료');
+  }
+
+  Future<void> stopBackgroundLocationService() async {
+    await bg.BackgroundGeolocation.stop();
+    bg.BackgroundGeolocation.removeListeners();
+    print('stopBackgroundLocationService 완료');
+  }
+
+  bool _checkPositionWithinBoundary(lat, lon, lat_resort_info, lon_resort_info, radius) {
+    double distanceInMeters = Geolocator.distanceBetween(lat, lon, lat_resort_info, lon_resort_info);
+    return distanceInMeters <= radius;
+  }
+
+  Map<String, dynamic>? checkPositionInAreas(Position position, List<Map<String, dynamic>> slopeInfo, List<Map<String, dynamic>> treasure_hunt_info, List<Map<String, dynamic>> resetPoint, List<Map<String, dynamic>> respawnPoint) {
+    // 순서대로 검사
+    for (var slope in slopeInfo) {
+      if (_isWithinRadius(position, slope['coordinates'], slope['radius'])) {
+        return {'type': 'slope_info', 'id': slope['slope_id']};
+      }
+    }
+
+    for (var treasure_hunt_info in treasure_hunt_info) {
+      if (_isWithinRadius(position, treasure_hunt_info['coordinates'], treasure_hunt_info['radius'])) {
+        return {'type': 'treasure_hunt_info', 'id': treasure_hunt_info['slope_id']};
+      }
+    }
+
+    for (var reset in resetPoint) {
+      if (_isWithinRadius(position, reset['coordinates'], reset['radius'])) {
+        return {'type': 'reset_point', 'id': reset['reset_point_id']};
+      }
+    }
+
+    for (var respawn in respawnPoint) {
+      if (_isWithinRadius(position, respawn['coordinates'], respawn['radius'])) {
+        return {'type': 'respawn_point', 'id': respawn['respawn_point_id']};
+      }
+    }
+
+    return null; // 해당하는 위치가 없을 경우
+  }
+
+  bool _isWithinRadius(Position position, String coordinatesStr, double radius) {
+    // 좌표 문자열을 위도와 경도로 변환
+    final parts = coordinatesStr.split(';POINT (')[1].replaceAll(')', '').split(' ');
+    final double longitude = double.parse(parts[0]);
+    final double latitude = double.parse(parts[1]);
+
+    final distance = Geolocator.distanceBetween(
+      position.latitude,
+      position.longitude,
+      latitude,
+      longitude,
+    );
+
+    return distance <= radius;
+  }
+
+  Future<void> liveOff(Map<String, dynamic> body,user_id) async {
+
+    isLoading(true);
+    ApiResponse response_off = await RankingAPI().liveOff(body);
+    if(response_off.success) {
+      ApiResponse response_fetchResortHome = await ResortHomeAPI().fetchResortHomeData(user_id);
+      if (response_fetchResortHome.success)
+        _resortHomeModel.value = ResortHomeModel.fromJson(response_fetchResortHome.data);
+      await _userViewModel.updateUserModel_api(_userViewModel.user.user_id);
+      print('liveOff 완료');
+    }
+    else {
+      CustomFullScreenDialog.cancelDialog();
+    }
+    isLoading(false);
+  }
+
+  Future<ApiResponse> liveOn(Map<String, dynamic> body) async {
+    try {
+      isLoading(true);
+      ApiResponse response = await RankingAPI().check_wb(body);
+      if (response.success) {
+        _resort_info.value = response.data['resort_info'];
+        _slope_info.value = List<Map<String, dynamic>>.from(response.data['slope_info']);
+        _treasure_hunt_info.value = List<Map<String, dynamic>>.from(response.data['treasure_hunt_info']);
+        _reset_point.value = List<Map<String, dynamic>>.from(response.data['reset_point']);
+        _respawn_point.value = List<Map<String, dynamic>>.from(response.data['respawn_point']);
+        _isParticipate_treasure_hunt.value = response.data['participant'];
+        return response;
+      } else {
+        await stopForegroundLocationService();
+        CustomFullScreenDialog.cancelDialog();
+        return response;
+      }
+    } catch (e) {
+      await stopForegroundLocationService();
+      CustomFullScreenDialog.cancelDialog();
+      print('Error in liveOn: $e'); // 예외 발생 시 출력
+      return ApiResponse.error('An error occurred: $e'); // 에러 응답 반환
+    } finally {
+      isLoading(false); // 성공/실패/예외 발생 여부와 상관없이 로딩 상태 종료
+    }
+  }
+
+  //TODO: 라이브온 관련 메소드****************************************************
+
+
+  //TODO: 보물찾기 관련 메소드****************************************************
+
+  Future<void> checkAndShowTreasureHuntPopup({required int userId, int? userCrewId}) async {
+    try {
+      // Firebase에서 treasure_hunt 문서 가져오기
+      DocumentSnapshot<Map<String, dynamic>> treasureHuntDoc = await FirebaseFirestore.instance
+          .collection('treasure_hunt')
+          .doc('treasure_hunt')
+          .get();
+
+      if (treasureHuntDoc.exists) {
+        final data = treasureHuntDoc.data();
+
+        // open 필드가 true인지 확인
+        bool isOpen = data?['open'] ?? false;
+
+        // to_everyone 필드가 true인지 확인
+        bool isToEveryone = data?['to_everyone'] ?? false;
+
+        // crew_list 필드가 리스트인지 확인하고, 유저의 크루가 리스트에 포함되어 있는지 확인
+        List<dynamic> crewList = data?['crew_list'] ?? [];
+        bool isUserInCrewList = userCrewId != null && crewList.contains(userCrewId);
+
+        // 팝업을 띄울 조건 확인: open이 true이고, to_everyone이 true이거나 유저의 크루가 포함된 경우
+        if (_resort_info['treasure_hunt'] == true && isOpen && (isToEveryone || isUserInCrewList)) {
+          // 이미 참여 중인 경우 팝업을 띄우지 않음
+          if (!_isParticipate_treasure_hunt.value) {
+            // 조건을 만족하면 보물찾기 참여 팝업 띄우기
+            Get.dialog(
+              Center(
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 30),
+                  child: Container(
+                    height: 460,
+                    decoration: BoxDecoration(
+                      color: SDSColor.snowliveWhite,
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    child: Stack(
+                      children: [
+                        Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(16),
                           ),
-                        )
-                            : Text(
-                          '라이브 시작하기',
-                          style: SDSTextStyle.extraBold.copyWith(
-                            fontSize: 16,
-                            letterSpacing: -0.1,
-                            color: SDSColor.snowliveWhite,
-                          ),
-                        ),
-                        backgroundColor: (_userViewModel.user.within_boundary == true)
-                            ? (_resortHomeViewModel.resort_info['fullname'] != null) ? SDSColor.snowliveBlue : Color(0xFFFFAAA5)
-                            : SDSColor.gray800),
-                  )),
-                ),
-              ],
-            ),
-          )
-              :SizedBox.shrink(),
-          floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-          backgroundColor: Colors.white,
-          extendBodyBehindAppBar: true,
-          appBar: PreferredSize(
-            preferredSize: Size.fromHeight(44),
-            child: AppBar(
-              actions: [
-                IconButton(
-                  highlightColor: Colors.transparent,
-                  onPressed: () async{
-                    showModalBottomSheet(
-                      context: context,
-                      isScrollControlled: true,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-                      ),
-                      builder: (context) => DraggableScrollableSheet(
-                        expand: false,
-                        initialChildSize: 0.88,
-                        minChildSize: 0.4,
-                        maxChildSize: 0.88,
-                        builder: (BuildContext context, ScrollController scrollController) {
-                          return Container(
-                            decoration: BoxDecoration(
-                                color: SDSColor.snowliveWhite,
-                                borderRadius: BorderRadius.only(topRight: Radius.circular(20), topLeft: Radius.circular(20))
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(16),
+                            child: Image.asset(
+                                'assets/imgs/imgs/img_treasure_popup.png',
+                                fit: BoxFit.cover,
+                                height: 460
                             ),
-                            padding: EdgeInsets.only(top: 16),
-                            child: Column(
-                              children: [
-                                Center(
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(bottom: 20),
-                                    child: Container(
-                                      height: 4,
-                                      width: 36,
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(10),
-                                        color: SDSColor.gray200,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                Center(
-                                  child: Column(
-                                    children: [
-                                      Text(
-                                        '스키장 오픈채팅',
-                                        style: SDSTextStyle.bold.copyWith(fontSize: 16, color: SDSColor.gray900),
-                                      ),
-                                      SizedBox(height: 10,),
-                                      Text(
-                                        '전국 스키장의 스노우라이브 유저들과',
-                                        style: SDSTextStyle.regular.copyWith(fontSize: 14, color: SDSColor.gray500),
-                                      ),
-                                      Text(
-                                        '익명으로 실시간 채팅을 즐겨 보세요',
-                                        style: SDSTextStyle.regular.copyWith(fontSize: 14, color: SDSColor.gray500),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                SizedBox(height: 20,),
-                                Expanded(child: ChatScreen()),
-                              ],
-                            ), // ChatScreen을 모달 시트로 띄움
-                          );
-                        },
-                      ),
-                    );
-                  },
-                  icon: Image.asset(
-                    'assets/imgs/icons/icon_talk_resortHome.png',
-                    width: 26,
-                    height: 26,
-                  ),
-                ),
-                IconButton(
-                  highlightColor: Colors.transparent,
-                  onPressed: () async{
-                    showModalBottomSheet(
-                      context: context,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.vertical(
-                          top: Radius.circular(20),
+                          ),
                         ),
-                      ),
-                      isScrollControlled: true,
-                      builder: (context) {
-                        return Obx(() => DraggableScrollableSheet(
-                          initialChildSize:
-                          (_resortHomeViewModel.bestFriendList.length > 8)
-                              ? 0.6
-                              : (_resortHomeViewModel.bestFriendList.length > 4)
-                              ? 0.56
-                              : 0.4,
-                          minChildSize: 0.4,
-                          maxChildSize: 0.88,
-                          expand: false,
-                          builder: (context, scrollController) {
-                            return Stack(
+                        Positioned(
+                          bottom: 24,
+                          right: 20,
+                          left: 20,
+                          child: Padding(
+                            padding: const EdgeInsets.only(top: 16),
+                            child: Column(
                               children: [
                                 Container(
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.only(topLeft: Radius.circular(16), topRight: Radius.circular(16)),
-                                      color: SDSColor.snowliveWhite,
-                                    ),
-                                    padding: EdgeInsets.only(right: 16, left: 16, top: 12),
-                                    child: Obx(()=>Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Center(
-                                          child: Padding(
-                                            padding: const EdgeInsets.only(bottom: 20),
-                                            child: Container(
-                                              height: 4,
-                                              width: 36,
-                                              decoration: BoxDecoration(
-                                                borderRadius: BorderRadius.circular(10),
-                                                color: SDSColor.gray200,
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                        Stack(
-                                          children: [
-                                            Container(
-                                              width: _size.width,
-                                              height: 32,
-                                              child: Center(
-                                                child: Text(
-                                                  '라이브중인 친구',
-                                                  style: SDSTextStyle.bold.copyWith(fontSize: 16, color: SDSColor.gray900),
-                                                ),
-                                              ),
-                                            ),
-                                            Positioned(
-                                              right: 0,
-                                              top: 0,
-                                              bottom: 0,
-                                              child: ElevatedButton(
-                                                onPressed: () async{
-                                                  await _resortHomeViewModel.fetchBestFriendList(user_id: _userViewModel.user.user_id);
-                                                },
-                                                child: Text('새로고침',
-                                                  style: SDSTextStyle.bold.copyWith(fontSize: 13, color: SDSColor.gray900),
-                                                ),
-                                                style: ElevatedButton.styleFrom(
-                                                  padding: EdgeInsets.symmetric(horizontal: 14, vertical: 3),
-                                                  minimumSize: Size(36, 32),
-                                                  backgroundColor: SDSColor.snowliveWhite,
-                                                  side: BorderSide(
-                                                      color: SDSColor.gray200
-                                                  ),
-                                                  splashFactory: NoSplash.splashFactory, // 터치 시 효과 제거
-                                                  elevation: 0,
-                                                  shape: RoundedRectangleBorder(
-                                                      borderRadius: BorderRadius.circular(100)),
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                        SizedBox(height: 20,),
-                                        (_resortHomeViewModel.isLoading_bestFriend == true)
-                                            ? Container(
-                                          child: Column(
-                                            mainAxisAlignment: MainAxisAlignment.center,
-                                            crossAxisAlignment: CrossAxisAlignment.center,
-                                            children: [
-                                              Center(
-                                                child: Container(
-                                                  width: 24,
-                                                  height: 24,
-                                                  child: CircularProgressIndicator(
-                                                    strokeWidth: 4,
-                                                    backgroundColor: SDSColor.gray100,
-                                                    color: SDSColor.gray300.withOpacity(0.6),
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        )
-                                            :
-                                        Expanded(
-                                          child: _resortHomeViewModel.bestFriendList.isEmpty
-                                              ? Center(
-                                            child: Container(
-                                              height: 180,
-                                              child: Text(
-                                                '친구 관리로 이동해 즐겨찾는 친구를 등록해 주세요.\n라이브중인 친구를 바로 확인하실 수 있어요.',
-                                                style: SDSTextStyle.regular.copyWith(
-                                                    fontSize: 14, color: SDSColor.gray500, height: 1.4
-                                                ),
-                                                textAlign: TextAlign.center,
-                                              ),
-                                            ),
-                                          )
-                                              : GridView.builder(
-                                              controller: scrollController,
-                                              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                                                crossAxisCount: 4, // 4개의 열로 표시
-                                                childAspectRatio: 2 / 3.2, // 너비와 높이 비율 조정
-                                              ),
-                                              itemCount: _resortHomeViewModel.bestFriendList.length,
-                                              itemBuilder: (context, index) {
-                                                var BFdoc = _resortHomeViewModel.bestFriendList[index];
-                                                return GestureDetector(
-                                                  onTap: () async {
-                                                    Navigator.pop(context);
-                                                    Get.toNamed(AppRoutes.friendDetail);
-                                                    await _friendDetailViewModel.fetchFriendDetailInfo(
-                                                      userId: _userViewModel.user.user_id,
-                                                      friendUserId: BFdoc.friendInfo.userId,
-                                                      season: _friendDetailViewModel.seasonDate,
-                                                    );
-                                                  },
-                                                  child: Container(
-                                                    width: (_size.width - 40) / 4, // 화면 너비를 4등분
-                                                    child: Column(
-                                                      crossAxisAlignment: CrossAxisAlignment.center,
-                                                      mainAxisAlignment: MainAxisAlignment.start,
-                                                      children: [
-                                                        Stack(
-                                                          children: [
-                                                            Container(
-                                                              width: 68,
-                                                              height: 68,
-                                                              decoration: BoxDecoration(
-                                                                borderRadius: BorderRadius.circular(100),
-                                                                border: (BFdoc.friendInfo.withinBoundary == true &&
-                                                                    BFdoc.friendInfo.revealWb == true)
-                                                                    ? Border.all(
-                                                                  color: SDSColor.snowliveBlue,
-                                                                  width: 2,
-                                                                )
-                                                                    : Border.all(
-                                                                  color: SDSColor.gray100,
-                                                                  width: 1,
-                                                                ),
-                                                              ),
-                                                              alignment: Alignment.center,
-                                                              child: BFdoc.friendInfo.profileImageUrlUser.isNotEmpty
-                                                                  ? ExtendedImage.network(
-                                                                BFdoc.friendInfo.profileImageUrlUser,
-                                                                enableMemoryCache: true,
-                                                                shape: BoxShape.circle,
-                                                                borderRadius: BorderRadius.circular(100),
-                                                                width: 68,
-                                                                height: 68,
-                                                                fit: BoxFit.cover,
-                                                                loadStateChanged: (ExtendedImageState state) {
-                                                                  switch (state.extendedImageLoadState) {
-                                                                    case LoadState.loading:
-                                                                    // 로딩 중일 때 로딩 인디케이터를 표시
-                                                                      return Shimmer.fromColors(
-                                                                        baseColor: SDSColor.gray200!,
-                                                                        highlightColor: SDSColor.gray50!,
-                                                                        child: Container(
-                                                                          width: 32,
-                                                                          height: 32,
-                                                                          decoration: BoxDecoration(
-                                                                            color: Colors.white,
-                                                                            borderRadius: BorderRadius.circular(8),
-                                                                          ),
-                                                                        ),
-                                                                      );
-                                                                    case LoadState.completed:
-                                                                    // 로딩이 완료되었을 때 이미지 반환
-                                                                      return state.completedWidget;
-                                                                    case LoadState.failed:
-                                                                    // 로딩이 실패했을 때 대체 이미지 또는 다른 처리
-                                                                      return ExtendedImage.network(
-                                                                        '${profileImgUrlList[0].default_round}', // 대체 이미지 경로
-                                                                        width: 32,
-                                                                        height: 32,
-                                                                        fit: BoxFit.cover,
-                                                                      );
-                                                                  }
-                                                                },
-                                                              )
-                                                                  : ClipOval(
-                                                                child: Image.asset(
-                                                                  'assets/imgs/profile/img_profile_default_circle.png',
-                                                                  width: 68,
-                                                                  height: 68,
-                                                                  fit: BoxFit.cover,
-                                                                ),
-                                                              ),
-                                                            ),
-                                                            if (BFdoc.friendInfo.withinBoundary == true &&
-                                                                BFdoc.friendInfo.revealWb == true)
-                                                              Positioned(
-                                                                right: 0,
-                                                                bottom: 0,
-                                                                left: 0,
-                                                                child: Center(
-                                                                  child: Image.asset(
-                                                                    'assets/imgs/icons/icon_badge_live.png',
-                                                                    width: 34,
-                                                                  ),
-                                                                ),
-                                                              ),
-                                                          ],
-                                                        ),
-                                                        SizedBox(height: 6),
-                                                        Container(
-                                                          width: 72,
-                                                          child: Text(
-                                                            BFdoc.friendInfo.displayName,
-                                                            overflow: TextOverflow.ellipsis,
-                                                            textAlign: TextAlign.center,
-                                                            style: TextStyle(
-                                                                fontSize: 12,
-                                                                fontWeight: FontWeight.normal,
-                                                                color: SDSColor.gray900),
-                                                          ),
-                                                        ),
-                                                        Row(
-                                                          mainAxisAlignment: MainAxisAlignment.center,
-                                                          children: [
-                                                            Text(
-                                                              (BFdoc.lastPassSlope == null)
-                                                                  ? ''
-                                                                  : '${BFdoc.lastPassSlope}',
-                                                              overflow: TextOverflow.ellipsis,
-                                                              textAlign: TextAlign.center,
-                                                              style: SDSTextStyle.regular.copyWith(
-                                                                  fontSize: 11,
-                                                                  color: SDSColor.gray500),
-                                                            ),
-                                                            Text(
-                                                              (BFdoc.lastPassTime == null)
-                                                                  ? ''
-                                                                  : '·${GetDatetime().getAgoString(BFdoc.lastPassTime!)}',
-                                                              overflow: TextOverflow.ellipsis,
-                                                              textAlign: TextAlign.center,
-                                                              style: SDSTextStyle.regular.copyWith(
-                                                                  fontSize: 11,
-                                                                  color: SDSColor.gray500),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                );
-                                              }),
-                                        ),
-                                      ],
-                                    ),)
-                                ),
-                                Positioned(
-                                  left: 16,
-                                  right: 16,
-                                  bottom: 0,
-                                  child: SafeArea(
-                                    child: Container(
-                                      color: SDSColor.snowliveWhite,
-                                      width: _size.width,
-                                      padding: EdgeInsets.only(top: 12, bottom: 20),
-                                      child: ElevatedButton(
-                                        onPressed: () async {
-                                          Navigator.pop(context);
-                                          Get.toNamed(AppRoutes.friendList);
-                                          await _friendListViewModel.fetchFriendList();
-                                          await _friendListViewModel.fetchFriendRequestList(_userViewModel.user.user_id);
-                                        },
-                                        child: Text(
-                                          '친구 관리 바로가기',
-                                          style: SDSTextStyle.bold.copyWith(color: SDSColor.gray700, fontSize: 16),
-                                        ),
-                                        style: TextButton.styleFrom(
-                                          shape: const RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.all(Radius.circular(6)),
-                                          ),
-                                          elevation: 0,
-                                          splashFactory: InkRipple.splashFactory,
-                                          minimumSize: Size(double.infinity, 48),
-                                          backgroundColor: SDSColor.gray100,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            );
-                          },
-                        ));
-                      },
-                    );
-                  },
-                  icon: Image.asset(
-                    'assets/imgs/icons/icon_friend_resortHome.png',
-                    width: 28,
-                    height: 28,
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.only(right: 8),
-                  child: StreamBuilder<QuerySnapshot>(
-                    stream: FirebaseFirestore.instance
-                        .collection('notificationCenter')
-                        .where('uid', isEqualTo:  _userViewModel.user.user_id)
-                        .snapshots(),
-                    builder: (context, snapshot) {
-                      if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                        return IconButton(
-                          onPressed: () async{
-                            Get.toNamed(AppRoutes.alarmCenter);
-                            await _alarmCenterViewModel.fetchAlarmCenterList(userId: _userViewModel.user.user_id);
-                          },
-                          icon: Image.asset(
-                            'assets/imgs/icons/icon_alarm_resortHome.png',
-                            width: 26,
-                            height: 26,
-                          ),
-                        );
-                      }
-
-                      var data = snapshot.data!.docs[0].data() as Map<String, dynamic>?;
-                      bool isNewNotification = data?['total'] ?? false; // Firestore 문서 필드
-
-                      return Stack(
-                        children: [
-                          IconButton(
-                            highlightColor: Colors.transparent,
-                            splashColor: Colors.transparent,
-                            onPressed: () async{
-                              CustomFullScreenDialog.showDialog();
-                              await _alarmCenterViewModel.fetchAlarmCenterList(userId: _userViewModel.user.user_id);
-                              CustomFullScreenDialog.cancelDialog();
-                              Get.toNamed(AppRoutes.alarmCenter);
-                              await _alarmCenterViewModel.updateNotification(
-                                _userViewModel.user.user_id,
-                                total: false,
-                              );
-                            },
-                            icon: Image.asset(
-                              'assets/imgs/icons/icon_alarm_resortHome.png',
-                            ),
-                          ),
-                          if (isNewNotification)
-                            Positioned(
-                              top: 5,
-                              right: 5,
-                              child: GestureDetector(
-                                onTap: () async {
-                                  CustomFullScreenDialog.showDialog();
-                                  await _alarmCenterViewModel.fetchAlarmCenterList(userId: _userViewModel.user.user_id);
-                                  CustomFullScreenDialog.cancelDialog();
-                                  Get.toNamed(AppRoutes.alarmCenter);
-                                  await _alarmCenterViewModel.updateNotification(
-                                    _userViewModel.user.user_id,
-                                    total: false,
-                                  );
-                                },
-                                child: Container(
-                                  width: 20,
-                                  height: 20,
-                                  padding: EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                  width: 400,
+                                  height: 48,
                                   decoration: BoxDecoration(
-                                    color: Color(0xFFD6382B),
-                                    borderRadius: BorderRadius.circular(20),
+                                      borderRadius: BorderRadius.circular(5),
+                                      color: SDSColor.snowliveWhite
                                   ),
-                                  child: Text(
-                                    'N',
-                                    style: SDSTextStyle.extraBold.copyWith(
-                                      fontSize: 11,
-                                      fontWeight: FontWeight.bold,
-                                      color: Color(0xFFFFFFFF),
+                                  child: TextButton(
+                                    onPressed: () async {
+                                      // 참여하기 버튼 클릭 시 participate 메소드를 호출하고 바디 전달
+                                      Map<String, dynamic> body = {
+                                        "user_id": _userViewModel.user.user_id,
+                                        "resort_id": _resort_info['resort_id']
+                                      };
+                                      print(body);
+                                      await participate(body);
+                                      Get.back(); // 팝업 닫기
+                                    },
+                                    child: Text(
+                                      '참여하기',
+                                      style: SDSTextStyle.bold.copyWith(
+                                        fontSize: 16,
+                                        color: SDSColor.gray900,
+                                      ),
                                     ),
                                   ),
                                 ),
-                              ),
-                            ),
-                        ],
-                      );
-                    },
-                  ),
-                )
-              ],
-              systemOverlayStyle: SystemUiOverlayStyle.dark,
-              centerTitle: false,
-              titleSpacing: 0,
-              title: Padding(
-                padding: const EdgeInsets.only(left: 20),
-                child:  (_userViewModel.user.within_boundary == true)
-                    ? (_resortHomeViewModel.resort_info['fullname'] != null) ? Image.asset(
-                  'assets/imgs/logos/snowliveLogo_main_new_blue.png',
-                  height: 38,
-                ) : Image.asset(
-                  'assets/imgs/logos/snowliveLogo_main_new.png',
-                  height: 38,
-                )
-                    : Image.asset(
-                  'assets/imgs/logos/snowliveLogo_main_new.png',
-                  height: 38,
-                ),
-              ),
-              backgroundColor: SDSColor.snowliveWhite,
-              foregroundColor: SDSColor.snowliveWhite,
-              surfaceTintColor: SDSColor.snowliveWhite,
-              elevation: 0.0,
-            ),
-          ),
-          body: RefreshIndicator(
-            strokeWidth: 2,
-            edgeOffset: 60,
-            backgroundColor: SDSColor.snowliveBlue,
-            color: SDSColor.snowliveWhite,
-            onRefresh: _resortHomeViewModel.onRefresh_resortHome,
-            child: SingleChildScrollView(
-              physics: AlwaysScrollableScrollPhysics(),
-              child: Column(
-                children: [
-                  SizedBox(
-                    height: _statusBarSize + 56,
-                  ),
-                  Container(
-                    color: Colors.white,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Obx(() => Padding(
-                          padding: EdgeInsets.only(left: 16, right: 16),
-                          child: Container(
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(16),
-                                color: (_resortHomeViewModel.isLoading_weather == true)
-                                    ? SDSColor.gray200
-                                    : _resortHomeViewModel.weatherColors),
-                            alignment: Alignment.center,
-                            width: double.infinity,
-                            child: Column(
-                              children: [
                                 Padding(
-                                  padding: const EdgeInsets.only(top: 14),
-                                  child: Row(
-                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          GestureDetector(
-                                            child: Obx(() => Row(
-                                              crossAxisAlignment: CrossAxisAlignment.center,
-                                              mainAxisAlignment: MainAxisAlignment.start,
-                                              children: [
-                                                Padding(
-                                                  padding: const EdgeInsets.only(left: 24),
-                                                  child:
-                                                  (_resortHomeViewModel.isLoading_weather == true)
-                                                      ? Text(
-                                                    ' ',
-                                                    style: SDSTextStyle.bold.copyWith(
-                                                        color: SDSColor.snowliveWhite,
-                                                        fontSize: 16),
-                                                  )
-                                                      : Text(
-                                                    '${_resortHomeViewModel.resortHomeModel.instantResortName}',
-                                                    style: SDSTextStyle.bold.copyWith(
-                                                        color: _resortHomeViewModel.weatherTextColors,
-                                                        fontSize: 16),
-                                                  ),
-                                                ),
-                                                SizedBox(
-                                                  width: 3,
-                                                ),
-                                                (_resortHomeViewModel.isLoading_weather == true)
-                                                    ? Container()
-                                                    : Image.asset(
-                                                  'assets/imgs/icons/icon_dropdown.png',
-                                                  width: 18,
-                                                  height: 18,
-                                                  color: _resortHomeViewModel.weatherTextColors,
-                                                )
-                                              ],
-                                            ),
-                                            ),
-                                            onTap: () async{
-                                              selectedIndex = await showModalBottomSheet<int>(
-                                                constraints: BoxConstraints(
-                                                  maxHeight: _size.height - _statusBarSize - 44,
-                                                ),
-                                                backgroundColor: Colors.transparent,
-                                                context: context,
-                                                isScrollControlled: true,
-                                                builder: (context) => SelectResortWidget(),
-                                              );
-                                              if(selectedIndex != null)
-                                                await _resortHomeViewModel.changeInstantResort(
-                                                    {
-                                                      "user_id": _userViewModel.user.user_id,    //필수 - 수정할 유저id
-                                                      "instant_resort": selectedIndex!    //선택 - 프로필 비공개 설정에서만 씀
-                                                    }, _userViewModel.user.user_id
-                                                );
-
-                                            },
-                                          ),
-                                          SizedBox(
-                                            height: 2,
-                                          ),
-                                          SizedBox(
-                                            child: Padding(
-                                              padding: const EdgeInsets.only(left: 24),
-                                              child: Row(
-                                                mainAxisAlignment: MainAxisAlignment.start,
-                                                children: [
-                                                  (_resortHomeViewModel.isLoading_weather == true)
-                                                      ? Text(' ',
-                                                    style: SDSTextStyle.regular.copyWith(
-                                                        color: _resortHomeViewModel.weatherTextColors,
-                                                        fontSize: 13),
-                                                  )
-                                                      : Opacity(
-                                                    opacity: 0.5,
-                                                    child: Text('${GetDatetime().getDateTime()}',
-                                                      style: SDSTextStyle.regular.copyWith(
-                                                          color: _resortHomeViewModel.weatherTextColors,
-                                                          fontSize: 13),
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      GestureDetector(
-                                        onTap: (){
-                                          _resortHomeViewModel.toggleExpandWeatherInfo();
-                                        },
-                                        child: Padding(
-                                          padding: EdgeInsets.only(right: 4),
-                                          child: Row(
-                                            mainAxisAlignment: MainAxisAlignment.center,
-                                            crossAxisAlignment: CrossAxisAlignment.center,
-                                            children: [
-                                              (_resortHomeViewModel.isLoading_weather == true)
-                                                  ? Container()
-                                                  : Padding(
-                                                padding: const EdgeInsets.only(bottom: 2),
-                                                child: Container(
-                                                    width: 32,
-                                                    child: _resortHomeViewModel.weatherIcons),
-                                              ),
-                                              SizedBox(width: 10,),
-                                              Obx(() => (_resortHomeViewModel.isLoading_weather == true)
-                                                  ? Padding(
-                                                padding: EdgeInsets.only(right: 16),
-                                                child: Container(
-                                                    width: 50,
-                                                    child: Lottie.asset('assets/json/loadings_wht_final.json')),
-                                              )
-                                                  : Container(
-                                                height: 54,
-                                                child: Center(
-                                                  child: Text('${_resortHomeViewModel.weatherInfo['temp']??'-'}', //u00B0
-                                                    style: GoogleFonts.bebasNeue(
-                                                        fontSize: 44,
-                                                        color: _resortHomeViewModel.weatherTextColors,
-                                                        height: 1.3
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                              ),
-                                              Padding(
-                                                padding: const EdgeInsets.only(right: 6),
-                                                child: Obx(() => (_resortHomeViewModel.isLoading_weather == true)
-                                                    ? Padding(
-                                                  padding: const EdgeInsets.only(bottom: 4, left: 2),
-                                                  child: Text(' ',
-                                                    style: GoogleFonts.bebasNeue(
-                                                        fontSize: 36,
-                                                        color: Colors.white),
-                                                  ),
-                                                )
-                                                    : Padding(
-                                                  padding: const EdgeInsets.only(bottom: 4, left: 2),
-                                                  child: Text('\u00B0',
-                                                    style: GoogleFonts.bebasNeue(
-                                                        fontSize: 36,
-                                                        color: _resortHomeViewModel.weatherTextColors),
-                                                  ),
-                                                ),
-                                                ),
-                                              ),
-                                              Stack(
-                                                children: [
-                                                  Container(
-                                                    height: 40,
-                                                    width: 40,
-                                                    color: Colors.transparent,
-                                                  ),
-                                                  (_resortHomeViewModel.isWeatherInfoExpanded == false)
-                                                      ? Positioned(
-                                                    left: 0,
-                                                    top: 10,
-                                                    child: Image.asset(
-                                                      'assets/imgs/icons/icon_plus_round.png',
-                                                      width: 20,
-                                                      height: 20,
-                                                    ),
-                                                  )
-                                                      : Positioned(
-                                                    left: 0,
-                                                    top: 10,
-                                                    child: Image.asset(
-                                                      'assets/imgs/icons/icon_minus_round.png',
-                                                      width: 20,
-                                                      height: 20,
-                                                    ),
-                                                  )
-                                                ],
-                                              )
-
-                                            ],
-                                          ),
+                                  padding: const EdgeInsets.only(top: 8.0),
+                                  child: Container(
+                                    width: 400,
+                                    height: 48,
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(5),
+                                        color: Colors.transparent
+                                    ),
+                                    child: TextButton(
+                                      onPressed: () {
+                                        Get.back();
+                                      },
+                                      child: Text(
+                                        '돌아가기',
+                                        style: SDSTextStyle.bold.copyWith(
+                                          fontSize: 16,
+                                          color: SDSColor.snowliveWhite,
                                         ),
                                       ),
-                                    ],
-                                  ),
-                                ),
-                                if(_resortHomeViewModel.isWeatherInfoExpanded == true)
-                                  SizedBox(
-                                    height: 14,
-                                  ),
-                                if(_resortHomeViewModel.isWeatherInfoExpanded == true)
-                                  (_resortHomeViewModel.isLoading_weather == true)
-                                      ? Padding(
-                                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                                    child: Container(
-                                      color: SDSColor.gray500.withOpacity(0.1),
-                                      height: 1,
-                                      width: _size.width,
-                                    ),
-                                  )
-                                      : Padding(
-                                    padding: const EdgeInsets.symmetric(horizontal: 24),
-                                    child: Container(
-                                      color: SDSColor.snowliveBlack.withOpacity(0.08),
-                                      height: 1,
-                                      width: _size.width,
                                     ),
                                   ),
-                                SizedBox(
-                                  height: 14,
                                 ),
-                                if(_resortHomeViewModel.isWeatherInfoExpanded == true)
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                    children: [
-                                      Column(
-                                        children: [
-                                          Opacity(
-                                            opacity: 0.5,
-                                            child: Text('바람',
-                                              style: SDSTextStyle.regular.copyWith(
-                                                  color: _resortHomeViewModel.weatherTextColors,
-                                                  fontSize: 12),
-                                            ),
-                                          ),
-                                          Row(
-                                            crossAxisAlignment: CrossAxisAlignment.end,
-                                            children: [
-                                              Obx(() => Padding(
-                                                padding:
-                                                const EdgeInsets.only(right: 2),
-                                                child: Text(
-                                                  '${_resortHomeViewModel.weatherInfo['wind']??'-'}',
-                                                  style: GoogleFonts.bebasNeue(
-                                                      fontSize: 24,
-                                                      color: _resortHomeViewModel.weatherTextColors),
-                                                ),
-                                              ),
-                                              ),
-                                              Padding(
-                                                padding:
-                                                const EdgeInsets.only(bottom: 3),
-                                                child: Text('M/S',
-                                                  style: GoogleFonts.bebasNeue(
-                                                      fontSize: 16,
-                                                      color: _resortHomeViewModel.weatherTextColors),
-                                                ),
-                                              ),
-                                            ],
-                                          )
-                                        ],
-                                      ),
-                                      Column(
-                                        children: [
-                                          Opacity(
-                                            opacity: 0.5,
-                                            child: Text(
-                                              '습도',
-                                              style: SDSTextStyle.regular.copyWith(
-                                                  color: _resortHomeViewModel.weatherTextColors,
-                                                  fontSize: 12),
-                                            ),
-                                          ),
-
-                                          Row(
-                                            crossAxisAlignment: CrossAxisAlignment.end,
-                                            children: [
-                                              Obx(
-                                                    () => Padding(
-                                                  padding:
-                                                  const EdgeInsets.only(right: 2),
-                                                  child: Text(
-                                                    '${_resortHomeViewModel.weatherInfo['wet']??'-'}',
-                                                    style: GoogleFonts.bebasNeue(
-                                                        fontSize: 24,
-                                                        color: _resortHomeViewModel.weatherTextColors),
-                                                  ),
-                                                ),
-                                              ),
-                                              Padding(
-                                                padding:
-                                                const EdgeInsets.only(bottom: 3),
-                                                child: Text('%',
-                                                  style: GoogleFonts.bebasNeue(
-                                                      fontSize: 16,
-                                                      color: _resortHomeViewModel.weatherTextColors),
-                                                ),
-                                              ),
-                                            ],
-                                          )
-                                        ],
-                                      ),
-                                      Column(
-                                        children: [
-                                          Opacity(
-                                            opacity: 0.5,
-                                            child: Text(
-                                              '강수',
-                                              style: SDSTextStyle.regular.copyWith(
-                                                  color: _resortHomeViewModel.weatherTextColors,
-                                                  fontSize: 12),
-                                            ),
-                                          ),
-
-                                          Row(
-                                            crossAxisAlignment: CrossAxisAlignment.end,
-                                            children: [
-                                              Obx(
-                                                    () => Padding(
-                                                  padding: const EdgeInsets.only(right: 2),
-                                                  child: Text('${_resortHomeViewModel.weatherInfo['rain']??'-'}',
-                                                    style: GoogleFonts.bebasNeue(
-                                                        fontSize: 24,
-                                                        color: _resortHomeViewModel.weatherTextColors),
-                                                  ),
-                                                ),
-                                              ),
-                                              Padding(
-                                                padding:
-                                                const EdgeInsets.only(bottom: 3),
-                                                child: Text('MM',
-                                                  style: GoogleFonts.bebasNeue(
-                                                      fontSize: 16,
-                                                      color: _resortHomeViewModel.weatherTextColors),
-                                                ),
-                                              ),
-                                            ],
-                                          )
-                                        ],
-                                      ),
-                                      Column(
-                                        children: [
-                                          Opacity(
-                                            opacity: 0.5,
-                                            child: Text(
-                                              '최저/최고기온',
-                                              style: SDSTextStyle.regular.copyWith(
-                                                  color: _resortHomeViewModel.weatherTextColors,
-                                                  fontSize: 12),
-                                            ),
-                                          ),
-
-                                          Obx(
-                                                () => Row(
-                                              crossAxisAlignment: CrossAxisAlignment.end,
-                                              children: [
-                                                Text(
-                                                  '${_resortHomeViewModel.weatherInfo['minTemp']??'-'}',
-                                                  style: GoogleFonts.bebasNeue(
-                                                      fontSize: 24,
-                                                      color: _resortHomeViewModel.weatherTextColors),
-                                                ),
-                                                Padding(
-                                                  padding:
-                                                  const EdgeInsets.only(
-                                                      bottom: 3, left: 3, right: 2),
-                                                  child: Text(
-                                                    '/',
-                                                    style: GoogleFonts.bebasNeue(
-                                                        fontSize: 16,
-                                                        color: _resortHomeViewModel.weatherTextColors),
-                                                  ),
-                                                ),
-                                                Text(
-                                                  '${_resortHomeViewModel.weatherInfo['maxTemp']??'-'}',
-                                                  style: GoogleFonts.bebasNeue(
-                                                      fontSize: 24,
-                                                      color: _resortHomeViewModel.weatherTextColors),
-                                                ),
-                                              ],
-                                            ),
-                                          )
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                if(_resortHomeViewModel.isWeatherInfoExpanded == true)
-                                  SizedBox(
-                                    height: 14,
-                                  )
                               ],
+                              mainAxisAlignment: MainAxisAlignment.center,
                             ),
                           ),
-                        ),
-                        ),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            //TODO: url 아이콘 영역
-                            Container(
-                              decoration: BoxDecoration(
-                                color: Colors.white,),
-                              child: Padding(
-                                padding: const EdgeInsets.only(right: 28, left: 28, top: 20),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    GestureDetector(
-                                      onTap: () async {
-                                        await otherShare(contents: '${_resortHomeViewModel.resortHomeModel.urlNaver}');
-                                      },
-                                      child: Container(
-                                        width: 64,
-                                        child: Column(
-                                          children: [
-                                            Image.asset(
-                                              'assets/imgs/icons/icon_home_naver.png',
-                                              width: 32,
-                                              height: 32,
-                                            ),
-                                            SizedBox(
-                                              height: 4,
-                                            ),
-                                            Text(
-                                              '네이버 날씨',
-                                              style: SDSTextStyle.regular.copyWith(
-                                                  fontSize: 12,
-                                                  color: SDSColor.gray800),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                    GestureDetector(
-                                      onTap: () async{
-                                        if (_resortHomeViewModel.resortHomeModel.urlWebcam != '') {
-                                          await otherShare(contents: '${_resortHomeViewModel.resortHomeModel.urlWebcam}');
-                                        }
-                                      },
-                                      child: Container(
-                                        width: 64,
-                                        child: Column(
-                                          children: [
-                                            (_resortHomeViewModel.resortHomeModel.urlWebcam != '')
-                                                ? Image.asset(
-                                              'assets/imgs/icons/icon_home_livecam.png',
-                                              width: 32,
-                                              height: 32,
-                                            )
-                                                : Image.asset(
-                                              'assets/imgs/icons/icon_home_livecam_off.png',
-                                              width: 32,
-                                              height: 32,
-                                            ),
-                                            SizedBox(
-                                              height: 4,
-                                            ),
-                                            Text(
-                                              '실시간 웹캠',
-                                              style: SDSTextStyle.regular.copyWith(
-                                                  fontSize: 12,
-                                                  color:
-                                                  (_resortHomeViewModel.resortHomeModel.urlWebcam != '')
-                                                      ? SDSColor.gray800 : SDSColor.gray400),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                    GestureDetector(
-                                      onTap: () async{
-                                        if (_resortHomeViewModel.resortHomeModel.urlSlope != '') {
-                                          await otherShare(contents: '${_resortHomeViewModel.resortHomeModel.urlSlope}');
-                                        }
-                                      },
-                                      child: Container(
-                                        width: 64,
-                                        child: Column(
-                                          children: [
-                                            (_resortHomeViewModel.resortHomeModel.urlSlope != '')
-                                                ? Image.asset(
-                                              'assets/imgs/icons/icon_home_slope.png',
-                                              width: 32,
-                                              height: 32,
-                                            )
-                                                : Image.asset(
-                                              'assets/imgs/icons/icon_home_slope_off.png',
-                                              width: 32,
-                                              height: 32,
-                                            ),
-                                            SizedBox(
-                                              height: 4,
-                                            ),
-                                            Text(
-                                              '슬로프 현황',
-                                              style: SDSTextStyle.regular.copyWith(
-                                                  fontSize: 12,
-                                                  color:
-                                                  (_resortHomeViewModel.resortHomeModel.urlSlope != '')
-                                                      ? SDSColor.gray800 : SDSColor.gray400),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                    GestureDetector(
-                                      onTap: () async{
-                                        if (_resortHomeViewModel.resortHomeModel.urlBus != '') {
-                                          await otherShare(contents: '${_resortHomeViewModel.resortHomeModel.urlBus}');
-                                        }
-                                      },
-                                      child: Container(
-                                        width: 64,
-                                        child: Column(
-                                          children: [
-                                            (_resortHomeViewModel.resortHomeModel.urlBus != '')
-                                                ? Image.asset(
-                                              'assets/imgs/icons/icon_home_bus.png',
-                                              width: 32,
-                                              height: 32,
-                                            )
-                                                : Image.asset(
-                                              'assets/imgs/icons/icon_home_bus_off.png',
-                                              width: 32,
-                                              height: 32,
-                                            ),
-                                            SizedBox(
-                                              height: 4,
-                                            ),
-                                            Text(
-                                              '셔틀버스',
-                                              style: SDSTextStyle.regular.copyWith(
-                                                  fontSize: 12,
-                                                  color:
-                                                  (_resortHomeViewModel.resortHomeModel.urlBus != '')
-                                                      ? SDSColor.gray800 : SDSColor.gray400),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                            //TODO: 배너
-                            Padding(
-                              padding: EdgeInsets.only(left: 16, right: 16, top: 28),
-                              child: Banner_resortHome(),
-                            ),
-                            //TODO: 보물찾기 진입 배너
-                            GestureDetector(
-                              onTap: (){
-                                Get.toNamed(AppRoutes.treasureHunt);
-                              },
-                              child: Padding(
-                                padding: EdgeInsets.only(left: 16, right: 16, top: 8),
-                                child: Banner_treasureHunt(),
-                              ),
-                            ),
-                            //TODO: 구분선
-                            if((_resortHomeViewModel.resortHomeModel.dailyTotalCount != 0 || _userViewModel.user.within_boundary == true))
-                              Padding(
-                                padding: const EdgeInsets.only(top: 20, bottom: 24),
-                                child: Container(
-                                  width: _size.width,
-                                  height: 10,
-                                  color: SDSColor.gray50,
-                                ),
-                              ),
-                            Padding(
-                                padding: EdgeInsets.only(left: 16, right: 16),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    //TODO: 오늘의 기록
-                                    Padding(
-                                      padding: const EdgeInsets.only(right: 4, left: 4),
-                                      child: Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          if((_resortHomeViewModel.resortHomeModel.dailyTotalCount != 0 || _userViewModel.user.within_boundary == true))
-                                            Text('오늘의 기록',
-                                              style: SDSTextStyle.extraBold.copyWith(
-                                                  fontSize: 15,
-                                                  color: SDSColor.gray900
-                                              ),
-                                            ),
-                                          if(_userViewModel.user.within_boundary == true)
-                                            Row(
-                                              children: [
-                                                Padding(
-                                                  padding: const EdgeInsets.only(right: 2),
-                                                  child:
-                                                  (_resortHomeViewModel.resort_info['fullname'] != null)
-                                                      ? Image.asset(
-                                                    'assets/imgs/icons/icon_pin.png',
-                                                    width: 18,
-                                                    height: 18,
-                                                  )
-                                                      : Image.asset(
-                                                    'assets/imgs/icons/icon_pin_inactive.png',
-                                                    width: 18,
-                                                    height: 18,
-                                                  ),
-                                                ),
-                                                (_resortHomeViewModel.resort_info['fullname'] != null)
-                                                    ? Row(
-                                                  children: [
-                                                    Text('지금 ',
-                                                      style: SDSTextStyle.regular.copyWith(
-                                                          fontSize: 13,
-                                                          color: SDSColor.gray500
-                                                      ),
-                                                    ),
-                                                    Text('${_resortHomeViewModel.resort_info['fullname']}',
-                                                      style: SDSTextStyle.regular.copyWith(
-                                                          fontSize: 13,
-                                                          color: SDSColor.snowliveBlue
-                                                      ),
-                                                    ),
-                                                    Text('에서 라이브온 중이에요',
-                                                      style: SDSTextStyle.regular.copyWith(
-                                                          fontSize: 13,
-                                                          color: SDSColor.gray500
-                                                      ),
-                                                    ),
-                                                  ],
-                                                )
-                                                    :Text('라이브 지역을 확인할 수 없어요',
-                                                  style: SDSTextStyle.regular.copyWith(
-                                                      fontSize: 13,
-                                                      color: SDSColor.gray500
-                                                  ),
-                                                ),
-
-                                              ],
-                                            ),
-                                        ],
-                                      ),
-                                    ),
-                                    if((_resortHomeViewModel.resortHomeModel.dailyTotalCount != 0 || _userViewModel.user.within_boundary == true))
-                                      Column(
-                                        children: [
-                                          Column(
-                                            children: [
-                                              Padding(
-                                                padding: const EdgeInsets.only(top: 16),
-                                                child: Container(
-                                                  padding: EdgeInsets.only(top: 24, right: 20, left: 20, bottom: 30),
-                                                  width: _size.width,
-                                                  decoration: BoxDecoration(
-                                                    color: SDSColor.gray50,
-                                                    borderRadius: BorderRadius.circular(16),
-                                                  ),
-                                                  child: Column(
-                                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                                    children: [
-                                                      Text('오늘 총 라이딩 횟수',
-                                                        style: SDSTextStyle.regular.copyWith(
-                                                            color: SDSColor.gray900,
-                                                            fontSize: 13
-                                                        ),
-                                                      ),
-                                                      Padding(
-                                                        padding: const EdgeInsets.only(bottom: 6),
-                                                        child: Text('${_resortHomeViewModel.resortHomeModel.dailyTotalCount}',
-                                                          style: SDSTextStyle.extraBold.copyWith(
-                                                              color: SDSColor.gray900,
-                                                              fontSize: 30
-                                                          ),
-                                                        ),
-                                                      ),
-                                                      if(_resortHomeViewModel.resortHomeModel.slopeCountInfoToday.length != 0)
-                                                        Column(
-                                                          children: [
-                                                            Container(
-                                                                child: Column(
-                                                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                                                  children: _resortHomeViewModel.resortHomeModel.slopeCountInfoToday.map<Widget>((data)  {
-                                                                    String slopeName = data.slope;
-                                                                    int passCount = data.count;
-                                                                    double barWidthRatio = data.ratio;
-                                                                    return Padding(
-                                                                      padding: (data != _resortHomeViewModel.resortHomeModel.slopeCountInfoToday.last)
-                                                                          ? EdgeInsets.only(bottom: 2, top: 4)
-                                                                          : EdgeInsets.only(bottom: 0, top: 4),
-                                                                      child: Row(
-                                                                        children: [
-                                                                          Container(
-                                                                            width: 44,
-                                                                            child: Text(
-                                                                              slopeName,
-                                                                              style: SDSTextStyle.regular.copyWith(
-                                                                                fontSize: 11,
-                                                                                color: SDSColor.gray600,
-                                                                              ),
-                                                                            ),
-                                                                          ),
-                                                                          Container(
-                                                                            height: 14,
-                                                                            width: (_size.width - 166) * barWidthRatio,
-                                                                            decoration: BoxDecoration(
-                                                                                color:
-                                                                                (data == _resortHomeViewModel.resortHomeModel.slopeCountInfoToday.first)
-                                                                                    ? SDSColor.snowliveBlue
-                                                                                    : SDSColor.gray200,
-                                                                                borderRadius: BorderRadius.only(
-                                                                                    topRight: Radius.circular(4),
-                                                                                    bottomRight: Radius.circular(4)
-                                                                                )
-                                                                            ),
-                                                                          ),
-                                                                          Padding(
-                                                                            padding: (data == _resortHomeViewModel.resortHomeModel.slopeCountInfoToday.first)
-                                                                                ? EdgeInsets.only(left: 6)
-                                                                                : EdgeInsets.only(left: 2),
-                                                                            child: Container(
-                                                                              child: Column(
-                                                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                                                mainAxisAlignment: MainAxisAlignment.center,
-                                                                                children: [
-                                                                                  Container(
-                                                                                    decoration: BoxDecoration(
-                                                                                      borderRadius: BorderRadius.circular(20),
-                                                                                      color: (data == _resortHomeViewModel.resortHomeModel.slopeCountInfoToday.first)
-                                                                                          ? SDSColor.gray900
-                                                                                          : Colors.transparent,
-                                                                                    ),
-                                                                                    padding: EdgeInsets.symmetric(horizontal: 6, vertical: 1),
-                                                                                    child: Text('$passCount',
-                                                                                      style: SDSTextStyle.bold.copyWith(
-                                                                                        fontSize: 12,
-                                                                                        fontWeight: (data == _resortHomeViewModel.resortHomeModel.slopeCountInfoToday.first)
-                                                                                            ? FontWeight.bold : FontWeight.bold,
-                                                                                        color: (data == _resortHomeViewModel.resortHomeModel.slopeCountInfoToday.first)
-                                                                                            ? SDSColor.snowliveWhite : SDSColor.gray900,
-                                                                                      ),
-                                                                                    ),
-                                                                                  ),
-                                                                                ],
-                                                                              ),
-                                                                            ),
-                                                                          ),
-                                                                        ],
-                                                                      ),
-                                                                    );
-                                                                  }).toList(),
-                                                                )
-                                                            ),
-                                                            Padding(
-                                                              padding: EdgeInsets.symmetric(vertical: 24),
-                                                              child: Container(
-                                                                height: 1,
-                                                                width: _size.width - 80,
-                                                                color: SDSColor.snowliveBlack.withOpacity(0.05),
-                                                              ),
-                                                            ),
-                                                            if(_resortHomeViewModel.resortHomeModel.dailyTotalCount != 0)
-                                                              Column(
-                                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                                children: [
-                                                                  Text('시간대별 기록',
-                                                                    style: SDSTextStyle.regular.copyWith(
-                                                                        color: SDSColor.gray900,
-                                                                        fontSize: 13
-                                                                    ),
-                                                                  ),
-                                                                  if(_resortHomeViewModel.resortHomeModel.dailyTotalCount != 0)
-                                                                    Padding(
-                                                                      padding: EdgeInsets.only(top: 10),
-                                                                      child: Container(
-                                                                        child: Row(
-                                                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                                          crossAxisAlignment: CrossAxisAlignment.end,
-                                                                          children: _resortHomeViewModel.resortHomeModel.timeCountInfoToday.entries.map<Widget>((entry) {
-                                                                            String slotName = entry.key;
-                                                                            int passCount = entry.value;
-                                                                            int maxCount = _resortHomeViewModel.resortHomeModel.timeInfo_maxCount;
-                                                                            double barHeightRatio =  passCount/maxCount;
-                                                                            return Container(
-                                                                              width: 30,
-                                                                              child: Column(
-                                                                                mainAxisAlignment: MainAxisAlignment.end,
-                                                                                children: [
-                                                                                  AutoSizeText(
-                                                                                    passCount != 0 ? '$passCount' : '',
-                                                                                    style: SDSTextStyle.bold.copyWith(
-                                                                                      fontSize: 12,
-                                                                                      color: SDSColor.gray900,
-                                                                                    ),
-                                                                                    minFontSize: 6,
-                                                                                    maxLines: 1,
-                                                                                    overflow: TextOverflow.visible,
-                                                                                  ),
-                                                                                  Padding(
-                                                                                    padding: EdgeInsets.only(top: 4),
-                                                                                    child: Container(
-                                                                                      width: 16,
-                                                                                      height: 100 * barHeightRatio,
-                                                                                      decoration: BoxDecoration(
-                                                                                          color: SDSColor.gray200,
-                                                                                          borderRadius: BorderRadius.only(
-                                                                                              topRight: Radius.circular(4), topLeft: Radius.circular(4)
-                                                                                          )
-                                                                                      ),
-                                                                                    ),
-                                                                                  ),
-                                                                                  Padding(
-                                                                                    padding: const EdgeInsets.only(top: 8),
-                                                                                    child: Container(
-                                                                                      width: 20,
-                                                                                      child: Text(
-                                                                                        slotName,
-                                                                                        style: SDSTextStyle.regular.copyWith(
-                                                                                            fontSize: 11,
-                                                                                            color: SDSColor.gray600,
-                                                                                            height: 1.2
-                                                                                        ),
-                                                                                      ),
-                                                                                    ),
-                                                                                  ),
-                                                                                ],
-                                                                              ),
-                                                                            );
-                                                                          }).toList(),
-                                                                        ),
-                                                                      ),
-                                                                    ),
-                                                                  if(_resortHomeViewModel.resortHomeModel.dailyTotalCount == 0)
-                                                                    Center(
-                                                                      child: Padding(
-                                                                        padding: const EdgeInsets.only(bottom: 30),
-                                                                        child: Column(
-                                                                          children: [
-                                                                            Image.asset(
-                                                                              'assets/imgs/icons/icon_nodata.png',
-                                                                              fit: BoxFit.cover,
-                                                                              width: 72,
-                                                                              height: 72,
-                                                                            ),
-                                                                            Text('라이딩 기록이 없어요',
-                                                                              style: SDSTextStyle.regular.copyWith(
-                                                                                  fontSize: 14,
-                                                                                  color: SDSColor.gray600
-                                                                              ),
-                                                                            ),
-                                                                          ],
-                                                                        ),
-                                                                      ),
-                                                                    )
-                                                                ],
-                                                              ),
-                                                          ],
-                                                        ),
-
-                                                      if(_resortHomeViewModel.resortHomeModel.slopeCountInfoToday.length == 0)
-                                                        Center(
-                                                          child: Padding(
-                                                            padding: const EdgeInsets.only(bottom: 30),
-                                                            child: Column(
-                                                              children: [
-                                                                Image.asset(
-                                                                  'assets/imgs/icons/icon_nodata.png',
-                                                                  fit: BoxFit.cover,
-                                                                  width: 72,
-                                                                  height: 72,
-                                                                ),
-                                                                Text('라이딩 기록이 없어요',
-                                                                  style: SDSTextStyle.regular.copyWith(
-                                                                      fontSize: 14,
-                                                                      color: SDSColor.gray600
-                                                                  ),
-                                                                ),
-                                                              ],
-                                                            ),
-                                                          ),
-                                                        )
-                                                    ],
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ],
-                                      ),
-                                    if(_resortHomeViewModel.resortHomeModel.dailyTotalCount == 0 && _userViewModel.user.within_boundary == false)
-                                      Padding(
-                                        padding: EdgeInsets.only(top: 10),
-                                        child: Container(
-                                          height: _size.width,
-                                          decoration: BoxDecoration(
-                                            color: Color(0xFFF5F2F7),
-                                            borderRadius: BorderRadius.circular(10),
-                                          ),
-                                          child: Stack (
-                                            children: [
-                                              Positioned(
-                                                bottom: 0,
-                                                right: 0,
-                                                child: Padding(
-                                                  padding: EdgeInsets.only(bottom: 12),
-                                                  child: Image.asset(
-                                                    'assets/imgs/imgs/img_resortHome_ranking_1.png',
-                                                    fit: BoxFit.cover,
-                                                    width: _size.width - 60,
-                                                  ),
-                                                ),
-                                              ),
-                                              Row(
-                                                children: [
-                                                  Padding(
-                                                    padding: const EdgeInsets.only(left: 24, top: 30, right: 24),
-                                                    child: Column(
-                                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                                      mainAxisAlignment: MainAxisAlignment.start,
-                                                      children: [
-                                                        Text(
-                                                          '지금 바로 랭킹에 참여해보세요!',
-                                                          style: SDSTextStyle.bold.copyWith(
-                                                            fontSize: 18,
-                                                            color: SDSColor.gray900,
-                                                          ),
-                                                        ),
-                                                        Padding(
-                                                          padding: const EdgeInsets.only(top: 4),
-                                                          child: Text(
-                                                            '친구들의 라이브 상태도 확인하고',
-                                                            style: SDSTextStyle.regular.copyWith(
-                                                              fontSize: 14,
-                                                              color: SDSColor.gray600,
-                                                            ),
-                                                          ),
-                                                        ),
-                                                        Padding(
-                                                          padding: const EdgeInsets.only(top: 2),
-                                                          child: Text(
-                                                            '다른 유저들과 경쟁해보세요!',
-                                                            style: SDSTextStyle.regular.copyWith(
-                                                              fontSize: 14,
-                                                              color: SDSColor.gray600,
-                                                            ),
-                                                          ),
-                                                        ),
-                                                        Padding(
-                                                          padding: EdgeInsets.only(top: 12),
-                                                          child: GestureDetector(
-                                                            onTap: () {
-                                                              Get.toNamed(AppRoutes.rankingGuideMain);
-                                                            },
-                                                            child: Container(
-                                                              padding: EdgeInsets.symmetric(horizontal: 12, vertical: 9),
-                                                              decoration: BoxDecoration(
-                                                                  color: SDSColor.snowliveWhite,
-                                                                  borderRadius: BorderRadius.circular(20),
-                                                                  border: Border.all(
-                                                                      color: SDSColor.gray300,
-                                                                      width: 1
-                                                                  )
-                                                              ),
-                                                              child: Row(
-                                                                children: [
-                                                                  Padding(
-                                                                    padding: const EdgeInsets.only(right: 6),
-                                                                    child: Text(
-                                                                      '필수 설정하러 가기',
-                                                                      style: SDSTextStyle.extraBold.copyWith(
-                                                                          color: SDSColor.snowliveBlack,
-                                                                          fontSize: 14
-                                                                      ),
-                                                                    ),
-                                                                  ),
-                                                                  Image.asset(
-                                                                    'assets/imgs/icons/icon_arrow_round_black.png',
-                                                                    fit: BoxFit.cover,
-                                                                    width: 18,
-                                                                    height: 18,
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      )
-                                  ],
-                                )
-                            ),
-                          ],
-                        ),
-                        SizedBox(
-                          height: 100,
                         ),
                       ],
                     ),
                   ),
-                ],
+                ),
               ),
+            );
+          }
+        }
+      } else {
+        print('Treasure hunt 문서가 존재하지 않습니다.');
+      }
+    } catch (e) {
+      print('보물찾기 정보 조회 중 오류 발생: $e');
+    }
+  }
+
+  Future<ApiResponse> participate(Map<String, dynamic> body) async {
+    try {
+      isLoading(true);
+      ApiResponse response = await RankingAPI().participate_treasure_hunt(body);
+      CustomFullScreenDialog.cancelDialog();
+      if (response.success) {
+        _isParticipate_treasure_hunt.value = true;
+        print('보물찾기 참가 등록 성공');
+        return response;
+      } else {
+        _isParticipate_treasure_hunt.value = false;
+        return response;
+      }
+    } catch (e) {
+      _isParticipate_treasure_hunt.value = false;
+      print('Error in liveOn: $e');
+      return ApiResponse.error('An error occurred: $e');
+    } finally {
+      isLoading(false);
+    }
+  }
+
+  Future<void> getInfo_treasureHunt() async {
+
+    infoStream_treasureHunt.value = FirebaseFirestore.instance
+        .collection('treasure_hunt')
+        .doc('treasure_hunt')
+        .snapshots();
+  }
+
+  Future<void> getInfo_treasureHunt_banner() async {
+
+    infoStream_treasureHunt_banner.value = FirebaseFirestore.instance
+        .collection('treasure_hunt')
+        .doc('treasure_hunt')
+        .snapshots();
+  }
+
+  Future<void> fetchTreasureHuntNum() async {
+    try {
+      DocumentSnapshot<Map<String, dynamic>> treasureHuntDoc = await FirebaseFirestore.instance
+          .collection('treasure_hunt')
+          .doc('treasure_hunt')
+          .get();
+
+      if (treasureHuntDoc.exists) {
+        final data = treasureHuntDoc.data();
+        int? num = data?['treasure_hunt_num'];
+
+        // Update observed variable
+        if (num != null) {
+          _treasureHuntNum.value = num;
+          print('Updated treasureHuntNum: $num');
+        }
+      } else {
+        print('Treasure hunt 문서가 존재하지 않습니다.');
+      }
+    } catch (e) {
+      print('Error fetching treasure hunt number: $e');
+    }
+  }
+
+  Future<void> getInfo_treasureHunt_findList() async {
+
+    infoStream_treasureHunt_findList.value = FirebaseFirestore.instance
+        .collection('treasure_hunt')
+        .doc('treasure_hunt')
+        .collection('find_list')
+        .orderBy('datetime', descending: true)
+        .snapshots();
+  }
+
+  Future<void> fetchTreasureRecords({required int userId,}) async {
+    try {
+      isLoadingTreasureRecords(true);
+
+      // API 호출
+      final response = await RankingAPI().fetchTreasureRecords({
+        'user_id': userId,
+        'treasure_hunt_num': _treasureHuntNum.value,
+      });
+
+      if (response.success) {
+        // 응답을 Map<String, dynamic>으로 변환
+        final data = response.data as Map<String, dynamic>;
+
+        // treasure_records 키에서 리스트 가져오기
+        if (data['treasure_records'] is List) {
+          final treasureRecordsData = data['treasure_records'] as List<dynamic>;
+
+          // treasure_records 리스트를 TreasureRecord 객체 리스트로 변환하여 할당
+          _treasureRecordList.value = treasureRecordsData.map((record) {
+            return TreasureRecord.fromJson(record as Map<String, dynamic>);
+          }).toList();
+        } else {
+          print('Unexpected data format for treasure_records: $data');
+          _treasureRecordList.clear(); // 데이터가 없을 경우 빈 리스트로 초기화
+        }
+      } else {
+        print('Failed to load treasure records: ${response.error}');
+      }
+    } catch (e) {
+      print('Error fetching treasure records: $e');
+    } finally {
+      isLoadingTreasureRecords(false);
+    }
+  }
+
+  Future<void> updateTreasureRecord({
+    required int treasureRecordId,
+    required bool active,
+    int? userId,
+  }) async {
+    try {
+      // 로딩 상태 true로 설정
+      isLoadingTreasureRecordUpdate(true);
+
+      final response = await RankingAPI().updateTreasureRecord({
+        'treasure_record_id': treasureRecordId,
+        'active': active,
+        'user_id': userId,
+      });
+
+      if (response.success) {} else {}
+    }finally {
+      // 로딩 상태 false로 설정
+      isLoadingTreasureRecordUpdate(false);
+    }
+  }
+
+  Future<bool> checkUserTreasureStatus() async {
+    // Firestore에서 find_list 컬렉션에 active가 true인 문서가 있는지 확인
+    final querySnapshot = await FirebaseFirestore.instance
+        .collection('treasure_hunt')
+        .doc('treasure_hunt')
+        .collection('find_list')
+        .where('user_id', isEqualTo: _userViewModel.user.user_id)
+        .where('active', isEqualTo: true)
+        .get();
+
+    return querySnapshot.docs.isNotEmpty;
+  }
+
+  Future<void> updateAllActiveToFalse() async {
+    final querySnapshot = await FirebaseFirestore.instance
+        .collection('treasure_hunt')
+        .doc('treasure_hunt')
+        .collection('find_list')
+        .where('user_id', isEqualTo: _userViewModel.user.user_id)
+        .where('active', isEqualTo: true)
+        .get();
+
+    for (var doc in querySnapshot.docs) {
+      await doc.reference.update({'active': false});
+    }
+  }
+
+  //TODO: 보물찾기 관련 메소드****************************************************
+
+
+  Future<void> fetchResortHome(int userId) async {
+    isLoading(true);
+    ApiResponse response = await ResortHomeAPI().fetchResortHomeData(userId);
+    if(response.success)
+      _resortHomeModel.value = ResortHomeModel.fromJson(response.data);
+    print('리조트홈 패치 완료');
+    if(!response.success)
+      Get.snackbar('Error', '데이터 로딩 실패');
+    isLoading(false);
+  }
+
+  Future<void> fetchWeatherModel() async {
+    isLoading_weather(true);
+    try {
+      _weatherInfo.value = await WeatherModel().parseWeatherData(
+          _resortHomeModel.value.nx, _resortHomeModel.value.ny);
+      print('날씨정보 패치 완료');
+      weatherColors = WeatherModel().getWeatherColor(_weatherInfo['pty'], _weatherInfo['sky']);
+      weatherIcons = WeatherModel().getWeatherIcon(_weatherInfo['pty'], _weatherInfo['sky']);
+      weatherTextColors = WeatherModel().getWeatherTextColor(_weatherInfo['pty'], _weatherInfo['sky']);
+    }catch(e) {
+      print(e);
+      isLoading_weather(false);
+    }
+    isLoading_weather(false);
+  }
+
+  Future<void> fetchBestFriendList({required int user_id}) async {
+    isLoading_bestFriend(true);
+    ApiResponse response = await FriendAPI().fetchFriendList(userId: user_id, bestFriend: true);
+
+    if (response.success) {
+      try {
+        // JSON 데이터를 List<Map<String, dynamic>>로 변환
+        List<dynamic> dataList = response.data as List<dynamic>;
+
+        // List<Map<String, dynamic>>를 List<BestFriendListModel>로 변환
+        List<FriendListModel> friendList = dataList
+            .map((e) => FriendListModel.fromJson(e as Map<String, dynamic>))
+            .toList();
+
+        // _bestFriendList를 업데이트
+        _bestFriendList.value = friendList;
+
+        // 초기 높이 설정
+        if (_bestFriendList.length < 5) {
+          _initialHeightFriend.value = 0.38;
+        } else {
+          _initialHeightFriend.value = 0.525;
+        }
+
+      } catch (e) {
+        print('Error parsing friend list: $e');
+      }
+    } else {
+      print('친구없는놈');
+    }
+
+    isLoading_bestFriend(false);
+  }
+
+  Future<void> onRefresh_resortHome() async {
+    await fetchResortHome(_userViewModel.user.user_id);
+    fetchWeatherModel();
+  }
+
+  Future<void> changeInstantResort(Map<String, dynamic> body, user_id) async {
+
+    isLoading(true);
+    isLoading_weather(true);
+    ApiResponse response_updateUser = await UserAPI().updateUserInfo(body);
+    if(response_updateUser.success) {
+      ApiResponse response_fetchResortHome = await ResortHomeAPI().fetchResortHomeData(user_id);
+      if (response_fetchResortHome.success)
+        _resortHomeModel.value = ResortHomeModel.fromJson(response_fetchResortHome.data);
+      await fetchWeatherModel();
+    } else {
+      Get.snackbar('Error', '데이터 로딩 실패');
+      isLoading(false);
+      isLoading_weather(false);
+    }
+  }
+
+  void toggleExpandWeatherInfo() async {
+    _isWeatherInfoExpanded.value = !_isWeatherInfoExpanded.value;
+  }
+
+  Future<void> getRankingGuideUrl() async {
+    final snapshot = await FirebaseFirestore.instance
+        .collection('Ranking_guideUrl')
+        .get();
+    _rankingGuideUrl_aos.value = snapshot.docs[0]['url_android'];
+    _rankingGuideUrl_ios.value = snapshot.docs[0]['url_iOS'];
+    _rankingComingSoonUrl.value = snapshot.docs[0]['url_rankingComingSoon'];
+    _rankingGuideUrl_main.value = snapshot.docs[0]['url_rankingGuide'];
+    print('랭킹 url 불러오기 완료');
+  }
+
+  Color? getWeatherColor(String pty, String sky) {
+    String _timeString = DateFormat('HH').format(DateTime.now());
+    int _timeInt = int.parse(_timeString);
+    if (pty == '0' ) {
+      if (_timeInt < 7 || _timeInt > 17) {
+        return Color(0xFF32314D);
+      }else {
+        if( sky == '4' ){
+          return Color(0xFF707C87);
+        } else{
+          return Color(0xFF3D83ED);
+        }
+      }
+    } else if (pty == '1') {
+      return Color(0xFF3F668A);
+    } else if (pty == '2') {
+      return Color(0xFF3F668A);
+    } else if (pty == '3') {
+      return Color(0xFF9BBFE1);
+    } else if (pty == '5') {
+      return Color(0xFF3F668A);
+    } else if (pty == '6') {
+      return Color(0xFF9BBFE1);
+    } else if (pty == '7') {
+      return Color(0xFF9BBFE1);
+    }
+  }
+
+  Widget? getWeatherIcon(String pty, String sky) {
+    String _timeString = DateFormat('HH').format(DateTime.now());
+    int _timeInt = int.parse(_timeString);
+    if (pty == '0'){
+      if(_timeInt < 7 || _timeInt > 17){
+        return Image.asset(
+          'assets/imgs/weather/icon_weather.png',
+          width: 40,
+          height: 40,
+        );
+      }else{
+        if(sky == '4' ){
+          return Image.asset(
+            'assets/imgs/weather/icon_weather_cloud.png',
+            width: 40,
+            height: 40,
+          );
+        } else{
+          return Image.asset(
+            'assets/imgs/weather/icon_weather_sun.png',
+            width: 40,
+            height: 40,
+          );
+        }
+
+      }
+    } else if(pty == '1'){
+      return Image.asset(
+        'assets/imgs/weather/icon_weather_rain.png',
+        width: 40,
+        height: 40,
+      );
+    } else if (pty == '2') {
+      return Image.asset(
+        'assets/imgs/weather/icon_weather_rain.png',
+        width: 40,
+        height: 40,
+      );
+    } else if (pty == '3') {
+      return Image.asset(
+        'assets/imgs/weather/icon_weather_snow.png',
+        width: 40,
+        height: 40,
+      );
+    } else if (pty == '5') {
+      return Image.asset(
+        'assets/imgs/weather/icon_weather_rain.png',
+        width: 40,
+        height: 40,
+      );
+    } else if (pty == '6') {
+      return Image.asset(
+        'assets/imgs/weather/icon_weather_rain.png',
+        width: 40,
+        height: 40,
+      );
+    } else if (pty == '7') {
+      return Image.asset(
+        'assets/imgs/weather/icon_weather_snow.png',
+        width: 40,
+        height: 40,
+      );
+    }
+  }
+
+  Future<void> checkForUpdate() async {
+    try {
+      final currentVersion = await getCurrentAppVersion();
+      final latestVersion = await getLatestAppVersion();
+      final useUpdatePopup = await getUseUpdatePopup();
+      print('로컬버전 : ${currentVersion}');
+      print('서버버전 : ${latestVersion}');
+      print('강제업데이트 사용 : ${useUpdatePopup}');
+
+      if ((currentVersion != latestVersion) && (useUpdatePopup == true)) {
+        Get.dialog(
+          WillPopScope(
+            onWillPop: () async {
+              return false;
+            },
+            child: AlertDialog(
+              backgroundColor: SDSColor.snowliveWhite,
+              contentPadding: EdgeInsets.only(bottom: 0, left: 28, right: 28, top: 30),
+              elevation: 0,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16)),
+              buttonPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+              content: Container(
+                height: 300,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Image.asset(
+                      'assets/imgs/imgs/img_app_update_new.png',
+                      scale: 4,
+                      width: 200,
+                    ),
+                    Padding(
+                      padding: EdgeInsets.only(top: 20),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Text(
+                            '새로운 버전이 업데이트 되었습니다',
+                            textAlign: TextAlign.center,
+                            style: SDSTextStyle.bold.copyWith(
+                                color: SDSColor.gray900,
+                                fontSize: 16
+                            ),
+                          ),
+                          SizedBox(
+                            height: 6,
+                          ),
+                          Text(
+                            '최신 버전 앱으로 업데이트를 위해 스토어로 이동합니다.',
+                            textAlign: TextAlign.center,
+                            style: SDSTextStyle.regular.copyWith(
+                              color: SDSColor.gray500,
+                              fontSize: 14,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              actions: [
+                Container(
+                  width: MediaQuery.of(Get.context!).size.width,
+                  height: 48,
+                  child: ElevatedButton(
+                    onPressed: () async {
+                      if (Platform.isAndroid) {
+                        final url =
+                            'https://play.google.com/store/apps/details?id=com.snowlive';
+                        await otherShare(contents: url);
+                      } else if (Platform.isIOS) {
+                        final url =
+                            'https://apps.apple.com/us/app/apple-store/id6444235991';
+                        await otherShare(contents: url);
+                      }
+                    },
+                    child: Text(
+                      '업데이트하기',
+                      style: SDSTextStyle.bold.copyWith(
+                        fontSize: 16,
+                        color: SDSColor.snowliveWhite,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: SDSColor.snowliveBlue,
+                      elevation: 0,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
-        ))
-    );
+          barrierDismissible: false,
+        );
+      }
+    } catch (e) {
+      print('업데이트 확인 중 오류 발생: $e');
+    }
+  }
+
+  Future<String> getCurrentAppVersion() async {
+    try {
+      final PackageInfo packageInfo = await PackageInfo.fromPlatform();
+      return packageInfo.version;
+    } catch (e) {
+      print('앱 버전을 가져오는 동안 오류 발생: $e');
+      return ''; // 오류 발생 시 기본값 또는 빈 문자열 반환
+    }
+  }
+
+  Future<String> getLatestAppVersion() async {
+    DocumentReference<Map<String, dynamic>> documentReference =
+    ref.collection('version').doc('1');
+    final DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
+    await documentReference.get();
+    String latestAppVersion = documentSnapshot.get('version');
+    return latestAppVersion;
+  }
+
+  Future<bool> getUseUpdatePopup() async {
+    DocumentReference<Map<String, dynamic>> documentReference =
+    ref.collection('version').doc('1');
+    final DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
+    await documentReference.get();
+    bool useUpdatePopup = documentSnapshot.get('useUpdatePopup');
+    return useUpdatePopup;
+  }
+
+  Future<void> getBanner(String accountName) async {
+    Stream<DocumentSnapshot<Map<String, dynamic>>> stream = FirebaseFirestore.instance
+        .collection('banner')
+        .doc(accountName)
+        .snapshots();
+
+    switch (accountName) {
+      case 'home':
+        bannerStream_home.value = stream;
+        break;
+      case 'fleaMarket':
+        bannerStream_fleaMarket.value = stream;
+        break;
+      case 'moreTab':
+        bannerStream_moreTab.value = stream;
+        break;
+      case 'community':
+        bannerStream_community.value = stream;
+        break;
+      case 'community_detail':
+        bannerStream_community_detail.value = stream;
+        break;
+      case 'ranking':
+        bannerStream_ranking.value = stream;
+        break;
+      default:
+        print('알 수 없는 accountName: $accountName');
+    }
   }
 }

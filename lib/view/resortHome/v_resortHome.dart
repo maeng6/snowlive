@@ -240,7 +240,7 @@ class _ResortHomeViewState extends State<ResortHomeView> with
                                                 style: SDSTextStyle.bold.copyWith(fontSize: 18, height: 1.4, color: SDSColor.gray900),
                                               ),
                                               Text(
-                                                '${_resortHomeViewModel.resortHomeModel.todayTotalScore.toInt()}',
+                                                '${_resortHomeViewModel.resortHomeModel.todayTotalScore.round()}',
                                                 style: SDSTextStyle.bold.copyWith(fontSize: 18, height: 1.4, color: SDSColor.snowliveBlue),
                                               ),
                                               Text(
@@ -500,7 +500,7 @@ class _ResortHomeViewState extends State<ResortHomeView> with
                         label: (_userViewModel.user.within_boundary == true)
                             ? Text(
                           (_resortHomeViewModel.resort_info['fullname'] != null)
-                              ? '${_resortHomeViewModel.resortHomeModel.todayTotalScore.toInt()}점 획득'
+                              ? '${_resortHomeViewModel.resortHomeModel.todayTotalScore.round()}점 획득'
                               : '버튼을 눌러 라이브 종료 후 다시 시작해주세요',
                           style: SDSTextStyle.extraBold.copyWith(
                             fontSize: 16,
