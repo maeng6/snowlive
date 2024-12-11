@@ -233,6 +233,7 @@ class ResortHomeViewModel extends GetxController {
             } else {
               print('포그라운드 경계 외부');
               await stopForegroundLocationService();
+              await stopBackgroundLocationService();
               await liveOff({"user_id": user_id}, user_id);
             }
           });
