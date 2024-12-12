@@ -12,6 +12,7 @@ import 'package:com.snowlive/model/m_weatherModel.dart';
 import 'package:com.snowlive/util/util_1.dart';
 import 'package:com.snowlive/viewmodel/vm_user.dart';
 import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
+import 'package:com.snowlive/widget/w_popUp_bottomSheet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_background_geolocation/flutter_background_geolocation.dart';
@@ -112,7 +113,7 @@ class ResortHomeViewModel extends GetxController {
     await getRankingGuideUrl();
     await fetchResortHome(_userViewModel.user.user_id!);
     await fetchWeatherModel();
-    await checkForUpdate();
+    await checkForPopUp();
     await fetchTreasureHuntNum();
   }
 
@@ -968,7 +969,7 @@ class ResortHomeViewModel extends GetxController {
     }
   }
 
-  Future<void> checkForUpdate() async {
+  Future<void> checkForPopUp() async {
     try {
       final currentVersion = await getCurrentAppVersion();
       final latestVersion = await getLatestAppVersion();
@@ -1069,6 +1070,8 @@ class ResortHomeViewModel extends GetxController {
           barrierDismissible: false,
         );
       }
+      bottomPopUp();
+      print('바텀팝업');
     } catch (e) {
       print('업데이트 확인 중 오류 발생: $e');
     }

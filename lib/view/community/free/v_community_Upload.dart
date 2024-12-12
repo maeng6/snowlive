@@ -358,71 +358,6 @@ class CommunityBulletinUpload extends StatelessWidget {
                                   ],
                                 ),
                               ),
-                              (_communityBulletinListViewModel.tapName == '게시판')
-                                  ? Container()
-                                  : Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                                child: Column(
-                                  children: [
-                                    Padding(
-                                      padding: const EdgeInsets.only(top: 32, left: 4),
-                                      child: Row(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Text('SNS URL', style: SDSTextStyle.regular.copyWith(
-                                              fontSize: 13,
-                                              color: SDSColor.gray900
-                                          ),),
-                                        ],
-                                      ),
-                                    ),
-                                    SizedBox(height: 8),
-                                    TextFormField(
-                                      focusNode: urlFocusNode,
-                                      textAlignVertical: TextAlignVertical.center,
-                                      cursorColor: SDSColor.snowliveBlue,
-                                      cursorHeight: 16,
-                                      cursorWidth: 2,
-                                      autovalidateMode: AutovalidateMode.onUserInteraction,
-                                      controller: null,
-                                      style: SDSTextStyle.regular.copyWith(fontSize: 15),
-                                      strutStyle: StrutStyle(fontSize: 14, leading: 0),
-                                      decoration: InputDecoration(
-                                        floatingLabelBehavior: FloatingLabelBehavior.never,
-                                        errorMaxLines: 2,
-                                        errorStyle: SDSTextStyle.regular.copyWith(fontSize: 12, color: SDSColor.red),
-                                        labelStyle: SDSTextStyle.regular.copyWith(color: SDSColor.gray400, fontSize: 14),
-                                        hintStyle: SDSTextStyle.regular.copyWith(color: SDSColor.gray400, fontSize: 14),
-                                        hintText: 'URL',
-                                        contentPadding: EdgeInsets.only(top: 10, bottom: 10, left: 12, right: 50),
-                                        fillColor: SDSColor.gray50,
-                                        hoverColor: SDSColor.snowliveBlue,
-                                        filled: true,
-                                        focusColor: SDSColor.snowliveBlue,
-                                        border: OutlineInputBorder(
-                                          borderSide: BorderSide(color: SDSColor.gray50),
-                                          borderRadius: BorderRadius.circular(6),
-                                        ),
-                                        errorBorder: OutlineInputBorder(
-                                          borderSide: BorderSide(color: SDSColor.red, strokeAlign: BorderSide.strokeAlignInside, width: 1.5),
-                                        ),
-                                        focusedBorder: OutlineInputBorder(
-                                          borderSide: BorderSide(color: SDSColor.snowliveBlue, strokeAlign: BorderSide.strokeAlignInside, width: 1.5),
-                                        ),
-                                        enabledBorder: OutlineInputBorder(
-                                          borderSide: BorderSide(color: Colors.transparent),
-                                          borderRadius: BorderRadius.circular(6),
-                                        ),
-                                      ),
-                                      validator: (val) {
-                                      },
-                                    ),
-                                  ],
-                                ),
-                              ),
-
-
-
                               Padding(
                                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                                 child: Column(
@@ -527,7 +462,7 @@ class CommunityBulletinUpload extends StatelessWidget {
                                     ? await _communityBulletinListViewModel.fetchAllCommunity()
                                     :await _communityBulletinListViewModel.fetchEventCommunity();
                                 if(_communityBulletinListViewModel.tapName=='행사·클리닉')
-                                await _alarmCenterViewModel.updateEventTabNotice(_userViewModel.user.user_id, true);
+                                  await _alarmCenterViewModel.updateEventTabNotice(_userViewModel.user.user_id, true);
                               }
 
 
