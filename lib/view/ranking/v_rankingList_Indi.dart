@@ -195,7 +195,12 @@ class RankingIndiView extends StatelessWidget {
                                                   width: 80,
                                                   height: 80,
                                                   decoration: BoxDecoration(
-                                                    color: SDSColor.blue50,
+                                                    color: Color(
+                                                      int.parse(
+                                                        'FF' + _rankingListViewModel.rankingListIndivMy_view!.secondaryColor!,
+                                                        radix: 16,
+                                                      ),
+                                                    ),
                                                     borderRadius: BorderRadius.circular(16),
                                                   ),
                                                   padding: EdgeInsets.all(8),
@@ -203,6 +208,7 @@ class RankingIndiView extends StatelessWidget {
                                                     offset: Offset(0, 0),
                                                     child: GestureDetector(
                                                       onTap:(){
+                                                        if(_rankingListViewModel.rankingListIndivMy_view?.overallTotalScore != 0)
                                                         showDialog(
                                                           barrierColor: Colors.black.withOpacity(0.85),
                                                           context: context,
@@ -241,7 +247,7 @@ class RankingIndiView extends StatelessWidget {
                                                                       offset: Offset(0, -40),
                                                                       child: Column(
                                                                         children: [
-                                                                          Text('${_rankingListViewModel.rankingListIndivMy_view?.tierNameKor}',
+                                                                          Text('${_rankingListViewModel.rankingListIndivMy_view?.tierNameEng}',
                                                                             style: GoogleFonts.bebasNeue(
                                                                               color: SDSColor.snowliveWhite,
                                                                               fontSize: 36,
@@ -276,14 +282,17 @@ class RankingIndiView extends StatelessWidget {
                                                                 switch (state.extendedImageLoadState) {
                                                                   case LoadState.loading:
                                                                   // 로딩 중일 때 로딩 인디케이터를 표시
-                                                                    return Center(
-                                                                      child: Container(
-                                                                        width: 24,
-                                                                        height: 24,
-                                                                        child: CircularProgressIndicator(
-                                                                          strokeWidth: 4,
-                                                                          backgroundColor: SDSColor.gray100,
-                                                                          color: SDSColor.gray300.withOpacity(0.6),
+                                                                    return Padding(
+                                                                      padding: EdgeInsets.only(top: 16),
+                                                                      child: Center(
+                                                                        child: Container(
+                                                                          width: 24,
+                                                                          height: 24,
+                                                                          child: CircularProgressIndicator(
+                                                                            strokeWidth: 4,
+                                                                            backgroundColor: SDSColor.blue100,
+                                                                            color: SDSColor.blue300.withOpacity(0.6),
+                                                                          ),
                                                                         ),
                                                                       ),
                                                                     );
@@ -293,7 +302,7 @@ class RankingIndiView extends StatelessWidget {
                                                                   case LoadState.failed:
                                                                   // 로딩이 실패했을 때 대체 이미지 또는 다른 처리
                                                                     return Padding(
-                                                                      padding: EdgeInsets.symmetric(horizontal: 2),
+                                                                      padding: EdgeInsets.only(left: 2, right: 2, top: 16),
                                                                       child: Image.asset(
                                                                         'assets/imgs/logos/snowlive_logo_new.png', // 대체 이미지 경로
                                                                         width: 24,
@@ -308,6 +317,7 @@ class RankingIndiView extends StatelessWidget {
                                                     ),
                                                   ),
                                                 ),
+                                                if(_rankingListViewModel.rankingListIndivMy_view?.tierNameKor != '')
                                                 Positioned(
                                                   right: 0,
                                                   left: 0,
@@ -316,7 +326,7 @@ class RankingIndiView extends StatelessWidget {
                                                     child: Text('${_rankingListViewModel.rankingListIndivMy_view?.tierNameKor}',
                                                       style: SDSTextStyle.bold.copyWith(
                                                           fontSize: 12,
-                                                          color: SDSColor.sBlue700.withOpacity(0.4)
+                                                          color: SDSColor.gray900.withOpacity(0.3)
                                                       ),),
                                                   ),
                                                 )

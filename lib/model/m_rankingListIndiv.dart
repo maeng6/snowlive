@@ -57,8 +57,8 @@ class MyRankingInfo {
     overallTierIconUrl = json['overall_tier_icon_url'] ?? '';
     resortTotalScore = json['resort_total_score']?.round() ?? 0;
     resortRank = json['resort_rank'] ?? 0;
-    primaryColor = json['primary_color'] ?? '';
-    secondaryColor = json['secondary_color'] ?? '';
+    primaryColor = json['primary_color'] ?? '3D83ED';
+    secondaryColor = json['secondary_color'] ?? 'F0F6FF';
     tierNameKor = json['tier_name_kor'] ?? '';
     tierNameEng = json['tier_name_eng'] ?? '';
   }
@@ -129,8 +129,8 @@ class RankingUser {
     overallTierIconUrl = json['overall_tier_icon_url'];
     resortTotalScore = json['resort_total_score']?.round();
     resortRank = json['resort_rank'];
-    primaryColor = json['primary_color'] ?? '';
-    secondaryColor = json['secondary_color'] ?? '';
+    primaryColor = json['primary_color'] ?? '3D83ED';
+    secondaryColor = json['secondary_color'] ?? 'F0F6FF';
     tierNameKor = json['tier_name_kor'] ?? '';
     tierNameEng = json['tier_name_eng'] ?? '';
   }

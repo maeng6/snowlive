@@ -104,10 +104,10 @@ class SeasonRankingInfo {
     overallRank = 0;
     overallRankPercentage = 0.0;
     overallTierIconUrl = '';
-    primaryColor = '#FFFFFF';
-    secondaryColor = '#000000';
-    tierNameKor = 'N/A';
-    tierNameEng = 'N/A'; // 기본값 추가
+    primaryColor = '3D83ED';
+    secondaryColor = 'F0F6FF';
+    tierNameKor = '';
+    tierNameEng = ''; // 기본값 추가
   }
 
   // fromJson 생성자

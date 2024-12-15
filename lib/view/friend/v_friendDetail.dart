@@ -852,7 +852,7 @@ class _FriendDetailViewState extends State<FriendDetailView> {
                                                                                               offset: Offset(0, -40),
                                                                                               child: Column(
                                                                                                 children: [
-                                                                                                  Text('${_friendDetailViewModel.friendDetailModel.seasonRankingInfo.tierNameKor}',
+                                                                                                  Text('${_friendDetailViewModel.friendDetailModel.seasonRankingInfo.tierNameEng}',
                                                                                                     style: GoogleFonts.bebasNeue(
                                                                                                       color: SDSColor.snowliveWhite,
                                                                                                       fontSize: 36,
