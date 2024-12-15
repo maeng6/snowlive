@@ -847,13 +847,13 @@ class _FriendDetailViewState extends State<FriendDetailView> {
                                                                                               offset: Offset(0, -40),
                                                                                               child: Column(
                                                                                                 children: [
-                                                                                                  Text('GRAND MASTER',
+                                                                                                  Text('${_friendDetailViewModel.friendDetailModel.seasonRankingInfo.tierNameKor}',
                                                                                                     style: GoogleFonts.bebasNeue(
                                                                                                       color: SDSColor.snowliveWhite,
                                                                                                       fontSize: 36,
                                                                                                     ),
                                                                                                   ),
-                                                                                                  Text('그랜드 마스터',
+                                                                                                  Text('${_friendDetailViewModel.friendDetailModel.seasonRankingInfo.tierNameKor}',
                                                                                                     style: SDSTextStyle.bold.copyWith(
                                                                                                       color: SDSColor.snowliveWhite.withOpacity(0.5),
                                                                                                       fontSize: 16,
@@ -910,7 +910,7 @@ class _FriendDetailViewState extends State<FriendDetailView> {
                                                                         ),
                                                                         Transform.translate(
                                                                           offset: Offset(0, -6),
-                                                                          child: Text('골드',
+                                                                          child: Text('${_friendDetailViewModel.friendDetailModel.seasonRankingInfo.tierNameKor}',
                                                                             style: SDSTextStyle.bold.copyWith(
                                                                                 fontSize: 13,
                                                                                 color: SDSColor.snowliveBlack.withOpacity(0.4)

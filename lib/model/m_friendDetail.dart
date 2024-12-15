@@ -86,7 +86,7 @@ class SeasonRankingInfo {
   late double overallTotalScore;
   late int overallTotalCount;
   late int overallRank;
-  late int timeInfoMaxCount;
+  late int timeInfo_maxCount;
   late double overallRankPercentage;
   late String overallTierIconUrl;
   late String primaryColor; // 추가된 필드
@@ -97,7 +97,7 @@ class SeasonRankingInfo {
   SeasonRankingInfo() {
     countInfo = [];
     timeInfo = {};
-    timeInfoMaxCount = 0;
+    timeInfo_maxCount = 0;
     overallTotalScore = 0.0;
     overallTotalCount = 0;
     overallRank = 0;
@@ -124,7 +124,7 @@ class SeasonRankingInfo {
       "20-22": json['time_info'][7],
       "22-00": json['time_info'][8],
     };
-    timeInfoMaxCount = timeInfo.values.reduce((a, b) => a > b ? a : b);
+    timeInfo_maxCount = timeInfo.values.reduce((a, b) => a > b ? a : b);
     overallTotalScore = json['overall_total_score'];
     overallTotalCount = json['overall_total_count'];
     overallRank = json['overall_rank'];
@@ -140,22 +140,22 @@ class CalendarInfo {
   late String date;
   late List<SlopeCountInfo> dailyInfo;
   late Map<String, dynamic> timeInfo;
-  late int dailyTotalCount;
-  late int timeInfoMaxCount;
+  late int daily_total_count;
+  late int timeInfo_maxCount;
 
   // 기본 생성자
   CalendarInfo() {
     date = '';
     dailyInfo = [];
     timeInfo = {};
-    dailyTotalCount = 0;
-    timeInfoMaxCount = 0;
+    daily_total_count = 0;
+    timeInfo_maxCount=0;
   }
 
   // fromJson 생성자
   CalendarInfo.fromJson(Map<String, dynamic> json) {
     date = json['date'];
-    dailyTotalCount = json['daily_total_count'];
+    daily_total_count = json['daily_total_count'];
     dailyInfo = (json['daily_info'] as List)
         .map((e) => SlopeCountInfo.fromJson(e))
         .toList();
@@ -170,7 +170,7 @@ class CalendarInfo {
       "20-22": json['time_info'][7],
       "22-00": json['time_info'][8],
     };
-    timeInfoMaxCount = timeInfo.values.reduce((a, b) => a > b ? a : b);
+    timeInfo_maxCount = timeInfo.values.reduce((a, b) => a > b ? a : b);
   }
 }
 
