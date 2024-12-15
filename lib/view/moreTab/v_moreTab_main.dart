@@ -60,7 +60,7 @@ class MoreTabMainView extends StatelessWidget {
         body: Stack(
           children: [
             Padding(
-              padding: EdgeInsets.only(bottom: 72),
+              padding: EdgeInsets.only(bottom: 60),
               child: Container(
                 color: Colors.white,
                 child: ListView(

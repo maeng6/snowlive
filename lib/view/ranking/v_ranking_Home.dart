@@ -7,6 +7,7 @@ import 'package:com.snowlive/view/ranking/v_rankingList_crew.dart';
 import 'package:com.snowlive/viewmodel/ranking/vm_rankingList.dart';
 import 'package:com.snowlive/viewmodel/vm_user.dart';
 import 'package:com.snowlive/widget/w_floatingButton_ranking.dart';
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -107,39 +108,118 @@ class RankingHomeView extends StatelessWidget {
                         ),
                       ],
                     ),
-                    Padding(
-                      padding: EdgeInsets.only(right: 14),
-                      child:
-                      GestureDetector(
-                        onTap: (){
-                          Get.toNamed(AppRoutes.rankingHistoryHome);
-                        } ,
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            IconButton(
-                              highlightColor: Colors.transparent,
-                              onPressed: () async{
-                                HapticFeedback.lightImpact();
-                                Get.toNamed(AppRoutes.rankingHistoryHome);
-                              },
-                              icon: Image.asset(
-                                'assets/imgs/icons/icon_data_history.png',
-                                width: 26,
-                                height: 26,
+                    Row(
+                      children: [
+                        GestureDetector(
+                          onTap: (){
+                            Get.toNamed(AppRoutes.rankingHistoryHome);
+                          } ,
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              IconButton(
+                                highlightColor: Colors.transparent,
+                                onPressed: () async{
+                                  HapticFeedback.lightImpact();
+                                  Get.toNamed(AppRoutes.rankingHistoryHome);
+                                },
+                                icon: Image.asset(
+                                  'assets/imgs/icons/icon_data_history.png',
+                                  width: 26,
+                                  height: 26,
+                                ),
                               ),
-                            ),
-                            Transform.translate(
-                              offset: Offset(-6, 0),
-                              child: Text('랭킹 기록실',
-                                  style: SDSTextStyle.regular.copyWith(
-                                      fontSize: 14,
-                                      color: SDSColor.gray900
-                                  )),
-                            )
-                          ],
+                              Transform.translate(
+                                offset: Offset(-6, 0),
+                                child: Text('랭킹 기록실',
+                                    style: SDSTextStyle.regular.copyWith(
+                                        fontSize: 14,
+                                        color: SDSColor.gray900
+                                    )),
+                              )
+                            ],
+                          ),
                         ),
-                      ),
+                        Padding(
+                          padding: EdgeInsets.only(right: 4),
+                          child: IconButton(
+                            highlightColor: Colors.transparent,
+                            onPressed: () async{
+                              showModalBottomSheet(
+                                backgroundColor: Colors.white,
+                                context: context,
+                                isScrollControlled: true,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+                                ),
+                                builder: (context) {
+                                  return StatefulBuilder(
+                                    builder: (context, setState) {
+                                      return SafeArea(
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                            color: SDSColor.snowliveWhite,
+                                            borderRadius: BorderRadius.only(
+                                              topRight: Radius.circular(20),
+                                              topLeft: Radius.circular(20),
+                                            ),
+                                          ),
+                                          padding: EdgeInsets.only(top: 16),
+                                          child: SingleChildScrollView(
+                                            child: Column(
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: [
+                                                Center(
+                                                  child: Padding(
+                                                    padding: const EdgeInsets.only(bottom: 20),
+                                                    child: Container(
+                                                      height: 4,
+                                                      width: 36,
+                                                      decoration: BoxDecoration(
+                                                        borderRadius: BorderRadius.circular(10),
+                                                        color: SDSColor.gray200,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                                Center(
+                                                  child: Column(
+                                                    children: [
+                                                      Text(
+                                                        '스노우라이브 랭킹 등급표',
+                                                        style: SDSTextStyle.bold.copyWith(
+                                                          fontSize: 16,
+                                                          color: SDSColor.gray900,
+                                                        ),
+                                                      ),
+                                                      SizedBox(height: 24),
+                                                      ExtendedImage.asset(
+                                                        'assets/imgs/imgs/img_ranking_tierlist.png',
+                                                        width: 300,
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                                SizedBox(height: 30),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  );
+                                },
+                              );
+
+                            },
+                            icon: Image.asset(
+                              'assets/imgs/icons/icon_header_info.png',
+                              width: 26,
+                              height: 26,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),

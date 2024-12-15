@@ -18,6 +18,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:photo_view/photo_view.dart';
 
 class FriendDetailView extends StatefulWidget {
@@ -727,7 +728,7 @@ class _FriendDetailViewState extends State<FriendDetailView> {
                                                     padding: const EdgeInsets.only(left: 16, right: 16),
                                                     child: Container(
                                                       height: 92,
-                                                      padding: const EdgeInsets.only(left: 24, right: 20, top: 18, bottom: 18),
+                                                      padding: const EdgeInsets.only(left: 30),
                                                       decoration: BoxDecoration(
                                                         color: SDSColor.snowliveBlue,
                                                         borderRadius: BorderRadius.circular(16),
@@ -739,7 +740,7 @@ class _FriendDetailViewState extends State<FriendDetailView> {
                                                           Row(
                                                             children: [
                                                               Container(
-                                                                width: _size.width / 3 - 24,
+                                                                width: _size.width / 3 - 30,
                                                                 child: Column(
                                                                   crossAxisAlignment: CrossAxisAlignment.start,
                                                                   mainAxisAlignment: MainAxisAlignment.center,
@@ -764,10 +765,10 @@ class _FriendDetailViewState extends State<FriendDetailView> {
                                                                 ),
                                                               ),
                                                               SizedBox(
-                                                                width: 16,
+                                                                width: 6,
                                                               ),
-                                                              Container(
-                                                                width: _size.width / 3 - 24,
+                                                                Container(
+                                                                width: _size.width / 3 - 30,
                                                                 child: Column(
                                                                   crossAxisAlignment: CrossAxisAlignment.start,
                                                                   mainAxisAlignment: MainAxisAlignment.center,
@@ -794,80 +795,135 @@ class _FriendDetailViewState extends State<FriendDetailView> {
                                                               ),
                                                             ],
                                                           ),
-                                                          Container(
-                                                            width: 66,
-                                                            height: 66,
-                                                            
-                                                            child: Transform.translate(
-                                                              offset: Offset(0, 0),
-                                                              child: GestureDetector(
-                                                                onTap:(){
-                                                                  showDialog(
-                                                                    context: context,
-                                                                    builder: (BuildContext context) {
-                                                                      return Dialog(
-                                                                        backgroundColor: Colors.transparent, // 다이얼로그 배경을 투명하게 설정
-                                                                        child: GestureDetector(
-                                                                          onTap: () {
-                                                                            Navigator.of(context).pop(); // 클릭 시 다이얼로그 닫기
-                                                                          },
-                                                                          child: Center(
-                                                                            child: PhotoView(
-                                                                              imageProvider: ExtendedNetworkImageProvider(
-                                                                                _friendDetailViewModel.friendDetailModel.seasonRankingInfo.overallTierIconUrl, // 이미지 URL 설정
-                                                                                cache: true, // 캐싱 옵션
-                                                                              ),
-                                                                              backgroundDecoration: const BoxDecoration(
-                                                                                color: Colors.transparent, // 배경을 투명으로 설정
-                                                                              ),
-                                                                              minScale: PhotoViewComputedScale.contained, // 최소 확대 비율
-                                                                              maxScale: PhotoViewComputedScale.covered * 7, // 최대 확대 비율
+                                                          Row(
+                                                            children: [
+                                                              Container(
+                                                                width: 1,
+                                                                height: 92,
+                                                                color: Colors.black12,
+                                                              ),
+                                                              Container(
+                                                                decoration: BoxDecoration(
+                                                                  color: Colors.transparent,
+                                                                  borderRadius: BorderRadius.only(topRight: Radius.circular(16), bottomRight: Radius.circular(16)),
+                                                                ),
+                                                                width: 102,
+                                                                height: 92,
+                                                                child: Center(
+                                                                  child: Padding(
+                                                                    padding: EdgeInsets.only(bottom: 2),
+                                                                    child: Column(
+                                                                      mainAxisAlignment: MainAxisAlignment.center,
+                                                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                                                      children: [
+                                                                        Container(
+                                                                          width: 66,
+                                                                          height: 66,
+                                                                          child: Transform.translate(
+                                                                            offset: Offset(0, 0),
+                                                                            child: GestureDetector(
+                                                                              onTap:(){
+                                                                                showDialog(
+                                                                                  barrierColor: Colors.black.withOpacity(0.85),
+                                                                                  context: context,
+                                                                                  builder: (BuildContext context) {
+                                                                                    return Dialog(
+                                                                                      backgroundColor: Colors.transparent, // 다이얼로그 배경을 투명하게 설정
+                                                                                      child: GestureDetector(
+                                                                                        onTap: () {
+                                                                                          Navigator.of(context).pop(); // 클릭 시 다이얼로그 닫기
+                                                                                        },
+                                                                                        child: Column(
+                                                                                          mainAxisAlignment: MainAxisAlignment.center,
+                                                                                          children: [
+                                                                                            Container(
+                                                                                              width: _size.width - 72,
+                                                                                              child: ExtendedImage.network(
+                                                                                                _friendDetailViewModel.friendDetailModel.seasonRankingInfo.overallTierIconUrl, // 이미지 URL 설정
+                                                                                                cache: true,
+                                                                                              ),
+                                                                                            ),
+                                                                                            Transform.translate(
+                                                                                              offset: Offset(0, -40),
+                                                                                              child: Column(
+                                                                                                children: [
+                                                                                                  Text('GRAND MASTER',
+                                                                                                    style: GoogleFonts.bebasNeue(
+                                                                                                      color: SDSColor.snowliveWhite,
+                                                                                                      fontSize: 36,
+                                                                                                    ),
+                                                                                                  ),
+                                                                                                  Text('그랜드 마스터',
+                                                                                                    style: SDSTextStyle.bold.copyWith(
+                                                                                                      color: SDSColor.snowliveWhite.withOpacity(0.5),
+                                                                                                      fontSize: 16,
+                                                                                                    ),
+                                                                                                  )
+                                                                                                ],
+                                                                                              ),
+                                                                                            ),
 
+                                                                                          ],
+                                                                                        ),
+                                                                                      ),
+                                                                                    );
+                                                                                  },
+                                                                                );
+                                                                              },
+                                                                              child: ExtendedImage.network(
+                                                                                  '${_friendDetailViewModel.friendDetailModel.seasonRankingInfo.overallTierIconUrl ?? '등급 없음'}',
+                                                                                  enableMemoryCache: true,
+                                                                                  fit: BoxFit.cover,
+                                                                                  loadStateChanged: (ExtendedImageState state) {
+                                                                                    switch (state.extendedImageLoadState) {
+                                                                                      case LoadState.loading:
+                                                                                      // 로딩 중일 때 로딩 인디케이터를 표시
+                                                                                        return Center(
+                                                                                          child: Container(
+                                                                                            width: 24,
+                                                                                            height: 24,
+                                                                                            child: CircularProgressIndicator(
+                                                                                              strokeWidth: 4,
+                                                                                              backgroundColor: SDSColor.gray100,
+                                                                                              color: SDSColor.gray300.withOpacity(0.6),
+                                                                                            ),
+                                                                                          ),
+                                                                                        );
+                                                                                      case LoadState.completed:
+                                                                                      // 로딩이 완료되었을 때 이미지 반환
+                                                                                        return state.completedWidget;
+                                                                                      case LoadState.failed:
+                                                                                      // 로딩이 실패했을 때 대체 이미지 또는 다른 처리
+                                                                                        return Padding(
+                                                                                          padding: EdgeInsets.symmetric(horizontal: 2),
+                                                                                          child: Image.asset(
+                                                                                            'assets/imgs/logos/snowlive_logo_new.png', // 대체 이미지 경로
+                                                                                            width: 24,
+                                                                                            color: SDSColor.blue200,
+                                                                                          ),
+                                                                                        );
+                                                                                    }
+                                                                                  }
+                                                                              ),
                                                                             ),
                                                                           ),
                                                                         ),
-                                                                      );
-                                                                    },
-                                                                  );
-                                                                },
-                                                                child: ExtendedImage.network(
-                                                                    '${_friendDetailViewModel.friendDetailModel.seasonRankingInfo.overallTierIconUrl ?? '등급 없음'}',
-                                                                    enableMemoryCache: true,
-                                                                    fit: BoxFit.cover,
-                                                                    loadStateChanged: (ExtendedImageState state) {
-                                                                      switch (state.extendedImageLoadState) {
-                                                                        case LoadState.loading:
-                                                                        // 로딩 중일 때 로딩 인디케이터를 표시
-                                                                          return Center(
-                                                                            child: Container(
-                                                                              width: 24,
-                                                                              height: 24,
-                                                                              child: CircularProgressIndicator(
-                                                                                strokeWidth: 4,
-                                                                                backgroundColor: SDSColor.gray100,
-                                                                                color: SDSColor.gray300.withOpacity(0.6),
-                                                                              ),
-                                                                            ),
-                                                                          );
-                                                                        case LoadState.completed:
-                                                                        // 로딩이 완료되었을 때 이미지 반환
-                                                                          return state.completedWidget;
-                                                                        case LoadState.failed:
-                                                                        // 로딩이 실패했을 때 대체 이미지 또는 다른 처리
-                                                                          return Padding(
-                                                                            padding: EdgeInsets.symmetric(horizontal: 2),
-                                                                            child: Image.asset(
-                                                                              'assets/imgs/logos/snowlive_logo_new.png', // 대체 이미지 경로
-                                                                              width: 24,
-                                                                              color: SDSColor.blue200,
-                                                                            ),
-                                                                          );
-                                                                      }
-                                                                    }
+                                                                        Transform.translate(
+                                                                          offset: Offset(0, -6),
+                                                                          child: Text('골드',
+                                                                            style: SDSTextStyle.bold.copyWith(
+                                                                                fontSize: 13,
+                                                                                color: SDSColor.snowliveBlack.withOpacity(0.4)
+                                                                            ),),
+                                                                        ),
+                                                                      ],
+                                                                    ),
+                                                                  ),
                                                                 ),
                                                               ),
-                                                            ),
+                                                            ],
                                                           ),
+
                                                         ],
                                                       ),
                                                     ),

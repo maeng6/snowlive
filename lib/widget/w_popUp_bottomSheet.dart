@@ -7,6 +7,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../data/snowliveDesignStyle.dart';
+
 final ref = FirebaseFirestore.instance;
 final auth = FirebaseAuth.instance;
 
@@ -141,88 +143,96 @@ Widget _buildBottomSheetContent({
     onWillPop: () async => false,
     child: Container(
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(12),
-          topRight: Radius.circular(12),
-        ),
+        borderRadius: BorderRadius.only(topLeft: Radius.circular(16), topRight: Radius.circular(16)),
+        color: SDSColor.snowliveWhite,
       ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Stack(
-            children: [
-              Container(
-                height: Get.width,
-                width: Get.width,
-                child: ExtendedImage.network(
-                  imageUrl,
-                  cacheHeight: 500,
-                  fit: BoxFit.cover,
-                ),
-              ),
-              Positioned(
-                top: 14,
-                right: 14,
-                child: GestureDetector(
-                  onTap: (){
-                    Get.back();
-                  },
-                  child: Image.asset(
-                    'assets/imgs/icons/icon_profile_delete.png',
-                    fit: BoxFit.cover,
-                    width: 24,
-                    height: 24,
+      child: SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Stack(
+              children: [
+                Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.only(topLeft: Radius.circular(16), topRight: Radius.circular(16)),
                   ),
-                ),
-              ),
-            ],
-          ),
-          Row(
-            children: [
-              Expanded(
-                child: ElevatedButton(
-                  onPressed: onDismiss,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.white,
-                    elevation: 0,
-                  ),
-                  child: Text(
-                    '다시 보지 않기',
-                    style: TextStyle(
-                      color: Color(0xFF949494),
-                      fontWeight: FontWeight.normal,
-                      fontSize: 16,
+                  height: Get.width,
+                  width: Get.width,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.only(topLeft: Radius.circular(16), topRight: Radius.circular(16)),
+                    child: ExtendedImage.network(
+                      imageUrl,
+                      cacheHeight: 800,
+                      fit: BoxFit.cover,
                     ),
                   ),
                 ),
-              ),
-              Container(
-                height: 40,
-                width: 1,
-                color: Color(0xFFDEDEDE),
-              ),
-              Expanded(
-                child: ElevatedButton(
-                  onPressed: onAction,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.white,
-                    elevation: 0,
-                  ),
-                  child: Text(
-                    buttonText,
-                    style: TextStyle(
-                      color: Color(0xFF111111),
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16,
+                Positioned(
+                  top: 16,
+                  right: 16,
+                  child: GestureDetector(
+                    onTap: (){
+                      Get.back();
+                    },
+                    child: Image.asset(
+                      'assets/imgs/icons/icon_profile_delete.png',
+                      fit: BoxFit.cover,
+                      width: 22,
+                      height: 22,
                     ),
                   ),
                 ),
+              ],
+            ),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 6),
+              child: Container(
+                height: 56,
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: ElevatedButton(
+                        onPressed: onDismiss,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.white,
+                          elevation: 0,
+                        ),
+                        child: Text(
+                          '다시 보지 않기',
+                          style: SDSTextStyle.regular.copyWith(
+                            color: SDSColor.gray500,
+                            fontSize: 15,
+                          ),
+                        ),
+                      ),
+                    ),
+                    Container(
+                      height: 20,
+                      width: 1,
+                      color: Color(0xFFDEDEDE),
+                    ),
+                    Expanded(
+                      child: ElevatedButton(
+                        onPressed: onAction,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.white,
+                          elevation: 0,
+                        ),
+                        child: Text(
+                          buttonText,
+                          style: SDSTextStyle.bold.copyWith(
+                            color: SDSColor.gray900,
+                            fontSize: 15,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ],
-          ),
-          SizedBox(height: 28),
-        ],
+            ),
+          ],
+        ),
       ),
     ),
   );

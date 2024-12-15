@@ -731,7 +731,7 @@ class _ResortHomeViewState extends State<ResortHomeView> with
                                               controller: scrollController,
                                               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                                                 crossAxisCount: 4, // 4개의 열로 표시
-                                                childAspectRatio: 2 / 3.2, // 너비와 높이 비율 조정
+                                                childAspectRatio: 2 / 3, // 너비와 높이 비율 조정
                                               ),
                                               itemCount: _resortHomeViewModel.bestFriendList.length,
                                               itemBuilder: (context, index) {
