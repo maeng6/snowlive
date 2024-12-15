@@ -1,12 +1,19 @@
 class RankingListIndivResponse {
   MyRankingInfo? myRankingInfo;
-  Results? results; // Results 클래스를 사용하여 results를 저장
+  Results? results;
 
   RankingListIndivResponse({this.myRankingInfo, this.results});
 
   RankingListIndivResponse.fromJson(Map<String, dynamic> json) {
     myRankingInfo = MyRankingInfo.fromJson(json['my_ranking_info']);
-    results = Results.fromJson(json['results']); // results를 Results 클래스로 변환
+    results = Results.fromJson(json['results']);
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'my_ranking_info': myRankingInfo?.toJson(),
+      'results': results?.toJson(),
+    };
   }
 }
 
@@ -20,6 +27,9 @@ class MyRankingInfo {
   int? overallRank;
   double? overallRankPercentage;
   String? overallTierIconUrl;
+  String? primaryColor; // 추가된 필드
+  String? secondaryColor; // 추가된 필드
+  String? tierNameKor; // 추가된 필드
   int? resortTotalScore;
   int? resortRank;
 
@@ -33,22 +43,47 @@ class MyRankingInfo {
     this.overallRank,
     this.overallRankPercentage,
     this.overallTierIconUrl,
+    this.primaryColor, // 추가된 필드
+    this.secondaryColor, // 추가된 필드
+    this.tierNameKor, // 추가된 필드
     this.resortTotalScore,
     this.resortRank,
   });
 
   MyRankingInfo.fromJson(Map<String, dynamic> json) {
-    userId = json['user_id'] ; // 기본값 0
-    displayName = json['display_name'] ; // 기본값 'Unknown'
-    profileImageUrlUser = json['profile_image_url_user'] ?? ''; // 빈 문자열
-    resortNickname = json['resort_nickname'] ?? '-'; // 기본값 'N/A'
-    crewName = json['crew_name'] ?? ''; // 기본값 'No Crew'
-    overallTotalScore = json['overall_total_score']?.round() ?? 0; // 기본값 0
-    overallRank = json['overall_rank'] ?? 0; // 기본값 0
-    overallRankPercentage = json['overall_rank_percentage']?.toDouble() ?? 0.0; // 기본값 0.0
-    overallTierIconUrl = json['overall_tier_icon_url'] ?? ''; // 빈 문자열
-    resortTotalScore = json['resort_total_score']?.round() ?? 0; // 기본값 0
-    resortRank = json['resort_rank'] ?? 0; // 기본값 0
+    userId = json['user_id'];
+    displayName = json['display_name'];
+    profileImageUrlUser = json['profile_image_url_user'] ?? '';
+    resortNickname = json['resort_nickname'] ?? '-';
+    crewName = json['crew_name'] ?? '';
+    overallTotalScore = json['overall_total_score']?.round() ?? 0;
+    overallRank = json['overall_rank'] ?? 0;
+    overallRankPercentage = json['overall_rank_percentage']?.toDouble() ?? 0.0;
+    overallTierIconUrl = json['overall_tier_icon_url'] ?? '';
+    primaryColor = json['primary_color'] ?? '#FFFFFF'; // 기본값 추가
+    secondaryColor = json['secondary_color'] ?? '#000000'; // 기본값 추가
+    tierNameKor = json['tier_name_kor'] ?? 'N/A'; // 기본값 추가
+    resortTotalScore = json['resort_total_score']?.round() ?? 0;
+    resortRank = json['resort_rank'] ?? 0;
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'user_id': userId,
+      'display_name': displayName,
+      'profile_image_url_user': profileImageUrlUser,
+      'resort_nickname': resortNickname,
+      'crew_name': crewName,
+      'overall_total_score': overallTotalScore,
+      'overall_rank': overallRank,
+      'overall_rank_percentage': overallRankPercentage,
+      'overall_tier_icon_url': overallTierIconUrl,
+      'primary_color': primaryColor,
+      'secondary_color': secondaryColor,
+      'tier_name_kor': tierNameKor,
+      'resort_total_score': resortTotalScore,
+      'resort_rank': resortRank,
+    };
   }
 }
 
@@ -56,10 +91,10 @@ class Results {
   int? count;
   String? next;
   String? previous;
-  List<RankingUser> rankingUsers; // 기본값을 빈 리스트로 설정
+  List<RankingUser> rankingUsers;
 
   Results({this.count, this.next, this.previous, List<RankingUser>? rankingUsers})
-      : rankingUsers = rankingUsers ?? []; // rankingUsers를 빈 리스트로 초기화
+      : rankingUsers = rankingUsers ?? [];
 
   Results.fromJson(Map<String, dynamic> json)
       : count = json['count'],
@@ -67,7 +102,16 @@ class Results {
         previous = json['previous'],
         rankingUsers = (json['results'] as List<dynamic>?)
             ?.map((v) => RankingUser.fromJson(v))
-            .toList() ?? []; // JSON에서 results를 가져와 List로 변환
+            .toList() ?? [];
+
+  Map<String, dynamic> toJson() {
+    return {
+      'count': count,
+      'next': next,
+      'previous': previous,
+      'results': rankingUsers.map((rankingUser) => rankingUser.toJson()).toList(),
+    };
+  }
 }
 
 class RankingUser {
@@ -80,6 +124,9 @@ class RankingUser {
   int? overallRank;
   double? overallRankPercentage;
   String? overallTierIconUrl;
+  String? primaryColor; // 추가된 필드
+  String? secondaryColor; // 추가된 필드
+  String? tierNameKor; // 추가된 필드
   int? resortTotalScore;
   int? resortRank;
 
@@ -93,6 +140,9 @@ class RankingUser {
     this.overallRank,
     this.overallRankPercentage,
     this.overallTierIconUrl,
+    this.primaryColor, // 추가된 필드
+    this.secondaryColor, // 추가된 필드
+    this.tierNameKor, // 추가된 필드
     this.resortTotalScore,
     this.resortRank,
   });
@@ -107,7 +157,29 @@ class RankingUser {
     overallRank = json['overall_rank'];
     overallRankPercentage = json['overall_rank_percentage']?.toDouble();
     overallTierIconUrl = json['overall_tier_icon_url'];
+    primaryColor = json['primary_color'] ?? '#FFFFFF'; // 기본값 추가
+    secondaryColor = json['secondary_color'] ?? '#000000'; // 기본값 추가
+    tierNameKor = json['tier_name_kor'] ?? 'N/A'; // 기본값 추가
     resortTotalScore = json['resort_total_score']?.round();
     resortRank = json['resort_rank'];
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'user_id': userId,
+      'display_name': displayName,
+      'profile_image_url_user': profileImageUrlUser,
+      'resort_nickname': resortNickname,
+      'crew_name': crewName,
+      'overall_total_score': overallTotalScore,
+      'overall_rank': overallRank,
+      'overall_rank_percentage': overallRankPercentage,
+      'overall_tier_icon_url': overallTierIconUrl,
+      'primary_color': primaryColor,
+      'secondary_color': secondaryColor,
+      'tier_name_kor': tierNameKor,
+      'resort_total_score': resortTotalScore,
+      'resort_rank': resortRank,
+    };
   }
 }

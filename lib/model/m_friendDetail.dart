@@ -86,20 +86,26 @@ class SeasonRankingInfo {
   late double overallTotalScore;
   late int overallTotalCount;
   late int overallRank;
-  late int timeInfo_maxCount;
+  late int timeInfoMaxCount;
   late double overallRankPercentage;
   late String overallTierIconUrl;
+  late String primaryColor; // 추가된 필드
+  late String secondaryColor; // 추가된 필드
+  late String tierNameKor; // 추가된 필드
 
   // 기본 생성자
   SeasonRankingInfo() {
     countInfo = [];
     timeInfo = {};
-    timeInfo_maxCount = 0;
+    timeInfoMaxCount = 0;
     overallTotalScore = 0.0;
     overallTotalCount = 0;
     overallRank = 0;
     overallRankPercentage = 0.0;
     overallTierIconUrl = '';
+    primaryColor = '#FFFFFF';
+    secondaryColor = '#000000';
+    tierNameKor = 'N/A';
   }
 
   // fromJson 생성자
@@ -118,12 +124,15 @@ class SeasonRankingInfo {
       "20-22": json['time_info'][7],
       "22-00": json['time_info'][8],
     };
-    timeInfo_maxCount = timeInfo.values.reduce((a, b) => a > b ? a : b);
+    timeInfoMaxCount = timeInfo.values.reduce((a, b) => a > b ? a : b);
     overallTotalScore = json['overall_total_score'];
     overallTotalCount = json['overall_total_count'];
     overallRank = json['overall_rank'];
     overallRankPercentage = json['overall_rank_percentage'];
-    overallTierIconUrl = json['overall_tier_icon_url']??'';
+    overallTierIconUrl = json['overall_tier_icon_url'] ?? '';
+    primaryColor = json['primary_color'] ?? '#FFFFFF';
+    secondaryColor = json['secondary_color'] ?? '#000000';
+    tierNameKor = json['tier_name_kor'] ?? 'N/A';
   }
 }
 
@@ -131,22 +140,22 @@ class CalendarInfo {
   late String date;
   late List<SlopeCountInfo> dailyInfo;
   late Map<String, dynamic> timeInfo;
-  late int daily_total_count;
-  late int timeInfo_maxCount;
+  late int dailyTotalCount;
+  late int timeInfoMaxCount;
 
   // 기본 생성자
   CalendarInfo() {
     date = '';
     dailyInfo = [];
     timeInfo = {};
-    daily_total_count = 0;
-    timeInfo_maxCount=0;
+    dailyTotalCount = 0;
+    timeInfoMaxCount = 0;
   }
 
   // fromJson 생성자
   CalendarInfo.fromJson(Map<String, dynamic> json) {
     date = json['date'];
-    daily_total_count = json['daily_total_count'];
+    dailyTotalCount = json['daily_total_count'];
     dailyInfo = (json['daily_info'] as List)
         .map((e) => SlopeCountInfo.fromJson(e))
         .toList();
@@ -161,7 +170,7 @@ class CalendarInfo {
       "20-22": json['time_info'][7],
       "22-00": json['time_info'][8],
     };
-    timeInfo_maxCount = timeInfo.values.reduce((a, b) => a > b ? a : b);
+    timeInfoMaxCount = timeInfo.values.reduce((a, b) => a > b ? a : b);
   }
 }
 
