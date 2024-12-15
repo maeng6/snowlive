@@ -133,7 +133,7 @@ class SeasonRankingInfo {
     overallRankPercentage = json['overall_rank_percentage'];
     overallTierIconUrl = json['overall_tier_icon_url'] ?? '';
     primaryColor = json['primary_color'] ?? '3D83ED';
-    secondaryColor = json['secondary_color'] ?? '3D83ED';
+    secondaryColor = json['secondary_color'] ?? 'F0F6FF';
     tierNameKor = json['tier_name_kor'] ?? '';
     tierNameEng = json['tier_name_eng']?.toUpperCase() ?? ''; // 대문자로 변환하여 저장
   }
