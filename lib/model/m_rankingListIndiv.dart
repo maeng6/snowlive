@@ -1,19 +1,12 @@
 class RankingListIndivResponse {
   MyRankingInfo? myRankingInfo;
-  Results? results;
+  Results? results; // Results 클래스를 사용하여 results를 저장
 
   RankingListIndivResponse({this.myRankingInfo, this.results});
 
   RankingListIndivResponse.fromJson(Map<String, dynamic> json) {
     myRankingInfo = MyRankingInfo.fromJson(json['my_ranking_info']);
-    results = Results.fromJson(json['results']);
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'my_ranking_info': myRankingInfo?.toJson(),
-      'results': results?.toJson(),
-    };
+    results = Results.fromJson(json['results']); // results를 Results 클래스로 변환
   }
 }
 
@@ -27,12 +20,12 @@ class MyRankingInfo {
   int? overallRank;
   double? overallRankPercentage;
   String? overallTierIconUrl;
+  int? resortTotalScore;
+  int? resortRank;
   String? primaryColor;
   String? secondaryColor;
   String? tierNameKor;
-  String? tierNameEng; // 추가된 필드
-  int? resortTotalScore;
-  int? resortRank;
+  String? tierNameEng;
 
   MyRankingInfo({
     this.userId,
@@ -44,12 +37,12 @@ class MyRankingInfo {
     this.overallRank,
     this.overallRankPercentage,
     this.overallTierIconUrl,
+    this.resortTotalScore,
+    this.resortRank,
     this.primaryColor,
     this.secondaryColor,
     this.tierNameKor,
-    this.tierNameEng, // 추가된 필드
-    this.resortTotalScore,
-    this.resortRank,
+    this.tierNameEng,
   });
 
   MyRankingInfo.fromJson(Map<String, dynamic> json) {
@@ -62,32 +55,12 @@ class MyRankingInfo {
     overallRank = json['overall_rank'] ?? 0;
     overallRankPercentage = json['overall_rank_percentage']?.toDouble() ?? 0.0;
     overallTierIconUrl = json['overall_tier_icon_url'] ?? '';
-    primaryColor = json['primary_color'] ?? '#FFFFFF';
-    secondaryColor = json['secondary_color'] ?? '#000000';
-    tierNameKor = json['tier_name_kor'] ?? 'N/A';
-    tierNameEng = json['tier_name_eng']?.toUpperCase() ?? 'N/A'; // 추가된 필드
     resortTotalScore = json['resort_total_score']?.round() ?? 0;
     resortRank = json['resort_rank'] ?? 0;
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'user_id': userId,
-      'display_name': displayName,
-      'profile_image_url_user': profileImageUrlUser,
-      'resort_nickname': resortNickname,
-      'crew_name': crewName,
-      'overall_total_score': overallTotalScore,
-      'overall_rank': overallRank,
-      'overall_rank_percentage': overallRankPercentage,
-      'overall_tier_icon_url': overallTierIconUrl,
-      'primary_color': primaryColor,
-      'secondary_color': secondaryColor,
-      'tier_name_kor': tierNameKor,
-      'tier_name_eng': tierNameEng, // 추가된 필드
-      'resort_total_score': resortTotalScore,
-      'resort_rank': resortRank,
-    };
+    primaryColor = json['primary_color'] ?? '';
+    secondaryColor = json['secondary_color'] ?? '';
+    tierNameKor = json['tier_name_kor'] ?? '';
+    tierNameEng = json['tier_name_eng'] ?? '';
   }
 }
 
@@ -107,15 +80,6 @@ class Results {
         rankingUsers = (json['results'] as List<dynamic>?)
             ?.map((v) => RankingUser.fromJson(v))
             .toList() ?? [];
-
-  Map<String, dynamic> toJson() {
-    return {
-      'count': count,
-      'next': next,
-      'previous': previous,
-      'results': rankingUsers.map((rankingUser) => rankingUser.toJson()).toList(),
-    };
-  }
 }
 
 class RankingUser {
@@ -128,12 +92,12 @@ class RankingUser {
   int? overallRank;
   double? overallRankPercentage;
   String? overallTierIconUrl;
+  int? resortTotalScore;
+  int? resortRank;
   String? primaryColor;
   String? secondaryColor;
   String? tierNameKor;
-  String? tierNameEng; // 추가된 필드
-  int? resortTotalScore;
-  int? resortRank;
+  String? tierNameEng;
 
   RankingUser({
     this.userId,
@@ -145,12 +109,12 @@ class RankingUser {
     this.overallRank,
     this.overallRankPercentage,
     this.overallTierIconUrl,
+    this.resortTotalScore,
+    this.resortRank,
     this.primaryColor,
     this.secondaryColor,
     this.tierNameKor,
-    this.tierNameEng, // 추가된 필드
-    this.resortTotalScore,
-    this.resortRank,
+    this.tierNameEng,
   });
 
   RankingUser.fromJson(Map<String, dynamic> json) {
@@ -163,31 +127,11 @@ class RankingUser {
     overallRank = json['overall_rank'];
     overallRankPercentage = json['overall_rank_percentage']?.toDouble();
     overallTierIconUrl = json['overall_tier_icon_url'];
-    primaryColor = json['primary_color'] ?? '#FFFFFF';
-    secondaryColor = json['secondary_color'] ?? '#000000';
-    tierNameKor = json['tier_name_kor'] ?? 'N/A';
-    tierNameEng = json['tier_name_eng']?.toUpperCase() ?? 'N/A'; // 추가된 필드
     resortTotalScore = json['resort_total_score']?.round();
     resortRank = json['resort_rank'];
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'user_id': userId,
-      'display_name': displayName,
-      'profile_image_url_user': profileImageUrlUser,
-      'resort_nickname': resortNickname,
-      'crew_name': crewName,
-      'overall_total_score': overallTotalScore,
-      'overall_rank': overallRank,
-      'overall_rank_percentage': overallRankPercentage,
-      'overall_tier_icon_url': overallTierIconUrl,
-      'primary_color': primaryColor,
-      'secondary_color': secondaryColor,
-      'tier_name_kor': tierNameKor,
-      'tier_name_eng': tierNameEng, // 추가된 필드
-      'resort_total_score': resortTotalScore,
-      'resort_rank': resortRank,
-    };
+    primaryColor = json['primary_color'] ?? '';
+    secondaryColor = json['secondary_color'] ?? '';
+    tierNameKor = json['tier_name_kor'] ?? '';
+    tierNameEng = json['tier_name_eng'] ?? '';
   }
 }

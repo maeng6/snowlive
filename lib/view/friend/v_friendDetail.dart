@@ -730,7 +730,12 @@ class _FriendDetailViewState extends State<FriendDetailView> {
                                                       height: 92,
                                                       padding: const EdgeInsets.only(left: 30),
                                                       decoration: BoxDecoration(
-                                                        color: SDSColor.snowliveBlue,
+                                                        color: Color(
+                                                          int.parse(
+                                                            'FF' + _friendDetailViewModel.friendDetailModel.seasonRankingInfo.primaryColor,
+                                                            radix: 16,
+                                                          ),
+                                                        ),
                                                         borderRadius: BorderRadius.circular(16),
                                                       ),
                                                       child: Row(
