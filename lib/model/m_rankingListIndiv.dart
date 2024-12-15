@@ -27,9 +27,10 @@ class MyRankingInfo {
   int? overallRank;
   double? overallRankPercentage;
   String? overallTierIconUrl;
-  String? primaryColor; // 추가된 필드
-  String? secondaryColor; // 추가된 필드
-  String? tierNameKor; // 추가된 필드
+  String? primaryColor;
+  String? secondaryColor;
+  String? tierNameKor;
+  String? tierNameEng; // 추가된 필드
   int? resortTotalScore;
   int? resortRank;
 
@@ -43,9 +44,10 @@ class MyRankingInfo {
     this.overallRank,
     this.overallRankPercentage,
     this.overallTierIconUrl,
-    this.primaryColor, // 추가된 필드
-    this.secondaryColor, // 추가된 필드
-    this.tierNameKor, // 추가된 필드
+    this.primaryColor,
+    this.secondaryColor,
+    this.tierNameKor,
+    this.tierNameEng, // 추가된 필드
     this.resortTotalScore,
     this.resortRank,
   });
@@ -60,9 +62,10 @@ class MyRankingInfo {
     overallRank = json['overall_rank'] ?? 0;
     overallRankPercentage = json['overall_rank_percentage']?.toDouble() ?? 0.0;
     overallTierIconUrl = json['overall_tier_icon_url'] ?? '';
-    primaryColor = json['primary_color'] ?? '#FFFFFF'; // 기본값 추가
-    secondaryColor = json['secondary_color'] ?? '#000000'; // 기본값 추가
-    tierNameKor = json['tier_name_kor'] ?? 'N/A'; // 기본값 추가
+    primaryColor = json['primary_color'] ?? '#FFFFFF';
+    secondaryColor = json['secondary_color'] ?? '#000000';
+    tierNameKor = json['tier_name_kor'] ?? 'N/A';
+    tierNameEng = json['tier_name_eng']?.toUpperCase() ?? 'N/A'; // 추가된 필드
     resortTotalScore = json['resort_total_score']?.round() ?? 0;
     resortRank = json['resort_rank'] ?? 0;
   }
@@ -81,6 +84,7 @@ class MyRankingInfo {
       'primary_color': primaryColor,
       'secondary_color': secondaryColor,
       'tier_name_kor': tierNameKor,
+      'tier_name_eng': tierNameEng, // 추가된 필드
       'resort_total_score': resortTotalScore,
       'resort_rank': resortRank,
     };
@@ -124,9 +128,10 @@ class RankingUser {
   int? overallRank;
   double? overallRankPercentage;
   String? overallTierIconUrl;
-  String? primaryColor; // 추가된 필드
-  String? secondaryColor; // 추가된 필드
-  String? tierNameKor; // 추가된 필드
+  String? primaryColor;
+  String? secondaryColor;
+  String? tierNameKor;
+  String? tierNameEng; // 추가된 필드
   int? resortTotalScore;
   int? resortRank;
 
@@ -140,9 +145,10 @@ class RankingUser {
     this.overallRank,
     this.overallRankPercentage,
     this.overallTierIconUrl,
-    this.primaryColor, // 추가된 필드
-    this.secondaryColor, // 추가된 필드
-    this.tierNameKor, // 추가된 필드
+    this.primaryColor,
+    this.secondaryColor,
+    this.tierNameKor,
+    this.tierNameEng, // 추가된 필드
     this.resortTotalScore,
     this.resortRank,
   });
@@ -157,9 +163,10 @@ class RankingUser {
     overallRank = json['overall_rank'];
     overallRankPercentage = json['overall_rank_percentage']?.toDouble();
     overallTierIconUrl = json['overall_tier_icon_url'];
-    primaryColor = json['primary_color'] ?? '#FFFFFF'; // 기본값 추가
-    secondaryColor = json['secondary_color'] ?? '#000000'; // 기본값 추가
-    tierNameKor = json['tier_name_kor'] ?? 'N/A'; // 기본값 추가
+    primaryColor = json['primary_color'] ?? '#FFFFFF';
+    secondaryColor = json['secondary_color'] ?? '#000000';
+    tierNameKor = json['tier_name_kor'] ?? 'N/A';
+    tierNameEng = json['tier_name_eng']?.toUpperCase() ?? 'N/A'; // 추가된 필드
     resortTotalScore = json['resort_total_score']?.round();
     resortRank = json['resort_rank'];
   }
@@ -178,6 +185,7 @@ class RankingUser {
       'primary_color': primaryColor,
       'secondary_color': secondaryColor,
       'tier_name_kor': tierNameKor,
+      'tier_name_eng': tierNameEng, // 추가된 필드
       'resort_total_score': resortTotalScore,
       'resort_rank': resortRank,
     };

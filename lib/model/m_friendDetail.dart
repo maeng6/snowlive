@@ -89,9 +89,10 @@ class SeasonRankingInfo {
   late int timeInfo_maxCount;
   late double overallRankPercentage;
   late String overallTierIconUrl;
-  late String primaryColor; // 추가된 필드
-  late String secondaryColor; // 추가된 필드
-  late String tierNameKor; // 추가된 필드
+  late String primaryColor; // 기존 필드
+  late String secondaryColor; // 기존 필드
+  late String tierNameKor; // 기존 필드
+  late String tierNameEng; // 새로 추가된 필드
 
   // 기본 생성자
   SeasonRankingInfo() {
@@ -106,6 +107,7 @@ class SeasonRankingInfo {
     primaryColor = '#FFFFFF';
     secondaryColor = '#000000';
     tierNameKor = 'N/A';
+    tierNameEng = 'N/A'; // 기본값 추가
   }
 
   // fromJson 생성자
@@ -133,8 +135,10 @@ class SeasonRankingInfo {
     primaryColor = json['primary_color'] ?? '#FFFFFF';
     secondaryColor = json['secondary_color'] ?? '#000000';
     tierNameKor = json['tier_name_kor'] ?? 'N/A';
+    tierNameEng = json['tier_name_eng']?.toUpperCase() ?? 'N/A'; // 대문자로 변환하여 저장
   }
 }
+
 
 class CalendarInfo {
   late String date;
