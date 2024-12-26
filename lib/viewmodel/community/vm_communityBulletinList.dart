@@ -150,7 +150,7 @@ class CommunityBulletinListViewModel extends GetxController {
   Future<void> _scrollListener_total() async {
     // 스크롤이 리스트의 끝에 도달했을 때
     if (scrollController_total.position.pixels == scrollController_total.position.maxScrollExtent) {
-      if (_nextPageUrl_total.value.isNotEmpty) {
+      if (!_isLoadingNextList_total.value && _nextPageUrl_total.value.isNotEmpty) {
         _isLoadingNextList_total.value = true;
         await fetchNextPage_total();
         _isLoadingNextList_total.value = false;
@@ -172,7 +172,7 @@ class CommunityBulletinListViewModel extends GetxController {
   Future<void> _scrollListener_free() async {
     // 스크롤이 리스트의 끝에 도달했을 때
     if (scrollController_free.position.pixels == scrollController_free.position.maxScrollExtent) {
-      if (_nextPageUrl_free.value.isNotEmpty) {
+      if (!_isLoadingNextList_free.value && _nextPageUrl_free.value.isNotEmpty) {
         _isLoadingNextList_free.value = true;
         await fetchNextPage_free();
         _isLoadingNextList_free.value = false;
@@ -194,7 +194,7 @@ class CommunityBulletinListViewModel extends GetxController {
   Future<void> _scrollListener_room() async {
     // 스크롤이 리스트의 끝에 도달했을 때
     if (scrollController_room.position.pixels == scrollController_room.position.maxScrollExtent) {
-      if (_nextPageUrl_room.value.isNotEmpty) {
+      if (!_isLoadingNextList_room.value && _nextPageUrl_room.value.isNotEmpty) {
         _isLoadingNextList_room.value = true;
         await fetchNextPage_room();
         _isLoadingNextList_room.value = false;
@@ -216,7 +216,7 @@ class CommunityBulletinListViewModel extends GetxController {
   Future<void> _scrollListener_crew() async {
     // 스크롤이 리스트의 끝에 도달했을 때
     if (scrollController_crew.position.pixels == scrollController_crew.position.maxScrollExtent) {
-      if (_nextPageUrl_crew.value.isNotEmpty) {
+      if (!_isLoadingNextList_crew.value && _nextPageUrl_crew.value.isNotEmpty) {
         _isLoadingNextList_crew.value = true;
         await fetchNextPage_crew();
         _isLoadingNextList_crew.value = false;
@@ -238,7 +238,7 @@ class CommunityBulletinListViewModel extends GetxController {
   Future<void> _scrollListener_event() async {
     // 스크롤이 리스트의 끝에 도달했을 때
     if (scrollController_event.position.pixels == scrollController_event.position.maxScrollExtent) {
-      if (_nextPageUrl_event.value.isNotEmpty) {
+      if (!_isLoadingNextList_event.value && _nextPageUrl_event.value.isNotEmpty) {
         _isLoadingNextList_event.value = true;
         await fetchNextPage_event();
         _isLoadingNextList_event.value = true;
@@ -528,10 +528,10 @@ class CommunityBulletinListViewModel extends GetxController {
 
   Future<void> onRefresh_bulletin_total() async {
     await fetchCommunityList_total(userId:  _userViewModel.user.user_id,categoryMain: '게시판');
-     fetchCommunityList_free(userId:  _userViewModel.user.user_id,categoryMain: '게시판',categorySub: Community_Category_sub_bulletin.free.korean);
-     fetchCommunityList_room(userId:  _userViewModel.user.user_id,categoryMain: '게시판',categorySub: Community_Category_sub_bulletin.room.korean);
-     fetchCommunityList_crew(userId:  _userViewModel.user.user_id,categoryMain: '게시판',categorySub: Community_Category_sub_bulletin.crew.korean);
-     fetchCommunityList_event(userId:  _userViewModel.user.user_id,categoryMain: '이벤트');
+    fetchCommunityList_free(userId:  _userViewModel.user.user_id,categoryMain: '게시판',categorySub: Community_Category_sub_bulletin.free.korean);
+    fetchCommunityList_room(userId:  _userViewModel.user.user_id,categoryMain: '게시판',categorySub: Community_Category_sub_bulletin.room.korean);
+    fetchCommunityList_crew(userId:  _userViewModel.user.user_id,categoryMain: '게시판',categorySub: Community_Category_sub_bulletin.crew.korean);
+    fetchCommunityList_event(userId:  _userViewModel.user.user_id,categoryMain: '이벤트');
   }
   Future<void> onRefresh_bulletin_free() async {
     await fetchCommunityList_free(userId:  _userViewModel.user.user_id,categoryMain: '게시판',categorySub: Community_Category_sub_bulletin.free.korean);

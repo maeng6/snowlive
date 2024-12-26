@@ -209,66 +209,66 @@ class RankingIndiView extends StatelessWidget {
                                                     child: GestureDetector(
                                                       onTap:(){
                                                         if(_rankingListViewModel.rankingListIndivMy_view?.overallTotalScore != 0)
-                                                        showDialog(
-                                                          barrierColor: Colors.black.withOpacity(0.85),
-                                                          context: context,
-                                                          builder: (BuildContext context) {
-                                                            return Dialog(
-                                                              backgroundColor: Colors.transparent, // 다이얼로그 배경을 투명하게 설정
-                                                              child: GestureDetector(
-                                                                onTap: () {
-                                                                  Navigator.of(context).pop(); // 클릭 시 다이얼로그 닫기
-                                                                },
-                                                                child: Column(
-                                                                  mainAxisAlignment: MainAxisAlignment.center,
-                                                                  children: [
-                                                                    Container(
-                                                                      width: _size.width - 72,
-                                                                      child: ExtendedImage.network(
-                                                                        _rankingListViewModel.rankingListIndivMy_view!.overallTierIconUrl!,
-                                                                        cache: true,
+                                                          showDialog(
+                                                            barrierColor: Colors.black.withOpacity(0.85),
+                                                            context: context,
+                                                            builder: (BuildContext context) {
+                                                              return Dialog(
+                                                                backgroundColor: Colors.transparent, // 다이얼로그 배경을 투명하게 설정
+                                                                child: GestureDetector(
+                                                                  onTap: () {
+                                                                    Navigator.of(context).pop(); // 클릭 시 다이얼로그 닫기
+                                                                  },
+                                                                  child: Column(
+                                                                    mainAxisAlignment: MainAxisAlignment.center,
+                                                                    children: [
+                                                                      Container(
+                                                                        width: _size.width - 72,
+                                                                        child: ExtendedImage.network(
+                                                                          _rankingListViewModel.rankingListIndivMy_view!.overallTierIconUrl!,
+                                                                          cache: true,
+                                                                        ),
                                                                       ),
-                                                                    ),
-                                                                    // Center(
-                                                                    //   child: PhotoView(
-                                                                    //     imageProvider: ExtendedNetworkImageProvider(
-                                                                    //       _rankingListViewModel.rankingListIndivMy_view!.overallTierIconUrl!, // 이미지 URL 설정
-                                                                    //       cache: true, // 캐싱 옵션
-                                                                    //     ),
-                                                                    //     backgroundDecoration: const BoxDecoration(
-                                                                    //       color: Colors.transparent, // 배경을 투명으로 설정
-                                                                    //     ),
-                                                                    //     minScale: PhotoViewComputedScale.contained, // 최소 확대 비율
-                                                                    //     maxScale: PhotoViewComputedScale.covered * 7, // 최대 확대 비율
-                                                                    //
-                                                                    //   ),
-                                                                    // ),
-                                                                    Transform.translate(
-                                                                      offset: Offset(0, -40),
-                                                                      child: Column(
-                                                                        children: [
-                                                                          Text('${_rankingListViewModel.rankingListIndivMy_view?.tierNameEng}',
-                                                                            style: GoogleFonts.bebasNeue(
-                                                                              color: SDSColor.snowliveWhite,
-                                                                              fontSize: 36,
+                                                                      // Center(
+                                                                      //   child: PhotoView(
+                                                                      //     imageProvider: ExtendedNetworkImageProvider(
+                                                                      //       _rankingListViewModel.rankingListIndivMy_view!.overallTierIconUrl!, // 이미지 URL 설정
+                                                                      //       cache: true, // 캐싱 옵션
+                                                                      //     ),
+                                                                      //     backgroundDecoration: const BoxDecoration(
+                                                                      //       color: Colors.transparent, // 배경을 투명으로 설정
+                                                                      //     ),
+                                                                      //     minScale: PhotoViewComputedScale.contained, // 최소 확대 비율
+                                                                      //     maxScale: PhotoViewComputedScale.covered * 7, // 최대 확대 비율
+                                                                      //
+                                                                      //   ),
+                                                                      // ),
+                                                                      Transform.translate(
+                                                                        offset: Offset(0, -40),
+                                                                        child: Column(
+                                                                          children: [
+                                                                            Text('${_rankingListViewModel.rankingListIndivMy_view?.tierNameEng}',
+                                                                              style: GoogleFonts.bebasNeue(
+                                                                                color: SDSColor.snowliveWhite,
+                                                                                fontSize: 36,
+                                                                              ),
                                                                             ),
-                                                                          ),
-                                                                          Text('${_rankingListViewModel.rankingListIndivMy_view?.tierNameKor}',
-                                                                            style: SDSTextStyle.bold.copyWith(
-                                                                              color: SDSColor.snowliveWhite.withOpacity(0.5),
-                                                                              fontSize: 16,
-                                                                            ),
-                                                                          )
-                                                                        ],
+                                                                            Text('${_rankingListViewModel.rankingListIndivMy_view?.tierNameKor}',
+                                                                              style: SDSTextStyle.bold.copyWith(
+                                                                                color: SDSColor.snowliveWhite.withOpacity(0.5),
+                                                                                fontSize: 16,
+                                                                              ),
+                                                                            )
+                                                                          ],
+                                                                        ),
                                                                       ),
-                                                                    ),
 
-                                                                  ],
+                                                                    ],
+                                                                  ),
                                                                 ),
-                                                              ),
-                                                            );
-                                                          },
-                                                        );
+                                                              );
+                                                            },
+                                                          );
                                                       },
                                                       child: Transform.translate(
                                                         offset: Offset(0, -8),
@@ -318,18 +318,18 @@ class RankingIndiView extends StatelessWidget {
                                                   ),
                                                 ),
                                                 if(_rankingListViewModel.rankingListIndivMy_view?.tierNameKor != '')
-                                                Positioned(
-                                                  right: 0,
-                                                  left: 0,
-                                                  top: 56,
-                                                  child: Center(
-                                                    child: Text('${_rankingListViewModel.rankingListIndivMy_view?.tierNameKor}',
-                                                      style: SDSTextStyle.bold.copyWith(
-                                                          fontSize: 12,
-                                                          color: SDSColor.gray900.withOpacity(0.3)
-                                                      ),),
-                                                  ),
-                                                )
+                                                  Positioned(
+                                                    right: 0,
+                                                    left: 0,
+                                                    top: 56,
+                                                    child: Center(
+                                                      child: Text('${_rankingListViewModel.rankingListIndivMy_view?.tierNameKor}',
+                                                        style: SDSTextStyle.bold.copyWith(
+                                                            fontSize: 12,
+                                                            color: SDSColor.gray900.withOpacity(0.3)
+                                                        ),),
+                                                    ),
+                                                  )
                                               ],
                                             ),
                                         ],
@@ -358,6 +358,7 @@ class RankingIndiView extends StatelessWidget {
                                                       HapticFeedback.lightImpact();
                                                       _rankingListViewModel.changeCategory_resort('${RankingFilter_resort.initial.korean}');
                                                       _rankingListViewModel.changeResortOrTotal('전체스키장');
+                                                      _rankingListViewModel.changeCategory_fed('리그별 랭킹');
                                                       _rankingListViewModel.changeResortNum(99);
                                                       _rankingListViewModel.changeMyBoxText();
                                                       await _rankingListViewModel.toggleDataDayOrTotal_tapFilter();
@@ -369,9 +370,9 @@ class RankingIndiView extends StatelessWidget {
                                                             right: 12, left: 12, top: 2, bottom: 2),
                                                         side: BorderSide(
                                                           width: 1,
-                                                          color: (_rankingListViewModel.resortOrTotal == '전체스키장') ? SDSColor.gray900 : SDSColor.gray100,
+                                                          color: (_rankingListViewModel.resortOrTotal == '전체스키장' && _rankingListViewModel.selectedCategory_fed == '리그별 랭킹') ? SDSColor.gray900 : SDSColor.gray100,
                                                         ),
-                                                        backgroundColor: (_rankingListViewModel.resortOrTotal == '전체스키장') ? SDSColor.gray900 : SDSColor.snowliveWhite,
+                                                        backgroundColor: (_rankingListViewModel.resortOrTotal == '전체스키장'&& _rankingListViewModel.selectedCategory_fed == '리그별 랭킹') ? SDSColor.gray900 : SDSColor.snowliveWhite,
                                                         elevation: 0,
                                                         shape: RoundedRectangleBorder(
                                                             borderRadius: BorderRadius.circular(50))),
@@ -379,7 +380,7 @@ class RankingIndiView extends StatelessWidget {
                                                     Text('${RankingFilter_resort.total.korean}',
                                                         style: SDSTextStyle.bold.copyWith(
                                                             fontSize: 13,
-                                                            color: (_rankingListViewModel.resortOrTotal == '전체스키장') ? Color(0xFFFFFFFF) : Color(0xFF111111)))
+                                                            color: (_rankingListViewModel.resortOrTotal == '전체스키장'&& _rankingListViewModel.selectedCategory_fed == '리그별 랭킹') ? Color(0xFFFFFFFF) : Color(0xFF111111)))
                                                 ),
                                               ],
                                             ),
@@ -439,6 +440,7 @@ class RankingIndiView extends StatelessWidget {
                                                                               Navigator.pop(context);
                                                                               _rankingListViewModel.changeCategory_resort('${RankingFilter_resort.konjiam.korean}');
                                                                               _rankingListViewModel.changeResortOrTotal('개별스키장');
+                                                                              _rankingListViewModel.changeCategory_fed('리그별 랭킹');
                                                                               _rankingListViewModel.changeResortNum(1);
                                                                               _rankingListViewModel.changeMyBoxText();
                                                                               await _rankingListViewModel.toggleDataDayOrTotal_tapFilter(resortNum: 1);
@@ -463,6 +465,7 @@ class RankingIndiView extends StatelessWidget {
                                                                               Navigator.pop(context);
                                                                               _rankingListViewModel.changeCategory_resort('${RankingFilter_resort.muju.korean}');
                                                                               _rankingListViewModel.changeResortOrTotal('개별스키장');
+                                                                              _rankingListViewModel.changeCategory_fed('리그별 랭킹');
                                                                               _rankingListViewModel.changeResortNum(2);
                                                                               _rankingListViewModel.changeMyBoxText();
                                                                               await _rankingListViewModel.toggleDataDayOrTotal_tapFilter(resortNum: 2);
@@ -487,6 +490,7 @@ class RankingIndiView extends StatelessWidget {
                                                                               Navigator.pop(context);
                                                                               _rankingListViewModel.changeCategory_resort('${RankingFilter_resort.vivaldi.korean}');
                                                                               _rankingListViewModel.changeResortOrTotal('개별스키장');
+                                                                              _rankingListViewModel.changeCategory_fed('리그별 랭킹');
                                                                               _rankingListViewModel.changeResortNum(3);
                                                                               _rankingListViewModel.changeMyBoxText();
                                                                               await _rankingListViewModel.toggleDataDayOrTotal_tapFilter(resortNum: 3);
@@ -511,6 +515,7 @@ class RankingIndiView extends StatelessWidget {
                                                                               Navigator.pop(context);
                                                                               _rankingListViewModel.changeCategory_resort('${RankingFilter_resort.alphen.korean}');
                                                                               _rankingListViewModel.changeResortOrTotal('개별스키장');
+                                                                              _rankingListViewModel.changeCategory_fed('리그별 랭킹');
                                                                               _rankingListViewModel.changeResortNum(4);
                                                                               _rankingListViewModel.changeMyBoxText();
                                                                               await _rankingListViewModel.toggleDataDayOrTotal_tapFilter(resortNum:4);
@@ -535,6 +540,7 @@ class RankingIndiView extends StatelessWidget {
                                                                               Navigator.pop(context);
                                                                               _rankingListViewModel.changeCategory_resort('${RankingFilter_resort.gangchon.korean}');
                                                                               _rankingListViewModel.changeResortOrTotal('개별스키장');
+                                                                              _rankingListViewModel.changeCategory_fed('리그별 랭킹');
                                                                               _rankingListViewModel.changeResortNum(6);
                                                                               _rankingListViewModel.changeMyBoxText();
                                                                               await _rankingListViewModel.toggleDataDayOrTotal_tapFilter(resortNum: 6);
@@ -559,6 +565,7 @@ class RankingIndiView extends StatelessWidget {
                                                                               Navigator.pop(context);
                                                                               _rankingListViewModel.changeCategory_resort('${RankingFilter_resort.oak.korean}');
                                                                               _rankingListViewModel.changeResortOrTotal('개별스키장');
+                                                                              _rankingListViewModel.changeCategory_fed('리그별 랭킹');
                                                                               _rankingListViewModel.changeResortNum(7);
                                                                               _rankingListViewModel.changeMyBoxText();
                                                                               await _rankingListViewModel.toggleDataDayOrTotal_tapFilter(resortNum: 7);
@@ -583,6 +590,7 @@ class RankingIndiView extends StatelessWidget {
                                                                               Navigator.pop(context);
                                                                               _rankingListViewModel.changeCategory_resort('${RankingFilter_resort.o2.korean}');
                                                                               _rankingListViewModel.changeResortOrTotal('개별스키장');
+                                                                              _rankingListViewModel.changeCategory_fed('리그별 랭킹');
                                                                               _rankingListViewModel.changeResortNum(8);
                                                                               _rankingListViewModel.changeMyBoxText();
                                                                               await _rankingListViewModel.toggleDataDayOrTotal_tapFilter(resortNum: 8);
@@ -607,6 +615,7 @@ class RankingIndiView extends StatelessWidget {
                                                                               Navigator.pop(context);
                                                                               _rankingListViewModel.changeCategory_resort('${RankingFilter_resort.yongpyong.korean}');
                                                                               _rankingListViewModel.changeResortOrTotal('개별스키장');
+                                                                              _rankingListViewModel.changeCategory_fed('리그별 랭킹');
                                                                               _rankingListViewModel.changeResortNum(9);
                                                                               _rankingListViewModel.changeMyBoxText();
                                                                               await _rankingListViewModel.toggleDataDayOrTotal_tapFilter(resortNum: 9);
@@ -631,6 +640,7 @@ class RankingIndiView extends StatelessWidget {
                                                                               Navigator.pop(context);
                                                                               _rankingListViewModel.changeCategory_resort('${RankingFilter_resort.welli.korean}');
                                                                               _rankingListViewModel.changeResortOrTotal('개별스키장');
+                                                                              _rankingListViewModel.changeCategory_fed('리그별 랭킹');
                                                                               _rankingListViewModel.changeResortNum(10);
                                                                               _rankingListViewModel.changeMyBoxText();
                                                                               await _rankingListViewModel.toggleDataDayOrTotal_tapFilter(resortNum: 10);
@@ -655,6 +665,7 @@ class RankingIndiView extends StatelessWidget {
                                                                               Navigator.pop(context);
                                                                               _rankingListViewModel.changeCategory_resort('${RankingFilter_resort.jisan.korean}');
                                                                               _rankingListViewModel.changeResortOrTotal('개별스키장');
+                                                                              _rankingListViewModel.changeCategory_fed('리그별 랭킹');
                                                                               _rankingListViewModel.changeResortNum(11);
                                                                               _rankingListViewModel.changeMyBoxText();
                                                                               await _rankingListViewModel.toggleDataDayOrTotal_tapFilter(resortNum: 11);
@@ -679,6 +690,7 @@ class RankingIndiView extends StatelessWidget {
                                                                               Navigator.pop(context);
                                                                               _rankingListViewModel.changeCategory_resort('${RankingFilter_resort.high1.korean}');
                                                                               _rankingListViewModel.changeResortOrTotal('개별스키장');
+                                                                              _rankingListViewModel.changeCategory_fed('리그별 랭킹');
                                                                               _rankingListViewModel.changeResortNum(12);
                                                                               _rankingListViewModel.changeMyBoxText();
                                                                               await _rankingListViewModel.toggleDataDayOrTotal_tapFilter(resortNum: 12);
@@ -703,6 +715,7 @@ class RankingIndiView extends StatelessWidget {
                                                                               Navigator.pop(context);
                                                                               _rankingListViewModel.changeCategory_resort('${RankingFilter_resort.phoenix.korean}');
                                                                               _rankingListViewModel.changeResortOrTotal('개별스키장');
+                                                                              _rankingListViewModel.changeCategory_fed('리그별 랭킹');
                                                                               _rankingListViewModel.changeResortNum(13);
                                                                               _rankingListViewModel.changeMyBoxText();
                                                                               await _rankingListViewModel.toggleDataDayOrTotal_tapFilter(resortNum: 13);
@@ -784,7 +797,9 @@ class RankingIndiView extends StatelessWidget {
                                                                             Navigator.pop(context);
                                                                             _rankingListViewModel.changeCategory_resort('${RankingFilter_resort.konjiam.korean}');
                                                                             _rankingListViewModel.changeResortOrTotal('개별스키장');
+                                                                            _rankingListViewModel.changeCategory_fed('리그별 랭킹');
                                                                             _rankingListViewModel.changeResortNum(1);
+                                                                            _rankingListViewModel.changeMyBoxText();
                                                                             await _rankingListViewModel.toggleDataDayOrTotal_tapFilter(resortNum: 1);
                                                                           },
                                                                           shape: RoundedRectangleBorder(
@@ -807,7 +822,9 @@ class RankingIndiView extends StatelessWidget {
                                                                             Navigator.pop(context);
                                                                             _rankingListViewModel.changeCategory_resort('${RankingFilter_resort.muju.korean}');
                                                                             _rankingListViewModel.changeResortOrTotal('개별스키장');
+                                                                            _rankingListViewModel.changeCategory_fed('리그별 랭킹');
                                                                             _rankingListViewModel.changeResortNum(2);
+                                                                            _rankingListViewModel.changeMyBoxText();
                                                                             await _rankingListViewModel.toggleDataDayOrTotal_tapFilter(resortNum: 2);
                                                                           },
                                                                           shape: RoundedRectangleBorder(
@@ -830,7 +847,9 @@ class RankingIndiView extends StatelessWidget {
                                                                             Navigator.pop(context);
                                                                             _rankingListViewModel.changeCategory_resort('${RankingFilter_resort.vivaldi.korean}');
                                                                             _rankingListViewModel.changeResortOrTotal('개별스키장');
+                                                                            _rankingListViewModel.changeCategory_fed('리그별 랭킹');
                                                                             _rankingListViewModel.changeResortNum(3);
+                                                                            _rankingListViewModel.changeMyBoxText();
                                                                             await _rankingListViewModel.toggleDataDayOrTotal_tapFilter(resortNum: 3);
                                                                           },
                                                                           shape: RoundedRectangleBorder(
@@ -853,7 +872,9 @@ class RankingIndiView extends StatelessWidget {
                                                                             Navigator.pop(context);
                                                                             _rankingListViewModel.changeCategory_resort('${RankingFilter_resort.alphen.korean}');
                                                                             _rankingListViewModel.changeResortOrTotal('개별스키장');
+                                                                            _rankingListViewModel.changeCategory_fed('리그별 랭킹');
                                                                             _rankingListViewModel.changeResortNum(4);
+                                                                            _rankingListViewModel.changeMyBoxText();
                                                                             await _rankingListViewModel.toggleDataDayOrTotal_tapFilter(resortNum:4);
                                                                           },
                                                                           shape: RoundedRectangleBorder(
@@ -876,7 +897,9 @@ class RankingIndiView extends StatelessWidget {
                                                                             Navigator.pop(context);
                                                                             _rankingListViewModel.changeCategory_resort('${RankingFilter_resort.gangchon.korean}');
                                                                             _rankingListViewModel.changeResortOrTotal('개별스키장');
+                                                                            _rankingListViewModel.changeCategory_fed('리그별 랭킹');
                                                                             _rankingListViewModel.changeResortNum(6);
+                                                                            _rankingListViewModel.changeMyBoxText();
                                                                             await _rankingListViewModel.toggleDataDayOrTotal_tapFilter(resortNum: 6);
                                                                           },
                                                                           shape: RoundedRectangleBorder(
@@ -899,7 +922,9 @@ class RankingIndiView extends StatelessWidget {
                                                                             Navigator.pop(context);
                                                                             _rankingListViewModel.changeCategory_resort('${RankingFilter_resort.oak.korean}');
                                                                             _rankingListViewModel.changeResortOrTotal('개별스키장');
+                                                                            _rankingListViewModel.changeCategory_fed('리그별 랭킹');
                                                                             _rankingListViewModel.changeResortNum(7);
+                                                                            _rankingListViewModel.changeMyBoxText();
                                                                             await _rankingListViewModel.toggleDataDayOrTotal_tapFilter(resortNum: 7);
                                                                           },
                                                                           shape: RoundedRectangleBorder(
@@ -922,7 +947,9 @@ class RankingIndiView extends StatelessWidget {
                                                                             Navigator.pop(context);
                                                                             _rankingListViewModel.changeCategory_resort('${RankingFilter_resort.o2.korean}');
                                                                             _rankingListViewModel.changeResortOrTotal('개별스키장');
+                                                                            _rankingListViewModel.changeCategory_fed('리그별 랭킹');
                                                                             _rankingListViewModel.changeResortNum(8);
+                                                                            _rankingListViewModel.changeMyBoxText();
                                                                             await _rankingListViewModel.toggleDataDayOrTotal_tapFilter(resortNum: 8);
                                                                           },
                                                                           shape: RoundedRectangleBorder(
@@ -945,7 +972,9 @@ class RankingIndiView extends StatelessWidget {
                                                                             Navigator.pop(context);
                                                                             _rankingListViewModel.changeCategory_resort('${RankingFilter_resort.yongpyong.korean}');
                                                                             _rankingListViewModel.changeResortOrTotal('개별스키장');
+                                                                            _rankingListViewModel.changeCategory_fed('리그별 랭킹');
                                                                             _rankingListViewModel.changeResortNum(9);
+                                                                            _rankingListViewModel.changeMyBoxText();
                                                                             await _rankingListViewModel.toggleDataDayOrTotal_tapFilter(resortNum: 9);
                                                                           },
                                                                           shape: RoundedRectangleBorder(
@@ -968,7 +997,9 @@ class RankingIndiView extends StatelessWidget {
                                                                             Navigator.pop(context);
                                                                             _rankingListViewModel.changeCategory_resort('${RankingFilter_resort.welli.korean}');
                                                                             _rankingListViewModel.changeResortOrTotal('개별스키장');
+                                                                            _rankingListViewModel.changeCategory_fed('리그별 랭킹');
                                                                             _rankingListViewModel.changeResortNum(10);
+                                                                            _rankingListViewModel.changeMyBoxText();
                                                                             await _rankingListViewModel.toggleDataDayOrTotal_tapFilter(resortNum: 10);
                                                                           },
                                                                           shape: RoundedRectangleBorder(
@@ -991,7 +1022,9 @@ class RankingIndiView extends StatelessWidget {
                                                                             Navigator.pop(context);
                                                                             _rankingListViewModel.changeCategory_resort('${RankingFilter_resort.jisan.korean}');
                                                                             _rankingListViewModel.changeResortOrTotal('개별스키장');
+                                                                            _rankingListViewModel.changeCategory_fed('리그별 랭킹');
                                                                             _rankingListViewModel.changeResortNum(11);
+                                                                            _rankingListViewModel.changeMyBoxText();
                                                                             await _rankingListViewModel.toggleDataDayOrTotal_tapFilter(resortNum: 11);
                                                                           },
                                                                           shape: RoundedRectangleBorder(
@@ -1014,7 +1047,9 @@ class RankingIndiView extends StatelessWidget {
                                                                             Navigator.pop(context);
                                                                             _rankingListViewModel.changeCategory_resort('${RankingFilter_resort.high1.korean}');
                                                                             _rankingListViewModel.changeResortOrTotal('개별스키장');
+                                                                            _rankingListViewModel.changeCategory_fed('리그별 랭킹');
                                                                             _rankingListViewModel.changeResortNum(12);
+                                                                            _rankingListViewModel.changeMyBoxText();
                                                                             await _rankingListViewModel.toggleDataDayOrTotal_tapFilter(resortNum: 12);
                                                                           },
                                                                           shape: RoundedRectangleBorder(
@@ -1037,7 +1072,9 @@ class RankingIndiView extends StatelessWidget {
                                                                             Navigator.pop(context);
                                                                             _rankingListViewModel.changeCategory_resort('${RankingFilter_resort.phoenix.korean}');
                                                                             _rankingListViewModel.changeResortOrTotal('개별스키장');
+                                                                            _rankingListViewModel.changeCategory_fed('리그별 랭킹');
                                                                             _rankingListViewModel.changeResortNum(13);
+                                                                            _rankingListViewModel.changeMyBoxText();
                                                                             await _rankingListViewModel.toggleDataDayOrTotal_tapFilter(resortNum: 13);
                                                                           },
                                                                           shape: RoundedRectangleBorder(
@@ -1052,13 +1089,237 @@ class RankingIndiView extends StatelessWidget {
                                                             );
                                                           });
                                                     },
-                                                    child: (_rankingListViewModel.resortOrTotal != '전체스키장')
-                                                        ? Image.asset(
+                                                    child: (_rankingListViewModel.resortOrTotal != '전체스키장') ? Image.asset(
                                                       'assets/imgs/icons/icon_check_round.png',
                                                       fit: BoxFit.cover,
                                                       width: 16,
-                                                      height: 16,)
-                                                        : Image.asset(
+                                                      height: 16,
+                                                    ) : Image.asset(
+                                                      'assets/imgs/icons/icon_check_round_black.png',
+                                                      fit: BoxFit.cover,
+                                                      width: 16,
+                                                      height: 16,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: EdgeInsets.only(top: 16, bottom: 8),
+                                      child: Row(
+                                        children: [
+                                          Padding(
+                                            padding: EdgeInsets.only(right: 8),
+                                            child: Stack(
+                                              children: [
+                                                ElevatedButton(
+                                                    onPressed: () async {
+                                                      HapticFeedback.lightImpact();
+                                                      showModalBottomSheet(
+                                                          enableDrag: false,
+                                                          isScrollControlled: true,
+                                                          backgroundColor: Colors.transparent,
+                                                          context: context,
+                                                          builder: (context) {
+                                                            return SafeArea(
+                                                              child: Padding(
+                                                                padding: const EdgeInsets.symmetric(vertical: 20),
+                                                                child: Container(
+                                                                  margin: EdgeInsets.only(
+                                                                    left: 16,
+                                                                    right: 16,
+                                                                    top: 16,
+                                                                  ),
+                                                                  height: MediaQuery.of(context).size.height * 0.6,
+                                                                  padding: EdgeInsets.all(16),
+                                                                  decoration: BoxDecoration(
+                                                                    color: Colors.white,
+                                                                    borderRadius: BorderRadius.circular(16),
+                                                                  ),
+                                                                  child: Scrollbar(
+                                                                    child: SingleChildScrollView(
+                                                                      child: Wrap(
+                                                                        children: [
+                                                                          //대학 스키
+                                                                          ListTile(
+                                                                            contentPadding: EdgeInsets.zero,
+                                                                            title: Center(
+                                                                              child: Text(
+                                                                                '${RankingFilter_fed.univ_ski.korean}',
+                                                                                style: SDSTextStyle.bold.copyWith(
+                                                                                    fontSize: 15,
+                                                                                    color: SDSColor.gray900
+                                                                                ),
+                                                                              ),
+                                                                            ),
+                                                                            onTap: () async {
+                                                                              Navigator.pop(context);
+                                                                              _rankingListViewModel.changeCategory_resort('${RankingFilter_resort.initial.korean}');
+                                                                              _rankingListViewModel.changeCategory_fed('${RankingFilter_fed.univ_ski.english}');
+                                                                              _rankingListViewModel.changeResortOrTotal('전체스키장');
+                                                                              _rankingListViewModel.changeResortNum(99);
+                                                                              _rankingListViewModel.changeMyBoxText();
+                                                                              await _rankingListViewModel.toggleDataDayOrTotal_tapFilter();
+                                                                            },
+                                                                            shape: RoundedRectangleBorder(
+                                                                                borderRadius:
+                                                                                BorderRadius.circular(16)),
+                                                                          ),
+                                                                          //대학 보드
+                                                                          ListTile(
+                                                                            contentPadding: EdgeInsets.zero,
+                                                                            title: Center(
+                                                                              child: Text(
+                                                                                '${RankingFilter_fed.univ_board.korean}',
+                                                                                style: SDSTextStyle.bold.copyWith(
+                                                                                    fontSize: 15,
+                                                                                    color: SDSColor.gray900
+                                                                                ),
+                                                                              ),
+                                                                            ),
+                                                                            onTap: () async {
+                                                                              Navigator.pop(context);
+                                                                              _rankingListViewModel.changeCategory_resort('${RankingFilter_resort.initial.korean}');
+                                                                              _rankingListViewModel.changeCategory_fed('${RankingFilter_fed.univ_board.english}');
+                                                                              _rankingListViewModel.changeResortOrTotal('전체스키장');
+                                                                              _rankingListViewModel.changeResortNum(99);
+                                                                              _rankingListViewModel.changeMyBoxText();
+                                                                              await _rankingListViewModel.toggleDataDayOrTotal_tapFilter();
+                                                                            },
+                                                                            shape: RoundedRectangleBorder(
+                                                                                borderRadius:
+                                                                                BorderRadius.circular(16)),
+                                                                          ),
+                                                                        ],
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                            );
+                                                          });
+                                                    },
+                                                    style: ElevatedButton.styleFrom(
+                                                        shadowColor: Colors.transparent,
+                                                        overlayColor: Colors.transparent,
+                                                        padding: EdgeInsets.only(
+                                                            right: 32, left: 12, top: 3, bottom: 2),
+                                                        side: BorderSide(
+                                                          width: 1,
+                                                          color: (_rankingListViewModel.selectedCategory_fed != '리그별 랭킹' ) ? SDSColor.gray900 : SDSColor.gray100,
+                                                        ),
+                                                        backgroundColor: (_rankingListViewModel.selectedCategory_fed != '리그별 랭킹') ? SDSColor.gray900 : SDSColor.snowliveWhite,
+                                                        elevation: 0,
+                                                        shape: RoundedRectangleBorder(
+                                                            borderRadius: BorderRadius.circular(50))),
+                                                    child:
+                                                    Text(
+                                                        (_rankingListViewModel.selectedCategory_fed=='리그별 랭킹')
+                                                            ? '${RankingFilter_fed.initial.korean}'
+                                                            :(_rankingListViewModel.selectedCategory_fed=='univ_board')
+                                                            ?'${RankingFilter_fed.univ_board.korean}'
+                                                            :'${RankingFilter_fed.univ_ski.korean}',
+                                                        style: SDSTextStyle.bold.copyWith(
+                                                            fontSize: 13,
+                                                            color: (_rankingListViewModel.selectedCategory_fed != '리그별 랭킹' ) ? Color(0xFFFFFFFF) : Color(0xFF111111)))
+                                                ),
+                                                Positioned(
+                                                  top: 10,
+                                                  right: 10,
+                                                  child: GestureDetector(
+                                                    onTap: () async {
+                                                      showModalBottomSheet(
+                                                          enableDrag: false,
+                                                          isScrollControlled: true,
+                                                          backgroundColor: Colors.transparent,
+                                                          context: context,
+                                                          builder: (context) {
+                                                            return SafeArea(
+                                                              child: Padding(
+                                                                padding: const EdgeInsets.symmetric(vertical: 20),
+                                                                child: Container(
+                                                                  margin: EdgeInsets.only(
+                                                                    left: 16,
+                                                                    right: 16,
+                                                                    top: 16,
+                                                                  ),
+                                                                  height: MediaQuery.of(context).size.height * 0.6,
+                                                                  padding: EdgeInsets.all(16),
+                                                                  decoration: BoxDecoration(
+                                                                    color: Colors.white,
+                                                                    borderRadius: BorderRadius.circular(16),
+                                                                  ),
+                                                                  child: Scrollbar(
+                                                                    child: SingleChildScrollView(
+                                                                      child: Wrap(
+                                                                        children: [
+                                                                          //대학 스키
+                                                                          ListTile(
+                                                                            contentPadding: EdgeInsets.zero,
+                                                                            title: Center(
+                                                                              child: Text(
+                                                                                '${RankingFilter_fed.univ_ski.korean}',
+                                                                                style: SDSTextStyle.bold.copyWith(
+                                                                                    fontSize: 15,
+                                                                                    color: SDSColor.gray900
+                                                                                ),
+                                                                              ),
+                                                                            ),
+                                                                            onTap: () async {
+                                                                              Navigator.pop(context);
+                                                                              _rankingListViewModel.changeCategory_fed('${RankingFilter_fed.univ_ski}');
+                                                                              _rankingListViewModel.changeResortOrTotal('전체스키장');
+                                                                              _rankingListViewModel.changeResortNum(99);
+                                                                              _rankingListViewModel.changeMyBoxText();
+                                                                              await _rankingListViewModel.toggleDataDayOrTotal_tapFilter();
+                                                                            },
+                                                                            shape: RoundedRectangleBorder(
+                                                                                borderRadius:
+                                                                                BorderRadius.circular(16)),
+                                                                          ),
+                                                                          //대학 보드
+                                                                          ListTile(
+                                                                            contentPadding: EdgeInsets.zero,
+                                                                            title: Center(
+                                                                              child: Text(
+                                                                                '${RankingFilter_fed.univ_board.korean}',
+                                                                                style: SDSTextStyle.bold.copyWith(
+                                                                                    fontSize: 15,
+                                                                                    color: SDSColor.gray900
+                                                                                ),
+                                                                              ),
+                                                                            ),
+                                                                            onTap: () async {
+                                                                              Navigator.pop(context);
+                                                                              _rankingListViewModel.changeCategory_fed('${RankingFilter_fed.univ_board}');
+                                                                              _rankingListViewModel.changeResortOrTotal('전체스키장');
+                                                                              _rankingListViewModel.changeResortNum(99);
+                                                                              _rankingListViewModel.changeMyBoxText();
+                                                                              await _rankingListViewModel.toggleDataDayOrTotal_tapFilter();
+                                                                            },
+                                                                            shape: RoundedRectangleBorder(
+                                                                                borderRadius:
+                                                                                BorderRadius.circular(16)),
+                                                                          ),
+                                                                        ],
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                            );
+                                                          });
+                                                    },
+                                                    child: (_rankingListViewModel.resortOrTotal != '전체스키장') ? Image.asset(
+                                                      'assets/imgs/icons/icon_check_round.png',
+                                                      fit: BoxFit.cover,
+                                                      width: 16,
+                                                      height: 16,
+                                                    ) : Image.asset(
                                                       'assets/imgs/icons/icon_check_round_black.png',
                                                       fit: BoxFit.cover,
                                                       width: 16,
@@ -1081,6 +1342,7 @@ class RankingIndiView extends StatelessWidget {
                             return Obx(() => _rankingListViewModel.isLoadingRankingListIndiv_next // 여기서 Obx 사용
                                 ? Container(
                               height: 100,
+                              padding: EdgeInsets.only(bottom: 75),
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -1603,20 +1865,24 @@ class RankingIndiView extends StatelessWidget {
                                               children: [
                                                 ElevatedButton(
                                                     onPressed: () async {
+                                                      HapticFeedback.lightImpact();
                                                       _rankingListViewModel.changeCategory_resort('${RankingFilter_resort.initial.korean}');
                                                       _rankingListViewModel.changeResortOrTotal('전체스키장');
+                                                      _rankingListViewModel.changeCategory_fed('리그별 랭킹');
                                                       _rankingListViewModel.changeResortNum(99);
                                                       _rankingListViewModel.changeMyBoxText();
                                                       await _rankingListViewModel.toggleDataDayOrTotal_tapFilter();
                                                     },
                                                     style: ElevatedButton.styleFrom(
+                                                        shadowColor: Colors.transparent,
+                                                        overlayColor: Colors.transparent,
                                                         padding: EdgeInsets.only(
                                                             right: 12, left: 12, top: 2, bottom: 2),
                                                         side: BorderSide(
                                                           width: 1,
-                                                          color: (_rankingListViewModel.resortOrTotal == '전체스키장') ? SDSColor.gray900 : SDSColor.gray100,
+                                                          color: (_rankingListViewModel.resortOrTotal == '전체스키장' && _rankingListViewModel.selectedCategory_fed == '리그별 랭킹') ? SDSColor.gray900 : SDSColor.gray100,
                                                         ),
-                                                        backgroundColor: (_rankingListViewModel.resortOrTotal == '전체스키장') ? SDSColor.gray900 : SDSColor.snowliveWhite,
+                                                        backgroundColor: (_rankingListViewModel.resortOrTotal == '전체스키장'&& _rankingListViewModel.selectedCategory_fed == '리그별 랭킹') ? SDSColor.gray900 : SDSColor.snowliveWhite,
                                                         elevation: 0,
                                                         shape: RoundedRectangleBorder(
                                                             borderRadius: BorderRadius.circular(50))),
@@ -1624,7 +1890,7 @@ class RankingIndiView extends StatelessWidget {
                                                     Text('${RankingFilter_resort.total.korean}',
                                                         style: SDSTextStyle.bold.copyWith(
                                                             fontSize: 13,
-                                                            color: (_rankingListViewModel.resortOrTotal == '전체스키장') ? Color(0xFFFFFFFF) : Color(0xFF111111)))
+                                                            color: (_rankingListViewModel.resortOrTotal == '전체스키장'&& _rankingListViewModel.selectedCategory_fed == '리그별 랭킹') ? Color(0xFFFFFFFF) : Color(0xFF111111)))
                                                 ),
                                               ],
                                             ),
@@ -1642,6 +1908,7 @@ class RankingIndiView extends StatelessWidget {
                                               children: [
                                                 ElevatedButton(
                                                     onPressed: () async {
+                                                      HapticFeedback.lightImpact();
                                                       showModalBottomSheet(
                                                           enableDrag: false,
                                                           isScrollControlled: true,
@@ -1683,6 +1950,7 @@ class RankingIndiView extends StatelessWidget {
                                                                               Navigator.pop(context);
                                                                               _rankingListViewModel.changeCategory_resort('${RankingFilter_resort.konjiam.korean}');
                                                                               _rankingListViewModel.changeResortOrTotal('개별스키장');
+                                                                              _rankingListViewModel.changeCategory_fed('리그별 랭킹');
                                                                               _rankingListViewModel.changeResortNum(1);
                                                                               _rankingListViewModel.changeMyBoxText();
                                                                               await _rankingListViewModel.toggleDataDayOrTotal_tapFilter(resortNum: 1);
@@ -1707,6 +1975,7 @@ class RankingIndiView extends StatelessWidget {
                                                                               Navigator.pop(context);
                                                                               _rankingListViewModel.changeCategory_resort('${RankingFilter_resort.muju.korean}');
                                                                               _rankingListViewModel.changeResortOrTotal('개별스키장');
+                                                                              _rankingListViewModel.changeCategory_fed('리그별 랭킹');
                                                                               _rankingListViewModel.changeResortNum(2);
                                                                               _rankingListViewModel.changeMyBoxText();
                                                                               await _rankingListViewModel.toggleDataDayOrTotal_tapFilter(resortNum: 2);
@@ -1731,6 +2000,7 @@ class RankingIndiView extends StatelessWidget {
                                                                               Navigator.pop(context);
                                                                               _rankingListViewModel.changeCategory_resort('${RankingFilter_resort.vivaldi.korean}');
                                                                               _rankingListViewModel.changeResortOrTotal('개별스키장');
+                                                                              _rankingListViewModel.changeCategory_fed('리그별 랭킹');
                                                                               _rankingListViewModel.changeResortNum(3);
                                                                               _rankingListViewModel.changeMyBoxText();
                                                                               await _rankingListViewModel.toggleDataDayOrTotal_tapFilter(resortNum: 3);
@@ -1755,6 +2025,7 @@ class RankingIndiView extends StatelessWidget {
                                                                               Navigator.pop(context);
                                                                               _rankingListViewModel.changeCategory_resort('${RankingFilter_resort.alphen.korean}');
                                                                               _rankingListViewModel.changeResortOrTotal('개별스키장');
+                                                                              _rankingListViewModel.changeCategory_fed('리그별 랭킹');
                                                                               _rankingListViewModel.changeResortNum(4);
                                                                               _rankingListViewModel.changeMyBoxText();
                                                                               await _rankingListViewModel.toggleDataDayOrTotal_tapFilter(resortNum:4);
@@ -1779,6 +2050,7 @@ class RankingIndiView extends StatelessWidget {
                                                                               Navigator.pop(context);
                                                                               _rankingListViewModel.changeCategory_resort('${RankingFilter_resort.gangchon.korean}');
                                                                               _rankingListViewModel.changeResortOrTotal('개별스키장');
+                                                                              _rankingListViewModel.changeCategory_fed('리그별 랭킹');
                                                                               _rankingListViewModel.changeResortNum(6);
                                                                               _rankingListViewModel.changeMyBoxText();
                                                                               await _rankingListViewModel.toggleDataDayOrTotal_tapFilter(resortNum: 6);
@@ -1803,6 +2075,7 @@ class RankingIndiView extends StatelessWidget {
                                                                               Navigator.pop(context);
                                                                               _rankingListViewModel.changeCategory_resort('${RankingFilter_resort.oak.korean}');
                                                                               _rankingListViewModel.changeResortOrTotal('개별스키장');
+                                                                              _rankingListViewModel.changeCategory_fed('리그별 랭킹');
                                                                               _rankingListViewModel.changeResortNum(7);
                                                                               _rankingListViewModel.changeMyBoxText();
                                                                               await _rankingListViewModel.toggleDataDayOrTotal_tapFilter(resortNum: 7);
@@ -1827,6 +2100,7 @@ class RankingIndiView extends StatelessWidget {
                                                                               Navigator.pop(context);
                                                                               _rankingListViewModel.changeCategory_resort('${RankingFilter_resort.o2.korean}');
                                                                               _rankingListViewModel.changeResortOrTotal('개별스키장');
+                                                                              _rankingListViewModel.changeCategory_fed('리그별 랭킹');
                                                                               _rankingListViewModel.changeResortNum(8);
                                                                               _rankingListViewModel.changeMyBoxText();
                                                                               await _rankingListViewModel.toggleDataDayOrTotal_tapFilter(resortNum: 8);
@@ -1851,6 +2125,7 @@ class RankingIndiView extends StatelessWidget {
                                                                               Navigator.pop(context);
                                                                               _rankingListViewModel.changeCategory_resort('${RankingFilter_resort.yongpyong.korean}');
                                                                               _rankingListViewModel.changeResortOrTotal('개별스키장');
+                                                                              _rankingListViewModel.changeCategory_fed('리그별 랭킹');
                                                                               _rankingListViewModel.changeResortNum(9);
                                                                               _rankingListViewModel.changeMyBoxText();
                                                                               await _rankingListViewModel.toggleDataDayOrTotal_tapFilter(resortNum: 9);
@@ -1875,6 +2150,7 @@ class RankingIndiView extends StatelessWidget {
                                                                               Navigator.pop(context);
                                                                               _rankingListViewModel.changeCategory_resort('${RankingFilter_resort.welli.korean}');
                                                                               _rankingListViewModel.changeResortOrTotal('개별스키장');
+                                                                              _rankingListViewModel.changeCategory_fed('리그별 랭킹');
                                                                               _rankingListViewModel.changeResortNum(10);
                                                                               _rankingListViewModel.changeMyBoxText();
                                                                               await _rankingListViewModel.toggleDataDayOrTotal_tapFilter(resortNum: 10);
@@ -1899,6 +2175,7 @@ class RankingIndiView extends StatelessWidget {
                                                                               Navigator.pop(context);
                                                                               _rankingListViewModel.changeCategory_resort('${RankingFilter_resort.jisan.korean}');
                                                                               _rankingListViewModel.changeResortOrTotal('개별스키장');
+                                                                              _rankingListViewModel.changeCategory_fed('리그별 랭킹');
                                                                               _rankingListViewModel.changeResortNum(11);
                                                                               _rankingListViewModel.changeMyBoxText();
                                                                               await _rankingListViewModel.toggleDataDayOrTotal_tapFilter(resortNum: 11);
@@ -1923,6 +2200,7 @@ class RankingIndiView extends StatelessWidget {
                                                                               Navigator.pop(context);
                                                                               _rankingListViewModel.changeCategory_resort('${RankingFilter_resort.high1.korean}');
                                                                               _rankingListViewModel.changeResortOrTotal('개별스키장');
+                                                                              _rankingListViewModel.changeCategory_fed('리그별 랭킹');
                                                                               _rankingListViewModel.changeResortNum(12);
                                                                               _rankingListViewModel.changeMyBoxText();
                                                                               await _rankingListViewModel.toggleDataDayOrTotal_tapFilter(resortNum: 12);
@@ -1947,6 +2225,7 @@ class RankingIndiView extends StatelessWidget {
                                                                               Navigator.pop(context);
                                                                               _rankingListViewModel.changeCategory_resort('${RankingFilter_resort.phoenix.korean}');
                                                                               _rankingListViewModel.changeResortOrTotal('개별스키장');
+                                                                              _rankingListViewModel.changeCategory_fed('리그별 랭킹');
                                                                               _rankingListViewModel.changeResortNum(13);
                                                                               _rankingListViewModel.changeMyBoxText();
                                                                               await _rankingListViewModel.toggleDataDayOrTotal_tapFilter(resortNum: 13);
@@ -1965,6 +2244,8 @@ class RankingIndiView extends StatelessWidget {
                                                           });
                                                     },
                                                     style: ElevatedButton.styleFrom(
+                                                        shadowColor: Colors.transparent,
+                                                        overlayColor: Colors.transparent,
                                                         padding: EdgeInsets.only(
                                                             right: 32, left: 12, top: 3, bottom: 2),
                                                         side: BorderSide(
@@ -2026,7 +2307,9 @@ class RankingIndiView extends StatelessWidget {
                                                                             Navigator.pop(context);
                                                                             _rankingListViewModel.changeCategory_resort('${RankingFilter_resort.konjiam.korean}');
                                                                             _rankingListViewModel.changeResortOrTotal('개별스키장');
+                                                                            _rankingListViewModel.changeCategory_fed('리그별 랭킹');
                                                                             _rankingListViewModel.changeResortNum(1);
+                                                                            _rankingListViewModel.changeMyBoxText();
                                                                             await _rankingListViewModel.toggleDataDayOrTotal_tapFilter(resortNum: 1);
                                                                           },
                                                                           shape: RoundedRectangleBorder(
@@ -2049,7 +2332,9 @@ class RankingIndiView extends StatelessWidget {
                                                                             Navigator.pop(context);
                                                                             _rankingListViewModel.changeCategory_resort('${RankingFilter_resort.muju.korean}');
                                                                             _rankingListViewModel.changeResortOrTotal('개별스키장');
+                                                                            _rankingListViewModel.changeCategory_fed('리그별 랭킹');
                                                                             _rankingListViewModel.changeResortNum(2);
+                                                                            _rankingListViewModel.changeMyBoxText();
                                                                             await _rankingListViewModel.toggleDataDayOrTotal_tapFilter(resortNum: 2);
                                                                           },
                                                                           shape: RoundedRectangleBorder(
@@ -2072,7 +2357,9 @@ class RankingIndiView extends StatelessWidget {
                                                                             Navigator.pop(context);
                                                                             _rankingListViewModel.changeCategory_resort('${RankingFilter_resort.vivaldi.korean}');
                                                                             _rankingListViewModel.changeResortOrTotal('개별스키장');
+                                                                            _rankingListViewModel.changeCategory_fed('리그별 랭킹');
                                                                             _rankingListViewModel.changeResortNum(3);
+                                                                            _rankingListViewModel.changeMyBoxText();
                                                                             await _rankingListViewModel.toggleDataDayOrTotal_tapFilter(resortNum: 3);
                                                                           },
                                                                           shape: RoundedRectangleBorder(
@@ -2095,7 +2382,9 @@ class RankingIndiView extends StatelessWidget {
                                                                             Navigator.pop(context);
                                                                             _rankingListViewModel.changeCategory_resort('${RankingFilter_resort.alphen.korean}');
                                                                             _rankingListViewModel.changeResortOrTotal('개별스키장');
+                                                                            _rankingListViewModel.changeCategory_fed('리그별 랭킹');
                                                                             _rankingListViewModel.changeResortNum(4);
+                                                                            _rankingListViewModel.changeMyBoxText();
                                                                             await _rankingListViewModel.toggleDataDayOrTotal_tapFilter(resortNum:4);
                                                                           },
                                                                           shape: RoundedRectangleBorder(
@@ -2118,7 +2407,9 @@ class RankingIndiView extends StatelessWidget {
                                                                             Navigator.pop(context);
                                                                             _rankingListViewModel.changeCategory_resort('${RankingFilter_resort.gangchon.korean}');
                                                                             _rankingListViewModel.changeResortOrTotal('개별스키장');
+                                                                            _rankingListViewModel.changeCategory_fed('리그별 랭킹');
                                                                             _rankingListViewModel.changeResortNum(6);
+                                                                            _rankingListViewModel.changeMyBoxText();
                                                                             await _rankingListViewModel.toggleDataDayOrTotal_tapFilter(resortNum: 6);
                                                                           },
                                                                           shape: RoundedRectangleBorder(
@@ -2141,7 +2432,9 @@ class RankingIndiView extends StatelessWidget {
                                                                             Navigator.pop(context);
                                                                             _rankingListViewModel.changeCategory_resort('${RankingFilter_resort.oak.korean}');
                                                                             _rankingListViewModel.changeResortOrTotal('개별스키장');
+                                                                            _rankingListViewModel.changeCategory_fed('리그별 랭킹');
                                                                             _rankingListViewModel.changeResortNum(7);
+                                                                            _rankingListViewModel.changeMyBoxText();
                                                                             await _rankingListViewModel.toggleDataDayOrTotal_tapFilter(resortNum: 7);
                                                                           },
                                                                           shape: RoundedRectangleBorder(
@@ -2164,7 +2457,9 @@ class RankingIndiView extends StatelessWidget {
                                                                             Navigator.pop(context);
                                                                             _rankingListViewModel.changeCategory_resort('${RankingFilter_resort.o2.korean}');
                                                                             _rankingListViewModel.changeResortOrTotal('개별스키장');
+                                                                            _rankingListViewModel.changeCategory_fed('리그별 랭킹');
                                                                             _rankingListViewModel.changeResortNum(8);
+                                                                            _rankingListViewModel.changeMyBoxText();
                                                                             await _rankingListViewModel.toggleDataDayOrTotal_tapFilter(resortNum: 8);
                                                                           },
                                                                           shape: RoundedRectangleBorder(
@@ -2187,7 +2482,9 @@ class RankingIndiView extends StatelessWidget {
                                                                             Navigator.pop(context);
                                                                             _rankingListViewModel.changeCategory_resort('${RankingFilter_resort.yongpyong.korean}');
                                                                             _rankingListViewModel.changeResortOrTotal('개별스키장');
+                                                                            _rankingListViewModel.changeCategory_fed('리그별 랭킹');
                                                                             _rankingListViewModel.changeResortNum(9);
+                                                                            _rankingListViewModel.changeMyBoxText();
                                                                             await _rankingListViewModel.toggleDataDayOrTotal_tapFilter(resortNum: 9);
                                                                           },
                                                                           shape: RoundedRectangleBorder(
@@ -2210,7 +2507,9 @@ class RankingIndiView extends StatelessWidget {
                                                                             Navigator.pop(context);
                                                                             _rankingListViewModel.changeCategory_resort('${RankingFilter_resort.welli.korean}');
                                                                             _rankingListViewModel.changeResortOrTotal('개별스키장');
+                                                                            _rankingListViewModel.changeCategory_fed('리그별 랭킹');
                                                                             _rankingListViewModel.changeResortNum(10);
+                                                                            _rankingListViewModel.changeMyBoxText();
                                                                             await _rankingListViewModel.toggleDataDayOrTotal_tapFilter(resortNum: 10);
                                                                           },
                                                                           shape: RoundedRectangleBorder(
@@ -2233,7 +2532,9 @@ class RankingIndiView extends StatelessWidget {
                                                                             Navigator.pop(context);
                                                                             _rankingListViewModel.changeCategory_resort('${RankingFilter_resort.jisan.korean}');
                                                                             _rankingListViewModel.changeResortOrTotal('개별스키장');
+                                                                            _rankingListViewModel.changeCategory_fed('리그별 랭킹');
                                                                             _rankingListViewModel.changeResortNum(11);
+                                                                            _rankingListViewModel.changeMyBoxText();
                                                                             await _rankingListViewModel.toggleDataDayOrTotal_tapFilter(resortNum: 11);
                                                                           },
                                                                           shape: RoundedRectangleBorder(
@@ -2256,7 +2557,9 @@ class RankingIndiView extends StatelessWidget {
                                                                             Navigator.pop(context);
                                                                             _rankingListViewModel.changeCategory_resort('${RankingFilter_resort.high1.korean}');
                                                                             _rankingListViewModel.changeResortOrTotal('개별스키장');
+                                                                            _rankingListViewModel.changeCategory_fed('리그별 랭킹');
                                                                             _rankingListViewModel.changeResortNum(12);
+                                                                            _rankingListViewModel.changeMyBoxText();
                                                                             await _rankingListViewModel.toggleDataDayOrTotal_tapFilter(resortNum: 12);
                                                                           },
                                                                           shape: RoundedRectangleBorder(
@@ -2279,7 +2582,9 @@ class RankingIndiView extends StatelessWidget {
                                                                             Navigator.pop(context);
                                                                             _rankingListViewModel.changeCategory_resort('${RankingFilter_resort.phoenix.korean}');
                                                                             _rankingListViewModel.changeResortOrTotal('개별스키장');
+                                                                            _rankingListViewModel.changeCategory_fed('리그별 랭킹');
                                                                             _rankingListViewModel.changeResortNum(13);
+                                                                            _rankingListViewModel.changeMyBoxText();
                                                                             await _rankingListViewModel.toggleDataDayOrTotal_tapFilter(resortNum: 13);
                                                                           },
                                                                           shape: RoundedRectangleBorder(
@@ -2294,13 +2599,237 @@ class RankingIndiView extends StatelessWidget {
                                                             );
                                                           });
                                                     },
-                                                    child: (_rankingListViewModel.resortOrTotal != '전체스키장')
-                                                        ? Image.asset(
+                                                    child: (_rankingListViewModel.resortOrTotal != '전체스키장') ? Image.asset(
                                                       'assets/imgs/icons/icon_check_round.png',
                                                       fit: BoxFit.cover,
                                                       width: 16,
-                                                      height: 16,)
-                                                        : Image.asset(
+                                                      height: 16,
+                                                    ) : Image.asset(
+                                                      'assets/imgs/icons/icon_check_round_black.png',
+                                                      fit: BoxFit.cover,
+                                                      width: 16,
+                                                      height: 16,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: EdgeInsets.only(top: 16, bottom: 8),
+                                      child: Row(
+                                        children: [
+                                          Padding(
+                                            padding: EdgeInsets.only(right: 8),
+                                            child: Stack(
+                                              children: [
+                                                ElevatedButton(
+                                                    onPressed: () async {
+                                                      HapticFeedback.lightImpact();
+                                                      showModalBottomSheet(
+                                                          enableDrag: false,
+                                                          isScrollControlled: true,
+                                                          backgroundColor: Colors.transparent,
+                                                          context: context,
+                                                          builder: (context) {
+                                                            return SafeArea(
+                                                              child: Padding(
+                                                                padding: const EdgeInsets.symmetric(vertical: 20),
+                                                                child: Container(
+                                                                  margin: EdgeInsets.only(
+                                                                    left: 16,
+                                                                    right: 16,
+                                                                    top: 16,
+                                                                  ),
+                                                                  height: MediaQuery.of(context).size.height * 0.6,
+                                                                  padding: EdgeInsets.all(16),
+                                                                  decoration: BoxDecoration(
+                                                                    color: Colors.white,
+                                                                    borderRadius: BorderRadius.circular(16),
+                                                                  ),
+                                                                  child: Scrollbar(
+                                                                    child: SingleChildScrollView(
+                                                                      child: Wrap(
+                                                                        children: [
+                                                                          //대학 스키
+                                                                          ListTile(
+                                                                            contentPadding: EdgeInsets.zero,
+                                                                            title: Center(
+                                                                              child: Text(
+                                                                                '${RankingFilter_fed.univ_ski.korean}',
+                                                                                style: SDSTextStyle.bold.copyWith(
+                                                                                    fontSize: 15,
+                                                                                    color: SDSColor.gray900
+                                                                                ),
+                                                                              ),
+                                                                            ),
+                                                                            onTap: () async {
+                                                                              Navigator.pop(context);
+                                                                              _rankingListViewModel.changeCategory_resort('${RankingFilter_resort.initial.korean}');
+                                                                              _rankingListViewModel.changeCategory_fed('${RankingFilter_fed.univ_ski.english}');
+                                                                              _rankingListViewModel.changeResortOrTotal('전체스키장');
+                                                                              _rankingListViewModel.changeResortNum(99);
+                                                                              _rankingListViewModel.changeMyBoxText();
+                                                                              await _rankingListViewModel.toggleDataDayOrTotal_tapFilter();
+                                                                            },
+                                                                            shape: RoundedRectangleBorder(
+                                                                                borderRadius:
+                                                                                BorderRadius.circular(16)),
+                                                                          ),
+                                                                          //대학 보드
+                                                                          ListTile(
+                                                                            contentPadding: EdgeInsets.zero,
+                                                                            title: Center(
+                                                                              child: Text(
+                                                                                '${RankingFilter_fed.univ_board.korean}',
+                                                                                style: SDSTextStyle.bold.copyWith(
+                                                                                    fontSize: 15,
+                                                                                    color: SDSColor.gray900
+                                                                                ),
+                                                                              ),
+                                                                            ),
+                                                                            onTap: () async {
+                                                                              Navigator.pop(context);
+                                                                              _rankingListViewModel.changeCategory_resort('${RankingFilter_resort.initial.korean}');
+                                                                              _rankingListViewModel.changeCategory_fed('${RankingFilter_fed.univ_board.english}');
+                                                                              _rankingListViewModel.changeResortOrTotal('전체스키장');
+                                                                              _rankingListViewModel.changeResortNum(99);
+                                                                              _rankingListViewModel.changeMyBoxText();
+                                                                              await _rankingListViewModel.toggleDataDayOrTotal_tapFilter();
+                                                                            },
+                                                                            shape: RoundedRectangleBorder(
+                                                                                borderRadius:
+                                                                                BorderRadius.circular(16)),
+                                                                          ),
+                                                                        ],
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                            );
+                                                          });
+                                                    },
+                                                    style: ElevatedButton.styleFrom(
+                                                        shadowColor: Colors.transparent,
+                                                        overlayColor: Colors.transparent,
+                                                        padding: EdgeInsets.only(
+                                                            right: 32, left: 12, top: 3, bottom: 2),
+                                                        side: BorderSide(
+                                                          width: 1,
+                                                          color: (_rankingListViewModel.selectedCategory_fed != '리그별 랭킹' ) ? SDSColor.gray900 : SDSColor.gray100,
+                                                        ),
+                                                        backgroundColor: (_rankingListViewModel.selectedCategory_fed != '리그별 랭킹') ? SDSColor.gray900 : SDSColor.snowliveWhite,
+                                                        elevation: 0,
+                                                        shape: RoundedRectangleBorder(
+                                                            borderRadius: BorderRadius.circular(50))),
+                                                    child:
+                                                    Text(
+                                                        (_rankingListViewModel.selectedCategory_fed=='리그별 랭킹')
+                                                            ? '${RankingFilter_fed.initial.korean}'
+                                                            :(_rankingListViewModel.selectedCategory_fed=='univ_board')
+                                                            ?'${RankingFilter_fed.univ_board.korean}'
+                                                            :'${RankingFilter_fed.univ_ski.korean}',
+                                                        style: SDSTextStyle.bold.copyWith(
+                                                            fontSize: 13,
+                                                            color: (_rankingListViewModel.selectedCategory_fed != '리그별 랭킹' ) ? Color(0xFFFFFFFF) : Color(0xFF111111)))
+                                                ),
+                                                Positioned(
+                                                  top: 10,
+                                                  right: 10,
+                                                  child: GestureDetector(
+                                                    onTap: () async {
+                                                      showModalBottomSheet(
+                                                          enableDrag: false,
+                                                          isScrollControlled: true,
+                                                          backgroundColor: Colors.transparent,
+                                                          context: context,
+                                                          builder: (context) {
+                                                            return SafeArea(
+                                                              child: Padding(
+                                                                padding: const EdgeInsets.symmetric(vertical: 20),
+                                                                child: Container(
+                                                                  margin: EdgeInsets.only(
+                                                                    left: 16,
+                                                                    right: 16,
+                                                                    top: 16,
+                                                                  ),
+                                                                  height: MediaQuery.of(context).size.height * 0.6,
+                                                                  padding: EdgeInsets.all(16),
+                                                                  decoration: BoxDecoration(
+                                                                    color: Colors.white,
+                                                                    borderRadius: BorderRadius.circular(16),
+                                                                  ),
+                                                                  child: Scrollbar(
+                                                                    child: SingleChildScrollView(
+                                                                      child: Wrap(
+                                                                        children: [
+                                                                          //대학 스키
+                                                                          ListTile(
+                                                                            contentPadding: EdgeInsets.zero,
+                                                                            title: Center(
+                                                                              child: Text(
+                                                                                '${RankingFilter_fed.univ_ski.korean}',
+                                                                                style: SDSTextStyle.bold.copyWith(
+                                                                                    fontSize: 15,
+                                                                                    color: SDSColor.gray900
+                                                                                ),
+                                                                              ),
+                                                                            ),
+                                                                            onTap: () async {
+                                                                              Navigator.pop(context);
+                                                                              _rankingListViewModel.changeCategory_fed('${RankingFilter_fed.univ_ski}');
+                                                                              _rankingListViewModel.changeResortOrTotal('전체스키장');
+                                                                              _rankingListViewModel.changeResortNum(99);
+                                                                              _rankingListViewModel.changeMyBoxText();
+                                                                              await _rankingListViewModel.toggleDataDayOrTotal_tapFilter();
+                                                                            },
+                                                                            shape: RoundedRectangleBorder(
+                                                                                borderRadius:
+                                                                                BorderRadius.circular(16)),
+                                                                          ),
+                                                                          //대학 보드
+                                                                          ListTile(
+                                                                            contentPadding: EdgeInsets.zero,
+                                                                            title: Center(
+                                                                              child: Text(
+                                                                                '${RankingFilter_fed.univ_board.korean}',
+                                                                                style: SDSTextStyle.bold.copyWith(
+                                                                                    fontSize: 15,
+                                                                                    color: SDSColor.gray900
+                                                                                ),
+                                                                              ),
+                                                                            ),
+                                                                            onTap: () async {
+                                                                              Navigator.pop(context);
+                                                                              _rankingListViewModel.changeCategory_fed('${RankingFilter_fed.univ_board}');
+                                                                              _rankingListViewModel.changeResortOrTotal('전체스키장');
+                                                                              _rankingListViewModel.changeResortNum(99);
+                                                                              _rankingListViewModel.changeMyBoxText();
+                                                                              await _rankingListViewModel.toggleDataDayOrTotal_tapFilter();
+                                                                            },
+                                                                            shape: RoundedRectangleBorder(
+                                                                                borderRadius:
+                                                                                BorderRadius.circular(16)),
+                                                                          ),
+                                                                        ],
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                            );
+                                                          });
+                                                    },
+                                                    child: (_rankingListViewModel.resortOrTotal != '전체스키장') ? Image.asset(
+                                                      'assets/imgs/icons/icon_check_round.png',
+                                                      fit: BoxFit.cover,
+                                                      width: 16,
+                                                      height: 16,
+                                                    ) : Image.asset(
                                                       'assets/imgs/icons/icon_check_round_black.png',
                                                       fit: BoxFit.cover,
                                                       width: 16,

@@ -155,6 +155,7 @@ class RankingAPI {
     bool? daily,
     String? season,
     String? url,
+    String? federation
   }) async {
     final uri = url != null
         ? Uri.parse(url)
@@ -164,6 +165,7 @@ class RankingAPI {
         if (resortId != null) 'resort_id': resortId.toString(),
         if (daily != null) 'daily': daily.toString(),
         if (season != null) 'season': season,
+        if (federation != null) 'federation': federation,
       },
     );
 
@@ -208,6 +210,7 @@ class RankingAPI {
     bool? daily,
     String? season,
     String? url,
+    String? federation
   }) async {
     final uri = url != null
         ? Uri.parse(url)
@@ -217,6 +220,7 @@ class RankingAPI {
         if (resortId != null) 'resort_id': resortId.toString(),
         if (daily != null) 'daily': daily.toString(),
         if (season != null) 'season': season,
+        if (federation != null) 'federation': federation,
       },
     );
 

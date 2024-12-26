@@ -56,6 +56,7 @@ class _FriendDetailViewState extends State<FriendDetailView> {
     final CrewMemberListViewModel _crewMemberListViewModel = Get.find<CrewMemberListViewModel>();
     final CrewRecordRoomViewModel _crewRecordRoomViewModel = Get.find<CrewRecordRoomViewModel>();
     final AlarmCenterViewModel _alarmCenterViewModel = Get.find<AlarmCenterViewModel>();
+    _friendDetailViewModel.changeRidingStaticTab(0);
 
     return GestureDetector(
       onTap: () {
@@ -772,7 +773,7 @@ class _FriendDetailViewState extends State<FriendDetailView> {
                                                               SizedBox(
                                                                 width: 6,
                                                               ),
-                                                                Container(
+                                                              Container(
                                                                 width: _size.width / 3 - 30,
                                                                 child: Column(
                                                                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -1324,9 +1325,9 @@ class _FriendDetailViewState extends State<FriendDetailView> {
                                                                           ? Column(
                                                                         crossAxisAlignment: CrossAxisAlignment.start,
                                                                         children: [
-                                                                              Column(
-                                                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                                                children: _friendDetailViewModel.friendDetailModel.calendarInfo[_friendDetailViewModel.selectedDailyIndex].dailyInfo.map<Widget>((data) {
+                                                                          Column(
+                                                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                                                            children: _friendDetailViewModel.friendDetailModel.calendarInfo[_friendDetailViewModel.selectedDailyIndex].dailyInfo.map<Widget>((data) {
                                                                               String slopeName = data.slope;
                                                                               int passCount = data.count;
                                                                               double barWidthRatio = data.ratio;
@@ -1393,84 +1394,84 @@ class _FriendDetailViewState extends State<FriendDetailView> {
                                                                                   ],
                                                                                 ),
                                                                               );
-                                                                                                                                                      }).toList(),
-                                                                                                                                                    ),
-                                                                              Padding(
-                                                                                padding: EdgeInsets.symmetric(vertical: 24),
-                                                                                child: Container(
-                                                                                  height: 1,
-                                                                                  width: _size.width - 80,
-                                                                                  color: SDSColor.snowliveBlack.withOpacity(0.05),
-                                                                                ),
+                                                                            }).toList(),
+                                                                          ),
+                                                                          Padding(
+                                                                            padding: EdgeInsets.symmetric(vertical: 24),
+                                                                            child: Container(
+                                                                              height: 1,
+                                                                              width: _size.width - 80,
+                                                                              color: SDSColor.snowliveBlack.withOpacity(0.05),
+                                                                            ),
+                                                                          ),
+                                                                          Padding(
+                                                                            padding: EdgeInsets.only(bottom: 10),
+                                                                            child: Text('시간대별 기록',
+                                                                              style: SDSTextStyle.regular.copyWith(
+                                                                                  color: SDSColor.gray900,
+                                                                                  fontSize: 13
                                                                               ),
-                                                                              Padding(
-                                                                                padding: EdgeInsets.only(bottom: 10),
-                                                                                child: Text('시간대별 기록',
-                                                                                  style: SDSTextStyle.regular.copyWith(
-                                                                                      color: SDSColor.gray900,
-                                                                                      fontSize: 13
-                                                                                  ),
-                                                                                ),
-                                                                              ),
-                                                                              if (_friendDetailViewModel.selectedDailyIndex != -1 &&
-                                                                                  _friendDetailViewModel.friendDetailModel.calendarInfo.length > _friendDetailViewModel.selectedDailyIndex)
-                                                                                Row(
-                                                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                                                  crossAxisAlignment: CrossAxisAlignment.end,
-                                                                                  children: _friendDetailViewModel.friendDetailModel.calendarInfo[_friendDetailViewModel.selectedDailyIndex].timeInfo.entries.map<Widget>((entry) {
-                                                                                    String slotName = entry.key;
-                                                                                    int passCount = entry.value;
-                                                                                    int maxCount = _friendDetailViewModel.friendDetailModel.calendarInfo[_friendDetailViewModel.selectedDailyIndex].timeInfo_maxCount;
-                                                                                    double barHeightRatio = passCount / maxCount;
-                                                                                    return Container(
-                                                                                      width: 30,
-                                                                                      child: Column(
-                                                                                        mainAxisAlignment: MainAxisAlignment.end,
-                                                                                        children: [
-                                                                                          AutoSizeText(
-                                                                                            passCount != 0 ? '$passCount' : '',
-                                                                                            style: SDSTextStyle.bold.copyWith(
-                                                                                              fontSize: 12,
-                                                                                              color: SDSColor.gray900,
-                                                                                            ),
-                                                                                            minFontSize: 6,
-                                                                                            maxLines: 1,
-                                                                                            overflow: TextOverflow.visible,
-                                                                                          ),
-                                                                                          Padding(
-                                                                                            padding: EdgeInsets.only(top: 4),
-                                                                                            child: Container(
-                                                                                              width: 16,
-                                                                                              height: 100 * barHeightRatio,
-                                                                                              decoration: BoxDecoration(
-                                                                                                  color: SDSColor.gray200,
-                                                                                                  borderRadius: BorderRadius.only(
-                                                                                                      topRight: Radius.circular(4), topLeft: Radius.circular(4)
-                                                                                                  )
-                                                                                              ),
-                                                                                            ),
-                                                                                          ),
-                                                                                          Padding(
-                                                                                            padding: const EdgeInsets.only(top: 8),
-                                                                                            child: Container(
-                                                                                              width: 20,
-                                                                                              child: Text(
-                                                                                                slotName,
-                                                                                                style: SDSTextStyle.regular.copyWith(
-                                                                                                    fontSize: 11,
-                                                                                                    color: SDSColor.gray600,
-                                                                                                    height: 1.2
-                                                                                                ),
-                                                                                              ),
-                                                                                            ),
-                                                                                          ),
-                                                                                        ],
+                                                                            ),
+                                                                          ),
+                                                                          if (_friendDetailViewModel.selectedDailyIndex != -1 &&
+                                                                              _friendDetailViewModel.friendDetailModel.calendarInfo.length > _friendDetailViewModel.selectedDailyIndex)
+                                                                            Row(
+                                                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                                              crossAxisAlignment: CrossAxisAlignment.end,
+                                                                              children: _friendDetailViewModel.friendDetailModel.calendarInfo[_friendDetailViewModel.selectedDailyIndex].timeInfo.entries.map<Widget>((entry) {
+                                                                                String slotName = entry.key;
+                                                                                int passCount = entry.value;
+                                                                                int maxCount = _friendDetailViewModel.friendDetailModel.calendarInfo[_friendDetailViewModel.selectedDailyIndex].timeInfo_maxCount;
+                                                                                double barHeightRatio = passCount / maxCount;
+                                                                                return Container(
+                                                                                  width: 30,
+                                                                                  child: Column(
+                                                                                    mainAxisAlignment: MainAxisAlignment.end,
+                                                                                    children: [
+                                                                                      AutoSizeText(
+                                                                                        passCount != 0 ? '$passCount' : '',
+                                                                                        style: SDSTextStyle.bold.copyWith(
+                                                                                          fontSize: 12,
+                                                                                          color: SDSColor.gray900,
+                                                                                        ),
+                                                                                        minFontSize: 6,
+                                                                                        maxLines: 1,
+                                                                                        overflow: TextOverflow.visible,
                                                                                       ),
-                                                                                    );
-                                                                                  }).toList(),
-                                                                                )
-                                                                            ],
-                                                                          )
+                                                                                      Padding(
+                                                                                        padding: EdgeInsets.only(top: 4),
+                                                                                        child: Container(
+                                                                                          width: 16,
+                                                                                          height: 100 * barHeightRatio,
+                                                                                          decoration: BoxDecoration(
+                                                                                              color: SDSColor.gray200,
+                                                                                              borderRadius: BorderRadius.only(
+                                                                                                  topRight: Radius.circular(4), topLeft: Radius.circular(4)
+                                                                                              )
+                                                                                          ),
+                                                                                        ),
+                                                                                      ),
+                                                                                      Padding(
+                                                                                        padding: const EdgeInsets.only(top: 8),
+                                                                                        child: Container(
+                                                                                          width: 20,
+                                                                                          child: Text(
+                                                                                            slotName,
+                                                                                            style: SDSTextStyle.regular.copyWith(
+                                                                                                fontSize: 11,
+                                                                                                color: SDSColor.gray600,
+                                                                                                height: 1.2
+                                                                                            ),
+                                                                                          ),
+                                                                                        ),
+                                                                                      ),
+                                                                                    ],
+                                                                                  ),
+                                                                                );
+                                                                              }).toList(),
+                                                                            )
+                                                                        ],
+                                                                      )
                                                                           : Center(
                                                                         child: Padding(
                                                                           padding: const EdgeInsets.only(bottom: 30),

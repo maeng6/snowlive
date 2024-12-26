@@ -178,8 +178,11 @@ class CommunityMainView extends StatelessWidget {
                                           ),
                                           onPressed: () async{
                                             HapticFeedback.lightImpact();
-                                            await _alarmCenterViewModel.updateEventTabNotice(_userViewModel.user.user_id, false);
                                             _communityBulletinListViewModel.changeTap('행사·클리닉');
+                                            if(showNewBadge){
+                                              await _communityBulletinListViewModel.fetchCommunityList_event(userId:  _userViewModel.user.user_id,categoryMain: '이벤트');
+                                              await _alarmCenterViewModel.updateEventTabNotice(_userViewModel.user.user_id, false);
+                                            }
                                           },
                                           style: ElevatedButton.styleFrom(
                                             splashFactory: NoSplash.splashFactory,

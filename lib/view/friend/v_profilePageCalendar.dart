@@ -66,8 +66,23 @@ class _ProfilePageCalendarState extends State<ProfilePageCalendar> {
     });
   }
 
+  void _loadRidingDataForSelectedDay() {
+    if (ridingHistory.containsKey(focusedDay)) {
+      int index = ridingHistory.keys.toList().indexOf(focusedDay);
+      _friendDetailViewModel.updateSelectedDailyIndex(index);
+    } else {
+      _friendDetailViewModel.updateSelectedDailyIndex(-1); // 데이터 없음
+    }
+  }
+
+
   @override
   Widget build(BuildContext context) {
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _loadRidingDataForSelectedDay();
+    });
+
     return TableCalendar<int>(
       availableGestures: AvailableGestures.horizontalSwipe,
       focusedDay: focusedDay,

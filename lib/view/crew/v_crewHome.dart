@@ -19,6 +19,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:photo_view/photo_view.dart';
 
 class CrewHomeView extends StatelessWidget {
   CrewHomeView({Key? key}) : super(key: key);
@@ -167,6 +168,32 @@ class CrewHomeView extends StatelessWidget {
                                       if (_crewDetailViewModel.crewLogoUrl.isNotEmpty)
                                         GestureDetector(
                                           onTap: () {
+                                            showDialog(
+                                              context: context,
+                                              builder: (BuildContext context) {
+                                                return Dialog(
+                                                  backgroundColor: Colors.transparent, // 다이얼로그 배경을 투명하게 설정
+                                                  child: GestureDetector(
+                                                    onTap: () {
+                                                      Navigator.of(context).pop(); // 클릭 시 다이얼로그 닫기
+                                                    },
+                                                    child: Center(
+                                                      child: PhotoView(
+                                                        imageProvider: ExtendedNetworkImageProvider(
+                                                          _crewDetailViewModel.crewLogoUrl, // 이미지 URL 설정
+                                                          cache: true, // 캐싱 옵션
+                                                        ),
+                                                        backgroundDecoration: const BoxDecoration(
+                                                          color: Colors.transparent, // 배경을 투명으로 설정
+                                                        ),
+                                                        minScale: PhotoViewComputedScale.contained, // 최소 확대 비율
+                                                        maxScale: PhotoViewComputedScale.covered * 7, // 최대 확대 비율
+                                                      ),
+                                                    ),
+                                                  ),
+                                                );
+                                              },
+                                            );
                                           },
                                           child: Container(
                                             decoration: const BoxDecoration(

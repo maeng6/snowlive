@@ -198,7 +198,7 @@ class FleamarketListViewModel extends GetxController {
   Future<void> _scrollListener_total() async {
     // 스크롤이 리스트의 끝에 도달했을 때
     if (scrollController_total.position.pixels == scrollController_total.position.maxScrollExtent) {
-      if (_nextPageUrl_total.value.isNotEmpty) {
+      if (!_isLoadingNextList_total.value && _nextPageUrl_total.value.isNotEmpty) {
         _isLoadingNextList_total .value = true;
         await fetchNextPage_total();
         _isLoadingNextList_total .value = false;
@@ -219,7 +219,7 @@ class FleamarketListViewModel extends GetxController {
   Future<void> _scrollListener_ski() async {
     // 스크롤이 리스트의 끝에 도달했을 때
     if (scrollController_ski.position.pixels == scrollController_ski.position.maxScrollExtent) {
-      if (_nextPageUrl_ski.value.isNotEmpty) {
+      if (!_isLoadingNextList_ski.value && _nextPageUrl_ski.value.isNotEmpty) {
         _isLoadingNextList_ski.value = true;
         await fetchNextPage_ski();
         _isLoadingNextList_ski.value = false;
@@ -240,7 +240,7 @@ class FleamarketListViewModel extends GetxController {
   Future<void> _scrollListener_board() async {
     // 스크롤이 리스트의 끝에 도달했을 때
     if (scrollController_board.position.pixels == scrollController_board.position.maxScrollExtent) {
-      if (_nextPageUrl_board.value.isNotEmpty) {
+      if (!_isLoadingNextList_board.value && _nextPageUrl_board.value.isNotEmpty) {
         _isLoadingNextList_board.value = true;
         await fetchNextPage_board();
         _isLoadingNextList_board.value = false;
@@ -261,7 +261,7 @@ class FleamarketListViewModel extends GetxController {
   Future<void> _scrollListener_favorite() async {
     // 스크롤이 리스트의 끝에 도달했을 때
     if (scrollController_favorite.position.pixels == scrollController_favorite.position.maxScrollExtent) {
-      if (_nextPageUrl_favorite.value.isNotEmpty) {
+      if (!_isLoadingNextList_favorite.value && _nextPageUrl_favorite.value.isNotEmpty) {
         _isLoadingNextList_favorite.value = true;
         await fetchNextPage_favorite();
         _isLoadingNextList_favorite.value = false;
@@ -282,7 +282,7 @@ class FleamarketListViewModel extends GetxController {
   Future<void> _scrollListener_my() async {
     // 스크롤이 리스트의 끝에 도달했을 때
     if (scrollController_my.position.pixels == scrollController_my.position.maxScrollExtent) {
-      if (_nextPageUrl_my.value.isNotEmpty) {
+      if (!_isLoadingNextList_my.value && _nextPageUrl_my.value.isNotEmpty) {
         _isLoadingNextList_my.value = true;
         await fetchNextPage_my();
         _isLoadingNextList_my.value = false;

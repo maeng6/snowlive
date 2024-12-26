@@ -51,6 +51,7 @@ class RankingHomeView extends StatelessWidget {
                               _rankingListViewModel.changeDayOrTotal('누적');
                               _rankingListViewModel.changeResortOrTotal('전체스키장');
                               _rankingListViewModel.changeCategory_resort('스키장별 랭킹');
+                              _rankingListViewModel.changeCategory_fed('리그별 랭킹');
                               _rankingListViewModel.changeMyBoxText();
                             },
                             style: ElevatedButton.styleFrom(
@@ -92,6 +93,7 @@ class RankingHomeView extends StatelessWidget {
                               _rankingListViewModel.changeDayOrTotal('누적');
                               _rankingListViewModel.changeResortOrTotal('전체스키장');
                               _rankingListViewModel.changeCategory_resort('스키장별 랭킹');
+                              _rankingListViewModel.changeCategory_fed('리그별 랭킹');
                               _rankingListViewModel.changeMyBoxText();
                             },
                             style: ElevatedButton.styleFrom(
