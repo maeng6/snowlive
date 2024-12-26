@@ -657,17 +657,17 @@ class RankingListViewModel extends GetxController {
       _rankingListIndivList_view.value = _rankingListIndivList_resort;
       _rankingListIndivMy_view.value = _rankingListIndivMy_resort.value;
     } else if (tapName == '개인랭킹' && resortOrTotal == '전체스키장' && dayOrTotal == '일간' && selectedCategory_fed == '리그별 랭킹'){
-      _isLoadingRankingListIndiv_total.value=true;
-      _isLoadingRankingListIndiv_total_daily.value=true;
-      await fetchRankingDataIndiv_total_daily(userId: _userViewModel.user.user_id,daily: true);
+      // _isLoadingRankingListIndiv_total.value=true;
+      // _isLoadingRankingListIndiv_total_daily.value=true;
+      // await fetchRankingDataIndiv_total_daily(userId: _userViewModel.user.user_id,daily: true);
       _isLoadingRankingListIndiv_total.value=false;
       _isLoadingRankingListIndiv_total_daily.value=false;
       _rankingListIndivList_view.value = _rankingListIndivList_total_daily;
       _rankingListIndivMy_view.value = _rankingListIndivMy_total_daily.value;
     } else if (tapName == '개인랭킹' && resortOrTotal == '전체스키장' && dayOrTotal == '누적' && selectedCategory_fed == '리그별 랭킹'){
-      _isLoadingRankingListIndiv_total.value=true;
-      _isLoadingRankingListIndiv_total_daily.value=true;
-      await fetchRankingDataIndiv_total(userId: _userViewModel.user.user_id);
+      // _isLoadingRankingListIndiv_total.value=true;
+      // _isLoadingRankingListIndiv_total_daily.value=true;
+      // await fetchRankingDataIndiv_total(userId: _userViewModel.user.user_id);
       _isLoadingRankingListIndiv_total.value=false;
       _isLoadingRankingListIndiv_total_daily.value=false;
       _rankingListIndivList_view.value = _rankingListIndivList_total;
