@@ -1194,7 +1194,8 @@ class RankingCrewView extends StatelessWidget {
                                                                             ),
                                                                             onTap: () async {
                                                                               Navigator.pop(context);
-                                                                              _rankingListViewModel.changeCategory_fed('${RankingFilter_fed.univ_ski}');
+                                                                              _rankingListViewModel.changeCategory_resort('${RankingFilter_resort.initial.korean}');
+                                                                              _rankingListViewModel.changeCategory_fed('${RankingFilter_fed.univ_ski.english}');
                                                                               _rankingListViewModel.changeResortOrTotal('전체스키장');
                                                                               _rankingListViewModel.changeResortNum(99);
                                                                               _rankingListViewModel.changeMyBoxText();
@@ -1218,7 +1219,8 @@ class RankingCrewView extends StatelessWidget {
                                                                             ),
                                                                             onTap: () async {
                                                                               Navigator.pop(context);
-                                                                              _rankingListViewModel.changeCategory_fed('${RankingFilter_fed.univ_board}');
+                                                                              _rankingListViewModel.changeCategory_resort('${RankingFilter_resort.initial.korean}');
+                                                                              _rankingListViewModel.changeCategory_fed('${RankingFilter_fed.univ_board.english}');
                                                                               _rankingListViewModel.changeResortOrTotal('전체스키장');
                                                                               _rankingListViewModel.changeResortNum(99);
                                                                               _rankingListViewModel.changeMyBoxText();
