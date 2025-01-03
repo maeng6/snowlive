@@ -285,6 +285,7 @@ class FriendDetailUpdateView extends StatelessWidget {
                                       strutStyle: StrutStyle(fontSize: 14, leading: 0),
                                       inputFormatters: [
                                         FilteringTextInputFormatter.deny(RegExp(r'\s')), // 띄어쓰기 입력 차단
+                                        LengthLimitingTextInputFormatter(10), // 최대 10글자 제한
                                       ],
                                       decoration: InputDecoration(
                                         floatingLabelBehavior: FloatingLabelBehavior.never,
@@ -330,7 +331,7 @@ class FriendDetailUpdateView extends StatelessWidget {
                                         if (val!.length <= 10 && val.length >= 1) {
                                           return null;
                                         } else if (val.length == 0) {
-                                          return '활동명을 입력해주세요.';
+                                          return '닉네임을 입력해주세요.';
                                         } else {
                                           return '최대 입력 가능한 글자 수를 초과했습니다.';
                                         }
@@ -368,7 +369,7 @@ class FriendDetailUpdateView extends StatelessWidget {
                                                     child: Column(
                                                       mainAxisSize: MainAxisSize.min,
                                                       children: [
-                                                        Text('이미 존재하는 활동명이에요',
+                                                        Text('이미 존재하는 닉네임이에요',
                                                           style: SDSTextStyle.bold.copyWith(fontSize: 16, color: SDSColor.gray900),
                                                           textAlign: TextAlign.center,
                                                         ),
@@ -442,6 +443,9 @@ class FriendDetailUpdateView extends StatelessWidget {
                                       cursorColor: SDSColor.snowliveBlue,
                                       cursorHeight: 16,
                                       cursorWidth: 2,
+                                      inputFormatters: [
+                                        LengthLimitingTextInputFormatter(20), // 최대 20글자 제한
+                                      ],
                                       autovalidateMode: AutovalidateMode.onUserInteraction,
                                       controller: _friendDetailUpdateViewModel.textEditingController_stateMsg..text,
                                       style: SDSTextStyle.regular.copyWith(fontSize: 15),

@@ -56,7 +56,6 @@ class _FriendDetailViewState extends State<FriendDetailView> {
     final CrewMemberListViewModel _crewMemberListViewModel = Get.find<CrewMemberListViewModel>();
     final CrewRecordRoomViewModel _crewRecordRoomViewModel = Get.find<CrewRecordRoomViewModel>();
     final AlarmCenterViewModel _alarmCenterViewModel = Get.find<AlarmCenterViewModel>();
-    _friendDetailViewModel.changeRidingStaticTab(0);
 
     return GestureDetector(
       onTap: () {
