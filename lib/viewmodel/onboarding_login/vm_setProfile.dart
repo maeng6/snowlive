@@ -1,6 +1,7 @@
 import 'package:com.snowlive/api/ApiResponse.dart';
 import 'package:com.snowlive/api/api_login.dart';
 import 'package:com.snowlive/model/m_resortModel.dart';
+import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_rx/get_rx.dart';
@@ -55,7 +56,7 @@ class SetProfileViewModel extends GetxController {
       _imageFile.value = await imageController.getSingleImage(source);
       if(_imageFile.value != null)
         _croppedFile.value = await imageController.cropImage(_imageFile.value);
-       if(_croppedFile.value != null)
+      if(_croppedFile.value != null)
         _profileImage.value = true;
 
     } catch (e) {
@@ -74,12 +75,25 @@ class SetProfileViewModel extends GetxController {
     }
   }
 
-  Future<void> startSnowlive(Map<String, dynamic> body) async {
-    if (formKey.currentState!.validate()){
-    ApiResponse response = await LoginAPI().registerUser(body);
-    _startSnowliveReturn = response.data;
+
+  Future<bool> startSnowlive(Map<String, dynamic> body) async {
+    if (formKey.currentState!.validate()) {
+      ApiResponse response = await LoginAPI().registerUser(body);
+      if (response.success) {
+        _startSnowliveReturn = response.data;
+        return true; // 성공 시 true 반환
+      } else {
+        CustomFullScreenDialog.cancelDialog();
+        Get.snackbar(
+          '회원가입 실패',
+          '잠시 후 다시 시도해주세요.',
+        );
+        return false; // 실패 시 false 반환
+      }
     }
+    return false; // 폼 검증 실패 시 false 반환
   }
+
 
   void cancelSelectedImage(){
     _profileImage.value = false;
@@ -96,7 +110,7 @@ class SetProfileViewModel extends GetxController {
   }
 
   void selectSkiOrBoard(String selected){
-      _selectedSkiOrBoard.value = selected;
+    _selectedSkiOrBoard.value = selected;
   }
 
   void selectSex(String selected){
@@ -111,7 +125,7 @@ class SetProfileViewModel extends GetxController {
       _isCheckedDisplayName.value = true;
       _displayName.value = textEditingController.text;
     } else{
-        _isCheckedDisplayName.value = false;
+      _isCheckedDisplayName.value = false;
 
     }
   }

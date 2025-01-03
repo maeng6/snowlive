@@ -2,6 +2,7 @@ import 'package:com.snowlive/api/ApiResponse.dart';
 import 'package:com.snowlive/api/api_login.dart';
 import 'package:com.snowlive/api/api_user.dart';
 import 'package:com.snowlive/model/m_resortModel.dart';
+import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_rx/get_rx.dart';
@@ -151,13 +152,22 @@ class FriendDetailUpdateViewModel extends GetxController {
     }
   }
 
-  Future<void> updateFriendDetail(body) async {
+  Future<bool> updateFriendDetail(Map<String, dynamic> body) async {
     ApiResponse response = await UserAPI().updateUserInfo(body);
+
     if (response.success) {
-      print('유저 정보 수정완료');
+      print('유저 정보 수정 완료');
+      return true; // 성공
     } else {
-      print('유저 정보 수정실패');
+      CustomFullScreenDialog.cancelDialog();
+      Get.snackbar(
+        '프로필 수정 실패',
+        '잠시 후 다시 시도해주세요.',
+      );
+      print('유저 정보 수정 실패: ${response.error}');
+      return false; // 실패
     }
   }
+
 }
 

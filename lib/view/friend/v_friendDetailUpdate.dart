@@ -318,7 +318,7 @@ class FriendDetailUpdateView extends StatelessWidget {
                                         WidgetsBinding.instance.addPostFrameCallback((_) {
                                           if ((val!.length <= 10 && val.length >= 1)
                                               &&  (_friendDetailUpdateViewModel.textEditingController_displayName.text != _friendDetailViewModel.friendDetailModel.friendUserInfo.displayName)
-                                          && _friendDetailUpdateViewModel.isCheckedDisplayName ==false) {
+                                              && _friendDetailUpdateViewModel.isCheckedDisplayName ==false) {
                                             _friendDetailUpdateViewModel.toggleActiveCheckDisplaynameButton(true);
                                             _friendDetailUpdateViewModel.toggleIsCheckedDisplayName(false);
                                           } else {
@@ -342,14 +342,14 @@ class FriendDetailUpdateView extends StatelessWidget {
                                       bottom: 0,
                                       child:
                                       (_friendDetailUpdateViewModel.textEditingController_displayName.text != '')
-                                      ?TextButton(
+                                          ?TextButton(
                                         onPressed: (_friendDetailUpdateViewModel.activeCheckDisplaynameButton == true && !_friendDetailUpdateViewModel.isCheckedDisplayName)
                                             ? () async {
                                           print(_friendDetailUpdateViewModel.textEditingController_displayName.text);
                                           if(_friendDetailUpdateViewModel.textEditingController_displayName.text !=_friendDetailViewModel.friendDetailModel.friendUserInfo.displayName){
-                                          await _friendDetailUpdateViewModel.checkDisplayName({
-                                            "display_name": _friendDetailUpdateViewModel.textEditingController_displayName.text,
-                                          });}else{
+                                            await _friendDetailUpdateViewModel.checkDisplayName({
+                                              "display_name": _friendDetailUpdateViewModel.textEditingController_displayName.text,
+                                            });}else{
                                             _friendDetailUpdateViewModel.toggleActiveCheckDisplaynameButton(false);
                                             _friendDetailUpdateViewModel.toggleIsCheckedDisplayName(true);
                                             print(_friendDetailUpdateViewModel.isCheckedDisplayName);
@@ -417,7 +417,7 @@ class FriendDetailUpdateView extends StatelessWidget {
                                         ),
                                         ),
                                       )
-                                      : Container(),
+                                          : Container(),
                                     ),
                                   ],
                                 )),
@@ -550,7 +550,7 @@ class FriendDetailUpdateView extends StatelessWidget {
                                 SizedBox(height: 6),
                                 Padding(
                                   padding: const EdgeInsets.only(left: 4),
-                                  child: Text('자주가는 스키장과 관련장된 다양한 서비스를 즐길 수 있습니다',
+                                  child: Text('자주가는 스키장과 관련된 다양한 서비스를 즐길 수 있습니다',
                                     style: SDSTextStyle.regular.copyWith(
                                         color: SDSColor.gray500,
                                         fontSize: 12
@@ -729,27 +729,31 @@ class FriendDetailUpdateView extends StatelessWidget {
                       onPressed: () async {
                         CustomFullScreenDialog.showDialog();
                         await _friendDetailUpdateViewModel.getImageUrl();
-                        await _friendDetailUpdateViewModel.updateFriendDetail(
-                            {
-                              "user_id": _userViewModel.user.user_id,    //필수 - 수정할 유저id
-                              "display_name": _friendDetailUpdateViewModel.textEditingController_displayName.text,
-                              "state_msg": _friendDetailUpdateViewModel.textEditingController_stateMsg.text,    //선택
-                              "profile_image_url_user": _friendDetailUpdateViewModel.profileImageUrl,
-                              "hide_profile": _friendDetailUpdateViewModel.hideProfile,    //선택 - 프로필 비공개 설정에서만 씀
-                              "instant_resort":_userViewModel.user.instant_resort,
-                              "favorite_resort":_friendDetailUpdateViewModel.selectedResortIndex+1,
-                              "sex": _friendDetailUpdateViewModel.selectedSex,
-                              "skiorboard": _friendDetailUpdateViewModel.selectedSkiOrBoard
-                            }
-                        );
-                        await _friendDetailViewModel.fetchFriendDetailInfo(
-                          userId: _userViewModel.user.user_id,
-                          friendUserId: _userViewModel.user.user_id,
-                          season: _friendDetailViewModel.seasonDate,
-                        );
-                        await _userViewModel.updateUserModel_api(_userViewModel.user.user_id);
-                        CustomFullScreenDialog.cancelDialog();
-                        Get.back();
+                        bool isSuccess = await _friendDetailUpdateViewModel.updateFriendDetail({
+                          "user_id": _userViewModel.user.user_id, // 필수
+                          "display_name": _friendDetailUpdateViewModel.textEditingController_displayName.text,
+                          "state_msg": _friendDetailUpdateViewModel.textEditingController_stateMsg.text, // 선택
+                          "profile_image_url_user": _friendDetailUpdateViewModel.profileImageUrl,
+                          "hide_profile": _friendDetailUpdateViewModel.hideProfile, // 선택
+                          "instant_resort": _userViewModel.user.instant_resort,
+                          "favorite_resort": _friendDetailUpdateViewModel.selectedResortIndex + 1,
+                          "sex": _friendDetailUpdateViewModel.selectedSex,
+                          "skiorboard": _friendDetailUpdateViewModel.selectedSkiOrBoard,
+                        });
+                        if (isSuccess) {
+                          await _friendDetailViewModel.fetchFriendDetailInfo(
+                            userId: _userViewModel.user.user_id,
+                            friendUserId: _userViewModel.user.user_id,
+                            season: _friendDetailViewModel.seasonDate,
+                          );
+                          await _userViewModel.updateUserModel_api(_userViewModel.user.user_id);
+                          CustomFullScreenDialog.cancelDialog();
+                          Get.back(); // 성공 시 이전 화면으로 돌아가기
+                        } else {
+                          CustomFullScreenDialog.cancelDialog();
+                          print('유저 정보 수정 실패');
+                          // 실패 시 추가적인 처리가 필요하다면 여기서 수행
+                        }
                       },
                       style: TextButton.styleFrom(
                         shape: const RoundedRectangleBorder(

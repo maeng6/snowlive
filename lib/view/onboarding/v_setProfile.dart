@@ -468,7 +468,7 @@ class SetProfileView extends StatelessWidget {
                                 SizedBox(height: 6),
                                 Padding(
                                   padding: const EdgeInsets.only(left: 4),
-                                  child: Text('자주가는 스키장과 관련장된 다양한 서비스를 즐길 수 있습니다',
+                                  child: Text('자주가는 스키장과 관련된 다양한 서비스를 즐길 수 있습니다',
                                     style: SDSTextStyle.regular.copyWith(
                                         color: SDSColor.gray500,
                                         fontSize: 12
@@ -643,26 +643,30 @@ class SetProfileView extends StatelessWidget {
                       onPressed: () async {
                         CustomFullScreenDialog.showDialog();
                         await _setProfileViewModel.getImageUrl();
-                        await _setProfileViewModel.startSnowlive(
-                            {
-                              "uid": FirebaseAuth.instance.currentUser!.uid,
-                              "email": "${FirebaseAuth.instance.currentUser!.uid}@1.com",
-                              "favorite_resort": _setProfileViewModel.selectedResortIndex + 1,
-                              "device_id": _notificationController.deviceID,
-                              "profile_image_url_user": _setProfileViewModel.profileImageUrl,
-                              "device_token": _notificationController.deviceToken,
-                              "display_name": _setProfileViewModel.displayName,
-                              "skiorboard": _setProfileViewModel.selectedSkiOrBoard,
-                              "sex": _setProfileViewModel.selectedSex
-                            }
-                        );
-                        _userViewModel.updateUserModel_data(_setProfileViewModel.startSnowliveReturn);
-                        await FlutterSecureStorage().write(key: 'localUid', value: FirebaseAuth.instance.currentUser!.uid);
-                        await FlutterSecureStorage().write(key: 'device_id', value: _notificationController.deviceID);
-                        await FlutterSecureStorage().write(key: 'device_token', value: _notificationController.deviceToken);
-                        await FlutterSecureStorage().write(key: 'user_id', value: _userViewModel.user.user_id.toString());
-                        CustomFullScreenDialog.cancelDialog();
-                        Get.offAllNamed(AppRoutes.mainHome);
+                        bool isSuccess = await _setProfileViewModel.startSnowlive({
+                          "uid": FirebaseAuth.instance.currentUser!.uid,
+                          "email": "${FirebaseAuth.instance.currentUser!.uid}@1.com",
+                          "favorite_resort": _setProfileViewModel.selectedResortIndex + 1,
+                          "device_id": _notificationController.deviceID,
+                          "profile_image_url_user": _setProfileViewModel.profileImageUrl,
+                          "device_token": _notificationController.deviceToken,
+                          "display_name": _setProfileViewModel.displayName,
+                          "skiorboard": _setProfileViewModel.selectedSkiOrBoard,
+                          "sex": _setProfileViewModel.selectedSex,
+                        });
+                        if (isSuccess) {
+                          _userViewModel.updateUserModel_data(_setProfileViewModel.startSnowliveReturn);
+                          await FlutterSecureStorage().write(key: 'localUid', value: FirebaseAuth.instance.currentUser!.uid);
+                          await FlutterSecureStorage().write(key: 'device_id', value: _notificationController.deviceID);
+                          await FlutterSecureStorage().write(key: 'device_token', value: _notificationController.deviceToken);
+                          await FlutterSecureStorage().write(key: 'user_id', value: _userViewModel.user.user_id.toString());
+                          CustomFullScreenDialog.cancelDialog();
+                          Get.offAllNamed(AppRoutes.mainHome); // 성공 시 메인 홈 이동
+                        } else {
+                          CustomFullScreenDialog.cancelDialog();
+                          // 실패 시 사용자에게 알림이 표시되고 홈으로 이동하지 않음
+                          print('회원가입 실패: 서버 등록 문제');
+                        }
                       },
                       style: TextButton.styleFrom(
                         shape: const RoundedRectangleBorder(
