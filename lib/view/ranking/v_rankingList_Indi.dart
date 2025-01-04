@@ -1767,13 +1767,13 @@ class RankingIndiView extends StatelessWidget {
                                                                     offset: Offset(0, -40),
                                                                     child: Column(
                                                                       children: [
-                                                                        Text('GRAND MASTER',
+                                                                        Text('${_rankingListViewModel.rankingListIndivMy_view?.tierNameEng}',
                                                                           style: GoogleFonts.bebasNeue(
                                                                             color: SDSColor.snowliveWhite,
                                                                             fontSize: 36,
                                                                           ),
                                                                         ),
-                                                                        Text('그랜드 마스터',
+                                                                        Text('${_rankingListViewModel.rankingListIndivMy_view?.tierNameKor}',
                                                                           style: SDSTextStyle.bold.copyWith(
                                                                             color: SDSColor.snowliveWhite.withOpacity(0.5),
                                                                             fontSize: 16,
@@ -1838,7 +1838,7 @@ class RankingIndiView extends StatelessWidget {
                                                   left: 0,
                                                   top: 56,
                                                   child: Center(
-                                                    child: Text('골드',
+                                                    child: Text('${_rankingListViewModel.rankingListIndivMy_view?.tierNameKor}',
                                                       style: SDSTextStyle.bold.copyWith(
                                                           fontSize: 12,
                                                           color: SDSColor.sBlue700.withOpacity(0.4)
