@@ -266,84 +266,443 @@ class RankingCrewView extends StatelessWidget {
                               //필터
                               Container(
                                 height: 60,
-                                child: Row(
-                                  children: [
-                                    Padding(
-                                      padding: EdgeInsets.only(top: 16, bottom: 8),
-                                      child: Row(
-                                        children: [
-                                          Padding(
-                                            padding: EdgeInsets.only(right: 8),
-                                            child: Stack(
-                                              children: [
-                                                ElevatedButton(
-                                                    onPressed: () async {
-                                                      HapticFeedback.lightImpact();
-                                                      _rankingListViewModel.changeCategory_resort('${RankingFilter_resort.initial.korean}');
-                                                      _rankingListViewModel.changeResortOrTotal('전체스키장');
-                                                      _rankingListViewModel.changeCategory_fed('리그별 랭킹');
-                                                      _rankingListViewModel.changeResortNum(99);
-                                                      _rankingListViewModel.changeMyBoxText();
-                                                      await _rankingListViewModel.toggleDataDayOrTotal_tapFilter();
-                                                    },
-                                                    style: ElevatedButton.styleFrom(
-                                                        shadowColor: Colors.transparent,
-                                                        overlayColor: Colors.transparent,
-                                                        padding: EdgeInsets.only(
-                                                            right: 12, left: 12, top: 2, bottom: 2),
-                                                        side: BorderSide(
-                                                          width: 1,
-                                                          color: (_rankingListViewModel.resortOrTotal == '전체스키장' && _rankingListViewModel.selectedCategory_fed == '리그별 랭킹') ? SDSColor.gray900 : SDSColor.gray100,
-                                                        ),
-                                                        backgroundColor: (_rankingListViewModel.resortOrTotal == '전체스키장'&& _rankingListViewModel.selectedCategory_fed == '리그별 랭킹') ? SDSColor.gray900 : SDSColor.snowliveWhite,
-                                                        elevation: 0,
-                                                        shape: RoundedRectangleBorder(
-                                                            borderRadius: BorderRadius.circular(50))),
-                                                    child:
-                                                    Text('${RankingFilter_resort.total.korean}',
-                                                        style: SDSTextStyle.bold.copyWith(
-                                                            fontSize: 13,
-                                                            color: (_rankingListViewModel.resortOrTotal == '전체스키장'&& _rankingListViewModel.selectedCategory_fed == '리그별 랭킹') ? Color(0xFFFFFFFF) : Color(0xFF111111)))
-                                                ),
-                                              ],
+                                child: SingleChildScrollView(
+                                  scrollDirection: Axis.horizontal,
+                                  child: Row(
+                                    children: [
+                                      Padding(
+                                        padding: EdgeInsets.only(top: 16, bottom: 8),
+                                        child: Row(
+                                          children: [
+                                            Padding(
+                                              padding: EdgeInsets.only(right: 6),
+                                              child: Stack(
+                                                children: [
+                                                  ElevatedButton(
+                                                      onPressed: () async {
+                                                        HapticFeedback.lightImpact();
+                                                        _rankingListViewModel.changeCategory_resort('${RankingFilter_resort.initial.korean}');
+                                                        _rankingListViewModel.changeResortOrTotal('전체스키장');
+                                                        _rankingListViewModel.changeCategory_fed('리그별 랭킹');
+                                                        _rankingListViewModel.changeResortNum(99);
+                                                        _rankingListViewModel.changeMyBoxText();
+                                                        await _rankingListViewModel.toggleDataDayOrTotal_tapFilter();
+                                                      },
+                                                      style: ElevatedButton.styleFrom(
+                                                          shadowColor: Colors.transparent,
+                                                          overlayColor: Colors.transparent,
+                                                          padding: EdgeInsets.only(
+                                                              right: 12, left: 12, top: 2, bottom: 2),
+                                                          side: BorderSide(
+                                                            width: 1,
+                                                            color: (_rankingListViewModel.resortOrTotal == '전체스키장' && _rankingListViewModel.selectedCategory_fed == '리그별 랭킹') ? SDSColor.gray900 : SDSColor.gray100,
+                                                          ),
+                                                          backgroundColor: (_rankingListViewModel.resortOrTotal == '전체스키장'&& _rankingListViewModel.selectedCategory_fed == '리그별 랭킹') ? SDSColor.gray900 : SDSColor.snowliveWhite,
+                                                          elevation: 0,
+                                                          shape: RoundedRectangleBorder(
+                                                              borderRadius: BorderRadius.circular(50))),
+                                                      child:
+                                                      Text('${RankingFilter_resort.total.korean}',
+                                                          style: SDSTextStyle.bold.copyWith(
+                                                              fontSize: 13,
+                                                              color: (_rankingListViewModel.resortOrTotal == '전체스키장'&& _rankingListViewModel.selectedCategory_fed == '리그별 랭킹') ? Color(0xFFFFFFFF) : Color(0xFF111111)))
+                                                  ),
+                                                ],
+                                              ),
                                             ),
-                                          ),
-                                        ],
+                                          ],
+                                        ),
                                       ),
-                                    ),
-                                    Padding(
-                                      padding: EdgeInsets.only(top: 16, bottom: 8),
-                                      child: Row(
-                                        children: [
-                                          Padding(
-                                            padding: EdgeInsets.only(right: 8),
-                                            child: Stack(
-                                              children: [
-                                                ElevatedButton(
-                                                    onPressed: () async {
-                                                      HapticFeedback.lightImpact();
-                                                      showModalBottomSheet(
-                                                          enableDrag: false,
-                                                          isScrollControlled: true,
-                                                          backgroundColor: Colors.transparent,
-                                                          context: context,
-                                                          builder: (context) {
-                                                            return SafeArea(
-                                                              child: Padding(
-                                                                padding: const EdgeInsets.symmetric(vertical: 20),
-                                                                child: Container(
-                                                                  margin: EdgeInsets.only(
-                                                                    left: 16,
-                                                                    right: 16,
-                                                                    top: 16,
+                                      Padding(
+                                        padding: EdgeInsets.only(top: 16, bottom: 8),
+                                        child: Row(
+                                          children: [
+                                            Padding(
+                                              padding: EdgeInsets.only(right: 6),
+                                              child: Stack(
+                                                children: [
+                                                  ElevatedButton(
+                                                      onPressed: () async {
+                                                        HapticFeedback.lightImpact();
+                                                        showModalBottomSheet(
+                                                            enableDrag: false,
+                                                            isScrollControlled: true,
+                                                            backgroundColor: Colors.transparent,
+                                                            context: context,
+                                                            builder: (context) {
+                                                              return SafeArea(
+                                                                child: Padding(
+                                                                  padding: const EdgeInsets.symmetric(vertical: 20),
+                                                                  child: Container(
+                                                                    margin: EdgeInsets.only(
+                                                                      left: 16,
+                                                                      right: 16,
+                                                                      top: 16,
+                                                                    ),
+                                                                    height: MediaQuery.of(context).size.height * 0.6,
+                                                                    padding: EdgeInsets.all(16),
+                                                                    decoration: BoxDecoration(
+                                                                      color: Colors.white,
+                                                                      borderRadius: BorderRadius.circular(16),
+                                                                    ),
+                                                                    child: Scrollbar(
+                                                                      child: SingleChildScrollView(
+                                                                        child: Wrap(
+                                                                          children: [
+                                                                            //곤지암 1
+                                                                            ListTile(
+                                                                              contentPadding: EdgeInsets.zero,
+                                                                              title: Center(
+                                                                                child: Text(
+                                                                                  '${RankingFilter_resort.konjiam.korean}',
+                                                                                  style: SDSTextStyle.bold.copyWith(
+                                                                                      fontSize: 15,
+                                                                                      color: SDSColor.gray900
+                                                                                  ),
+                                                                                ),
+                                                                              ),
+                                                                              onTap: () async {
+                                                                                Navigator.pop(context);
+                                                                                _rankingListViewModel.changeCategory_resort('${RankingFilter_resort.konjiam.korean}');
+                                                                                _rankingListViewModel.changeResortOrTotal('개별스키장');
+                                                                                _rankingListViewModel.changeCategory_fed('리그별 랭킹');
+                                                                                _rankingListViewModel.changeResortNum(1);
+                                                                                _rankingListViewModel.changeMyBoxText();
+                                                                                await _rankingListViewModel.toggleDataDayOrTotal_tapFilter(resortNum: 1);
+                                                                              },
+                                                                              shape: RoundedRectangleBorder(
+                                                                                  borderRadius:
+                                                                                  BorderRadius.circular(16)),
+                                                                            ),
+                                                                            //무주 2
+                                                                            ListTile(
+                                                                              contentPadding: EdgeInsets.zero,
+                                                                              title: Center(
+                                                                                child: Text(
+                                                                                  '${RankingFilter_resort.muju.korean}',
+                                                                                  style: SDSTextStyle.bold.copyWith(
+                                                                                      fontSize: 15,
+                                                                                      color: SDSColor.gray900
+                                                                                  ),
+                                                                                ),
+                                                                              ),
+                                                                              onTap: () async {
+                                                                                Navigator.pop(context);
+                                                                                _rankingListViewModel.changeCategory_resort('${RankingFilter_resort.muju.korean}');
+                                                                                _rankingListViewModel.changeResortOrTotal('개별스키장');
+                                                                                _rankingListViewModel.changeCategory_fed('리그별 랭킹');
+                                                                                _rankingListViewModel.changeResortNum(2);
+                                                                                _rankingListViewModel.changeMyBoxText();
+                                                                                await _rankingListViewModel.toggleDataDayOrTotal_tapFilter(resortNum: 2);
+                                                                              },
+                                                                              shape: RoundedRectangleBorder(
+                                                                                  borderRadius:
+                                                                                  BorderRadius.circular(16)),
+                                                                            ),
+                                                                            //비발디 3
+                                                                            ListTile(
+                                                                              contentPadding: EdgeInsets.zero,
+                                                                              title: Center(
+                                                                                child: Text(
+                                                                                  '${RankingFilter_resort.vivaldi.korean}',
+                                                                                  style: SDSTextStyle.bold.copyWith(
+                                                                                      fontSize: 15,
+                                                                                      color: SDSColor.gray900
+                                                                                  ),
+                                                                                ),
+                                                                              ),
+                                                                              onTap: () async {
+                                                                                Navigator.pop(context);
+                                                                                _rankingListViewModel.changeCategory_resort('${RankingFilter_resort.vivaldi.korean}');
+                                                                                _rankingListViewModel.changeResortOrTotal('개별스키장');
+                                                                                _rankingListViewModel.changeCategory_fed('리그별 랭킹');
+                                                                                _rankingListViewModel.changeResortNum(3);
+                                                                                _rankingListViewModel.changeMyBoxText();
+                                                                                await _rankingListViewModel.toggleDataDayOrTotal_tapFilter(resortNum: 3);
+                                                                              },
+                                                                              shape: RoundedRectangleBorder(
+                                                                                  borderRadius:
+                                                                                  BorderRadius.circular(16)),
+                                                                            ),
+                                                                            //알펜 4
+                                                                            ListTile(
+                                                                              contentPadding: EdgeInsets.zero,
+                                                                              title: Center(
+                                                                                child: Text(
+                                                                                  '${RankingFilter_resort.alphen.korean}',
+                                                                                  style: SDSTextStyle.bold.copyWith(
+                                                                                      fontSize: 15,
+                                                                                      color: SDSColor.gray900
+                                                                                  ),
+                                                                                ),
+                                                                              ),
+                                                                              onTap: () async {
+                                                                                Navigator.pop(context);
+                                                                                _rankingListViewModel.changeCategory_resort('${RankingFilter_resort.alphen.korean}');
+                                                                                _rankingListViewModel.changeResortOrTotal('개별스키장');
+                                                                                _rankingListViewModel.changeCategory_fed('리그별 랭킹');
+                                                                                _rankingListViewModel.changeResortNum(4);
+                                                                                _rankingListViewModel.changeMyBoxText();
+                                                                                await _rankingListViewModel.toggleDataDayOrTotal_tapFilter(resortNum:4);
+                                                                              },
+                                                                              shape: RoundedRectangleBorder(
+                                                                                  borderRadius:
+                                                                                  BorderRadius.circular(16)),
+                                                                            ),
+                                                                            //강촌 6
+                                                                            ListTile(
+                                                                              contentPadding: EdgeInsets.zero,
+                                                                              title: Center(
+                                                                                child: Text(
+                                                                                  '${RankingFilter_resort.gangchon.korean}',
+                                                                                  style: SDSTextStyle.bold.copyWith(
+                                                                                      fontSize: 15,
+                                                                                      color: SDSColor.gray900
+                                                                                  ),
+                                                                                ),
+                                                                              ),
+                                                                              onTap: () async {
+                                                                                Navigator.pop(context);
+                                                                                _rankingListViewModel.changeCategory_resort('${RankingFilter_resort.gangchon.korean}');
+                                                                                _rankingListViewModel.changeResortOrTotal('개별스키장');
+                                                                                _rankingListViewModel.changeCategory_fed('리그별 랭킹');
+                                                                                _rankingListViewModel.changeResortNum(6);
+                                                                                _rankingListViewModel.changeMyBoxText();
+                                                                                await _rankingListViewModel.toggleDataDayOrTotal_tapFilter(resortNum: 6);
+                                                                              },
+                                                                              shape: RoundedRectangleBorder(
+                                                                                  borderRadius:
+                                                                                  BorderRadius.circular(16)),
+                                                                            ),
+                                                                            //오크 7
+                                                                            ListTile(
+                                                                              contentPadding: EdgeInsets.zero,
+                                                                              title: Center(
+                                                                                child: Text(
+                                                                                  '${RankingFilter_resort.oak.korean}',
+                                                                                  style: SDSTextStyle.bold.copyWith(
+                                                                                      fontSize: 15,
+                                                                                      color: SDSColor.gray900
+                                                                                  ),
+                                                                                ),
+                                                                              ),
+                                                                              onTap: () async {
+                                                                                Navigator.pop(context);
+                                                                                _rankingListViewModel.changeCategory_resort('${RankingFilter_resort.oak.korean}');
+                                                                                _rankingListViewModel.changeResortOrTotal('개별스키장');
+                                                                                _rankingListViewModel.changeCategory_fed('리그별 랭킹');
+                                                                                _rankingListViewModel.changeResortNum(7);
+                                                                                _rankingListViewModel.changeMyBoxText();
+                                                                                await _rankingListViewModel.toggleDataDayOrTotal_tapFilter(resortNum: 7);
+                                                                              },
+                                                                              shape: RoundedRectangleBorder(
+                                                                                  borderRadius:
+                                                                                  BorderRadius.circular(16)),
+                                                                            ),
+                                                                            //오투 8
+                                                                            ListTile(
+                                                                              contentPadding: EdgeInsets.zero,
+                                                                              title: Center(
+                                                                                child: Text(
+                                                                                  '${RankingFilter_resort.o2.korean}',
+                                                                                  style: SDSTextStyle.bold.copyWith(
+                                                                                      fontSize: 15,
+                                                                                      color: SDSColor.gray900
+                                                                                  ),
+                                                                                ),
+                                                                              ),
+                                                                              onTap: () async {
+                                                                                Navigator.pop(context);
+                                                                                _rankingListViewModel.changeCategory_resort('${RankingFilter_resort.o2.korean}');
+                                                                                _rankingListViewModel.changeResortOrTotal('개별스키장');
+                                                                                _rankingListViewModel.changeCategory_fed('리그별 랭킹');
+                                                                                _rankingListViewModel.changeResortNum(8);
+                                                                                _rankingListViewModel.changeMyBoxText();
+                                                                                await _rankingListViewModel.toggleDataDayOrTotal_tapFilter(resortNum: 8);
+                                                                              },
+                                                                              shape: RoundedRectangleBorder(
+                                                                                  borderRadius:
+                                                                                  BorderRadius.circular(16)),
+                                                                            ),
+                                                                            //용평 9
+                                                                            ListTile(
+                                                                              contentPadding: EdgeInsets.zero,
+                                                                              title: Center(
+                                                                                child: Text(
+                                                                                  '${RankingFilter_resort.yongpyong.korean}',
+                                                                                  style: SDSTextStyle.bold.copyWith(
+                                                                                      fontSize: 15,
+                                                                                      color: SDSColor.gray900
+                                                                                  ),
+                                                                                ),
+                                                                              ),
+                                                                              onTap: () async {
+                                                                                Navigator.pop(context);
+                                                                                _rankingListViewModel.changeCategory_resort('${RankingFilter_resort.yongpyong.korean}');
+                                                                                _rankingListViewModel.changeResortOrTotal('개별스키장');
+                                                                                _rankingListViewModel.changeCategory_fed('리그별 랭킹');
+                                                                                _rankingListViewModel.changeResortNum(9);
+                                                                                _rankingListViewModel.changeMyBoxText();
+                                                                                await _rankingListViewModel.toggleDataDayOrTotal_tapFilter(resortNum: 9);
+                                                                              },
+                                                                              shape: RoundedRectangleBorder(
+                                                                                  borderRadius:
+                                                                                  BorderRadius.circular(16)),
+                                                                            ),
+                                                                            //웰팍 10
+                                                                            ListTile(
+                                                                              contentPadding: EdgeInsets.zero,
+                                                                              title: Center(
+                                                                                child: Text(
+                                                                                  '${RankingFilter_resort.welli.korean}',
+                                                                                  style: SDSTextStyle.bold.copyWith(
+                                                                                      fontSize: 15,
+                                                                                      color: SDSColor.gray900
+                                                                                  ),
+                                                                                ),
+                                                                              ),
+                                                                              onTap: () async {
+                                                                                Navigator.pop(context);
+                                                                                _rankingListViewModel.changeCategory_resort('${RankingFilter_resort.welli.korean}');
+                                                                                _rankingListViewModel.changeResortOrTotal('개별스키장');
+                                                                                _rankingListViewModel.changeCategory_fed('리그별 랭킹');
+                                                                                _rankingListViewModel.changeResortNum(10);
+                                                                                _rankingListViewModel.changeMyBoxText();
+                                                                                await _rankingListViewModel.toggleDataDayOrTotal_tapFilter(resortNum: 10);
+                                                                              },
+                                                                              shape: RoundedRectangleBorder(
+                                                                                  borderRadius:
+                                                                                  BorderRadius.circular(16)),
+                                                                            ),
+                                                                            //지산 11
+                                                                            ListTile(
+                                                                              contentPadding: EdgeInsets.zero,
+                                                                              title: Center(
+                                                                                child: Text(
+                                                                                  '${RankingFilter_resort.jisan.korean}',
+                                                                                  style: SDSTextStyle.bold.copyWith(
+                                                                                      fontSize: 15,
+                                                                                      color: SDSColor.gray900
+                                                                                  ),
+                                                                                ),
+                                                                              ),
+                                                                              onTap: () async {
+                                                                                Navigator.pop(context);
+                                                                                _rankingListViewModel.changeCategory_resort('${RankingFilter_resort.jisan.korean}');
+                                                                                _rankingListViewModel.changeResortOrTotal('개별스키장');
+                                                                                _rankingListViewModel.changeCategory_fed('리그별 랭킹');
+                                                                                _rankingListViewModel.changeResortNum(11);
+                                                                                _rankingListViewModel.changeMyBoxText();
+                                                                                await _rankingListViewModel.toggleDataDayOrTotal_tapFilter(resortNum: 11);
+                                                                              },
+                                                                              shape: RoundedRectangleBorder(
+                                                                                  borderRadius:
+                                                                                  BorderRadius.circular(16)),
+                                                                            ),
+                                                                            //하이원 12
+                                                                            ListTile(
+                                                                              contentPadding: EdgeInsets.zero,
+                                                                              title: Center(
+                                                                                child: Text(
+                                                                                  '${RankingFilter_resort.high1.korean}',
+                                                                                  style: SDSTextStyle.bold.copyWith(
+                                                                                      fontSize: 15,
+                                                                                      color: SDSColor.gray900
+                                                                                  ),
+                                                                                ),
+                                                                              ),
+                                                                              onTap: () async {
+                                                                                Navigator.pop(context);
+                                                                                _rankingListViewModel.changeCategory_resort('${RankingFilter_resort.high1.korean}');
+                                                                                _rankingListViewModel.changeResortOrTotal('개별스키장');
+                                                                                _rankingListViewModel.changeCategory_fed('리그별 랭킹');
+                                                                                _rankingListViewModel.changeResortNum(12);
+                                                                                _rankingListViewModel.changeMyBoxText();
+                                                                                await _rankingListViewModel.toggleDataDayOrTotal_tapFilter(resortNum: 12);
+                                                                              },
+                                                                              shape: RoundedRectangleBorder(
+                                                                                  borderRadius:
+                                                                                  BorderRadius.circular(16)),
+                                                                            ),
+                                                                            //휘닉스 13
+                                                                            ListTile(
+                                                                              contentPadding: EdgeInsets.zero,
+                                                                              title: Center(
+                                                                                child: Text(
+                                                                                  '${RankingFilter_resort.phoenix.korean}',
+                                                                                  style: SDSTextStyle.bold.copyWith(
+                                                                                      fontSize: 15,
+                                                                                      color: SDSColor.gray900
+                                                                                  ),
+                                                                                ),
+                                                                              ),
+                                                                              onTap: () async {
+                                                                                Navigator.pop(context);
+                                                                                _rankingListViewModel.changeCategory_resort('${RankingFilter_resort.phoenix.korean}');
+                                                                                _rankingListViewModel.changeResortOrTotal('개별스키장');
+                                                                                _rankingListViewModel.changeCategory_fed('리그별 랭킹');
+                                                                                _rankingListViewModel.changeResortNum(13);
+                                                                                _rankingListViewModel.changeMyBoxText();
+                                                                                await _rankingListViewModel.toggleDataDayOrTotal_tapFilter(resortNum: 13);
+                                                                              },
+                                                                              shape: RoundedRectangleBorder(
+                                                                                  borderRadius:
+                                                                                  BorderRadius.circular(16)),
+                                                                            ),
+                                                                          ],
+                                                                        ),
+                                                                      ),
+                                                                    ),
                                                                   ),
-                                                                  height: MediaQuery.of(context).size.height * 0.6,
-                                                                  padding: EdgeInsets.all(16),
-                                                                  decoration: BoxDecoration(
-                                                                    color: Colors.white,
-                                                                    borderRadius: BorderRadius.circular(16),
-                                                                  ),
-                                                                  child: Scrollbar(
+                                                                ),
+                                                              );
+                                                            });
+                                                      },
+                                                      style: ElevatedButton.styleFrom(
+                                                          shadowColor: Colors.transparent,
+                                                          overlayColor: Colors.transparent,
+                                                          padding: EdgeInsets.only(
+                                                              right: 32, left: 12, top: 3, bottom: 2),
+                                                          side: BorderSide(
+                                                            width: 1,
+                                                            color: (_rankingListViewModel.resortOrTotal != '전체스키장') ? SDSColor.gray900 : SDSColor.gray100,
+                                                          ),
+                                                          backgroundColor: (_rankingListViewModel.resortOrTotal != '전체스키장') ? SDSColor.gray900 : SDSColor.snowliveWhite,
+                                                          elevation: 0,
+                                                          shape: RoundedRectangleBorder(
+                                                              borderRadius: BorderRadius.circular(50))),
+                                                      child:
+                                                      Text('${_rankingListViewModel.selectedCategory_resort}',
+                                                          style: SDSTextStyle.bold.copyWith(
+                                                              fontSize: 13,
+                                                              color: (_rankingListViewModel.resortOrTotal != '전체스키장') ? Color(0xFFFFFFFF) : Color(0xFF111111)))
+                                                  ),
+                                                  Positioned(
+                                                    top: 10,
+                                                    right: 10,
+                                                    child: GestureDetector(
+                                                      onTap: () async {
+                                                        showModalBottomSheet(
+                                                            enableDrag: false,
+                                                            isScrollControlled: true,
+                                                            backgroundColor: Colors.transparent,
+                                                            context: context,
+                                                            builder: (context) {
+                                                              return SafeArea(
+                                                                child: Padding(
+                                                                  padding: const EdgeInsets.symmetric(vertical: 20),
+                                                                  child: Container(
+                                                                    margin: EdgeInsets.only(
+                                                                      left: 16,
+                                                                      right: 16,
+                                                                      top: 16,
+                                                                    ),
+                                                                    height: MediaQuery.of(context).size.height * 0.5,
+                                                                    padding: EdgeInsets.all(16),
+                                                                    decoration: BoxDecoration(
+                                                                      color: Colors.white,
+                                                                      borderRadius: BorderRadius.circular(16),
+                                                                    ),
                                                                     child: SingleChildScrollView(
                                                                       child: Wrap(
                                                                         children: [
@@ -652,392 +1011,33 @@ class RankingCrewView extends StatelessWidget {
                                                                     ),
                                                                   ),
                                                                 ),
-                                                              ),
-                                                            );
-                                                          });
-                                                    },
-                                                    style: ElevatedButton.styleFrom(
-                                                        shadowColor: Colors.transparent,
-                                                        overlayColor: Colors.transparent,
-                                                        padding: EdgeInsets.only(
-                                                            right: 32, left: 12, top: 3, bottom: 2),
-                                                        side: BorderSide(
-                                                          width: 1,
-                                                          color: (_rankingListViewModel.resortOrTotal != '전체스키장') ? SDSColor.gray900 : SDSColor.gray100,
-                                                        ),
-                                                        backgroundColor: (_rankingListViewModel.resortOrTotal != '전체스키장') ? SDSColor.gray900 : SDSColor.snowliveWhite,
-                                                        elevation: 0,
-                                                        shape: RoundedRectangleBorder(
-                                                            borderRadius: BorderRadius.circular(50))),
-                                                    child:
-                                                    Text('${_rankingListViewModel.selectedCategory_resort}',
-                                                        style: SDSTextStyle.bold.copyWith(
-                                                            fontSize: 13,
-                                                            color: (_rankingListViewModel.resortOrTotal != '전체스키장') ? Color(0xFFFFFFFF) : Color(0xFF111111)))
-                                                ),
-                                                Positioned(
-                                                  top: 10,
-                                                  right: 10,
-                                                  child: GestureDetector(
-                                                    onTap: () async {
-                                                      showModalBottomSheet(
-                                                          enableDrag: false,
-                                                          isScrollControlled: true,
-                                                          backgroundColor: Colors.transparent,
-                                                          context: context,
-                                                          builder: (context) {
-                                                            return SafeArea(
-                                                              child: Padding(
-                                                                padding: const EdgeInsets.symmetric(vertical: 20),
-                                                                child: Container(
-                                                                  margin: EdgeInsets.only(
-                                                                    left: 16,
-                                                                    right: 16,
-                                                                    top: 16,
-                                                                  ),
-                                                                  height: MediaQuery.of(context).size.height * 0.5,
-                                                                  padding: EdgeInsets.all(16),
-                                                                  decoration: BoxDecoration(
-                                                                    color: Colors.white,
-                                                                    borderRadius: BorderRadius.circular(16),
-                                                                  ),
-                                                                  child: SingleChildScrollView(
-                                                                    child: Wrap(
-                                                                      children: [
-                                                                        //곤지암 1
-                                                                        ListTile(
-                                                                          contentPadding: EdgeInsets.zero,
-                                                                          title: Center(
-                                                                            child: Text(
-                                                                              '${RankingFilter_resort.konjiam.korean}',
-                                                                              style: SDSTextStyle.bold.copyWith(
-                                                                                  fontSize: 15,
-                                                                                  color: SDSColor.gray900
-                                                                              ),
-                                                                            ),
-                                                                          ),
-                                                                          onTap: () async {
-                                                                            Navigator.pop(context);
-                                                                            _rankingListViewModel.changeCategory_resort('${RankingFilter_resort.konjiam.korean}');
-                                                                            _rankingListViewModel.changeResortOrTotal('개별스키장');
-                                                                            _rankingListViewModel.changeCategory_fed('리그별 랭킹');
-                                                                            _rankingListViewModel.changeResortNum(1);
-                                                                            _rankingListViewModel.changeMyBoxText();
-                                                                            await _rankingListViewModel.toggleDataDayOrTotal_tapFilter(resortNum: 1);
-                                                                          },
-                                                                          shape: RoundedRectangleBorder(
-                                                                              borderRadius:
-                                                                              BorderRadius.circular(16)),
-                                                                        ),
-                                                                        //무주 2
-                                                                        ListTile(
-                                                                          contentPadding: EdgeInsets.zero,
-                                                                          title: Center(
-                                                                            child: Text(
-                                                                              '${RankingFilter_resort.muju.korean}',
-                                                                              style: SDSTextStyle.bold.copyWith(
-                                                                                  fontSize: 15,
-                                                                                  color: SDSColor.gray900
-                                                                              ),
-                                                                            ),
-                                                                          ),
-                                                                          onTap: () async {
-                                                                            Navigator.pop(context);
-                                                                            _rankingListViewModel.changeCategory_resort('${RankingFilter_resort.muju.korean}');
-                                                                            _rankingListViewModel.changeResortOrTotal('개별스키장');
-                                                                            _rankingListViewModel.changeCategory_fed('리그별 랭킹');
-                                                                            _rankingListViewModel.changeResortNum(2);
-                                                                            _rankingListViewModel.changeMyBoxText();
-                                                                            await _rankingListViewModel.toggleDataDayOrTotal_tapFilter(resortNum: 2);
-                                                                          },
-                                                                          shape: RoundedRectangleBorder(
-                                                                              borderRadius:
-                                                                              BorderRadius.circular(16)),
-                                                                        ),
-                                                                        //비발디 3
-                                                                        ListTile(
-                                                                          contentPadding: EdgeInsets.zero,
-                                                                          title: Center(
-                                                                            child: Text(
-                                                                              '${RankingFilter_resort.vivaldi.korean}',
-                                                                              style: SDSTextStyle.bold.copyWith(
-                                                                                  fontSize: 15,
-                                                                                  color: SDSColor.gray900
-                                                                              ),
-                                                                            ),
-                                                                          ),
-                                                                          onTap: () async {
-                                                                            Navigator.pop(context);
-                                                                            _rankingListViewModel.changeCategory_resort('${RankingFilter_resort.vivaldi.korean}');
-                                                                            _rankingListViewModel.changeResortOrTotal('개별스키장');
-                                                                            _rankingListViewModel.changeCategory_fed('리그별 랭킹');
-                                                                            _rankingListViewModel.changeResortNum(3);
-                                                                            _rankingListViewModel.changeMyBoxText();
-                                                                            await _rankingListViewModel.toggleDataDayOrTotal_tapFilter(resortNum: 3);
-                                                                          },
-                                                                          shape: RoundedRectangleBorder(
-                                                                              borderRadius:
-                                                                              BorderRadius.circular(16)),
-                                                                        ),
-                                                                        //알펜 4
-                                                                        ListTile(
-                                                                          contentPadding: EdgeInsets.zero,
-                                                                          title: Center(
-                                                                            child: Text(
-                                                                              '${RankingFilter_resort.alphen.korean}',
-                                                                              style: SDSTextStyle.bold.copyWith(
-                                                                                  fontSize: 15,
-                                                                                  color: SDSColor.gray900
-                                                                              ),
-                                                                            ),
-                                                                          ),
-                                                                          onTap: () async {
-                                                                            Navigator.pop(context);
-                                                                            _rankingListViewModel.changeCategory_resort('${RankingFilter_resort.alphen.korean}');
-                                                                            _rankingListViewModel.changeResortOrTotal('개별스키장');
-                                                                            _rankingListViewModel.changeCategory_fed('리그별 랭킹');
-                                                                            _rankingListViewModel.changeResortNum(4);
-                                                                            _rankingListViewModel.changeMyBoxText();
-                                                                            await _rankingListViewModel.toggleDataDayOrTotal_tapFilter(resortNum:4);
-                                                                          },
-                                                                          shape: RoundedRectangleBorder(
-                                                                              borderRadius:
-                                                                              BorderRadius.circular(16)),
-                                                                        ),
-                                                                        //강촌 6
-                                                                        ListTile(
-                                                                          contentPadding: EdgeInsets.zero,
-                                                                          title: Center(
-                                                                            child: Text(
-                                                                              '${RankingFilter_resort.gangchon.korean}',
-                                                                              style: SDSTextStyle.bold.copyWith(
-                                                                                  fontSize: 15,
-                                                                                  color: SDSColor.gray900
-                                                                              ),
-                                                                            ),
-                                                                          ),
-                                                                          onTap: () async {
-                                                                            Navigator.pop(context);
-                                                                            _rankingListViewModel.changeCategory_resort('${RankingFilter_resort.gangchon.korean}');
-                                                                            _rankingListViewModel.changeResortOrTotal('개별스키장');
-                                                                            _rankingListViewModel.changeCategory_fed('리그별 랭킹');
-                                                                            _rankingListViewModel.changeResortNum(6);
-                                                                            _rankingListViewModel.changeMyBoxText();
-                                                                            await _rankingListViewModel.toggleDataDayOrTotal_tapFilter(resortNum: 6);
-                                                                          },
-                                                                          shape: RoundedRectangleBorder(
-                                                                              borderRadius:
-                                                                              BorderRadius.circular(16)),
-                                                                        ),
-                                                                        //오크 7
-                                                                        ListTile(
-                                                                          contentPadding: EdgeInsets.zero,
-                                                                          title: Center(
-                                                                            child: Text(
-                                                                              '${RankingFilter_resort.oak.korean}',
-                                                                              style: SDSTextStyle.bold.copyWith(
-                                                                                  fontSize: 15,
-                                                                                  color: SDSColor.gray900
-                                                                              ),
-                                                                            ),
-                                                                          ),
-                                                                          onTap: () async {
-                                                                            Navigator.pop(context);
-                                                                            _rankingListViewModel.changeCategory_resort('${RankingFilter_resort.oak.korean}');
-                                                                            _rankingListViewModel.changeResortOrTotal('개별스키장');
-                                                                            _rankingListViewModel.changeCategory_fed('리그별 랭킹');
-                                                                            _rankingListViewModel.changeResortNum(7);
-                                                                            _rankingListViewModel.changeMyBoxText();
-                                                                            await _rankingListViewModel.toggleDataDayOrTotal_tapFilter(resortNum: 7);
-                                                                          },
-                                                                          shape: RoundedRectangleBorder(
-                                                                              borderRadius:
-                                                                              BorderRadius.circular(16)),
-                                                                        ),
-                                                                        //오투 8
-                                                                        ListTile(
-                                                                          contentPadding: EdgeInsets.zero,
-                                                                          title: Center(
-                                                                            child: Text(
-                                                                              '${RankingFilter_resort.o2.korean}',
-                                                                              style: SDSTextStyle.bold.copyWith(
-                                                                                  fontSize: 15,
-                                                                                  color: SDSColor.gray900
-                                                                              ),
-                                                                            ),
-                                                                          ),
-                                                                          onTap: () async {
-                                                                            Navigator.pop(context);
-                                                                            _rankingListViewModel.changeCategory_resort('${RankingFilter_resort.o2.korean}');
-                                                                            _rankingListViewModel.changeResortOrTotal('개별스키장');
-                                                                            _rankingListViewModel.changeCategory_fed('리그별 랭킹');
-                                                                            _rankingListViewModel.changeResortNum(8);
-                                                                            _rankingListViewModel.changeMyBoxText();
-                                                                            await _rankingListViewModel.toggleDataDayOrTotal_tapFilter(resortNum: 8);
-                                                                          },
-                                                                          shape: RoundedRectangleBorder(
-                                                                              borderRadius:
-                                                                              BorderRadius.circular(16)),
-                                                                        ),
-                                                                        //용평 9
-                                                                        ListTile(
-                                                                          contentPadding: EdgeInsets.zero,
-                                                                          title: Center(
-                                                                            child: Text(
-                                                                              '${RankingFilter_resort.yongpyong.korean}',
-                                                                              style: SDSTextStyle.bold.copyWith(
-                                                                                  fontSize: 15,
-                                                                                  color: SDSColor.gray900
-                                                                              ),
-                                                                            ),
-                                                                          ),
-                                                                          onTap: () async {
-                                                                            Navigator.pop(context);
-                                                                            _rankingListViewModel.changeCategory_resort('${RankingFilter_resort.yongpyong.korean}');
-                                                                            _rankingListViewModel.changeResortOrTotal('개별스키장');
-                                                                            _rankingListViewModel.changeCategory_fed('리그별 랭킹');
-                                                                            _rankingListViewModel.changeResortNum(9);
-                                                                            _rankingListViewModel.changeMyBoxText();
-                                                                            await _rankingListViewModel.toggleDataDayOrTotal_tapFilter(resortNum: 9);
-                                                                          },
-                                                                          shape: RoundedRectangleBorder(
-                                                                              borderRadius:
-                                                                              BorderRadius.circular(16)),
-                                                                        ),
-                                                                        //웰팍 10
-                                                                        ListTile(
-                                                                          contentPadding: EdgeInsets.zero,
-                                                                          title: Center(
-                                                                            child: Text(
-                                                                              '${RankingFilter_resort.welli.korean}',
-                                                                              style: SDSTextStyle.bold.copyWith(
-                                                                                  fontSize: 15,
-                                                                                  color: SDSColor.gray900
-                                                                              ),
-                                                                            ),
-                                                                          ),
-                                                                          onTap: () async {
-                                                                            Navigator.pop(context);
-                                                                            _rankingListViewModel.changeCategory_resort('${RankingFilter_resort.welli.korean}');
-                                                                            _rankingListViewModel.changeResortOrTotal('개별스키장');
-                                                                            _rankingListViewModel.changeCategory_fed('리그별 랭킹');
-                                                                            _rankingListViewModel.changeResortNum(10);
-                                                                            _rankingListViewModel.changeMyBoxText();
-                                                                            await _rankingListViewModel.toggleDataDayOrTotal_tapFilter(resortNum: 10);
-                                                                          },
-                                                                          shape: RoundedRectangleBorder(
-                                                                              borderRadius:
-                                                                              BorderRadius.circular(16)),
-                                                                        ),
-                                                                        //지산 11
-                                                                        ListTile(
-                                                                          contentPadding: EdgeInsets.zero,
-                                                                          title: Center(
-                                                                            child: Text(
-                                                                              '${RankingFilter_resort.jisan.korean}',
-                                                                              style: SDSTextStyle.bold.copyWith(
-                                                                                  fontSize: 15,
-                                                                                  color: SDSColor.gray900
-                                                                              ),
-                                                                            ),
-                                                                          ),
-                                                                          onTap: () async {
-                                                                            Navigator.pop(context);
-                                                                            _rankingListViewModel.changeCategory_resort('${RankingFilter_resort.jisan.korean}');
-                                                                            _rankingListViewModel.changeResortOrTotal('개별스키장');
-                                                                            _rankingListViewModel.changeCategory_fed('리그별 랭킹');
-                                                                            _rankingListViewModel.changeResortNum(11);
-                                                                            _rankingListViewModel.changeMyBoxText();
-                                                                            await _rankingListViewModel.toggleDataDayOrTotal_tapFilter(resortNum: 11);
-                                                                          },
-                                                                          shape: RoundedRectangleBorder(
-                                                                              borderRadius:
-                                                                              BorderRadius.circular(16)),
-                                                                        ),
-                                                                        //하이원 12
-                                                                        ListTile(
-                                                                          contentPadding: EdgeInsets.zero,
-                                                                          title: Center(
-                                                                            child: Text(
-                                                                              '${RankingFilter_resort.high1.korean}',
-                                                                              style: SDSTextStyle.bold.copyWith(
-                                                                                  fontSize: 15,
-                                                                                  color: SDSColor.gray900
-                                                                              ),
-                                                                            ),
-                                                                          ),
-                                                                          onTap: () async {
-                                                                            Navigator.pop(context);
-                                                                            _rankingListViewModel.changeCategory_resort('${RankingFilter_resort.high1.korean}');
-                                                                            _rankingListViewModel.changeResortOrTotal('개별스키장');
-                                                                            _rankingListViewModel.changeCategory_fed('리그별 랭킹');
-                                                                            _rankingListViewModel.changeResortNum(12);
-                                                                            _rankingListViewModel.changeMyBoxText();
-                                                                            await _rankingListViewModel.toggleDataDayOrTotal_tapFilter(resortNum: 12);
-                                                                          },
-                                                                          shape: RoundedRectangleBorder(
-                                                                              borderRadius:
-                                                                              BorderRadius.circular(16)),
-                                                                        ),
-                                                                        //휘닉스 13
-                                                                        ListTile(
-                                                                          contentPadding: EdgeInsets.zero,
-                                                                          title: Center(
-                                                                            child: Text(
-                                                                              '${RankingFilter_resort.phoenix.korean}',
-                                                                              style: SDSTextStyle.bold.copyWith(
-                                                                                  fontSize: 15,
-                                                                                  color: SDSColor.gray900
-                                                                              ),
-                                                                            ),
-                                                                          ),
-                                                                          onTap: () async {
-                                                                            Navigator.pop(context);
-                                                                            _rankingListViewModel.changeCategory_resort('${RankingFilter_resort.phoenix.korean}');
-                                                                            _rankingListViewModel.changeResortOrTotal('개별스키장');
-                                                                            _rankingListViewModel.changeCategory_fed('리그별 랭킹');
-                                                                            _rankingListViewModel.changeResortNum(13);
-                                                                            _rankingListViewModel.changeMyBoxText();
-                                                                            await _rankingListViewModel.toggleDataDayOrTotal_tapFilter(resortNum: 13);
-                                                                          },
-                                                                          shape: RoundedRectangleBorder(
-                                                                              borderRadius:
-                                                                              BorderRadius.circular(16)),
-                                                                        ),
-                                                                      ],
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                              ),
-                                                            );
-                                                          });
-                                                    },
-                                                    child: (_rankingListViewModel.resortOrTotal != '전체스키장') ? Image.asset(
-                                                      'assets/imgs/icons/icon_check_round.png',
-                                                      fit: BoxFit.cover,
-                                                      width: 16,
-                                                      height: 16,
-                                                    ) : Image.asset(
-                                                      'assets/imgs/icons/icon_check_round_black.png',
-                                                      fit: BoxFit.cover,
-                                                      width: 16,
-                                                      height: 16,
+                                                              );
+                                                            });
+                                                      },
+                                                      child: (_rankingListViewModel.resortOrTotal != '전체스키장') ? Image.asset(
+                                                        'assets/imgs/icons/icon_check_round.png',
+                                                        fit: BoxFit.cover,
+                                                        width: 16,
+                                                        height: 16,
+                                                      ) : Image.asset(
+                                                        'assets/imgs/icons/icon_check_round_black.png',
+                                                        fit: BoxFit.cover,
+                                                        width: 16,
+                                                        height: 16,
+                                                      ),
                                                     ),
                                                   ),
-                                                ),
-                                              ],
+                                                ],
+                                              ),
                                             ),
-                                          ),
-                                        ],
+                                          ],
+                                        ),
                                       ),
-                                    ),
-                                    Padding(
-                                      padding: EdgeInsets.only(top: 16, bottom: 8),
-                                      child: Row(
-                                        children: [
-                                          Padding(
-                                            padding: EdgeInsets.only(right: 8),
-                                            child: Stack(
+                                      Padding(
+                                        padding: EdgeInsets.only(top: 16, bottom: 8),
+                                        child: Row(
+                                          children: [
+                                            Stack(
                                               children: [
                                                 ElevatedButton(
                                                     onPressed: () async {
@@ -1057,7 +1057,7 @@ class RankingCrewView extends StatelessWidget {
                                                                     right: 16,
                                                                     top: 16,
                                                                   ),
-                                                                  height: MediaQuery.of(context).size.height * 0.6,
+                                                                  height: 146,
                                                                   padding: EdgeInsets.all(16),
                                                                   decoration: BoxDecoration(
                                                                     color: Colors.white,
@@ -1170,7 +1170,7 @@ class RankingCrewView extends StatelessWidget {
                                                                     right: 16,
                                                                     top: 16,
                                                                   ),
-                                                                  height: MediaQuery.of(context).size.height * 0.6,
+                                                                  height: 146,
                                                                   padding: EdgeInsets.all(16),
                                                                   decoration: BoxDecoration(
                                                                     color: Colors.white,
@@ -1239,7 +1239,7 @@ class RankingCrewView extends StatelessWidget {
                                                             );
                                                           });
                                                     },
-                                                    child: (_rankingListViewModel.resortOrTotal != '전체스키장') ? Image.asset(
+                                                    child: (_rankingListViewModel.selectedCategory_fed !='리그별 랭킹') ? Image.asset(
                                                       'assets/imgs/icons/icon_check_round.png',
                                                       fit: BoxFit.cover,
                                                       width: 16,
@@ -1254,11 +1254,11 @@ class RankingCrewView extends StatelessWidget {
                                                 ),
                                               ],
                                             ),
-                                          ),
-                                        ],
+                                          ],
+                                        ),
                                       ),
-                                    ),
-                                  ],
+                                    ],
+                                  ),
                                 ),
                               ),
                               SizedBox(height: 16),
@@ -1690,84 +1690,443 @@ class RankingCrewView extends StatelessWidget {
                               //필터
                               Container(
                                 height: 60,
-                                child: Row(
-                                  children: [
-                                    Padding(
-                                      padding: EdgeInsets.only(top: 16, bottom: 8),
-                                      child: Row(
-                                        children: [
-                                          Padding(
-                                            padding: EdgeInsets.only(right: 8),
-                                            child: Stack(
-                                              children: [
-                                                ElevatedButton(
-                                                    onPressed: () async {
-                                                      HapticFeedback.lightImpact();
-                                                      _rankingListViewModel.changeCategory_resort('${RankingFilter_resort.initial.korean}');
-                                                      _rankingListViewModel.changeResortOrTotal('전체스키장');
-                                                      _rankingListViewModel.changeCategory_fed('리그별 랭킹');
-                                                      _rankingListViewModel.changeResortNum(99);
-                                                      _rankingListViewModel.changeMyBoxText();
-                                                      await _rankingListViewModel.toggleDataDayOrTotal_tapFilter();
-                                                    },
-                                                    style: ElevatedButton.styleFrom(
-                                                        shadowColor: Colors.transparent,
-                                                        overlayColor: Colors.transparent,
-                                                        padding: EdgeInsets.only(
-                                                            right: 12, left: 12, top: 2, bottom: 2),
-                                                        side: BorderSide(
-                                                          width: 1,
-                                                          color: (_rankingListViewModel.resortOrTotal == '전체스키장' && _rankingListViewModel.selectedCategory_fed == '리그별 랭킹') ? SDSColor.gray900 : SDSColor.gray100,
-                                                        ),
-                                                        backgroundColor: (_rankingListViewModel.resortOrTotal == '전체스키장'&& _rankingListViewModel.selectedCategory_fed == '리그별 랭킹') ? SDSColor.gray900 : SDSColor.snowliveWhite,
-                                                        elevation: 0,
-                                                        shape: RoundedRectangleBorder(
-                                                            borderRadius: BorderRadius.circular(50))),
-                                                    child:
-                                                    Text('${RankingFilter_resort.total.korean}',
-                                                        style: SDSTextStyle.bold.copyWith(
-                                                            fontSize: 13,
-                                                            color: (_rankingListViewModel.resortOrTotal == '전체스키장'&& _rankingListViewModel.selectedCategory_fed == '리그별 랭킹') ? Color(0xFFFFFFFF) : Color(0xFF111111)))
-                                                ),
-                                              ],
+                                child: SingleChildScrollView(
+                                  scrollDirection: Axis.horizontal,
+                                  child: Row(
+                                    children: [
+                                      Padding(
+                                        padding: EdgeInsets.only(top: 16, bottom: 8),
+                                        child: Row(
+                                          children: [
+                                            Padding(
+                                              padding: EdgeInsets.only(right: 6),
+                                              child: Stack(
+                                                children: [
+                                                  ElevatedButton(
+                                                      onPressed: () async {
+                                                        HapticFeedback.lightImpact();
+                                                        _rankingListViewModel.changeCategory_resort('${RankingFilter_resort.initial.korean}');
+                                                        _rankingListViewModel.changeResortOrTotal('전체스키장');
+                                                        _rankingListViewModel.changeCategory_fed('리그별 랭킹');
+                                                        _rankingListViewModel.changeResortNum(99);
+                                                        _rankingListViewModel.changeMyBoxText();
+                                                        await _rankingListViewModel.toggleDataDayOrTotal_tapFilter();
+                                                      },
+                                                      style: ElevatedButton.styleFrom(
+                                                          shadowColor: Colors.transparent,
+                                                          overlayColor: Colors.transparent,
+                                                          padding: EdgeInsets.only(
+                                                              right: 12, left: 12, top: 2, bottom: 2),
+                                                          side: BorderSide(
+                                                            width: 1,
+                                                            color: (_rankingListViewModel.resortOrTotal == '전체스키장' && _rankingListViewModel.selectedCategory_fed == '리그별 랭킹') ? SDSColor.gray900 : SDSColor.gray100,
+                                                          ),
+                                                          backgroundColor: (_rankingListViewModel.resortOrTotal == '전체스키장'&& _rankingListViewModel.selectedCategory_fed == '리그별 랭킹') ? SDSColor.gray900 : SDSColor.snowliveWhite,
+                                                          elevation: 0,
+                                                          shape: RoundedRectangleBorder(
+                                                              borderRadius: BorderRadius.circular(50))),
+                                                      child:
+                                                      Text('${RankingFilter_resort.total.korean}',
+                                                          style: SDSTextStyle.bold.copyWith(
+                                                              fontSize: 13,
+                                                              color: (_rankingListViewModel.resortOrTotal == '전체스키장'&& _rankingListViewModel.selectedCategory_fed == '리그별 랭킹') ? Color(0xFFFFFFFF) : Color(0xFF111111)))
+                                                  ),
+                                                ],
+                                              ),
                                             ),
-                                          ),
-                                        ],
+                                          ],
+                                        ),
                                       ),
-                                    ),
-                                    Padding(
-                                      padding: EdgeInsets.only(top: 16, bottom: 8),
-                                      child: Row(
-                                        children: [
-                                          Padding(
-                                            padding: EdgeInsets.only(right: 8),
-                                            child: Stack(
-                                              children: [
-                                                ElevatedButton(
-                                                    onPressed: () async {
-                                                      HapticFeedback.lightImpact();
-                                                      showModalBottomSheet(
-                                                          enableDrag: false,
-                                                          isScrollControlled: true,
-                                                          backgroundColor: Colors.transparent,
-                                                          context: context,
-                                                          builder: (context) {
-                                                            return SafeArea(
-                                                              child: Padding(
-                                                                padding: const EdgeInsets.symmetric(vertical: 20),
-                                                                child: Container(
-                                                                  margin: EdgeInsets.only(
-                                                                    left: 16,
-                                                                    right: 16,
-                                                                    top: 16,
+                                      Padding(
+                                        padding: EdgeInsets.only(top: 16, bottom: 8),
+                                        child: Row(
+                                          children: [
+                                            Padding(
+                                              padding: EdgeInsets.only(right: 6),
+                                              child: Stack(
+                                                children: [
+                                                  ElevatedButton(
+                                                      onPressed: () async {
+                                                        HapticFeedback.lightImpact();
+                                                        showModalBottomSheet(
+                                                            enableDrag: false,
+                                                            isScrollControlled: true,
+                                                            backgroundColor: Colors.transparent,
+                                                            context: context,
+                                                            builder: (context) {
+                                                              return SafeArea(
+                                                                child: Padding(
+                                                                  padding: const EdgeInsets.symmetric(vertical: 20),
+                                                                  child: Container(
+                                                                    margin: EdgeInsets.only(
+                                                                      left: 16,
+                                                                      right: 16,
+                                                                      top: 16,
+                                                                    ),
+                                                                    height: MediaQuery.of(context).size.height * 0.6,
+                                                                    padding: EdgeInsets.all(16),
+                                                                    decoration: BoxDecoration(
+                                                                      color: Colors.white,
+                                                                      borderRadius: BorderRadius.circular(16),
+                                                                    ),
+                                                                    child: Scrollbar(
+                                                                      child: SingleChildScrollView(
+                                                                        child: Wrap(
+                                                                          children: [
+                                                                            //곤지암 1
+                                                                            ListTile(
+                                                                              contentPadding: EdgeInsets.zero,
+                                                                              title: Center(
+                                                                                child: Text(
+                                                                                  '${RankingFilter_resort.konjiam.korean}',
+                                                                                  style: SDSTextStyle.bold.copyWith(
+                                                                                      fontSize: 15,
+                                                                                      color: SDSColor.gray900
+                                                                                  ),
+                                                                                ),
+                                                                              ),
+                                                                              onTap: () async {
+                                                                                Navigator.pop(context);
+                                                                                _rankingListViewModel.changeCategory_resort('${RankingFilter_resort.konjiam.korean}');
+                                                                                _rankingListViewModel.changeResortOrTotal('개별스키장');
+                                                                                _rankingListViewModel.changeCategory_fed('리그별 랭킹');
+                                                                                _rankingListViewModel.changeResortNum(1);
+                                                                                _rankingListViewModel.changeMyBoxText();
+                                                                                await _rankingListViewModel.toggleDataDayOrTotal_tapFilter(resortNum: 1);
+                                                                              },
+                                                                              shape: RoundedRectangleBorder(
+                                                                                  borderRadius:
+                                                                                  BorderRadius.circular(16)),
+                                                                            ),
+                                                                            //무주 2
+                                                                            ListTile(
+                                                                              contentPadding: EdgeInsets.zero,
+                                                                              title: Center(
+                                                                                child: Text(
+                                                                                  '${RankingFilter_resort.muju.korean}',
+                                                                                  style: SDSTextStyle.bold.copyWith(
+                                                                                      fontSize: 15,
+                                                                                      color: SDSColor.gray900
+                                                                                  ),
+                                                                                ),
+                                                                              ),
+                                                                              onTap: () async {
+                                                                                Navigator.pop(context);
+                                                                                _rankingListViewModel.changeCategory_resort('${RankingFilter_resort.muju.korean}');
+                                                                                _rankingListViewModel.changeResortOrTotal('개별스키장');
+                                                                                _rankingListViewModel.changeCategory_fed('리그별 랭킹');
+                                                                                _rankingListViewModel.changeResortNum(2);
+                                                                                _rankingListViewModel.changeMyBoxText();
+                                                                                await _rankingListViewModel.toggleDataDayOrTotal_tapFilter(resortNum: 2);
+                                                                              },
+                                                                              shape: RoundedRectangleBorder(
+                                                                                  borderRadius:
+                                                                                  BorderRadius.circular(16)),
+                                                                            ),
+                                                                            //비발디 3
+                                                                            ListTile(
+                                                                              contentPadding: EdgeInsets.zero,
+                                                                              title: Center(
+                                                                                child: Text(
+                                                                                  '${RankingFilter_resort.vivaldi.korean}',
+                                                                                  style: SDSTextStyle.bold.copyWith(
+                                                                                      fontSize: 15,
+                                                                                      color: SDSColor.gray900
+                                                                                  ),
+                                                                                ),
+                                                                              ),
+                                                                              onTap: () async {
+                                                                                Navigator.pop(context);
+                                                                                _rankingListViewModel.changeCategory_resort('${RankingFilter_resort.vivaldi.korean}');
+                                                                                _rankingListViewModel.changeResortOrTotal('개별스키장');
+                                                                                _rankingListViewModel.changeCategory_fed('리그별 랭킹');
+                                                                                _rankingListViewModel.changeResortNum(3);
+                                                                                _rankingListViewModel.changeMyBoxText();
+                                                                                await _rankingListViewModel.toggleDataDayOrTotal_tapFilter(resortNum: 3);
+                                                                              },
+                                                                              shape: RoundedRectangleBorder(
+                                                                                  borderRadius:
+                                                                                  BorderRadius.circular(16)),
+                                                                            ),
+                                                                            //알펜 4
+                                                                            ListTile(
+                                                                              contentPadding: EdgeInsets.zero,
+                                                                              title: Center(
+                                                                                child: Text(
+                                                                                  '${RankingFilter_resort.alphen.korean}',
+                                                                                  style: SDSTextStyle.bold.copyWith(
+                                                                                      fontSize: 15,
+                                                                                      color: SDSColor.gray900
+                                                                                  ),
+                                                                                ),
+                                                                              ),
+                                                                              onTap: () async {
+                                                                                Navigator.pop(context);
+                                                                                _rankingListViewModel.changeCategory_resort('${RankingFilter_resort.alphen.korean}');
+                                                                                _rankingListViewModel.changeResortOrTotal('개별스키장');
+                                                                                _rankingListViewModel.changeCategory_fed('리그별 랭킹');
+                                                                                _rankingListViewModel.changeResortNum(4);
+                                                                                _rankingListViewModel.changeMyBoxText();
+                                                                                await _rankingListViewModel.toggleDataDayOrTotal_tapFilter(resortNum:4);
+                                                                              },
+                                                                              shape: RoundedRectangleBorder(
+                                                                                  borderRadius:
+                                                                                  BorderRadius.circular(16)),
+                                                                            ),
+                                                                            //강촌 6
+                                                                            ListTile(
+                                                                              contentPadding: EdgeInsets.zero,
+                                                                              title: Center(
+                                                                                child: Text(
+                                                                                  '${RankingFilter_resort.gangchon.korean}',
+                                                                                  style: SDSTextStyle.bold.copyWith(
+                                                                                      fontSize: 15,
+                                                                                      color: SDSColor.gray900
+                                                                                  ),
+                                                                                ),
+                                                                              ),
+                                                                              onTap: () async {
+                                                                                Navigator.pop(context);
+                                                                                _rankingListViewModel.changeCategory_resort('${RankingFilter_resort.gangchon.korean}');
+                                                                                _rankingListViewModel.changeResortOrTotal('개별스키장');
+                                                                                _rankingListViewModel.changeCategory_fed('리그별 랭킹');
+                                                                                _rankingListViewModel.changeResortNum(6);
+                                                                                _rankingListViewModel.changeMyBoxText();
+                                                                                await _rankingListViewModel.toggleDataDayOrTotal_tapFilter(resortNum: 6);
+                                                                              },
+                                                                              shape: RoundedRectangleBorder(
+                                                                                  borderRadius:
+                                                                                  BorderRadius.circular(16)),
+                                                                            ),
+                                                                            //오크 7
+                                                                            ListTile(
+                                                                              contentPadding: EdgeInsets.zero,
+                                                                              title: Center(
+                                                                                child: Text(
+                                                                                  '${RankingFilter_resort.oak.korean}',
+                                                                                  style: SDSTextStyle.bold.copyWith(
+                                                                                      fontSize: 15,
+                                                                                      color: SDSColor.gray900
+                                                                                  ),
+                                                                                ),
+                                                                              ),
+                                                                              onTap: () async {
+                                                                                Navigator.pop(context);
+                                                                                _rankingListViewModel.changeCategory_resort('${RankingFilter_resort.oak.korean}');
+                                                                                _rankingListViewModel.changeResortOrTotal('개별스키장');
+                                                                                _rankingListViewModel.changeCategory_fed('리그별 랭킹');
+                                                                                _rankingListViewModel.changeResortNum(7);
+                                                                                _rankingListViewModel.changeMyBoxText();
+                                                                                await _rankingListViewModel.toggleDataDayOrTotal_tapFilter(resortNum: 7);
+                                                                              },
+                                                                              shape: RoundedRectangleBorder(
+                                                                                  borderRadius:
+                                                                                  BorderRadius.circular(16)),
+                                                                            ),
+                                                                            //오투 8
+                                                                            ListTile(
+                                                                              contentPadding: EdgeInsets.zero,
+                                                                              title: Center(
+                                                                                child: Text(
+                                                                                  '${RankingFilter_resort.o2.korean}',
+                                                                                  style: SDSTextStyle.bold.copyWith(
+                                                                                      fontSize: 15,
+                                                                                      color: SDSColor.gray900
+                                                                                  ),
+                                                                                ),
+                                                                              ),
+                                                                              onTap: () async {
+                                                                                Navigator.pop(context);
+                                                                                _rankingListViewModel.changeCategory_resort('${RankingFilter_resort.o2.korean}');
+                                                                                _rankingListViewModel.changeResortOrTotal('개별스키장');
+                                                                                _rankingListViewModel.changeCategory_fed('리그별 랭킹');
+                                                                                _rankingListViewModel.changeResortNum(8);
+                                                                                _rankingListViewModel.changeMyBoxText();
+                                                                                await _rankingListViewModel.toggleDataDayOrTotal_tapFilter(resortNum: 8);
+                                                                              },
+                                                                              shape: RoundedRectangleBorder(
+                                                                                  borderRadius:
+                                                                                  BorderRadius.circular(16)),
+                                                                            ),
+                                                                            //용평 9
+                                                                            ListTile(
+                                                                              contentPadding: EdgeInsets.zero,
+                                                                              title: Center(
+                                                                                child: Text(
+                                                                                  '${RankingFilter_resort.yongpyong.korean}',
+                                                                                  style: SDSTextStyle.bold.copyWith(
+                                                                                      fontSize: 15,
+                                                                                      color: SDSColor.gray900
+                                                                                  ),
+                                                                                ),
+                                                                              ),
+                                                                              onTap: () async {
+                                                                                Navigator.pop(context);
+                                                                                _rankingListViewModel.changeCategory_resort('${RankingFilter_resort.yongpyong.korean}');
+                                                                                _rankingListViewModel.changeResortOrTotal('개별스키장');
+                                                                                _rankingListViewModel.changeCategory_fed('리그별 랭킹');
+                                                                                _rankingListViewModel.changeResortNum(9);
+                                                                                _rankingListViewModel.changeMyBoxText();
+                                                                                await _rankingListViewModel.toggleDataDayOrTotal_tapFilter(resortNum: 9);
+                                                                              },
+                                                                              shape: RoundedRectangleBorder(
+                                                                                  borderRadius:
+                                                                                  BorderRadius.circular(16)),
+                                                                            ),
+                                                                            //웰팍 10
+                                                                            ListTile(
+                                                                              contentPadding: EdgeInsets.zero,
+                                                                              title: Center(
+                                                                                child: Text(
+                                                                                  '${RankingFilter_resort.welli.korean}',
+                                                                                  style: SDSTextStyle.bold.copyWith(
+                                                                                      fontSize: 15,
+                                                                                      color: SDSColor.gray900
+                                                                                  ),
+                                                                                ),
+                                                                              ),
+                                                                              onTap: () async {
+                                                                                Navigator.pop(context);
+                                                                                _rankingListViewModel.changeCategory_resort('${RankingFilter_resort.welli.korean}');
+                                                                                _rankingListViewModel.changeResortOrTotal('개별스키장');
+                                                                                _rankingListViewModel.changeCategory_fed('리그별 랭킹');
+                                                                                _rankingListViewModel.changeResortNum(10);
+                                                                                _rankingListViewModel.changeMyBoxText();
+                                                                                await _rankingListViewModel.toggleDataDayOrTotal_tapFilter(resortNum: 10);
+                                                                              },
+                                                                              shape: RoundedRectangleBorder(
+                                                                                  borderRadius:
+                                                                                  BorderRadius.circular(16)),
+                                                                            ),
+                                                                            //지산 11
+                                                                            ListTile(
+                                                                              contentPadding: EdgeInsets.zero,
+                                                                              title: Center(
+                                                                                child: Text(
+                                                                                  '${RankingFilter_resort.jisan.korean}',
+                                                                                  style: SDSTextStyle.bold.copyWith(
+                                                                                      fontSize: 15,
+                                                                                      color: SDSColor.gray900
+                                                                                  ),
+                                                                                ),
+                                                                              ),
+                                                                              onTap: () async {
+                                                                                Navigator.pop(context);
+                                                                                _rankingListViewModel.changeCategory_resort('${RankingFilter_resort.jisan.korean}');
+                                                                                _rankingListViewModel.changeResortOrTotal('개별스키장');
+                                                                                _rankingListViewModel.changeCategory_fed('리그별 랭킹');
+                                                                                _rankingListViewModel.changeResortNum(11);
+                                                                                _rankingListViewModel.changeMyBoxText();
+                                                                                await _rankingListViewModel.toggleDataDayOrTotal_tapFilter(resortNum: 11);
+                                                                              },
+                                                                              shape: RoundedRectangleBorder(
+                                                                                  borderRadius:
+                                                                                  BorderRadius.circular(16)),
+                                                                            ),
+                                                                            //하이원 12
+                                                                            ListTile(
+                                                                              contentPadding: EdgeInsets.zero,
+                                                                              title: Center(
+                                                                                child: Text(
+                                                                                  '${RankingFilter_resort.high1.korean}',
+                                                                                  style: SDSTextStyle.bold.copyWith(
+                                                                                      fontSize: 15,
+                                                                                      color: SDSColor.gray900
+                                                                                  ),
+                                                                                ),
+                                                                              ),
+                                                                              onTap: () async {
+                                                                                Navigator.pop(context);
+                                                                                _rankingListViewModel.changeCategory_resort('${RankingFilter_resort.high1.korean}');
+                                                                                _rankingListViewModel.changeResortOrTotal('개별스키장');
+                                                                                _rankingListViewModel.changeCategory_fed('리그별 랭킹');
+                                                                                _rankingListViewModel.changeResortNum(12);
+                                                                                _rankingListViewModel.changeMyBoxText();
+                                                                                await _rankingListViewModel.toggleDataDayOrTotal_tapFilter(resortNum: 12);
+                                                                              },
+                                                                              shape: RoundedRectangleBorder(
+                                                                                  borderRadius:
+                                                                                  BorderRadius.circular(16)),
+                                                                            ),
+                                                                            //휘닉스 13
+                                                                            ListTile(
+                                                                              contentPadding: EdgeInsets.zero,
+                                                                              title: Center(
+                                                                                child: Text(
+                                                                                  '${RankingFilter_resort.phoenix.korean}',
+                                                                                  style: SDSTextStyle.bold.copyWith(
+                                                                                      fontSize: 15,
+                                                                                      color: SDSColor.gray900
+                                                                                  ),
+                                                                                ),
+                                                                              ),
+                                                                              onTap: () async {
+                                                                                Navigator.pop(context);
+                                                                                _rankingListViewModel.changeCategory_resort('${RankingFilter_resort.phoenix.korean}');
+                                                                                _rankingListViewModel.changeResortOrTotal('개별스키장');
+                                                                                _rankingListViewModel.changeCategory_fed('리그별 랭킹');
+                                                                                _rankingListViewModel.changeResortNum(13);
+                                                                                _rankingListViewModel.changeMyBoxText();
+                                                                                await _rankingListViewModel.toggleDataDayOrTotal_tapFilter(resortNum: 13);
+                                                                              },
+                                                                              shape: RoundedRectangleBorder(
+                                                                                  borderRadius:
+                                                                                  BorderRadius.circular(16)),
+                                                                            ),
+                                                                          ],
+                                                                        ),
+                                                                      ),
+                                                                    ),
                                                                   ),
-                                                                  height: MediaQuery.of(context).size.height * 0.6,
-                                                                  padding: EdgeInsets.all(16),
-                                                                  decoration: BoxDecoration(
-                                                                    color: Colors.white,
-                                                                    borderRadius: BorderRadius.circular(16),
-                                                                  ),
-                                                                  child: Scrollbar(
+                                                                ),
+                                                              );
+                                                            });
+                                                      },
+                                                      style: ElevatedButton.styleFrom(
+                                                          shadowColor: Colors.transparent,
+                                                          overlayColor: Colors.transparent,
+                                                          padding: EdgeInsets.only(
+                                                              right: 32, left: 12, top: 3, bottom: 2),
+                                                          side: BorderSide(
+                                                            width: 1,
+                                                            color: (_rankingListViewModel.resortOrTotal != '전체스키장') ? SDSColor.gray900 : SDSColor.gray100,
+                                                          ),
+                                                          backgroundColor: (_rankingListViewModel.resortOrTotal != '전체스키장') ? SDSColor.gray900 : SDSColor.snowliveWhite,
+                                                          elevation: 0,
+                                                          shape: RoundedRectangleBorder(
+                                                              borderRadius: BorderRadius.circular(50))),
+                                                      child:
+                                                      Text('${_rankingListViewModel.selectedCategory_resort}',
+                                                          style: SDSTextStyle.bold.copyWith(
+                                                              fontSize: 13,
+                                                              color: (_rankingListViewModel.resortOrTotal != '전체스키장') ? Color(0xFFFFFFFF) : Color(0xFF111111)))
+                                                  ),
+                                                  Positioned(
+                                                    top: 10,
+                                                    right: 10,
+                                                    child: GestureDetector(
+                                                      onTap: () async {
+                                                        showModalBottomSheet(
+                                                            enableDrag: false,
+                                                            isScrollControlled: true,
+                                                            backgroundColor: Colors.transparent,
+                                                            context: context,
+                                                            builder: (context) {
+                                                              return SafeArea(
+                                                                child: Padding(
+                                                                  padding: const EdgeInsets.symmetric(vertical: 20),
+                                                                  child: Container(
+                                                                    margin: EdgeInsets.only(
+                                                                      left: 16,
+                                                                      right: 16,
+                                                                      top: 16,
+                                                                    ),
+                                                                    height: MediaQuery.of(context).size.height * 0.5,
+                                                                    padding: EdgeInsets.all(16),
+                                                                    decoration: BoxDecoration(
+                                                                      color: Colors.white,
+                                                                      borderRadius: BorderRadius.circular(16),
+                                                                    ),
                                                                     child: SingleChildScrollView(
                                                                       child: Wrap(
                                                                         children: [
@@ -2076,392 +2435,33 @@ class RankingCrewView extends StatelessWidget {
                                                                     ),
                                                                   ),
                                                                 ),
-                                                              ),
-                                                            );
-                                                          });
-                                                    },
-                                                    style: ElevatedButton.styleFrom(
-                                                        shadowColor: Colors.transparent,
-                                                        overlayColor: Colors.transparent,
-                                                        padding: EdgeInsets.only(
-                                                            right: 32, left: 12, top: 3, bottom: 2),
-                                                        side: BorderSide(
-                                                          width: 1,
-                                                          color: (_rankingListViewModel.resortOrTotal != '전체스키장') ? SDSColor.gray900 : SDSColor.gray100,
-                                                        ),
-                                                        backgroundColor: (_rankingListViewModel.resortOrTotal != '전체스키장') ? SDSColor.gray900 : SDSColor.snowliveWhite,
-                                                        elevation: 0,
-                                                        shape: RoundedRectangleBorder(
-                                                            borderRadius: BorderRadius.circular(50))),
-                                                    child:
-                                                    Text('${_rankingListViewModel.selectedCategory_resort}',
-                                                        style: SDSTextStyle.bold.copyWith(
-                                                            fontSize: 13,
-                                                            color: (_rankingListViewModel.resortOrTotal != '전체스키장') ? Color(0xFFFFFFFF) : Color(0xFF111111)))
-                                                ),
-                                                Positioned(
-                                                  top: 10,
-                                                  right: 10,
-                                                  child: GestureDetector(
-                                                    onTap: () async {
-                                                      showModalBottomSheet(
-                                                          enableDrag: false,
-                                                          isScrollControlled: true,
-                                                          backgroundColor: Colors.transparent,
-                                                          context: context,
-                                                          builder: (context) {
-                                                            return SafeArea(
-                                                              child: Padding(
-                                                                padding: const EdgeInsets.symmetric(vertical: 20),
-                                                                child: Container(
-                                                                  margin: EdgeInsets.only(
-                                                                    left: 16,
-                                                                    right: 16,
-                                                                    top: 16,
-                                                                  ),
-                                                                  height: MediaQuery.of(context).size.height * 0.5,
-                                                                  padding: EdgeInsets.all(16),
-                                                                  decoration: BoxDecoration(
-                                                                    color: Colors.white,
-                                                                    borderRadius: BorderRadius.circular(16),
-                                                                  ),
-                                                                  child: SingleChildScrollView(
-                                                                    child: Wrap(
-                                                                      children: [
-                                                                        //곤지암 1
-                                                                        ListTile(
-                                                                          contentPadding: EdgeInsets.zero,
-                                                                          title: Center(
-                                                                            child: Text(
-                                                                              '${RankingFilter_resort.konjiam.korean}',
-                                                                              style: SDSTextStyle.bold.copyWith(
-                                                                                  fontSize: 15,
-                                                                                  color: SDSColor.gray900
-                                                                              ),
-                                                                            ),
-                                                                          ),
-                                                                          onTap: () async {
-                                                                            Navigator.pop(context);
-                                                                            _rankingListViewModel.changeCategory_resort('${RankingFilter_resort.konjiam.korean}');
-                                                                            _rankingListViewModel.changeResortOrTotal('개별스키장');
-                                                                            _rankingListViewModel.changeCategory_fed('리그별 랭킹');
-                                                                            _rankingListViewModel.changeResortNum(1);
-                                                                            _rankingListViewModel.changeMyBoxText();
-                                                                            await _rankingListViewModel.toggleDataDayOrTotal_tapFilter(resortNum: 1);
-                                                                          },
-                                                                          shape: RoundedRectangleBorder(
-                                                                              borderRadius:
-                                                                              BorderRadius.circular(16)),
-                                                                        ),
-                                                                        //무주 2
-                                                                        ListTile(
-                                                                          contentPadding: EdgeInsets.zero,
-                                                                          title: Center(
-                                                                            child: Text(
-                                                                              '${RankingFilter_resort.muju.korean}',
-                                                                              style: SDSTextStyle.bold.copyWith(
-                                                                                  fontSize: 15,
-                                                                                  color: SDSColor.gray900
-                                                                              ),
-                                                                            ),
-                                                                          ),
-                                                                          onTap: () async {
-                                                                            Navigator.pop(context);
-                                                                            _rankingListViewModel.changeCategory_resort('${RankingFilter_resort.muju.korean}');
-                                                                            _rankingListViewModel.changeResortOrTotal('개별스키장');
-                                                                            _rankingListViewModel.changeCategory_fed('리그별 랭킹');
-                                                                            _rankingListViewModel.changeResortNum(2);
-                                                                            _rankingListViewModel.changeMyBoxText();
-                                                                            await _rankingListViewModel.toggleDataDayOrTotal_tapFilter(resortNum: 2);
-                                                                          },
-                                                                          shape: RoundedRectangleBorder(
-                                                                              borderRadius:
-                                                                              BorderRadius.circular(16)),
-                                                                        ),
-                                                                        //비발디 3
-                                                                        ListTile(
-                                                                          contentPadding: EdgeInsets.zero,
-                                                                          title: Center(
-                                                                            child: Text(
-                                                                              '${RankingFilter_resort.vivaldi.korean}',
-                                                                              style: SDSTextStyle.bold.copyWith(
-                                                                                  fontSize: 15,
-                                                                                  color: SDSColor.gray900
-                                                                              ),
-                                                                            ),
-                                                                          ),
-                                                                          onTap: () async {
-                                                                            Navigator.pop(context);
-                                                                            _rankingListViewModel.changeCategory_resort('${RankingFilter_resort.vivaldi.korean}');
-                                                                            _rankingListViewModel.changeResortOrTotal('개별스키장');
-                                                                            _rankingListViewModel.changeCategory_fed('리그별 랭킹');
-                                                                            _rankingListViewModel.changeResortNum(3);
-                                                                            _rankingListViewModel.changeMyBoxText();
-                                                                            await _rankingListViewModel.toggleDataDayOrTotal_tapFilter(resortNum: 3);
-                                                                          },
-                                                                          shape: RoundedRectangleBorder(
-                                                                              borderRadius:
-                                                                              BorderRadius.circular(16)),
-                                                                        ),
-                                                                        //알펜 4
-                                                                        ListTile(
-                                                                          contentPadding: EdgeInsets.zero,
-                                                                          title: Center(
-                                                                            child: Text(
-                                                                              '${RankingFilter_resort.alphen.korean}',
-                                                                              style: SDSTextStyle.bold.copyWith(
-                                                                                  fontSize: 15,
-                                                                                  color: SDSColor.gray900
-                                                                              ),
-                                                                            ),
-                                                                          ),
-                                                                          onTap: () async {
-                                                                            Navigator.pop(context);
-                                                                            _rankingListViewModel.changeCategory_resort('${RankingFilter_resort.alphen.korean}');
-                                                                            _rankingListViewModel.changeResortOrTotal('개별스키장');
-                                                                            _rankingListViewModel.changeCategory_fed('리그별 랭킹');
-                                                                            _rankingListViewModel.changeResortNum(4);
-                                                                            _rankingListViewModel.changeMyBoxText();
-                                                                            await _rankingListViewModel.toggleDataDayOrTotal_tapFilter(resortNum:4);
-                                                                          },
-                                                                          shape: RoundedRectangleBorder(
-                                                                              borderRadius:
-                                                                              BorderRadius.circular(16)),
-                                                                        ),
-                                                                        //강촌 6
-                                                                        ListTile(
-                                                                          contentPadding: EdgeInsets.zero,
-                                                                          title: Center(
-                                                                            child: Text(
-                                                                              '${RankingFilter_resort.gangchon.korean}',
-                                                                              style: SDSTextStyle.bold.copyWith(
-                                                                                  fontSize: 15,
-                                                                                  color: SDSColor.gray900
-                                                                              ),
-                                                                            ),
-                                                                          ),
-                                                                          onTap: () async {
-                                                                            Navigator.pop(context);
-                                                                            _rankingListViewModel.changeCategory_resort('${RankingFilter_resort.gangchon.korean}');
-                                                                            _rankingListViewModel.changeResortOrTotal('개별스키장');
-                                                                            _rankingListViewModel.changeCategory_fed('리그별 랭킹');
-                                                                            _rankingListViewModel.changeResortNum(6);
-                                                                            _rankingListViewModel.changeMyBoxText();
-                                                                            await _rankingListViewModel.toggleDataDayOrTotal_tapFilter(resortNum: 6);
-                                                                          },
-                                                                          shape: RoundedRectangleBorder(
-                                                                              borderRadius:
-                                                                              BorderRadius.circular(16)),
-                                                                        ),
-                                                                        //오크 7
-                                                                        ListTile(
-                                                                          contentPadding: EdgeInsets.zero,
-                                                                          title: Center(
-                                                                            child: Text(
-                                                                              '${RankingFilter_resort.oak.korean}',
-                                                                              style: SDSTextStyle.bold.copyWith(
-                                                                                  fontSize: 15,
-                                                                                  color: SDSColor.gray900
-                                                                              ),
-                                                                            ),
-                                                                          ),
-                                                                          onTap: () async {
-                                                                            Navigator.pop(context);
-                                                                            _rankingListViewModel.changeCategory_resort('${RankingFilter_resort.oak.korean}');
-                                                                            _rankingListViewModel.changeResortOrTotal('개별스키장');
-                                                                            _rankingListViewModel.changeCategory_fed('리그별 랭킹');
-                                                                            _rankingListViewModel.changeResortNum(7);
-                                                                            _rankingListViewModel.changeMyBoxText();
-                                                                            await _rankingListViewModel.toggleDataDayOrTotal_tapFilter(resortNum: 7);
-                                                                          },
-                                                                          shape: RoundedRectangleBorder(
-                                                                              borderRadius:
-                                                                              BorderRadius.circular(16)),
-                                                                        ),
-                                                                        //오투 8
-                                                                        ListTile(
-                                                                          contentPadding: EdgeInsets.zero,
-                                                                          title: Center(
-                                                                            child: Text(
-                                                                              '${RankingFilter_resort.o2.korean}',
-                                                                              style: SDSTextStyle.bold.copyWith(
-                                                                                  fontSize: 15,
-                                                                                  color: SDSColor.gray900
-                                                                              ),
-                                                                            ),
-                                                                          ),
-                                                                          onTap: () async {
-                                                                            Navigator.pop(context);
-                                                                            _rankingListViewModel.changeCategory_resort('${RankingFilter_resort.o2.korean}');
-                                                                            _rankingListViewModel.changeResortOrTotal('개별스키장');
-                                                                            _rankingListViewModel.changeCategory_fed('리그별 랭킹');
-                                                                            _rankingListViewModel.changeResortNum(8);
-                                                                            _rankingListViewModel.changeMyBoxText();
-                                                                            await _rankingListViewModel.toggleDataDayOrTotal_tapFilter(resortNum: 8);
-                                                                          },
-                                                                          shape: RoundedRectangleBorder(
-                                                                              borderRadius:
-                                                                              BorderRadius.circular(16)),
-                                                                        ),
-                                                                        //용평 9
-                                                                        ListTile(
-                                                                          contentPadding: EdgeInsets.zero,
-                                                                          title: Center(
-                                                                            child: Text(
-                                                                              '${RankingFilter_resort.yongpyong.korean}',
-                                                                              style: SDSTextStyle.bold.copyWith(
-                                                                                  fontSize: 15,
-                                                                                  color: SDSColor.gray900
-                                                                              ),
-                                                                            ),
-                                                                          ),
-                                                                          onTap: () async {
-                                                                            Navigator.pop(context);
-                                                                            _rankingListViewModel.changeCategory_resort('${RankingFilter_resort.yongpyong.korean}');
-                                                                            _rankingListViewModel.changeResortOrTotal('개별스키장');
-                                                                            _rankingListViewModel.changeCategory_fed('리그별 랭킹');
-                                                                            _rankingListViewModel.changeResortNum(9);
-                                                                            _rankingListViewModel.changeMyBoxText();
-                                                                            await _rankingListViewModel.toggleDataDayOrTotal_tapFilter(resortNum: 9);
-                                                                          },
-                                                                          shape: RoundedRectangleBorder(
-                                                                              borderRadius:
-                                                                              BorderRadius.circular(16)),
-                                                                        ),
-                                                                        //웰팍 10
-                                                                        ListTile(
-                                                                          contentPadding: EdgeInsets.zero,
-                                                                          title: Center(
-                                                                            child: Text(
-                                                                              '${RankingFilter_resort.welli.korean}',
-                                                                              style: SDSTextStyle.bold.copyWith(
-                                                                                  fontSize: 15,
-                                                                                  color: SDSColor.gray900
-                                                                              ),
-                                                                            ),
-                                                                          ),
-                                                                          onTap: () async {
-                                                                            Navigator.pop(context);
-                                                                            _rankingListViewModel.changeCategory_resort('${RankingFilter_resort.welli.korean}');
-                                                                            _rankingListViewModel.changeResortOrTotal('개별스키장');
-                                                                            _rankingListViewModel.changeCategory_fed('리그별 랭킹');
-                                                                            _rankingListViewModel.changeResortNum(10);
-                                                                            _rankingListViewModel.changeMyBoxText();
-                                                                            await _rankingListViewModel.toggleDataDayOrTotal_tapFilter(resortNum: 10);
-                                                                          },
-                                                                          shape: RoundedRectangleBorder(
-                                                                              borderRadius:
-                                                                              BorderRadius.circular(16)),
-                                                                        ),
-                                                                        //지산 11
-                                                                        ListTile(
-                                                                          contentPadding: EdgeInsets.zero,
-                                                                          title: Center(
-                                                                            child: Text(
-                                                                              '${RankingFilter_resort.jisan.korean}',
-                                                                              style: SDSTextStyle.bold.copyWith(
-                                                                                  fontSize: 15,
-                                                                                  color: SDSColor.gray900
-                                                                              ),
-                                                                            ),
-                                                                          ),
-                                                                          onTap: () async {
-                                                                            Navigator.pop(context);
-                                                                            _rankingListViewModel.changeCategory_resort('${RankingFilter_resort.jisan.korean}');
-                                                                            _rankingListViewModel.changeResortOrTotal('개별스키장');
-                                                                            _rankingListViewModel.changeCategory_fed('리그별 랭킹');
-                                                                            _rankingListViewModel.changeResortNum(11);
-                                                                            _rankingListViewModel.changeMyBoxText();
-                                                                            await _rankingListViewModel.toggleDataDayOrTotal_tapFilter(resortNum: 11);
-                                                                          },
-                                                                          shape: RoundedRectangleBorder(
-                                                                              borderRadius:
-                                                                              BorderRadius.circular(16)),
-                                                                        ),
-                                                                        //하이원 12
-                                                                        ListTile(
-                                                                          contentPadding: EdgeInsets.zero,
-                                                                          title: Center(
-                                                                            child: Text(
-                                                                              '${RankingFilter_resort.high1.korean}',
-                                                                              style: SDSTextStyle.bold.copyWith(
-                                                                                  fontSize: 15,
-                                                                                  color: SDSColor.gray900
-                                                                              ),
-                                                                            ),
-                                                                          ),
-                                                                          onTap: () async {
-                                                                            Navigator.pop(context);
-                                                                            _rankingListViewModel.changeCategory_resort('${RankingFilter_resort.high1.korean}');
-                                                                            _rankingListViewModel.changeResortOrTotal('개별스키장');
-                                                                            _rankingListViewModel.changeCategory_fed('리그별 랭킹');
-                                                                            _rankingListViewModel.changeResortNum(12);
-                                                                            _rankingListViewModel.changeMyBoxText();
-                                                                            await _rankingListViewModel.toggleDataDayOrTotal_tapFilter(resortNum: 12);
-                                                                          },
-                                                                          shape: RoundedRectangleBorder(
-                                                                              borderRadius:
-                                                                              BorderRadius.circular(16)),
-                                                                        ),
-                                                                        //휘닉스 13
-                                                                        ListTile(
-                                                                          contentPadding: EdgeInsets.zero,
-                                                                          title: Center(
-                                                                            child: Text(
-                                                                              '${RankingFilter_resort.phoenix.korean}',
-                                                                              style: SDSTextStyle.bold.copyWith(
-                                                                                  fontSize: 15,
-                                                                                  color: SDSColor.gray900
-                                                                              ),
-                                                                            ),
-                                                                          ),
-                                                                          onTap: () async {
-                                                                            Navigator.pop(context);
-                                                                            _rankingListViewModel.changeCategory_resort('${RankingFilter_resort.phoenix.korean}');
-                                                                            _rankingListViewModel.changeResortOrTotal('개별스키장');
-                                                                            _rankingListViewModel.changeCategory_fed('리그별 랭킹');
-                                                                            _rankingListViewModel.changeResortNum(13);
-                                                                            _rankingListViewModel.changeMyBoxText();
-                                                                            await _rankingListViewModel.toggleDataDayOrTotal_tapFilter(resortNum: 13);
-                                                                          },
-                                                                          shape: RoundedRectangleBorder(
-                                                                              borderRadius:
-                                                                              BorderRadius.circular(16)),
-                                                                        ),
-                                                                      ],
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                              ),
-                                                            );
-                                                          });
-                                                    },
-                                                    child: (_rankingListViewModel.resortOrTotal != '전체스키장') ? Image.asset(
-                                                      'assets/imgs/icons/icon_check_round.png',
-                                                      fit: BoxFit.cover,
-                                                      width: 16,
-                                                      height: 16,
-                                                    ) : Image.asset(
-                                                      'assets/imgs/icons/icon_check_round_black.png',
-                                                      fit: BoxFit.cover,
-                                                      width: 16,
-                                                      height: 16,
+                                                              );
+                                                            });
+                                                      },
+                                                      child: (_rankingListViewModel.resortOrTotal != '전체스키장') ? Image.asset(
+                                                        'assets/imgs/icons/icon_check_round.png',
+                                                        fit: BoxFit.cover,
+                                                        width: 16,
+                                                        height: 16,
+                                                      ) : Image.asset(
+                                                        'assets/imgs/icons/icon_check_round_black.png',
+                                                        fit: BoxFit.cover,
+                                                        width: 16,
+                                                        height: 16,
+                                                      ),
                                                     ),
                                                   ),
-                                                ),
-                                              ],
+                                                ],
+                                              ),
                                             ),
-                                          ),
-                                        ],
+                                          ],
+                                        ),
                                       ),
-                                    ),
-                                    Padding(
-                                      padding: EdgeInsets.only(top: 16, bottom: 8),
-                                      child: Row(
-                                        children: [
-                                          Padding(
-                                            padding: EdgeInsets.only(right: 8),
-                                            child: Stack(
+                                      Padding(
+                                        padding: EdgeInsets.only(top: 16, bottom: 8),
+                                        child: Row(
+                                          children: [
+                                            Stack(
                                               children: [
                                                 ElevatedButton(
                                                     onPressed: () async {
@@ -2481,7 +2481,7 @@ class RankingCrewView extends StatelessWidget {
                                                                     right: 16,
                                                                     top: 16,
                                                                   ),
-                                                                  height: MediaQuery.of(context).size.height * 0.6,
+                                                                  height: 146,
                                                                   padding: EdgeInsets.all(16),
                                                                   decoration: BoxDecoration(
                                                                     color: Colors.white,
@@ -2594,7 +2594,7 @@ class RankingCrewView extends StatelessWidget {
                                                                     right: 16,
                                                                     top: 16,
                                                                   ),
-                                                                  height: MediaQuery.of(context).size.height * 0.6,
+                                                                  height: 146,
                                                                   padding: EdgeInsets.all(16),
                                                                   decoration: BoxDecoration(
                                                                     color: Colors.white,
@@ -2661,7 +2661,7 @@ class RankingCrewView extends StatelessWidget {
                                                             );
                                                           });
                                                     },
-                                                    child: (_rankingListViewModel.resortOrTotal != '전체스키장') ? Image.asset(
+                                                    child: (_rankingListViewModel.selectedCategory_fed != '리그별 랭킹' ) ? Image.asset(
                                                       'assets/imgs/icons/icon_check_round.png',
                                                       fit: BoxFit.cover,
                                                       width: 16,
@@ -2676,11 +2676,11 @@ class RankingCrewView extends StatelessWidget {
                                                 ),
                                               ],
                                             ),
-                                          ),
-                                        ],
+                                          ],
+                                        ),
                                       ),
-                                    ),
-                                  ],
+                                    ],
+                                  ),
                                 ),
                               ),
                               SizedBox(height: 16),
