@@ -90,4 +90,23 @@ class SnowballAPI {
       return ApiResponse.error(data);
     }
   }
+
+  // 특정 user_id의 레코드 조회
+  Future<ApiResponse> fetchUserSnowballRecords(Map<String, dynamic> body) async {
+    final response = await http.post(
+      Uri.parse('$baseUrl/user-snowball-record/'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode(body),
+    );
+
+    if (response.statusCode == 200) {
+      final data = json.decode(utf8.decode(response.bodyBytes)) as List<dynamic>;
+      return ApiResponse.success(data);
+    } else {
+      final data = json.decode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
+      return ApiResponse.error(data);
+    }
+  }
+
+
 }

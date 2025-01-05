@@ -37,13 +37,15 @@ class SnowballSummary {
 class SnowballShopItem {
   String? name;
   int? count;
+  String? imageUrl;
   int? snowballCount;
-  int? snowballItemId; // 새로 추가된 필드
+  int? snowballItemId;
   bool? active;
 
   SnowballShopItem({
     this.name,
     this.count,
+    this.imageUrl,
     this.snowballCount,
     this.snowballItemId,
     this.active,
@@ -52,8 +54,9 @@ class SnowballShopItem {
   SnowballShopItem.fromJson(Map<String, dynamic> json) {
     name = json['name'];
     count = json['count'];
+    imageUrl = json['image_url'];
     snowballCount = json['snowball_count'];
-    snowballItemId = json['snowball_item_id']; // JSON에서 새로운 필드 매핑
+    snowballItemId = json['snowball_item_id'];
     active = json['active'];
   }
 }
@@ -103,5 +106,53 @@ class SnowballBuyRecord {
     phoneNumber = json['phone_number'];
     address = json['address'];
     uploadTime = json['upload_time'];
+  }
+}
+
+class SnowballRecordResponse {
+  List<SnowballRecord>? records;
+
+  SnowballRecordResponse({this.records});
+
+  SnowballRecordResponse.fromJson(List<dynamic> jsonList) {
+    records = jsonList.map((v) => SnowballRecord.fromJson(v)).toList();
+  }
+}
+
+class SnowballRecord {
+  int? snowballRecordId;
+  int? userId;
+  String? passTime;
+  String? coordinates;
+  bool? active;
+  String? color;
+
+  SnowballRecord({
+    this.snowballRecordId,
+    this.userId,
+    this.passTime,
+    this.coordinates,
+    this.active,
+    this.color,
+  });
+
+  SnowballRecord.fromJson(Map<String, dynamic> json) {
+    snowballRecordId = json['snowball_record_id'];
+    userId = json['user_id'];
+    passTime = json['pass_time'];
+    coordinates = json['coordinates'];
+    active = json['active'];
+    color = json['color'];
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'snowball_record_id': snowballRecordId,
+      'user_id': userId,
+      'pass_time': passTime,
+      'coordinates': coordinates,
+      'active': active,
+      'color': color,
+    };
   }
 }

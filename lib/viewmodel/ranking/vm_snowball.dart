@@ -16,6 +16,7 @@ class SnowballShopViewModel extends GetxController {
   var whiteShopItems = <SnowballShopItem>[].obs;
   var sponsors = <SnowballSponsor>[].obs;
   var purchaseHistory = <SnowballBuyRecord>[].obs;
+  var userSnowballRecords = <SnowballRecord>[].obs; // 추가된 필드
 
   // 현재 선택된 아이템 정보
   var selectedItem = SnowballShopItem().obs;
@@ -24,7 +25,7 @@ class SnowballShopViewModel extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    fetchSnowballShopData();
+    fetchSnowballSummary();
   }
 
   /// 눈송이 상점 데이터 가져오기(눈송이 홈)
@@ -155,6 +156,31 @@ class SnowballShopViewModel extends GetxController {
       isLoading(false);
     }
   }
+
+  /// 특정 user_id의 눈송이 기록 가져오기
+  Future<void> fetchUserSnowballRecords() async {
+    try {
+      isLoading(true);
+      int userId = _userViewModel.user.user_id;
+
+      // API 호출
+      final response = await SnowballAPI().fetchUserSnowballRecords({'user_id': userId});
+      if (response.success) {
+        print("User snowball records fetched successfully: ${response.data}");
+        userSnowballRecords.value = (response.data as List)
+            .map((record) => SnowballRecord.fromJson(record))
+            .toList();
+      } else {
+        print("Failed to fetch user snowball records: ${response.error}");
+      }
+    } catch (e) {
+      print("Error fetching user snowball records: $e");
+    } finally {
+      isLoading(false);
+    }
+  }
+
+
 
   /// 아이템 누르면 아이템 정보를 모델에 할당.(구매버튼 누르면 이 아이템의 id를 api에 보내려는 목적)
   void selectItem(SnowballShopItem item) {
