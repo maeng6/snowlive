@@ -24,6 +24,8 @@ import 'package:get/get_core/src/get_main.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:android_intent_plus/android_intent.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 import '../banner/v_banner_treasureHunt.dart';
 
@@ -298,11 +300,11 @@ class _ResortHomeViewState extends State<ResortHomeView> with
                                                   await _resortHomeViewModel.liveOff({
                                                     "user_id":_userViewModel.user.user_id
                                                   }, _userViewModel.user.user_id);
+                                                  CustomFullScreenDialog.cancelDialog();
+                                                  Get.back();
                                                   await _userViewModel.updateUserModel_api(_userViewModel.user.user_id);
                                                   await _resortHomeViewModel.stopForegroundLocationService();
                                                   await _resortHomeViewModel.stopBackgroundLocationService();
-                                                  CustomFullScreenDialog.cancelDialog();
-                                                  Get.back();
                                                   print('라이브 OFF');
                                                 },
                                                 child: Text(
@@ -380,6 +382,35 @@ class _ResortHomeViewState extends State<ResortHomeView> with
                                       ),
                                       child: TextButton(
                                         onPressed: () async{
+
+                                          // 위치 서비스 권한 확인(안드만 실행되게 함)
+                                          if (Platform.isAndroid) {
+                                            // 위치 서비스 권한 확인 (안드로이드에서만 실행)
+                                            final status = await Permission.locationAlways.status;
+                                            if (status != PermissionStatus.granted) {
+                                              // 위치 서비스 항상 허용이 아닐 경우 팝업 표시
+                                              await _resortHomeViewModel.showSettingsPopup(
+                                                title: '권한 필요',
+                                                message: '위치 서비스를 항상 허용으로 설정해야 라이브 기능을 사용할 수 있습니다.',
+                                                action: () => openAppSettings(),
+                                              );
+                                              return; // 이후 코드 실행 중단
+                                            }
+                                          }
+                                          // 배터리 절약 모드(절전 모드) 확인
+                                          final isBatterySaverOn = await _resortHomeViewModel.isBatterySaverOn();
+                                          if (isBatterySaverOn) {
+                                            // 배터리 절약 모드가 켜져 있을 경우 팝업 표시
+                                            await _resortHomeViewModel.showSettingsPopup(
+                                              title: '배터리 절약 모드 감지',
+                                              message: '배터리 절약 모드를 비활성화해야 라이브 기능을 사용할 수 있습니다.',
+                                              action: () async {
+                                                await _resortHomeViewModel.navigateToBatterySettings();
+                                              },
+                                            );
+                                            return; // 이후 코드 실행 중단
+                                          }
+
                                           HapticFeedback.lightImpact();
                                           CustomFullScreenDialog.showDialog();
                                           await _resortHomeViewModel.startLiveLocationService(user_id: _userViewModel.user.user_id);
@@ -435,11 +466,11 @@ class _ResortHomeViewState extends State<ResortHomeView> with
                                                 await _resortHomeViewModel.liveOff({
                                                   "user_id":_userViewModel.user.user_id
                                                 }, _userViewModel.user.user_id);
+                                                CustomFullScreenDialog.cancelDialog();
+                                                Get.back();
                                                 await _userViewModel.updateUserModel_api(_userViewModel.user.user_id);
                                                 await _resortHomeViewModel.stopForegroundLocationService();
                                                 await _resortHomeViewModel.stopBackgroundLocationService();
-                                                CustomFullScreenDialog.cancelDialog();
-                                                Get.back();
                                                 print('라이브 OFF');
                                               },
                                               child: Text(
@@ -463,6 +494,35 @@ class _ResortHomeViewState extends State<ResortHomeView> with
                           }
                           else if(_userViewModel.user.within_boundary == false) {
                             HapticFeedback.lightImpact();
+
+                            // 위치 서비스 권한 확인(안드만 실행되게 함)
+                            if (Platform.isAndroid) {
+                              // 위치 서비스 권한 확인 (안드로이드에서만 실행)
+                              final status = await Permission.locationAlways.status;
+                              if (status != PermissionStatus.granted) {
+                                // 위치 서비스 항상 허용이 아닐 경우 팝업 표시
+                                await _resortHomeViewModel.showSettingsPopup(
+                                  title: '권한 필요',
+                                  message: '위치 서비스를 항상 허용으로 설정해야 라이브 기능을 사용할 수 있습니다.',
+                                  action: () => openAppSettings(),
+                                );
+                                return; // 이후 코드 실행 중단
+                              }
+                            }
+                            // 배터리 절약 모드(절전 모드) 확인
+                            final isBatterySaverOn = await _resortHomeViewModel.isBatterySaverOn();
+                            if (isBatterySaverOn) {
+                              // 배터리 절약 모드가 켜져 있을 경우 팝업 표시
+                              await _resortHomeViewModel.showSettingsPopup(
+                                title: '배터리 절약 모드 감지',
+                                message: '배터리 절약 모드를 비활성화해야 라이브 기능을 사용할 수 있습니다.',
+                                action: () async {
+                                  await _resortHomeViewModel.navigateToBatterySettings();
+                                },
+                              );
+                              return; // 이후 코드 실행 중단
+                            }
+
                             CustomFullScreenDialog.showDialog();
                             await _resortHomeViewModel.startLiveLocationService(user_id: _userViewModel.user.user_id);
                             await _userViewModel.updateUserModel_api(_userViewModel.user.user_id);

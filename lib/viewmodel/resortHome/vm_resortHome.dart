@@ -32,6 +32,7 @@ import 'dart:io';
 import 'package:android_intent_plus/android_intent.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:flutter/services.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 final ref = FirebaseFirestore.instance;
 DateTime? _lastFakeLocationCheckTime;
@@ -143,6 +144,34 @@ class ResortHomeViewModel extends GetxController {
       await liveOff({"user_id": user_id}, user_id);
       print('라이브 위치 서비스 실행 실패: $error');
     }
+  }
+
+// 팝업 표시 함수
+  Future<void> showSettingsPopup({
+    required String title,
+    required String message,
+    required VoidCallback action,
+  }) async {
+    Get.defaultDialog(
+      title: title,
+      content: Column(
+        children: [
+          Text(
+            message,
+            textAlign: TextAlign.center,
+          ),
+          SizedBox(height: 16),
+          ElevatedButton(
+            onPressed: (){
+              Get.back(); // 팝업 닫기
+              action();
+            },
+            child: Text('설정으로 이동'),
+          ),
+        ],
+      ),
+      barrierDismissible: true, // 팝업 외부 클릭으로 닫히게 설정함
+    );
   }
 
   Future<bool> startForegroundLocationService({required user_id}) async {
@@ -353,6 +382,8 @@ class ResortHomeViewModel extends GetxController {
 
         if (withinBoundary) {
 
+          await _userViewModel.updateUserModel_api(_userViewModel.user.user_id);
+
           try {
             // 현재 시간 가져오기
             final now = DateTime.now();
@@ -537,41 +568,6 @@ class ResortHomeViewModel extends GetxController {
   Future<ApiResponse> liveOn(Map<String, dynamic> body) async {
     try {
       isLoading(true);
-
-      // 위치 서비스 권한 확인
-      final isLocationAlwaysGranted = await Permission.locationAlways.isGranted;
-      if (!isLocationAlwaysGranted) {
-        // 위치 권한이 항상 허용이 아닌 경우 설정으로 이동
-        Get.snackbar(
-          '권한 필요',
-          '위치 서비스를 항상 허용으로 설정해야 라이브 기능을 사용할 수 있습니다.',
-          snackPosition: SnackPosition.BOTTOM,
-        );
-        openAppSettings();
-        return ApiResponse.error('Location permission is not always granted.');
-      }
-
-      // 배터리 절약 모드(절전 모드) 확인
-      final isBatterySaverOn = await _isBatterySaverOn();
-      if (isBatterySaverOn) {
-        // 배터리 절약 모드가 켜져 있을 경우 설정으로 이동
-        Get.snackbar(
-          '배터리 절약 모드 감지',
-          '배터리 절약 모드를 비활성화해야 라이브 기능을 사용할 수 있습니다.',
-          snackPosition: SnackPosition.BOTTOM,
-        );
-
-        if (Platform.isAndroid) {
-          final intent = AndroidIntent(
-            action: 'android.settings.BATTERY_SAVER_SETTINGS',
-          );
-          await intent.launch();
-        } else {
-          openAppSettings(); // iOS에서는 앱 설정으로 이동
-        }
-        return ApiResponse.error('Battery saver mode is enabled.');
-      }
-
       // API 호출
       ApiResponse response = await RankingAPI().check_wb(body);
       if (response.success) {
@@ -598,18 +594,36 @@ class ResortHomeViewModel extends GetxController {
   }
 
   /// 배터리 절약 모드 확인 메서드
-  Future<bool> _isBatterySaverOn() async {
-    if (Platform.isAndroid) {
+  Future<bool> isBatterySaverOn() async {
+    if (Platform.isAndroid || Platform.isIOS) {
       try {
-        const intent = MethodChannel('detect_battery_saver');
-        final result = await intent.invokeMethod('isBatterySaverOn');
+        const channel = MethodChannel('detect_battery_saver');
+        final result = await channel.invokeMethod('isBatterySaverOn');
         return result == true;
       } catch (e) {
         print('배터리 절약 모드 확인 중 오류 발생: $e');
         return false; // 기본값은 꺼져 있다고 가정
       }
     }
-    return false; // iOS에서는 배터리 절약 모드 확인 지원 없음
+    return false; // 지원하지 않는 플랫폼
+  }
+
+  Future<void> navigateToBatterySettings() async {
+    if (Platform.isAndroid) {
+      // Android의 경우 배터리 절약 모드 설정 화면으로 이동
+      final intent = AndroidIntent(
+        action: 'android.settings.BATTERY_SAVER_SETTINGS',
+      );
+      await intent.launch();
+    } else if (Platform.isIOS) {
+      // iOS의 경우 배터리 설정 화면으로 이동
+      const url = 'App-Prefs:root=BATTERY_USAGE';
+      if (await canLaunch(url)) {
+        await launch(url);
+      } else {
+        openAppSettings(); // URL 스킴이 실패하면 앱 설정으로 이동
+      }
+    }
   }
 
   //TODO: 라이브온 관련 메소드****************************************************
