@@ -16,8 +16,20 @@ import GoogleMaps
     // Flutter Plugins 등록
     GeneratedPluginRegistrant.register(with: self)
 
+    // 배터리 절약 모드 감지 설정
+    let controller: FlutterViewController = window?.rootViewController as! FlutterViewController
+    let channel = FlutterMethodChannel(name: "detect_battery_saver", binaryMessenger: controller.binaryMessenger)
+
+    channel.setMethodCallHandler { (call: FlutterMethodCall, result: @escaping FlutterResult) in
+      if call.method == "isBatterySaverOn" {
+        // 배터리 절약 모드 확인
+        let isLowPowerMode = ProcessInfo.processInfo.isLowPowerModeEnabled
+        result(isLowPowerMode)
+      } else {
+        result(FlutterMethodNotImplemented)
+      }
+    }
+
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
   }
-
-  // 페이스북 로그인 및 기타 URL 스킴을 처리하기 위한 메서드 삭제
 }
