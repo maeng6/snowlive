@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:com.snowlive/api/api_snowball.dart';
 import 'package:com.snowlive/model/m_snowball.dart';
 import 'package:com.snowlive/viewmodel/vm_user.dart';
@@ -16,6 +17,9 @@ class SnowballShopViewModel extends GetxController {
   var whiteShopItems = <SnowballShopItem>[].obs;
   var sponsors = <SnowballSponsor>[].obs;
   var purchaseHistory = <SnowballBuyRecord>[].obs;
+  Rxn<Stream<DocumentSnapshot<Map<String, dynamic>>>> infoStream_snowballShop = Rxn<Stream<DocumentSnapshot<Map<String, dynamic>>>>();
+  Rxn<Stream<DocumentSnapshot<Map<String, dynamic>>>> infoStream_snowballShop_entrance = Rxn<Stream<DocumentSnapshot<Map<String, dynamic>>>>();
+
 
   // 현재 선택된 아이템 정보
   var selectedItem = SnowballShopItem().obs;
@@ -25,6 +29,22 @@ class SnowballShopViewModel extends GetxController {
   void onInit() {
     super.onInit();
     fetchSnowballShopData();
+  }
+
+  Future<void> getInfo_snowballMarket_entrance() async {
+
+    infoStream_snowballShop_entrance.value = FirebaseFirestore.instance
+        .collection('snowball_market')
+        .doc('snowball_market')
+        .snapshots();
+  }
+
+  Future<void> getInfo_snowballMarket() async {
+
+    infoStream_snowballShop.value = FirebaseFirestore.instance
+        .collection('snowball_market')
+        .doc('snowball_market')
+        .snapshots();
   }
 
   /// 눈송이 상점 데이터 가져오기(눈송이 홈)
