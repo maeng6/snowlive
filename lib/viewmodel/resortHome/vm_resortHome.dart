@@ -4,6 +4,7 @@ import 'package:com.snowlive/api/ApiResponse.dart';
 import 'package:com.snowlive/api/api_friend.dart';
 import 'package:com.snowlive/api/api_ranking.dart';
 import 'package:com.snowlive/api/api_resortHome.dart';
+import 'package:com.snowlive/api/api_snowball.dart';
 import 'package:com.snowlive/api/api_user.dart';
 import 'package:com.snowlive/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/model/m_bestFriendListModel.dart';
@@ -13,6 +14,7 @@ import 'package:com.snowlive/util/util_1.dart';
 import 'package:com.snowlive/viewmodel/vm_user.dart';
 import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 import 'package:com.snowlive/widget/w_popUp_bottomSheet.dart';
+import 'package:detect_fake_location/detect_fake_location.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_background_geolocation/flutter_background_geolocation.dart';
@@ -27,8 +29,11 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:synchronized/synchronized.dart';
 import 'package:flutter_background_geolocation/flutter_background_geolocation.dart' as bg;
 import 'dart:io';
+import 'package:android_intent_plus/android_intent.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 final ref = FirebaseFirestore.instance;
+DateTime? _lastFakeLocationCheckTime;
 
 class ResortHomeViewModel extends GetxController {
   var _resortHomeModel = ResortHomeModel().obs;
@@ -180,6 +185,40 @@ class ResortHomeViewModel extends GetxController {
             );
 
             if (withinBoundary) {
+
+              try {
+                // 현재 시간 가져오기
+                final now = DateTime.now();
+
+                // 마지막 페이크 위치 감지 시간과의 차이 계산 (10초 초과 시 실행)
+                if (_lastFakeLocationCheckTime == null ||
+                    now.difference(_lastFakeLocationCheckTime!).inSeconds > 10) {
+                  _lastFakeLocationCheckTime = now; // 마지막 실행 시간 업데이트
+
+                  // 페이크 위치 감지
+                  final isFakeLocation = await DetectFakeLocation().detectFakeLocation();
+
+                  if (isFakeLocation) {
+                    print('페이크 위치가 감지되었습니다. 위치 추적을 중지합니다.');
+
+                    // 위치 추적 서비스 중지
+                    await stopForegroundLocationService();
+                    await stopBackgroundLocationService();
+
+                    // 사용자에게 경고 메시지 표시
+                    Get.snackbar(
+                      '경고',
+                      '페이크 위치가 감지되었습니다. 위치 추적 서비스가 중단되었습니다.',
+                      snackPosition: SnackPosition.BOTTOM,
+                    );
+
+                    return; // 이후 코드 실행 방지
+                  }
+                }
+              } catch (e) {
+                print('페이크 위치 감지 중 오류 발생: $e');
+              }
+
               Map<String, dynamic>? passPointInfo = checkPositionInAreas(
                 position,
                 _slope_info,
@@ -206,13 +245,17 @@ class ResortHomeViewModel extends GetxController {
               }
 
               if (passPointInfo != null && passPointInfo['type'] == 'treasure_hunt_info') {
-                if (resort_info['treasure_hunt'] == true && isParticipate_treasure_hunt == true) {
-                  await RankingAPI().createTreasureRecord({
-                    "user_id": user_id,
-                    "slope_id": passPointInfo['id'],
-                    "coordinates": "POINT (${position.longitude} ${position.latitude})"
-                  });
-                  print('보물찾기 기록 성공');
+                if (resort_info['snowball'] == true) {
+                  try {
+                    await SnowballAPI().createSnowballRecord({
+                      "user_id": user_id,
+                      "slope_id": passPointInfo['id'],
+                      "coordinates": "POINT (${position.longitude} ${position.latitude})"
+                    });
+                    print('눈송이 기록 성공');
+                  } catch (e) {
+                    print('눈송이 기록 실패: $e');
+                  }
                 }
               }
 
@@ -308,6 +351,40 @@ class ResortHomeViewModel extends GetxController {
         DateTime now = DateTime.now();
 
         if (withinBoundary) {
+
+          try {
+            // 현재 시간 가져오기
+            final now = DateTime.now();
+
+            // 마지막 페이크 위치 감지 시간과의 차이 계산 (10초 초과 시 실행)
+            if (_lastFakeLocationCheckTime == null ||
+                now.difference(_lastFakeLocationCheckTime!).inSeconds > 10) {
+              _lastFakeLocationCheckTime = now; // 마지막 실행 시간 업데이트
+
+              // 페이크 위치 감지
+              final isFakeLocation = await DetectFakeLocation().detectFakeLocation();
+
+              if (isFakeLocation) {
+                print('페이크 위치가 감지되었습니다. 위치 추적을 중지합니다.');
+
+                // 위치 추적 서비스 중지
+                await stopForegroundLocationService();
+                await stopBackgroundLocationService();
+
+                // 사용자에게 경고 메시지 표시
+                Get.snackbar(
+                  '경고',
+                  '페이크 위치가 감지되었습니다. 위치 추적 서비스가 중단되었습니다.',
+                  snackPosition: SnackPosition.BOTTOM,
+                );
+
+                return; // 이후 코드 실행 방지
+              }
+            }
+          } catch (e) {
+            print('페이크 위치 감지 중 오류 발생: $e');
+          }
+
           Map<String, dynamic>? passPointInfo = checkPositionInAreas(position, _slope_info,_treasure_hunt_info, _reset_point, _respawn_point);
 
           if (passPointInfo != null && passPointInfo['type'] == 'slope_info') {
@@ -459,6 +536,42 @@ class ResortHomeViewModel extends GetxController {
   Future<ApiResponse> liveOn(Map<String, dynamic> body) async {
     try {
       isLoading(true);
+
+      // 위치 서비스 권한 확인
+      final isLocationAlwaysGranted = await Permission.locationAlways.isGranted;
+      if (!isLocationAlwaysGranted) {
+        // 위치 권한이 항상 허용이 아닌 경우 설정으로 이동
+        Get.snackbar(
+          '권한 필요',
+          '위치 서비스를 항상 허용으로 설정해야 라이브 기능을 사용할 수 있습니다.',
+          snackPosition: SnackPosition.BOTTOM,
+        );
+        openAppSettings();
+        return ApiResponse.error('Location permission is not always granted.');
+      }
+
+      // 배터리 절약 모드(절전 모드) 확인
+      final isBatterySaverOn = await _isBatterySaverOn();
+      if (isBatterySaverOn) {
+        // 배터리 절약 모드가 켜져 있을 경우 설정으로 이동
+        Get.snackbar(
+          '배터리 절약 모드 감지',
+          '배터리 절약 모드를 비활성화해야 라이브 기능을 사용할 수 있습니다.',
+          snackPosition: SnackPosition.BOTTOM,
+        );
+
+        if (Platform.isAndroid) {
+          final intent = AndroidIntent(
+            action: 'android.settings.BATTERY_SAVER_SETTINGS',
+          );
+          await intent.launch();
+        } else {
+          openAppSettings(); // iOS에서는 앱 설정으로 이동
+        }
+        return ApiResponse.error('Battery saver mode is enabled.');
+      }
+
+      // API 호출
       ApiResponse response = await RankingAPI().check_wb(body);
       if (response.success) {
         _resort_info.value = response.data['resort_info'];
@@ -476,11 +589,26 @@ class ResortHomeViewModel extends GetxController {
     } catch (e) {
       await stopForegroundLocationService();
       CustomFullScreenDialog.cancelDialog();
-      print('Error in liveOn: $e'); // 예외 발생 시 출력
-      return ApiResponse.error('An error occurred: $e'); // 에러 응답 반환
+      print('Error in liveOn: $e');
+      return ApiResponse.error('An error occurred: $e');
     } finally {
-      isLoading(false); // 성공/실패/예외 발생 여부와 상관없이 로딩 상태 종료
+      isLoading(false);
     }
+  }
+
+  /// 배터리 절약 모드 확인 메서드
+  Future<bool> _isBatterySaverOn() async {
+    if (Platform.isAndroid) {
+      try {
+        const intent = MethodChannel('detect_battery_saver');
+        final result = await intent.invokeMethod('isBatterySaverOn');
+        return result == true;
+      } catch (e) {
+        print('배터리 절약 모드 확인 중 오류 발생: $e');
+        return false; // 기본값은 꺼져 있다고 가정
+      }
+    }
+    return false; // iOS에서는 배터리 절약 모드 확인 지원 없음
   }
 
   //TODO: 라이브온 관련 메소드****************************************************

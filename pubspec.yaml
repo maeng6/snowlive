@@ -95,6 +95,8 @@ dependencies:
   flutter_image_compress: ^2.3.0
   flutter_foreground_task: ^8.10.4
   cached_network_image: ^3.4.1
+  detect_fake_location: ^0.0.2
+  android_intent_plus: ^5.2.1
 
 dev_dependencies:
   flutter_test:
