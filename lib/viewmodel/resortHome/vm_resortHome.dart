@@ -31,6 +31,7 @@ import 'package:flutter_background_geolocation/flutter_background_geolocation.da
 import 'dart:io';
 import 'package:android_intent_plus/android_intent.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:flutter/services.dart';
 
 final ref = FirebaseFirestore.instance;
 DateTime? _lastFakeLocationCheckTime;
