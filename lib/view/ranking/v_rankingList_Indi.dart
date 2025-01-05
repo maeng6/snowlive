@@ -2,6 +2,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:com.snowlive/data/imgaUrls/Data_url_image.dart';
 import 'package:com.snowlive/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/routes/routes.dart';
+import 'package:com.snowlive/view/banner/v_banner_ranking.dart';
 import 'package:com.snowlive/viewmodel/friend/vm_friendDetail.dart';
 import 'package:com.snowlive/viewmodel/ranking/vm_rankingList.dart';
 import 'package:com.snowlive/viewmodel/resortHome/vm_resortHome.dart';
@@ -85,6 +86,11 @@ class RankingIndiView extends StatelessWidget {
                         itemBuilder: (context, index) {
                           if(index == 0){
                             return Column(children: [
+                              // 배너
+                              Padding(
+                                padding: EdgeInsets.only(top: 4),
+                                child: Banner_ranking(),
+                              ),
                               //마이인포 박스 - 점수와 랭킹없는경우 널처리해야함
                               GestureDetector(
                                 onTap: () async{
@@ -95,7 +101,7 @@ class RankingIndiView extends StatelessWidget {
                                       season: _friendDetailViewModel.seasonDate);
                                 },
                                 child: Obx(() => Padding(
-                                  padding: EdgeInsets.only(top: 16, bottom: 16),
+                                  padding: EdgeInsets.only(top: 10, bottom: 12),
                                   child: Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
@@ -342,13 +348,14 @@ class RankingIndiView extends StatelessWidget {
                               ),
                               //필터
                               Container(
-                                height: 60,
+                                height: 56,
                                 child: SingleChildScrollView(
                                   scrollDirection: Axis.horizontal,
                                   child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
                                     children: [
                                       Padding(
-                                        padding: EdgeInsets.only(top: 16, bottom: 8),
+                                        padding: EdgeInsets.only(top: 12, bottom: 8),
                                         child: Row(
                                           children: [
                                             Padding(
@@ -391,7 +398,7 @@ class RankingIndiView extends StatelessWidget {
                                         ),
                                       ),
                                       Padding(
-                                        padding: EdgeInsets.only(top: 16, bottom: 8),
+                                        padding: EdgeInsets.only(top: 12, bottom: 8),
                                         child: Row(
                                           children: [
                                             Padding(
@@ -1111,7 +1118,7 @@ class RankingIndiView extends StatelessWidget {
                                         ),
                                       ),
                                       Padding(
-                                        padding: EdgeInsets.only(top: 16, bottom: 8),
+                                        padding: EdgeInsets.only(top: 12, bottom: 8),
                                         child: Row(
                                           children: [
                                             Stack(
@@ -1338,7 +1345,7 @@ class RankingIndiView extends StatelessWidget {
                                   ),
                                 ),
                               ),
-                              SizedBox(height: 16),
+                              SizedBox(height: 8),
                             ],);
                           }else if(index == _rankingListViewModel.rankingListIndivList_view!.length + 1){
                             return Obx(() => _rankingListViewModel.isLoadingRankingListIndiv_next // 여기서 Obx 사용
@@ -1623,7 +1630,7 @@ class RankingIndiView extends StatelessWidget {
                                       season: _friendDetailViewModel.seasonDate);
                                 },
                                 child: Obx(() => Padding(
-                                  padding: EdgeInsets.only(top: 16, bottom: 16),
+                                  padding: EdgeInsets.only(top: 10, bottom: 12),
                                   child: Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
@@ -1857,13 +1864,14 @@ class RankingIndiView extends StatelessWidget {
                               ),
                               //필터
                               Container(
-                                height: 60,
+                                height: 56,
                                 child: SingleChildScrollView(
                                   scrollDirection: Axis.horizontal,
                                   child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
                                     children: [
                                       Padding(
-                                        padding: EdgeInsets.only(top: 16, bottom: 8),
+                                        padding: EdgeInsets.only(top: 12, bottom: 8),
                                         child: Row(
                                           children: [
                                             Padding(
@@ -1906,7 +1914,7 @@ class RankingIndiView extends StatelessWidget {
                                         ),
                                       ),
                                       Padding(
-                                        padding: EdgeInsets.only(top: 16, bottom: 8),
+                                        padding: EdgeInsets.only(top: 12, bottom: 8),
                                         child: Row(
                                           children: [
                                             Padding(
@@ -2626,7 +2634,7 @@ class RankingIndiView extends StatelessWidget {
                                         ),
                                       ),
                                       Padding(
-                                        padding: EdgeInsets.only(top: 16, bottom: 8),
+                                        padding: EdgeInsets.only(top: 12, bottom: 8),
                                         child: Row(
                                           children: [
                                             Stack(
@@ -2853,7 +2861,7 @@ class RankingIndiView extends StatelessWidget {
                                   ),
                                 ),
                               ),
-                              SizedBox(height: 16),
+                              SizedBox(height: 8),
                             ],);
                           } else{
                             return Container(

@@ -97,8 +97,8 @@ class _Banner_rankingState extends State<Banner_ranking> {
 
             return Padding(
               padding: bannerWidgets.length > 0
-                  ? EdgeInsets.only(left: 12, right: 12, bottom: 15.0)
-                  : EdgeInsets.only(left: 12, right: 12, bottom: 0),
+                  ? EdgeInsets.only(bottom: 15.0)
+                  : EdgeInsets.only(bottom: 0),
               child: Container(
                 width: _size.width,
                 child: CarouselSlider(

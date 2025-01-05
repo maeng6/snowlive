@@ -2,6 +2,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:com.snowlive/data/imgaUrls/Data_url_image.dart';
 import 'package:com.snowlive/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/routes/routes.dart';
+import 'package:com.snowlive/view/banner/v_banner_ranking.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewDetail.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewMemberList.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewMemberRankingList.dart';
@@ -76,12 +77,11 @@ class RankingCrewView extends StatelessWidget {
                     await _rankingListViewModel.toggleDataDayOrTotal_refresh();
                   if(_rankingListViewModel.resortOrTotal=='개별스키장')
                     await _rankingListViewModel.toggleDataDayOrTotal_refresh(resortNum: _rankingListViewModel.selectedResortNum);
-
                 },
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: Container(
-                    child: (_rankingListViewModel.rankingListCrewList_view!.length != 0 )
+                    child: (_rankingListViewModel.rankingListCrewList_view!.length != 0)
                         ? Scrollbar(
                       controller: _rankingListViewModel.scrollController_crew,
                       child: ListView.builder(
@@ -92,10 +92,15 @@ class RankingCrewView extends StatelessWidget {
                         itemBuilder: (context, index) {
                           if(index == 0){
                             return Column(children: [
-                              //마이인포 박스 - 점수와 랭킹없는경우 안보여주게함
+                              // 배너
+                              Padding(
+                                padding: EdgeInsets.only(top: 4),
+                                child: Banner_ranking(),
+                              ),
+                              // 마이인포 박스 - 점수와 랭킹없는경우 안보여주게함
                               if(_rankingListViewModel.rankingListCrewMy_view!.crewName != null)
                                 Obx(() => Padding(
-                                  padding: EdgeInsets.only(top: 16, bottom: 16),
+                                  padding: EdgeInsets.only(top: 10, bottom: 12),
                                   child: Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
@@ -261,17 +266,17 @@ class RankingCrewView extends StatelessWidget {
                                     ],
                                   ),
                                 )
-
                                 ),
-                              //필터
+                              // 필터
                               Container(
-                                height: 60,
+                                height: 56,
                                 child: SingleChildScrollView(
                                   scrollDirection: Axis.horizontal,
                                   child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
                                     children: [
                                       Padding(
-                                        padding: EdgeInsets.only(top: 16, bottom: 8),
+                                        padding: EdgeInsets.only(top: 12, bottom: 8),
                                         child: Row(
                                           children: [
                                             Padding(
@@ -314,7 +319,7 @@ class RankingCrewView extends StatelessWidget {
                                         ),
                                       ),
                                       Padding(
-                                        padding: EdgeInsets.only(top: 16, bottom: 8),
+                                        padding: EdgeInsets.only(top: 12, bottom: 8),
                                         child: Row(
                                           children: [
                                             Padding(
@@ -1034,7 +1039,7 @@ class RankingCrewView extends StatelessWidget {
                                         ),
                                       ),
                                       Padding(
-                                        padding: EdgeInsets.only(top: 16, bottom: 8),
+                                        padding: EdgeInsets.only(top: 12, bottom: 8),
                                         child: Row(
                                           children: [
                                             Stack(
@@ -1261,7 +1266,7 @@ class RankingCrewView extends StatelessWidget {
                                   ),
                                 ),
                               ),
-                              SizedBox(height: 16),
+                              SizedBox(height: 8),
                             ],);
                           }
                           else if(index == _rankingListViewModel.rankingListCrewList_view!.length + 1){
@@ -1520,7 +1525,7 @@ class RankingCrewView extends StatelessWidget {
                               //마이인포 박스 - 점수와 랭킹없는경우 안보여주게함
                               if(_rankingListViewModel.rankingListCrewMy_view!.crewName != null)
                                 Obx(() => Padding(
-                                  padding: EdgeInsets.only(top: 16, bottom: 16),
+                                  padding: EdgeInsets.only(top: 10, bottom: 12),
                                   child: Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
@@ -1689,13 +1694,14 @@ class RankingCrewView extends StatelessWidget {
                                 ),
                               //필터
                               Container(
-                                height: 60,
+                                height: 56,
                                 child: SingleChildScrollView(
                                   scrollDirection: Axis.horizontal,
                                   child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
                                     children: [
                                       Padding(
-                                        padding: EdgeInsets.only(top: 16, bottom: 8),
+                                        padding: EdgeInsets.only(top: 12, bottom: 8),
                                         child: Row(
                                           children: [
                                             Padding(
@@ -1738,7 +1744,7 @@ class RankingCrewView extends StatelessWidget {
                                         ),
                                       ),
                                       Padding(
-                                        padding: EdgeInsets.only(top: 16, bottom: 8),
+                                        padding: EdgeInsets.only(top: 12, bottom: 8),
                                         child: Row(
                                           children: [
                                             Padding(
@@ -2458,7 +2464,7 @@ class RankingCrewView extends StatelessWidget {
                                         ),
                                       ),
                                       Padding(
-                                        padding: EdgeInsets.only(top: 16, bottom: 8),
+                                        padding: EdgeInsets.only(top: 12, bottom: 8),
                                         child: Row(
                                           children: [
                                             Stack(
@@ -2683,7 +2689,7 @@ class RankingCrewView extends StatelessWidget {
                                   ),
                                 ),
                               ),
-                              SizedBox(height: 16),
+                              SizedBox(height: 8),
                             ],);
                           }else{
                             return Container(
