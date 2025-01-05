@@ -28,8 +28,7 @@ import 'package:com.snowlive/view/ranking/v_rankingGuide.dart';
 import 'package:com.snowlive/view/ranking/v_settingGuide_android.dart';
 import 'package:com.snowlive/view/ranking/v_settingGuide_ios.dart';
 import 'package:com.snowlive/view/resortHome/v_alarmCenter.dart';
-import 'package:com.snowlive/view/resortHome/v_treasureHunt.dart';
-import 'package:com.snowlive/view/resortHome/v_treasureHunt_list.dart';
+import 'package:com.snowlive/view/ranking/v_snowballShop.dart';
 import 'package:com.snowlive/view/v_profileImageScreen.dart';
 import 'package:com.snowlive/view/crew/v_crewHome.dart';
 import 'package:com.snowlive/view/crew/v_crewMain.dart';
@@ -107,8 +106,7 @@ class AppRoutes {
   static const String rankingGuideMain = '/rankingGuideMain';
   static const String androidSettingGuide = '/androidSettingGuide';
   static const String iosSettingGuide = '/iosSettingGuide';
-  static const String treasureHunt = '/treasureHunt';
-  static const String treasureHuntMyPage = '/treasureHuntList';
+  static const String snowballShop = '/treasureHunt';
   static const String crewMemberRankingList = '/crewMemberRankingList';
 
 
@@ -346,12 +344,8 @@ class AppRoutes {
       page: () => IosSettingGuideView(),
     ),
     GetPage(
-      name: treasureHunt,
-      page: () => TreasureHuntView(),
-    ),
-    GetPage(
-      name: treasureHuntMyPage,
-      page: () => TreasureHuntMyPageView(),
+      name: snowballShop,
+      page: () => SnowballShopView(),
     ),
     GetPage(
       name: crewMemberRankingList,

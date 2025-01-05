@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:com.snowlive/api/api_snowball.dart';
 import 'package:com.snowlive/model/m_snowball.dart';
 import 'package:com.snowlive/viewmodel/vm_user.dart';
@@ -6,6 +7,14 @@ import 'package:get/get.dart';
 class SnowballShopViewModel extends GetxController {
   // API 호출 상태 관리
   var isLoading = false.obs;
+  var _isLodaing_entrance = false.obs;
+
+  bool get loadingEntrance => _isLodaing_entrance.value;
+
+  // 눈송이 상점 진입점 데이터 로딩 일괄 제어
+  set loadingEntrance(bool value) {
+    _isLodaing_entrance.value = value;
+  }
 
   // 유저 정보
   final UserViewModel _userViewModel = Get.find<UserViewModel>();
@@ -18,6 +27,11 @@ class SnowballShopViewModel extends GetxController {
   var purchaseHistory = <SnowballBuyRecord>[].obs;
   var userSnowballRecords = <SnowballRecord>[].obs; // 추가된 필드
 
+  Rxn<Stream<DocumentSnapshot<Map<String, dynamic>>>> infoStream_snowballShop = Rxn<Stream<DocumentSnapshot<Map<String, dynamic>>>>();
+  Rxn<Stream<DocumentSnapshot<Map<String, dynamic>>>> infoStream_snowballShop_entrance = Rxn<Stream<DocumentSnapshot<Map<String, dynamic>>>>();
+  Rxn<Stream<QuerySnapshot<Map<String, dynamic>>>> infoStream_snowballShop_findList_gold = Rxn<Stream<QuerySnapshot<Map<String, dynamic>>>>();
+
+
   // 현재 선택된 아이템 정보
   var selectedItem = SnowballShopItem().obs;
 
@@ -25,8 +39,34 @@ class SnowballShopViewModel extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    fetchSnowballSummary();
+    fetchSnowballShopData();
   }
+
+  Future<void> getInfo_snowballMarket_entrance() async {
+
+    infoStream_snowballShop_entrance.value = FirebaseFirestore.instance
+        .collection('snowball_market')
+        .doc('snowball_market')
+        .snapshots();
+  }
+
+  Future<void> getInfo_snowballMarket() async {
+
+    infoStream_snowballShop.value = FirebaseFirestore.instance
+        .collection('snowball_market')
+        .doc('snowball_market')
+        .snapshots();
+  }
+
+  Future<void> getInfo_snowballMarket_findList_gold() async {
+    infoStream_snowballShop_findList_gold.value = FirebaseFirestore.instance
+        .collection('snowball_market') // 상위 컬렉션
+        .doc('snowball_market') // 특정 문서
+        .collection('find_list') // 하위 컬렉션
+        .orderBy('datetime', descending: true)
+        .snapshots(); // 필터링된 결과를 스트림으로 가져옴
+  }
+
 
   /// 눈송이 상점 데이터 가져오기(눈송이 홈)
   Future<void> fetchSnowballShopData() async {
@@ -179,8 +219,6 @@ class SnowballShopViewModel extends GetxController {
       isLoading(false);
     }
   }
-
-
 
   /// 아이템 누르면 아이템 정보를 모델에 할당.(구매버튼 누르면 이 아이템의 id를 api에 보내려는 목적)
   void selectItem(SnowballShopItem item) {

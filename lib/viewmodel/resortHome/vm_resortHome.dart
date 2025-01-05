@@ -78,14 +78,12 @@ class ResortHomeViewModel extends GetxController {
   Rxn<Stream<DocumentSnapshot<Map<String, dynamic>>>> bannerStream_community = Rxn<Stream<DocumentSnapshot<Map<String, dynamic>>>>();
   Rxn<Stream<DocumentSnapshot<Map<String, dynamic>>>> bannerStream_community_detail = Rxn<Stream<DocumentSnapshot<Map<String, dynamic>>>>();
   Rxn<Stream<DocumentSnapshot<Map<String, dynamic>>>> bannerStream_ranking = Rxn<Stream<DocumentSnapshot<Map<String, dynamic>>>>();
-  Rxn<Stream<DocumentSnapshot<Map<String, dynamic>>>> infoStream_treasureHunt = Rxn<Stream<DocumentSnapshot<Map<String, dynamic>>>>();
-  Rxn<Stream<DocumentSnapshot<Map<String, dynamic>>>> infoStream_treasureHunt_banner = Rxn<Stream<DocumentSnapshot<Map<String, dynamic>>>>();
-  Rxn<Stream<QuerySnapshot<Map<String, dynamic>>>> infoStream_treasureHunt_findList = Rxn<Stream<QuerySnapshot<Map<String, dynamic>>>>();
 
   StreamSubscription<Position>? _positionStreamSubscription;
   DateTime? _lastCountMethodCall;
   DateTime? _lastResetMethodCall;
   DateTime? _lastRespawnMethodCall;
+  DateTime? _lastSnowballMethodCall;
   String get rankingGuideUrl_ios => _rankingGuideUrl_ios.value;
   String get rankingGuideUrl_aos => _rankingGuideUrl_aos.value;
   String get rankingComingSoonUrl => _rankingComingSoonUrl.value;
@@ -121,7 +119,6 @@ class ResortHomeViewModel extends GetxController {
     await fetchResortHome(_userViewModel.user.user_id!);
     await fetchWeatherModel();
     await checkForPopUp();
-    await fetchTreasureHuntNum();
   }
 
   //TODO: 라이브온 관련 메소드****************************************************
@@ -152,25 +149,52 @@ class ResortHomeViewModel extends GetxController {
     required String message,
     required VoidCallback action,
   }) async {
-    Get.defaultDialog(
-      title: title,
-      content: Column(
-        children: [
-          Text(
-            message,
-            textAlign: TextAlign.center,
+    Get.dialog(
+      WillPopScope(
+        onWillPop: () async => true, // 뒤로가기 허용 (기본값)
+        child: AlertDialog(
+          backgroundColor: SDSColor.snowliveWhite,
+          contentPadding: EdgeInsets.only(bottom: 28, left: 28, right: 28, top: 30),
+          elevation: 0,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          content: Column(
+            mainAxisSize: MainAxisSize.min, // 다이얼로그 크기를 내용에 맞게 조정
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Text(
+                title,
+                style: SDSTextStyle.bold.copyWith(fontSize: 18, height: 1.4, color: SDSColor.gray900),
+                textAlign: TextAlign.center,
+              ),
+              SizedBox(height: 8),
+              Text(
+                message,
+                style: SDSTextStyle.regular.copyWith(fontSize: 14, height: 1.4, color: SDSColor.gray600),
+                textAlign: TextAlign.center,
+              ),
+              SizedBox(height: 30),
+              ElevatedButton(
+                onPressed: () {
+                  Get.back(); // 팝업 닫기
+                  action(); // 기존 기능 유지
+                },
+                style: ElevatedButton.styleFrom(
+                  elevation: 0,
+                  shadowColor: Colors.transparent,
+                  backgroundColor: SDSColor.snowliveBlue,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+                  minimumSize: Size(double.infinity, 48),
+                ),
+                child: Text(
+                  '설정으로 이동',
+                  style: SDSTextStyle.bold.copyWith(fontSize: 16, color: SDSColor.snowliveWhite),
+                ),
+              ),
+            ],
           ),
-          SizedBox(height: 16),
-          ElevatedButton(
-            onPressed: (){
-              Get.back(); // 팝업 닫기
-              action();
-            },
-            child: Text('설정으로 이동'),
-          ),
-        ],
+        ),
       ),
-      barrierDismissible: true, // 팝업 외부 클릭으로 닫히게 설정함
+      barrierDismissible: true, // 팝업 외부 클릭으로 닫히게 설정
     );
   }
 
@@ -276,18 +300,24 @@ class ResortHomeViewModel extends GetxController {
 
               if (passPointInfo != null && passPointInfo['type'] == 'treasure_hunt_info') {
                 if (resort_info['snowball'] == true) {
-                  try {
-                    await SnowballAPI().createSnowballRecord({
-                      "user_id": user_id,
-                      "slope_id": passPointInfo['id'],
-                      "coordinates": "POINT (${position.longitude} ${position.latitude})"
-                    });
-                    print('눈송이 기록 성공');
-                  } catch (e) {
-                    print('눈송이 기록 실패: $e');
+                  if (_lastSnowballMethodCall == null || DateTime.now().difference(_lastSnowballMethodCall!).inSeconds > 10) {
+                    try {
+                      _lastSnowballMethodCall = DateTime.now(); // 마지막 호출 시간 업데이트
+                      await SnowballAPI().createSnowballRecord({
+                        "user_id": user_id,
+                        "slope_id": passPointInfo['id'],
+                        "coordinates": "POINT (${position.longitude} ${position.latitude})"
+                      });
+                      print('눈송이 기록 성공');
+                    } catch (e) {
+                      print('눈송이 기록 실패: $e');
+                    }
+                  } else {
+                    print('10초 제한으로 인해 눈송이 기록 생략');
                   }
                 }
               }
+
 
               if (passPointInfo != null && passPointInfo['type'] == 'reset_point') {
                 if (_lastResetMethodCall == null || DateTime.now().difference(_lastResetMethodCall!).inSeconds > 180) {
@@ -447,17 +477,28 @@ class ResortHomeViewModel extends GetxController {
           if (passPointInfo != null
               && passPointInfo['type'] == 'treasure_hunt_info'
               && resort_info['treasure_hunt'] == true
-              && isParticipate_treasure_hunt ==true) {
-            print(user_id);
-            print(passPointInfo['id']);
-            print("${position.latitude}, ${position.longitude}");
+              && isParticipate_treasure_hunt == true) {
+            if (_lastSnowballMethodCall == null || now.difference(_lastSnowballMethodCall!).inSeconds > 10) {
+              try {
+                print(user_id);
+                print(passPointInfo['id']);
+                print("${position.latitude}, ${position.longitude}");
 
-            await RankingAPI().createTreasureRecord({
-              "user_id": user_id,
-              "slope_id": passPointInfo['id'],
-              "coordinates": "POINT (${position.longitude} ${position.latitude})"
-            });
+                _lastSnowballMethodCall = now; // 마지막 호출 시간 업데이트
+                await SnowballAPI().createSnowballRecord({
+                  "user_id": user_id,
+                  "slope_id": passPointInfo['id'],
+                  "coordinates": "POINT (${position.longitude} ${position.latitude})"
+                });
+                print('백 눈송이 기록 성공');
+              } catch (e) {
+                print('백 눈송이 기록 실패: $e');
+              }
+            } else {
+              print('백 눈송이 기록 생략 - 10초 제한');
+            }
           }
+
 
           if (passPointInfo != null && passPointInfo['type'] == 'reset_point') {
             if (_lastResetMethodCall == null || now.difference(_lastResetMethodCall!).inSeconds > 180) {
@@ -629,296 +670,6 @@ class ResortHomeViewModel extends GetxController {
   //TODO: 라이브온 관련 메소드****************************************************
 
 
-  //TODO: 보물찾기 관련 메소드****************************************************
-
-  Future<void> checkAndShowTreasureHuntPopup({required int userId, int? userCrewId}) async {
-    try {
-      // Firebase에서 treasure_hunt 문서 가져오기
-      DocumentSnapshot<Map<String, dynamic>> treasureHuntDoc = await FirebaseFirestore.instance
-          .collection('treasure_hunt')
-          .doc('treasure_hunt')
-          .get();
-
-      if (treasureHuntDoc.exists) {
-        final data = treasureHuntDoc.data();
-
-        // open 필드가 true인지 확인
-        bool isOpen = data?['open'] ?? false;
-
-        // to_everyone 필드가 true인지 확인
-        bool isToEveryone = data?['to_everyone'] ?? false;
-
-        // crew_list 필드가 리스트인지 확인하고, 유저의 크루가 리스트에 포함되어 있는지 확인
-        List<dynamic> crewList = data?['crew_list'] ?? [];
-        bool isUserInCrewList = userCrewId != null && crewList.contains(userCrewId);
-
-        // 팝업을 띄울 조건 확인: open이 true이고, to_everyone이 true이거나 유저의 크루가 포함된 경우
-        if (_resort_info['treasure_hunt'] == true && isOpen && (isToEveryone || isUserInCrewList)) {
-          // 이미 참여 중인 경우 팝업을 띄우지 않음
-          if (!_isParticipate_treasure_hunt.value) {
-            // 조건을 만족하면 보물찾기 참여 팝업 띄우기
-            Get.dialog(
-              Center(
-                child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 30),
-                  child: Container(
-                    height: 460,
-                    decoration: BoxDecoration(
-                      color: SDSColor.snowliveWhite,
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    child: Stack(
-                      children: [
-                        Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(16),
-                          ),
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(16),
-                            child: Image.asset(
-                                'assets/imgs/imgs/img_treasure_popup.png',
-                                fit: BoxFit.cover,
-                                height: 460
-                            ),
-                          ),
-                        ),
-                        Positioned(
-                          bottom: 24,
-                          right: 20,
-                          left: 20,
-                          child: Padding(
-                            padding: const EdgeInsets.only(top: 16),
-                            child: Column(
-                              children: [
-                                Container(
-                                  width: 400,
-                                  height: 48,
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(5),
-                                      color: SDSColor.snowliveWhite
-                                  ),
-                                  child: TextButton(
-                                    onPressed: () async {
-                                      // 참여하기 버튼 클릭 시 participate 메소드를 호출하고 바디 전달
-                                      Map<String, dynamic> body = {
-                                        "user_id": _userViewModel.user.user_id,
-                                        "resort_id": _resort_info['resort_id']
-                                      };
-                                      print(body);
-                                      await participate(body);
-                                      Get.back(); // 팝업 닫기
-                                    },
-                                    child: Text(
-                                      '참여하기',
-                                      style: SDSTextStyle.bold.copyWith(
-                                        fontSize: 16,
-                                        color: SDSColor.gray900,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.only(top: 8.0),
-                                  child: Container(
-                                    width: 400,
-                                    height: 48,
-                                    decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(5),
-                                        color: Colors.transparent
-                                    ),
-                                    child: TextButton(
-                                      onPressed: () {
-                                        Get.back();
-                                      },
-                                      child: Text(
-                                        '돌아가기',
-                                        style: SDSTextStyle.bold.copyWith(
-                                          fontSize: 16,
-                                          color: SDSColor.snowliveWhite,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                              mainAxisAlignment: MainAxisAlignment.center,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            );
-          }
-        }
-      } else {
-        print('Treasure hunt 문서가 존재하지 않습니다.');
-      }
-    } catch (e) {
-      print('보물찾기 정보 조회 중 오류 발생: $e');
-    }
-  }
-
-  Future<ApiResponse> participate(Map<String, dynamic> body) async {
-    try {
-      isLoading(true);
-      ApiResponse response = await RankingAPI().participate_treasure_hunt(body);
-      CustomFullScreenDialog.cancelDialog();
-      if (response.success) {
-        _isParticipate_treasure_hunt.value = true;
-        print('보물찾기 참가 등록 성공');
-        return response;
-      } else {
-        _isParticipate_treasure_hunt.value = false;
-        return response;
-      }
-    } catch (e) {
-      _isParticipate_treasure_hunt.value = false;
-      print('Error in liveOn: $e');
-      return ApiResponse.error('An error occurred: $e');
-    } finally {
-      isLoading(false);
-    }
-  }
-
-  Future<void> getInfo_treasureHunt() async {
-
-    infoStream_treasureHunt.value = FirebaseFirestore.instance
-        .collection('treasure_hunt')
-        .doc('treasure_hunt')
-        .snapshots();
-  }
-
-  Future<void> getInfo_treasureHunt_banner() async {
-
-    infoStream_treasureHunt_banner.value = FirebaseFirestore.instance
-        .collection('treasure_hunt')
-        .doc('treasure_hunt')
-        .snapshots();
-  }
-
-  Future<void> fetchTreasureHuntNum() async {
-    try {
-      DocumentSnapshot<Map<String, dynamic>> treasureHuntDoc = await FirebaseFirestore.instance
-          .collection('treasure_hunt')
-          .doc('treasure_hunt')
-          .get();
-
-      if (treasureHuntDoc.exists) {
-        final data = treasureHuntDoc.data();
-        int? num = data?['treasure_hunt_num'];
-
-        // Update observed variable
-        if (num != null) {
-          _treasureHuntNum.value = num;
-          print('Updated treasureHuntNum: $num');
-        }
-      } else {
-        print('Treasure hunt 문서가 존재하지 않습니다.');
-      }
-    } catch (e) {
-      print('Error fetching treasure hunt number: $e');
-    }
-  }
-
-  Future<void> getInfo_treasureHunt_findList() async {
-
-    infoStream_treasureHunt_findList.value = FirebaseFirestore.instance
-        .collection('treasure_hunt')
-        .doc('treasure_hunt')
-        .collection('find_list')
-        .orderBy('datetime', descending: true)
-        .snapshots();
-  }
-
-  Future<void> fetchTreasureRecords({required int userId,}) async {
-    try {
-      isLoadingTreasureRecords(true);
-
-      // API 호출
-      final response = await RankingAPI().fetchTreasureRecords({
-        'user_id': userId,
-        'treasure_hunt_num': _treasureHuntNum.value,
-      });
-
-      if (response.success) {
-        // 응답을 Map<String, dynamic>으로 변환
-        final data = response.data as Map<String, dynamic>;
-
-        // treasure_records 키에서 리스트 가져오기
-        if (data['treasure_records'] is List) {
-          final treasureRecordsData = data['treasure_records'] as List<dynamic>;
-
-          // treasure_records 리스트를 TreasureRecord 객체 리스트로 변환하여 할당
-          _treasureRecordList.value = treasureRecordsData.map((record) {
-            return TreasureRecord.fromJson(record as Map<String, dynamic>);
-          }).toList();
-        } else {
-          print('Unexpected data format for treasure_records: $data');
-          _treasureRecordList.clear(); // 데이터가 없을 경우 빈 리스트로 초기화
-        }
-      } else {
-        print('Failed to load treasure records: ${response.error}');
-      }
-    } catch (e) {
-      print('Error fetching treasure records: $e');
-    } finally {
-      isLoadingTreasureRecords(false);
-    }
-  }
-
-  Future<void> updateTreasureRecord({
-    required int treasureRecordId,
-    required bool active,
-    int? userId,
-  }) async {
-    try {
-      // 로딩 상태 true로 설정
-      isLoadingTreasureRecordUpdate(true);
-
-      final response = await RankingAPI().updateTreasureRecord({
-        'treasure_record_id': treasureRecordId,
-        'active': active,
-        'user_id': userId,
-      });
-
-      if (response.success) {} else {}
-    }finally {
-      // 로딩 상태 false로 설정
-      isLoadingTreasureRecordUpdate(false);
-    }
-  }
-
-  Future<bool> checkUserTreasureStatus() async {
-    // Firestore에서 find_list 컬렉션에 active가 true인 문서가 있는지 확인
-    final querySnapshot = await FirebaseFirestore.instance
-        .collection('treasure_hunt')
-        .doc('treasure_hunt')
-        .collection('find_list')
-        .where('user_id', isEqualTo: _userViewModel.user.user_id)
-        .where('active', isEqualTo: true)
-        .get();
-
-    return querySnapshot.docs.isNotEmpty;
-  }
-
-  Future<void> updateAllActiveToFalse() async {
-    final querySnapshot = await FirebaseFirestore.instance
-        .collection('treasure_hunt')
-        .doc('treasure_hunt')
-        .collection('find_list')
-        .where('user_id', isEqualTo: _userViewModel.user.user_id)
-        .where('active', isEqualTo: true)
-        .get();
-
-    for (var doc in querySnapshot.docs) {
-      await doc.reference.update({'active': false});
-    }
-  }
-
-  //TODO: 보물찾기 관련 메소드****************************************************
 
 
   Future<void> fetchResortHome(int userId) async {

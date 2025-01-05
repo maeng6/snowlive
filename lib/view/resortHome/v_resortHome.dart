@@ -27,7 +27,7 @@ import 'package:shimmer/shimmer.dart';
 import 'package:android_intent_plus/android_intent.dart';
 import 'package:permission_handler/permission_handler.dart';
 
-import '../banner/v_banner_treasureHunt.dart';
+import '../ranking/v_entrance_snowballShop.dart';
 
 class ResortHomeView extends StatefulWidget {
   @override
@@ -417,16 +417,6 @@ class _ResortHomeViewState extends State<ResortHomeView> with
                                           await _userViewModel.updateUserModel_api(_userViewModel.user.user_id);
                                           CustomFullScreenDialog.cancelDialog();
                                           Get.back();
-                                          if (_userViewModel.user.crew_id != null) {
-                                            await _resortHomeViewModel.checkAndShowTreasureHuntPopup(
-                                              userId: _userViewModel.user.user_id!,
-                                              userCrewId: _userViewModel.user.crew_id,
-                                            );
-                                          } else {
-                                            await _resortHomeViewModel.checkAndShowTreasureHuntPopup(
-                                              userId: _userViewModel.user.user_id!,
-                                            );
-                                          }
 
                                           if(_userViewModel.user.within_boundary == false){
                                             Get.snackbar(
@@ -527,16 +517,6 @@ class _ResortHomeViewState extends State<ResortHomeView> with
                             await _resortHomeViewModel.startLiveLocationService(user_id: _userViewModel.user.user_id);
                             await _userViewModel.updateUserModel_api(_userViewModel.user.user_id);
                             CustomFullScreenDialog.cancelDialog();
-                            if (_userViewModel.user.crew_id != null) {
-                              await _resortHomeViewModel.checkAndShowTreasureHuntPopup(
-                                userId: _userViewModel.user.user_id!,
-                                userCrewId: _userViewModel.user.crew_id,
-                              );
-                            } else {
-                              await _resortHomeViewModel.checkAndShowTreasureHuntPopup(
-                                userId: _userViewModel.user.user_id!,
-                              );
-                            }
 
                             if(_userViewModel.user.within_boundary == false){
                               Get.snackbar(
@@ -1669,16 +1649,6 @@ class _ResortHomeViewState extends State<ResortHomeView> with
                             Padding(
                               padding: EdgeInsets.only(left: 16, right: 16, top: 28),
                               child: Banner_resortHome(),
-                            ),
-                            //TODO: 보물찾기 진입 배너
-                            GestureDetector(
-                              onTap: (){
-                                Get.toNamed(AppRoutes.treasureHunt);
-                              },
-                              child: Padding(
-                                padding: EdgeInsets.only(left: 16, right: 16, top: 8),
-                                child: Banner_treasureHunt(),
-                              ),
                             ),
                             //TODO: 구분선
                             if((_resortHomeViewModel.resortHomeModel.dailyTotalCount != 0 || _userViewModel.user.within_boundary == true))
