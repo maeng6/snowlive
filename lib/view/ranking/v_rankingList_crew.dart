@@ -91,7 +91,9 @@ class RankingCrewView extends StatelessWidget {
                         itemCount: _rankingListViewModel.rankingListCrewList_view!.length + 2,
                         itemBuilder: (context, index) {
                           if(index == 0){
-                            return Column(children: [
+                            return Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
                               // 배너
                               Padding(
                                 padding: EdgeInsets.only(top: 4),
@@ -1521,7 +1523,9 @@ class RankingCrewView extends StatelessWidget {
                         itemCount: _rankingListViewModel.rankingListCrewList_view!.length + 2,
                         itemBuilder: (context, index) {
                           if(index == 0){
-                            return Column(children: [
+                            return Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
                               //마이인포 박스 - 점수와 랭킹없는경우 안보여주게함
                               if(_rankingListViewModel.rankingListCrewMy_view!.crewName != null)
                                 Obx(() => Padding(
