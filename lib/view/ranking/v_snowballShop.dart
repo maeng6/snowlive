@@ -144,679 +144,778 @@ class _SnowballShopViewState extends State<SnowballShopView> {
             : Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(height: 20),
-            StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
-              stream: _snowballShopViewModel.infoStream_snowballShop.value,
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Center(
-                    child: CircularProgressIndicator(),
-                  );
-                }
+            Expanded(
+              child: RefreshIndicator(
+                strokeWidth: 2,
+                edgeOffset: -40,
+                displacement: 40,
+                backgroundColor: SDSColor.snowliveBlue,
+                color: SDSColor.snowliveWhite,
+                onRefresh: () async{
+                  _snowballShopViewModel.loadingEntrance = true;
+                  Get.toNamed(AppRoutes.snowballShop);
+                  await _snowballShopViewModel.getInfo_snowballMarket();
+                  await _snowballShopViewModel.fetchSnowballShopData();
+                  await _snowballShopViewModel.getInfo_snowballMarket_findList_gold();
+                  await _snowballShopViewModel.fetchUserSnowballRecords();
+                  _snowballShopViewModel.loadingEntrance = false;
 
-                if (snapshot.hasError) {
-                  return Center(
-                    child: Text('Error: ${snapshot.error}'),
-                  );
-                }
-
-                if (snapshot.hasData) {
-                  final data = snapshot.data!.data();
-                  final DateTime endTime = (data?['end_time'] as Timestamp).toDate();
-
-                  if (_currentEndTime == null || _currentEndTime != endTime) {
-                    _startTimer(endTime);
-                  }
-
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: Text(
-                      '눈송이 상점 오픈 남은 시간: $_days일 $_hours시간 $_minutes분',
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                    ),
-                  );
-                } else {
-                  return Center(child: Text('No data available'));
-                }
-              },
-            ),
-            SizedBox(height: 20),
-            //TODO: 내가 획득한 눈송이_타이틀
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Text(
-                '내가 획득한 눈송이',
-                style: TextStyle(
-                  fontSize: 13,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black87,
-                ),
-              ),
-            ),
-            SizedBox(height: 5),
-            //TODO: 내가 획득한 눈송이_내용+바텀시트
-            GestureDetector(
-              onTap: () {
-                showModalBottomSheet(
-                  isDismissible: true,
-                  context: context,
-                  isScrollControlled: true,
-                  backgroundColor: Colors.transparent,
-                  builder: (BuildContext context) {
-                    return GestureDetector(
-                      behavior: HitTestBehavior.opaque, // 화면 바깥 클릭 감지
-                      onTap: () {
-                        Navigator.of(context).pop(); // 바텀시트 닫기
-                      },
-                      child: Stack(
-                        children: [
-                          GestureDetector(
-                            onTap: () {}, // 내부 터치는 닫히지 않게 처리
-                            child: DraggableScrollableSheet(
-                              initialChildSize: 0.66, // 화면 높이의 2/3
-                              maxChildSize: 0.9,
-                              minChildSize: 0.4,
-                              builder: (_, controller) {
-                                return Container(
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.only(
-                                      topLeft: Radius.circular(16),
-                                      topRight: Radius.circular(16),
-                                    ),
-                                  ),
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsets.all(16.0),
-                                        child: Center(
-                                          child: Container(
-                                            width: 40,
-                                            height: 4,
-                                            decoration: BoxDecoration(
-                                              color: Colors.grey[300],
-                                              borderRadius: BorderRadius.circular(2),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                      SizedBox(height: 10,),
-                                      Padding(
-                                        padding: const EdgeInsets.symmetric(horizontal: 16),
-                                        child: Center(
-                                          child: Text(
-                                            '내가 획득한 눈송이',
-                                            style: TextStyle(
-                                              fontSize: 18,
-                                              fontWeight: FontWeight.bold,
-                                              color: Colors.black87,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                      SizedBox(height: 20,),
-                                      Expanded(
-                                        child: ListView.builder(
-                                          controller: controller,
-                                          itemCount: _snowballShopViewModel.userSnowballRecords.length,
-                                          itemBuilder: (context, index) {
-                                            final item = _snowballShopViewModel.userSnowballRecords[index];
-                                            final String passTimeString = item.passTime ?? DateTime.now().toIso8601String();
-                                            final DateTime datetime = DateTime.parse(passTimeString);
-
-                                            final formattedDatetime =
-                                                "${datetime.year.toString().padLeft(4, '0')}-${datetime.month.toString().padLeft(2, '0')}-${datetime.day.toString().padLeft(2, '0')} "
-                                                "${datetime.hour.toString().padLeft(2, '0')}:${datetime.minute.toString().padLeft(2, '0')}:${datetime.second.toString().padLeft(2, '0')}";
-
-                                            final color = item.color;
-
-                                            return Padding(
-                                              padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-                                              child: Row(
-                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                children: [
-                                                  SizedBox(width: 12),
-                                                  // 텍스트 정보
-                                                  Expanded(
-                                                    child: Column(
-                                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                                      children: [
-                                                        Text(
-                                                          '$color 눈송이 1개를 획득했습니다.',
-                                                          style: TextStyle(
-                                                            color: Colors.black87,
-                                                            fontSize: 14,
-                                                            fontWeight: FontWeight.bold,
-                                                          ),
-                                                        ),
-                                                        SizedBox(height: 4),
-                                                        Text(
-                                                          formattedDatetime,
-                                                          style: TextStyle(
-                                                            color: Colors.grey,
-                                                            fontSize: 12,
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            );
-                                          },
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                );
-                              },
-                            ),
-                          ),
-                        ],
-                      ),
-                    );
-                  },
-                );
-              },
-              child: Container(
-                padding: EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: Colors.grey[900],
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                margin: EdgeInsets.symmetric(horizontal: 16),
-                child: Row(
+                },
+                child: ListView(
+                  padding: EdgeInsets.symmetric(horizontal: 16),
                   children: [
-                    Expanded(
-                      child: Row(
-                        children: [
-                          Text(
-                            _snowballShopViewModel.userSnowballRecords.isNotEmpty
-                                ? '${_snowballShopViewModel.userSnowballRecords[0].color} 눈송이를 1개를 획득했어요!'
-                                : '아직 획득한 눈송이가 없어요!',
-                            style: TextStyle(color: Colors.white, fontSize: 14),
-                          ),
-                          Expanded(child: SizedBox()),
-                          Text(
-                                () {
-                              if (_snowballShopViewModel.userSnowballRecords.isNotEmpty) {
-                                final passTimeString = _snowballShopViewModel.userSnowballRecords[0].passTime ?? DateTime.now().toIso8601String();
-                                final datetime = DateTime.parse(passTimeString);
-                                final formattedDatetime =
-                                    "${datetime.year.toString().padLeft(4, '0')}-${datetime.month.toString().padLeft(2, '0')}-${datetime.day.toString().padLeft(2, '0')} "
-                                    "${datetime.hour.toString().padLeft(2, '0')}:${datetime.minute.toString().padLeft(2, '0')}:${datetime.second.toString().padLeft(2, '0')}";
-                                return formattedDatetime;
-                              } else {
-                                return '시간 정보 없음';
-                              }
-                            }(),
-                            style: TextStyle(color: Colors.grey, fontSize: 12),
-                          ),
-                        ],
-                      ),
-                    ),
-                    SizedBox(width: 10,),
-                    Icon(Icons.arrow_forward, color: Colors.white),
-                  ],
-                ),
-              ),
-            ),
-            SizedBox(height: 20),
-            //TODO: 황금 눈송이 축하 메시지+바텀시트
-            StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-              stream: _snowballShopViewModel.infoStream_snowballShop_findList_gold.value,
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Center(
-                    child: CircularProgressIndicator(),
-                  );
-                }
+                    SizedBox(height: 20),
+                    StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+                      stream: _snowballShopViewModel.infoStream_snowballShop.value,
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState == ConnectionState.waiting) {
+                          return Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        }
 
-                if (snapshot.hasError) {
-                  return Center(
-                    child: Text(
-                      'Error: ${snapshot.error}',
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  );
-                }
+                        if (snapshot.hasError) {
+                          return Center(
+                            child: Text('Error: ${snapshot.error}'),
+                          );
+                        }
 
-                if (snapshot.hasData) {
-                  final data = snapshot.data!.docs;
+                        if (snapshot.hasData) {
+                          final data = snapshot.data!.data();
+                          final DateTime endTime = (data?['end_time'] as Timestamp).toDate();
 
-                  // 문서가 없는 경우 처리
-                  if (data.isEmpty) {
-                    return SizedBox.shrink();
-                  }
+                          if (_currentEndTime == null || _currentEndTime != endTime) {
+                            _startTimer(endTime);
+                          }
 
-                  return GestureDetector(
-                    onTap: () {
-                      showModalBottomSheet(
-                        isDismissible: true,
-                        context: context,
-                        isScrollControlled: true,
-                        backgroundColor: Colors.transparent,
-                        builder: (BuildContext context) {
-                          return GestureDetector(
-                            behavior: HitTestBehavior.opaque, // 화면 바깥 클릭 감지
-                            onTap: () {
-                              Navigator.of(context).pop(); // 바텀시트 닫기
-                            },
-                            child: Stack(
-                              children: [
-                                GestureDetector(
-                                  onTap: () {}, // 내부 터치는 닫히지 않게 처리
-                                  child: DraggableScrollableSheet(
-                                    initialChildSize: 0.66, // 화면 높이의 2/3
-                                    maxChildSize: 0.9,
-                                    minChildSize: 0.4,
-                                    builder: (_, controller) {
-                                      return Container(
-                                        decoration: BoxDecoration(
-                                          color: Colors.white,
-                                          borderRadius: BorderRadius.only(
-                                            topLeft: Radius.circular(16),
-                                            topRight: Radius.circular(16),
-                                          ),
-                                        ),
-                                        child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-                                            Padding(
-                                              padding: const EdgeInsets.all(16.0),
-                                              child: Center(
-                                                child: Container(
-                                                  width: 40,
-                                                  height: 4,
-                                                  decoration: BoxDecoration(
-                                                    color: Colors.grey[300],
-                                                    borderRadius: BorderRadius.circular(2),
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                            SizedBox(height: 10,),
-                                            Padding(
-                                              padding: const EdgeInsets.symmetric(horizontal: 16),
-                                              child: Center(
-                                                child: Text(
-                                                  '황금 눈송이 획득한 라이더',
-                                                  style: TextStyle(
-                                                    fontSize: 18,
-                                                    fontWeight: FontWeight.bold,
-                                                    color: Colors.black87,
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                            SizedBox(height: 20,),
-                                            Expanded(
-                                              child: ListView.builder(
-                                                controller: controller,
-                                                itemCount: data.length,
-                                                itemBuilder: (context, index) {
-                                                  final item = data[index];
-                                                  final displayName = item['display_name'] ?? '알 수 없음';
-                                                  final datetime = item['datetime'] as Timestamp;
-                                                  final formattedDatetime =
-                                                      "${datetime.toDate().year}.${datetime.toDate().month.toString().padLeft(2, '0')}.${datetime.toDate().day.toString().padLeft(2, '0')} ${datetime.toDate().hour.toString().padLeft(2, '0')}:${datetime.toDate().minute.toString().padLeft(2, '0')}";
-                                                  final profileImageUrl = item['profile_image_url_user'] ?? '';
-                                                  final userID = item['user_id'];
-                                                  final color = item['color'];
-
-                                                  return Padding(
-                                                    padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-                                                    child: Row(
-                                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                                      children: [
-                                                        // 프로필 이미지
-                                                        GestureDetector(
-                                                            onTap: () async{
-                                                              Get.toNamed(AppRoutes.friendDetail);
-                                                              await _friendDetailViewModel.fetchFriendDetailInfo(
-                                                                  userId: _userViewModel.user.user_id,
-                                                                  friendUserId: userID,
-                                                                  season: _friendDetailViewModel.seasonDate);
-                                                            },
-                                                            child: ExtendedImage.network(
-                                                              profileImageUrl,
-                                                              enableMemoryCache: true,
-                                                              shape: BoxShape.circle,
-                                                              cacheHeight: 150,
-                                                              borderRadius: BorderRadius.circular(8),
-                                                              width: 40,
-                                                              height: 40,
-                                                              fit: BoxFit.cover,
-                                                              loadStateChanged: (ExtendedImageState state) {
-                                                                switch (state.extendedImageLoadState) {
-                                                                  case LoadState.loading:
-                                                                  // 로딩 중일 때 로딩 인디케이터를 표시
-                                                                    return Shimmer.fromColors(
-                                                                      baseColor: SDSColor.gray200!,
-                                                                      highlightColor: SDSColor.gray50!,
-                                                                      child: Container(
-                                                                        width: 32,
-                                                                        height: 32,
-                                                                        decoration: BoxDecoration(
-                                                                          color: Colors.white,
-                                                                          borderRadius: BorderRadius.circular(8),
-                                                                        ),
-                                                                      ),
-                                                                    );
-                                                                  case LoadState.completed:
-                                                                  // 로딩이 완료되었을 때 이미지 반환
-                                                                    return state.completedWidget;
-                                                                  case LoadState.failed:
-                                                                  // 로딩이 실패했을 때 대체 이미지 또는 다른 처리
-                                                                    return Image.asset(
-                                                                      'assets/imgs/profile/img_profile_default_circle.png',
-                                                                      width: 32,
-                                                                      height: 32,
-                                                                      fit: BoxFit.cover,
-                                                                    );
-                                                                }
-                                                              },
-                                                            )
-                                                        ),
-                                                        SizedBox(width: 12),
-                                                        // 텍스트 정보
-                                                        Expanded(
-                                                          child: Column(
-                                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                                            children: [
-                                                              Text(
-                                                                '$displayName 님이 $color 눈송이 1개를 획득했습니다.',
-                                                                style: TextStyle(
-                                                                  color: Colors.black87,
-                                                                  fontSize: 14,
-                                                                  fontWeight: FontWeight.bold,
-                                                                ),
-                                                              ),
-                                                              SizedBox(height: 4),
-                                                              Text(
-                                                                formattedDatetime,
-                                                                style: TextStyle(
-                                                                  color: Colors.grey,
-                                                                  fontSize: 12,
-                                                                ),
-                                                              ),
-                                                            ],
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  );
-                                                },
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      );
-                                    },
-                                  ),
-                                ),
-                              ],
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 16),
+                            child: Text(
+                              '눈송이 상점 오픈 남은 시간: $_days일 $_hours시간 $_minutes분',
+                              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                             ),
                           );
-                        },
-                      );
-                    },
-                    child: Container(
-                      padding: EdgeInsets.all(16),
-                      decoration: BoxDecoration(
-                        color: Colors.grey[900],
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      margin: EdgeInsets.symmetric(horizontal: 16),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: Text(
-                              '${data[0]['display_name']} 님이 ${data[0]['color']} 눈송이를 획득했어요!\n모두 함께 축하해 주세요:)',
-                              style: TextStyle(color: Colors.white, fontSize: 14),
-                            ),
-                          ),
-                          Icon(Icons.arrow_forward, color: Colors.white),
-                        ],
+                        } else {
+                          return Center(child: Text('No data available'));
+                        }
+                      },
+                    ),
+                    SizedBox(height: 20),
+                    //TODO: 내가 획득한 눈송이_타이틀
+                    Text(
+                      '내가 획득한 눈송이',
+                      style: TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black87,
                       ),
                     ),
-                  );
+                    SizedBox(height: 5),
+                    //TODO: 내가 획득한 눈송이_내용+바텀시트
+                    GestureDetector(
+                      onTap: () {
+                        showModalBottomSheet(
+                          isDismissible: true,
+                          context: context,
+                          isScrollControlled: true,
+                          backgroundColor: Colors.transparent,
+                          builder: (BuildContext context) {
+                            return GestureDetector(
+                              behavior: HitTestBehavior.opaque, // 화면 바깥 클릭 감지
+                              onTap: () {
+                                Navigator.of(context).pop(); // 바텀시트 닫기
+                              },
+                              child: Stack(
+                                children: [
+                                  GestureDetector(
+                                    onTap: () {}, // 내부 터치는 닫히지 않게 처리
+                                    child: DraggableScrollableSheet(
+                                      initialChildSize: 0.66, // 화면 높이의 2/3
+                                      maxChildSize: 0.9,
+                                      minChildSize: 0.4,
+                                      builder: (_, controller) {
+                                        return Container(
+                                          decoration: BoxDecoration(
+                                            color: Colors.white,
+                                            borderRadius: BorderRadius.only(
+                                              topLeft: Radius.circular(16),
+                                              topRight: Radius.circular(16),
+                                            ),
+                                          ),
+                                          child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              Padding(
+                                                padding: const EdgeInsets.all(16.0),
+                                                child: Center(
+                                                  child: Container(
+                                                    width: 40,
+                                                    height: 4,
+                                                    decoration: BoxDecoration(
+                                                      color: Colors.grey[300],
+                                                      borderRadius: BorderRadius.circular(2),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                              SizedBox(height: 10,),
+                                              Padding(
+                                                padding: const EdgeInsets.symmetric(horizontal: 16),
+                                                child: Center(
+                                                  child: Text(
+                                                    '내가 획득한 눈송이',
+                                                    style: TextStyle(
+                                                      fontSize: 18,
+                                                      fontWeight: FontWeight.bold,
+                                                      color: Colors.black87,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                              SizedBox(height: 20,),
+                                              Expanded(
+                                                child: ListView.builder(
+                                                  controller: controller,
+                                                  itemCount: _snowballShopViewModel.userSnowballRecords.length,
+                                                  itemBuilder: (context, index) {
+                                                    final item = _snowballShopViewModel.userSnowballRecords[index];
+                                                    final String passTimeString = item.passTime ?? DateTime.now().toIso8601String();
+                                                    final DateTime datetime = DateTime.parse(passTimeString);
 
-                } else {
-                  return Center(
-                    child: Text(
-                      'No data available',
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  );
-                }
-              },
-            ),
-            SizedBox(height: 20),
-            //TODO: 눈송이 상점
-            Expanded(
-              child: ListView(
-                padding: EdgeInsets.symmetric(horizontal: 16),
-                children: [
-                  Center(
-                    child: Text(
-                      '황금 눈송이 전용 상점',
-                      style: TextStyle(
-                          fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black),
-                    ),
-                  ),
-                  SizedBox(height: 16),
-                  GridView.builder(
-                    shrinkWrap: true,
-                    physics: NeverScrollableScrollPhysics(),
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      mainAxisSpacing: 16,
-                      crossAxisSpacing: 16,
-                      childAspectRatio: 2 / 3,
-                    ),
-                    itemCount: _snowballShopViewModel.goldShopItems.length,
-                    itemBuilder: (context, index) {
-                      final item = _snowballShopViewModel.goldShopItems[index];
-                      return Container(
+                                                    final formattedDatetime =
+                                                        "${datetime.year.toString().padLeft(4, '0')}-${datetime.month.toString().padLeft(2, '0')}-${datetime.day.toString().padLeft(2, '0')} "
+                                                        "${datetime.hour.toString().padLeft(2, '0')}:${datetime.minute.toString().padLeft(2, '0')}:${datetime.second.toString().padLeft(2, '0')}";
+
+                                                    final color = item.color;
+
+                                                    return Padding(
+                                                      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                                                      child: Row(
+                                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                                        children: [
+                                                          SizedBox(width: 12),
+                                                          // 텍스트 정보
+                                                          Expanded(
+                                                            child: Column(
+                                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                                              children: [
+                                                                Text(
+                                                                  '$color 눈송이 1개를 획득했습니다.',
+                                                                  style: TextStyle(
+                                                                    color: Colors.black87,
+                                                                    fontSize: 14,
+                                                                    fontWeight: FontWeight.bold,
+                                                                  ),
+                                                                ),
+                                                                SizedBox(height: 4),
+                                                                Text(
+                                                                  formattedDatetime,
+                                                                  style: TextStyle(
+                                                                    color: Colors.grey,
+                                                                    fontSize: 12,
+                                                                  ),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    );
+                                                  },
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
+                        );
+                      },
+                      child: Container(
+                        padding: EdgeInsets.all(16),
                         decoration: BoxDecoration(
-                          color: Colors.white,
-                          border: Border.all(color: Colors.grey),
+                          color: Colors.grey[900],
                           borderRadius: BorderRadius.circular(8),
                         ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
+                        child: Row(
                           children: [
                             Expanded(
-                              child: ExtendedImage.network(
-                                item.imageUrl ?? '',
-                                enableMemoryCache: true,
-                                cacheHeight: 100,
-                                cacheWidth: 100,
-                                fit: BoxFit.cover,
-                                loadStateChanged: (ExtendedImageState state) {
-                                  switch (state.extendedImageLoadState) {
-                                    case LoadState.loading:
-                                      return Shimmer.fromColors(
-                                        baseColor: SDSColor.gray200!,
-                                        highlightColor: SDSColor.gray50!,
-                                        child: Container(
-                                          decoration: BoxDecoration(
-                                            color: Colors.white,
-                                          ),
-                                        ),
-                                      );
-                                    case LoadState.completed:
-                                      return state.completedWidget;
-                                    case LoadState.failed:
-                                      return Image.asset(
-                                        'assets/imgs/imgs/img_flea_default.png',
-                                        fit: BoxFit.cover,
-                                      );
-                                  }
-                                },
+                              child: Row(
+                                children: [
+                                  Text(
+                                    _snowballShopViewModel.userSnowballRecords.isNotEmpty
+                                        ? '${_snowballShopViewModel.userSnowballRecords[0].color} 눈송이를 1개를 획득했어요!'
+                                        : '아직 획득한 눈송이가 없어요!',
+                                    style: TextStyle(color: Colors.white, fontSize: 14),
+                                  ),
+                                  Expanded(child: SizedBox()),
+                                  Text(
+                                        () {
+                                      if (_snowballShopViewModel.userSnowballRecords.isNotEmpty) {
+                                        final passTimeString = _snowballShopViewModel.userSnowballRecords[0].passTime ?? DateTime.now().toIso8601String();
+                                        final datetime = DateTime.parse(passTimeString);
+                                        final formattedDatetime =
+                                            "${datetime.year.toString().padLeft(4, '0')}-${datetime.month.toString().padLeft(2, '0')}-${datetime.day.toString().padLeft(2, '0')} "
+                                            "${datetime.hour.toString().padLeft(2, '0')}:${datetime.minute.toString().padLeft(2, '0')}:${datetime.second.toString().padLeft(2, '0')}";
+                                        return formattedDatetime;
+                                      } else {
+                                        return '시간 정보 없음';
+                                      }
+                                    }(),
+                                    style: TextStyle(color: Colors.grey, fontSize: 12),
+                                  ),
+                                ],
                               ),
                             ),
-                            SizedBox(height: 8),
-                            Text(
-                              item.name ?? '상품 이름',
-                              style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
-                            ),
-                            Text(
-                              '황금 눈송이 ${item.snowballCount ?? 0}개',
-                              style: TextStyle(fontSize: 12, color: Colors.grey),
-                            ),
+                            SizedBox(width: 10,),
+                            Icon(Icons.arrow_forward, color: Colors.white),
                           ],
                         ),
-                      );
-                    },
-                  ),
-                  SizedBox(height: 16),
-                  Center(
-                    child: Text(
-                      '일반 눈송이 상점',
-                      style: TextStyle(
-                          fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black),
+                      ),
                     ),
-                  ),
-                  SizedBox(height: 16),
-                  GridView.builder(
-                    shrinkWrap: true,
-                    physics: NeverScrollableScrollPhysics(),
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      mainAxisSpacing: 16,
-                      crossAxisSpacing: 16,
-                      childAspectRatio: 2 / 3,
+                    SizedBox(height: 20),
+                    //TODO: 황금 눈송이 축하 메시지+바텀시트
+                    StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+                      stream: _snowballShopViewModel.infoStream_snowballShop_findList_gold.value,
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState == ConnectionState.waiting) {
+                          return Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        }
+
+                        if (snapshot.hasError) {
+                          return Center(
+                            child: Text(
+                              'Error: ${snapshot.error}',
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          );
+                        }
+
+                        if (snapshot.hasData) {
+                          final data = snapshot.data!.docs;
+
+                          // 문서가 없는 경우 처리
+                          if (data.isEmpty) {
+                            return SizedBox.shrink();
+                          }
+
+                          return GestureDetector(
+                            onTap: () {
+                              showModalBottomSheet(
+                                isDismissible: true,
+                                context: context,
+                                isScrollControlled: true,
+                                backgroundColor: Colors.transparent,
+                                builder: (BuildContext context) {
+                                  return GestureDetector(
+                                    behavior: HitTestBehavior.opaque, // 화면 바깥 클릭 감지
+                                    onTap: () {
+                                      Navigator.of(context).pop(); // 바텀시트 닫기
+                                    },
+                                    child: Stack(
+                                      children: [
+                                        GestureDetector(
+                                          onTap: () {}, // 내부 터치는 닫히지 않게 처리
+                                          child: DraggableScrollableSheet(
+                                            initialChildSize: 0.66, // 화면 높이의 2/3
+                                            maxChildSize: 0.9,
+                                            minChildSize: 0.4,
+                                            builder: (_, controller) {
+                                              return Container(
+                                                decoration: BoxDecoration(
+                                                  color: Colors.white,
+                                                  borderRadius: BorderRadius.only(
+                                                    topLeft: Radius.circular(16),
+                                                    topRight: Radius.circular(16),
+                                                  ),
+                                                ),
+                                                child: Column(
+                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                  children: [
+                                                    Padding(
+                                                      padding: const EdgeInsets.all(16.0),
+                                                      child: Center(
+                                                        child: Container(
+                                                          width: 40,
+                                                          height: 4,
+                                                          decoration: BoxDecoration(
+                                                            color: Colors.grey[300],
+                                                            borderRadius: BorderRadius.circular(2),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    SizedBox(height: 10,),
+                                                    Padding(
+                                                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                                                      child: Center(
+                                                        child: Text(
+                                                          '황금 눈송이 획득한 라이더',
+                                                          style: TextStyle(
+                                                            fontSize: 18,
+                                                            fontWeight: FontWeight.bold,
+                                                            color: Colors.black87,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    SizedBox(height: 20,),
+                                                    Expanded(
+                                                      child: ListView.builder(
+                                                        controller: controller,
+                                                        itemCount: data.length,
+                                                        itemBuilder: (context, index) {
+                                                          final item = data[index];
+                                                          final displayName = item['display_name'] ?? '알 수 없음';
+                                                          final datetime = item['datetime'] as Timestamp;
+                                                          final formattedDatetime =
+                                                              "${datetime.toDate().year}.${datetime.toDate().month.toString().padLeft(2, '0')}.${datetime.toDate().day.toString().padLeft(2, '0')} ${datetime.toDate().hour.toString().padLeft(2, '0')}:${datetime.toDate().minute.toString().padLeft(2, '0')}";
+                                                          final profileImageUrl = item['profile_image_url_user'] ?? '';
+                                                          final userID = item['user_id'];
+                                                          final color = item['color'];
+
+                                                          return Padding(
+                                                            padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                                                            child: Row(
+                                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                                              children: [
+                                                                // 프로필 이미지
+                                                                GestureDetector(
+                                                                    onTap: () async{
+                                                                      Get.toNamed(AppRoutes.friendDetail);
+                                                                      await _friendDetailViewModel.fetchFriendDetailInfo(
+                                                                          userId: _userViewModel.user.user_id,
+                                                                          friendUserId: userID,
+                                                                          season: _friendDetailViewModel.seasonDate);
+                                                                    },
+                                                                    child: ExtendedImage.network(
+                                                                      profileImageUrl,
+                                                                      enableMemoryCache: true,
+                                                                      shape: BoxShape.circle,
+                                                                      cacheHeight: 150,
+                                                                      borderRadius: BorderRadius.circular(8),
+                                                                      width: 40,
+                                                                      height: 40,
+                                                                      fit: BoxFit.cover,
+                                                                      loadStateChanged: (ExtendedImageState state) {
+                                                                        switch (state.extendedImageLoadState) {
+                                                                          case LoadState.loading:
+                                                                          // 로딩 중일 때 로딩 인디케이터를 표시
+                                                                            return Shimmer.fromColors(
+                                                                              baseColor: SDSColor.gray200!,
+                                                                              highlightColor: SDSColor.gray50!,
+                                                                              child: Container(
+                                                                                width: 32,
+                                                                                height: 32,
+                                                                                decoration: BoxDecoration(
+                                                                                  color: Colors.white,
+                                                                                  borderRadius: BorderRadius.circular(8),
+                                                                                ),
+                                                                              ),
+                                                                            );
+                                                                          case LoadState.completed:
+                                                                          // 로딩이 완료되었을 때 이미지 반환
+                                                                            return state.completedWidget;
+                                                                          case LoadState.failed:
+                                                                          // 로딩이 실패했을 때 대체 이미지 또는 다른 처리
+                                                                            return Image.asset(
+                                                                              'assets/imgs/profile/img_profile_default_circle.png',
+                                                                              width: 32,
+                                                                              height: 32,
+                                                                              fit: BoxFit.cover,
+                                                                            );
+                                                                        }
+                                                                      },
+                                                                    )
+                                                                ),
+                                                                SizedBox(width: 12),
+                                                                // 텍스트 정보
+                                                                Expanded(
+                                                                  child: Column(
+                                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                                    children: [
+                                                                      Text(
+                                                                        '$displayName 님이 $color 눈송이 1개를 획득했습니다.',
+                                                                        style: TextStyle(
+                                                                          color: Colors.black87,
+                                                                          fontSize: 14,
+                                                                          fontWeight: FontWeight.bold,
+                                                                        ),
+                                                                      ),
+                                                                      SizedBox(height: 4),
+                                                                      Text(
+                                                                        formattedDatetime,
+                                                                        style: TextStyle(
+                                                                          color: Colors.grey,
+                                                                          fontSize: 12,
+                                                                        ),
+                                                                      ),
+                                                                    ],
+                                                                  ),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          );
+                                                        },
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              );
+                                            },
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                },
+                              );
+                            },
+                            child: Container(
+                              padding: EdgeInsets.all(16),
+                              decoration: BoxDecoration(
+                                color: Colors.grey[900],
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      '${data[0]['display_name']} 님이 ${data[0]['color']} 눈송이를 획득했어요!\n모두 함께 축하해 주세요:)',
+                                      style: TextStyle(color: Colors.white, fontSize: 14),
+                                    ),
+                                  ),
+                                  Icon(Icons.arrow_forward, color: Colors.white),
+                                ],
+                              ),
+                            ),
+                          );
+
+                        } else {
+                          return Center(
+                            child: Text(
+                              'No data available',
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          );
+                        }
+                      },
                     ),
-                    itemCount: _snowballShopViewModel.whiteShopItems.length,
-                    itemBuilder: (context, index) {
-                      final item = _snowballShopViewModel.whiteShopItems[index];
-                      return Container(
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          border: Border.all(color: Colors.grey),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
+                    SizedBox(height: 20),
+                    //TODO: 황금 눈송이 상점
+                    Center(
+                      child: Text(
+                        '황금 눈송이 전용 상점',
+                        style: TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black),
+                      ),
+                    ),
+                    SizedBox(height: 16),
+                    GridView.builder(
+                      shrinkWrap: true,
+                      physics: NeverScrollableScrollPhysics(),
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        mainAxisSpacing: 16,
+                        crossAxisSpacing: 16,
+                        childAspectRatio: 2 / 3,
+                      ),
+                      itemCount: _snowballShopViewModel.goldShopItems.length,
+                      itemBuilder: (context, index) {
+                        final item = _snowballShopViewModel.goldShopItems[index];
+                        return Stack(
                           children: [
-                            Expanded(
-                              child: ExtendedImage.network(
-                                item.imageUrl ?? '',
-                                enableMemoryCache: true,
-                                cacheHeight: 100,
-                                cacheWidth: 100,
-                                fit: BoxFit.cover,
-                                loadStateChanged: (ExtendedImageState state) {
-                                  switch (state.extendedImageLoadState) {
-                                    case LoadState.loading:
-                                      return Shimmer.fromColors(
-                                        baseColor: SDSColor.gray200!,
-                                        highlightColor: SDSColor.gray50!,
-                                        child: Container(
-                                          decoration: BoxDecoration(
-                                            color: Colors.white,
-                                          ),
-                                        ),
-                                      );
-                                    case LoadState.completed:
-                                      return state.completedWidget;
-                                    case LoadState.failed:
-                                      return Image.asset(
-                                        'assets/imgs/imgs/img_flea_default.png',
+                            Container(
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Expanded(
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(8),
+                                      child: ExtendedImage.network(
+                                        item.imageUrl ?? '',
+                                        enableMemoryCache: true,
+                                        cacheHeight: 100,
+                                        cacheWidth: 100,
                                         fit: BoxFit.cover,
-                                      );
-                                  }
-                                },
+                                        loadStateChanged: (ExtendedImageState state) {
+                                          switch (state.extendedImageLoadState) {
+                                            case LoadState.loading:
+                                              return Shimmer.fromColors(
+                                                baseColor: Colors.grey[200]!,
+                                                highlightColor: Colors.grey[50]!,
+                                                child: Container(
+                                                  decoration: BoxDecoration(
+                                                    color: Colors.white,
+                                                  ),
+                                                ),
+                                              );
+                                            case LoadState.completed:
+                                              return state.completedWidget;
+                                            case LoadState.failed:
+                                              return Image.asset(
+                                                'assets/imgs/imgs/img_flea_default.png',
+                                                fit: BoxFit.cover,
+                                              );
+                                          }
+                                        },
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(height: 8),
+                                  Text(
+                                    item.name ?? '상품 이름',
+                                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                                  ),
+                                  Text(
+                                    '황금 눈송이 ${item.snowballCount ?? 0}개',
+                                    style: TextStyle(fontSize: 12, color: Colors.grey),
+                                  ),
+                                  if (item.count != 0)
+                                    Text(
+                                      '잔여 수량 ${item.count}개',
+                                      style: TextStyle(fontSize: 12, color: Colors.blueAccent),
+                                    ),
+                                  if (item.count == 0)
+                                    Text(
+                                      '품절',
+                                      style: TextStyle(fontSize: 12, color: Colors.red),
+                                    ),
+                                ],
                               ),
                             ),
-                            SizedBox(height: 8),
-                            Text(
-                              item.name ?? '상품 이름',
-                              style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
-                            ),
-                            Text(
-                              '일반 눈송이 ${item.snowballCount ?? 0}개',
-                              style: TextStyle(fontSize: 12, color: Colors.grey),
-                            ),
+                            if (item.active == false)
+                              Positioned.fill(
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    color: Colors.black.withOpacity(0.6), // 딤드 효과
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  child: Center(
+                                    child: Container(
+                                      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.circular(4),
+                                      ),
+                                      child: Text(
+                                        '교환완료',
+                                        style: TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.black,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
                           ],
-                        ),
-                      );
-                    },
-                  ),
-                  SizedBox(height: 16),
-                  Center(
-                    child: Text(
-                      '함께 하는 브랜드',
-                      style: TextStyle(
-                          fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black),
+                        );
+                      },
                     ),
-                  ),
-                  SizedBox(height: 16),
-                  GridView.builder(
-                    shrinkWrap: true,
-                    physics: NeverScrollableScrollPhysics(),
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      mainAxisSpacing: 16,
-                      crossAxisSpacing: 16,
-                      childAspectRatio: 1,
+
+                    SizedBox(height: 16),
+                    //TODO: 하얀 눈송이 상점
+                    Center(
+                      child: Text(
+                        '하얀 눈송이 상점',
+                        style: TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black),
+                      ),
                     ),
-                    itemCount: _snowballShopViewModel.sponsors.length,
-                    itemBuilder: (context, index) {
-                      final sponsor = _snowballShopViewModel.sponsors[index];
-                      return Container(
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          border: Border.all(color: Colors.grey),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
+                    SizedBox(height: 16),
+                    GridView.builder(
+                      shrinkWrap: true,
+                      physics: NeverScrollableScrollPhysics(),
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        mainAxisSpacing: 16,
+                        crossAxisSpacing: 16,
+                        childAspectRatio: 2 / 3,
+                      ),
+                      itemCount: _snowballShopViewModel.whiteShopItems.length,
+                      itemBuilder: (context, index) {
+                        final item = _snowballShopViewModel.whiteShopItems[index];
+                        return Stack(
                           children: [
-                            Expanded(
-                              child: ExtendedImage.network(
-                                sponsor.logoUrl ?? '',
-                                enableMemoryCache: true,
-                                cacheHeight: 100,
-                                cacheWidth: 100,
-                                fit: BoxFit.cover,
-                                loadStateChanged: (ExtendedImageState state) {
-                                  switch (state.extendedImageLoadState) {
-                                    case LoadState.loading:
-                                      return Shimmer.fromColors(
-                                        baseColor: SDSColor.gray200!,
-                                        highlightColor: SDSColor.gray50!,
-                                        child: Container(
-                                          decoration: BoxDecoration(
-                                            color: Colors.white,
-                                          ),
-                                        ),
-                                      );
-                                    case LoadState.completed:
-                                      return state.completedWidget;
-                                    case LoadState.failed:
-                                      return Image.asset(
-                                        'assets/imgs/imgs/img_flea_default.png',
+                            Container(
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Expanded(
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(8),
+                                      child: ExtendedImage.network(
+                                        item.imageUrl ?? '',
+                                        enableMemoryCache: true,
+                                        cacheHeight: 100,
+                                        cacheWidth: 100,
                                         fit: BoxFit.cover,
-                                      );
-                                  }
-                                },
+                                        loadStateChanged: (ExtendedImageState state) {
+                                          switch (state.extendedImageLoadState) {
+                                            case LoadState.loading:
+                                              return Shimmer.fromColors(
+                                                baseColor: Colors.grey[200]!,
+                                                highlightColor: Colors.grey[50]!,
+                                                child: Container(
+                                                  decoration: BoxDecoration(
+                                                    color: Colors.white,
+                                                  ),
+                                                ),
+                                              );
+                                            case LoadState.completed:
+                                              return state.completedWidget;
+                                            case LoadState.failed:
+                                              return Image.asset(
+                                                'assets/imgs/imgs/img_flea_default.png',
+                                                fit: BoxFit.cover,
+                                              );
+                                          }
+                                        },
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(height: 8),
+                                  Text(
+                                    item.name ?? '상품 이름',
+                                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                                  ),
+                                  Text(
+                                    '일반 눈송이 ${item.snowballCount ?? 0}개',
+                                    style: TextStyle(fontSize: 12, color: Colors.grey),
+                                  ),
+                                  if (item.count != 0)
+                                    Text(
+                                      '잔여 수량 ${item.count}개',
+                                      style: TextStyle(fontSize: 12, color: Colors.blueAccent),
+                                    ),
+                                  if (item.count == 0)
+                                    Text(
+                                      '품절',
+                                      style: TextStyle(fontSize: 12, color: Colors.red),
+                                    ),
+                                ],
                               ),
                             ),
-                            SizedBox(height: 8),
-                            Text(
-                              sponsor.name ?? '브랜드 이름',
-                              style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
-                            ),
+                            if (item.active == false)
+                              Positioned.fill(
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    color: Colors.black.withOpacity(0.6), // 딤드 효과
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  child: Center(
+                                    child: Container(
+                                      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.circular(4),
+                                      ),
+                                      child: Text(
+                                        '교환완료',
+                                        style: TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.black,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
                           ],
-                        ),
-                      );
-                    },
-                  ),
-                ],
+                        );
+                      },
+                    ),
+
+                    SizedBox(height: 16),
+                    Center(
+                      child: Text(
+                        '함께 하는 브랜드',
+                        style: TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black),
+                      ),
+                    ),
+                    SizedBox(height: 16),
+                    GridView.builder(
+                      shrinkWrap: true,
+                      physics: NeverScrollableScrollPhysics(),
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        mainAxisSpacing: 16,
+                        crossAxisSpacing: 16,
+                        childAspectRatio: 1,
+                      ),
+                      itemCount: _snowballShopViewModel.sponsors.length,
+                      itemBuilder: (context, index) {
+                        final sponsor = _snowballShopViewModel.sponsors[index];
+                        return Container(
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            border: Border.all(color: Colors.grey),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Expanded(
+                                child: ExtendedImage.network(
+                                  sponsor.logoUrl ?? '',
+                                  enableMemoryCache: true,
+                                  cacheHeight: 100,
+                                  cacheWidth: 100,
+                                  fit: BoxFit.cover,
+                                  loadStateChanged: (ExtendedImageState state) {
+                                    switch (state.extendedImageLoadState) {
+                                      case LoadState.loading:
+                                        return Shimmer.fromColors(
+                                          baseColor: SDSColor.gray200!,
+                                          highlightColor: SDSColor.gray50!,
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                        );
+                                      case LoadState.completed:
+                                        return state.completedWidget;
+                                      case LoadState.failed:
+                                        return Image.asset(
+                                          'assets/imgs/imgs/img_flea_default.png',
+                                          fit: BoxFit.cover,
+                                        );
+                                    }
+                                  },
+                                ),
+                              ),
+                              SizedBox(height: 8),
+                              Text(
+                                sponsor.name ?? '브랜드 이름',
+                                style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                    ),
+                  ],
+                ),
               ),
             ),
             //TODO: 하단 버튼
@@ -849,8 +948,9 @@ class _SnowballShopViewState extends State<SnowballShopView> {
                   SizedBox(width: 16),
                   Expanded(
                     child: ElevatedButton(
-                      onPressed: () {
-                        // '교환한 목록' 버튼 클릭 로직
+                      onPressed: () async{
+                        Get.toNamed(AppRoutes.snowballExchangeHistoryView);
+                        await _snowballShopViewModel.fetchPurchaseHistory();
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.blue[800],

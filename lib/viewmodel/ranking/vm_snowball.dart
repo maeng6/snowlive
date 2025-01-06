@@ -183,9 +183,13 @@ class SnowballShopViewModel extends GetxController {
       final response = await SnowballAPI().fetchSnowballBuyRecords({'user_id': userId});
       if (response.success) {
         print("Purchase history fetched successfully: ${response.data}");
-        // 구매 내역 데이터를 purchaseHistory에 업데이트
-        purchaseHistory.value = (response.data as List)
-            .map((record) => SnowballBuyRecord.fromJson(record))
+
+        // API 응답에서 `snowball_buy_records` 리스트를 추출
+        final List<dynamic> records = response.data?['snowball_buy_records'] ?? [];
+
+        // 리스트를 `SnowballBuyRecord` 객체로 변환
+        purchaseHistory.value = records
+            .map((record) => SnowballBuyRecord.fromJson(record as Map<String, dynamic>))
             .toList();
       } else {
         print("Failed to fetch purchase history: ${response.error}");
@@ -196,6 +200,7 @@ class SnowballShopViewModel extends GetxController {
       isLoading(false);
     }
   }
+
 
   /// 특정 user_id의 눈송이 기록 가져오기
   Future<void> fetchUserSnowballRecords() async {
