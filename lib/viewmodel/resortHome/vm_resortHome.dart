@@ -240,38 +240,38 @@ class ResortHomeViewModel extends GetxController {
 
             if (withinBoundary) {
 
-              // try {
-              //   // 현재 시간 가져오기
-              //   final now = DateTime.now();
-              //
-              //   // 마지막 페이크 위치 감지 시간과의 차이 계산 (10초 초과 시 실행)
-              //   if (_lastFakeLocationCheckTime == null ||
-              //       now.difference(_lastFakeLocationCheckTime!).inSeconds > 10) {
-              //     _lastFakeLocationCheckTime = now; // 마지막 실행 시간 업데이트
-              //
-              //     // 페이크 위치 감지0
-              //     final isFakeLocation = await DetectFakeLocation().detectFakeLocation();
-              //
-              //     if (isFakeLocation) {
-              //       print('페이크 위치가 감지되었습니다. 위치 추적을 중지합니다.');
-              //
-              //       // 위치 추적 서비스 중지
-              //       await stopForegroundLocationService();
-              //       await stopBackgroundLocationService();
-              //
-              //       // 사용자에게 경고 메시지 표시
-              //       Get.snackbar(
-              //         '경고',
-              //         '페이크 위치가 감지되었습니다. 위치 추적 서비스가 중단되었습니다.',
-              //         snackPosition: SnackPosition.BOTTOM,
-              //       );
-              //
-              //       return; // 이후 코드 실행 방지
-              //     }
-              //   }
-              // } catch (e) {
-              //   print('페이크 위치 감지 중 오류 발생: $e');
-              // }
+              try {
+                // 현재 시간 가져오기
+                final now = DateTime.now();
+
+                // 마지막 페이크 위치 감지 시간과의 차이 계산 (10초 초과 시 실행)
+                if (_lastFakeLocationCheckTime == null ||
+                    now.difference(_lastFakeLocationCheckTime!).inSeconds > 10) {
+                  _lastFakeLocationCheckTime = now; // 마지막 실행 시간 업데이트
+
+                  // 페이크 위치 감지0
+                  final isFakeLocation = await DetectFakeLocation().detectFakeLocation();
+
+                  if (isFakeLocation) {
+                    print('페이크 위치가 감지되었습니다. 위치 추적을 중지합니다.');
+
+                    // 위치 추적 서비스 중지
+                    await stopForegroundLocationService();
+                    await stopBackgroundLocationService();
+
+                    // 사용자에게 경고 메시지 표시
+                    Get.snackbar(
+                      '경고',
+                      '페이크 위치가 감지되었습니다. 위치 추적 서비스가 중단되었습니다.',
+                      snackPosition: SnackPosition.BOTTOM,
+                    );
+
+                    return; // 이후 코드 실행 방지
+                  }
+                }
+              } catch (e) {
+                print('페이크 위치 감지 중 오류 발생: $e');
+              }
 
               Map<String, dynamic>? passPointInfo = checkPositionInAreas(
                 position,
@@ -414,38 +414,38 @@ class ResortHomeViewModel extends GetxController {
 
           await _userViewModel.updateUserModel_api(_userViewModel.user.user_id);
 
-          // try {
-          //   // 현재 시간 가져오기
-          //   final now = DateTime.now();
-          //
-          //   // 마지막 페이크 위치 감지 시간과의 차이 계산 (10초 초과 시 실행)
-          //   if (_lastFakeLocationCheckTime == null ||
-          //       now.difference(_lastFakeLocationCheckTime!).inSeconds > 10) {
-          //     _lastFakeLocationCheckTime = now; // 마지막 실행 시간 업데이트
-          //
-          //     // 페이크 위치 감지
-          //     final isFakeLocation = await DetectFakeLocation().detectFakeLocation();
-          //
-          //     if (isFakeLocation) {
-          //       print('페이크 위치가 감지되었습니다. 위치 추적을 중지합니다.');
-          //
-          //       // 위치 추적 서비스 중지
-          //       await stopForegroundLocationService();
-          //       await stopBackgroundLocationService();
-          //
-          //       // 사용자에게 경고 메시지 표시
-          //       Get.snackbar(
-          //         '경고',
-          //         '페이크 위치가 감지되었습니다. 위치 추적 서비스가 중단되었습니다.',
-          //         snackPosition: SnackPosition.BOTTOM,
-          //       );
-          //
-          //       return; // 이후 코드 실행 방지
-          //     }
-          //   }
-          // } catch (e) {
-          //   print('페이크 위치 감지 중 오류 발생: $e');
-          // }
+          try {
+            // 현재 시간 가져오기
+            final now = DateTime.now();
+
+            // 마지막 페이크 위치 감지 시간과의 차이 계산 (10초 초과 시 실행)
+            if (_lastFakeLocationCheckTime == null ||
+                now.difference(_lastFakeLocationCheckTime!).inSeconds > 10) {
+              _lastFakeLocationCheckTime = now; // 마지막 실행 시간 업데이트
+
+              // 페이크 위치 감지
+              final isFakeLocation = await DetectFakeLocation().detectFakeLocation();
+
+              if (isFakeLocation) {
+                print('페이크 위치가 감지되었습니다. 위치 추적을 중지합니다.');
+
+                // 위치 추적 서비스 중지
+                await stopForegroundLocationService();
+                await stopBackgroundLocationService();
+
+                // 사용자에게 경고 메시지 표시
+                Get.snackbar(
+                  '경고',
+                  '페이크 위치가 감지되었습니다. 위치 추적 서비스가 중단되었습니다.',
+                  snackPosition: SnackPosition.BOTTOM,
+                );
+
+                return; // 이후 코드 실행 방지
+              }
+            }
+          } catch (e) {
+            print('페이크 위치 감지 중 오류 발생: $e');
+          }
 
           Map<String, dynamic>? passPointInfo = checkPositionInAreas(position, _slope_info,_treasure_hunt_info, _reset_point, _respawn_point);
 
