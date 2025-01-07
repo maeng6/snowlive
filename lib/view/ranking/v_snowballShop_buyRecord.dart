@@ -134,7 +134,7 @@ class SnowballExchangeHistoryView extends StatelessWidget {
                         ),
                         SizedBox(height: 4),
                         Text(
-                          '눈송이 ${record.snowballCount ?? 0}개',
+                          '${record.color} 눈송이 ${record.count ?? 0}개',
                           style: TextStyle(fontSize: 12, color: Colors.grey),
                         ),
                         SizedBox(height: 4),
@@ -265,7 +265,7 @@ class SnowballExchangeHistoryView extends StatelessWidget {
                                                         ),
                                                         SizedBox(height: 4),
                                                         Text(
-                                                          '${record.color ?? ''} 눈송이 ${record.snowballCount ?? 0}개',
+                                                          '${record.color ?? ''} 눈송이 ${record.count ?? 0}개',
                                                           style: TextStyle(
                                                             fontSize: 12,
                                                             color: Colors.white70,
@@ -404,7 +404,7 @@ class SnowballExchangeHistoryView extends StatelessWidget {
                                                   ),
                                                   Expanded(
                                                     child: Text(
-                                                      '${record.color ?? ''} 눈송이 ${record.snowballCount ?? 0}개',
+                                                      '${record.color ?? ''} 눈송이 ${record.count ?? 0}개',
                                                       textAlign: TextAlign.end,
                                                       style: TextStyle(
                                                         fontSize: 14,

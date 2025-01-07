@@ -25,6 +25,7 @@ import 'package:com.snowlive/view/friend/v_invitation_friend.dart';
 import 'package:com.snowlive/view/moreTab/v_setting_moreTab.dart';
 import 'package:com.snowlive/view/ranking/history/v_ranking_history_home.dart';
 import 'package:com.snowlive/view/ranking/v_rankingGuide.dart';
+import 'package:com.snowlive/view/ranking/v_reward_exchange.dart';
 import 'package:com.snowlive/view/ranking/v_settingGuide_android.dart';
 import 'package:com.snowlive/view/ranking/v_settingGuide_ios.dart';
 import 'package:com.snowlive/view/ranking/v_snowballShop_buyRecord.dart';
@@ -110,6 +111,7 @@ class AppRoutes {
   static const String snowballShop = '/treasureHunt';
   static const String crewMemberRankingList = '/crewMemberRankingList';
   static const String snowballExchangeHistoryView = '/snowballExchangeHistoryView';
+  static const String rewardExchangeView = '/rewardExchangeView';
 
 
 
@@ -356,6 +358,10 @@ class AppRoutes {
     GetPage(
       name: snowballExchangeHistoryView,
       page: () => SnowballExchangeHistoryView(),
+    ),
+    GetPage(
+      name: rewardExchangeView,
+      page: () => RewardExchangeView(),
     ),
   ];
 }

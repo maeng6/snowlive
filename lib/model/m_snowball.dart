@@ -42,6 +42,7 @@ class SnowballShopItem {
   int? snowballCount;
   int? snowballItemId;
   bool? active;
+  String? color;
 
   SnowballShopItem({
     this.name,
@@ -51,6 +52,7 @@ class SnowballShopItem {
     this.snowballCount,
     this.snowballItemId,
     this.active,
+    this.color,
   });
 
   SnowballShopItem.fromJson(Map<String, dynamic> json) {
@@ -61,6 +63,7 @@ class SnowballShopItem {
     snowballCount = json['snowball_count'];
     snowballItemId = json['snowball_item_id'];
     active = json['active'];
+    color = json['color'];
   }
 }
 
@@ -83,7 +86,7 @@ class SnowballBuyRecord {
   int? recordId;
   String? itemName;
   String? color;
-  int? snowballCount;
+  int? count;
   String? userName;
   String? phoneNumber;
   String? address;
@@ -94,19 +97,19 @@ class SnowballBuyRecord {
     this.recordId,
     this.itemName,
     this.color,
-    this.snowballCount,
+    this.count,
     this.userName,
     this.phoneNumber,
     this.address,
     this.uploadTime,
-    this.imageUrl
+    this.imageUrl,
   });
 
   SnowballBuyRecord.fromJson(Map<String, dynamic> json) {
     recordId = json['record_id'];
     itemName = json['item_name'];
     color = json['color'];
-    snowballCount = json['count'];
+    count = json['count'];
     userName = json['user_name'];
     phoneNumber = json['phone_number'];
     address = json['address'];

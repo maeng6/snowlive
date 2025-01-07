@@ -632,67 +632,76 @@ class _SnowballShopViewState extends State<SnowballShopView> {
                         final item = _snowballShopViewModel.goldShopItems[index];
                         return Stack(
                           children: [
-                            Container(
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Expanded(
-                                    child: ClipRRect(
-                                      borderRadius: BorderRadius.circular(8),
-                                      child: ExtendedImage.network(
-                                        item.imageUrl ?? '',
-                                        enableMemoryCache: true,
-                                        cacheHeight: 100,
-                                        cacheWidth: 100,
-                                        fit: BoxFit.cover,
-                                        loadStateChanged: (ExtendedImageState state) {
-                                          switch (state.extendedImageLoadState) {
-                                            case LoadState.loading:
-                                              return Shimmer.fromColors(
-                                                baseColor: Colors.grey[200]!,
-                                                highlightColor: Colors.grey[50]!,
-                                                child: Container(
-                                                  decoration: BoxDecoration(
-                                                    color: Colors.white,
+                            GestureDetector(
+                              onTap: (){
+                                if(item.count == 0){
+                                  return ;
+                                }
+                                _snowballShopViewModel.selectItem(item);
+                                Get.toNamed(AppRoutes.rewardExchangeView);
+                              },
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Expanded(
+                                      child: ClipRRect(
+                                        borderRadius: BorderRadius.circular(8),
+                                        child: ExtendedImage.network(
+                                          item.imageUrl ?? '',
+                                          enableMemoryCache: true,
+                                          cacheHeight: 100,
+                                          cacheWidth: 100,
+                                          fit: BoxFit.cover,
+                                          loadStateChanged: (ExtendedImageState state) {
+                                            switch (state.extendedImageLoadState) {
+                                              case LoadState.loading:
+                                                return Shimmer.fromColors(
+                                                  baseColor: Colors.grey[200]!,
+                                                  highlightColor: Colors.grey[50]!,
+                                                  child: Container(
+                                                    decoration: BoxDecoration(
+                                                      color: Colors.white,
+                                                    ),
                                                   ),
-                                                ),
-                                              );
-                                            case LoadState.completed:
-                                              return state.completedWidget;
-                                            case LoadState.failed:
-                                              return Image.asset(
-                                                'assets/imgs/imgs/img_flea_default.png',
-                                                fit: BoxFit.cover,
-                                              );
-                                          }
-                                        },
+                                                );
+                                              case LoadState.completed:
+                                                return state.completedWidget;
+                                              case LoadState.failed:
+                                                return Image.asset(
+                                                  'assets/imgs/imgs/img_flea_default.png',
+                                                  fit: BoxFit.cover,
+                                                );
+                                            }
+                                          },
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                  SizedBox(height: 8),
-                                  Text(
-                                    item.name ?? '상품 이름',
-                                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
-                                  ),
-                                  Text(
-                                    '황금 눈송이 ${item.snowballCount ?? 0}개',
-                                    style: TextStyle(fontSize: 12, color: Colors.grey),
-                                  ),
-                                  if (item.count != 0)
+                                    SizedBox(height: 8),
                                     Text(
-                                      '잔여 수량 ${item.count}개',
-                                      style: TextStyle(fontSize: 12, color: Colors.blueAccent),
+                                      item.name ?? '상품 이름',
+                                      style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
                                     ),
-                                  if (item.count == 0)
                                     Text(
-                                      '품절',
-                                      style: TextStyle(fontSize: 12, color: Colors.red),
+                                      '황금 눈송이 ${item.snowballCount ?? 0}개',
+                                      style: TextStyle(fontSize: 12, color: Colors.grey),
                                     ),
-                                ],
+                                    if (item.count != 0)
+                                      Text(
+                                        '잔여 수량 ${item.count}개',
+                                        style: TextStyle(fontSize: 12, color: Colors.blueAccent),
+                                      ),
+                                    if (item.count == 0)
+                                      Text(
+                                        '품절',
+                                        style: TextStyle(fontSize: 12, color: Colors.red),
+                                      ),
+                                  ],
+                                ),
                               ),
                             ),
                             if (item.active == false)
@@ -750,67 +759,76 @@ class _SnowballShopViewState extends State<SnowballShopView> {
                         final item = _snowballShopViewModel.whiteShopItems[index];
                         return Stack(
                           children: [
-                            Container(
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Expanded(
-                                    child: ClipRRect(
-                                      borderRadius: BorderRadius.circular(8),
-                                      child: ExtendedImage.network(
-                                        item.imageUrl ?? '',
-                                        enableMemoryCache: true,
-                                        cacheHeight: 100,
-                                        cacheWidth: 100,
-                                        fit: BoxFit.cover,
-                                        loadStateChanged: (ExtendedImageState state) {
-                                          switch (state.extendedImageLoadState) {
-                                            case LoadState.loading:
-                                              return Shimmer.fromColors(
-                                                baseColor: Colors.grey[200]!,
-                                                highlightColor: Colors.grey[50]!,
-                                                child: Container(
-                                                  decoration: BoxDecoration(
-                                                    color: Colors.white,
+                            GestureDetector(
+                              onTap: (){
+                                if(item.count == 0){
+                                  return ;
+                                }
+                                _snowballShopViewModel.selectItem(item);
+                                Get.toNamed(AppRoutes.rewardExchangeView);
+                              },
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Expanded(
+                                      child: ClipRRect(
+                                        borderRadius: BorderRadius.circular(8),
+                                        child: ExtendedImage.network(
+                                          item.imageUrl ?? '',
+                                          enableMemoryCache: true,
+                                          cacheHeight: 100,
+                                          cacheWidth: 100,
+                                          fit: BoxFit.cover,
+                                          loadStateChanged: (ExtendedImageState state) {
+                                            switch (state.extendedImageLoadState) {
+                                              case LoadState.loading:
+                                                return Shimmer.fromColors(
+                                                  baseColor: Colors.grey[200]!,
+                                                  highlightColor: Colors.grey[50]!,
+                                                  child: Container(
+                                                    decoration: BoxDecoration(
+                                                      color: Colors.white,
+                                                    ),
                                                   ),
-                                                ),
-                                              );
-                                            case LoadState.completed:
-                                              return state.completedWidget;
-                                            case LoadState.failed:
-                                              return Image.asset(
-                                                'assets/imgs/imgs/img_flea_default.png',
-                                                fit: BoxFit.cover,
-                                              );
-                                          }
-                                        },
+                                                );
+                                              case LoadState.completed:
+                                                return state.completedWidget;
+                                              case LoadState.failed:
+                                                return Image.asset(
+                                                  'assets/imgs/imgs/img_flea_default.png',
+                                                  fit: BoxFit.cover,
+                                                );
+                                            }
+                                          },
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                  SizedBox(height: 8),
-                                  Text(
-                                    item.name ?? '상품 이름',
-                                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
-                                  ),
-                                  Text(
-                                    '일반 눈송이 ${item.snowballCount ?? 0}개',
-                                    style: TextStyle(fontSize: 12, color: Colors.grey),
-                                  ),
-                                  if (item.count != 0)
+                                    SizedBox(height: 8),
                                     Text(
-                                      '잔여 수량 ${item.count}개',
-                                      style: TextStyle(fontSize: 12, color: Colors.blueAccent),
+                                      item.name ?? '상품 이름',
+                                      style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
                                     ),
-                                  if (item.count == 0)
                                     Text(
-                                      '품절',
-                                      style: TextStyle(fontSize: 12, color: Colors.red),
+                                      '하얀 눈송이 ${item.snowballCount ?? 0}개',
+                                      style: TextStyle(fontSize: 12, color: Colors.grey),
                                     ),
-                                ],
+                                    if (item.count != 0)
+                                      Text(
+                                        '잔여 수량 ${item.count}개',
+                                        style: TextStyle(fontSize: 12, color: Colors.blueAccent),
+                                      ),
+                                    if (item.count == 0)
+                                      Text(
+                                        '품절',
+                                        style: TextStyle(fontSize: 12, color: Colors.red),
+                                      ),
+                                  ],
+                                ),
                               ),
                             ),
                             if (item.active == false)
