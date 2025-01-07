@@ -249,7 +249,7 @@ class ResortHomeViewModel extends GetxController {
               //       now.difference(_lastFakeLocationCheckTime!).inSeconds > 10) {
               //     _lastFakeLocationCheckTime = now; // 마지막 실행 시간 업데이트
               //
-              //     // 페이크 위치 감지
+              //     // 페이크 위치 감지0
               //     final isFakeLocation = await DetectFakeLocation().detectFakeLocation();
               //
               //     if (isFakeLocation) {
