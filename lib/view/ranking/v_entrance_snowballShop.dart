@@ -137,7 +137,7 @@ class _Entrance_snowballShopState extends State<Entrance_snowballShop> {
                         Get.toNamed(AppRoutes.snowballShop);
                         await _snowballShopViewModel.getInfo_snowballMarket();
                         await _snowballShopViewModel.fetchSnowballShopData();
-                        await _snowballShopViewModel.getInfo_snowballMarket_findList_gold();
+                        await _snowballShopViewModel.getInfo_snowballMarket_notice_gold();
                         await _snowballShopViewModel.fetchUserSnowballRecords();
                         _snowballShopViewModel.loadingEntrance = false;
                       },

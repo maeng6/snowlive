@@ -29,7 +29,8 @@ class SnowballShopViewModel extends GetxController {
 
   Rxn<Stream<DocumentSnapshot<Map<String, dynamic>>>> infoStream_snowballShop = Rxn<Stream<DocumentSnapshot<Map<String, dynamic>>>>();
   Rxn<Stream<DocumentSnapshot<Map<String, dynamic>>>> infoStream_snowballShop_entrance = Rxn<Stream<DocumentSnapshot<Map<String, dynamic>>>>();
-  Rxn<Stream<QuerySnapshot<Map<String, dynamic>>>> infoStream_snowballShop_findList_gold = Rxn<Stream<QuerySnapshot<Map<String, dynamic>>>>();
+  // Rxn<Stream<QuerySnapshot<Map<String, dynamic>>>> infoStream_snowballShop_findList_gold = Rxn<Stream<QuerySnapshot<Map<String, dynamic>>>>();
+  Rxn<Stream<DocumentSnapshot<Map<String, dynamic>>>> infoStream_snowballShop_notice_gold = Rxn<Stream<DocumentSnapshot<Map<String, dynamic>>>>();
 
 
   // 현재 선택된 아이템 정보
@@ -58,14 +59,22 @@ class SnowballShopViewModel extends GetxController {
         .snapshots();
   }
 
-  Future<void> getInfo_snowballMarket_findList_gold() async {
-    infoStream_snowballShop_findList_gold.value = FirebaseFirestore.instance
+  // Future<void> getInfo_snowballMarket_findList_gold() async {
+  //   infoStream_snowballShop_findList_gold.value = FirebaseFirestore.instance
+  //       .collection('snowball_market') // 상위 컬렉션
+  //       .doc('snowball_market') // 특정 문서
+  //       .collection('find_list') // 하위 컬렉션
+  //       .orderBy('datetime', descending: true)
+  //       .snapshots(); // 필터링된 결과를 스트림으로 가져옴
+  // }
+
+  Future<void> getInfo_snowballMarket_notice_gold() async {
+    infoStream_snowballShop_notice_gold.value = FirebaseFirestore.instance
         .collection('snowball_market') // 상위 컬렉션
-        .doc('snowball_market') // 특정 문서
-        .collection('find_list') // 하위 컬렉션
-        .orderBy('datetime', descending: true)
+        .doc('gold_snowball_notice') // 특정 문서
         .snapshots(); // 필터링된 결과를 스트림으로 가져옴
   }
+
 
 
   /// 눈송이 상점 데이터 가져오기(눈송이 홈)
