@@ -70,7 +70,7 @@ dependencies:
   firebase_analytics: ^11.2.0
   table_calendar: ^3.0.9
   google_maps_flutter: ^2.2.8
-  location: ^4.4.0
+  location: ^6.0.2
   geolocator: ^9.0.2
   google_maps_flutter_platform_interface: ^2.2.7
   image_cropper: ^5.0.0
