@@ -135,6 +135,7 @@ class SnowballRecord {
   String? coordinates;
   bool? active;
   String? color;
+  String? slopeName;
 
   SnowballRecord({
     this.snowballRecordId,
@@ -143,6 +144,7 @@ class SnowballRecord {
     this.coordinates,
     this.active,
     this.color,
+    this.slopeName,
   });
 
   SnowballRecord.fromJson(Map<String, dynamic> json) {
@@ -152,6 +154,7 @@ class SnowballRecord {
     coordinates = json['coordinates'];
     active = json['active'];
     color = json['color'];
+    slopeName = json['slope_name'];
   }
 
   Map<String, dynamic> toJson() {
@@ -162,6 +165,7 @@ class SnowballRecord {
       'coordinates': coordinates,
       'active': active,
       'color': color,
+      'slope_name': slopeName,
     };
   }
 }
