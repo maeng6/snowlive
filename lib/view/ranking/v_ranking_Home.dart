@@ -227,11 +227,11 @@ class RankingHomeView extends StatelessWidget {
                   ],
                 ),
               ),
-              //TODO: 눈송이 상점 진입점
-              Padding(
-                padding: EdgeInsets.only(left: 16, right: 16, top: 8),
-                child: Entrance_snowballShop(),
-              ),
+              // 눈송이 상점 진입점
+              // Padding(
+              //   padding: EdgeInsets.only(left: 16, right: 16, top: 8),
+              //   child: Entrance_snowballShop(),
+              // ),
               if (_rankingListViewModel.tapName=='개인랭킹')
                 Expanded(
                     child: RankingIndiView()),

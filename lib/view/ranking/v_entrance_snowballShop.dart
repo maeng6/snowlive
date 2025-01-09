@@ -65,6 +65,14 @@ class _Entrance_snowballShopState extends State<Entrance_snowballShop> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    Image.asset(
+                      'assets/imgs/imgs/snowballShop/img_snowballshop_text_1.png',
+                      width: 52,
+                    ),
+                    Image.asset(
+                      'assets/imgs/imgs/snowballShop/img_snowballshop_text_2.png',
+                      width: 110,
+                    ),
                     Text(
                       '오픈!',
                       style: TextStyle(

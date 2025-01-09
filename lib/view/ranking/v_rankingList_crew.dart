@@ -3,6 +3,7 @@ import 'package:com.snowlive/data/imgaUrls/Data_url_image.dart';
 import 'package:com.snowlive/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/routes/routes.dart';
 import 'package:com.snowlive/view/banner/v_banner_ranking.dart';
+import 'package:com.snowlive/view/ranking/v_entrance_snowballShop.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewDetail.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewMemberList.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewMemberRankingList.dart';
@@ -94,6 +95,11 @@ class RankingCrewView extends StatelessWidget {
                             return Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
+                                // 눈송이 상점 진입점
+                                Padding(
+                                  padding: EdgeInsets.only(top: 4),
+                                  child: Entrance_snowballShop(),
+                                ),
                               // 배너
                               Padding(
                                 padding: EdgeInsets.only(top: 4),
@@ -1526,6 +1532,11 @@ class RankingCrewView extends StatelessWidget {
                             return Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
+                                // 눈송이 상점 진입점
+                                Padding(
+                                  padding: EdgeInsets.only(top: 4),
+                                  child: Entrance_snowballShop(),
+                                ),
                               //마이인포 박스 - 점수와 랭킹없는경우 안보여주게함
                               if(_rankingListViewModel.rankingListCrewMy_view!.crewName != null)
                                 Obx(() => Padding(

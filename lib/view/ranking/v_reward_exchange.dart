@@ -360,6 +360,11 @@ class _RewardExchangeViewState extends State<RewardExchangeView> {
                                     onPressed: () {
                                       Navigator.pop(context); // 팝업 닫기
                                       Get.back(); // 이전 화면으로 돌아가기
+                                      Future.delayed(Duration(milliseconds: 100), () {
+                                        if (Navigator.canPop(context)) {
+                                          Navigator.pop(context);
+                                        }
+                                      });
                                     },
                                     style: ElevatedButton.styleFrom(
                                       backgroundColor: Colors.blue,
