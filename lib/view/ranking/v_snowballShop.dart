@@ -2,11 +2,13 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:com.snowlive/data/imgaUrls/Data_url_image.dart';
 import 'package:com.snowlive/data/snowliveDesignStyle.dart';
+import 'package:com.snowlive/model/m_snowball.dart';
 import 'package:com.snowlive/routes/routes.dart';
 import 'package:com.snowlive/viewmodel/friend/vm_friendDetail.dart';
 import 'package:com.snowlive/viewmodel/ranking/vm_snowball.dart';
 import 'package:com.snowlive/viewmodel/resortHome/vm_resortHome.dart';
 import 'package:com.snowlive/viewmodel/vm_user.dart';
+import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -287,6 +289,7 @@ class _SnowballShopViewState extends State<SnowballShopView> {
                                                         "${datetime.hour.toString().padLeft(2, '0')}:${datetime.minute.toString().padLeft(2, '0')}:${datetime.second.toString().padLeft(2, '0')}";
 
                                                     final color = item.color;
+                                                    final slope = item.slopeName;
 
                                                     return Padding(
                                                       padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
@@ -300,7 +303,7 @@ class _SnowballShopViewState extends State<SnowballShopView> {
                                                               crossAxisAlignment: CrossAxisAlignment.start,
                                                               children: [
                                                                 Text(
-                                                                  '$color 눈송이 1개를 획득했습니다.',
+                                                                  '$slope 에서 $color 눈송이 1개를 획득했습니다.',
                                                                   style: TextStyle(
                                                                     color: Colors.black87,
                                                                     fontSize: 14,
@@ -349,7 +352,7 @@ class _SnowballShopViewState extends State<SnowballShopView> {
                                 children: [
                                   Text(
                                     _snowballShopViewModel.userSnowballRecords.isNotEmpty
-                                        ? '${_snowballShopViewModel.userSnowballRecords[0].color} 눈송이를 1개를 획득했어요!'
+                                        ? '${_snowballShopViewModel.userSnowballRecords[0].slopeName} 슬로프에서\n${_snowballShopViewModel.userSnowballRecords[0].color} 눈송이를 1개를 획득했어요!'
                                         : '아직 획득한 눈송이가 없어요!',
                                     style: TextStyle(color: Colors.white, fontSize: 14),
                                   ),
@@ -470,12 +473,199 @@ class _SnowballShopViewState extends State<SnowballShopView> {
                         return Stack(
                           children: [
                             GestureDetector(
-                              onTap: (){
+                              onTap: () async{
                                 if(item.count == 0){
                                   return ;
                                 }
+
+                                CustomFullScreenDialog.showDialog();
+                                await _snowballShopViewModel.fetchSnowballShopData();
+                                CustomFullScreenDialog.cancelDialog();
+
+                                final updatedItem = _snowballShopViewModel.goldShopItems.firstWhere(
+                                      (updated) => updated.snowballItemId == item.snowballItemId,
+                                  orElse: () => SnowballShopItem(count: 0), // 기본값
+                                );
+
+                                if(updatedItem.count == 0){
+                                  return ;
+                                }
+
                                 _snowballShopViewModel.selectItem(item);
-                                Get.toNamed(AppRoutes.rewardExchangeView);
+                                showModalBottomSheet(
+                                  context: context,
+                                  isScrollControlled: true,
+                                  backgroundColor: Colors.transparent,
+                                  builder: (BuildContext context) {
+                                    return GestureDetector(
+                                      onTap: () => Navigator.of(context).pop(), // 바깥 클릭 시 닫기
+                                      child: Container(
+                                        color: Colors.transparent,
+                                        child: DraggableScrollableSheet(
+                                          initialChildSize: 0.6,
+                                          maxChildSize: 0.9,
+                                          minChildSize: 0.4,
+                                          builder: (_, scrollController) {
+                                            return Container(
+                                              decoration: BoxDecoration(
+                                                color: Colors.white,
+                                                borderRadius: BorderRadius.only(
+                                                  topLeft: Radius.circular(16),
+                                                  topRight: Radius.circular(16),
+                                                ),
+                                              ),
+                                              child: Column(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: [
+                                                  // 상단 닫기 버튼
+                                                  Padding(
+                                                    padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 16.0),
+                                                    child: Center(
+                                                      child: Container(
+                                                        width: 40,
+                                                        height: 4,
+                                                        decoration: BoxDecoration(
+                                                          color: Colors.grey[300],
+                                                          borderRadius: BorderRadius.circular(2),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  Expanded(
+                                                    child: SingleChildScrollView(
+                                                      controller: scrollController,
+                                                      child: Padding(
+                                                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                                                        child: Column(
+                                                          crossAxisAlignment: CrossAxisAlignment.center,
+                                                          children: [
+                                                            // 이미지 표시
+                                                            ClipRRect(
+                                                              borderRadius: BorderRadius.circular(16),
+                                                              child: ExtendedImage.network(
+                                                                item.imageUrl ?? '',
+                                                                width: 150,
+                                                                height: 150,
+                                                                fit: BoxFit.cover,
+                                                              ),
+                                                            ),
+                                                            SizedBox(height: 16),
+                                                            // 상품명
+                                                            Text(
+                                                              item.name ?? '상품 이름',
+                                                              style: TextStyle(
+                                                                fontSize: 18,
+                                                                fontWeight: FontWeight.bold,
+                                                              ),
+                                                            ),
+                                                            SizedBox(height: 8),
+                                                            // 설명 텍스트
+                                                            Text(
+                                                              item.description ?? '',
+                                                              textAlign: TextAlign.center,
+                                                              style: TextStyle(
+                                                                fontSize: 14,
+                                                                color: Colors.grey[700],
+                                                              ),
+                                                            ),
+                                                            SizedBox(height: 16),
+                                                            // 버튼들
+                                                            Row(
+                                                              children: [
+                                                                Expanded(
+                                                                  child: ElevatedButton(
+                                                                    onPressed: () {
+                                                                      // 상세 정보 보기 로직
+                                                                    },
+                                                                    style: ElevatedButton.styleFrom(
+                                                                      backgroundColor: Colors.grey[800],
+                                                                      padding: EdgeInsets.symmetric(vertical: 14),
+                                                                      shape: RoundedRectangleBorder(
+                                                                        borderRadius: BorderRadius.circular(8),
+                                                                      ),
+                                                                    ),
+                                                                    child: Text(
+                                                                      '상세 정보 보기',
+                                                                      style: TextStyle(
+                                                                        fontSize: 16,
+                                                                        color: Colors.white,
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                                SizedBox(width: 16),
+                                                                Expanded(
+                                                                  child: ElevatedButton(
+                                                                    onPressed: () async{
+                                                                      final int shortfallAmount = item.snowballCount! - _snowballShopViewModel.snowballSummary.value.gold!;
+
+                                                                      if(_snowballShopViewModel.snowballSummary.value.white! < item.snowballCount!){
+                                                                        showDialog(
+                                                                          context: context,
+                                                                          builder: (BuildContext context) {
+                                                                            return AlertDialog(
+                                                                              shape: RoundedRectangleBorder(
+                                                                                borderRadius: BorderRadius.circular(8),
+                                                                              ),
+                                                                              title: Text(
+                                                                                '수량 부족',
+                                                                                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                                                                              ),
+                                                                              content: Text(
+                                                                                '보유한 황금 눈송이 수량이 부족합니다.'
+                                                                                    '\n교환하려면 황금 눈송이가 $shortfallAmount개 더 필요합니다.',
+                                                                                style: TextStyle(fontSize: 14),
+                                                                              ),
+                                                                              actions: [
+                                                                                TextButton(
+                                                                                  onPressed: () {
+                                                                                    Navigator.of(context).pop(); // 팝업 닫기
+                                                                                  },
+                                                                                  child: Text(
+                                                                                    '확인',
+                                                                                    style: TextStyle(color: Colors.blue),
+                                                                                  ),
+                                                                                ),
+                                                                              ],
+                                                                            );
+                                                                          },
+                                                                        );
+                                                                        return ;
+                                                                      }
+                                                                      Get.toNamed(AppRoutes.rewardExchangeView);
+                                                                    },
+                                                                    style: ElevatedButton.styleFrom(
+                                                                      backgroundColor: Colors.blue[800],
+                                                                      padding: EdgeInsets.symmetric(vertical: 14),
+                                                                      shape: RoundedRectangleBorder(
+                                                                        borderRadius: BorderRadius.circular(8),
+                                                                      ),
+                                                                    ),
+                                                                    child: Text(
+                                                                      '교환하기',
+                                                                      style: TextStyle(
+                                                                        fontSize: 16,
+                                                                        color: Colors.white,
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            );
+                                          },
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                );
                               },
                               child: Container(
                                 decoration: BoxDecoration(
@@ -597,12 +787,199 @@ class _SnowballShopViewState extends State<SnowballShopView> {
                         return Stack(
                           children: [
                             GestureDetector(
-                              onTap: (){
+                              onTap: () async{
                                 if(item.count == 0){
                                   return ;
                                 }
+
+                                CustomFullScreenDialog.showDialog();
+                                await _snowballShopViewModel.fetchSnowballShopData();
+                                CustomFullScreenDialog.cancelDialog();
+
+                                final updatedItem = _snowballShopViewModel.whiteShopItems.firstWhere(
+                                      (updated) => updated.snowballItemId == item.snowballItemId,
+                                  orElse: () => SnowballShopItem(count: 0), // 기본값
+                                );
+
+                                if(updatedItem.count == 0){
+                                  return ;
+                                }
                                 _snowballShopViewModel.selectItem(item);
-                                Get.toNamed(AppRoutes.rewardExchangeView);
+                                showModalBottomSheet(
+                                  context: context,
+                                  isScrollControlled: true,
+                                  backgroundColor: Colors.transparent,
+                                  builder: (BuildContext context) {
+                                    return GestureDetector(
+                                      onTap: () => Navigator.of(context).pop(), // 바깥 클릭 시 닫기
+                                      child: Container(
+                                        color: Colors.transparent,
+                                        child: DraggableScrollableSheet(
+                                          initialChildSize: 0.6,
+                                          maxChildSize: 0.9,
+                                          minChildSize: 0.4,
+                                          builder: (_, scrollController) {
+                                            return Container(
+                                              decoration: BoxDecoration(
+                                                color: Colors.white,
+                                                borderRadius: BorderRadius.only(
+                                                  topLeft: Radius.circular(16),
+                                                  topRight: Radius.circular(16),
+                                                ),
+                                              ),
+                                              child: Column(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: [
+                                                  // 상단 닫기 버튼
+                                                  Padding(
+                                                    padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 16.0),
+                                                    child: Center(
+                                                      child: Container(
+                                                        width: 40,
+                                                        height: 4,
+                                                        decoration: BoxDecoration(
+                                                          color: Colors.grey[300],
+                                                          borderRadius: BorderRadius.circular(2),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  Expanded(
+                                                    child: SingleChildScrollView(
+                                                      controller: scrollController,
+                                                      child: Padding(
+                                                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                                                        child: Column(
+                                                          crossAxisAlignment: CrossAxisAlignment.center,
+                                                          children: [
+                                                            // 이미지 표시
+                                                            ClipRRect(
+                                                              borderRadius: BorderRadius.circular(16),
+                                                              child: ExtendedImage.network(
+                                                                item.imageUrl ?? '',
+                                                                width: 150,
+                                                                height: 150,
+                                                                fit: BoxFit.cover,
+                                                              ),
+                                                            ),
+                                                            SizedBox(height: 16),
+                                                            // 상품명
+                                                            Text(
+                                                              item.name ?? '상품 이름',
+                                                              style: TextStyle(
+                                                                fontSize: 18,
+                                                                fontWeight: FontWeight.bold,
+                                                              ),
+                                                            ),
+                                                            SizedBox(height: 8),
+                                                            // 설명 텍스트
+                                                            Text(
+                                                              item.description ?? '',
+                                                              textAlign: TextAlign.center,
+                                                              style: TextStyle(
+                                                                fontSize: 14,
+                                                                color: Colors.grey[700],
+                                                              ),
+                                                            ),
+                                                            SizedBox(height: 16),
+                                                            // 버튼들
+                                                            Row(
+                                                              children: [
+                                                                Expanded(
+                                                                  child: ElevatedButton(
+                                                                    onPressed: () {
+                                                                      // 상세 정보 보기 로직
+                                                                    },
+                                                                    style: ElevatedButton.styleFrom(
+                                                                      backgroundColor: Colors.grey[800],
+                                                                      padding: EdgeInsets.symmetric(vertical: 14),
+                                                                      shape: RoundedRectangleBorder(
+                                                                        borderRadius: BorderRadius.circular(8),
+                                                                      ),
+                                                                    ),
+                                                                    child: Text(
+                                                                      '상세 정보 보기',
+                                                                      style: TextStyle(
+                                                                        fontSize: 16,
+                                                                        color: Colors.white,
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                                SizedBox(width: 16),
+                                                                Expanded(
+                                                                  child: ElevatedButton(
+                                                                    onPressed: () {
+
+                                                                      final int shortfallAmount = item.snowballCount! - _snowballShopViewModel.snowballSummary.value.white!;
+
+                                                                      if(_snowballShopViewModel.snowballSummary.value.white! < item.snowballCount!){
+                                                                        showDialog(
+                                                                          context: context,
+                                                                          builder: (BuildContext context) {
+                                                                            return AlertDialog(
+                                                                              shape: RoundedRectangleBorder(
+                                                                                borderRadius: BorderRadius.circular(8),
+                                                                              ),
+                                                                              title: Text(
+                                                                                '수량 부족',
+                                                                                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                                                                              ),
+                                                                              content: Text(
+                                                                                '보유한 하얀 눈송이 수량이 부족합니다.'
+                                                                                    '\n교환하려면 하얀 눈송이가 $shortfallAmount개 더 필요합니다.',
+                                                                                style: TextStyle(fontSize: 14),
+                                                                              ),
+                                                                              actions: [
+                                                                                TextButton(
+                                                                                  onPressed: () {
+                                                                                    Navigator.of(context).pop(); // 팝업 닫기
+                                                                                  },
+                                                                                  child: Text(
+                                                                                    '확인',
+                                                                                    style: TextStyle(color: Colors.blue),
+                                                                                  ),
+                                                                                ),
+                                                                              ],
+                                                                            );
+                                                                          },
+                                                                        );
+                                                                        return ;
+                                                                      }
+                                                                      Get.toNamed(AppRoutes.rewardExchangeView);
+                                                                    },
+                                                                    style: ElevatedButton.styleFrom(
+                                                                      backgroundColor: Colors.blue[800],
+                                                                      padding: EdgeInsets.symmetric(vertical: 14),
+                                                                      shape: RoundedRectangleBorder(
+                                                                        borderRadius: BorderRadius.circular(8),
+                                                                      ),
+                                                                    ),
+                                                                    child: Text(
+                                                                      '교환하기',
+                                                                      style: TextStyle(
+                                                                        fontSize: 16,
+                                                                        color: Colors.white,
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            );
+                                          },
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                );
                               },
                               child: Container(
                                 decoration: BoxDecoration(
