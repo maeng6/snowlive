@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:com.snowlive/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/routes/routes.dart';
 import 'package:com.snowlive/viewmodel/ranking/vm_snowball.dart';
 import 'package:com.snowlive/viewmodel/resortHome/vm_resortHome.dart';
@@ -6,6 +7,7 @@ import 'package:com.snowlive/viewmodel/vm_user.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class Entrance_snowballShop extends StatefulWidget {
   @override
@@ -16,12 +18,28 @@ class _Entrance_snowballShopState extends State<Entrance_snowballShop> {
   UserViewModel _userViewModel = Get.find<UserViewModel>();
   SnowballShopViewModel _snowballShopViewModel = Get.find<SnowballShopViewModel>();
 
+  RxBool isLoading = false.obs;
+
   @override
   void initState() {
     super.initState();
-    _snowballShopViewModel.getInfo_snowballMarket_entrance(); // Firebase에서 banner 가져오는 함수
-    _snowballShopViewModel.fetchSnowballSummary();
+    _snowballShopViewModel.getInfo_snowballMarket_entrance();
+    _fetchData();
   }
+
+  Future<void> _fetchData() async {
+    setState(() {
+      isLoading.value = true;
+    });
+
+    await _snowballShopViewModel.fetchSnowballSummary();
+
+    setState(() {
+      isLoading.value = false;
+    });
+  }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -52,123 +70,186 @@ class _Entrance_snowballShopState extends State<Entrance_snowballShop> {
 
 
         if (isOpen == true && (isToEveryone || isUserInCrewList)) {
-          return Obx(()=>Container(
-            width: double.infinity,
-            padding: EdgeInsets.all(16.0),
-            decoration: BoxDecoration(
-              color: Color(0xFF1A1A2E), // 배경색
-              borderRadius: BorderRadius.circular(12.0),
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Image.asset(
-                      'assets/imgs/imgs/snowballShop/img_snowballshop_text_1.png',
-                      width: 52,
-                    ),
-                    Image.asset(
-                      'assets/imgs/imgs/snowballShop/img_snowballshop_text_2.png',
-                      width: 110,
-                    ),
-                    Text(
-                      '오픈!',
-                      style: TextStyle(
-                        color: Colors.lightBlueAccent,
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    Text(
-                      '눈송이 상점',
-                      style: TextStyle(
-                        color: Colors.lightBlueAccent,
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    SizedBox(height: 4),
-                    Text(
-                      '눈송이를 찾아라!',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 14,
-                      ),
-                    ),
-                  ],
+          return Stack(
+            children: [
+              Container(
+                width: double.infinity,
+                padding: EdgeInsets.only(top: 8, bottom: 10, right: 16, left: 12),
+                decoration: BoxDecoration(
+                  color: Color(0xFF1D242E), // 배경색
+                  borderRadius: BorderRadius.circular(12.0),
                 ),
-                Column(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Row(
+                    Container(
+                      width: 62,
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Row(
-                          children: [
-                            Icon(Icons.ac_unit, color: Colors.blue, size: 18), // 하얀 눈송이 아이콘
-                            SizedBox(width: 4),
-                            Text(
-                              '${_snowballShopViewModel.snowballSummary.value.white}', // 하얀 눈송이 개수
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 16,
+                        Image.asset(
+                          'assets/imgs/imgs/snowballShop/img_snowballshop_text_1.png',
+                          height: 22,
+                        ),
+                        Image.asset(
+                          'assets/imgs/imgs/snowballShop/img_snowballshop_text_2.png',
+                          height: 22,
+                        ),
+                        SizedBox(height: 4),
+                        Padding(
+                          padding: EdgeInsets.only(left: 2),
+                          child: Container(
+                            color: SDSColor.blue400.withOpacity(0.4),
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 4, vertical: 1),
+                              child: Text(
+                                '눈송이를 찾아라!',
+                                style: SDSTextStyle.extraBold.copyWith(
+                                  color: Colors.white,
+                                  fontSize: 12,
+                                ),
                               ),
                             ),
-                          ],
+                          ),
                         ),
-                        SizedBox(width: 12),
-                        Row(
-                          children: [
-                            Icon(Icons.circle, color: Colors.amber, size: 18), // 황금 눈송이 아이콘
-                            SizedBox(width: 4),
-                            Text(
-                              '${_snowballShopViewModel.snowballSummary.value.gold}', // 황금 눈송이 개수
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 16,
-                              ),
-                            ),
-                          ],
-                        ),
-                        SizedBox(width: 12),
-                        GestureDetector(
-                            onTap: (){
-                              _snowballShopViewModel.fetchSnowballSummary();
-                            },
-                            child: Icon(Icons.refresh, color: Colors.white, size: 20)), // 새로고침 아이콘
                       ],
                     ),
-                    SizedBox(height: 20,),
-                    ElevatedButton(
-                      onPressed: () async{
-                        _snowballShopViewModel.loadingEntrance = true;
-                        Get.toNamed(AppRoutes.snowballShop);
-                        await _snowballShopViewModel.getInfo_snowballMarket();
-                        await _snowballShopViewModel.fetchSnowballShopData();
-                        await _snowballShopViewModel.getInfo_snowballMarket_notice_gold();
-                        await _snowballShopViewModel.fetchUserSnowballRecords();
-                        _snowballShopViewModel.loadingEntrance = false;
-                      },
-                      style: ElevatedButton.styleFrom(
-                        foregroundColor: Colors.black,
-                        backgroundColor: Colors.white,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        GestureDetector(
+                          onTap: _fetchData,
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: Colors.black.withOpacity(0.3),
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+                              child: Row(
+                                children: [
+                                  Obx(() => isLoading.value
+                                  ? Container(
+                                    width: 73,
+                                    height: 19,
+                                    child: Center(
+                                      child: LoadingAnimationWidget.waveDots(
+                                        color: SDSColor.snowliveWhite.withOpacity(0.5),
+                                        size: 20,
+                                      ),
+                                    ),
+                                  )
+                                      : Container(
+                                    width: 73,
+                                        height: 19,
+                                        child: Row(
+                                          children: [
+                                            Row(
+                                              children: [
+                                                Image.asset(
+                                                  'assets/imgs/imgs/snowballShop/icon_snowballshop_whiteball.png',
+                                                  height: 14,
+                                                ),
+                                                SizedBox(width: 3),
+                                                Text(
+                                                  '${_snowballShopViewModel.snowballSummary.value.white}', // 하얀 눈송이 개수
+                                                  style: SDSTextStyle.regular.copyWith(
+                                                    color: Colors.white,
+                                                    fontSize: 13,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                        SizedBox(width: 6),
+                                        Row(
+                                          children: [
+                                            Image.asset(
+                                              'assets/imgs/imgs/snowballShop/icon_snowballshop_goldball.png',
+                                              height: 14,
+                                            ),
+                                            SizedBox(width: 3),
+                                            Text(
+                                              '${_snowballShopViewModel.snowballSummary.value.gold}', // 황금 눈송이 개수
+                                              style: SDSTextStyle.regular.copyWith(
+                                                color: Colors.white,
+                                                fontSize: 13,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                                                            ],
+                                                                          ),
+                                      )),
+                                  SizedBox(width: 4),
+                                  Icon(Icons.refresh, color: Colors.white, size: 20), // 새로고침 아이콘
+                                ],
+                              ),
+                            ),
+                          ),
                         ),
-                      ),
-                      child: Text(
-                        '입장하기',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
+                        SizedBox(height: 2),
+                        GestureDetector(
+                          onTap: () async {
+                            _snowballShopViewModel.loadingEntrance = true;
+                            Get.toNamed(AppRoutes.snowballShop);
+                            await _snowballShopViewModel.getInfo_snowballMarket();
+                            await _snowballShopViewModel.fetchSnowballShopData();
+                            await _snowballShopViewModel.getInfo_snowballMarket_notice_gold();
+                            await _snowballShopViewModel.fetchUserSnowballRecords();
+                            _snowballShopViewModel.loadingEntrance = false;
+                          },
+                          child: Padding(
+                            padding: EdgeInsets.only(right: 8),
+                            child: Container(
+                              width: 90,
+                              height: 30,
+                              child: Padding(
+                                padding: EdgeInsets.only(top: 8),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    Text(
+                                      '입장하기',
+                                      style: SDSTextStyle.bold.copyWith(
+                                        fontSize: 14,
+                                        color: SDSColor.snowliveWhite
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: EdgeInsets.only(left: 6),
+                                      child: Image.asset(
+                                        'assets/imgs/imgs/snowballShop/icon_snowballshop_arrow.png',
+                                        width: 18,
+                                        height: 18,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
                         ),
-                      ),
+                      ],
                     ),
                   ],
                 ),
-              ],
-            ),
-          ));
+              ),
+              // 이미지 영역
+              Positioned(
+                left: 6,
+                top: 6,
+                bottom: 6,
+                child: Padding(
+                  padding: EdgeInsets.only(top: 2),
+                  child: Image.asset(
+                      'assets/imgs/imgs/snowballShop/icon_snowballshop_store_banner.png',
+                      width: 86
+                  ),
+                ),
+              ),
+            ],
+          );
         } else {
           return SizedBox.shrink(); // banner 필드가 없거나 비어있으면 빈 공간 반환
         }

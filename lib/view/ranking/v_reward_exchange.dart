@@ -75,20 +75,36 @@ class _RewardExchangeViewState extends State<RewardExchangeView> {
 
   @override
   Widget build(BuildContext context) {
+
+    Size _size = MediaQuery.of(context).size;
+
     return GestureDetector(
       onTap: () {
         FocusScope.of(context).unfocus();
       },
       child: Scaffold(
-        appBar: AppBar(
-          title: const Text(
-            '경품 교환',
-            style: TextStyle(color: Colors.black),
-          ),
-          backgroundColor: Colors.white,
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back, color: Colors.black),
-            onPressed: () => Navigator.pop(context),
+        backgroundColor: Colors.white,
+        appBar: PreferredSize(
+          preferredSize: Size.fromHeight(44),
+          child: AppBar(
+            leading: GestureDetector(
+              child: Image.asset(
+                'assets/imgs/icons/icon_snowLive_back.png',
+                scale: 4,
+                width: 26,
+                height: 26,
+              ),
+              onTap: () => Navigator.pop(context),
+            ),
+            title: Text(
+              '경품 교환',
+              style: SDSTextStyle.extraBold.copyWith(
+                  color: SDSColor.gray900,
+                  fontSize: 18),
+            ),
+            backgroundColor: SDSColor.snowliveWhite,
+            surfaceTintColor: Colors.transparent,
+            elevation: 0.0,
           ),
         ),
         body: SingleChildScrollView(
@@ -104,22 +120,21 @@ class _RewardExchangeViewState extends State<RewardExchangeView> {
                 children: [
                   // 상단 경품 정보 박스
                   Container(
-                    padding: const EdgeInsets.all(12),
+                    padding: EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: Colors.black,
+                      color: Color(0xFF1D242E),
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Row(
                       children: [
                         ClipRRect(
-                          borderRadius: BorderRadius.circular(8),
+                          borderRadius: BorderRadius.circular(4),
                           child: ExtendedImage.network(
                             _snowballShopViewModel.selectedItem.value.imageUrl!,
                             enableMemoryCache: true,
-                            cacheHeight: 150,
-                            borderRadius: BorderRadius.circular(8),
-                            width: 40,
-                            height: 40,
+                            borderRadius: BorderRadius.circular(4),
+                            width: 48,
+                            height: 48,
                             fit: BoxFit.cover,
                             loadStateChanged: (ExtendedImageState state) {
                               switch (state.extendedImageLoadState) {
@@ -128,11 +143,11 @@ class _RewardExchangeViewState extends State<RewardExchangeView> {
                                     baseColor: SDSColor.gray200!,
                                     highlightColor: SDSColor.gray50!,
                                     child: Container(
-                                      width: 40,
-                                      height: 40,
+                                      width: 48,
+                                      height: 48,
                                       decoration: BoxDecoration(
                                         color: Colors.white,
-                                        borderRadius: BorderRadius.circular(8),
+                                        borderRadius: BorderRadius.circular(4),
                                       ),
                                     ),
                                   );
@@ -140,9 +155,9 @@ class _RewardExchangeViewState extends State<RewardExchangeView> {
                                   return state.completedWidget;
                                 case LoadState.failed:
                                   return Image.asset(
-                                    'assets/imgs/profile/img_profile_default_circle.png',
-                                    width: 32,
-                                    height: 32,
+                                    'assets/imgs/profile/img_profile_default_.png',
+                                    width: 48,
+                                    height: 48,
                                     fit: BoxFit.cover,
                                   );
                               }
@@ -156,18 +171,16 @@ class _RewardExchangeViewState extends State<RewardExchangeView> {
                             children: [
                               Text(
                                 '${_snowballShopViewModel.selectedItem.value.name}',
-                                style: const TextStyle(
+                                style: SDSTextStyle.bold.copyWith(
                                   fontSize: 14,
-                                  fontWeight: FontWeight.bold,
                                   color: Colors.white,
                                 ),
                               ),
-                              const SizedBox(height: 4),
                               Text(
-                                ' ${_snowballShopViewModel.selectedItem.value.color} 눈송이 ${_snowballShopViewModel.selectedItem.value.snowballCount}',
-                                style: const TextStyle(
+                                '${_snowballShopViewModel.selectedItem.value.color} 눈송이 ${_snowballShopViewModel.selectedItem.value.snowballCount}개',
+                                style: SDSTextStyle.regular.copyWith(
                                   fontSize: 12,
-                                  color: Colors.white70,
+                                  color: Colors.white.withOpacity(0.5),
                                 ),
                               ),
                             ],
@@ -176,219 +189,843 @@ class _RewardExchangeViewState extends State<RewardExchangeView> {
                       ],
                     ),
                   ),
-                  const SizedBox(height: 20),
-
-                  const Text(
-                    '상품 수령을 위해 아래 정보를 입력해주세요.',
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
-                      color: Colors.black87,
+                  SizedBox(height: 20),
+                  Center(
+                    child: Text(
+                      '상품 수령을 위해 아래 정보를 입력해주세요.',
+                      style: SDSTextStyle.bold.copyWith(
+                        fontSize: 13,
+                        color: SDSColor.gray900,
+                      ),
                     ),
                   ),
                   const SizedBox(height: 16),
 
                   // 이름 입력
-                  const Text(
-                    '이름',
-                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 14, left: 4),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('이름',
+                          style: SDSTextStyle.regular.copyWith(
+                              fontSize: 13,
+                              color: SDSColor.gray900
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 2, top: 2),
+                          child: Container(
+                            width: 4,
+                            height: 4,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              color: SDSColor.red,
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
                   ),
-                  const SizedBox(height: 8),
+                  SizedBox(height: 8),
                   TextField(
                     controller: _nameController,
+                    cursorColor: SDSColor.snowliveBlue,
+                    cursorHeight: 16,
+                    cursorWidth: 2,
+                    style: SDSTextStyle.regular.copyWith(fontSize: 15),
+                    strutStyle: StrutStyle(fontSize: 14, leading: 0),
                     decoration: InputDecoration(
+                      floatingLabelBehavior: FloatingLabelBehavior.never,
+                      errorStyle: SDSTextStyle.regular.copyWith(fontSize: 12, color: SDSColor.red),
+                      errorMaxLines: 2,
+                      labelStyle: SDSTextStyle.regular.copyWith(color: SDSColor.gray400, fontSize: 14),
+                      hintStyle: SDSTextStyle.regular.copyWith(color: SDSColor.gray400, fontSize: 14),
                       hintText: '이름을 입력해 주세요.',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
-                        borderSide: const BorderSide(color: Colors.grey),
-                      ),
+                      labelText: '이름',
+                      contentPadding: EdgeInsets.only(
+                          top: 10, bottom: 10, left: 12, right: 12),
+                      fillColor: SDSColor.gray50,
+                      hoverColor: SDSColor.snowliveBlue,
                       filled: true,
-                      fillColor: Colors.grey[200],
+                      focusColor: SDSColor.snowliveBlue,
+                      border: OutlineInputBorder(
+                        borderSide: BorderSide(color: SDSColor.gray50),
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                      errorBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: SDSColor.red, strokeAlign: BorderSide.strokeAlignInside, width: 1.5),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: SDSColor.snowliveBlue, strokeAlign: BorderSide.strokeAlignInside, width: 1.5),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.transparent),
+                        borderRadius: BorderRadius.circular(6),
+                      ),
                     ),
                   ),
-                  const SizedBox(height: 16),
 
                   // 연락처 입력
-                  const Text(
-                    '연락처',
-                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 8),
-                  TextField(
-                    controller: _phoneController,
-                    decoration: InputDecoration(
-                      hintText: '전화번호를 입력해 주세요.',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
-                        borderSide: const BorderSide(color: Colors.grey),
-                      ),
-                      filled: true,
-                      fillColor: Colors.grey[200],
+                  Padding(
+                    padding: const EdgeInsets.only(top: 24, left: 4),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('연락처 (- 없이 입력)', style: SDSTextStyle.regular.copyWith(
+                            fontSize: 13,
+                            color: SDSColor.gray900
+                        ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 2, top: 2),
+                          child: Container(
+                            width: 4,
+                            height: 4,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              color: SDSColor.red,
+                            ),
+                          ),
+                        )
+                      ],
                     ),
                   ),
-                  const SizedBox(height: 16),
+                  SizedBox(height: 8),
+                  TextField(
+                    textAlignVertical: TextAlignVertical.center,
+                    cursorColor: SDSColor.snowliveBlue,
+                    cursorHeight: 16,
+                    cursorWidth: 2,
+                    controller: _phoneController,
+                    style: SDSTextStyle.regular.copyWith(fontSize: 15),
+                    strutStyle: StrutStyle(fontSize: 14, leading: 0),
+                    decoration: InputDecoration(
+                      floatingLabelBehavior: FloatingLabelBehavior.never,
+                      errorMaxLines: 2,
+                      errorStyle: SDSTextStyle.regular.copyWith(fontSize: 12, color: SDSColor.red),
+                      labelStyle: SDSTextStyle.regular.copyWith(color: SDSColor.gray400, fontSize: 14),
+                      hintStyle: SDSTextStyle.regular.copyWith(color: SDSColor.gray400, fontSize: 14),
+                      hintText: '전화번호를 입력해 주세요.',
+                      labelText: '전화번호',
+                      contentPadding: EdgeInsets.only(
+                          top: 10, bottom: 10, left: 12, right: 12),
+                      fillColor: SDSColor.gray50,
+                      hoverColor: SDSColor.snowliveBlue,
+                      filled: true,
+                      focusColor: SDSColor.snowliveBlue,
+                      border: OutlineInputBorder(
+                        borderSide: BorderSide(color: SDSColor.gray50),
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                      errorBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: SDSColor.red, strokeAlign: BorderSide.strokeAlignInside, width: 1.5),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: SDSColor.snowliveBlue, strokeAlign: BorderSide.strokeAlignInside, width: 1.5),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.transparent),
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                    ),
+                  ),
 
                   // 주소 입력
-                  const Text(
-                    '경품 수령 주소지',
-                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 24, left: 4),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('경품 수령 주소지',
+                          style: SDSTextStyle.regular.copyWith(
+                              fontSize: 13,
+                              color: SDSColor.gray900
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 2, top: 2),
+                          child: Container(
+                            width: 4,
+                            height: 4,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              color: SDSColor.red,
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
                   ),
-                  const SizedBox(height: 8),
+                  SizedBox(height: 8),
                   Row(
                     children: [
                       Expanded(
                         child: TextField(
+                          textAlignVertical: TextAlignVertical.center,
+                          cursorColor: SDSColor.snowliveBlue,
+                          cursorHeight: 16,
+                          cursorWidth: 2,
                           controller: _postalCodeController,
                           readOnly: true,
+                          style: SDSTextStyle.regular.copyWith(fontSize: 15),
+                          strutStyle: StrutStyle(fontSize: 14, leading: 0),
                           decoration: InputDecoration(
-                            hintText: '우편번호',
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8),
-                              borderSide: const BorderSide(color: Colors.grey),
-                            ),
+                            floatingLabelBehavior: FloatingLabelBehavior.never,
+                            errorMaxLines: 2,
+                            errorStyle: SDSTextStyle.regular.copyWith(fontSize: 12, color: SDSColor.red),
+                            labelStyle: SDSTextStyle.regular.copyWith(color: SDSColor.gray400, fontSize: 14),
+                            hintStyle: SDSTextStyle.regular.copyWith(color: SDSColor.gray400, fontSize: 14),
+                            hintText: '우편번호를 검색해 주세요.',
+                            labelText: '우편번호',
+                            contentPadding: EdgeInsets.only(
+                                top: 10, bottom: 10, left: 12, right: 12),
+                            fillColor: SDSColor.gray50,
+                            hoverColor: SDSColor.snowliveBlue,
                             filled: true,
-                            fillColor: Colors.grey[300],
+                            focusColor: SDSColor.snowliveBlue,
+                            border: OutlineInputBorder(
+                              borderSide: BorderSide(color: SDSColor.gray50),
+                              borderRadius: BorderRadius.circular(6),
+                            ),
+                            errorBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: SDSColor.red, strokeAlign: BorderSide.strokeAlignInside, width: 1.5),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: SDSColor.snowliveBlue, strokeAlign: BorderSide.strokeAlignInside, width: 1.5),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.transparent),
+                              borderRadius: BorderRadius.circular(6),
+                            ),
                           ),
                         ),
                       ),
-                      const SizedBox(width: 8),
+                      SizedBox(width: 8),
                       ElevatedButton(
                         onPressed: _searchAddress,
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.grey[300],
-                          foregroundColor: Colors.black,
-                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                          elevation: 0,
+                          shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(6))),
+                          backgroundColor: SDSColor.snowliveBlue,
+                          foregroundColor: SDSColor.snowliveWhite,
+                          padding: EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                         ),
-                        child: const Text(
+                        child: Text(
                           '검색하기',
-                          style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                          style: SDSTextStyle.bold.copyWith(fontSize: 14, color: Colors.white),
                         ),
                       ),
                     ],
                   ),
                   const SizedBox(height: 8),
                   TextField(
+                    textAlignVertical: TextAlignVertical.center,
+                    cursorColor: SDSColor.snowliveBlue,
+                    cursorHeight: 16,
+                    cursorWidth: 2,
                     controller: _addressController,
                     readOnly: true,
+                    style: SDSTextStyle.regular.copyWith(fontSize: 15),
+                    strutStyle: StrutStyle(fontSize: 14, leading: 0),
                     decoration: InputDecoration(
+                      floatingLabelBehavior: FloatingLabelBehavior.never,
+                      errorMaxLines: 2,
+                      errorStyle: SDSTextStyle.regular.copyWith(fontSize: 12, color: SDSColor.red),
+                      labelStyle: SDSTextStyle.regular.copyWith(color: SDSColor.gray400, fontSize: 14),
+                      hintStyle: SDSTextStyle.regular.copyWith(color: SDSColor.gray400, fontSize: 14),
                       hintText: '주소를 입력해 주세요.',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
-                        borderSide: const BorderSide(color: Colors.grey),
-                      ),
+                      labelText: '주소',
+                      contentPadding: EdgeInsets.only(
+                          top: 10, bottom: 10, left: 12, right: 12),
+                      fillColor: SDSColor.gray50,
+                      hoverColor: SDSColor.snowliveBlue,
                       filled: true,
-                      fillColor: Colors.grey[300],
+                      focusColor: SDSColor.snowliveBlue,
+                      border: OutlineInputBorder(
+                        borderSide: BorderSide(color: SDSColor.gray50),
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                      errorBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: SDSColor.red, strokeAlign: BorderSide.strokeAlignInside, width: 1.5),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: SDSColor.snowliveBlue, strokeAlign: BorderSide.strokeAlignInside, width: 1.5),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.transparent),
+                        borderRadius: BorderRadius.circular(6),
+                      ),
                     ),
                   ),
                   const SizedBox(height: 8),
                   TextField(
+                    textAlignVertical: TextAlignVertical.center,
+                    cursorColor: SDSColor.snowliveBlue,
+                    cursorHeight: 16,
+                    cursorWidth: 2,
                     controller: _detailAddressController,
+                    style: SDSTextStyle.regular.copyWith(fontSize: 15),
+                    strutStyle: StrutStyle(fontSize: 14, leading: 0),
                     decoration: InputDecoration(
+                      floatingLabelBehavior: FloatingLabelBehavior.never,
+                      errorMaxLines: 2,
+                      errorStyle: SDSTextStyle.regular.copyWith(fontSize: 12, color: SDSColor.red),
+                      labelStyle: SDSTextStyle.regular.copyWith(color: SDSColor.gray400, fontSize: 14),
+                      hintStyle: SDSTextStyle.regular.copyWith(color: SDSColor.gray400, fontSize: 14),
                       hintText: '상세 주소를 입력해 주세요.',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
-                        borderSide: const BorderSide(color: Colors.grey),
-                      ),
+                      labelText: '상세 주소',
+                      contentPadding: EdgeInsets.only(
+                          top: 10, bottom: 10, left: 12, right: 12),
+                      fillColor: SDSColor.gray50,
+                      hoverColor: SDSColor.snowliveBlue,
                       filled: true,
-                      fillColor: Colors.grey[200],
+                      focusColor: SDSColor.snowliveBlue,
+                      border: OutlineInputBorder(
+                        borderSide: BorderSide(color: SDSColor.gray50),
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                      errorBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: SDSColor.red, strokeAlign: BorderSide.strokeAlignInside, width: 1.5),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: SDSColor.snowliveBlue, strokeAlign: BorderSide.strokeAlignInside, width: 1.5),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.transparent),
+                        borderRadius: BorderRadius.circular(6),
+                      ),
                     ),
                   ),
-                  const SizedBox(height: 16),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Divider(
+                    color: SDSColor.gray100,
+                    height: 60,
+                  ),
 
                   // 안내사항
+                  Text(
+                    '안내사항',
+                    style: SDSTextStyle.bold.copyWith(fontSize: 13, color: SDSColor.gray900),
+                  ),
+                  const SizedBox(height: 8),
                   Container(
-                    padding: const EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                      color: Colors.grey[100],
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: const Text(
-                      '안내사항\n\n'
-                          '• 모든 상품은 1인당 구매 횟수가 1회로 제한됩니다.\n'
-                          '• 각 상품은 선착순으로 구매 가능하며, 모두 소진 시 경품 교환이 어려운 점 양해 부탁드립니다.\n'
-                          '• 상품 수령을 위해 입력하신 개인정보는 상품 발송 완료 후 일주일 이내에 삭제됩니다.',
-                      style: TextStyle(fontSize: 12, color: Colors.black87),
+                    width: _size.width - 32,
+                    child: Column(
+                      children: [
+                        Row(
+                          children: [
+                            Text('•',
+                              style: SDSTextStyle.regular.copyWith(fontSize: 13, color: SDSColor.gray500),
+                            ),
+                            SizedBox(
+                              width: 3,
+                            ),
+                            Expanded(
+                              child: Text('모든 상품은 1인당 구매 횟수가 1회로 제한됩니다.',
+                                style: SDSTextStyle.regular.copyWith(fontSize: 13, color: SDSColor.gray500),
+                                maxLines: 2,
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(
+                          height: 4,
+                        ),
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text('•',
+                              style: SDSTextStyle.regular.copyWith(fontSize: 13, color: SDSColor.gray500),
+                            ),
+                            SizedBox(
+                              width: 3,
+                            ),
+                            Expanded(
+                              child: Text('각 상품은 선착순으로 구매 가능하며, 모두 소진 시 경품 교환이 어려운 점 양해 부탁드립니다.',
+                                style: SDSTextStyle.regular.copyWith(fontSize: 13, color: SDSColor.gray500),
+                                maxLines: 2,
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(
+                          height: 4,
+                        ),
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text('•',
+                              style: SDSTextStyle.regular.copyWith(fontSize: 13, color: SDSColor.gray500),
+                            ),
+                            SizedBox(
+                              width: 3,
+                            ),
+                            Expanded(
+                              child: Text('상품 수령을 위해 입력하신 개인정보는 상품 발송 완료 후 일주일 이내에 삭제됩니다.',
+                                style: SDSTextStyle.regular.copyWith(fontSize: 13, color: SDSColor.gray500),
+                                maxLines: 2,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
                     ),
                   ),
-                  const SizedBox(height: 16),
-
+                  SizedBox(
+                    height: 40,
+                  ),
                   // 다음 버튼
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
                       onPressed: _isFormValid
-                          ? () async{
-                        // 교환하기 로직
-                        CustomFullScreenDialog.showDialog(); // 로딩 다이얼로그 표시
-                        await _snowballShopViewModel.purchaseSnowballItem(
-                          snowballItemId: _snowballShopViewModel.selectedItem.value.snowballItemId!,
-                          address: '${_postalCodeController.text} ${_addressController.text} ${_detailAddressController.text}',
-                          name: _nameController.text,
-                          phoneNumber: _phoneController.text,
-                        );
-                        CustomFullScreenDialog.cancelDialog(); // 로딩 다이얼로그 닫기
+                          ? () {
 
-                        // 교환 완료 팝업 띄우기
-                        showDialog(
+                        showModalBottomSheet(
                           context: context,
-                          barrierDismissible: false, // 바깥 터치로 닫히지 않게 설정
-                          builder: (BuildContext context) {
-                            return AlertDialog(
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-                              title: Center(
-                                child: Text(
-                                  '경품 교환 완료!',
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
+                          isScrollControlled: true,
+                          backgroundColor: Colors.transparent,
+                          builder: (context) {
+                            return GestureDetector(
+                              behavior: HitTestBehavior.opaque, // 화면 바깥 클릭 감지
+                              onTap: () {
+                                Navigator.of(context).pop(); // 바텀시트 닫기
+                              },
+                              child: SafeArea(
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.only(topLeft: Radius.circular(16), topRight: Radius.circular(16)),
+                                    color: SDSColor.snowliveWhite,
+                                  ),
+                                  padding: EdgeInsets.only(bottom: 16, right: 16, left: 16, top: 12),
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      // 드래그 핸들
+                                      Center(
+                                        child: Padding(
+                                          padding: const EdgeInsets.only(bottom: 20),
+                                          child: Container(
+                                            height: 4,
+                                            width: 36,
+                                            decoration: BoxDecoration(
+                                              borderRadius: BorderRadius.circular(10),
+                                              color: SDSColor.gray200,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      // 제목
+                                      Text(
+                                        '주문 상세 내역',
+                                        style: TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.black,
+                                        ),
+                                        textAlign: TextAlign.center,
+                                      ),
+                                      SizedBox(height: 16),
+                                      // 상단 상품 정보 박스
+                                      Container(
+                                        padding: EdgeInsets.all(12),
+                                        decoration: BoxDecoration(
+                                          color: Color(0xFF1D242E),
+                                          borderRadius: BorderRadius.circular(8),
+                                        ),
+                                        child: Row(
+                                          children: [
+                                            ClipRRect(
+                                              borderRadius: BorderRadius.circular(4),
+                                              child: ExtendedImage.network(
+                                                _snowballShopViewModel.selectedItem.value.imageUrl!,
+                                                enableMemoryCache: true,
+                                                borderRadius: BorderRadius.circular(4),
+                                                width: 48,
+                                                height: 48,
+                                                fit: BoxFit.cover,
+                                                loadStateChanged: (ExtendedImageState state) {
+                                                  switch (state.extendedImageLoadState) {
+                                                    case LoadState.loading:
+                                                    // 로딩 중일 때 로딩 인디케이터를 표시
+                                                      return Shimmer.fromColors(
+                                                        baseColor: SDSColor.gray200!,
+                                                        highlightColor: SDSColor.gray50!,
+                                                        child: Container(
+                                                          width: 48,
+                                                          height: 48,
+                                                          decoration: BoxDecoration(
+                                                            color: Colors.white,
+                                                            borderRadius: BorderRadius.circular(4),
+                                                          ),
+                                                        ),
+                                                      );
+                                                    case LoadState.completed:
+                                                    // 로딩이 완료되었을 때 이미지 반환
+                                                      return state.completedWidget;
+                                                    case LoadState.failed:
+                                                    // 로딩이 실패했을 때 대체 이미지 또는 다른 처리
+                                                      return Image.asset(
+                                                        'assets/imgs/profile/img_profile_default_.png',
+                                                        width: 48,
+                                                        height: 48,
+                                                        fit: BoxFit.cover,
+                                                      );
+                                                  }
+                                                },
+                                              ),
+                                            ),
+                                            SizedBox(width: 12),
+                                            Expanded(
+                                              child: Column(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                    _snowballShopViewModel.selectedItem.value.name ?? '상품 이름',
+                                                    style: SDSTextStyle.bold.copyWith(
+                                                      fontSize: 14,
+                                                      color: Colors.white,
+                                                    ),
+                                                  ),
+                                                  Text(
+                                                    '${_snowballShopViewModel.selectedItem.value.color ?? ''} 눈송이 ${_snowballShopViewModel.selectedItem.value.snowballCount ?? 0}개',
+                                                    style: SDSTextStyle.regular.copyWith(
+                                                      fontSize: 12,
+                                                      color: Colors.white.withOpacity(0.5),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      SizedBox(height: 20),
+                                      // 주문 정보
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(vertical: 4),
+                                        child: Row(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Text(
+                                              '주문자명',
+                                              style: SDSTextStyle.regular.copyWith(
+                                                fontSize: 14,
+                                                color: SDSColor.gray500,
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              width: 16,
+                                            ),
+                                            Expanded(
+                                              child: Text(
+                                                _nameController.text ?? '',
+                                                textAlign: TextAlign.end,
+                                                style: TextStyle(
+                                                  fontSize: 14,
+                                                  fontWeight: FontWeight.w400,
+                                                  color: Colors.black87,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(vertical: 4),
+                                        child: Row(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Text(
+                                              '경품 수령 주소',
+                                              style: SDSTextStyle.regular.copyWith(
+                                                fontSize: 14,
+                                                color: SDSColor.gray500,
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              width: 16,
+                                            ),
+                                            Expanded(
+                                              child: Text(
+                                                _addressController.text ?? '',
+                                                textAlign: TextAlign.end,
+                                                style: TextStyle(
+                                                  fontSize: 14,
+                                                  fontWeight: FontWeight.w400,
+                                                  color: Colors.black87,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(vertical: 4),
+                                        child: Row(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Text(
+                                              '전화번호',
+                                              style: SDSTextStyle.regular.copyWith(
+                                                fontSize: 14,
+                                                color: SDSColor.gray500,
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              width: 16,
+                                            ),
+                                            Expanded(
+                                              child: Text(
+                                                _phoneController.text ?? '',
+                                                textAlign: TextAlign.end,
+                                                style: TextStyle(
+                                                  fontSize: 14,
+                                                  fontWeight: FontWeight.w400,
+                                                  color: Colors.black87,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      Divider(height: 32, thickness: 1, color: SDSColor.gray100),
+                                      // 교환 상세 정보
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(vertical: 4),
+                                        child: Row(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Text(
+                                              '교환 상품명',
+                                              style: SDSTextStyle.regular.copyWith(
+                                                fontSize: 14,
+                                                color: SDSColor.gray500,
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              width: 16,
+                                            ),
+                                            Expanded(
+                                              child: Text(
+                                                _snowballShopViewModel.selectedItem.value.name ?? '',
+                                                textAlign: TextAlign.end,
+                                                style: TextStyle(
+                                                  fontSize: 14,
+                                                  fontWeight: FontWeight.w400,
+                                                  color: Colors.black87,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(vertical: 4),
+                                        child: Row(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Text(
+                                              '눈송이 가격',
+                                              style: SDSTextStyle.regular.copyWith(
+                                                fontSize: 14,
+                                                color: SDSColor.gray500,
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              width: 16,
+                                            ),
+                                            Expanded(
+                                              child: Text(
+                                                '${_snowballShopViewModel.selectedItem.value.color ?? ''} 눈송이 ${_snowballShopViewModel.selectedItem.value.snowballCount ?? 0}개',
+                                                textAlign: TextAlign.end,
+                                                style: TextStyle(
+                                                  fontSize: 14,
+                                                  fontWeight: FontWeight.w400,
+                                                  color: Colors.black87,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      Divider(height: 32, thickness: 1, color: SDSColor.gray100),
+                                      SizedBox(
+                                        height: 4,
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                                        child: Text(
+                                          '수집된 개인 정보는 상품 발송 후 일주일 뒤에 바로 삭제됩니다.',
+                                          style: TextStyle(fontSize: 12, color: Colors.grey),
+                                          textAlign: TextAlign.center,
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        height: 20,
+                                      ),
+                                      Container(
+                                        padding: EdgeInsets.only(top: 16),
+                                        child: Row(
+                                          children: [
+                                            Expanded(
+                                              child: ElevatedButton(
+                                                onPressed: () {
+                                                  Navigator.pop(context);
+                                                  FocusScope.of(context).unfocus();
+                                                },
+                                                style: ElevatedButton.styleFrom(
+                                                  elevation: 0,
+                                                  backgroundColor: Color(0xFF7C899D),
+                                                  padding: EdgeInsets.symmetric(vertical: 14),
+                                                  shape: RoundedRectangleBorder(
+                                                    borderRadius: BorderRadius.circular(6),
+                                                  ),
+                                                ),
+                                                child: Text(
+                                                  '다시 입력하기',
+                                                  style: TextStyle(
+                                                    fontSize: 16,
+                                                    fontWeight: FontWeight.bold,
+                                                    color: Colors.white,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                            SizedBox(width: 10),
+                                            Expanded(
+                                              child: ElevatedButton(
+                                                onPressed: () async {
+
+                                                  // 교환하기 로직
+                                                  CustomFullScreenDialog.showDialog(); // 로딩 다이얼로그 표시
+                                                  await _snowballShopViewModel.purchaseSnowballItem(
+                                                    snowballItemId: _snowballShopViewModel.selectedItem.value.snowballItemId!,
+                                                    address: '${_postalCodeController.text} ${_addressController.text} ${_detailAddressController.text}',
+                                                    name: _nameController.text,
+                                                    phoneNumber: _phoneController.text,
+                                                  );
+                                                  CustomFullScreenDialog.cancelDialog(); // 로딩 다이얼로그 닫기
+                                                  // 교환 완료 팝업 띄우기
+                                                  showDialog(
+                                                    context: context,
+                                                    barrierDismissible: false, // 바깥 터치로 닫히지 않게 설정
+                                                    builder: (BuildContext context) {
+                                                      return AlertDialog(
+                                                        backgroundColor: SDSColor.snowliveWhite,
+                                                        contentPadding: EdgeInsets.only(left: 28, right: 28, top: 36),
+                                                        elevation: 0,
+                                                        shape: RoundedRectangleBorder(
+                                                          borderRadius: BorderRadius.circular(16),
+                                                        ),
+                                                        buttonPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+                                                        content: Column(
+                                                          mainAxisSize: MainAxisSize.min,
+                                                          children: [
+                                                            Text(
+                                                              '경품 교환 완료!',
+                                                              textAlign: TextAlign.center,
+                                                              style: SDSTextStyle.bold.copyWith(
+                                                                  color: SDSColor.gray900,
+                                                                  fontSize: 16
+                                                              ),
+                                                            ),
+                                                            SizedBox(
+                                                              height: 6,
+                                                            ),
+                                                            Text(
+                                                              '${_snowballShopViewModel.selectedItem.value.color} 눈송이 ${_snowballShopViewModel.selectedItem.value.snowballCount}개로 경품 교환을 완료했어요. 교환하신 상품은 구매 목록을 통해 확인해 주세요.',
+                                                              textAlign: TextAlign.center,
+                                                              style: SDSTextStyle.regular.copyWith(
+                                                                color: SDSColor.gray500,
+                                                                fontSize: 14,
+                                                              ),
+                                                            ),
+                                                            SizedBox(
+                                                              height: 20,
+                                                            )
+                                                          ],
+                                                        ),
+                                                        actions: [
+                                                          Center(
+                                                            child: TextButton(
+                                                              onPressed: () {
+                                                                Navigator.pop(context); // 팝업 닫기
+                                                                Get.back(); // 이전 화면으로 돌아가기
+                                                                Future.delayed(Duration(milliseconds: 100), () {
+                                                                  if (Navigator.canPop(context)) {
+                                                                    Navigator.pop(context);
+                                                                  }
+                                                                });
+                                                              },
+                                                                style: TextButton.styleFrom(
+                                                                  backgroundColor: Colors.transparent, // 배경색 투명
+                                                                  splashFactory: NoSplash.splashFactory, // 터치 시 효과 제거
+                                                                ),
+                                                                child: Text('확인',
+                                                                  style: SDSTextStyle.bold.copyWith(
+                                                                    fontSize: 17,
+                                                                    color: SDSColor.snowliveBlue,
+                                                                  ),
+                                                                )
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      );
+                                                    },
+                                                  );
+
+                                                },
+                                                style: ElevatedButton.styleFrom(
+                                                  elevation: 0,
+
+                                                  backgroundColor: SDSColor.snowliveBlue,
+                                                  padding: EdgeInsets.symmetric(vertical: 14),
+                                                  shape: RoundedRectangleBorder(
+                                                    borderRadius: BorderRadius.circular(6),
+                                                  ),
+                                                ),
+                                                child: Text(
+                                                  '교환하기',
+                                                  style: TextStyle(
+                                                    fontSize: 16,
+                                                    fontWeight: FontWeight.bold,
+                                                    color: Colors.white,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      )
+                                    ],
                                   ),
                                 ),
                               ),
-                              content: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Text(
-                                    '${_snowballShopViewModel.selectedItem.value.color} 눈송이 ${_snowballShopViewModel.selectedItem.value.snowballCount}개로 경품 교환을 완료했어요.\n\n교환하신 상품은 구매 목록을 통해 확인해 주세요.',
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(fontSize: 14, color: Colors.black87),
-                                  ),
-                                ],
-                              ),
-                              actions: [
-                                Center(
-                                  child: ElevatedButton(
-                                    onPressed: () {
-                                      Navigator.pop(context); // 팝업 닫기
-                                      Get.back(); // 이전 화면으로 돌아가기
-                                      Future.delayed(Duration(milliseconds: 100), () {
-                                        if (Navigator.canPop(context)) {
-                                          Navigator.pop(context);
-                                        }
-                                      });
-                                    },
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: Colors.blue,
-                                      padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                                    ),
-                                    child: Text(
-                                      '확인',
-                                      style: TextStyle(fontSize: 16, color: Colors.white, fontWeight: FontWeight.bold),
-                                    ),
-                                  ),
-                                ),
-                              ],
                             );
                           },
                         );
                       }
                           : null, // 비활성화 상태 처리
                       style: ElevatedButton.styleFrom(
+                        shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(6)),
+                        ),
+                        elevation: 0,
                         padding: const EdgeInsets.symmetric(vertical: 16),
-                        backgroundColor: Colors.blue,
+                        backgroundColor: SDSColor.snowliveBlue,
                       ),
-                      child: const Text(
+                      child: Text(
                         '다음',
-                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
+                        style: SDSTextStyle.bold.copyWith(fontSize: 16, color: SDSColor.snowliveWhite),
                       ),
                     ),
                   ),

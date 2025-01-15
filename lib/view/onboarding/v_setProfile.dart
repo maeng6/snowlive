@@ -124,8 +124,7 @@ class SetProfileView extends StatelessWidget {
                                       ),
                                       Expanded(child: Container()),
                                       Row(
-                                        mainAxisAlignment:
-                                        MainAxisAlignment.spaceEvenly,
+                                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                         children: [
                                           Expanded(
                                             child: ElevatedButton(

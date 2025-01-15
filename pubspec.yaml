@@ -98,6 +98,7 @@ dependencies:
   detect_fake_location: ^0.0.2
   android_intent_plus: ^5.2.1
   kpostal: ^1.0.0
+  loading_animation_widget: ^1.3.0
 
 dev_dependencies:
   flutter_test:
@@ -135,6 +136,7 @@ flutter:
     - assets/imgs/liveCrew/
     - assets/imgs/ranking/
     - assets/imgs/imgs/
+    - assets/imgs/imgs/snowballShop/
     - assets/json/
 
   # An image asset can refer to one or more resolution-specific "variants", see
@@ -169,11 +171,11 @@ flutter:
 
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
-flutter_native_splash:
-  color: "#D8E7FD"
-  image: assets/imgs/splash_screen/splash_logo.png
-  fullscreen: true
-  ios_content_mode: scaleTotFill
+#flutter_native_splash:
+#  color: "#D8E7FD"
+#  image: assets/imgs/splash_screen/splash_logo.png
+#  fullscreen: true
+#  ios_content_mode: scaleTotFill
 # 변경사항 필요시 flutter pub run flutter_native_splash:create 와 remove 사용
 
 
