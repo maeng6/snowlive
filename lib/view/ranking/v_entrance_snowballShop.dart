@@ -83,7 +83,7 @@ class _Entrance_snowballShopState extends State<Entrance_snowballShop> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Container(
-                      width: 62,
+                      width: 86,
                     ),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -115,6 +115,7 @@ class _Entrance_snowballShopState extends State<Entrance_snowballShop> {
                         ),
                       ],
                     ),
+                    Expanded(child: Container()),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
@@ -131,7 +132,7 @@ class _Entrance_snowballShopState extends State<Entrance_snowballShop> {
                                 children: [
                                   Obx(() => isLoading.value
                                   ? Container(
-                                    width: 73,
+                                    width: 58,
                                     height: 19,
                                     child: Center(
                                       child: LoadingAnimationWidget.waveDots(
@@ -141,7 +142,6 @@ class _Entrance_snowballShopState extends State<Entrance_snowballShop> {
                                     ),
                                   )
                                       : Container(
-                                    width: 73,
                                         height: 19,
                                         child: Row(
                                           children: [
