@@ -345,7 +345,8 @@ class _SnowballShopViewState extends State<SnowballShopView> {
                                             : '아직 획득한 눈송이가 없어요!',
                                         style: SDSTextStyle.bold.copyWith(color: Colors.white, fontSize: 13),
                                       ),
-                                      Text(
+                                      (_snowballShopViewModel.userSnowballRecords.isNotEmpty)
+                                      ? Text(
                                             () {
                                           if (_snowballShopViewModel.userSnowballRecords.isNotEmpty) {
                                             final passTimeString = _snowballShopViewModel.userSnowballRecords[0].passTime ?? DateTime.now().toIso8601String();
@@ -359,7 +360,8 @@ class _SnowballShopViewState extends State<SnowballShopView> {
                                           }
                                         }(),
                                         style: SDSTextStyle.regular.copyWith(color: SDSColor.snowliveWhite.withOpacity(0.4), fontSize: 12),
-                                      ),
+                                      )
+                                      : Container(),
                                     ],
                                   ),
                                 ),
