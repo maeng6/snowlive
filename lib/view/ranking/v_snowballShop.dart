@@ -847,9 +847,20 @@ class _SnowballShopViewState extends State<SnowballShopView> {
                                           overflow: TextOverflow.ellipsis,
                                         ),
                                         SizedBox(height: 1),
-                                        Text(
-                                          '황금 눈송이 ${item.snowballCount ?? 0}개',
-                                          style: SDSTextStyle.regular.copyWith(fontSize: 12, color: SDSColor.snowliveWhite.withOpacity(0.5),),
+                                        Row(
+                                          children: [
+                                            Image.asset(
+                                              'assets/imgs/imgs/snowballShop/icon_snowballshop_goldball.png',
+                                              height: 12,
+                                            ),
+                                            SizedBox(
+                                              width: 3,
+                                            ),
+                                            Text(
+                                              '황금 눈송이 ${item.snowballCount ?? 0}개',
+                                              style: SDSTextStyle.regular.copyWith(fontSize: 12, color: SDSColor.snowliveWhite.withOpacity(0.6),),
+                                            ),
+                                          ],
                                         ),
                                         SizedBox(height: 2),
                                         if (item.count != 0)
@@ -1239,9 +1250,18 @@ class _SnowballShopViewState extends State<SnowballShopView> {
                                           overflow: TextOverflow.ellipsis,
                                         ),
                                         SizedBox(height: 1),
-                                        Text(
-                                          '하얀 눈송이 ${item.snowballCount ?? 0}개',
-                                          style: SDSTextStyle.regular.copyWith(fontSize: 12, color: SDSColor.snowliveWhite.withOpacity(0.5),),
+                                        Row(
+                                          children: [
+                                            Image.asset(
+                                              'assets/imgs/imgs/snowballShop/icon_snowballshop_whiteball.png',
+                                              height: 12,
+                                            ),
+                                            SizedBox(width: 3),
+                                            Text(
+                                              '하얀 눈송이 ${item.snowballCount ?? 0}개',
+                                              style: SDSTextStyle.regular.copyWith(fontSize: 12, color: SDSColor.snowliveWhite.withOpacity(0.6),),
+                                            ),
+                                          ],
                                         ),
                                         SizedBox(height: 2),
                                         if (item.count != 0)
