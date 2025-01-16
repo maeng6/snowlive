@@ -541,7 +541,7 @@ class _SnowballShopViewState extends State<SnowballShopView> {
                               children: [
                                 GestureDetector(
                                   onTap: () async{
-                                    if(item.count == 0){
+                                    if(item.active == false || item.count == 0){
                                       return ;
                                     }
 
@@ -932,7 +932,7 @@ class _SnowballShopViewState extends State<SnowballShopView> {
                               children: [
                                 GestureDetector(
                                   onTap: () async{
-                                    if(item.count == 0){
+                                    if(item.active == false || item.count == 0){
                                       return ;
                                     }
 
