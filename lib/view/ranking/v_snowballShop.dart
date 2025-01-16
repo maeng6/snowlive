@@ -430,12 +430,12 @@ class _SnowballShopViewState extends State<SnowballShopView> {
                                 }
 
                                 // slope_name 필드 가져오기
-                                final slopeName = data['slope_name'] ?? '';
+                                final ment = data['ment'] ?? '';
 
                                 // 필드 값이 비었을 때와 아닐 때 처리
-                                final displayText = slopeName.isEmpty
+                                final displayText = ment.isEmpty
                                     ? '황금 눈송이 소식이 아직 없네요..'
-                                    : '$slopeName 슬로프에 황금 눈송이가 나타났어요!';
+                                    : '$ment';
 
                                 return Center(
                                   child: Column(
@@ -456,7 +456,7 @@ class _SnowballShopViewState extends State<SnowballShopView> {
                                           ),
                                           child: Text(
                                             displayText,
-                                            style: SDSTextStyle.bold.copyWith(color: SDSColor.snowliveBlack, fontSize: 13),
+                                            style: SDSTextStyle.bold.copyWith(color: SDSColor.snowliveBlack, fontSize: 12),
                                           ),
                                         ),
                                       ),
