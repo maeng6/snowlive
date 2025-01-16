@@ -1342,58 +1342,60 @@ class _SnowballShopViewState extends State<SnowballShopView> {
               ),
             ),
             // 하단 버튼
-            Container(
-              padding: EdgeInsets.only(left: 16,right: 16,top: 16, bottom: 16),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: ElevatedButton(
-                      onPressed: () {
-                        // '눈송이 상점이란?' 버튼 클릭 로직
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Color(0xFF7C899D).withOpacity(0.4),
-                        padding: EdgeInsets.symmetric(vertical: 14),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(6),
+            SafeArea(
+              child: Container(
+                padding: EdgeInsets.only(left: 16,right: 16,top: 16, bottom: 16),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: ElevatedButton(
+                        onPressed: () {
+                          // '눈송이 상점이란?' 버튼 클릭 로직
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Color(0xFF7C899D).withOpacity(0.4),
+                          padding: EdgeInsets.symmetric(vertical: 14),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(6),
+                          ),
                         ),
-                      ),
-                      child: Text(
-                        '눈송이 상점이란?',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
-                  ),
-                  SizedBox(width: 10),
-                  Expanded(
-                    child: ElevatedButton(
-                      onPressed: () async{
-                        Get.toNamed(AppRoutes.snowballExchangeHistoryView);
-                        await _snowballShopViewModel.fetchPurchaseHistory();
-                      },
-                      style: ElevatedButton.styleFrom(
-                        elevation: 0,
-                        backgroundColor: Color(0xFF649CF1).withOpacity(0.4),
-                        padding: EdgeInsets.symmetric(vertical: 14),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(6),
-                        ),
-                      ),
-                      child: Text(
-                        '교환한 목록',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
+                        child: Text(
+                          '눈송이 상점이란?',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                ],
+                    SizedBox(width: 10),
+                    Expanded(
+                      child: ElevatedButton(
+                        onPressed: () async{
+                          Get.toNamed(AppRoutes.snowballExchangeHistoryView);
+                          await _snowballShopViewModel.fetchPurchaseHistory();
+                        },
+                        style: ElevatedButton.styleFrom(
+                          elevation: 0,
+                          backgroundColor: Color(0xFF649CF1).withOpacity(0.4),
+                          padding: EdgeInsets.symmetric(vertical: 14),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(6),
+                          ),
+                        ),
+                        child: Text(
+                          '교환한 목록',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             )
 
