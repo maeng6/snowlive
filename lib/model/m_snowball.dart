@@ -43,6 +43,7 @@ class SnowballShopItem {
   int? snowballItemId;
   bool? active;
   String? color;
+  String? landingUrl;
 
   SnowballShopItem({
     this.name,
@@ -53,6 +54,7 @@ class SnowballShopItem {
     this.snowballItemId,
     this.active,
     this.color,
+    this.landingUrl
   });
 
   SnowballShopItem.fromJson(Map<String, dynamic> json) {
@@ -64,21 +66,27 @@ class SnowballShopItem {
     snowballItemId = json['snowball_item_id'];
     active = json['active'];
     color = json['color'];
+    landingUrl = json['landing_url'];
   }
 }
 
 class SnowballSponsor {
   String? name;
   String? logoUrl;
+  String? landingUrl;
 
   SnowballSponsor({
     this.name,
     this.logoUrl,
+    this.landingUrl,
   });
 
   SnowballSponsor.fromJson(Map<String, dynamic> json) {
+
     name = json['name'];
     logoUrl = json['logo_url'];
+    landingUrl = json['landing_url'];
+
   }
 }
 

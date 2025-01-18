@@ -1304,53 +1304,57 @@ class _SnowballShopViewState extends State<SnowballShopView> {
                           itemCount: _snowballShopViewModel.sponsors.length,
                           itemBuilder: (context, index) {
                             final sponsor = _snowballShopViewModel.sponsors[index];
-                            return Column(
-                              children: [
-                                Column(
-                                  children: [
-                                    Container(
-                                      height: 120,
-                                      decoration: BoxDecoration(
-                                        color: SDSColor.snowliveBlack.withOpacity(0.4),
-                                        borderRadius: BorderRadius.circular(8),
-                                      ),
-                                      child: ExtendedImage.network(
-                                        sponsor.logoUrl ?? '',
-                                        enableMemoryCache: true,
-                                        fit: BoxFit.cover,
-                                        cacheHeight: 120,
-                                        cacheWidth: 173,
-                                        loadStateChanged: (ExtendedImageState state) {
-                                          switch (state.extendedImageLoadState) {
-                                            case LoadState.loading:
-                                              return Shimmer.fromColors(
-                                                baseColor: SDSColor.gray200!,
-                                                highlightColor: SDSColor.gray50!,
-                                                child: Container(
-                                                  decoration: BoxDecoration(
-                                                    color: Colors.white,
+                            return GestureDetector(
+                              onTap: (){
+                              },
+                              child: Column(
+                                children: [
+                                  Column(
+                                    children: [
+                                      Container(
+                                        height: 120,
+                                        decoration: BoxDecoration(
+                                          color: SDSColor.snowliveBlack.withOpacity(0.4),
+                                          borderRadius: BorderRadius.circular(8),
+                                        ),
+                                        child: ExtendedImage.network(
+                                          sponsor.logoUrl ?? '',
+                                          enableMemoryCache: true,
+                                          fit: BoxFit.cover,
+                                          cacheHeight: 120,
+                                          cacheWidth: 173,
+                                          loadStateChanged: (ExtendedImageState state) {
+                                            switch (state.extendedImageLoadState) {
+                                              case LoadState.loading:
+                                                return Shimmer.fromColors(
+                                                  baseColor: SDSColor.gray200!,
+                                                  highlightColor: SDSColor.gray50!,
+                                                  child: Container(
+                                                    decoration: BoxDecoration(
+                                                      color: Colors.white,
+                                                    ),
                                                   ),
-                                                ),
-                                              );
-                                            case LoadState.completed:
-                                              return state.completedWidget;
-                                            case LoadState.failed:
-                                              return Image.asset(
-                                                'assets/imgs/imgs/img_flea_default.png',
-                                                fit: BoxFit.cover,
-                                              );
-                                          }
-                                        },
+                                                );
+                                              case LoadState.completed:
+                                                return state.completedWidget;
+                                              case LoadState.failed:
+                                                return Image.asset(
+                                                  'assets/imgs/imgs/img_flea_default.png',
+                                                  fit: BoxFit.cover,
+                                                );
+                                            }
+                                          },
+                                        ),
                                       ),
-                                    ),
-                                  ],
-                                ),
-                                SizedBox(height: 8),
-                                Text(
-                                  sponsor.name ?? '브랜드 이름',
-                                  style: SDSTextStyle.regular.copyWith(fontSize: 14, color: SDSColor.snowliveWhite),
-                                ),
-                              ],
+                                    ],
+                                  ),
+                                  SizedBox(height: 8),
+                                  Text(
+                                    sponsor.name ?? '브랜드 이름',
+                                    style: SDSTextStyle.regular.copyWith(fontSize: 14, color: SDSColor.snowliveWhite),
+                                  ),
+                                ],
+                              ),
                             );
                           },
                         ),

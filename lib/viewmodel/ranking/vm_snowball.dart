@@ -101,25 +101,6 @@ class SnowballShopViewModel extends GetxController {
     }
   }
 
-  /// 눈송이 기록 생성
-  Future<void> createSnowballRecord(Map<String, dynamic> body) async {
-    try {
-      isLoading(true);
-
-      // API 호출
-      final response = await SnowballAPI().createSnowballRecord(body);
-      if (response.success) {
-        print("Snowball record created successfully: ${response.data}");
-      } else {
-        print("Failed to create snowball record: ${response.error}");
-      }
-    } catch (e) {
-      print("Error creating snowball record: $e");
-    } finally {
-      isLoading(false);
-    }
-  }
-
   /// 랭킹탭 상단의 획득 눈송이 갯수 보여주는 메서드
   Future<void> fetchSnowballSummary() async {
     try {

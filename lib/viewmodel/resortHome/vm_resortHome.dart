@@ -238,6 +238,8 @@ class ResortHomeViewModel extends GetxController {
               _resort_info['radius'],
             );
 
+            DateTime now = DateTime.now();
+
             if (withinBoundary) {
 
               try {
@@ -302,13 +304,25 @@ class ResortHomeViewModel extends GetxController {
                 if (resort_info['snowball'] == true) {
                   if (_lastSnowballMethodCall == null || DateTime.now().difference(_lastSnowballMethodCall!).inSeconds > 10) {
                     try {
-                      _lastSnowballMethodCall = DateTime.now(); // 마지막 호출 시간 업데이트
-                      await SnowballAPI().createSnowballRecord({
+                      print('11111');
+                      final response = await SnowballAPI().createSnowballRecord({
                         "user_id": user_id,
-                        "slope_id": passPointInfo['id'],
+                        "snowball_id": passPointInfo['id'],
                         "coordinates": "POINT (${position.longitude} ${position.latitude})"
                       });
-                      print('눈송이 기록 성공');
+
+                      if(response.statusCode == 201){
+                        print('포 상태코드 ${response.statusCode}');
+                        print('포 눈송이 업데이트 통신 성공');
+                        _lastSnowballMethodCall = now;
+                      }else if(response.statusCode==400){
+                        print('포 상태코드 ${response.statusCode}');
+                        _lastSnowballMethodCall = now;
+                      } else{
+                        _lastSnowballMethodCall = null;
+                        print('포 상태코드 ${response.statusCode}');
+                        print('포 눈송이 업데이트 통신 실패');
+                      }
                     } catch (e) {
                       print('눈송이 기록 실패: $e');
                     }
@@ -474,28 +488,34 @@ class ResortHomeViewModel extends GetxController {
             }
           }
 
-          if (passPointInfo != null
-              && passPointInfo['type'] == 'treasure_hunt_info'
-              && resort_info['treasure_hunt'] == true
-              && isParticipate_treasure_hunt == true) {
-            if (_lastSnowballMethodCall == null || now.difference(_lastSnowballMethodCall!).inSeconds > 10) {
-              try {
-                print(user_id);
-                print(passPointInfo['id']);
-                print("${position.latitude}, ${position.longitude}");
+          if (passPointInfo != null && passPointInfo['type'] == 'treasure_hunt_info') {
+            if (resort_info['snowball'] == true) {
+              if (_lastSnowballMethodCall == null || DateTime.now().difference(_lastSnowballMethodCall!).inSeconds > 10) {
+                try {
+                  final response = await SnowballAPI().createSnowballRecord({
+                    "user_id": user_id,
+                    "snowball_id": passPointInfo['id'],
+                    "coordinates": "POINT (${position.longitude} ${position.latitude})"
+                  });
 
-                _lastSnowballMethodCall = now; // 마지막 호출 시간 업데이트
-                await SnowballAPI().createSnowballRecord({
-                  "user_id": user_id,
-                  "slope_id": passPointInfo['id'],
-                  "coordinates": "POINT (${position.longitude} ${position.latitude})"
-                });
-                print('백 눈송이 기록 성공');
-              } catch (e) {
-                print('백 눈송이 기록 실패: $e');
+                  if(response.statusCode == 201){
+                    print('백 상태코드 ${response.statusCode}');
+                    print('백 눈송이 업데이트 통신 성공');
+                    _lastSnowballMethodCall = now;
+                  }else if(response.statusCode==400){
+                    print('백 상태코드 ${response.statusCode}');
+                    _lastSnowballMethodCall = now;
+                  } else{
+                    _lastSnowballMethodCall = null;
+                    print('백 상태코드 ${response.statusCode}');
+                    print('백 눈송이 업데이트 통신 실패');
+                  }
+                } catch (e) {
+                  print('눈송이 기록 실패: $e');
+                }
+              } else {
+                print('10초 제한으로 인해 눈송이 기록 생략');
               }
-            } else {
-              print('백 눈송이 기록 생략 - 10초 제한');
             }
           }
 
@@ -554,7 +574,7 @@ class ResortHomeViewModel extends GetxController {
 
     for (var treasure_hunt_info in treasure_hunt_info) {
       if (_isWithinRadius(position, treasure_hunt_info['coordinates'], treasure_hunt_info['radius'])) {
-        return {'type': 'treasure_hunt_info', 'id': treasure_hunt_info['slope_id']};
+        return {'type': 'treasure_hunt_info', 'id': treasure_hunt_info['snowball_id']};
       }
     }
 

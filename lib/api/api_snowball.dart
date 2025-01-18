@@ -7,20 +7,16 @@ class SnowballAPI {
 
 
   //눈송이 좌표 지나가면 서버랑 파베에 등록하는 메서드
-  Future<ApiResponse> createSnowballRecord(Map<String, dynamic> body) async {
+  Future<http.Response> createSnowballRecord(Map<String, dynamic> body) async {
+    print(body);
     final response = await http.post(
       Uri.parse('$baseUrl/snowball-record/'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode(body),
     );
-
-    if (response.statusCode == 201) {
-      final data = json.decode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
-      return ApiResponse.success(data);
-    } else {
-      final data = json.decode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
-      return ApiResponse.error(data);
-    }
+    print('2222');
+    print(json.decode(utf8.decode(response.bodyBytes)));
+    return response;
   }
 
   //랭킹탭 맨 위에 논송이 갯수 요약으로 보여주는 정보 가져오기
