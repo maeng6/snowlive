@@ -642,8 +642,8 @@ class _SnowballShopViewState extends State<SnowballShopView> {
                                                         Row(
                                                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                                           children: [
-                                                            if(item.landingUrl != null)
-                                                            Expanded(
+                                                            (item.landingUrl != null && item.landingUrl != "")
+                                                            ? Expanded(
                                                               child: ElevatedButton(
                                                                 onPressed: () async {
                                                                   print(item.landingUrl);
@@ -663,9 +663,10 @@ class _SnowballShopViewState extends State<SnowballShopView> {
                                                                       fontSize: 16),
                                                                 ),
                                                               ),
-                                                            ),
-                                                            if(item.landingUrl != null)
-                                                            SizedBox(width: 10),
+                                                            )
+                                                            : Container(),
+                                                            (item.landingUrl != null && item.landingUrl != "")
+                                                            ? SizedBox(width: 10) : Container(),
                                                             Expanded(
                                                               child: ElevatedButton(
                                                                 onPressed: () async{
@@ -1046,8 +1047,8 @@ class _SnowballShopViewState extends State<SnowballShopView> {
                                                         // 버튼들
                                                         Row(
                                                           children: [
-                                                            if(item.landingUrl != null)
-                                                                Expanded(
+                                                            (item.landingUrl != null && item.landingUrl != "")
+                                                                ? Expanded(
                                                                   child: ElevatedButton(
                                                                     onPressed: () async {
                                                                       print(item.landingUrl);
@@ -1067,9 +1068,11 @@ class _SnowballShopViewState extends State<SnowballShopView> {
                                                                           fontSize: 16),
                                                                     ),
                                                                   ),
-                                                                ),
-                                                            if(item.landingUrl != null)
-                                                            SizedBox(width: 10),
+                                                                )
+                                                            : Container(),
+                                                            (item.landingUrl != null && item.landingUrl != "")
+                                                            ? SizedBox(width: 10)
+                                                            : Container(),
                                                             Expanded(
                                                               child: ElevatedButton(
                                                                 onPressed: () {
