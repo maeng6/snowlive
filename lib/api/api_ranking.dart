@@ -52,26 +52,41 @@ class RankingAPI {
     }
   }
 
-  Future<http.Response> addCheckPoint(Map<String, dynamic> body) async {
-    final response = await http.post(
-      Uri.parse('$baseUrl/add-check-point/'),
-      headers: {'Content-Type': 'application/json'},
-      body: jsonEncode(body),
-    );
-    return response; // 응답을 그대로 반환
-  }
 
-  Future<ApiResponse> respawn(Map<String, dynamic> body) async {
+  Future<http.Response> addCheckPoint(Map<String, dynamic> body) async {
+    final Uri uri = Uri.parse('$baseUrl/add-check-point/');
+    print('체크포인트 요청 바디: ${jsonEncode(body)}');
+    print(uri);
+
     final response = await http.post(
-      Uri.parse('$baseUrl/respawn/'),
+      uri,
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode(body),
     );
 
     if (response.statusCode == 200) {
+      print('POST 요청 성공: ${json.decode(utf8.decode(response.bodyBytes))}');
+    } else {
+      print('POST 요청 실패: ${json.decode(utf8.decode(response.bodyBytes))}');
+    }
+
+    return response;
+  }
+
+
+  Future<ApiResponse> respawn(Map<String, dynamic> body) async {
+    print('리스폰 요청 바디: ${jsonEncode(body)}');
+    final response = await http.post(
+      Uri.parse('$baseUrl/respawn/'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode(body),
+    );
+    print('리스폰 요청 응답: ${json.decode(utf8.decode(response.bodyBytes))}');
+    if (response.statusCode == 200) {
       final data = json.decode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
       return ApiResponse.success(data);
     } else {
+      print('리스폰 요청 실패: ${json.decode(utf8.decode(response.bodyBytes))}');
       final data = json.decode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
       return ApiResponse.error(data);
     }

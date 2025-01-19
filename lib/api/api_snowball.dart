@@ -8,14 +8,14 @@ class SnowballAPI {
 
   //눈송이 좌표 지나가면 서버랑 파베에 등록하는 메서드
   Future<http.Response> createSnowballRecord(Map<String, dynamic> body) async {
-    print(body);
+    print('눈송이 요청 바디: ${jsonEncode(body)}');
     final response = await http.post(
       Uri.parse('$baseUrl/snowball-record/'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode(body),
     );
-    print('2222');
-    print(json.decode(utf8.decode(response.bodyBytes)));
+    print('눈송이 Response Code: ${response.statusCode}');
+    print('눈송이 Response Body: ${json.decode(utf8.decode(response.bodyBytes))}');
     return response;
   }
 

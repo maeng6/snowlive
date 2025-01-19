@@ -242,40 +242,40 @@ class ResortHomeViewModel extends GetxController {
 
             if (withinBoundary) {
 
-              try {
-                // 현재 시간 가져오기
-                final now = DateTime.now();
+              // try {
+              //   // 현재 시간 가져오기
+              //   final now = DateTime.now();
+              //
+              //   // 마지막 페이크 위치 감지 시간과의 차이 계산 (10초 초과 시 실행)
+              //   if (_lastFakeLocationCheckTime == null ||
+              //       now.difference(_lastFakeLocationCheckTime!).inSeconds > 10) {
+              //     _lastFakeLocationCheckTime = now; // 마지막 실행 시간 업데이트
+              //
+              //     // 페이크 위치 감지0
+              //     final isFakeLocation = await DetectFakeLocation().detectFakeLocation();
+              //
+              //     if (isFakeLocation) {
+              //       print('페이크 위치가 감지되었습니다. 위치 추적을 중지합니다.');
+              //
+              //       // 위치 추적 서비스 중지
+              //       await stopForegroundLocationService();
+              //       await stopBackgroundLocationService();
+              //
+              //       // 사용자에게 경고 메시지 표시
+              //       Get.snackbar(
+              //         '경고',
+              //         '페이크 위치가 감지되었습니다. 위치 추적 서비스가 중단되었습니다.',
+              //         snackPosition: SnackPosition.BOTTOM,
+              //       );
+              //
+              //       return; // 이후 코드 실행 방지
+              //     }
+              //   }
+              // } catch (e) {
+              //   print('페이크 위치 감지 중 오류 발생: $e');
+              // }
 
-                // 마지막 페이크 위치 감지 시간과의 차이 계산 (10초 초과 시 실행)
-                if (_lastFakeLocationCheckTime == null ||
-                    now.difference(_lastFakeLocationCheckTime!).inSeconds > 10) {
-                  _lastFakeLocationCheckTime = now; // 마지막 실행 시간 업데이트
-
-                  // 페이크 위치 감지0
-                  final isFakeLocation = await DetectFakeLocation().detectFakeLocation();
-
-                  if (isFakeLocation) {
-                    print('페이크 위치가 감지되었습니다. 위치 추적을 중지합니다.');
-
-                    // 위치 추적 서비스 중지
-                    await stopForegroundLocationService();
-                    await stopBackgroundLocationService();
-
-                    // 사용자에게 경고 메시지 표시
-                    Get.snackbar(
-                      '경고',
-                      '페이크 위치가 감지되었습니다. 위치 추적 서비스가 중단되었습니다.',
-                      snackPosition: SnackPosition.BOTTOM,
-                    );
-
-                    return; // 이후 코드 실행 방지
-                  }
-                }
-              } catch (e) {
-                print('페이크 위치 감지 중 오류 발생: $e');
-              }
-
-              Map<String, dynamic>? passPointInfo = checkPositionInAreas(
+              List<Map<String, dynamic>> passPointInfos = checkPositionInAreas(
                 position,
                 _slope_info,
                 _treasure_hunt_info,
@@ -283,69 +283,48 @@ class ResortHomeViewModel extends GetxController {
                 _respawn_point,
               );
 
-              if (passPointInfo != null && passPointInfo['type'] == 'slope_info') {
-                if (_lastCountMethodCall == null || DateTime.now().difference(_lastCountMethodCall!).inSeconds > 10) {
-                  final response = await RankingAPI().addCheckPoint({
-                    "user_id": user_id,
-                    "slope_id": passPointInfo['id'],
-                    "coordinates": "${position.latitude}, ${position.longitude}"
-                  });
-
-                  if (response.statusCode == 201 || response.statusCode == 416) {
+              for (var passPointInfo in passPointInfos) {
+                if (passPointInfo['type'] == 'slope_info') {
+                  if (_lastCountMethodCall == null || DateTime.now().difference(_lastCountMethodCall!).inSeconds > 10) {
                     _lastCountMethodCall = DateTime.now();
-                    print('체크포인트 업데이트 성공');
-                  } else {
-                    print('체크포인트 업데이트 실패: ${response.statusCode}');
+                    print('체크ㅜ시작');
+                    await RankingAPI().addCheckPoint({
+                      "user_id": user_id,
+                      "slope_id": passPointInfo['id'],
+                      "coordinates": "${position.latitude}, ${position.longitude}"
+                    });
+                    print('슬로프 체크포인트 업데이트 성공');
                   }
                 }
-              }
 
-              if (passPointInfo != null && passPointInfo['type'] == 'treasure_hunt_info') {
-                if (resort_info['snowball'] == true) {
-                  if (_lastSnowballMethodCall == null || DateTime.now().difference(_lastSnowballMethodCall!).inSeconds > 10) {
-                    try {
-                      print('11111');
-                      final response = await SnowballAPI().createSnowballRecord({
+                if (passPointInfo['type'] == 'treasure_hunt_info') {
+                  if (resort_info['snowball'] == true) {
+                    if (_lastSnowballMethodCall == null || DateTime.now().difference(_lastSnowballMethodCall!).inSeconds > 10) {
+                      _lastSnowballMethodCall = DateTime.now();
+                      await SnowballAPI().createSnowballRecord({
                         "user_id": user_id,
                         "snowball_id": passPointInfo['id'],
                         "coordinates": "POINT (${position.longitude} ${position.latitude})"
                       });
-
-                      if(response.statusCode == 201){
-                        print('포 상태코드 ${response.statusCode}');
-                        print('포 눈송이 업데이트 통신 성공');
-                        _lastSnowballMethodCall = now;
-                      }else if(response.statusCode==400){
-                        print('포 상태코드 ${response.statusCode}');
-                        _lastSnowballMethodCall = now;
-                      } else{
-                        _lastSnowballMethodCall = null;
-                        print('포 상태코드 ${response.statusCode}');
-                        print('포 눈송이 업데이트 통신 실패');
-                      }
-                    } catch (e) {
-                      print('눈송이 기록 실패: $e');
+                      print('눈송이 기록 성공');
                     }
-                  } else {
-                    print('10초 제한으로 인해 눈송이 기록 생략');
                   }
                 }
-              }
 
-
-              if (passPointInfo != null && passPointInfo['type'] == 'reset_point') {
-                if (_lastResetMethodCall == null || DateTime.now().difference(_lastResetMethodCall!).inSeconds > 180) {
-                  _lastResetMethodCall = DateTime.now();
-                  await RankingAPI().reset({"user_id": user_id});
-                  print('리셋 성공');
+                if (passPointInfo['type'] == 'reset_point') {
+                  if (_lastResetMethodCall == null || DateTime.now().difference(_lastResetMethodCall!).inSeconds > 180) {
+                    _lastResetMethodCall = DateTime.now();
+                    await RankingAPI().reset({"user_id": user_id});
+                    print('리셋 성공');
+                  }
                 }
-              }
 
-              if (passPointInfo != null && passPointInfo['type'] == 'respawn_point') {
-                if (_lastRespawnMethodCall == null || DateTime.now().difference(_lastRespawnMethodCall!).inSeconds > 180) {
-                  _lastRespawnMethodCall = DateTime.now();
-                  await RankingAPI().respawn({"user_id": user_id});
-                  print('리스폰 성공');
+                if (passPointInfo['type'] == 'respawn_point') {
+                  if (_lastRespawnMethodCall == null || DateTime.now().difference(_lastRespawnMethodCall!).inSeconds > 10) {
+                    _lastRespawnMethodCall = DateTime.now();
+                    await RankingAPI().respawn({"user_id": user_id});
+                    print('리스폰 성공');
+                  }
                 }
               }
             } else {
@@ -381,7 +360,7 @@ class ResortHomeViewModel extends GetxController {
       stopOnTerminate: true,
       startOnBoot: false,
       stationaryRadius: 25,
-      logLevel: bg.Config.LOG_LEVEL_VERBOSE,
+      logLevel: bg.Config.LOG_LEVEL_OFF,
       locationUpdateInterval: 5000,
       disableLocationAuthorizationAlert: true,
       showsBackgroundLocationIndicator: true,
@@ -425,116 +404,100 @@ class ResortHomeViewModel extends GetxController {
         DateTime now = DateTime.now();
 
         if (withinBoundary) {
+          //
+          // try {
+          //   // 현재 시간 가져오기
+          //   final now = DateTime.now();
+          //
+          //   // 마지막 페이크 위치 감지 시간과의 차이 계산 (10초 초과 시 실행)
+          //   if (_lastFakeLocationCheckTime == null ||
+          //       now.difference(_lastFakeLocationCheckTime!).inSeconds > 10) {
+          //     _lastFakeLocationCheckTime = now; // 마지막 실행 시간 업데이트
+          //
+          //     // 페이크 위치 감지
+          //     final isFakeLocation = await DetectFakeLocation().detectFakeLocation();
+          //
+          //     if (isFakeLocation) {
+          //       print('페이크 위치가 감지되었습니다. 위치 추적을 중지합니다.');
+          //
+          //       // 위치 추적 서비스 중지
+          //       await stopForegroundLocationService();
+          //       await stopBackgroundLocationService();
+          //
+          //       // 사용자에게 경고 메시지 표시
+          //       Get.snackbar(
+          //         '경고',
+          //         '페이크 위치가 감지되었습니다. 위치 추적 서비스가 중단되었습니다.',
+          //         snackPosition: SnackPosition.BOTTOM,
+          //       );
+          //
+          //       return; // 이후 코드 실행 방지
+          //     }
+          //   }
+          // } catch (e) {
+          //   print('페이크 위치 감지 중 오류 발생: $e');
+          // }
 
-          await _userViewModel.updateUserModel_api(_userViewModel.user.user_id);
+          List<Map<String, dynamic>> passPointInfos = checkPositionInAreas(
+            position,
+            _slope_info,
+            _treasure_hunt_info,
+            _reset_point,
+            _respawn_point,
+          );
 
-          try {
-            // 현재 시간 가져오기
-            final now = DateTime.now();
-
-            // 마지막 페이크 위치 감지 시간과의 차이 계산 (10초 초과 시 실행)
-            if (_lastFakeLocationCheckTime == null ||
-                now.difference(_lastFakeLocationCheckTime!).inSeconds > 10) {
-              _lastFakeLocationCheckTime = now; // 마지막 실행 시간 업데이트
-
-              // 페이크 위치 감지
-              final isFakeLocation = await DetectFakeLocation().detectFakeLocation();
-
-              if (isFakeLocation) {
-                print('페이크 위치가 감지되었습니다. 위치 추적을 중지합니다.');
-
-                // 위치 추적 서비스 중지
-                await stopForegroundLocationService();
-                await stopBackgroundLocationService();
-
-                // 사용자에게 경고 메시지 표시
-                Get.snackbar(
-                  '경고',
-                  '페이크 위치가 감지되었습니다. 위치 추적 서비스가 중단되었습니다.',
-                  snackPosition: SnackPosition.BOTTOM,
-                );
-
-                return; // 이후 코드 실행 방지
+          for (var passPointInfo in passPointInfos) {
+            if (passPointInfo['type'] == 'slope_info') {
+              if (_lastCountMethodCall == null || DateTime.now().difference(_lastCountMethodCall!).inSeconds > 10) {
+                _lastCountMethodCall = DateTime.now();
+                final response = await RankingAPI().addCheckPoint({
+                  "user_id": user_id,
+                  "slope_id": passPointInfo['id'],
+                  "coordinates": "${position.latitude}, ${position.longitude}"
+                });
+                if (response.statusCode == 201 || response.statusCode == 416) {
+                  print('체크포인트 업데이트 성공');
+                } else {
+                  print('체크포인트 업데이트 실패: ${response.statusCode}');
+                }
               }
             }
-          } catch (e) {
-            print('페이크 위치 감지 중 오류 발생: $e');
-          }
 
-          Map<String, dynamic>? passPointInfo = checkPositionInAreas(position, _slope_info,_treasure_hunt_info, _reset_point, _respawn_point);
-
-          if (passPointInfo != null && passPointInfo['type'] == 'slope_info') {
-            if (_lastCountMethodCall == null || now.difference(_lastCountMethodCall!).inSeconds > 10) {
-              print('백 체크포인트 실행');
-              final response = await RankingAPI().addCheckPoint({
-                "user_id": user_id,
-                "slope_id": passPointInfo['id'],
-                "coordinates": "${position.latitude}, ${position.longitude}"
-              });
-
-              if(response.statusCode == 201){
-                print('백 상태코드 ${response.statusCode}');
-                print('백 체크포인트 업데이트 통신 성공');
-                _lastCountMethodCall = now;
-              }else if(response.statusCode==416){
-                print('백 상태코드 ${response.statusCode}');
-                _lastCountMethodCall = now;
-              } else{
-                _lastCountMethodCall = null;
-                print('백 상태코드 ${response.statusCode}');
-                print('백 체크포인트 업데이트 통신 실패');
-              }
-
-            }
-          }
-
-          if (passPointInfo != null && passPointInfo['type'] == 'treasure_hunt_info') {
-            if (resort_info['snowball'] == true) {
-              if (_lastSnowballMethodCall == null || DateTime.now().difference(_lastSnowballMethodCall!).inSeconds > 10) {
-                try {
+            if (passPointInfo['type'] == 'treasure_hunt_info') {
+              if (resort_info['snowball'] == true) {
+                if (_lastSnowballMethodCall == null || DateTime.now().difference(_lastSnowballMethodCall!).inSeconds > 10) {
+                  _lastSnowballMethodCall = DateTime.now();
                   final response = await SnowballAPI().createSnowballRecord({
                     "user_id": user_id,
                     "snowball_id": passPointInfo['id'],
                     "coordinates": "POINT (${position.longitude} ${position.latitude})"
                   });
-
-                  if(response.statusCode == 201){
-                    print('백 상태코드 ${response.statusCode}');
-                    print('백 눈송이 업데이트 통신 성공');
-                    _lastSnowballMethodCall = now;
-                  }else if(response.statusCode==400){
-                    print('백 상태코드 ${response.statusCode}');
-                    _lastSnowballMethodCall = now;
-                  } else{
-                    _lastSnowballMethodCall = null;
-                    print('백 상태코드 ${response.statusCode}');
-                    print('백 눈송이 업데이트 통신 실패');
+                  if (response.statusCode == 201) {
+                    print('눈송이 기록 성공');
+                  } else {
+                    print('눈송이 기록 실패: ${response.statusCode}');
                   }
-                } catch (e) {
-                  print('눈송이 기록 실패: $e');
                 }
-              } else {
-                print('10초 제한으로 인해 눈송이 기록 생략');
+              }
+            }
+
+            if (passPointInfo['type'] == 'reset_point') {
+              if (_lastResetMethodCall == null || DateTime.now().difference(_lastResetMethodCall!).inSeconds > 180) {
+                _lastResetMethodCall = DateTime.now();
+                await RankingAPI().reset({"user_id": user_id});
+                print('리셋 성공');
+              }
+            }
+
+            if (passPointInfo['type'] == 'respawn_point') {
+              if (_lastRespawnMethodCall == null || DateTime.now().difference(_lastRespawnMethodCall!).inSeconds > 180) {
+                _lastRespawnMethodCall = DateTime.now();
+                await RankingAPI().respawn({"user_id": user_id});
+                print('리스폰 성공');
               }
             }
           }
 
-
-          if (passPointInfo != null && passPointInfo['type'] == 'reset_point') {
-            if (_lastResetMethodCall == null || now.difference(_lastResetMethodCall!).inSeconds > 180) {
-              _lastResetMethodCall = now;
-              await RankingAPI().reset({"user_id": user_id});
-              print('백 리셋 성공');
-            }
-          }
-
-          if (passPointInfo != null && passPointInfo['type'] == 'respawn_point') {
-            if (_lastRespawnMethodCall == null || now.difference(_lastRespawnMethodCall!).inSeconds > 180) {
-              _lastRespawnMethodCall = now;
-              await RankingAPI().respawn({"user_id": user_id});
-              print('백 리스폰 성공');
-            }
-          }
         } else {
           await stopForegroundLocationService();
           await stopBackgroundLocationService();
@@ -564,34 +527,46 @@ class ResortHomeViewModel extends GetxController {
     return distanceInMeters <= radius;
   }
 
-  Map<String, dynamic>? checkPositionInAreas(Position position, List<Map<String, dynamic>> slopeInfo, List<Map<String, dynamic>> treasure_hunt_info, List<Map<String, dynamic>> resetPoint, List<Map<String, dynamic>> respawnPoint) {
-    // 순서대로 검사
+  List<Map<String, dynamic>> checkPositionInAreas(
+      Position position,
+      List<Map<String, dynamic>> slopeInfo,
+      List<Map<String, dynamic>> treasureHuntInfo,
+      List<Map<String, dynamic>> resetPoint,
+      List<Map<String, dynamic>> respawnPoint,
+      ) {
+    List<Map<String, dynamic>> detectedAreas = [];
+
+    // 슬로프 영역 검사
     for (var slope in slopeInfo) {
       if (_isWithinRadius(position, slope['coordinates'], slope['radius'])) {
-        return {'type': 'slope_info', 'id': slope['slope_id']};
+        detectedAreas.add({'type': 'slope_info', 'id': slope['slope_id']});
       }
     }
 
-    for (var treasure_hunt_info in treasure_hunt_info) {
-      if (_isWithinRadius(position, treasure_hunt_info['coordinates'], treasure_hunt_info['radius'])) {
-        return {'type': 'treasure_hunt_info', 'id': treasure_hunt_info['snowball_id']};
+    // 트레저 헌트 영역 검사
+    for (var treasure in treasureHuntInfo) {
+      if (_isWithinRadius(position, treasure['coordinates'], treasure['radius'])) {
+        detectedAreas.add({'type': 'treasure_hunt_info', 'id': treasure['snowball_id']});
       }
     }
 
+    // 리셋 포인트 영역 검사
     for (var reset in resetPoint) {
       if (_isWithinRadius(position, reset['coordinates'], reset['radius'])) {
-        return {'type': 'reset_point', 'id': reset['reset_point_id']};
+        detectedAreas.add({'type': 'reset_point', 'id': reset['reset_point_id']});
       }
     }
 
+    // 리스폰 포인트 영역 검사
     for (var respawn in respawnPoint) {
       if (_isWithinRadius(position, respawn['coordinates'], respawn['radius'])) {
-        return {'type': 'respawn_point', 'id': respawn['respawn_point_id']};
+        detectedAreas.add({'type': 'respawn_point', 'id': respawn['respawn_point_id']});
       }
     }
-
-    return null; // 해당하는 위치가 없을 경우
+    print('지나간 구간 : ${detectedAreas}');
+    return detectedAreas; // 모든 감지된 영역 정보를 반환
   }
+
 
   bool _isWithinRadius(Position position, String coordinatesStr, double radius) {
     // 좌표 문자열을 위도와 경도로 변환
