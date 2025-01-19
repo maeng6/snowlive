@@ -4,6 +4,7 @@ import 'package:com.snowlive/data/imgaUrls/Data_url_image.dart';
 import 'package:com.snowlive/data/snowliveDesignStyle.dart';
 import 'package:com.snowlive/model/m_snowball.dart';
 import 'package:com.snowlive/routes/routes.dart';
+import 'package:com.snowlive/util/util_1.dart';
 import 'package:com.snowlive/viewmodel/friend/vm_friendDetail.dart';
 import 'package:com.snowlive/viewmodel/ranking/vm_snowball.dart';
 import 'package:com.snowlive/viewmodel/resortHome/vm_resortHome.dart';
@@ -641,10 +642,12 @@ class _SnowballShopViewState extends State<SnowballShopView> {
                                                         Row(
                                                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                                           children: [
+                                                            if(item.landingUrl != null)
                                                             Expanded(
                                                               child: ElevatedButton(
-                                                                onPressed: () {
-                                                                  // 상세 정보 보기 로직
+                                                                onPressed: () async {
+                                                                  print(item.landingUrl);
+                                                                  await otherShare(contents: '${item.landingUrl}');
                                                                 },
                                                                 style: TextButton.styleFrom(
                                                                     shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(6))),
@@ -661,6 +664,7 @@ class _SnowballShopViewState extends State<SnowballShopView> {
                                                                 ),
                                                               ),
                                                             ),
+                                                            if(item.landingUrl != null)
                                                             SizedBox(width: 10),
                                                             Expanded(
                                                               child: ElevatedButton(
@@ -1042,26 +1046,29 @@ class _SnowballShopViewState extends State<SnowballShopView> {
                                                         // 버튼들
                                                         Row(
                                                           children: [
-                                                            Expanded(
-                                                              child: ElevatedButton(
-                                                                onPressed: () {
-                                                                  // 상세 정보 보기 로직
-                                                                },
-                                                                style: TextButton.styleFrom(
-                                                                    shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(6))),
-                                                                    splashFactory: InkRipple.splashFactory,
-                                                                    elevation: 0,
-                                                                    minimumSize: Size(100, 48),
-                                                                    backgroundColor: SDSColor.sBlue500
+                                                            if(item.landingUrl != null)
+                                                                Expanded(
+                                                                  child: ElevatedButton(
+                                                                    onPressed: () async {
+                                                                      print(item.landingUrl);
+                                                                      await otherShare(contents: '${item.landingUrl}');
+                                                                    },
+                                                                    style: TextButton.styleFrom(
+                                                                        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(6))),
+                                                                        splashFactory: InkRipple.splashFactory,
+                                                                        elevation: 0,
+                                                                        minimumSize: Size(100, 48),
+                                                                        backgroundColor: SDSColor.sBlue500
+                                                                    ),
+                                                                    child: Text(
+                                                                      '상세 정보 보기',
+                                                                      style: SDSTextStyle.bold.copyWith(
+                                                                          color: SDSColor.snowliveWhite,
+                                                                          fontSize: 16),
+                                                                    ),
+                                                                  ),
                                                                 ),
-                                                                child: Text(
-                                                                  '상세 정보 보기',
-                                                                  style: SDSTextStyle.bold.copyWith(
-                                                                      color: SDSColor.snowliveWhite,
-                                                                      fontSize: 16),
-                                                                ),
-                                                              ),
-                                                            ),
+                                                            if(item.landingUrl != null)
                                                             SizedBox(width: 10),
                                                             Expanded(
                                                               child: ElevatedButton(
@@ -1305,7 +1312,9 @@ class _SnowballShopViewState extends State<SnowballShopView> {
                           itemBuilder: (context, index) {
                             final sponsor = _snowballShopViewModel.sponsors[index];
                             return GestureDetector(
-                              onTap: (){
+                              onTap: () async {
+                                print('${_snowballShopViewModel.sponsors[index].landingUrl}');
+                                await otherShare(contents: '${_snowballShopViewModel.sponsors[index].landingUrl}');
                               },
                               child: Column(
                                 children: [
@@ -1375,8 +1384,29 @@ class _SnowballShopViewState extends State<SnowballShopView> {
                   children: [
                     Expanded(
                       child: ElevatedButton(
-                        onPressed: () {
-                          // '눈송이 상점이란?' 버튼 클릭 로직
+                        onPressed: () async {
+                          try {
+                            // Firestore에서 데이터 가져오기
+                            DocumentSnapshot<Map<String, dynamic>> snapshot =
+                            await FirebaseFirestore.instance
+                                .collection('snowball_market')
+                                .doc('snowball_market')
+                                .get();
+
+                            // guide_image 값 추출
+                            String? guideImage = snapshot.data()?['guide_image'];
+
+                            if (guideImage != null && guideImage.isNotEmpty) {
+                              // otherShare 함수 호출
+                              await otherShare(contents: guideImage);
+                            } else {
+                              // guide_image가 비어있을 경우 처리
+                              print('guide_image is empty or null');
+                            }
+                          } catch (e) {
+                            // Firestore 오류 처리
+                            print('Error fetching guide_image: $e');
+                          }
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Color(0xFF7C899D).withOpacity(0.4),
