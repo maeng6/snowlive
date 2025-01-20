@@ -286,27 +286,34 @@ class ResortHomeViewModel extends GetxController {
               for (var passPointInfo in passPointInfos) {
                 if (passPointInfo['type'] == 'slope_info') {
                   if (_lastCountMethodCall == null || DateTime.now().difference(_lastCountMethodCall!).inSeconds > 10) {
-                    _lastCountMethodCall = DateTime.now();
-                    print('체크ㅜ시작');
-                    await RankingAPI().addCheckPoint({
+                    final response = await RankingAPI().addCheckPoint({
                       "user_id": user_id,
                       "slope_id": passPointInfo['id'],
                       "coordinates": "${position.latitude}, ${position.longitude}"
                     });
-                    print('슬로프 체크포인트 업데이트 성공');
+                    if (response.statusCode == 201 || response.statusCode == 416) {
+                      _lastCountMethodCall = DateTime.now();
+                      print('포그라운드 체크포인트 업데이트 성공');
+                    } else {
+                      print('포그라운드 체크포인트 업데이트 실패: ${response.statusCode}');
+                    }
                   }
                 }
 
                 if (passPointInfo['type'] == 'treasure_hunt_info') {
                   if (resort_info['snowball'] == true) {
-                    if (_lastSnowballMethodCall == null || DateTime.now().difference(_lastSnowballMethodCall!).inSeconds > 10) {
-                      _lastSnowballMethodCall = DateTime.now();
-                      await SnowballAPI().createSnowballRecord({
+                    if (_lastSnowballMethodCall == null || DateTime.now().difference(_lastSnowballMethodCall!).inSeconds > 300) {
+                      final response = await SnowballAPI().createSnowballRecord({
                         "user_id": user_id,
                         "snowball_id": passPointInfo['id'],
                         "coordinates": "POINT (${position.longitude} ${position.latitude})"
                       });
-                      print('눈송이 기록 성공');
+                      if (response.statusCode == 201) {
+                        _lastSnowballMethodCall = DateTime.now();
+                        print('포그라운드 눈송이 기록 성공');
+                      } else {
+                        print('포그라운드 눈송이 기록 실패: ${response.statusCode}');
+                      }
                     }
                   }
                 }
@@ -320,7 +327,7 @@ class ResortHomeViewModel extends GetxController {
                 }
 
                 if (passPointInfo['type'] == 'respawn_point') {
-                  if (_lastRespawnMethodCall == null || DateTime.now().difference(_lastRespawnMethodCall!).inSeconds > 10) {
+                  if (_lastRespawnMethodCall == null || DateTime.now().difference(_lastRespawnMethodCall!).inSeconds > 180) {
                     _lastRespawnMethodCall = DateTime.now();
                     await RankingAPI().respawn({"user_id": user_id});
                     print('리스폰 성공');
@@ -449,33 +456,33 @@ class ResortHomeViewModel extends GetxController {
           for (var passPointInfo in passPointInfos) {
             if (passPointInfo['type'] == 'slope_info') {
               if (_lastCountMethodCall == null || DateTime.now().difference(_lastCountMethodCall!).inSeconds > 10) {
-                _lastCountMethodCall = DateTime.now();
                 final response = await RankingAPI().addCheckPoint({
                   "user_id": user_id,
                   "slope_id": passPointInfo['id'],
                   "coordinates": "${position.latitude}, ${position.longitude}"
                 });
                 if (response.statusCode == 201 || response.statusCode == 416) {
-                  print('체크포인트 업데이트 성공');
+                  _lastCountMethodCall = DateTime.now();
+                  print('백그라운드 체크포인트 업데이트 성공');
                 } else {
-                  print('체크포인트 업데이트 실패: ${response.statusCode}');
+                  print('백그라운드 체크포인트 업데이트 실패: ${response.statusCode}');
                 }
               }
             }
 
             if (passPointInfo['type'] == 'treasure_hunt_info') {
               if (resort_info['snowball'] == true) {
-                if (_lastSnowballMethodCall == null || DateTime.now().difference(_lastSnowballMethodCall!).inSeconds > 10) {
-                  _lastSnowballMethodCall = DateTime.now();
+                if (_lastSnowballMethodCall == null || DateTime.now().difference(_lastSnowballMethodCall!).inSeconds > 300) {
                   final response = await SnowballAPI().createSnowballRecord({
                     "user_id": user_id,
                     "snowball_id": passPointInfo['id'],
                     "coordinates": "POINT (${position.longitude} ${position.latitude})"
                   });
                   if (response.statusCode == 201) {
-                    print('눈송이 기록 성공');
+                    _lastSnowballMethodCall = DateTime.now();
+                    print('백그라운드 눈송이 기록 성공');
                   } else {
-                    print('눈송이 기록 실패: ${response.statusCode}');
+                    print('백그라운드 눈송이 기록 실패: ${response.statusCode}');
                   }
                 }
               }
@@ -631,7 +638,7 @@ class ResortHomeViewModel extends GetxController {
 
   /// 배터리 절약 모드 확인 메서드
   Future<bool> isBatterySaverOn() async {
-    if (Platform.isAndroid || Platform.isIOS) {
+    if (Platform.isAndroid|| Platform.isIOS) {
       try {
         const channel = MethodChannel('detect_battery_saver');
         final result = await channel.invokeMethod('isBatterySaverOn');
