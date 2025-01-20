@@ -64,7 +64,7 @@ class RankingAPI {
       body: jsonEncode(body),
     );
 
-    if (response.statusCode == 200) {
+    if (response.statusCode == 201 || response.statusCode == 416) {
       print('POST 요청 성공: ${json.decode(utf8.decode(response.bodyBytes))}');
     } else {
       print('POST 요청 실패: ${json.decode(utf8.decode(response.bodyBytes))}');
