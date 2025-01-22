@@ -280,11 +280,11 @@ class _SnowballShopViewState extends State<SnowballShopView> {
                                                                     Row(
                                                                       children: [
                                                                         (item.color == '하얀')
-                                                                        ? Image.asset(
+                                                                            ? Image.asset(
                                                                           'assets/imgs/imgs/snowballShop/icon_snowballshop_whiteball.png',
                                                                           height: 20,
                                                                         )
-                                                                        : Image.asset(
+                                                                            : Image.asset(
                                                                           'assets/imgs/imgs/snowballShop/icon_snowballshop_goldball.png',
                                                                           height: 20,
                                                                         ),
@@ -347,7 +347,7 @@ class _SnowballShopViewState extends State<SnowballShopView> {
                                         style: SDSTextStyle.bold.copyWith(color: Colors.white, fontSize: 13),
                                       ),
                                       (_snowballShopViewModel.userSnowballRecords.isNotEmpty)
-                                      ? Text(
+                                          ? Text(
                                             () {
                                           if (_snowballShopViewModel.userSnowballRecords.isNotEmpty) {
                                             final passTimeString = _snowballShopViewModel.userSnowballRecords[0].passTime ?? DateTime.now().toIso8601String();
@@ -362,7 +362,7 @@ class _SnowballShopViewState extends State<SnowballShopView> {
                                         }(),
                                         style: SDSTextStyle.regular.copyWith(color: SDSColor.snowliveWhite.withOpacity(0.4), fontSize: 12),
                                       )
-                                      : Container(),
+                                          : Container(),
                                     ],
                                   ),
                                 ),
@@ -392,8 +392,8 @@ class _SnowballShopViewState extends State<SnowballShopView> {
                         ),
                         Container(
                           child: Image.asset(
-                            'assets/imgs/imgs/snowballShop/icon_snowballshop_store.png',
-                            width: _size.width
+                              'assets/imgs/imgs/snowballShop/icon_snowballshop_store.png',
+                              width: _size.width
                           ),
                         ),
                         Positioned(
@@ -623,8 +623,8 @@ class _SnowballShopViewState extends State<SnowballShopView> {
                                                         Text(
                                                           item.name ?? '상품 이름',
                                                           style: SDSTextStyle.bold.copyWith(
-                                                            fontSize: 16,
-                                                            color: SDSColor.gray900
+                                                              fontSize: 16,
+                                                              color: SDSColor.gray900
                                                           ),
                                                         ),
                                                         SizedBox(height: 6),
@@ -643,7 +643,7 @@ class _SnowballShopViewState extends State<SnowballShopView> {
                                                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                                           children: [
                                                             (item.landingUrl != null && item.landingUrl != "")
-                                                            ? Expanded(
+                                                                ? Expanded(
                                                               child: ElevatedButton(
                                                                 onPressed: () async {
                                                                   print(item.landingUrl);
@@ -664,9 +664,9 @@ class _SnowballShopViewState extends State<SnowballShopView> {
                                                                 ),
                                                               ),
                                                             )
-                                                            : Container(),
+                                                                : Container(),
                                                             (item.landingUrl != null && item.landingUrl != "")
-                                                            ? SizedBox(width: 10) : Container(),
+                                                                ? SizedBox(width: 10) : Container(),
                                                             Expanded(
                                                               child: ElevatedButton(
                                                                 onPressed: () async{
@@ -1049,30 +1049,30 @@ class _SnowballShopViewState extends State<SnowballShopView> {
                                                           children: [
                                                             (item.landingUrl != null && item.landingUrl != "")
                                                                 ? Expanded(
-                                                                  child: ElevatedButton(
-                                                                    onPressed: () async {
-                                                                      print(item.landingUrl);
-                                                                      await otherShare(contents: '${item.landingUrl}');
-                                                                    },
-                                                                    style: TextButton.styleFrom(
-                                                                        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(6))),
-                                                                        splashFactory: InkRipple.splashFactory,
-                                                                        elevation: 0,
-                                                                        minimumSize: Size(100, 48),
-                                                                        backgroundColor: SDSColor.sBlue500
-                                                                    ),
-                                                                    child: Text(
-                                                                      '상세 정보 보기',
-                                                                      style: SDSTextStyle.bold.copyWith(
-                                                                          color: SDSColor.snowliveWhite,
-                                                                          fontSize: 16),
-                                                                    ),
-                                                                  ),
-                                                                )
-                                                            : Container(),
+                                                              child: ElevatedButton(
+                                                                onPressed: () async {
+                                                                  print(item.landingUrl);
+                                                                  await otherShare(contents: '${item.landingUrl}');
+                                                                },
+                                                                style: TextButton.styleFrom(
+                                                                    shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(6))),
+                                                                    splashFactory: InkRipple.splashFactory,
+                                                                    elevation: 0,
+                                                                    minimumSize: Size(100, 48),
+                                                                    backgroundColor: SDSColor.sBlue500
+                                                                ),
+                                                                child: Text(
+                                                                  '상세 정보 보기',
+                                                                  style: SDSTextStyle.bold.copyWith(
+                                                                      color: SDSColor.snowliveWhite,
+                                                                      fontSize: 16),
+                                                                ),
+                                                              ),
+                                                            )
+                                                                : Container(),
                                                             (item.landingUrl != null && item.landingUrl != "")
-                                                            ? SizedBox(width: 10)
-                                                            : Container(),
+                                                                ? SizedBox(width: 10)
+                                                                : Container(),
                                                             Expanded(
                                                               child: ElevatedButton(
                                                                 onPressed: () {
@@ -1120,9 +1120,9 @@ class _SnowballShopViewState extends State<SnowballShopView> {
                                                                           actions: [
                                                                             Center(
                                                                               child: TextButton(
-                                                                                onPressed: () {
-                                                                                  Navigator.of(context).pop(); // 팝업 닫기
-                                                                                },
+                                                                                  onPressed: () {
+                                                                                    Navigator.of(context).pop(); // 팝업 닫기
+                                                                                  },
                                                                                   style: TextButton.styleFrom(
                                                                                     backgroundColor: Colors.transparent, // 배경색 투명
                                                                                     splashFactory: NoSplash.splashFactory, // 터치 시 효과 제거
@@ -1333,8 +1333,7 @@ class _SnowballShopViewState extends State<SnowballShopView> {
                                           sponsor.logoUrl ?? '',
                                           enableMemoryCache: true,
                                           fit: BoxFit.cover,
-                                          cacheHeight: 120,
-                                          cacheWidth: 173,
+                                          cacheHeight: 1000,
                                           loadStateChanged: (ExtendedImageState state) {
                                             switch (state.extendedImageLoadState) {
                                               case LoadState.loading:

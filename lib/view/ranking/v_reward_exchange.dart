@@ -753,7 +753,7 @@ class _RewardExchangeViewState extends State<RewardExchangeView> {
                                             ),
                                             Expanded(
                                               child: Text(
-                                                _addressController.text ?? '',
+                                                '${_postalCodeController.text} ${_addressController.text} \n ${_detailAddressController.text}',
                                                 textAlign: TextAlign.end,
                                                 style: TextStyle(
                                                   fontSize: 14,
@@ -957,15 +957,15 @@ class _RewardExchangeViewState extends State<RewardExchangeView> {
                                                         actions: [
                                                           Center(
                                                             child: TextButton(
-                                                              onPressed: () {
-                                                                Navigator.pop(context); // 팝업 닫기
-                                                                Get.back(); // 이전 화면으로 돌아가기
-                                                                Future.delayed(Duration(milliseconds: 100), () {
-                                                                  if (Navigator.canPop(context)) {
-                                                                    Navigator.pop(context);
-                                                                  }
-                                                                });
-                                                              },
+                                                                onPressed: () {
+                                                                  Navigator.pop(context); // 팝업 닫기
+                                                                  Get.back(); // 이전 화면으로 돌아가기
+                                                                  Future.delayed(Duration(milliseconds: 100), () {
+                                                                    if (Navigator.canPop(context)) {
+                                                                      Navigator.pop(context);
+                                                                    }
+                                                                  });
+                                                                },
                                                                 style: TextButton.styleFrom(
                                                                   backgroundColor: Colors.transparent, // 배경색 투명
                                                                   splashFactory: NoSplash.splashFactory, // 터치 시 효과 제거
