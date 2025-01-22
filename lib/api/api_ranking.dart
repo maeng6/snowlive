@@ -65,9 +65,9 @@ class RankingAPI {
     );
 
     if (response.statusCode == 201 || response.statusCode == 416) {
-      print('POST 요청 성공: ${json.decode(utf8.decode(response.bodyBytes))}');
+      print('체크포인트 요청 성공: ${json.decode(utf8.decode(response.bodyBytes))}');
     } else {
-      print('POST 요청 실패: ${json.decode(utf8.decode(response.bodyBytes))}');
+      print('체크포인트 요청 실패: ${json.decode(utf8.decode(response.bodyBytes))}');
     }
 
     return response;

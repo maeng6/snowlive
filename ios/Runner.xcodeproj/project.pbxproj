@@ -396,7 +396,7 @@
 				ENABLE_BITCODE = NO;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				FLUTTER_BUILD_NAME = 3.5.3;
-				FLUTTER_BUILD_NUMBER = 84;
+				FLUTTER_BUILD_NUMBER = 85;
 				INFOPLIST_FILE = Runner/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "스노우라이브";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.sports";
@@ -544,7 +544,7 @@
 				ENABLE_BITCODE = NO;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				FLUTTER_BUILD_NAME = 3.5.3;
-				FLUTTER_BUILD_NUMBER = 84;
+				FLUTTER_BUILD_NUMBER = 85;
 				INFOPLIST_FILE = Runner/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "스노우라이브";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.sports";
@@ -584,7 +584,7 @@
 				ENABLE_BITCODE = NO;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				FLUTTER_BUILD_NAME = 3.5.3;
-				FLUTTER_BUILD_NUMBER = 84;
+				FLUTTER_BUILD_NUMBER = 85;
 				INFOPLIST_FILE = Runner/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "스노우라이브";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.sports";
