@@ -114,10 +114,10 @@ class _Entrance_snowballShopState extends State<Entrance_snowballShop> {
                               child: Padding(
                                 padding: EdgeInsets.symmetric(horizontal: 4, vertical: 1),
                                 child: Text(
-                                  '눈송이를 찾아라!',
-                                  style: SDSTextStyle.extraBold.copyWith(
+                                  'IN 휘닉스 파크',
+                                  style: SDSTextStyle.bold.copyWith(
                                     color: Colors.white,
-                                    fontSize: 12,
+                                    fontSize: 11,
                                   ),
                                 ),
                               ),
@@ -141,7 +141,7 @@ class _Entrance_snowballShopState extends State<Entrance_snowballShop> {
                                 child: Row(
                                   children: [
                                     Obx(() => isLoading.value
-                                    ? Container(
+                                        ? Container(
                                       width: 58,
                                       height: 19,
                                       child: Center(
@@ -152,25 +152,25 @@ class _Entrance_snowballShopState extends State<Entrance_snowballShop> {
                                       ),
                                     )
                                         : Container(
-                                          height: 19,
-                                          child: Row(
+                                      height: 19,
+                                      child: Row(
+                                        children: [
+                                          Row(
                                             children: [
-                                              Row(
-                                                children: [
-                                                  Image.asset(
-                                                    'assets/imgs/imgs/snowballShop/icon_snowballshop_whiteball.png',
-                                                    height: 14,
-                                                  ),
-                                                  SizedBox(width: 3),
-                                                  Text(
-                                                    '${_snowballShopViewModel.snowballSummary.value.white}', // 하얀 눈송이 개수
-                                                    style: SDSTextStyle.regular.copyWith(
-                                                      color: Colors.white,
-                                                      fontSize: 13,
-                                                    ),
-                                                  ),
-                                                ],
+                                              Image.asset(
+                                                'assets/imgs/imgs/snowballShop/icon_snowballshop_whiteball.png',
+                                                height: 14,
                                               ),
+                                              SizedBox(width: 3),
+                                              Text(
+                                                '${_snowballShopViewModel.snowballSummary.value.white}', // 하얀 눈송이 개수
+                                                style: SDSTextStyle.regular.copyWith(
+                                                  color: Colors.white,
+                                                  fontSize: 13,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
                                           SizedBox(width: 6),
                                           Row(
                                             children: [
@@ -188,9 +188,9 @@ class _Entrance_snowballShopState extends State<Entrance_snowballShop> {
                                               ),
                                             ],
                                           ),
-                                                                              ],
-                                                                            ),
-                                        )),
+                                        ],
+                                      ),
+                                    )),
                                     SizedBox(width: 4),
                                     Icon(Icons.refresh, color: Colors.white, size: 20), // 새로고침 아이콘
                                   ],
@@ -222,8 +222,8 @@ class _Entrance_snowballShopState extends State<Entrance_snowballShop> {
                                       Text(
                                         '입장하기',
                                         style: SDSTextStyle.bold.copyWith(
-                                          fontSize: 14,
-                                          color: SDSColor.snowliveWhite
+                                            fontSize: 14,
+                                            color: SDSColor.snowliveWhite
                                         ),
                                       ),
                                       Padding(
