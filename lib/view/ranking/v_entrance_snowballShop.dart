@@ -28,12 +28,14 @@ class _Entrance_snowballShopState extends State<Entrance_snowballShop> {
   }
 
   Future<void> _fetchData() async {
+    if (!mounted) return;
     setState(() {
       isLoading.value = true;
     });
 
     await _snowballShopViewModel.fetchSnowballSummary();
 
+    if (!mounted) return;
     setState(() {
       isLoading.value = false;
     });

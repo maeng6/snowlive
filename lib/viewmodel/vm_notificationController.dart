@@ -18,30 +18,37 @@ class NotificationController extends GetxController {
   void onInit() async {
     super.onInit();
 
-    // 권한 요청 및 초기 설정
+    // 권한 요청
     NotificationSettings settings = await messaging.requestPermission(
       alert: true,
       badge: true,
       sound: true,
     );
-    print(settings.authorizationStatus);
+    print("🔔 알림 권한 상태: ${settings.authorizationStatus}");
 
-    // 알림 채널 생성
-    await _initializeNotificationChannel();
-
-    // 토큰 가져오기 및 알림 수신 설정
-    await _getToken();
-    await _onMessage();
+    if (settings.authorizationStatus == AuthorizationStatus.authorized) {
+      // 권한이 허용된 경우에만 토큰 요청
+      await _initializeNotificationChannel();
+      await _getToken();
+      await _onMessage();
+    } else {
+      print("❌ 알림 권한이 거부됨");
+    }
   }
 
   Future<void> _getToken() async {
-    String? deviceToken = await messaging.getToken();
-    String? deviceId = await PlatformDeviceId.getDeviceId;
-    _deviceToken.value = deviceToken ?? '';
-    _deviceID.value = deviceId ?? '';
+    try {
+      String? deviceToken = await messaging.getToken();
+      String? deviceId = await PlatformDeviceId.getDeviceId;
 
-    //print('deviceToken: $_deviceToken');
-    //print('deviceID: $_deviceID');
+      _deviceToken.value = deviceToken ?? '';
+      _deviceID.value = deviceId ?? '';
+
+      print('📱 FCM Token: $_deviceToken');
+      print('📱 Device ID: $_deviceID');
+    } catch (e) {
+      print('❗️FCM 토큰 가져오기 실패: $e');
+    }
   }
 
   Future<String?> postMessage({required String fcmToken, required String title, required String body}) async {

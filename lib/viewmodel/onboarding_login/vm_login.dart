@@ -1,5 +1,5 @@
 import 'dart:convert';
-
+import 'dart:io';
 import 'package:com.snowlive/api/ApiResponse.dart';
 import 'package:com.snowlive/api/api_login.dart';
 import 'package:com.snowlive/routes/routes.dart';
@@ -43,16 +43,36 @@ class LoginViewModel extends GetxController {
     super.onInit();
   }
 
-  Future<void> _getToken() async{
-    String? deviceToken= await messaging.getToken();
-    String? deviceId = await PlatformDeviceId.getDeviceId;
-    this.device_token!.value = deviceToken!;
-    this.device_id!.value = deviceId!;
+  Future<void> _getToken() async {
+    if (Platform.isIOS && !await _isPhysicalDevice()) {
+      print('⚠️ 시뮬레이터에서는 FCM 토큰을 받을 수 없습니다.');
+      return;
+    }
 
-    try{
-      print('deviceToken : $device_token');
-      print('deviceID : $device_id');
-    } catch(e) {}
+    try {
+      NotificationSettings settings = await messaging.requestPermission();
+      if (settings.authorizationStatus == AuthorizationStatus.authorized) {
+        String? deviceToken = await messaging.getToken();
+        String? deviceId = await PlatformDeviceId.getDeviceId;
+
+        device_token!.value = deviceToken ?? '';
+        device_id!.value = deviceId ?? '';
+
+        print('📱 FCM Token (Login): $device_token');
+        print('📱 Device ID (Login): $device_id');
+      }
+    } catch (e) {
+      print('❗️LoginViewModel에서 FCM 토큰 에러: $e');
+    }
+  }
+
+  Future<bool> _isPhysicalDevice() async {
+    try {
+      final deviceId = await PlatformDeviceId.getDeviceId;
+      return deviceId != null && !deviceId.toLowerCase().contains('simulator');
+    } catch (_) {
+      return false;
+    }
   }
 
   //로컬에 signInMethod 저장

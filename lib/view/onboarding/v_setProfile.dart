@@ -642,14 +642,25 @@ class SetProfileView extends StatelessWidget {
                     child: ElevatedButton(
                       onPressed: () async {
                         CustomFullScreenDialog.showDialog();
+                        print(FirebaseAuth.instance.currentUser!.uid);
+                        print(FirebaseAuth.instance.currentUser!.uid);
+                        print(_setProfileViewModel.selectedResortIndex + 1);
+                        print( _notificationController.deviceID);
+                        print(_setProfileViewModel.profileImageUrl);
+                        print(_notificationController.deviceToken);
+                        print(_setProfileViewModel.displayName);
+                        print(_setProfileViewModel.selectedSkiOrBoard);
+                        print(_setProfileViewModel.selectedSex);
                         await _setProfileViewModel.getImageUrl();
                         bool isSuccess = await _setProfileViewModel.startSnowlive({
                           "uid": FirebaseAuth.instance.currentUser!.uid,
                           "email": "${FirebaseAuth.instance.currentUser!.uid}@1.com",
                           "favorite_resort": _setProfileViewModel.selectedResortIndex + 1,
-                          "device_id": _notificationController.deviceID,
+                          "device_id": '1',
+                          "device_token": '1',
+                          //"device_id": _notificationController.deviceID,
+                          //"device_token": _notificationController.deviceToken,
                           "profile_image_url_user": _setProfileViewModel.profileImageUrl,
-                          "device_token": _notificationController.deviceToken,
                           "display_name": _setProfileViewModel.displayName,
                           "skiorboard": _setProfileViewModel.selectedSkiOrBoard,
                           "sex": _setProfileViewModel.selectedSex,
@@ -657,8 +668,10 @@ class SetProfileView extends StatelessWidget {
                         if (isSuccess) {
                           _userViewModel.updateUserModel_data(_setProfileViewModel.startSnowliveReturn);
                           await FlutterSecureStorage().write(key: 'localUid', value: FirebaseAuth.instance.currentUser!.uid);
-                          await FlutterSecureStorage().write(key: 'device_id', value: _notificationController.deviceID);
-                          await FlutterSecureStorage().write(key: 'device_token', value: _notificationController.deviceToken);
+                          await FlutterSecureStorage().write(key: 'device_id', value: '1');
+                          await FlutterSecureStorage().write(key: 'device_token', value: '1');
+                          //await FlutterSecureStorage().write(key: 'device_id', value: _notificationController.deviceID);
+                          //await FlutterSecureStorage().write(key: 'device_token', value: _notificationController.deviceToken);
                           await FlutterSecureStorage().write(key: 'user_id', value: _userViewModel.user.user_id.toString());
                           CustomFullScreenDialog.cancelDialog();
                           Get.offAllNamed(AppRoutes.mainHome); // 성공 시 메인 홈 이동
