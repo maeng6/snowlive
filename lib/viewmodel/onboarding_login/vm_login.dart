@@ -33,8 +33,8 @@ class LoginViewModel extends GetxController {
   final loginAPI = LoginAPI();
   RxString signInMethod = ''.obs;
   RxString? loginUid = ''.obs;
-  RxString? device_id = ''.obs;
-  RxString? device_token = ''.obs;
+  RxString? device_id = '1'.obs;
+  RxString? device_token = '1'.obs;
 
   @override
   void onInit()  async{
@@ -232,9 +232,9 @@ class LoginViewModel extends GetxController {
     } else {
       final data = response.error as Map<String, dynamic>;
       final message = data['message'];
-    if (message == '온보딩이동') {
-    Get.offAllNamed(AppRoutes.tos);
-    }
+      if (message == '온보딩이동') {
+        Get.offAllNamed(AppRoutes.tos);
+      }
     }
   }
   //로컬의 signInMethod 불러오기

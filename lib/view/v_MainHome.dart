@@ -4,6 +4,7 @@ import 'package:com.snowlive/view/fleamarket/v_fleaMarketMain.dart';
 import 'package:com.snowlive/view/moreTab/v_moreTab_main.dart';
 import 'package:com.snowlive/view/ranking/v_ranking_Home.dart';
 import 'package:com.snowlive/view/resortHome/v_resortHome.dart';
+import 'package:com.snowlive/view/v_slmkScreen.dart';
 import 'package:com.snowlive/viewmodel/vm_mainHome.dart';
 import 'package:com.snowlive/viewmodel/vm_user.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
@@ -43,6 +44,25 @@ class MainHomeView extends StatelessWidget {
                 // 페이지 전환
                 _MainHomeViewModel.onItemTapped(index);
 
+                // 슬마켓(SlmkScreen)은 index 3번 → 새 페이지로 이동
+                if (index == 3) {
+                  FirebaseAnalytics.instance.logEvent(
+                    name: 'visit_slmk',
+                    parameters: {
+                      'user_id': _userViewModel.user.user_id,
+                      'user_name': _userViewModel.user.display_name,
+                    },
+                  );
+
+                  Get.to(() => SlmkScreen())!.then((result) {
+                    if (result != null && result is int) {
+                      _MainHomeViewModel.onItemTapped(result); // 홈 탭으로 이동
+                    }
+                  });
+
+                  return;
+                }
+
                 // Google Analytics 트래킹 이벤트 발생
                 switch (index) {
                   case 0:
@@ -66,13 +86,13 @@ class MainHomeView extends StatelessWidget {
                         'user_id': _userViewModel.user.user_id,
                         'user_name': _userViewModel.user.display_name,},);
                     break;
-                  case 3:
-                    FirebaseAnalytics.instance.logEvent(
-                      name: 'visit_community',
-                      parameters: <String, Object>{
-                        'user_id': _userViewModel.user.user_id,
-                        'user_name': _userViewModel.user.display_name,},);
-                    break;
+                // case 3:
+                //   FirebaseAnalytics.instance.logEvent(
+                //     name: 'visit_community',
+                //     parameters: <String, Object>{
+                //       'user_id': _userViewModel.user.user_id,
+                //       'user_name': _userViewModel.user.display_name,},);
+                //   break;
                   case 4:
                     FirebaseAnalytics.instance.logEvent(
                       name: 'visit_moreTab',
@@ -116,7 +136,7 @@ class MainHomeView extends StatelessWidget {
                     width: 32,
                     height: 32,
                   ),
-                  label: '스노우마켓',
+                  label: '중고거래',
                 ),
                 BottomNavigationBarItem(
                   backgroundColor: Colors.transparent,
@@ -134,16 +154,16 @@ class MainHomeView extends StatelessWidget {
                 ),
                 BottomNavigationBarItem(
                   backgroundColor: Colors.transparent,
-                  icon: Image.asset('assets/imgs/icons/icon_community_off.png',
+                  icon: Image.asset('assets/imgs/icons/icon_market_off.png',
                     width: 32,
                     height: 32,
                   ),
                   activeIcon:
-                  Image.asset('assets/imgs/icons/icon_community_on.png',
+                  Image.asset('assets/imgs/icons/icon_market_on.png',
                     width: 32,
                     height: 32,
                   ),
-                  label: '커뮤니티',
+                  label: '스라마켓',
                 ),
                 BottomNavigationBarItem(
                   backgroundColor: Colors.transparent,
@@ -181,7 +201,6 @@ class MainHomeView extends StatelessWidget {
             ResortHomeView(),
             FleaMarketMainView(),
             RankingHomeView(),
-            CommunityMainView(),
             MoreTabMainView()
           ],
         )
