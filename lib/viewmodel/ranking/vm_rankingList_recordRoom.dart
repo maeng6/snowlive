@@ -72,6 +72,7 @@ class RankingListViewModel_recordRoom extends GetxController {
   RxString _resortOrTotal = '전체스키장'.obs;
   RxString _selectedCategory_resort = '스키장별 랭킹'.obs;
   RxString _selectedCategory_season = '24/25시즌'.obs;
+  RxString _selectedCategory_season_db = '2425'.obs;
   RxString _selectedCategory_fed = '리그별 랭킹'.obs;
   RxString _myBox_title = '누적 전체 스키장'.obs;
   RxString _myBox_score = '크루 점수'.obs;
@@ -131,6 +132,7 @@ class RankingListViewModel_recordRoom extends GetxController {
   String get resortOrTotal => _resortOrTotal.value;
   String get selectedCategory_resort => _selectedCategory_resort.value;
   String get selectedCategory_season => _selectedCategory_season.value;
+  String get selectedCategory_season_db => _selectedCategory_season_db.value;
   String get selectedCategory_fed => _selectedCategory_fed.value;
   String get myBox_score => _myBox_score.value;
   String get myBox_title => _myBox_title.value;
@@ -199,19 +201,19 @@ class RankingListViewModel_recordRoom extends GetxController {
     _isLoadingRankingListIndiv_fed.value = true;
     _isLoadingRankingListIndiv_fed_daily.value = true;
 
-    await fetchRankingDataCrew_total(userId: _userViewModel.user.user_id,season: _friendDetailViewModel.seasonDate);
+    await fetchRankingDataCrew_total(userId: _userViewModel.user.user_id,selected_season:  _selectedCategory_season_db.value);
     _rankingListCrewList_view.value =_rankingListCrewList_total;
     _rankingListCrewMy_view.value = _rankingListCrewMy_total.value;
     _isLoadingRankingListCrewList_total.value = false;
-    await fetchRankingDataCrew_total_daily(userId: _userViewModel.user.user_id,daily: true,season: _friendDetailViewModel.seasonDate);
+    await fetchRankingDataCrew_total_daily(userId: _userViewModel.user.user_id,daily: true,selected_season:  _selectedCategory_season_db.value);
     _isLoadingRankingListCrewList_total_daily.value = false;
 
-    await fetchRankingDataIndiv_total(userId: _userViewModel.user.user_id,season: _friendDetailViewModel.seasonDate);
+    await fetchRankingDataIndiv_total(userId: _userViewModel.user.user_id,selected_season:  _selectedCategory_season_db.value);
     _rankingListIndivList_view.value =_rankingListIndivList_total;
     _rankingListIndivMy_view.value = _rankingListIndivMy_total.value;
     _isLoadingRankingListIndiv_total.value = false;
 
-    await fetchRankingDataIndiv_total_daily(userId: _userViewModel.user.user_id,daily: true,season: _friendDetailViewModel.seasonDate);
+    await fetchRankingDataIndiv_total_daily(userId: _userViewModel.user.user_id,daily: true,selected_season:  _selectedCategory_season_db.value);
     _isLoadingRankingListIndiv_total_daily.value = false;
 
   }
@@ -221,7 +223,7 @@ class RankingListViewModel_recordRoom extends GetxController {
       await fetchRankingDataIndiv_total(
           userId: _userViewModel.user.user_id,
           url: _nextPageUrl_indiv_total.value
-          ,season: _friendDetailViewModel.seasonDate
+          ,selected_season:  _selectedCategory_season_db.value
       );
     }
   }
@@ -230,7 +232,7 @@ class RankingListViewModel_recordRoom extends GetxController {
     if (_nextPageUrl_indiv_resort.value.isNotEmpty) {
       await fetchRankingDataIndiv_resort(
           userId: _userViewModel.user.user_id,
-          url: _nextPageUrl_indiv_resort.value,season: _friendDetailViewModel.seasonDate
+          url: _nextPageUrl_indiv_resort.value,selected_season:  _selectedCategory_season_db.value
       );
     }
   }
@@ -241,7 +243,7 @@ class RankingListViewModel_recordRoom extends GetxController {
       await fetchRankingDataIndiv_total_daily(
           userId: _userViewModel.user.user_id,
           url: _nextPageUrl_indiv_total_daily.value,
-          daily: true,season: _friendDetailViewModel.seasonDate
+          daily: true,selected_season: _selectedCategory_season_db.value
       );
     }
   }
@@ -251,7 +253,7 @@ class RankingListViewModel_recordRoom extends GetxController {
       await fetchRankingDataIndiv_resort_daily(
           userId: _userViewModel.user.user_id,
           url: _nextPageUrl_indiv_resort_daily.value,
-          daily: true,season: _friendDetailViewModel.seasonDate
+          daily: true,selected_season:  _selectedCategory_season_db.value
       );
     }
   }
@@ -261,7 +263,7 @@ class RankingListViewModel_recordRoom extends GetxController {
     if (_nextPageUrl_crew_total.value.isNotEmpty) {
       await fetchRankingDataCrew_total(
           userId: _userViewModel.user.user_id,
-          url: _nextPageUrl_crew_total.value,season: _friendDetailViewModel.seasonDate
+          url: _nextPageUrl_crew_total.value,selected_season:  _selectedCategory_season_db.value
       );
     }
   }
@@ -271,7 +273,7 @@ class RankingListViewModel_recordRoom extends GetxController {
     if (_nextPageUrl_crew_resort.value.isNotEmpty) {
       await fetchRankingDataCrew_resort(
           userId: _userViewModel.user.user_id,
-          url: _nextPageUrl_crew_resort.value,season: _friendDetailViewModel.seasonDate
+          url: _nextPageUrl_crew_resort.value,selected_season:  _selectedCategory_season_db.value
       );
     }
   }
@@ -282,7 +284,7 @@ class RankingListViewModel_recordRoom extends GetxController {
       await fetchRankingDataCrew_total_daily(
           userId: _userViewModel.user.user_id,
           url: _nextPageUrl_crew_total_daily.value,
-          daily: true,season: _friendDetailViewModel.seasonDate
+          daily: true,selected_season:  _selectedCategory_season_db.value
       );
     }
   }
@@ -293,7 +295,7 @@ class RankingListViewModel_recordRoom extends GetxController {
       await fetchRankingDataCrew_resort_daily(
           userId: _userViewModel.user.user_id,
           url: _nextPageUrl_crew_resort_daily.value,
-          daily: true,season: _friendDetailViewModel.seasonDate
+          daily: true,selected_season:  _selectedCategory_season_db.value
       );
     }
   }
@@ -302,8 +304,8 @@ class RankingListViewModel_recordRoom extends GetxController {
     if (_nextPageUrl_indiv_fed.value.isNotEmpty) {
       await fetchRankingDataIndiv_fed(
           userId: _userViewModel.user.user_id,
-          url: _nextPageUrl_indiv_fed.value
-          ,season: _friendDetailViewModel.seasonDate,
+          url: _nextPageUrl_indiv_fed.value,
+          selected_season:  _selectedCategory_season_db.value,
         federation: _selectedCategory_fed.value
       );
     }
@@ -315,7 +317,8 @@ class RankingListViewModel_recordRoom extends GetxController {
       await fetchRankingDataIndiv_fed_daily(
           userId: _userViewModel.user.user_id,
           url: _nextPageUrl_indiv_fed_daily.value,
-          daily: true,season: _friendDetailViewModel.seasonDate,
+          daily: true,
+          selected_season:  _selectedCategory_season_db.value,
           federation: _selectedCategory_fed.value
       );
     }
@@ -326,7 +329,7 @@ class RankingListViewModel_recordRoom extends GetxController {
     if (_nextPageUrl_crew_fed.value.isNotEmpty) {
       await fetchRankingDataCrew_fed(
           userId: _userViewModel.user.user_id,
-          url: _nextPageUrl_crew_total.value,season: _friendDetailViewModel.seasonDate,
+          url: _nextPageUrl_crew_total.value,selected_season:  _selectedCategory_season_db.value,
           federation: _selectedCategory_fed.value
       );
     }
@@ -338,7 +341,7 @@ class RankingListViewModel_recordRoom extends GetxController {
       await fetchRankingDataCrew_fed_daily(
           userId: _userViewModel.user.user_id,
           url: _nextPageUrl_crew_total_daily.value,
-          daily: true,season: _friendDetailViewModel.seasonDate,
+          daily: true,selected_season:  _selectedCategory_season_db.value,
           federation: _selectedCategory_fed.value
       );
     }
@@ -515,11 +518,11 @@ class RankingListViewModel_recordRoom extends GetxController {
 
   Future<void> toggleDataDayOrTotal({int? resortNum}) async{
     if(tapName == '개인랭킹' && resortOrTotal == '개별스키장' && dayOrTotal == '일간'){
-      await fetchRankingDataIndiv_resort_daily(userId: _userViewModel.user.user_id, resortId: resortNum,daily: true,season: _friendDetailViewModel.seasonDate);
+      await fetchRankingDataIndiv_resort_daily(userId: _userViewModel.user.user_id, resortId: resortNum,daily: true,selected_season:  _selectedCategory_season_db.value);
       _rankingListIndivList_view.value = _rankingListIndivList_resort_daily;
       _rankingListIndivMy_view.value = _rankingListIndivMy_resort_daily.value;
     } else if (tapName == '개인랭킹' && resortOrTotal == '개별스키장' && dayOrTotal == '누적'){
-      await fetchRankingDataIndiv_resort(userId: _userViewModel.user.user_id, resortId: resortNum,season: _friendDetailViewModel.seasonDate);
+      await fetchRankingDataIndiv_resort(userId: _userViewModel.user.user_id, resortId: resortNum,selected_season:  _selectedCategory_season_db.value);
       _rankingListIndivList_view.value = _rankingListIndivList_resort;
       _rankingListIndivMy_view.value = _rankingListIndivMy_resort.value;
     } else if (tapName == '개인랭킹' && resortOrTotal == '전체스키장' && dayOrTotal == '일간' && selectedCategory_fed == '리그별 랭킹'){
@@ -539,11 +542,11 @@ class RankingListViewModel_recordRoom extends GetxController {
       _rankingListIndivList_view.value = _rankingListIndivList_fed;
       _rankingListIndivMy_view.value = _rankingListIndivMy_fed.value;
     } else if(tapName == '크루랭킹' && resortOrTotal == '개별스키장' && dayOrTotal == '일간'){
-      await fetchRankingDataCrew_resort_daily(userId: _userViewModel.user.user_id, resortId: resortNum,daily: true,season: _friendDetailViewModel.seasonDate);
+      await fetchRankingDataCrew_resort_daily(userId: _userViewModel.user.user_id, resortId: resortNum,daily: true,selected_season:  _selectedCategory_season_db.value);
       _rankingListCrewList_view.value = _rankingListCrewList_resort_daily;
       _rankingListCrewMy_view.value = _rankingListCrewMy_resort_daily.value;
     } else if (tapName == '크루랭킹' && resortOrTotal == '개별스키장' && dayOrTotal == '누적'){
-      await fetchRankingDataCrew_resort(userId: _userViewModel.user.user_id, resortId: resortNum,season: _friendDetailViewModel.seasonDate);
+      await fetchRankingDataCrew_resort(userId: _userViewModel.user.user_id, resortId: resortNum,selected_season:  _selectedCategory_season_db.value);
       _rankingListCrewList_view.value = _rankingListCrewList_resort;
       _rankingListCrewMy_view.value = _rankingListCrewMy_resort.value;
     } else if (tapName == '크루랭킹' && resortOrTotal == '전체스키장' && dayOrTotal == '일간' && selectedCategory_fed == '리그별 랭킹'){
@@ -568,73 +571,73 @@ class RankingListViewModel_recordRoom extends GetxController {
   Future<void> toggleDataDayOrTotal_refresh({int? resortNum}) async{
     if(tapName == '개인랭킹' && resortOrTotal == '개별스키장' && dayOrTotal == '일간'){
       //_isLoadingRankingListIndiv_resort_daily.value = true;
-      await fetchRankingDataIndiv_resort_daily(userId: _userViewModel.user.user_id, resortId: resortNum,daily: true,season: _friendDetailViewModel.seasonDate);
+      await fetchRankingDataIndiv_resort_daily(userId: _userViewModel.user.user_id, resortId: resortNum,daily: true,selected_season:  _selectedCategory_season_db.value);
       //_isLoadingRankingListIndiv_resort_daily.value = false;
       _rankingListIndivList_view.value = _rankingListIndivList_resort_daily;
       _rankingListIndivMy_view.value = _rankingListIndivMy_resort_daily.value;
     } else if (tapName == '개인랭킹' && resortOrTotal == '개별스키장' && dayOrTotal == '누적'){
       //_isLoadingRankingListIndiv_resort.value = true;
-      await fetchRankingDataIndiv_resort(userId: _userViewModel.user.user_id, resortId: resortNum,season: _friendDetailViewModel.seasonDate);
+      await fetchRankingDataIndiv_resort(userId: _userViewModel.user.user_id, resortId: resortNum,selected_season:  _selectedCategory_season_db.value);
       //_isLoadingRankingListIndiv_resort.value = false;
       _rankingListIndivList_view.value = _rankingListIndivList_resort;
       _rankingListIndivMy_view.value = _rankingListIndivMy_resort.value;
     } else if (tapName == '개인랭킹' && resortOrTotal == '전체스키장' && dayOrTotal == '일간' && selectedCategory_fed == '리그별 랭킹'){
       //_isLoadingRankingListIndiv_total_daily.value = true;
-      await fetchRankingDataIndiv_total_daily(userId: _userViewModel.user.user_id,daily: true,season: _friendDetailViewModel.seasonDate);
+      await fetchRankingDataIndiv_total_daily(userId: _userViewModel.user.user_id,daily: true,selected_season:  _selectedCategory_season_db.value);
       //_isLoadingRankingListIndiv_total_daily.value = false;
       _rankingListIndivList_view.value = _rankingListIndivList_total_daily;
       _rankingListIndivMy_view.value = _rankingListIndivMy_total_daily.value;
     } else if (tapName == '개인랭킹' && resortOrTotal == '전체스키장' && dayOrTotal == '누적' && selectedCategory_fed == '리그별 랭킹'){
       //_isLoadingRankingListIndiv_total.value = true;
-      await fetchRankingDataIndiv_total(userId: _userViewModel.user.user_id,season: _friendDetailViewModel.seasonDate);
+      await fetchRankingDataIndiv_total(userId: _userViewModel.user.user_id,selected_season:  _selectedCategory_season_db.value);
       //_isLoadingRankingListIndiv_total.value = false;
       _rankingListIndivList_view.value = _rankingListIndivList_total;
       _rankingListIndivMy_view.value = _rankingListIndivMy_total.value;
     } else if (tapName == '개인랭킹' && resortOrTotal == '전체스키장' && dayOrTotal == '일간' && selectedCategory_fed != '리그별 랭킹'){
       //_isLoadingRankingListIndiv_total_daily.value = true;
-      await fetchRankingDataIndiv_fed_daily(userId: _userViewModel.user.user_id,daily: true,season: _friendDetailViewModel.seasonDate, federation: selectedCategory_fed);
+      await fetchRankingDataIndiv_fed_daily(userId: _userViewModel.user.user_id,daily: true,selected_season:  _selectedCategory_season_db.value, federation: selectedCategory_fed);
       //_isLoadingRankingListIndiv_total_daily.value = false;
       _rankingListIndivList_view.value = _rankingListIndivList_fed_daily;
       _rankingListIndivMy_view.value = _rankingListIndivMy_fed_daily.value;
     } else if (tapName == '개인랭킹' && resortOrTotal == '전체스키장' && dayOrTotal == '누적' && selectedCategory_fed != '리그별 랭킹'){
       //_isLoadingRankingListIndiv_total.value = true;
-      await fetchRankingDataIndiv_fed(userId: _userViewModel.user.user_id,season: _friendDetailViewModel.seasonDate,federation: selectedCategory_fed);
+      await fetchRankingDataIndiv_fed(userId: _userViewModel.user.user_id,selected_season:  _selectedCategory_season_db.value,federation: selectedCategory_fed);
       //_isLoadingRankingListIndiv_total.value = false;
       _rankingListIndivList_view.value = _rankingListIndivList_fed;
       _rankingListIndivMy_view.value = _rankingListIndivMy_fed.value;
     } else if(tapName == '크루랭킹' && resortOrTotal == '개별스키장' && dayOrTotal == '일간'){
       //_isLoadingRankingListCrewList_resort_daily.value = true;
-      await fetchRankingDataCrew_resort_daily(userId: _userViewModel.user.user_id, resortId: resortNum,daily: true,season: _friendDetailViewModel.seasonDate);
+      await fetchRankingDataCrew_resort_daily(userId: _userViewModel.user.user_id, resortId: resortNum,daily: true,selected_season:  _selectedCategory_season_db.value);
       //_isLoadingRankingListCrewList_resort_daily.value = false;
       _rankingListCrewList_view.value = _rankingListCrewList_resort_daily;
       _rankingListCrewMy_view.value = _rankingListCrewMy_resort_daily.value;
     } else if (tapName == '크루랭킹' && resortOrTotal == '개별스키장' && dayOrTotal == '누적'){
       //_isLoadingRankingListCrewList_resort.value = true;
-      await fetchRankingDataCrew_resort(userId: _userViewModel.user.user_id, resortId: resortNum,season: _friendDetailViewModel.seasonDate);
+      await fetchRankingDataCrew_resort(userId: _userViewModel.user.user_id, resortId: resortNum,selected_season:  _selectedCategory_season_db.value);
       //_isLoadingRankingListCrewList_resort.value = false;
       _rankingListCrewList_view.value = _rankingListCrewList_resort;
       _rankingListCrewMy_view.value = _rankingListCrewMy_resort.value;
     } else if (tapName == '크루랭킹' && resortOrTotal == '전체스키장' && dayOrTotal == '일간' && selectedCategory_fed == '리그별 랭킹'){
       //_isLoadingRankingListCrewList_total_daily.value = true;
-      await fetchRankingDataCrew_total_daily(userId: _userViewModel.user.user_id,daily: true,season: _friendDetailViewModel.seasonDate);
+      await fetchRankingDataCrew_total_daily(userId: _userViewModel.user.user_id,daily: true,selected_season:  _selectedCategory_season_db.value);
       //_isLoadingRankingListCrewList_total_daily.value = false;
       _rankingListCrewList_view.value = _rankingListCrewList_total_daily;
       _rankingListCrewMy_view.value = _rankingListCrewMy_total_daily.value;
     } else if (tapName == '크루랭킹' && resortOrTotal == '전체스키장' && dayOrTotal == '누적' && selectedCategory_fed == '리그별 랭킹'){
       //_isLoadingRankingListCrewList_total.value = true;
-      await fetchRankingDataCrew_total(userId: _userViewModel.user.user_id,season: _friendDetailViewModel.seasonDate);
+      await fetchRankingDataCrew_total(userId: _userViewModel.user.user_id,selected_season:  _selectedCategory_season_db.value);
       //_isLoadingRankingListCrewList_total.value = false;
       _rankingListCrewList_view.value = _rankingListCrewList_total;
       _rankingListCrewMy_view.value = _rankingListCrewMy_total.value;
     } else if (tapName == '크루랭킹' && resortOrTotal == '전체스키장' && dayOrTotal == '일간' && selectedCategory_fed != '리그별 랭킹'){
       //_isLoadingRankingListCrewList_total_daily.value = true;
-      await fetchRankingDataCrew_fed_daily(userId: _userViewModel.user.user_id,daily: true,season: _friendDetailViewModel.seasonDate,federation: selectedCategory_fed);
+      await fetchRankingDataCrew_fed_daily(userId: _userViewModel.user.user_id,daily: true,selected_season:  _selectedCategory_season_db.value,federation: selectedCategory_fed);
       //_isLoadingRankingListCrewList_total_daily.value = false;
       _rankingListCrewList_view.value = _rankingListCrewList_fed_daily;
       _rankingListCrewMy_view.value = _rankingListCrewMy_fed_daily.value;
     } else if (tapName == '크루랭킹' && resortOrTotal == '전체스키장' && dayOrTotal == '누적' && selectedCategory_fed != '리그별 랭킹'){
       //_isLoadingRankingListCrewList_total.value = true;
-      await fetchRankingDataCrew_fed(userId: _userViewModel.user.user_id,season: _friendDetailViewModel.seasonDate,federation: selectedCategory_fed);
+      await fetchRankingDataCrew_fed(userId: _userViewModel.user.user_id,selected_season:  _selectedCategory_season_db.value,federation: selectedCategory_fed);
       //_isLoadingRankingListCrewList_total.value = false;
       _rankingListCrewList_view.value = _rankingListCrewList_fed;
       _rankingListCrewMy_view.value = _rankingListCrewMy_fed.value;
@@ -645,7 +648,7 @@ class RankingListViewModel_recordRoom extends GetxController {
     if(tapName == '개인랭킹' && resortOrTotal == '개별스키장' && dayOrTotal == '일간'){
       _isLoadingRankingListIndiv_total.value=true;
       _isLoadingRankingListIndiv_total_daily.value=true;
-      await fetchRankingDataIndiv_resort_daily(userId: _userViewModel.user.user_id, resortId: resortNum,daily: true,season: _friendDetailViewModel.seasonDate);
+      await fetchRankingDataIndiv_resort_daily(userId: _userViewModel.user.user_id, resortId: resortNum,daily: true,selected_season:  _selectedCategory_season_db.value);
       _isLoadingRankingListIndiv_total.value=false;
       _isLoadingRankingListIndiv_total_daily.value=false;
       _rankingListIndivList_view.value = _rankingListIndivList_resort_daily;
@@ -653,7 +656,7 @@ class RankingListViewModel_recordRoom extends GetxController {
     } else if (tapName == '개인랭킹' && resortOrTotal == '개별스키장' && dayOrTotal == '누적'){
       _isLoadingRankingListIndiv_total.value=true;
       _isLoadingRankingListIndiv_total_daily.value=true;
-      await fetchRankingDataIndiv_resort(userId: _userViewModel.user.user_id, resortId: resortNum,season: _friendDetailViewModel.seasonDate);
+      await fetchRankingDataIndiv_resort(userId: _userViewModel.user.user_id, resortId: resortNum,selected_season:  _selectedCategory_season_db.value);
       _isLoadingRankingListIndiv_total.value=false;
       _isLoadingRankingListIndiv_total_daily.value=false;
       _rankingListIndivList_view.value = _rankingListIndivList_resort;
@@ -693,7 +696,7 @@ class RankingListViewModel_recordRoom extends GetxController {
     } else if(tapName == '크루랭킹' && resortOrTotal == '개별스키장' && dayOrTotal == '일간'){
       _isLoadingRankingListCrewList_total.value=true;
       _isLoadingRankingListCrewList_total_daily.value=true;
-      await fetchRankingDataCrew_resort_daily(userId: _userViewModel.user.user_id, resortId: resortNum,daily: true,season: _friendDetailViewModel.seasonDate);
+      await fetchRankingDataCrew_resort_daily(userId: _userViewModel.user.user_id, resortId: resortNum,daily: true,selected_season:  _selectedCategory_season_db.value);
       _isLoadingRankingListCrewList_total.value=false;
       _isLoadingRankingListCrewList_total_daily.value=false;
       _rankingListCrewList_view.value = _rankingListCrewList_resort_daily;
@@ -701,7 +704,7 @@ class RankingListViewModel_recordRoom extends GetxController {
     } else if (tapName == '크루랭킹' && resortOrTotal == '개별스키장' && dayOrTotal == '누적'){
       _isLoadingRankingListCrewList_total.value=true;
       _isLoadingRankingListCrewList_total_daily.value=true;
-      await fetchRankingDataCrew_resort(userId: _userViewModel.user.user_id, resortId: resortNum,season: _friendDetailViewModel.seasonDate);
+      await fetchRankingDataCrew_resort(userId: _userViewModel.user.user_id, resortId: resortNum,selected_season:  _selectedCategory_season_db.value);
       _isLoadingRankingListCrewList_total.value=false;
       _isLoadingRankingListCrewList_total_daily.value=false;
       _rankingListCrewList_view.value = _rankingListCrewList_resort;
@@ -739,18 +742,18 @@ class RankingListViewModel_recordRoom extends GetxController {
     required int userId,
     int? resortId,
     bool? daily,
-    String? season,
+    String? selected_season,
     String? url, // URL 추가
     String? federation
   }) async {
     print('fetchRankingDataCrew_fed 시작');
     try {
       isLoading(true);
-      final response = await RankingAPI().fetchRankingData_crew(
+      final response = await RankingAPI().fetchRankingData_crew_recordRoom(
         userId: userId,
         resortId: resortId,
         daily: daily,
-        season: season,
+          selected_season: selected_season,
         url: url, // URL 전달
         federation: federation
       );
@@ -782,18 +785,18 @@ class RankingListViewModel_recordRoom extends GetxController {
     required int userId,
     int? resortId,
     bool? daily,
-    String? season,
+    String? selected_season,
     String? url, // URL 추가
     String? federation
   }) async {
     print('fetchRankingDataCrew_fed_daily 시작');
     try {
       isLoading(true);
-      final response = await RankingAPI().fetchRankingData_crew(
+      final response = await RankingAPI().fetchRankingData_crew_recordRoom(
         userId: userId,
         resortId: resortId,
         daily: daily,
-        season: season,
+          selected_season: selected_season,
         url: url, // URL 전달
         federation: federation
       );
@@ -825,18 +828,18 @@ class RankingListViewModel_recordRoom extends GetxController {
     required int userId,
     int? resortId,
     bool? daily,
-    String? season,
+    String? selected_season,
     String? url,
     String? federation
   }) async {
     print('fetchRankingDataIndiv_fed 시작');
     try {
       isLoading(true);
-      final response = await RankingAPI().fetchRankingData_indiv(
+      final response = await RankingAPI().fetchRankingData_indiv_recordRoom(
         userId: userId,
         resortId: resortId,
         daily: daily,
-        season: season,
+        selected_season: selected_season,
         url: url,
         federation: federation,
       );
@@ -868,18 +871,18 @@ class RankingListViewModel_recordRoom extends GetxController {
     required int userId,
     int? resortId,
     bool? daily,
-    String? season,
+    String? selected_season,
     String? url,
     String? federation
   }) async {
     print('fetchRankingDataIndiv_fed_daily 시작');
     try {
       isLoading(true);
-      final response = await RankingAPI().fetchRankingData_indiv(
+      final response = await RankingAPI().fetchRankingData_indiv_recordRoom(
         userId: userId,
         resortId: resortId,
         daily: daily,
-        season: season,
+        selected_season: selected_season,
         url: url,
         federation: federation
       );
@@ -912,17 +915,17 @@ class RankingListViewModel_recordRoom extends GetxController {
     required int userId,
     int? resortId,
     bool? daily,
-    String? season,
+    String? selected_season,
     String? url,
   }) async {
     print('fetchRankingDataIndiv_total 시작');
     try {
       isLoading(true);
-      final response = await RankingAPI().fetchRankingData_indiv(
+      final response = await RankingAPI().fetchRankingData_indiv_recordRoom(
         userId: userId,
         resortId: resortId,
         daily: daily,
-        season: season,
+        selected_season: selected_season,
         url: url,
       );
 
@@ -953,17 +956,17 @@ class RankingListViewModel_recordRoom extends GetxController {
     required int userId,
     int? resortId,
     bool? daily,
-    String? season,
+    String? selected_season,
     String? url,
   }) async {
     print('fetchRankingDataIndiv_resort 시작');
     try {
       isLoading(true);
-      final response = await RankingAPI().fetchRankingData_indiv(
+      final response = await RankingAPI().fetchRankingData_indiv_recordRoom(
         userId: userId,
         resortId: resortId,
         daily: daily,
-        season: season,
+        selected_season: selected_season,
         url: url,
       );
 
@@ -994,17 +997,17 @@ class RankingListViewModel_recordRoom extends GetxController {
     required int userId,
     int? resortId,
     bool? daily,
-    String? season,
+    String? selected_season,
     String? url,
   }) async {
     print('fetchRankingDataIndiv_total_daily 시작');
     try {
       isLoading(true);
-      final response = await RankingAPI().fetchRankingData_indiv(
+      final response = await RankingAPI().fetchRankingData_indiv_recordRoom(
         userId: userId,
         resortId: resortId,
         daily: daily,
-        season: season,
+        selected_season: selected_season,
         url: url,
       );
 
@@ -1036,17 +1039,17 @@ class RankingListViewModel_recordRoom extends GetxController {
     required int userId,
     int? resortId,
     bool? daily,
-    String? season,
+    String? selected_season,
     String? url,
   }) async {
     print('fetchRankingDataIndiv_resort_daily 시작');
     try {
       isLoading(true);
-      final response = await RankingAPI().fetchRankingData_indiv(
+      final response = await RankingAPI().fetchRankingData_indiv_recordRoom(
         userId: userId,
         resortId: resortId,
         daily: daily,
-        season: season,
+        selected_season: selected_season,
         url: url,
       );
 
@@ -1078,19 +1081,19 @@ class RankingListViewModel_recordRoom extends GetxController {
     required int userId,
     int? resortId,
     bool? daily,
-    String? season,
+    String? selected_season,
     String? url, // URL 추가
   }) async {
     print('fetchRankingDataCrew_total 시작');
     try {
       isLoading(true);
       print('크루전체 패치시작');
-      print(season);
-      final response = await RankingAPI().fetchRankingData_crew(
+      print(selected_season);
+      final response = await RankingAPI().fetchRankingData_crew_recordRoom(
         userId: userId,
         resortId: resortId,
         daily: daily,
-        season: season,
+        selected_season: selected_season,
         url: url, // URL 전달
       );
 
@@ -1121,18 +1124,18 @@ class RankingListViewModel_recordRoom extends GetxController {
     required int userId,
     int? resortId,
     bool? daily,
-    String? season,
+    String? selected_season,
     String? url, // URL 추가
   }) async {
     print('fetchRankingDataCrew_resort 시작');
 
     try {
       isLoading(true);
-      final response = await RankingAPI().fetchRankingData_crew(
+      final response = await RankingAPI().fetchRankingData_crew_recordRoom(
         userId: userId,
         resortId: resortId,
         daily: daily,
-        season: season,
+        selected_season: selected_season,
         url: url, // URL 전달
       );
 
@@ -1164,17 +1167,17 @@ class RankingListViewModel_recordRoom extends GetxController {
     required int userId,
     int? resortId,
     bool? daily,
-    String? season,
+    String? selected_season,
     String? url, // URL 추가
   }) async {
     print('fetchRankingDataCrew_total_daily 시작');
     try {
       isLoading(true);
-      final response = await RankingAPI().fetchRankingData_crew(
+      final response = await RankingAPI().fetchRankingData_crew_recordRoom(
         userId: userId,
         resortId: resortId,
         daily: daily,
-        season: season,
+        selected_season: selected_season,
         url: url, // URL 전달
       );
 
@@ -1205,17 +1208,17 @@ class RankingListViewModel_recordRoom extends GetxController {
     required int userId,
     int? resortId,
     bool? daily,
-    String? season,
+    String? selected_season,
     String? url, // URL 추가
   }) async {
     print('fetchRankingDataCrew_resort_daily 시작');
     try {
       isLoading(true);
-      final response = await RankingAPI().fetchRankingData_crew(
+      final response = await RankingAPI().fetchRankingData_crew_recordRoom(
         userId: userId,
         resortId: resortId,
         daily: daily,
-        season: season,
+        selected_season: selected_season,
         url: url, // URL 전달
       );
 
@@ -1248,6 +1251,11 @@ class RankingListViewModel_recordRoom extends GetxController {
 
   void changeCategory_season(value) {
     _selectedCategory_season.value = value;
+    if(value=='24/25시즌')
+    _selectedCategory_season_db.value = '2425';
+    if(value=='23/24시즌')
+      _selectedCategory_season_db.value = '2324';
+
   }
 
   void changeCategory_fed(value) {
@@ -1258,9 +1266,9 @@ class RankingListViewModel_recordRoom extends GetxController {
 }
 
 enum RankingFilter_season {
-  season2425("24/25시즌", ""),
-  season2324("23/24시즌", ""),
-  initial("24/25시즌","");
+  season2425("24/25시즌", "2425"),
+  season2324("23/24시즌", "2324"),
+  initial("24/25시즌","2425");
 
   final String korean;
   final String english;

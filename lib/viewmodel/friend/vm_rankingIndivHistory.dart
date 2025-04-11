@@ -18,9 +18,12 @@ class RankingIndivHistoryViewModel extends GetxController {
 
   List<RankingUserBeta> get rankingListIndivBetaList => _rankingListIndivBetaList;
 
-  String get nextPageUrlIndivBeta => _nextPageUrlIndivBeta.value;
-
   ScrollController scrollControllerIndivBeta = ScrollController();
+
+  RxString _selectedCategory_season = '24/25시즌'.obs;
+
+  String get selectedCategory_season => _selectedCategory_season.value;
+  String get nextPageUrlIndivBeta => _nextPageUrlIndivBeta.value;
 
   @override
   void onInit() async{
@@ -68,5 +71,10 @@ class RankingIndivHistoryViewModel extends GetxController {
     }
   }
 
+  void changeCategory_season(value) {
+    _selectedCategory_season.value = value;
+  }
+
 
 }
+

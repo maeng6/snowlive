@@ -212,27 +212,125 @@ class ForestParkExchangeHistoryView extends StatelessWidget {
                                           ),
                                         ),
 
-                                        SizedBox(height: 20),
-                                        QrImageView(
-                                          data: record.recordId.toString(),
-                                          version: QrVersions.auto,
-                                          size: 200,
-                                          backgroundColor: Colors.white,
+                                        SizedBox(height: 40),
+                                        Container(
+                                          decoration: BoxDecoration(
+                                            border: Border.all(
+                                              color: Color(0xFF073819), // 테두리 색상
+                                              width: 6,            // 테두리 두께
+                                            ),
+                                          ),
+                                          child: QrImageView(
+                                            data: record.recordId.toString(),
+                                            version: QrVersions.auto,
+                                            size: 260,
+                                            backgroundColor: Colors.white,
+                                          ),
                                         ),
                                         SizedBox(
-                                          height: 10,
+                                          height: 20,
                                         ),
                                         Text(
-                                          '경품 수령을 위해 아래 QR 코드를 스캔해주세요!',
+                                          '경품 수령처에서 QR 코드를 스캔하고\n경품을 수령해 주세요!',
                                           style: TextStyle(
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.black,
+                                            fontSize: 13,
+                                            fontWeight: FontWeight.normal,
+                                            color: SDSColor.snowliveWhite,
                                           ),
                                           textAlign: TextAlign.center,
                                         ),
                                         SizedBox(
-                                          height: 20,
+                                          height: 60,
+                                        ),
+                                        Container(
+                                          padding: EdgeInsets.all(12),
+                                          decoration: BoxDecoration(
+                                            color: Colors.black.withOpacity(0.4),
+                                            borderRadius: BorderRadius.circular(8),
+                                          ),
+                                          child: Row(
+                                            children: [
+                                              ClipRRect(
+                                                borderRadius: BorderRadius.circular(4),
+                                                child: ExtendedImage.network(
+                                                  record.leafItem?.imageUrl ?? '',
+                                                  enableMemoryCache: true,
+                                                  borderRadius: BorderRadius.circular(4),
+                                                  width: 48,
+                                                  height: 48,
+                                                  fit: BoxFit.cover,
+                                                  loadStateChanged: (ExtendedImageState state) {
+                                                    switch (state.extendedImageLoadState) {
+                                                      case LoadState.loading:
+                                                      // 로딩 중일 때 로딩 인디케이터를 표시
+                                                        return Shimmer.fromColors(
+                                                          baseColor: SDSColor.gray200!,
+                                                          highlightColor: SDSColor.gray50!,
+                                                          child: Container(
+                                                            width: 48,
+                                                            height: 48,
+                                                            decoration: BoxDecoration(
+                                                              color: Colors.white,
+                                                              borderRadius: BorderRadius.circular(4),
+                                                            ),
+                                                          ),
+                                                        );
+                                                      case LoadState.completed:
+                                                      // 로딩이 완료되었을 때 이미지 반환
+                                                        return state.completedWidget;
+                                                      case LoadState.failed:
+                                                      // 로딩이 실패했을 때 대체 이미지 또는 다른 처리
+                                                        return Image.asset(
+                                                          'assets/imgs/profile/img_profile_default_.png',
+                                                          width: 48,
+                                                          height: 48,
+                                                          fit: BoxFit.cover,
+                                                        );
+                                                    }
+                                                  },
+                                                ),
+                                              ),
+                                              SizedBox(width: 12),
+                                              Expanded(
+                                                child: Column(
+                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                  children: [
+                                                    Text(
+                                                      record.leafItem?.name ?? '상품 이름',
+                                                      style: SDSTextStyle.bold.copyWith(
+                                                        fontSize: 14,
+                                                        color: Colors.white,
+                                                      ),
+                                                    ),
+                                                    Row(children: [
+                                                      Text(
+                                                        '초록열매 ${record.leafItem?.leafKind1Count ?? 0}개',
+                                                        style: SDSTextStyle.regular.copyWith(
+                                                          fontSize: 12,
+                                                          color: Colors.white.withOpacity(0.5),
+                                                        ),
+                                                      ),
+                                                      Text(
+                                                        ' / ',
+                                                        style: SDSTextStyle.regular.copyWith(
+                                                          fontSize: 12,
+                                                          color: Colors.white.withOpacity(0.5),
+                                                        ),
+                                                      ),
+                                                      Text(
+                                                        '황금열매 ${record.leafItem?.leafKind2Count ?? 0}개',
+                                                        style: SDSTextStyle.regular.copyWith(
+                                                          fontSize: 12,
+                                                          color: Colors.white.withOpacity(0.5),
+                                                        ),
+                                                      ),
+                                                    ],),
+
+                                                  ],
+                                                ),
+                                              ),
+                                            ],
+                                          ),
                                         ),
                                       ],
                                     ),

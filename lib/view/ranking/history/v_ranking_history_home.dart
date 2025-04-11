@@ -274,17 +274,12 @@ class RankingHistoryHomeView extends StatelessWidget {
                                     );
                                   });
                             },
-                            child: (_rankingListViewModel_recordRoom.resortOrTotal != '전체스키장') ? Image.asset(
+                            child:  Image.asset(
                               'assets/imgs/icons/icon_check_round.png',
                               fit: BoxFit.cover,
                               width: 16,
                               height: 16,
-                            ) : Image.asset(
-                              'assets/imgs/icons/icon_check_round_black.png',
-                              fit: BoxFit.cover,
-                              width: 16,
-                              height: 16,
-                            ),
+                            )
                           ),
                         ),
                       ],

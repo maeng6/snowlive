@@ -195,6 +195,37 @@ class RankingAPI {
     }
   }
 
+  Future<ApiResponse> fetchRankingData_indiv_recordRoom({
+    required int userId,
+    int? resortId,
+    bool? daily,
+    String? selected_season,
+    String? url,
+    String? federation
+  }) async {
+    final uri = url != null
+        ? Uri.parse(url)
+        : Uri.parse('$baseUrl/list-recordroom-indiv/').replace(
+      queryParameters: {
+        'user_id': userId.toString(),
+        if (resortId != null) 'resort_id': resortId.toString(),
+        if (daily != null) 'daily': daily.toString(),
+        if (selected_season != null) 'selected_season': selected_season,
+        if (federation != null) 'federation': federation,
+      },
+    );
+
+    final response = await http.get(uri);
+
+    if (response.statusCode == 200) {
+      final data = json.decode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
+      return ApiResponse.success(data);
+    } else {
+      final data = json.decode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
+      return ApiResponse.error(data);
+    }
+  }
+
   Future<ApiResponse> fetchRankingData_indiv_beta({
     int? userId,  // 선택적으로 userId를 받을 수 있도록 변경
     String? url,
@@ -235,6 +266,37 @@ class RankingAPI {
         if (resortId != null) 'resort_id': resortId.toString(),
         if (daily != null) 'daily': daily.toString(),
         if (season != null) 'season': season,
+        if (federation != null) 'federation': federation,
+      },
+    );
+
+    final response = await http.get(uri);
+
+    if (response.statusCode == 200) {
+      final data = json.decode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
+      return ApiResponse.success(data);
+    } else {
+      final data = json.decode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
+      return ApiResponse.error(data);
+    }
+  }
+
+  Future<ApiResponse> fetchRankingData_crew_recordRoom({
+    required int userId,
+    int? resortId,
+    bool? daily,
+    String? selected_season,
+    String? url,
+    String? federation
+  }) async {
+    final uri = url != null
+        ? Uri.parse(url)
+        : Uri.parse('$baseUrl/list-recordroom-crew/').replace(
+      queryParameters: {
+        'user_id': userId.toString(),
+        if (resortId != null) 'resort_id': resortId.toString(),
+        if (daily != null) 'daily': daily.toString(),
+        if (selected_season != null) 'selected_season': selected_season,
         if (federation != null) 'federation': federation,
       },
     );

@@ -335,6 +335,7 @@ class AppRoutes {
     GetPage(
         name: rankingIndivHistoryHome,
         page: () => RankingIndivHistoryHomeView(),
+        binding: IndivHistoryHome()
     ),
     GetPage(
         name: setting_moreTab,

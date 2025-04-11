@@ -20,6 +20,7 @@ import 'package:com.snowlive/viewmodel/fleamarket/vm_fleamarketUpload.dart';
 import 'package:com.snowlive/viewmodel/forestPark/vm_forestPark.dart';
 import 'package:com.snowlive/viewmodel/friend/vm_friendDetail.dart';
 import 'package:com.snowlive/viewmodel/friend/vm_friendDetailUpdate.dart';
+import 'package:com.snowlive/viewmodel/friend/vm_friendDetail_recordRoom.dart';
 import 'package:com.snowlive/viewmodel/friend/vm_friendList.dart';
 import 'package:com.snowlive/viewmodel/friend/vm_rankingIndivHistory.dart';
 import 'package:com.snowlive/viewmodel/onboarding_login/vm_login.dart';
@@ -211,6 +212,7 @@ class IndivHistoryHome extends Bindings {
   @override
   void dependencies() {
     Get.put(RankingIndivHistoryViewModel());
+    Get.put(FriendDetailViewModel_recordRoom());
   }
 }
 

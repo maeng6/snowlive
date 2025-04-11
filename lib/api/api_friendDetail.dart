@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:com.snowlive/model/m_friendDetail.dart';
+import 'package:com.snowlive/model/m_friendDetail_recordRoom.dart';
 import 'package:http/http.dart' as http;
 import 'ApiResponse.dart';
 
@@ -20,6 +21,26 @@ class FriendDetailAPI {
     if (response.statusCode == 200) {
       final data = json.decode(utf8.decode(response.bodyBytes));
       return ApiResponse.success(FriendDetailModel.fromJson(data));
+    } else {
+      final data = json.decode(utf8.decode(response.bodyBytes));
+      return ApiResponse.error(data);
+    }
+  }
+
+  Future<ApiResponse> fetchFriendDetail_recordRoom(int userId, int friendUserId, String selected_season) async {
+    final Uri uri = Uri.parse('$baseUrl/recordroom/').replace(
+      queryParameters: {
+        'user_id': userId.toString(),
+        'friend_user_id': friendUserId.toString(),
+        'selected_season': selected_season,
+      },
+    );
+
+    final response = await http.get(uri);
+
+    if (response.statusCode == 200) {
+      final data = json.decode(utf8.decode(response.bodyBytes));
+      return ApiResponse.success(FriendDetailModel_recordRoom.fromJson(data));
     } else {
       final data = json.decode(utf8.decode(response.bodyBytes));
       return ApiResponse.error(data);

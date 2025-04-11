@@ -81,7 +81,7 @@ class _ForestParkHomeState extends State<ForestParkHome> {
 
             // ⬇️ 설명
             Text(
-              '모험키트에서 참여코드를 확인하여 입력하고\n포레스트 파크에서 모험을 시작해 보세요!',
+              '구매하신 참여코드를 확인하여 입력하고\n포레스트 파크에서 모험을 시작해 보세요!',
               style: TextStyle(
                 fontSize: 12,
                 color: Colors.white.withOpacity(0.5),
@@ -147,25 +147,54 @@ class _ForestParkHomeState extends State<ForestParkHome> {
                     // ✅ 참여 성공 다이얼로그
                     Get.dialog(
                       AlertDialog(
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                        title: Text('참여 완료', style: TextStyle(fontWeight: FontWeight.bold)),
-                        content: Text('이벤트 참여가 완료되었습니다!\n퀴즈를 풀고 황금열매를 모아보세요.'),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16), // ✅ 보더레디우스 16
+                        ),
+                        title: Center(
+                          child: Text(
+                            '참여 완료',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18,
+                              color: Colors.black,
+                            ),
+                          ),
+                        ),
+                        content: Text(
+                          '이벤트 참여가 완료되었습니다!\n퀴즈를 풀고 황금열매를 모아보세요.',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.grey[800],
+                          ),
+                        ),
+                        actionsPadding: EdgeInsets.only(bottom: 16),
                         actions: [
                           Center(
-                            child: TextButton(
+                            child: ElevatedButton(
                               onPressed: () {
                                 Get.back(); // 다이얼로그 닫기
                                 Get.back(); // 바텀시트 닫기
                               },
-                              style: TextButton.styleFrom(
-                                foregroundColor: SDSColor.snowliveBlue,
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Color(0xFF127721),
+                                foregroundColor: Colors.white,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(6),
+                                ),
+                                minimumSize: Size(200, 44), // ✅ 버튼 사이즈
                               ),
-                              child: Text('확인', style: TextStyle(fontWeight: FontWeight.bold)),
+                              child: Text(
+                                '확인',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 15,
+                                ),
+                              ),
                             ),
-                          )
+                          ),
                         ],
                       ),
-                      barrierDismissible: false,
                     );
                   } else {
                     _codeErrorMessage.value = '유효하지 않은 참여코드입니다';

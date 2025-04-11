@@ -36,84 +36,168 @@ class _QuizPageForestParkState extends State<QuizPageForestPark> {
 
     Get.bottomSheet(
       Container(
-        padding: const EdgeInsets.all(20),
-        decoration: const BoxDecoration(
-          color: Colors.white,
+        constraints: BoxConstraints(
+          minHeight: MediaQuery.of(context).size.height * 0.35, // ✅ 높이 확보
+        ),
+        padding: const EdgeInsets.fromLTRB(24, 12, 24, 32), // 🔼 top padding 줄임
+        decoration: BoxDecoration(
+          color: Color(0xFF0B5E2A),
           borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            const Text(
-              '참여코드를 입력해주세요',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 12),
-            TextField(
-              controller: _codeController,
-              onChanged: (_) => _codeErrorMessage.value = '',
-              decoration: const InputDecoration(
-                hintText: '참여코드',
-                border: OutlineInputBorder(),
-                contentPadding: EdgeInsets.symmetric(horizontal: 12),
+            // ⬆️ 상단 핸들
+            Container(
+              width: 36,
+              height: 4,
+              margin: EdgeInsets.only(bottom: 20),
+              decoration: BoxDecoration(
+                color: Color(0xFFD9D9D9),
+                borderRadius: BorderRadius.circular(10),
               ),
             ),
-            Obx(() {
-              if (_codeErrorMessage.value.isEmpty) return const SizedBox.shrink();
-              return Padding(
-                padding: const EdgeInsets.only(top: 8),
-                child: Text(
-                  _codeErrorMessage.value,
-                  style: const TextStyle(color: Colors.red, fontSize: 12),
+
+            // ⬆️ 타이틀
+            Text(
+              '이벤트 참여 코드를 입력해주세요!',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 10),
+
+            // ⬇️ 설명
+            Text(
+              '구매하신 참여코드를 확인하여 입력하고\n포레스트 파크에서 모험을 시작해 보세요!',
+              style: TextStyle(
+                fontSize: 12,
+                color: Colors.white.withOpacity(0.5),
+              ),
+              textAlign: TextAlign.center,
+            ),
+
+            const SizedBox(height: 25),
+
+            // ⌨️ 텍스트 입력
+            Container(
+              decoration: BoxDecoration(
+                color: Color(0xFF0D2415).withOpacity(0.4),
+                borderRadius: BorderRadius.circular(6),
+              ),
+              padding: EdgeInsets.symmetric(horizontal: 12),
+              child: TextField(
+                controller: _codeController,
+                onChanged: (_) => _codeErrorMessage.value = '',
+                style: TextStyle(color: Colors.white),
+                decoration: InputDecoration(
+                  hintText: '참여코드를 입력해 주세요',
+                  hintStyle: TextStyle(fontSize: 14, color: Colors.white.withOpacity(0.5)),
+                  border: InputBorder.none,
                 ),
-              );
-            }),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () async {
-                final code = _codeController.text.trim();
-                if (code.isEmpty) {
-                  _codeErrorMessage.value = '참여코드를 입력해주세요';
-                  return;
-                }
+              ),
+            ),
 
-                CustomFullScreenDialog.showDialog();
-                final result = await _forestParkViewModel.registerParticipant(
-                  code: code,
-                  eventDate: eventDate,
-                );
-                CustomFullScreenDialog.cancelDialog();
+            Obx(() => _codeErrorMessage.value.isEmpty
+                ? SizedBox.shrink()
+                : Padding(
+              padding: const EdgeInsets.only(top: 8),
+              child: Text(
+                _codeErrorMessage.value,
+                style: TextStyle(color: Colors.red, fontSize: 12),
+              ),
+            )),
 
-                if (result) {
-                  // ✅ 참여 성공 다이얼로그
-                  Get.dialog(
-                    AlertDialog(
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                      title: Text('참여 완료', style: TextStyle(fontWeight: FontWeight.bold)),
-                      content: Text('이벤트 참여가 완료되었습니다!\n퀴즈를 풀고 황금열매를 모아보세요.'),
-                      actions: [
-                        Center(
-                          child: TextButton(
-                            onPressed: () {
-                              Get.back(); // 다이얼로그 닫기
-                              Get.back(); // 바텀시트 닫기
-                            },
-                            style: TextButton.styleFrom(
-                              foregroundColor: SDSColor.snowliveBlue,
+            const SizedBox(height: 45),
+
+            // ✅ 버튼
+            SizedBox(
+              width: double.infinity,
+              height: 50,
+              child: ElevatedButton(
+                onPressed: () async {
+                  final code = _codeController.text.trim();
+                  if (code.isEmpty) {
+                    _codeErrorMessage.value = '참여코드를 입력해주세요';
+                    return;
+                  }
+
+                  CustomFullScreenDialog.showDialog();
+                  final result = await _forestParkViewModel.registerParticipant(code: code, eventDate: eventDate);
+                  CustomFullScreenDialog.cancelDialog();
+
+                  if (result) {
+                    // ✅ 참여 성공 다이얼로그
+                    Get.dialog(
+                      AlertDialog(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16), // ✅ 보더레디우스 16
+                        ),
+                        title: Center(
+                          child: Text(
+                            '참여 완료',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18,
+                              color: Colors.black,
                             ),
-                            child: Text('확인', style: TextStyle(fontWeight: FontWeight.bold)),
                           ),
-                        )
-                      ],
-                    ),
-                    barrierDismissible: false,
-                  );
-                } else {
-                  _codeErrorMessage.value = '유효하지 않은 참여코드입니다';
-                }
-              },
-              child: const Text('등록하기'),
-            )
+                        ),
+                        content: Text(
+                          '이벤트 참여가 완료되었습니다!\n퀴즈를 풀고 황금열매를 모아보세요.',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.grey[800],
+                          ),
+                        ),
+                        actionsPadding: EdgeInsets.only(bottom: 16),
+                        actions: [
+                          Center(
+                            child: ElevatedButton(
+                              onPressed: () {
+                                Get.back(); // 다이얼로그 닫기
+                                Get.back(); // 바텀시트 닫기
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Color(0xFF127721),
+                                foregroundColor: Colors.white,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(6),
+                                ),
+                                minimumSize: Size(200, 44), // ✅ 버튼 사이즈
+                              ),
+                              child: Text(
+                                '확인',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 15,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  } else {
+                    _codeErrorMessage.value = '유효하지 않은 참여코드입니다';
+                  }
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.white,
+                  foregroundColor: Colors.black,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+                ),
+                child: Text(
+                  '포레스트 파크 시작하기',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                ),
+              ),
+            ),
           ],
         ),
       ),
@@ -148,42 +232,204 @@ class _QuizPageForestParkState extends State<QuizPageForestPark> {
     final result = _forestParkViewModel.answerResult.value.trim();
 
     if (result == '미참여') {
-      Get.defaultDialog(
-        title: '참여코드 필요',
-        middleText: '이벤트에 참여하려면 참여코드를 먼저 등록해야 해요!',
-        confirm: ElevatedButton(
-          onPressed: () {
-            Get.back(); // 닫기
-            _showCodeInputBottomSheet(_forestParkViewModel.eventDate.value); // 참여코드 입력 창 띄우기
-          },
-          child: const Text('참여코드 입력하기'),
+      Get.dialog(
+        AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16), // ✅ 보더레디우스 16
+          ),
+          title: Center(
+            child: Text(
+              '참여코드 필요',
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: Colors.black,
+              ),
+            ),
+          ),
+          content: Text(
+            '이벤트에 참여하려면\n참여코드를 먼저 등록해야 해요!',
+            textAlign: TextAlign.center,
+            style: TextStyle(fontSize: 14, color: Colors.grey[800]),
+          ),
+          actionsPadding: EdgeInsets.only(bottom: 16),
+          actions: [
+            Center(
+              child: ElevatedButton(
+                onPressed: () {
+                  Get.back(); // 다이얼로그 닫기
+                  _showCodeInputBottomSheet(_forestParkViewModel.eventDate.value); // 참여코드 입력창 띄우기
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Color(0xFF127721), // 너네 앱 색상
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(5),
+                  ),
+                  minimumSize: Size(200, 44), // ✅ 버튼 넓이 고정
+                ),
+                child: Text(
+                  '참여코드 입력하기',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+              ),
+            ),
+          ],
         ),
       );
     } else if (result == '정답') {
-      Get.snackbar(
-        '정답!',
-        '${quiz.leafColor ?? ""} 나뭇잎 ${quiz.leafCount ?? 0}개가 지급되었습니다 🎉',
-        snackPosition: SnackPosition.BOTTOM,
+      final colorKor = (quiz.leafColor == 'green')
+          ? '초록열매'
+          : (quiz.leafColor == 'gold')
+          ? '황금열매'
+          : '';
+      Get.dialog(
+        AlertDialog(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          title: Center(
+            child: Text(
+              '정답입니다!',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+          ),
+          content: Text(
+            '$colorKor ${quiz.leafCount ?? 0}개를 획득했어요!',
+            textAlign: TextAlign.center,
+            style: TextStyle(fontSize: 14, color: Colors.black87),
+          ),
+          actionsPadding: EdgeInsets.only(bottom: 16),
+          actions: [
+            Center(
+              child: ElevatedButton(
+                onPressed: () {
+                  Get.back(); // 팝업 닫기
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Color(0xFF127721),
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(5),
+                  ),
+                  minimumSize: Size(200, 44),
+                ),
+                child: Text('확인', style: TextStyle(fontWeight: FontWeight.bold)),
+              ),
+            ),
+          ],
+        ),
       );
     } else if (result == '오답') {
-      Get.snackbar(
-        '아쉬워요',
-        '오답입니다. 다시 도전해보세요!',
-        snackPosition: SnackPosition.BOTTOM,
+      Get.dialog(
+        AlertDialog(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          title: Center(
+            child: Text(
+              '아쉬워요!',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+          ),
+          content: Text(
+            '오답입니다. 다시 도전해 보세요!',
+            textAlign: TextAlign.center,
+            style: TextStyle(fontSize: 14, color: Colors.black87),
+          ),
+          actionsPadding: EdgeInsets.only(bottom: 16),
+          actions: [
+            Center(
+              child: ElevatedButton(
+                onPressed: () {
+                  Get.back();
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Color(0xFF127721),
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(5),
+                  ),
+                  minimumSize: Size(200, 44),
+                ),
+                child: Text('확인', style: TextStyle(fontWeight: FontWeight.bold)),
+              ),
+            ),
+          ],
+        ),
       );
     } else if (result == '중복제출') {
-      Get.snackbar(
-        '이미 참여한 퀴즈입니다.',
-        '다른 퀴즈를 찾아 도전해보세요!',
-        snackPosition: SnackPosition.BOTTOM,
+      Get.dialog(
+        AlertDialog(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          title: Center(
+            child: Text(
+              '이미 참여한 퀴즈에요!',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+          ),
+          content: Text(
+            '이미 제출한 퀴즈입니다.\n다른 퀴즈에 도전해 보세요!',
+            textAlign: TextAlign.center,
+            style: TextStyle(fontSize: 14, color: Colors.black87),
+          ),
+          actionsPadding: EdgeInsets.only(bottom: 16),
+          actions: [
+            Center(
+              child: ElevatedButton(
+                onPressed: () {
+                  Get.back();
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Color(0xFF127721),
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(5),
+                  ),
+                  minimumSize: Size(200, 44),
+                ),
+                child: Text('확인', style: TextStyle(fontWeight: FontWeight.bold)),
+              ),
+            ),
+          ],
+        ),
+        barrierDismissible: false,
       );
     } else {
-      Get.snackbar(
-        '알림',
-        result.isNotEmpty ? result : '서버로부터 응답을 받지 못했습니다.',
-        snackPosition: SnackPosition.BOTTOM,
+      Get.dialog(
+        AlertDialog(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          title: Center(
+            child: Text(
+              '알림',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+          ),
+          content: Text(
+            result.isNotEmpty ? result : '서버로부터 응답을 받지 못했습니다.',
+            textAlign: TextAlign.center,
+            style: TextStyle(fontSize: 14, color: Colors.black87),
+          ),
+          actionsPadding: EdgeInsets.only(bottom: 16),
+          actions: [
+            Center(
+              child: ElevatedButton(
+                onPressed: () {
+                  Get.back();
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.black87,
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(6),
+                  ),
+                  minimumSize: Size(200, 44),
+                ),
+                child: Text('확인', style: TextStyle(fontWeight: FontWeight.bold)),
+              ),
+            ),
+          ],
+        ),
+        barrierDismissible: false,
       );
     }
+
   }
 
   @override
@@ -191,9 +437,26 @@ class _QuizPageForestParkState extends State<QuizPageForestPark> {
     final quiz = _forestParkViewModel.quizDetail.value;
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('퀴즈'),
-        centerTitle: true,
+      backgroundColor: Color(0xFF12341E),
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(44),
+        child: AppBar(
+          elevation: 0,
+          surfaceTintColor: Colors.transparent,
+          backgroundColor: Color(0xFF12341E),
+          leading: GestureDetector(
+            child: Image.asset(
+              'assets/imgs/icons/icon_snowLive_back.png',
+              color: SDSColor.snowliveWhite,
+              scale: 4,
+              width: 26,
+              height: 26,
+            ),
+            onTap: () {
+              Get.back();
+            },
+          ),
+        ),
       ),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
@@ -206,19 +469,53 @@ class _QuizPageForestParkState extends State<QuizPageForestPark> {
         ),
       )
           : ListView(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(32),
         children: [
-          if (quiz.imgUrlAd != null && quiz.imgUrlAd!.isNotEmpty)
-            ClipRRect(
-              borderRadius: BorderRadius.circular(12),
-              child: Image.network(quiz.imgUrlAd!),
+          Center(
+            child: Container(
+              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 6), // 내부 여백
+              decoration: BoxDecoration(
+                color: Color(0xFF132A18), // 이미지 속 배경색 (진한 초록 계열)
+                borderRadius: BorderRadius.circular(40), // pill 형태로 둥글게
+              ),
+              child: Text(
+                '퀴즈',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 15,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
             ),
-          const SizedBox(height: 20),
-          Text(
-            quiz.question ?? '',
-            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 20),
+          if (quiz.imgUrl != null && quiz.imgUrl!.isNotEmpty)
+            Center(
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(5),
+                child: Image.network(quiz.imgUrl!),
+              ),
+            ),
+          if (quiz.imgUrl != null && quiz.imgUrl!.isNotEmpty)
+            const SizedBox(height: 40),
+          Center(
+            child: Text(
+              quiz.question ?? '',
+              textAlign: TextAlign.center,
+              style: TextStyle(color: SDSColor.snowliveWhite, fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+          ),
+          const SizedBox(height: 20),
+          Center(
+            child: Text('아래 보기 중 정답을 선택 후 제출해 주세요!',
+              style: TextStyle(
+                  color: Colors.white.withOpacity(0.5),
+                  fontSize: 12,
+                  fontWeight: FontWeight.normal
+              ),
+            ),
+          ),
+          const SizedBox(height: 40),
           ...List.generate(4, (index) {
             final option = [
               quiz.option1,
@@ -236,29 +533,53 @@ class _QuizPageForestParkState extends State<QuizPageForestPark> {
                 margin: const EdgeInsets.only(bottom: 12),
                 padding: const EdgeInsets.all(14),
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(8),
+                  borderRadius: BorderRadius.circular(6),
                   color: _selectedIndex == index
-                      ? Colors.blue.shade100
-                      : Colors.grey.shade100,
-                  border: Border.all(
-                    color: _selectedIndex == index
-                        ? Colors.blue
-                        : Colors.grey.shade300,
-                  ),
+                      ? Color(0xFF127721)
+                      : Color(0xFF0D2415),
                 ),
                 child: Text(
                   option ?? '',
-                  style: const TextStyle(fontSize: 16),
+                  style: TextStyle(
+                      fontSize: 15,
+                      color: SDSColor.snowliveWhite
+                  ),
+                  textAlign: TextAlign.center,
                 ),
               ),
             );
           }),
-          const SizedBox(height: 24),
+          const SizedBox(height: 25),
+          if (quiz.imgUrlAd != null && quiz.imgUrlAd!.isNotEmpty)
+            Center(
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(5),
+                child: Image.network(
+                  quiz.imgUrlAd!,
+                  height: 90, // ✅ 띠배너 느낌
+                  width: double.infinity,
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ),
+
+          const SizedBox(height: 25),
           ElevatedButton(
             onPressed: _submitAnswer,
-            child: const Text('정답 제출'),
+            child: const Text(
+              '정답 제출하기',
+              style: TextStyle(
+                  color: Colors.black, // 글자색 검정
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16
+              ),
+            ),
             style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.white, // 버튼 배경 흰색
               padding: const EdgeInsets.symmetric(vertical: 16),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(5), // 보더레디우스 5
+              ),
             ),
           ),
         ],
