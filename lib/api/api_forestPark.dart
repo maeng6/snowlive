@@ -52,7 +52,6 @@ class ForestParkAPI {
     }
   }
 
-  // 퀴즈 정답 제출
   Future<ApiResponse> submitQuizAnswer(Map<String, dynamic> body) async {
     final response = await http.post(
       Uri.parse('$baseUrl/quiz/answer/'),
@@ -60,9 +59,21 @@ class ForestParkAPI {
       body: jsonEncode(body),
     );
 
+    print('🔍 상태코드: ${response.statusCode}');
+    print('📥 원본 응답: ${response.body}');
+
     final data = json.decode(utf8.decode(response.bodyBytes));
-    return ApiResponse.success(data);
+
+    if (response.statusCode == 200 || response.statusCode == 409 || response.statusCode == 208) {
+      return ApiResponse.success(data);
+    } else {
+      return ApiResponse.error({
+        'message': '오류가 발생했습니다.',
+        'result': '',
+      });
+    }
   }
+
 
   // 교환소 아이템 목록 조회
   Future<ApiResponse> fetchLeafItems(int eventDate) async {
@@ -77,7 +88,7 @@ class ForestParkAPI {
   // 아이템 교환 시도
   Future<ApiResponse> tryBuyItem(Map<String, dynamic> body) async {
     final response = await http.post(
-      Uri.parse('$baseUrl/buy/item/'),
+      Uri.parse('$baseUrl/leaf/item/buy/'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode(body),
     );
@@ -93,7 +104,7 @@ class ForestParkAPI {
   // 교환 내역 조회
   Future<ApiResponse> fetchBuyRecords(String userId) async {
     final response = await http.get(
-      Uri.parse('$baseUrl/buy/list/?user_id=$userId'),
+      Uri.parse('$baseUrl/leaf/buy/list/?user_id=$userId'),
     );
 
     final data = json.decode(utf8.decode(response.bodyBytes));

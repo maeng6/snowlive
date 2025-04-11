@@ -31,6 +31,9 @@ import 'package:com.snowlive/view/ranking/v_settingGuide_ios.dart';
 import 'package:com.snowlive/view/ranking/v_snowballShop_buyRecord.dart';
 import 'package:com.snowlive/view/resortHome/v_alarmCenter.dart';
 import 'package:com.snowlive/view/ranking/v_snowballShop.dart';
+import 'package:com.snowlive/view/v_forestParkShop.dart';
+import 'package:com.snowlive/view/v_forestParkShop_buyRecord.dart';
+import 'package:com.snowlive/view/v_home_forestPark.dart';
 import 'package:com.snowlive/view/v_profileImageScreen.dart';
 import 'package:com.snowlive/view/crew/v_crewHome.dart';
 import 'package:com.snowlive/view/crew/v_crewMain.dart';
@@ -52,6 +55,8 @@ import 'package:com.snowlive/view/friend/v_searchFriend.dart';
 import 'package:com.snowlive/view/onboarding/v_setProfile.dart';
 import 'package:com.snowlive/view/onboarding/v_tos.dart';
 import 'package:com.snowlive/view/resortHome/v_resortHome.dart';
+import 'package:com.snowlive/view/v_qrScanner_forestPark.dart';
+import 'package:com.snowlive/view/v_quizScreen_forestPark.dart';
 import 'package:get/get.dart';
 import 'bindings.dart';
 
@@ -112,6 +117,11 @@ class AppRoutes {
   static const String crewMemberRankingList = '/crewMemberRankingList';
   static const String snowballExchangeHistoryView = '/snowballExchangeHistoryView';
   static const String rewardExchangeView = '/rewardExchangeView';
+  static const String forestParkHome = '/forestParkHome';
+  static const String quizPageForestPark = '/quizPageForestPark';
+  static const String qrScannerForestPark = '/qrScannerForestPark';
+  static const String forestParkShop = '/forestParkShop';
+  static const String forestParkExchangeHistory = '/forestParkExchangeHistory';
 
 
 
@@ -320,11 +330,11 @@ class AppRoutes {
     GetPage(
       name: rankingHistoryHome,
       page: () => RankingHistoryHomeView(),
+        binding: RankingRecordRoomBinding()
     ),
     GetPage(
         name: rankingIndivHistoryHome,
         page: () => RankingIndivHistoryHomeView(),
-        binding: IndivHistoryHome()
     ),
     GetPage(
         name: setting_moreTab,
@@ -362,6 +372,26 @@ class AppRoutes {
     GetPage(
       name: rewardExchangeView,
       page: () => RewardExchangeView(),
+    ),
+    GetPage(
+      name: forestParkHome,
+      page: () => ForestParkHome(),
+    ),
+    GetPage(
+      name: quizPageForestPark,
+      page: () => QuizPageForestPark(),
+    ),
+    GetPage(
+      name: qrScannerForestPark,
+      page: () => QrScannerForestPark(),
+    ),
+    GetPage(
+      name: forestParkShop,
+      page: () => ForestParkShop(),
+    ),
+    GetPage(
+      name: forestParkExchangeHistory,
+      page: () => ForestParkExchangeHistoryView(),
     ),
   ];
 }

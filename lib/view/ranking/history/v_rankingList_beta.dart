@@ -8,6 +8,7 @@ import 'package:com.snowlive/viewmodel/crew/vm_crewRecordRoom.dart';
 import 'package:com.snowlive/viewmodel/friend/vm_friendDetail.dart';
 import 'package:com.snowlive/viewmodel/ranking/vm_rankingList.dart';
 import 'package:com.snowlive/viewmodel/ranking/vm_rankingList_beta.dart';
+import 'package:com.snowlive/viewmodel/ranking/vm_rankingList_recordRoom.dart';
 import 'package:com.snowlive/viewmodel/vm_user.dart';
 import 'package:com.snowlive/widget/w_fullScreenDialog.dart';
 import 'package:com.snowlive/widget/w_verticalDivider.dart';
@@ -25,6 +26,7 @@ class RankingBetaView extends StatelessWidget {
   final CrewDetailViewModel _crewDetailViewModel = Get.find<CrewDetailViewModel>();
   final CrewMemberListViewModel _crewMemberListViewModel = Get.find<CrewMemberListViewModel>();
   final CrewRecordRoomViewModel _crewRecordRoomViewModel = Get.find<CrewRecordRoomViewModel>();
+  final RankingListViewModel_recordRoom _rankingListViewModel_recordRoom = Get.find<RankingListViewModel_recordRoom>();
 
 
   @override
@@ -63,121 +65,10 @@ class RankingBetaView extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // 필터
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.only(left: 4),
-                        child: Text('23/24 시즌',
-                            style: SDSTextStyle.bold.copyWith(
-                                fontSize: 15, color: Color(0xFF111111))),
-                      ),
-                      Container(
-                        height: 50,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Row(
-                              children: [
-                                Padding(
-                                  padding: EdgeInsets.only(top: 8, bottom: 8),
-                                  child: Row(
-                                    children: [
-                                      Padding(
-                                        padding: EdgeInsets.only(right: 8),
-                                        child: Stack(
-                                          children: [
-                                            ElevatedButton(
-                                              onPressed: () {
-                                                HapticFeedback.lightImpact();
-                                                _rankingListBetaViewModel.changeCrewOrIndiv('크루');
-                                              },
-                                              style: ElevatedButton.styleFrom(
-                                                shadowColor: Colors.transparent,
-                                                overlayColor: Colors.transparent,
-                                                padding: EdgeInsets.only(
-                                                    right: 12, left: 12, top: 2, bottom: 2),
-                                                side: BorderSide(
-                                                  width: 1,
-                                                  color: (_rankingListBetaViewModel.crewOrIndiv == '크루')
-                                                      ? SDSColor.gray900
-                                                      : SDSColor.gray100,
-                                                ),
-                                                backgroundColor: (_rankingListBetaViewModel.crewOrIndiv == '크루')
-                                                    ? SDSColor.gray900
-                                                    : SDSColor.snowliveWhite,
-                                                elevation: 0,
-                                                shape: RoundedRectangleBorder(
-                                                    borderRadius: BorderRadius.circular(50)),
-                                              ),
-                                              child: Text('크루랭킹',
-                                                  style: SDSTextStyle.bold.copyWith(
-                                                      fontSize: 13,
-                                                      color: (_rankingListBetaViewModel.crewOrIndiv == '크루')
-                                                          ? Color(0xFFFFFFFF)
-                                                          : Color(0xFF111111))),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.only(top: 8, bottom: 8),
-                                  child: Row(
-                                    children: [
-                                      Stack(
-                                        children: [
-                                          ElevatedButton(
-                                            onPressed: () {
-                                              HapticFeedback.lightImpact();
-                                              _rankingListBetaViewModel.changeCrewOrIndiv('개인');
-                                            },
-                                            style: ElevatedButton.styleFrom(
-                                              shadowColor: Colors.transparent,
-                                              overlayColor: Colors.transparent,
-                                              padding: EdgeInsets.only(
-                                                  right: 12, left: 12, top: 2, bottom: 2),
-                                              side: BorderSide(
-                                                width: 1,
-                                                color: (_rankingListBetaViewModel.crewOrIndiv == '개인')
-                                                    ? SDSColor.gray900
-                                                    : SDSColor.gray100,
-                                              ),
-                                              backgroundColor: (_rankingListBetaViewModel.crewOrIndiv == '개인')
-                                                  ? SDSColor.gray900
-                                                  : SDSColor.snowliveWhite,
-                                              elevation: 0,
-                                              shape: RoundedRectangleBorder(
-                                                  borderRadius: BorderRadius.circular(50)),
-                                            ),
-                                            child: Text('개인랭킹',
-                                                style: SDSTextStyle.bold.copyWith(
-                                                    fontSize: 13,
-                                                    color: (_rankingListBetaViewModel.crewOrIndiv == '개인')
-                                                        ? Color(0xFFFFFFFF)
-                                                        : Color(0xFF111111))),
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 12),
 
                   // 크루 또는 개인 랭킹 리스트 표시
                   Expanded( // Expanded로 감싸서 남은 공간을 사용하도록 함
-                    child: (_rankingListBetaViewModel.crewOrIndiv == '크루')
+                    child: (_rankingListViewModel_recordRoom.tapName == '크루랭킹')
                         ? Scrollbar(
                       controller: _rankingListBetaViewModel.scrollControllerCrewBeta,
                       child: ListView.builder(

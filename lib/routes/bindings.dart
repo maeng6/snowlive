@@ -17,6 +17,7 @@ import 'package:com.snowlive/viewmodel/fleamarket/vm_fleamarketList.dart';
 import 'package:com.snowlive/viewmodel/fleamarket/vm_fleamarketSearch.dart';
 import 'package:com.snowlive/viewmodel/fleamarket/vm_fleamarketUpdate.dart';
 import 'package:com.snowlive/viewmodel/fleamarket/vm_fleamarketUpload.dart';
+import 'package:com.snowlive/viewmodel/forestPark/vm_forestPark.dart';
 import 'package:com.snowlive/viewmodel/friend/vm_friendDetail.dart';
 import 'package:com.snowlive/viewmodel/friend/vm_friendDetailUpdate.dart';
 import 'package:com.snowlive/viewmodel/friend/vm_friendList.dart';
@@ -37,6 +38,7 @@ import 'package:com.snowlive/viewmodel/onboarding_login/vm_setProfile.dart';
 import 'package:com.snowlive/viewmodel/resortHome/vm_streamController_banner.dart';
 import 'package:com.snowlive/viewmodel/vm_user.dart';
 import 'package:get/get.dart';
+import 'package:com.snowlive/viewmodel/ranking/vm_rankingList_recordRoom.dart';
 
 
 class MainHomeBinding extends Bindings {
@@ -48,6 +50,7 @@ class MainHomeBinding extends Bindings {
     Get.put(AlarmCenterViewModel());
     Get.put(StreamController_Banner());
     Get.put(ResortHomeViewModel());
+    Get.put(ForestParkViewModel());
     Get.put(GenderCategoryViewModel());
     Get.put(ChatViewModel());
     Get.put(FriendDetailUpdateViewModel());
@@ -217,4 +220,10 @@ class Setting_moreTabBinding extends Bindings {
     Get.put(LoginViewModel());
   }
 }
-
+class RankingRecordRoomBinding extends Bindings {
+  @override
+  void dependencies() {
+    Get.put(RankingListViewModel_recordRoom());
+    Get.put(RankingListBetaViewModel());
+  }
+}
