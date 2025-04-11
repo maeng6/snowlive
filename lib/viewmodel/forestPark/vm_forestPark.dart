@@ -139,10 +139,11 @@ class ForestParkViewModel extends GetxController {
     }
   }
 
-  Future<bool> tryBuyItem(int leafItemId) async {
+  Future<bool> tryBuyItem(int leafItemId, int eventDate) async {
     final response = await ForestParkAPI().tryBuyItem({
       'user_id': _userViewModel.user.user_id,
       'leaf_item_id': leafItemId,
+      'event_date': eventDate
     });
 
     if (response.success) {

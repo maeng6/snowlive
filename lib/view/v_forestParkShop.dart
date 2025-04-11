@@ -336,7 +336,7 @@ class _ForestParkShopState extends State<ForestParkShop> {
 
                                                                           Navigator.pop(context); // 바텀시트 닫기
                                                                           CustomFullScreenDialog.showDialog();
-                                                                          final result = await _forestParkViewModel.tryBuyItem(item.leafItemId!);
+                                                                          final result = await _forestParkViewModel.tryBuyItem(item.leafItemId!, eventDate);
                                                                           await _forestParkViewModel.fetchLeafRemain(eventDate);
                                                                           await _forestParkViewModel.fetchLeafItems(eventDate);
                                                                           CustomFullScreenDialog.cancelDialog();
