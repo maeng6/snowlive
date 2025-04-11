@@ -139,17 +139,21 @@ class ForestParkViewModel extends GetxController {
     }
   }
 
-  Future<void> tryBuyItem(int leafItemId) async {
+  Future<bool> tryBuyItem(int leafItemId) async {
     final response = await ForestParkAPI().tryBuyItem({
       'user_id': _userViewModel.user.user_id,
       'leaf_item_id': leafItemId,
     });
+
     if (response.success) {
       print("교환 성공");
+      return true;
     } else {
       print("교환 실패: ${response.error}");
+      return false;
     }
   }
+
 
   Future<void> fetchBuyRecords() async {
     final response = await ForestParkAPI().fetchBuyRecords(_userViewModel.user.user_id.toString());

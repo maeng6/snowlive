@@ -290,7 +290,7 @@ class _ForestParkShopState extends State<ForestParkShop> {
                                                                       : Container(),
                                                                   Expanded(
                                                                       child: ElevatedButton(
-                                                                        onPressed: () async{
+                                                                        onPressed: () async {
                                                                           final userGreen = _forestParkViewModel.leafRemain.value.remainGreen ?? 0;
                                                                           final userGold = _forestParkViewModel.leafRemain.value.remainGold ?? 0;
 
@@ -304,77 +304,85 @@ class _ForestParkShopState extends State<ForestParkShop> {
 
                                                                           if (isNotEnough) {
                                                                             String shortfallMessage = '교환에 필요한 열매가 부족해요\n';
-
-                                                                            if (greenShort > 0) {
-                                                                              shortfallMessage += '・ 초록열매 ${greenShort}개 부족\n';
-                                                                            }
-                                                                            if (goldShort > 0) {
-                                                                              shortfallMessage += '・ 황금열매 ${goldShort}개 부족';
-                                                                            }
+                                                                            if (greenShort > 0) shortfallMessage += '・ 초록열매 ${greenShort}개 부족\n';
+                                                                            if (goldShort > 0) shortfallMessage += '・ 황금열매 ${goldShort}개 부족';
 
                                                                             showDialog(
                                                                               context: context,
-                                                                              builder: (BuildContext context) {
-                                                                                return AlertDialog(
-                                                                                  backgroundColor: SDSColor.snowliveWhite,
-                                                                                  contentPadding: EdgeInsets.only(left: 28, right: 28, top: 36),
-                                                                                  elevation: 0,
-                                                                                  shape: RoundedRectangleBorder(
-                                                                                    borderRadius: BorderRadius.circular(16),
-                                                                                  ),
-                                                                                  content: Column(
-                                                                                    mainAxisSize: MainAxisSize.min,
-                                                                                    children: [
-                                                                                      Text(
-                                                                                        '열매가 부족해요!',
-                                                                                        textAlign: TextAlign.center,
-                                                                                        style: SDSTextStyle.bold.copyWith(
-                                                                                          color: SDSColor.gray900,
-                                                                                          fontSize: 16,
-                                                                                        ),
-                                                                                      ),
-                                                                                      SizedBox(height: 10),
-                                                                                      Text(
-                                                                                        shortfallMessage,
-                                                                                        textAlign: TextAlign.center,
-                                                                                        style: SDSTextStyle.regular.copyWith(
-                                                                                          color: SDSColor.gray500,
-                                                                                          fontSize: 14,
-                                                                                        ),
-                                                                                      ),
-                                                                                    ],
-                                                                                  ),
-                                                                                  actions: [
-                                                                                    Center(
-                                                                                      child: TextButton(
-                                                                                        onPressed: () => Navigator.of(context).pop(),
-                                                                                        style: TextButton.styleFrom(
-                                                                                          backgroundColor: Colors.transparent,
-                                                                                          splashFactory: NoSplash.splashFactory,
-                                                                                        ),
-                                                                                        child: Text(
-                                                                                          '확인',
-                                                                                          style: SDSTextStyle.bold.copyWith(
-                                                                                            fontSize: 17,
-                                                                                            color: SDSColor.snowliveBlue,
-                                                                                          ),
-                                                                                        ),
-                                                                                      ),
-                                                                                    ),
+                                                                              builder: (_) => AlertDialog(
+                                                                                backgroundColor: SDSColor.snowliveWhite,
+                                                                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                                                                                content: Column(
+                                                                                  mainAxisSize: MainAxisSize.min,
+                                                                                  children: [
+                                                                                    Text('열매가 부족해요!', style: SDSTextStyle.bold.copyWith(fontSize: 16, color: SDSColor.gray900)),
+                                                                                    SizedBox(height: 10),
+                                                                                    Text(shortfallMessage, style: SDSTextStyle.regular.copyWith(fontSize: 14, color: SDSColor.gray500), textAlign: TextAlign.center),
                                                                                   ],
-                                                                                );
-                                                                              },
+                                                                                ),
+                                                                                actions: [
+                                                                                  Center(
+                                                                                    child: TextButton(
+                                                                                      onPressed: () => Navigator.of(context).pop(),
+                                                                                      style: TextButton.styleFrom(splashFactory: NoSplash.splashFactory),
+                                                                                      child: Text('확인', style: SDSTextStyle.bold.copyWith(color: SDSColor.snowliveBlue, fontSize: 17)),
+                                                                                    ),
+                                                                                  ),
+                                                                                ],
+                                                                              ),
                                                                             );
                                                                             return;
                                                                           }
 
-                                                                          Navigator.pop(context);
+                                                                          Navigator.pop(context); // 바텀시트 닫기
                                                                           CustomFullScreenDialog.showDialog();
-                                                                          await _forestParkViewModel.tryBuyItem(item.leafItemId!);
+                                                                          final result = await _forestParkViewModel.tryBuyItem(item.leafItemId!);
                                                                           await _forestParkViewModel.fetchLeafRemain(eventDate);
                                                                           await _forestParkViewModel.fetchLeafItems(eventDate);
                                                                           CustomFullScreenDialog.cancelDialog();
 
+                                                                          if (result) {
+                                                                            // ✅ 성공 팝업
+                                                                            Get.dialog(
+                                                                              AlertDialog(
+                                                                                backgroundColor: Colors.white,
+                                                                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                                                                                title: Text('교환 완료!', style: TextStyle(fontWeight: FontWeight.bold)),
+                                                                                content: Text('상품 교환이 성공적으로 완료되었습니다.\n경품 수령처에서 경품을 수령해 주세요.'),
+                                                                                actions: [
+                                                                                  Center(
+                                                                                    child: TextButton(
+                                                                                      onPressed: () => Get.back(),
+                                                                                      child: Text('확인', style: TextStyle(fontWeight: FontWeight.bold, color: SDSColor.snowliveBlue)),
+                                                                                    ),
+                                                                                  ),
+                                                                                ],
+                                                                              ),
+                                                                              barrierDismissible: false,
+                                                                            );
+                                                                          } else {
+                                                                            // ❌ 실패 팝업 (에러 메시지 보여주기)
+                                                                            Get.dialog(
+                                                                              AlertDialog(
+                                                                                backgroundColor: Colors.white,
+                                                                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                                                                                title: Text('교환 실패', style: TextStyle(fontWeight: FontWeight.bold)),
+                                                                                content: Text(
+                                                                                  '일시적인 오류로 교환에 실패했어요.\n다시 시도해 주세요.',
+                                                                                  style: TextStyle(fontSize: 14),
+                                                                                ),
+                                                                                actions: [
+                                                                                  Center(
+                                                                                    child: TextButton(
+                                                                                      onPressed: () => Get.back(),
+                                                                                      child: Text('확인', style: TextStyle(fontWeight: FontWeight.bold, color: SDSColor.snowliveBlue)),
+                                                                                    ),
+                                                                                  ),
+                                                                                ],
+                                                                              ),
+                                                                              barrierDismissible: false,
+                                                                            );
+                                                                          }
                                                                         },
                                                                         style: ElevatedButton.styleFrom(
                                                                           shape: const RoundedRectangleBorder(

@@ -140,12 +140,33 @@ class _ForestParkHomeState extends State<ForestParkHome> {
 
                   if (result) {
                     CustomFullScreenDialog.showDialog();
-                    await _forestParkViewModel.fetchLeafRemain(eventDate);
                     final result = await _forestParkViewModel.checkParticipant(eventDate);
                     isParticipant.value = result;
                     CustomFullScreenDialog.cancelDialog();
-                    Get.back();
-                    Get.snackbar('성공', '참여코드가 등록되었습니다');
+
+                    // ✅ 참여 성공 다이얼로그
+                    Get.dialog(
+                      AlertDialog(
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                        title: Text('참여 완료', style: TextStyle(fontWeight: FontWeight.bold)),
+                        content: Text('이벤트 참여가 완료되었습니다!\n퀴즈를 풀고 황금열매를 모아보세요.'),
+                        actions: [
+                          Center(
+                            child: TextButton(
+                              onPressed: () {
+                                Get.back(); // 다이얼로그 닫기
+                                Get.back(); // 바텀시트 닫기
+                              },
+                              style: TextButton.styleFrom(
+                                foregroundColor: SDSColor.snowliveBlue,
+                              ),
+                              child: Text('확인', style: TextStyle(fontWeight: FontWeight.bold)),
+                            ),
+                          )
+                        ],
+                      ),
+                      barrierDismissible: false,
+                    );
                   } else {
                     _codeErrorMessage.value = '유효하지 않은 참여코드입니다';
                   }

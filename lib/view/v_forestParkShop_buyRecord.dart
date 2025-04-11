@@ -34,7 +34,7 @@ class ForestParkExchangeHistoryView extends StatelessWidget {
         preferredSize: Size.fromHeight(44),
         child: AppBar(
           title: Text(
-            '내가 교환한 목록',
+            '경품 교환 목록',
             style: SDSTextStyle.extraBold.copyWith(
                 color: SDSColor.gray900,
                 fontSize: 18),
@@ -172,7 +172,7 @@ class ForestParkExchangeHistoryView extends StatelessWidget {
                     width: 16,
                   ),
                   // 주문 상세 버튼
-                  if(record.isReceived == true)
+                  if(record.isReceived == false)
                     Container(
                       height: 32,
                       child: ElevatedButton(
@@ -180,7 +180,7 @@ class ForestParkExchangeHistoryView extends StatelessWidget {
                           showModalBottomSheet(
                             context: context,
                             isScrollControlled: true,
-                            backgroundColor: Colors.transparent,
+                            backgroundColor: Color(0xFF0B5E2A),
                             builder: (context) {
                               return GestureDetector(
                                 behavior: HitTestBehavior.opaque, // 화면 바깥 클릭 감지
@@ -191,7 +191,7 @@ class ForestParkExchangeHistoryView extends StatelessWidget {
                                   child: Container(
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.only(topLeft: Radius.circular(16), topRight: Radius.circular(16)),
-                                      color: SDSColor.snowliveWhite,
+                                      color: Color(0xFF0B5E2A),
                                     ),
                                     padding: EdgeInsets.only(bottom: 16, right: 16, left: 16, top: 12),
                                     child: Column(
@@ -206,12 +206,22 @@ class ForestParkExchangeHistoryView extends StatelessWidget {
                                               width: 36,
                                               decoration: BoxDecoration(
                                                 borderRadius: BorderRadius.circular(10),
-                                                color: SDSColor.gray200,
+                                                color: SDSColor.snowliveWhite,
                                               ),
                                             ),
                                           ),
                                         ),
-                                        // 제목
+
+                                        SizedBox(height: 20),
+                                        QrImageView(
+                                          data: record.recordId.toString(),
+                                          version: QrVersions.auto,
+                                          size: 200,
+                                          backgroundColor: Colors.white,
+                                        ),
+                                        SizedBox(
+                                          height: 10,
+                                        ),
                                         Text(
                                           '경품 수령을 위해 아래 QR 코드를 스캔해주세요!',
                                           style: TextStyle(
@@ -221,14 +231,6 @@ class ForestParkExchangeHistoryView extends StatelessWidget {
                                           ),
                                           textAlign: TextAlign.center,
                                         ),
-                                        SizedBox(height: 20),
-                                        QrImageView(
-                                          data: record.recordId.toString(),
-                                          version: QrVersions.auto,
-                                          size: 200,
-                                          backgroundColor: Colors.white,
-                                        ),
-
                                         SizedBox(
                                           height: 20,
                                         ),
@@ -242,8 +244,8 @@ class ForestParkExchangeHistoryView extends StatelessWidget {
                         },
                         style: ElevatedButton.styleFrom(
                           elevation: 0,
-                          foregroundColor: SDSColor.gray900,
-                          backgroundColor: SDSColor.gray100,
+                          foregroundColor: SDSColor.snowliveWhite,
+                          backgroundColor: Color(0xFF147A23),
                           side: BorderSide(
                               color: SDSColor.gray100
                           ),
@@ -258,15 +260,15 @@ class ForestParkExchangeHistoryView extends StatelessWidget {
                         ),
                       ),
                     ),
-                  if(record.isReceived == false)
+                  if(record.isReceived == true)
                     Container(
                       height: 32,
                       child: ElevatedButton(
                         onPressed: () {},
                         style: ElevatedButton.styleFrom(
                           elevation: 0,
-                          foregroundColor: SDSColor.gray900,
-                          backgroundColor: SDSColor.gray100,
+                          foregroundColor: SDSColor.snowliveWhite,
+                          backgroundColor: Color(0xFF222222),
                           side: BorderSide(
                               color: SDSColor.gray100
                           ),
