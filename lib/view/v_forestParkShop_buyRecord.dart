@@ -197,7 +197,7 @@ class ForestParkExchangeHistoryView extends StatelessWidget {
                                     child: Column(
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
-                                        // 드래그 핸들
+                                        // 드래그 핸들.
                                         Center(
                                           child: Padding(
                                             padding: const EdgeInsets.only(bottom: 20),
