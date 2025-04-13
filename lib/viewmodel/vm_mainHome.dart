@@ -37,23 +37,23 @@ class MainHomeViewModel extends GetxController {
     _currentPage.value = index;
 
     // 슬마켓(커뮤니티)은 PageView에 없으므로 jumpToPage 하지 않음
-    if (index == 3) return;
+    if (index == 2) return;
 
     // index 4 ("더보기")는 PageView에서는 index 3임!
-    final pageViewIndex = index > 3 ? index - 1 : index;
+    final pageViewIndex = index > 2 ? index - 1 : index;
     _pageController.value.jumpToPage(pageViewIndex);
   }
 
   void changePage(int index) {
     // PageView는 슬마켓이 빠져 있으므로, 3번부터는 탭 index +1로 매핑
-    _currentPage.value = index >= 3 ? index + 1 : index;
+    _currentPage.value = index >= 2 ? index + 1 : index;
 
     // 탭 활성화 상태도 변경
     _tap_1.value = index == 0;
     _tap_2.value = index == 1;
-    _tap_3.value = index == 2;
     _tap_4.value = false;      // 슬마켓은 PageView에 없음
-    _tap_5.value = index == 3;
+    _tap_3.value = index == 3;
+    _tap_5.value = index == 4;
   }
 
 
