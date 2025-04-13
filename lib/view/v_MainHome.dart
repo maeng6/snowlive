@@ -41,11 +41,8 @@ class MainHomeView extends StatelessWidget {
               type: BottomNavigationBarType.fixed,
               currentIndex: _MainHomeViewModel.currentPage!,
               onTap: (index) {
-                // 페이지 전환
-                _MainHomeViewModel.onItemTapped(index);
-
-                // 슬마켓(SlmkScreen)은 index 3번 → 새 페이지로 이동
-                if (index == 3) {
+                if (index == 2) {
+                  // 스라마켓 탭 클릭 시 별도 처리
                   FirebaseAnalytics.instance.logEvent(
                     name: 'visit_slmk',
                     parameters: {
@@ -56,127 +53,73 @@ class MainHomeView extends StatelessWidget {
 
                   Get.to(() => SlmkScreen())!.then((result) {
                     if (result != null && result is int) {
-                      _MainHomeViewModel.onItemTapped(result); // 홈 탭으로 이동
+                      _MainHomeViewModel.onItemTapped(result); // 예: 홈으로 복귀
                     }
                   });
 
-                  return;
+                  return; // 🔥 슬마켓은 PageView 이동 방지
                 }
 
-                // Google Analytics 트래킹 이벤트 발생
+                // 슬마켓 외 페이지 전환
+                _MainHomeViewModel.onItemTapped(index);
+
+                // GA 트래킹
                 switch (index) {
                   case 0:
-                    FirebaseAnalytics.instance.logEvent(
-                      name: 'visit_resortHome',
-                      parameters: <String, Object>{
-                        'user_id': _userViewModel.user.user_id,
-                        'user_name': _userViewModel.user.display_name,},);
+                    FirebaseAnalytics.instance.logEvent(name: 'visit_resortHome', parameters: {
+                      'user_id': _userViewModel.user.user_id,
+                      'user_name': _userViewModel.user.display_name,
+                    });
                     break;
                   case 1:
-                    FirebaseAnalytics.instance.logEvent(
-                      name: 'visit_fleaMarket',
-                      parameters: <String, Object>{
-                        'user_id': _userViewModel.user.user_id,
-                        'user_name': _userViewModel.user.display_name,},);
+                    FirebaseAnalytics.instance.logEvent(name: 'visit_fleaMarket', parameters: {
+                      'user_id': _userViewModel.user.user_id,
+                      'user_name': _userViewModel.user.display_name,
+                    });
                     break;
-                  case 2:
-                    FirebaseAnalytics.instance.logEvent(
-                      name: 'visit_rankingHome',
-                      parameters: <String, Object>{
-                        'user_id': _userViewModel.user.user_id,
-                        'user_name': _userViewModel.user.display_name,},);
+                  case 3:
+                    FirebaseAnalytics.instance.logEvent(name: 'visit_rankingHome', parameters: {
+                      'user_id': _userViewModel.user.user_id,
+                      'user_name': _userViewModel.user.display_name,
+                    });
                     break;
-                // case 3:
-                //   FirebaseAnalytics.instance.logEvent(
-                //     name: 'visit_community',
-                //     parameters: <String, Object>{
-                //       'user_id': _userViewModel.user.user_id,
-                //       'user_name': _userViewModel.user.display_name,},);
-                //   break;
                   case 4:
-                    FirebaseAnalytics.instance.logEvent(
-                      name: 'visit_moreTab',
-                      parameters: <String, Object>{
-                        'user_id': _userViewModel.user.user_id,
-                        'user_name': _userViewModel.user.display_name,},);
+                    FirebaseAnalytics.instance.logEvent(name: 'visit_moreTab', parameters: {
+                      'user_id': _userViewModel.user.user_id,
+                      'user_name': _userViewModel.user.display_name,
+                    });
                     break;
                 }
               },
               items: [
                 BottomNavigationBarItem(
                   backgroundColor: Colors.transparent,
-                  icon: Stack(
-                    children: [
-                      Image.asset('assets/imgs/icons/icon_home_off.png',
-                        width: 32,
-                        height: 32,
-                      )
-                    ],
-                  ),
-                  activeIcon: Stack(
-                    children: [
-                      Image.asset('assets/imgs/icons/icon_home_on.png',
-                        width: 32,
-                        height: 32,
-                      )
-                    ],
-                  ),
+                  icon: Image.asset('assets/imgs/icons/icon_home_off.png', width: 32, height: 32),
+                  activeIcon: Image.asset('assets/imgs/icons/icon_home_on.png', width: 32, height: 32),
                   label: '홈',
                 ),
                 BottomNavigationBarItem(
                   backgroundColor: Colors.transparent,
-
-                  icon:
-                  Image.asset('assets/imgs/icons/icon_market_off.png',
-                    width: 32,
-                    height: 32,
-                  ),
-                  activeIcon:
-                  Image.asset('assets/imgs/icons/icon_market_on.png',
-                    width: 32,
-                    height: 32,
-                  ),
+                  icon: Image.asset('assets/imgs/icons/icon_market_off.png', width: 32, height: 32),
+                  activeIcon: Image.asset('assets/imgs/icons/icon_market_on.png', width: 32, height: 32),
                   label: '중고거래',
                 ),
                 BottomNavigationBarItem(
                   backgroundColor: Colors.transparent,
-                  icon:
-                  Image.asset('assets/imgs/icons/icon_discover_off.png',
-                    width: 32,
-                    height: 32,
-                  ),
-                  activeIcon:
-                  Image.asset('assets/imgs/icons/icon_discover_on.png',
-                    width: 32,
-                    height: 32,
-                  ),
-                  label: '랭킹',
-                ),
-                BottomNavigationBarItem(
-                  backgroundColor: Colors.transparent,
-                  icon: Image.asset('assets/imgs/icons/icon_market_off.png',
-                    width: 32,
-                    height: 32,
-                  ),
-                  activeIcon:
-                  Image.asset('assets/imgs/icons/icon_market_on.png',
-                    width: 32,
-                    height: 32,
-                  ),
+                  icon: Image.asset('assets/imgs/icons/icon_b_tabbar_slmk.png', width: 32, height: 32),
+                  activeIcon: Image.asset('assets/imgs/icons/icon_b_tabbar_slmk.png', width: 32, height: 32),
                   label: '스라마켓',
                 ),
                 BottomNavigationBarItem(
                   backgroundColor: Colors.transparent,
-                  icon:
-                  Image.asset('assets/imgs/icons/icon_more_off.png',
-                    width: 32,
-                    height: 32,
-                  ),
-                  activeIcon:
-                  Image.asset('assets/imgs/icons/icon_more_on.png',
-                    width: 32,
-                    height: 32,
-                  ),
+                  icon: Image.asset('assets/imgs/icons/icon_discover_off.png', width: 32, height: 32),
+                  activeIcon: Image.asset('assets/imgs/icons/icon_discover_on.png', width: 32, height: 32),
+                  label: '랭킹',
+                ),
+                BottomNavigationBarItem(
+                  backgroundColor: Colors.transparent,
+                  icon: Image.asset('assets/imgs/icons/icon_more_off.png', width: 32, height: 32),
+                  activeIcon: Image.asset('assets/imgs/icons/icon_more_on.png', width: 32, height: 32),
                   label: '더보기',
                 ),
               ],
@@ -198,10 +141,10 @@ class MainHomeView extends StatelessWidget {
           onPageChanged: _MainHomeViewModel.changePage,
           physics: NeverScrollableScrollPhysics(),
           children: [
-            ResortHomeView(),
-            FleaMarketMainView(),
-            RankingHomeView(),
-            MoreTabMainView()
+            ResortHomeView(),       // index 0
+            FleaMarketMainView(),   // index 1
+            RankingHomeView(),      // index 3
+            MoreTabMainView(),      // index 4
           ],
         )
     ));
