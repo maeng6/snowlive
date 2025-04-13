@@ -5,7 +5,7 @@ import 'package:com.snowlive/model/m_crewRecordRoom.dart';
 import 'package:com.snowlive/api/api_crew.dart';
 import 'package:get/get_rx/get_rx.dart';
 
-class CrewRecordRoomViewModel extends GetxController {
+class CrewDailyRecordViewModel extends GetxController {
   var isLoading = false.obs;
   var isLoading_refresh = false.obs;
   var crewRidingRecords = <CrewRidingRecord>[].obs;
@@ -16,18 +16,19 @@ class CrewRecordRoomViewModel extends GetxController {
   RxString currentSeason = '${RankingFilter_season.values.first.dbSeason}'.obs;
   RxBool isTodayCardExpanded = true.obs;
   RxInt expandedCardIndex = (-1).obs;
+  var currentYear = DateTime.now().year.obs; // 현재 연도로 초기화
 
   @override
   void onInit() async{
     // TODO: implement onInit
     super.onInit();
     resetTabs();
-    await fetchCrewRidingRecords(_crewDetailViewModel.crewDetailInfo.crewId!, RankingFilter_season.values.first.dbSeason);
+    await fetchCrewRidingRecords(_crewDetailViewModel.crewDetailInfo.crewId!, currentYear.value.toString());
   }
 
-  void setSeason(RankingFilter_season season) {
-    final dbSeason = season.dbSeason;
-    currentSeason.value = dbSeason;
+  // 연도 변경
+  void setYear(int year) {
+    currentYear.value = year;
   }
 
   // 특정 카드 확장 상태 변경
@@ -37,16 +38,16 @@ class CrewRecordRoomViewModel extends GetxController {
 
   // 탭 및 데이터 초기화
   void resetTabs() {
-    currentSeason.value = '${RankingFilter_season.values.first.dbSeason}';
-    expandedCardIndex.value = -1;
-    crewRidingRecords.clear();
+    currentYear.value = DateTime.now().year; // 현재 연도로 초기화
+    expandedCardIndex.value = -1; // 확장된 카드 초기화
+    crewRidingRecords.clear(); // 데이터를 비움
   }
 
   // API 호출을 통해 크루의 라이딩 기록을 가져오는 메서드
-  Future<void> fetchCrewRidingRecords(int crewId, String selected_season) async {
+  Future<void> fetchCrewRidingRecords(int crewId, String year) async {
     isLoading.value = true;
     try {
-      final response = await CrewAPI().getCrewDailyReport_recordRoom(crewId, selected_season);
+      final response = await CrewAPI().getCrewDailyReport(crewId, year);
       if (response.success) {
         var ridingRecordResponse = CrewRecordRoomResponse.fromJson(response.data);
         crewRidingRecords.value = ridingRecordResponse.records;
@@ -61,10 +62,10 @@ class CrewRecordRoomViewModel extends GetxController {
     }
   }
 
-  Future<void> fetchCrewRidingRecords_refresh(int crewId, String selected_season) async {
+  Future<void> fetchCrewRidingRecords_refresh(int crewId, String year) async {
     isLoading_refresh.value = true;
     try {
-      final response = await CrewAPI().getCrewDailyReport_recordRoom(crewId, selected_season);
+      final response = await CrewAPI().getCrewDailyReport(crewId, year);
       if (response.success) {
         var ridingRecordResponse = CrewRecordRoomResponse.fromJson(response.data);
         crewRidingRecords.value = ridingRecordResponse.records;

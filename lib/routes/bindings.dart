@@ -11,6 +11,7 @@ import 'package:com.snowlive/viewmodel/crew/vm_crewMemberRankingList.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewMemberRankingList_recordRoom.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewNotice.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_crewRecordRoom.dart';
+import 'package:com.snowlive/viewmodel/crew/vm_dailyRecord.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_rankingCrewHistory.dart';
 import 'package:com.snowlive/viewmodel/crew/vm_searchCrew.dart';
 import 'package:com.snowlive/viewmodel/fleamarket/vm_fleamarketCommentDetail.dart';
@@ -199,6 +200,7 @@ class CrewMainBinding extends Bindings {
 class CrewHomeBinding extends Bindings {
   @override
   void dependencies() {
+    Get.put(CrewDailyRecordViewModel());
   }
 }
 

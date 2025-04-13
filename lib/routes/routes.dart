@@ -276,6 +276,7 @@ class AppRoutes {
     GetPage(
       name: crewHome,
       page: () => CrewHomeView(),
+      binding: CrewHomeBinding()
     ),
     GetPage(
       name: crewMember,
