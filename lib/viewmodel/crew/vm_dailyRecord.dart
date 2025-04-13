@@ -13,7 +13,6 @@ class CrewDailyRecordViewModel extends GetxController {
   final CrewDetailViewModel _crewDetailViewModel = Get.find<CrewDetailViewModel>();
 
   // 현재 시즌 (enum 기반)
-  RxString currentSeason = '${RankingFilter_season.values.first.dbSeason}'.obs;
   RxBool isTodayCardExpanded = true.obs;
   RxInt expandedCardIndex = (-1).obs;
   var currentYear = DateTime.now().year.obs; // 현재 연도로 초기화

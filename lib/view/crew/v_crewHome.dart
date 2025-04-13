@@ -489,7 +489,7 @@ class CrewHomeView extends StatelessWidget {
                                             borderRadius: BorderRadius.circular(5)),
                                       ),
                                       child: Text(
-                                        '기록실',
+                                        '시즌 기록실',
                                         style: SDSTextStyle.bold.copyWith(fontSize: 13, color: SDSColor.gray900),
 
                                       ),
@@ -654,12 +654,40 @@ class CrewHomeView extends StatelessWidget {
                                   ),
                                 ),
                                 SizedBox(height: 20),
-                                Text(
-                                  '총 라이딩 횟수',
-                                  style: SDSTextStyle.regular.copyWith(
-                                      color: SDSColor.gray900.withOpacity(0.5),
-                                      fontSize: 13
-                                  ),
+                                Row(
+                                  children: [
+                                    Text(
+                                      '총 라이딩 횟수',
+                                      style: SDSTextStyle.regular.copyWith(
+                                          color: SDSColor.gray900.withOpacity(0.5),
+                                          fontSize: 13
+                                      ),
+                                    ),
+                                    Expanded(child: SizedBox()),
+                                    TextButton(
+                                      onPressed: () async{
+                                        Get.toNamed(AppRoutes.crewDailyRecord);
+                                      },
+                                      style: ElevatedButton.styleFrom(
+                                        shadowColor: Colors.transparent,
+                                        overlayColor: Colors.transparent,
+                                        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 3),
+                                        minimumSize: Size(36, 32),
+                                        backgroundColor: SDSColor.snowliveWhite,
+                                        side: BorderSide(
+                                            color: SDSColor.gray200
+                                        ),
+                                        elevation: 0,
+                                        shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(5)),
+                                      ),
+                                      child: Text(
+                                        '일별현황',
+                                        style: SDSTextStyle.bold.copyWith(fontSize: 13, color: SDSColor.gray900),
+
+                                      ),
+                                    )
+                                  ],
                                 ),
                                 Text(
                                   '${_crewDetailViewModel.totalSlopeCount}',

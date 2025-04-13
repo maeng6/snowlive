@@ -194,13 +194,14 @@ class SetCrewNameAndResortBinding extends Bindings {
 class CrewMainBinding extends Bindings {
   @override
   void dependencies() {
+    Get.put(CrewDailyRecordViewModel());
   }
 }
 
 class CrewHomeBinding extends Bindings {
   @override
   void dependencies() {
-    Get.put(CrewDailyRecordViewModel());
+
   }
 }
 

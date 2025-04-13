@@ -13,6 +13,7 @@ import 'package:com.snowlive/view/crew/v_crewNotice.dart';
 import 'package:com.snowlive/view/crew/v_crewNoticeList.dart';
 import 'package:com.snowlive/view/crew/v_crewNoticeModify.dart';
 import 'package:com.snowlive/view/crew/v_crewSetting.dart';
+import 'package:com.snowlive/view/crew/v_dailyRecord.dart';
 import 'package:com.snowlive/view/crew/v_managerPermission.dart';
 import 'package:com.snowlive/view/crew/v_searchCrew.dart';
 import 'package:com.snowlive/view/crew/v_updateCrewImageAndColor.dart';
@@ -124,6 +125,7 @@ class AppRoutes {
   static const String qrScannerForestPark = '/qrScannerForestPark';
   static const String forestParkShop = '/forestParkShop';
   static const String forestParkExchangeHistory = '/forestParkExchangeHistory';
+  static const String crewDailyRecord = '/crewDailyRecord';
 
 
 
@@ -274,18 +276,18 @@ class AppRoutes {
         binding: CrewMainBinding()
     ),
     GetPage(
-      name: crewHome,
-      page: () => CrewHomeView(),
-      binding: CrewHomeBinding()
+        name: crewHome,
+        page: () => CrewHomeView(),
+        binding: CrewHomeBinding()
     ),
     GetPage(
       name: crewMember,
       page: () => CrewMemberListView(),
     ),
     GetPage(
-      name: crewRecordRoom,
-      page: () => CrewRecordRoomView(),
-      binding: CrewRecordRoomBinding()
+        name: crewRecordRoom,
+        page: () => CrewRecordRoomView(),
+        binding: CrewRecordRoomBinding()
     ),
     GetPage(
       name: searchCrew,
@@ -332,8 +334,8 @@ class AppRoutes {
       page: () => CrewNoticeModifyView(),
     ),
     GetPage(
-      name: rankingHistoryHome,
-      page: () => RankingHistoryHomeView(),
+        name: rankingHistoryHome,
+        page: () => RankingHistoryHomeView(),
         binding: RankingRecordRoomBinding()
     ),
     GetPage(
@@ -403,6 +405,10 @@ class AppRoutes {
     GetPage(
       name: forestParkExchangeHistory,
       page: () => ForestParkExchangeHistoryView(),
+    ),
+    GetPage(
+      name: crewDailyRecord,
+      page: () => CrewDailyRecordView(),
     ),
   ];
 }
