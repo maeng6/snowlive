@@ -44,174 +44,199 @@ class _ForestParkHomeState extends State<ForestParkHome> {
 
     Get.bottomSheet(
       Container(
-        constraints: BoxConstraints(
-          minHeight: MediaQuery.of(context).size.height * 0.35, // ✅ 높이 확보
-        ),
-        padding: const EdgeInsets.fromLTRB(24, 12, 24, 32), // 🔼 top padding 줄임
         decoration: BoxDecoration(
           color: Color(0xFF0B5E2A),
           borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
         ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            // ⬆️ 상단 핸들
-            Container(
-              width: 36,
-              height: 4,
-              margin: EdgeInsets.only(bottom: 20),
-              decoration: BoxDecoration(
-                color: Color(0xFFD9D9D9),
-                borderRadius: BorderRadius.circular(10),
-              ),
+        child: SafeArea(
+          child: Container(
+            constraints: BoxConstraints(
+              minHeight: MediaQuery.of(context).size.height * 0.35, // ✅ 높이 확보
             ),
-
-            // ⬆️ 타이틀
-            Text(
-              '이벤트 참여 코드를 입력해주세요!',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-              ),
-              textAlign: TextAlign.center,
+            padding: EdgeInsets.fromLTRB(16, 12, 16, 16), // 🔼 top padding 줄임
+            decoration: BoxDecoration(
+              color: Color(0xFF0B5E2A),
+              borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
             ),
-            const SizedBox(height: 10),
-
-            // ⬇️ 설명
-            Text(
-              '구매하신 참여코드를 확인하여 입력하고\n포레스트 파크에서 모험을 시작해 보세요!',
-              style: TextStyle(
-                fontSize: 12,
-                color: Colors.white.withOpacity(0.5),
-              ),
-              textAlign: TextAlign.center,
-            ),
-
-            const SizedBox(height: 25),
-
-            // ⌨️ 텍스트 입력
-            Container(
-              decoration: BoxDecoration(
-                color: Color(0xFF0D2415).withOpacity(0.4),
-                borderRadius: BorderRadius.circular(6),
-              ),
-              padding: EdgeInsets.symmetric(horizontal: 12),
-              child: TextField(
-                controller: _codeController,
-                onChanged: (_) => _codeErrorMessage.value = '',
-                style: TextStyle(color: Colors.white),
-                decoration: InputDecoration(
-                  hintText: '참여코드를 입력해 주세요',
-                  hintStyle: TextStyle(fontSize: 14, color: Colors.white.withOpacity(0.5)),
-                  border: InputBorder.none,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                // ⬆️ 상단 핸들
+                Container(
+                  width: 36,
+                  height: 4,
+                  margin: EdgeInsets.only(bottom: 20),
+                  decoration: BoxDecoration(
+                    color: Color(0xFFffffff),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
                 ),
-              ),
-            ),
 
-            Obx(() => _codeErrorMessage.value.isEmpty
-                ? SizedBox.shrink()
-                : Padding(
-              padding: const EdgeInsets.only(top: 8),
-              child: Text(
-                _codeErrorMessage.value,
-                style: TextStyle(color: Colors.red, fontSize: 12),
-              ),
-            )),
+                // ⬆️ 타이틀
+                Text(
+                  '이벤트 참여 코드를 입력해주세요!',
+                  style: SDSTextStyle.bold.copyWith(
+                    fontSize: 16,
+                    color: Colors.white,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 10),
 
-            const SizedBox(height: 45),
+                // ⬇️ 설명
+                Text(
+                  '구매하신 참여코드를 확인하여 입력하고\n포레스트 파크에서 모험을 시작해 보세요!',
+                  style: SDSTextStyle.regular.copyWith(
+                    fontSize: 13,
+                    color: SDSColor.snowliveWhite.withOpacity(0.5),
+                  ),
+                  textAlign: TextAlign.center,
+                ),
 
-            // ✅ 버튼
-            SizedBox(
-              width: double.infinity,
-              height: 50,
-              child: ElevatedButton(
-                onPressed: () async {
-                  final code = _codeController.text.trim();
-                  if (code.isEmpty) {
-                    _codeErrorMessage.value = '참여코드를 입력해주세요';
-                    return;
-                  }
+                const SizedBox(height: 30),
 
-                  CustomFullScreenDialog.showDialog();
-                  final result = await _forestParkViewModel.registerParticipant(code: code, eventDate: eventDate);
-                  CustomFullScreenDialog.cancelDialog();
+                // ⌨️ 텍스트 입력
+                Container(
+                  decoration: BoxDecoration(
+                    color: Color(0xFF0D2415).withOpacity(0.4),
+                    borderRadius: BorderRadius.circular(6),
+                  ),
+                  padding: EdgeInsets.symmetric(horizontal: 12),
+                  child: TextField(
+                    controller: _codeController,
+                    onChanged: (_) => _codeErrorMessage.value = '',
+                    style: TextStyle(color: Colors.white),
+                    decoration: InputDecoration(
+                      hintText: '참여코드를 입력해 주세요',
+                      hintStyle: TextStyle(fontSize: 14, color: Colors.white.withOpacity(0.5)),
+                      border: InputBorder.none,
+                    ),
+                  ),
+                ),
 
-                  if (result) {
-                    CustomFullScreenDialog.showDialog();
-                    final result = await _forestParkViewModel.checkParticipant(eventDate);
-                    isParticipant.value = result;
-                    CustomFullScreenDialog.cancelDialog();
+                Obx(() => _codeErrorMessage.value.isEmpty
+                    ? SizedBox.shrink()
+                    : Padding(
+                  padding: const EdgeInsets.only(top: 8),
+                  child: Text(
+                    _codeErrorMessage.value,
+                    style: TextStyle(color: Colors.red, fontSize: 12),
+                  ),
+                )),
 
-                    // ✅ 참여 성공 다이얼로그
-                    Get.dialog(
-                      AlertDialog(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16), // ✅ 보더레디우스 16
-                        ),
-                        title: Center(
-                          child: Text(
-                            '참여 완료',
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 18,
-                              color: Colors.black,
-                            ),
-                          ),
-                        ),
-                        content: Text(
-                          '이벤트 참여가 완료되었습니다!\n퀴즈를 풀고 황금열매를 모아보세요.',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: Colors.grey[800],
-                          ),
-                        ),
-                        actionsPadding: EdgeInsets.only(bottom: 16),
-                        actions: [
-                          Center(
-                            child: ElevatedButton(
-                              onPressed: () {
-                                Get.back(); // 다이얼로그 닫기
-                                Get.back(); // 바텀시트 닫기
-                              },
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Color(0xFF127721),
-                                foregroundColor: Colors.white,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(6),
-                                ),
-                                minimumSize: Size(200, 44), // ✅ 버튼 사이즈
-                              ),
-                              child: Text(
-                                '확인',
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 15,
-                                ),
+                const SizedBox(height: 40),
+
+                // ✅ 버튼
+                SizedBox(
+                  width: double.infinity,
+                  height: 48,
+                  child: ElevatedButton(
+                    onPressed: () async {
+                      final code = _codeController.text.trim();
+                      if (code.isEmpty) {
+                        _codeErrorMessage.value = '참여코드를 입력해주세요';
+                        return;
+                      }
+
+                      CustomFullScreenDialog.showDialog();
+                      final result = await _forestParkViewModel.registerParticipant(code: code, eventDate: eventDate);
+                      CustomFullScreenDialog.cancelDialog();
+
+                      if (result) {
+                        CustomFullScreenDialog.showDialog();
+                        final result = await _forestParkViewModel.checkParticipant(eventDate);
+                        isParticipant.value = result;
+                        CustomFullScreenDialog.cancelDialog();
+
+                        // ✅ 참여 성공 다이얼로그
+                        Get.dialog(
+                          AlertDialog(
+                            backgroundColor: SDSColor.snowliveWhite,
+                            contentPadding: EdgeInsets.only(bottom: 0, left: 28, right: 28, top: 36),
+                            elevation: 0,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(16)),
+                            buttonPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+                            content: Container(
+                              height: 80,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    '참여 완료',
+                                    textAlign: TextAlign.center,
+                                    style: SDSTextStyle.bold.copyWith(
+                                        color: SDSColor.gray900,
+                                        fontSize: 16
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: 6,
+                                  ),
+                                  Text(
+                                    '이벤트 참여가 완료되었습니다!\n퀴즈를 풀고 황금열매를 모아보세요.',
+                                    textAlign: TextAlign.center,
+                                    style: SDSTextStyle.regular.copyWith(
+                                      color: SDSColor.gray500,
+                                      fontSize: 14,
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
+                            actions: [
+                              Padding(
+                                padding: EdgeInsets.only(top: 24),
+                                child: Expanded(
+                                  child: Container(
+                                    width: 240,
+                                    height: 48,
+                                    child: ElevatedButton(
+                                      onPressed: () {
+                                        Get.back(); // 다이얼로그 닫기
+                                        Get.back(); // 바텀시트 닫기
+                                      },
+                                      style: ElevatedButton.styleFrom(
+                                        elevation: 0,
+                                        backgroundColor: Color(0xFF127721),
+                                        foregroundColor: Colors.white,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(6),
+                                        ),
+                                      ),
+                                      child: Text(
+                                        '확인',
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 15,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              )
+                            ],
                           ),
-                        ],
-                      ),
-                    );
-                  } else {
-                    _codeErrorMessage.value = '유효하지 않은 참여코드입니다';
-                  }
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.white,
-                  foregroundColor: Colors.black,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+                        );
+                      } else {
+                        _codeErrorMessage.value = '유효하지 않은 참여코드입니다';
+                      }
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.white,
+                      foregroundColor: Colors.black,
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+                    ),
+                    child: Text(
+                      '포레스트 파크 시작하기',
+                      style: SDSTextStyle.bold.copyWith(fontSize: 16, color: SDSColor.snowliveBlack),
+                    ),
+                  ),
                 ),
-                child: Text(
-                  '포레스트 파크 시작하기',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                ),
-              ),
+              ],
             ),
-          ],
+          ),
         ),
       ),
       isScrollControlled: true,
@@ -221,6 +246,9 @@ class _ForestParkHomeState extends State<ForestParkHome> {
 
   @override
   Widget build(BuildContext context) {
+
+    Size _size = MediaQuery.of(context).size;
+
     return StreamBuilder<DocumentSnapshot>(
       stream: FirebaseFirestore.instance.collection('forestPark').doc('forestPark').snapshots(),
       builder: (context, snapshot) {
@@ -243,28 +271,32 @@ class _ForestParkHomeState extends State<ForestParkHome> {
 
 
         return Scaffold(
-          floatingActionButton: Padding(
-            padding: const EdgeInsets.only(bottom: 16),
-            child: SizedBox(
-              width: MediaQuery.of(context).size.width - 40,
-              child: FloatingActionButton.extended(
-                backgroundColor: Color(0xFF219432),
-                onPressed: () {
-                  Get.toNamed(AppRoutes.qrScannerForestPark);
-                },
-                icon: Icon(Icons.qr_code_scanner),
-                label: Text(
-                  '퀴즈 QR 스캔하기',
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: SDSColor.snowliveWhite,
-                      fontSize: 16
-                  ),
+          backgroundColor: Color(0xFF12341E),
+          floatingActionButton: SizedBox(
+            width: MediaQuery.of(context).size.width - 24,
+            child: FloatingActionButton.extended(
+              backgroundColor: Color(0xFF1B872B),
+              onPressed: () {
+                Get.toNamed(AppRoutes.qrScannerForestPark);
+              },
+              icon: Image.asset(
+                'assets/imgs/imgs/img_forest_qr.png',
+                width: 24,
+                height: 24,
+              ),
+              label: Text(
+                '퀴즈 QR 스캔하기',
+                style: SDSTextStyle.bold.copyWith(
+                    color: SDSColor.snowliveWhite,
+                    fontSize: 16
                 ),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(40),
-
+              ),
+              shape: RoundedRectangleBorder(
+                side: BorderSide(
+                  color: Color(0xFFFFAE00),
+                  width: 2,
                 ),
+                borderRadius: BorderRadius.circular(40),
               ),
             ),
           ),
@@ -274,12 +306,12 @@ class _ForestParkHomeState extends State<ForestParkHome> {
             preferredSize: Size.fromHeight(44),
             child: AppBar(
               elevation: 0,
+              titleSpacing: 16,
               surfaceTintColor: Colors.transparent,
               title: Text('황금숲의 전설 : 황금열매를 찾아서',
-                style: TextStyle(
+                style: SDSTextStyle.extraBold.copyWith(
                     color: SDSColor.snowliveWhite,
-                    fontWeight: FontWeight.bold
-                ),
+                    fontSize: 18),
               ),
               backgroundColor: _showAppBarBackground
                   ? Color(0xFF12341E) // 너가 쓰던 배경색과 비슷하게
@@ -329,11 +361,20 @@ class _ForestParkHomeState extends State<ForestParkHome> {
                           cache: true,
                           loadStateChanged: (state) {
                             if (state.extendedImageLoadState == LoadState.failed) {
-                              return Container(
-                                width: double.infinity,
-                                height: 250,
-                                color: Colors.grey.shade300,
-                                child: Icon(Icons.broken_image, size: 60, color: Colors.grey),
+                              return Column(
+                                children: [
+                                  Container(
+                                    width: double.infinity,
+                                    height: 250,
+                                    color: Colors.grey.shade300,
+                                    child: Icon(Icons.broken_image, size: 60, color: Colors.grey),
+                                  ),
+                                  Text('정보를 불러오지 못했어요! 다시 새로고침을 해주세요.',
+                                  style: SDSTextStyle.regular.copyWith(
+                                    fontSize: 13,
+                                    color: SDSColor.snowliveWhite.withOpacity(0.5)
+                                  ),)
+                                ],
                               );
                             }
                             return null;
@@ -343,14 +384,14 @@ class _ForestParkHomeState extends State<ForestParkHome> {
 
                       // ✅ 배경 위에 쌓을: 나뭇잎 현황 + 참여 버튼
                       Positioned(
-                        top: MediaQuery.of(context).padding.top + 60,
+                        top: MediaQuery.of(context).padding.top + 52,
                         left: 0,
                         right: 0,
                         child: Column(
                           children: [
                             Container(
                               margin: EdgeInsets.symmetric(horizontal: 16),
-                              padding: EdgeInsets.symmetric(vertical: 12, horizontal: 36),
+                              padding: EdgeInsets.symmetric(vertical: 12, horizontal: 32),
                               height: 52,
                               decoration: BoxDecoration(
                                 color: Color(0xFF000000).withOpacity(0.3),
@@ -367,8 +408,8 @@ class _ForestParkHomeState extends State<ForestParkHome> {
                                     Row(
                                       children: [
                                         Container(
-                                          width: 10,
-                                          height: 10,
+                                          width: 16,
+                                          height: 16,
                                           decoration: BoxDecoration(
                                             color: Colors.greenAccent,
                                             shape: BoxShape.circle,
@@ -376,20 +417,20 @@ class _ForestParkHomeState extends State<ForestParkHome> {
                                         ),
                                         SizedBox(width: 6),
                                         Text('초록열매', style: TextStyle(color: Colors.white.withOpacity(0.6), fontSize: 13)),
-                                        SizedBox(width: 20),
-                                        Text('$greenCount', style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
+                                        SizedBox(width: 24),
+                                        Text('$greenCount', style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)),
                                       ],
                                     ),
 
                                     // 구분선
-                                    Container(width: 1, height: 20, color: Color(0xFF000000).withOpacity(0.2)),
+                                    Container(width: 1, height: 20, color: Color(0xFF000000).withOpacity(0.3)),
 
                                     // 황금 나뭇잎
                                     Row(
                                       children: [
                                         Container(
-                                          width: 10,
-                                          height: 10,
+                                          width: 16,
+                                          height: 16,
                                           decoration: BoxDecoration(
                                             color: Colors.amberAccent,
                                             shape: BoxShape.circle,
@@ -397,8 +438,8 @@ class _ForestParkHomeState extends State<ForestParkHome> {
                                         ),
                                         SizedBox(width: 6),
                                         Text('황금열매', style: TextStyle(color: Colors.white.withOpacity(0.6), fontSize: 13)),
-                                        SizedBox(width: 20),
-                                        Text('$goldCount', style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
+                                        SizedBox(width: 24),
+                                        Text('$goldCount', style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)),
                                       ],
                                     ),
                                   ],
@@ -406,15 +447,14 @@ class _ForestParkHomeState extends State<ForestParkHome> {
                               }),
                             ),
                             SizedBox(height: 20),
-                            SizedBox(height: 20),
 
                             Obx(() {
                               return isParticipant.value == false
                                   ? GestureDetector(
                                 onTap: () => _showCodeInputPopup(context, eventDate),
                                 child: Container(
-                                  width: 168,
-                                  height: 48,
+                                  width: 152,
+                                  height: 42,
                                   decoration: BoxDecoration(
                                     color: Colors.white,
                                     borderRadius: BorderRadius.circular(45),
@@ -425,17 +465,16 @@ class _ForestParkHomeState extends State<ForestParkHome> {
                                       children: [
                                         Text(
                                           '이벤트 참여하기',
-                                          style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 15,
-                                            color: Color(0xFF1D1000),
+                                          style: SDSTextStyle.bold.copyWith(
+                                            fontSize: 14,
+                                            color: SDSColor.gray900,
                                           ),
                                         ),
                                         SizedBox(width: 12),
-                                        Icon(
-                                          Icons.arrow_circle_right,
-                                          size: 18,
-                                          color: Color(0xFF1D1000),
+                                        Image.asset(
+                                          'assets/imgs/icons/icon_arrow_round_black.png',
+                                          width: 18,
+                                          height: 18,
                                         ),
                                       ],
                                     ),
@@ -445,8 +484,8 @@ class _ForestParkHomeState extends State<ForestParkHome> {
                                   : GestureDetector(
                                 onTap: () {}, // 눌렀을 때 동작
                                 child: Container(
-                                  width: 122,
-                                  height: 48,
+                                  width: 110,
+                                  height: 42,
                                   decoration: BoxDecoration(
                                     color: Colors.white,
                                     borderRadius: BorderRadius.circular(45),
@@ -464,17 +503,16 @@ class _ForestParkHomeState extends State<ForestParkHome> {
                                       children: [
                                         Text(
                                           '참여완료',
-                                          style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 15,
-                                            color: Color(0xFF1D1000),
+                                          style: SDSTextStyle.bold.copyWith(
+                                            fontSize: 14,
+                                            color: SDSColor.gray900,
                                           ),
                                         ),
                                         SizedBox(width: 12),
-                                        Icon(
-                                          Icons.check_circle,
-                                          size: 18,
-                                          color: Color(0xFF1D1000),
+                                        Image.asset(
+                                          'assets/imgs/icons/icon_check_filled_forest_park.png',
+                                          width: 18,
+                                          height: 18,
                                         ),
                                       ],
                                     ),
@@ -492,28 +530,36 @@ class _ForestParkHomeState extends State<ForestParkHome> {
                   Container(
                     width: double.infinity,
                     color: Color(0xFF12341E),
-                    padding: const EdgeInsets.symmetric(vertical: 40, horizontal: 20),
+                    padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 16),
                     child: Column(
                       children: [
                         // ✅ 여기에 추가: 나뭇잎 지도 + 경품 교환소 버튼
                         Row(
                           children: [
                             Expanded(
-                              child: Container(
-                                height: 140,
-                                padding: EdgeInsets.all(16), // ✅ 좌상단 정렬 위한 패딩
-                                decoration: BoxDecoration(
-                                  color: Color(0xFF0B5E2A),
-                                  borderRadius: BorderRadius.circular(16),
-                                  border: Border.all(
-                                    color: Color(0xFF27894A),
-                                    width: 2, // ✅ 윤곽선 두께 2
+                              child: GestureDetector(
+                                onTap: (){
+
+                                },
+                                child: Container(
+                                  height: 140,
+                                  padding: EdgeInsets.all(20), // ✅ 좌상단 정렬 위한 패딩
+                                  decoration: BoxDecoration(
+                                    color: Color(0xFF0B5E2A),
+                                    borderRadius: BorderRadius.circular(16),
+                                    border: Border.all(
+                                      color: Color(0xFF27894A),
+                                      width: 2, // ✅ 윤곽선 두께 2
+                                    ),
                                   ),
-                                ),
-                                alignment: Alignment.topLeft, // ✅ 좌상단 정렬
-                                child: Text(
-                                  '황금열매 지도',
-                                  style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                                  alignment: Alignment.topLeft, // ✅ 좌상단 정렬
+                                  child: Text(
+                                    '황금열매 지도',
+                                    style: SDSTextStyle.bold.copyWith(
+                                        color: Colors.white,
+                                        fontSize: 15,
+                                    ),
+                                  ),
                                 ),
                               ),
                             ),
@@ -528,7 +574,7 @@ class _ForestParkHomeState extends State<ForestParkHome> {
                                 },
                                 child: Container(
                                   height: 140,
-                                  padding: EdgeInsets.all(16),
+                                  padding: EdgeInsets.all(20),
                                   decoration: BoxDecoration(
                                     color: Color(0xFF0B5E2A),
                                     borderRadius: BorderRadius.circular(16),
@@ -540,42 +586,165 @@ class _ForestParkHomeState extends State<ForestParkHome> {
                                   alignment: Alignment.topLeft,
                                   child: Text(
                                     '경품 교환소',
-                                    style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                                    style: SDSTextStyle.bold.copyWith(
+                                      color: Colors.white,
+                                      fontSize: 15,
+                                    ),
                                   ),
                                 ),
                               ),
                             ),
                           ],
                         ),
-                        const SizedBox(height: 40),
+                        const SizedBox(height: 60),
                         Text(
                           '전설의 황금 열매를 모아\n진짜 황금의 주인공이 되세요!',
-                          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),
+                          style: SDSTextStyle.bold.copyWith(fontSize: 20, color: SDSColor.snowliveWhite),
                           textAlign: TextAlign.center,
+                        ),
+                        Padding(
+                          padding: EdgeInsets.only(top: 4),
+                          child: Text(
+                            '황금숲의 전설에 대한 소문과 이벤트 참여 방법을 확인하세요!',
+                            style: SDSTextStyle.regular.copyWith(fontSize: 13, color: SDSColor.snowliveWhite.withOpacity(0.5)),
+                            textAlign: TextAlign.center,
+                          ),
                         ),
                         SizedBox(height: 20),
                         Container(
-                          width: MediaQuery.of(context).size.width - 32, // ✅ 고정 너비 (예: 전체 너비 - 좌우 20씩 마진)
-                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 30),
-                          decoration: BoxDecoration(
-                            color: Color(0xFF0D2415),
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: Text(
-                            '''1995년, 휘닉스의 개장이 있던 해.
+                          width: _size.width - 32,
+                          child: Stack(
+                            alignment: Alignment.center,
+                            children: [
+                              Image.asset(
+                                'assets/imgs/imgs/img_forest_storybg.png',
+                                width: _size.width - 32,
+                                fit: BoxFit.cover,
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 40),
+                                child: Text(
+                                  '''1995년, 휘닉스의 개장이 있던 해.
 한 명의 숲지기가 황금의 씨앗을 묻었다.
-그 씨앗은 시간이 지나 포레스트 파크라는 푸른 숲이 되었다.
+그 씨앗은 시간이 지나 포레스트 파크라는 
+푸른 숲이 되었다.
 
 2025년 현재, 휘닉스 파크 30주년을 맞아
-전설 속 황금의 씨앗이 열매를 맺는다는 소식이 퍼진다.
+전설 속 황금의 씨앗이 열매를 맺는다는 
+소식이 퍼진다.
 
 황금열매는 포레스트 파크 곳곳에 흩어져 있고,
-황금열매를  모은 자만이 진짜 황금을 손에 넣을 수 있다!''',
-                            style: TextStyle(color: Colors.white),
-                            textAlign: TextAlign.center, // ✅ 중앙 정렬 추가
+황금열매를 모은 자만이 
+진짜 황금을 손에 넣을 수 있다!''',
+                                  textAlign: TextAlign.center,
+                                  style: SDSTextStyle.regular.copyWith(
+                                    fontSize: 14,
+                                    height: 1.6,
+                                    color: SDSColor.snowliveWhite,
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
                         ),
-                        SizedBox(height: 150),
+                        const SizedBox(height: 48),
+                        Text(
+                          '이벤트 참여 방법',
+                          style: SDSTextStyle.bold.copyWith(fontSize: 18, color: SDSColor.snowliveWhite),
+                          textAlign: TextAlign.center,
+                        ),
+                        SizedBox(height: 16),
+                        Container(
+                          padding: EdgeInsets.only(top: 18, bottom: 24, left: 30, right: 30),
+                          decoration: BoxDecoration(
+                            color: Color(0xFF104122),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          width: _size.width - 32,
+                          child: Column(
+                            children: [
+                              Image.asset(
+                                'assets/imgs/imgs/img_forest_step1.png',
+                                width: 150,
+                                fit: BoxFit.cover,
+                              ),
+                              Padding(
+                                padding: EdgeInsets.only(top: 8),
+                                child: Text(
+                                  '1. 이벤트 참여하기 버튼을 누르고,\n참여코드 입력',
+                                  textAlign: TextAlign.center,
+                                  style: SDSTextStyle.regular.copyWith(
+                                    fontSize: 14,
+                                    color: SDSColor.snowliveWhite,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.only(top: 16),
+                          child: Container(
+                            padding: EdgeInsets.only(top: 18, bottom: 24, left: 30, right: 30),
+                            decoration: BoxDecoration(
+                              color: Color(0xFF104122),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            width: _size.width - 32,
+                            child: Column(
+                              children: [
+                                Image.asset(
+                                  'assets/imgs/imgs/img_forest_step2.png',
+                                  width: 150,
+                                  fit: BoxFit.cover,
+                                ),
+                                Padding(
+                                  padding: EdgeInsets.only(top: 8),
+                                  child: Text(
+                                    '2. 숨겨진 퀴즈를 찾아 QR 코드를 스캔한 후\n정답을 맞춰 초록/황금 열매를 획득',
+                                    textAlign: TextAlign.center,
+                                    style: SDSTextStyle.regular.copyWith(
+                                      fontSize: 14,
+                                      color: SDSColor.snowliveWhite,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.only(top: 16),
+                          child: Container(
+                            padding: EdgeInsets.only(top: 18, bottom: 24, left: 30, right: 30),
+                            decoration: BoxDecoration(
+                              color: Color(0xFF104122),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            width: _size.width - 32,
+                            child: Column(
+                              children: [
+                                Image.asset(
+                                  'assets/imgs/imgs/img_forest_step3.png',
+                                  width: 150,
+                                  fit: BoxFit.cover,
+                                ),
+                                Padding(
+                                  padding: EdgeInsets.only(top: 8),
+                                  child: Text(
+                                    '3. 획득한 초록/황금 열매를 사용해\n원하는 경품을 교환 후 경품 수령처에서 경품 받기',
+                                    textAlign: TextAlign.center,
+                                    style: SDSTextStyle.regular.copyWith(
+                                      fontSize: 14,
+                                      color: SDSColor.snowliveWhite,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: 140),
                       ],
                     ),
                   ),
