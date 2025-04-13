@@ -63,19 +63,43 @@ class CrewRecordRoomView extends StatelessWidget {
       SingleChildScrollView(
         physics: AlwaysScrollableScrollPhysics(),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            buildSeasonSelector(),
+            Padding(
+              padding: const EdgeInsets.only(left: 16, top: 10),
+              child: buildSeasonSelector(),
+            ),
             Obx(() {
               if (_crewRecordRoomViewModel.isLoading.value == true ||
                   _rankingCrewHistoryViewModel.isLoadingBeta_Crew.value == true) {
-                return Center(
-                  child: Padding(
-                    padding: EdgeInsets.only(bottom: 100),
-                    child: CircularProgressIndicator(
-                      strokeWidth: 4,
-                      backgroundColor: SDSColor.gray100,
-                      color: SDSColor.gray300.withOpacity(0.6),
-                    ),
+                return Container(
+                  height: 800,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Center(
+                              child: Padding(
+                                padding: EdgeInsets.only(bottom: 100),
+                                child: Container(
+                                  width: 24,
+                                  height: 24,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 4,
+                                    backgroundColor: SDSColor.gray100,
+                                    color: SDSColor.gray300.withOpacity(0.6),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
                 );
               }
@@ -236,7 +260,6 @@ class CrewRecordRoomView extends StatelessWidget {
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
         children: [
           ...RankingFilter_season.values.map((season) {
             return Padding(
@@ -254,11 +277,10 @@ class CrewRecordRoomView extends StatelessWidget {
                     color: _crewRecordRoomViewModel.currentSeason.value == season.dbSeason
                         ? SDSColor.snowliveBlack
                         : SDSColor.snowliveWhite,
-                    borderRadius: BorderRadius.circular(30.0),
-                    border: Border.all(color: Colors.transparent, width: 1),
+                    borderRadius: BorderRadius.circular(20.0),
                   ),
                   padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                  height: 36,
+                  height: 32,
                   child: Text(
                     season.korean,
                     style: SDSTextStyle.bold.copyWith(
@@ -268,7 +290,7 @@ class CrewRecordRoomView extends StatelessWidget {
                       fontWeight: _crewRecordRoomViewModel.currentSeason.value == season.dbSeason
                           ? FontWeight.bold
                           : FontWeight.normal,
-                      fontSize: 13,
+                      fontSize: 12,
                     ),
                   ),
                 )),
@@ -324,7 +346,7 @@ class CrewRecordRoomView extends StatelessWidget {
         children: [
           // 월 타이틀 추가
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 4),
+            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
             child: Text(
               _formatMonthTitle(monthKey),
               style: SDSTextStyle.bold.copyWith(
@@ -336,7 +358,10 @@ class CrewRecordRoomView extends StatelessWidget {
           // 해당 월의 레코드들
           ...records.map((record) {
             int index = _crewRecordRoomViewModel.crewRidingRecords.indexOf(record);
-            return buildExpansionTile(record, index);
+            return Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16), // ✅ 여기 패딩 추가
+              child: buildExpansionTile(record, index),
+            );
           }).toList(),
         ],
       );

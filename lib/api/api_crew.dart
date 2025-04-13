@@ -240,11 +240,27 @@ class CrewAPI {
     }
   }
 
-  // 크루 일일 리포트
-  Future<ApiResponse<List<dynamic>>> getCrewDailyReport(int crewId, String selected_season) async {
-    final uri = Uri.parse('$baseUrl/crew-daily-report/').replace(queryParameters: {
+  // 크루 일일 리포트 - 기록실
+  Future<ApiResponse<List<dynamic>>> getCrewDailyReport_recordRoom(int crewId, String selected_season) async {
+    final uri = Uri.parse('$baseUrl/crew-daily-report/recordroom/').replace(queryParameters: {
       'crew_id': crewId.toString(),
       'selected_season': selected_season,
+    });
+
+    final response = await http.get(uri);
+
+    if (response.statusCode == 200) {
+      return ApiResponse.success(json.decode(utf8.decode(response.bodyBytes)) as List<dynamic>);
+    } else {
+      return ApiResponse.error(json.decode(utf8.decode(response.bodyBytes)));
+    }
+  }
+
+  // 크루 일일 리포트 - 일별 현황
+  Future<ApiResponse<List<dynamic>>> getCrewDailyReport(int crewId, String year) async {
+    final uri = Uri.parse('$baseUrl/crew-daily-report/').replace(queryParameters: {
+      'crew_id': crewId.toString(),
+      'year': year,
     });
 
     final response = await http.get(uri);
