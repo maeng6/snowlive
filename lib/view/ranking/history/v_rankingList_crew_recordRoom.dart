@@ -27,7 +27,6 @@ class RankingCrewView_recordRoom extends StatelessWidget {
   final RankingListViewModel_recordRoom _rankingListViewModel_recordRoom = Get.find<RankingListViewModel_recordRoom>();
   final CrewDetailViewModel _crewDetailViewModel = Get.find<CrewDetailViewModel>();
   final CrewMemberListViewModel _crewMemberListViewModel = Get.find<CrewMemberListViewModel>();
-  final CrewRecordRoomViewModel _crewRecordRoomViewModel = Get.find<CrewRecordRoomViewModel>();
   final ResortHomeViewModel _resortHomeViewModel = Get.find<ResortHomeViewModel>();
 
   @override
@@ -118,11 +117,6 @@ class RankingCrewView_recordRoom extends StatelessWidget {
                                                     _rankingListViewModel_recordRoom.rankingListCrewMy_view!.crewId!,
                                                     _friendDetailViewModel.seasonDate
                                                 );
-                                                if(_userViewModel.user.crew_id == _rankingListViewModel_recordRoom.rankingListCrewMy_view!.crewId!)
-                                                  await _crewRecordRoomViewModel.fetchCrewRidingRecords(
-                                                      _rankingListViewModel_recordRoom.rankingListCrewMy_view!.crewId!,
-                                                      '${RankingFilter_season.values.first.dbSeason}'
-                                                  );
                                               },
                                               child: Padding(
                                                 padding: EdgeInsets.only(left: 8.0),
@@ -1302,12 +1296,6 @@ class RankingCrewView_recordRoom extends StatelessWidget {
                                       document.crewId!,
                                       _friendDetailViewModel.seasonDate
                                   );
-
-                                  if(_userViewModel.user.crew_id ==   _crewDetailViewModel.crewDetailInfo.crewId!)
-                                    await _crewRecordRoomViewModel.fetchCrewRidingRecords(
-                                        _crewDetailViewModel.crewDetailInfo.crewId!,
-                                        '${RankingFilter_season.values.first.dbSeason}'
-                                    );
                                 },
                                 child: Row(
                                   children: [
@@ -1550,11 +1538,6 @@ class RankingCrewView_recordRoom extends StatelessWidget {
                                                     _rankingListViewModel_recordRoom.rankingListCrewMy_view!.crewId!,
                                                     _friendDetailViewModel.seasonDate
                                                 );
-                                                if(_userViewModel.user.crew_id == _rankingListViewModel_recordRoom.rankingListCrewMy_view!.crewId!)
-                                                  await _crewRecordRoomViewModel.fetchCrewRidingRecords(
-                                                      _rankingListViewModel_recordRoom.rankingListCrewMy_view!.crewId!,
-                                                      '${RankingFilter_season.values.first.dbSeason}'
-                                                  );
                                               },
                                               child: Padding(
                                                 padding: EdgeInsets.only(left: 8.0),

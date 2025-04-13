@@ -15,6 +15,7 @@ class RankingHistoryHomeView extends StatelessWidget {
 
   final RankingListViewModel_recordRoom _rankingListViewModel_recordRoom = Get.find<RankingListViewModel_recordRoom>();
 
+
   @override
   Widget build(BuildContext context) {
 
