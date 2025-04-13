@@ -18,14 +18,16 @@ class SplashController extends GetxController{
   String get url => _url;
   String get localUrl => _localUrl;
   bool gotoMainHome = false;
+  RxBool isLoadingUrl = true.obs;
 
 
 
   Future<void> getSplashUrlandGotoMainHome() async{
     try {
       SplashModel splashModel = await SplashModel().getSplashImage();
-      gotoMainHome = await controller.userCheck();
       this._url = splashModel.modelUrl;
+      this.isLoadingUrl.value = false;
+      gotoMainHome = await controller.userCheck();
     }catch(e){
       this._url = 'https://i.esdrop.com/d/f/yytYSNBROy/spAvUnyvK6.png';
     }

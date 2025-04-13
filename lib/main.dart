@@ -21,7 +21,6 @@ import 'package:intl/date_symbol_data_local.dart';
 
 final navigatorKey = GlobalKey<NavigatorState>();
 
-// 반드시 main 함수 외부에 작성합니다. (= 최상위 수준 함수여야 함)
 @pragma('vm:entry-point')
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   if (message.notification != null) {
@@ -29,59 +28,41 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   }
 }
 
-// 푸시 알림 메시지와 상호작용을 정의합니다.
 Future<void> setupInteractedMessage() async {
-  // 앱이 종료된 상태에서 열릴 때 getInitialMessage 호출
-  RemoteMessage? initialMessage =
-  await FirebaseMessaging.instance.getInitialMessage();
-
+  RemoteMessage? initialMessage = await FirebaseMessaging.instance.getInitialMessage();
   if (initialMessage != null) {
     _handleMessage(initialMessage);
   }
-
-  // 앱이 백그라운드 상태일 때, 푸시 알림을 탭할 때 RemoteMessage 처리
   FirebaseMessaging.onMessageOpenedApp.listen(_handleMessage);
 }
 
-// FCM에서 전송한 data를 처리합니다. /message 페이지로 이동하면서 해당 데이터를 화면에 보여줍니다.
 void _handleMessage(RemoteMessage message) {
   Future.delayed(const Duration(seconds: 1), () {
     navigatorKey.currentState!.pushNamed("/message", arguments: message);
   });
 }
 
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await initializeDateFormatting('ko', null);
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-
-  await SystemChrome.setPreferredOrientations([
-    DeviceOrientation.portraitUp,
-    DeviceOrientation.portraitDown
-  ]);
+  await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
 
   HttpOverrides.global = MyHttpOverrides();
-  // Dependency Injection
+
   await Get.put(UserViewModel(), permanent: true);
   await Get.put(FriendDetailViewModel());
-  await Get.put(NotificationController(),permanent: true);
+  await Get.put(NotificationController(), permanent: true);
   await Get.put(AuthCheckViewModel(), permanent: true);
-  await Get.put(SplashController(),permanent: true);
+  await Get.put(SplashController(), permanent: true);
 
-  // FCM 푸시 알림 관련 초기화
   PushNotification.init();
-  // flutter_local_notifications 패키지 관련 초기화
   PushNotification.localNotiInit();
-  // 백그라운드 알림 수신 리스너
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
-  // 포그라운드 알림 수신 리스너
   FirebaseMessaging.onMessage.listen((RemoteMessage message) {
     String payloadData = jsonEncode(message.data);
-    print('Got a message in foreground');
     if (message.notification != null) {
-      // flutter_local_notifications 패키지 사용
       PushNotification.showSimpleNotification(
         title: message.notification!.title!,
         body: message.notification!.body!,
@@ -90,108 +71,141 @@ void main() async {
     }
   });
 
-  // 메시지 상호작용 함수 호출
   setupInteractedMessage();
 
-
-
   runApp(MyApp());
-
 }
 
 class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
-
 
   @override
   State<MyApp> createState() => _MyAppState();
 }
 
 class _MyAppState extends State<MyApp> {
+  final SplashController _splashController = Get.find<SplashController>();
 
-  Future<void>? loadingSplashImgUrl;
-  String splashUrl='';
+  String splashUrl = '';
   bool gotoMainHome = false;
-
-  //TODO: Dependency Injection********************************************
-  SplashController _splashController = Get.find<SplashController>();
+  bool fadeDone = false;
 
   @override
   Widget build(BuildContext context) {
-
     return GetMaterialApp(
-        debugShowCheckedModeBanner: false,
-        getPages: AppRoutes.pages,
-        navigatorObservers: [
-          FirebaseAnalyticsObserver(analytics: FirebaseAnalytics.instance)
-        ],
-        theme: ThemeData(
-          primaryColor: SDSColor.snowliveBlue,
-          primaryColorLight: SDSColor.blue50,
-          primaryColorDark: SDSColor.blue700,
-          textTheme: TextTheme(
-            displayLarge: TextStyle(fontFamily: 'Pretendard', fontWeight: FontWeight.w800),
-            displayMedium: TextStyle(fontFamily: 'Pretendard', fontWeight: FontWeight.w600),
-            bodyLarge: TextStyle(fontFamily: 'Pretendard', fontWeight: FontWeight.w300),
-          ),
-          fontFamily: 'Pretendard',
-          appBarTheme: AppBarTheme(
-            iconTheme: IconThemeData(
-                size: 30,
-                color: Colors.black
-            ),
-            centerTitle: true,
-            titleTextStyle: TextStyle(
-                fontFamily: 'Pretendard',
-                fontWeight: FontWeight.bold,
-                color: Colors.black,
-                fontSize: 20
-            ),
-            backgroundColor: Colors.transparent,
-            elevation: 0.0,
-          ),
-          buttonTheme: ButtonThemeData(
-              buttonColor: Colors.transparent
-          ),
+      debugShowCheckedModeBanner: false,
+      getPages: AppRoutes.pages,
+      navigatorObservers: [
+        FirebaseAnalyticsObserver(analytics: FirebaseAnalytics.instance)
+      ],
+      theme: ThemeData(
+        primaryColor: SDSColor.snowliveBlue,
+        fontFamily: 'Pretendard',
+        textTheme: TextTheme(
+          displayLarge: TextStyle(fontFamily: 'Pretendard', fontWeight: FontWeight.w800),
+          displayMedium: TextStyle(fontFamily: 'Pretendard', fontWeight: FontWeight.w600),
+          bodyLarge: TextStyle(fontFamily: 'Pretendard', fontWeight: FontWeight.w300),
         ),
-        builder: (context, child) {
-          // textScaleFactor를 1.0으로 고정
-          return MediaQuery(
-            data: MediaQuery.of(context).copyWith(textScaler: TextScaler.linear(1.0)),
-            child: child!,
+        appBarTheme: AppBarTheme(
+          iconTheme: IconThemeData(size: 30, color: Colors.black),
+          centerTitle: true,
+          titleTextStyle: TextStyle(
+            fontFamily: 'Pretendard',
+            fontWeight: FontWeight.bold,
+            color: Colors.black,
+            fontSize: 20,
+          ),
+          backgroundColor: Colors.transparent,
+          elevation: 0.0,
+        ),
+      ),
+      builder: (context, child) {
+        return MediaQuery(
+          data: MediaQuery.of(context).copyWith(textScaler: TextScaler.linear(1.0)),
+          child: child!,
+        );
+      },
+      home: FutureBuilder(
+        future: _splashController.getSplashUrlandGotoMainHome(),
+        builder: (context, snapshot) {
+          /// 초기 에셋 → 네트워크 이미지로 페이드 전환 구간
+          if (snapshot.connectionState != ConnectionState.done &&
+              _splashController.isLoadingUrl == false &&
+              !fadeDone) {
+            splashUrl = _splashController.url;
+
+            return Stack(
+              key: const ValueKey('fadeInStack'),
+              children: [
+                ExtendedImage.asset(
+                  'assets/imgs/splash_screen/splash_logo.png',
+                  fit: BoxFit.cover,
+                  enableMemoryCache: true,
+                  width: double.infinity,
+                  height: double.infinity,
+                ),
+                AnimatedOpacity(
+                  opacity: 1.0,
+                  duration: const Duration(milliseconds: 500),
+                  onEnd: () {
+                    setState(() {
+                      fadeDone = true;
+                    });
+                  },
+                  child: Image.network(
+                    splashUrl,
+                    fit: BoxFit.cover,
+                    width: double.infinity,
+                    height: double.infinity,
+                  ),
+                ),
+              ],
+            );
+          }
+
+          /// 로딩 완료 후: 네트워크 이미지 고정 + SplashScreen → 전환 애니메이션 없음
+          if (snapshot.connectionState == ConnectionState.done) {
+            if (snapshot.hasError) {
+              return const Center(child: Text('에러 발생'));
+            }
+
+            splashUrl = _splashController.url;
+            gotoMainHome = _splashController.gotoMainHome;
+
+            return Stack(
+              key: const ValueKey('finalStack'),
+              children: [
+                Image.network(
+                  splashUrl,
+                  fit: BoxFit.cover,
+                  width: double.infinity,
+                  height: double.infinity,
+                ),
+                SplashScreen(gotoMainHome: gotoMainHome),
+              ],
+            );
+          }
+
+          /// 최초 진입 시: 에셋 이미지 고정
+          return ExtendedImage.asset(
+            'assets/imgs/splash_screen/splash_logo.png',
+            key: const ValueKey('initialAsset'),
+            fit: BoxFit.cover,
+            enableMemoryCache: true,
+            width: double.infinity,
+            height: double.infinity,
           );
         },
-        home: FutureBuilder(
-          future: _splashController.getSplashUrlandGotoMainHome(),
-          builder: (context, snapshot){
-            if (snapshot.connectionState == ConnectionState.done) {
-              if (snapshot.hasError) {
-                return Center(child: Text('에러 발생: ${snapshot.error}'));
-              }
-              splashUrl = _splashController.url;
-              gotoMainHome = _splashController.gotoMainHome;
-              return SplashScreen(imageUrl: splashUrl, gotoMainHome: gotoMainHome,);
-            } else {
-              return ExtendedImage.asset(
-                'assets/imgs/splash_screen/splash_logo.png',
-                fit: BoxFit.cover,
-                enableMemoryCache: true,
-              );
-            }
-          },
-        )
+      ),
+
     );
   }
 }
 
-class MyHttpOverrides extends HttpOverrides{
+class MyHttpOverrides extends HttpOverrides {
   @override
-  HttpClient createHttpClient(SecurityContext? context){
+  HttpClient createHttpClient(SecurityContext? context) {
     return super.createHttpClient(context)
-      ..badCertificateCallback = (X509Certificate cert, String host, int port)=> true;
+      ..badCertificateCallback = (X509Certificate cert, String host, int port) => true;
   }
 }
-
-//TODO : 네이티브 Splah 생성/삭제 커맨드
-//flutter pub run flutter_native_splash:create
-//flutter pub run flutter_native_splash:remove

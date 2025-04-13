@@ -58,105 +58,112 @@ class CrewRecordRoomView extends StatelessWidget {
           ),
         ),
       ),
-      body: Obx(() {
-        if (_crewRecordRoomViewModel.isLoading.value == true ||
-            _rankingCrewHistoryViewModel.isLoadingBeta_Crew.value == true) {
-          return Center(
-            child: Padding(
-              padding: EdgeInsets.only(bottom: 100),
-              child: CircularProgressIndicator(
-                strokeWidth: 4,
-                backgroundColor: SDSColor.gray100,
-                color: SDSColor.gray300.withOpacity(0.6),
-              ),
-            ),
-          );
-        }
+      body:
 
-        if (_crewRecordRoomViewModel.currentSeason.value == '2324') {
-          return _buildBetaView(MediaQuery.of(context).size);
-        }
+      SingleChildScrollView(
+        physics: AlwaysScrollableScrollPhysics(),
+        child: Column(
+          children: [
+            buildSeasonSelector(),
+            Obx(() {
+              if (_crewRecordRoomViewModel.isLoading.value == true ||
+                  _rankingCrewHistoryViewModel.isLoadingBeta_Crew.value == true) {
+                return Center(
+                  child: Padding(
+                    padding: EdgeInsets.only(bottom: 100),
+                    child: CircularProgressIndicator(
+                      strokeWidth: 4,
+                      backgroundColor: SDSColor.gray100,
+                      color: SDSColor.gray300.withOpacity(0.6),
+                    ),
+                  ),
+                );
+              }
 
-        return RefreshIndicator(
-          strokeWidth: 2,
-          edgeOffset: -40,
-          displacement: 40,
-          backgroundColor: SDSColor.snowliveBlue,
-          color: SDSColor.snowliveWhite,
-          onRefresh: () async {
-            await _crewRecordRoomViewModel.fetchCrewRidingRecords_refresh(
-              _userViewModel.user!.crew_id,
-              _crewRecordRoomViewModel.currentSeason.value,
-            );
-          },
-          child: SingleChildScrollView(
-            physics: AlwaysScrollableScrollPhysics(),
-            child: Padding(
-              padding: EdgeInsets.only(bottom: 60),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SizedBox(height: 24),
-                  Padding(
-                    padding: EdgeInsets.only(left: 20, right: 20),
-                    child: Row(
-                      children: [
-                        Text(
-                          '크루 라이딩 통계',
-                          style: SDSTextStyle.bold.copyWith(
-                            fontSize: 15,
-                            color: SDSColor.gray900,
-                          ),
-                        ),
-                        Expanded(child: SizedBox()),
-                        (_crewDetailViewModel_recordRoom.isLoading == true)
-                            ? SizedBox.shrink()
-                            : Row(
+              if (_crewRecordRoomViewModel.currentSeason.value == '2324') {
+                return _buildBetaView(MediaQuery.of(context).size);
+              }
+
+              return RefreshIndicator(
+                strokeWidth: 2,
+                edgeOffset: -40,
+                displacement: 40,
+                backgroundColor: SDSColor.snowliveBlue,
+                color: SDSColor.snowliveWhite,
+                onRefresh: () async {
+                  await _crewRecordRoomViewModel.fetchCrewRidingRecords_refresh(
+                    _userViewModel.user!.crew_id,
+                    _crewRecordRoomViewModel.currentSeason.value,
+                  );
+                },
+                child: Padding(
+                  padding: EdgeInsets.only(bottom: 60),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(height: 24),
+                      Padding(
+                        padding: EdgeInsets.only(left: 20, right: 20),
+                        child: Row(
                           children: [
-                            TextButton(
-                              onPressed: () async {
-                                Get.toNamed(AppRoutes.crewMemberRankingList_recordRoom);
-                                await _crewRankingListViewModel_recordRoom.fetchCrewRankings_recordRoom(
-                                  crewId: _crewDetailViewModel.crewDetailInfo.crewId!,
-                                  userId: _userViewModel.user.user_id!,
-                                  selected_season: _crewRecordRoomViewModel.currentSeason.value,
-                                );
-                              },
-                              style: ElevatedButton.styleFrom(
-                                shadowColor: Colors.transparent,
-                                overlayColor: Colors.transparent,
-                                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 3),
-                                minimumSize: Size(36, 32),
-                                backgroundColor: SDSColor.snowliveWhite,
-                                side: BorderSide(color: SDSColor.gray200),
-                                elevation: 0,
-                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+                            Text(
+                              '크루 라이딩 통계',
+                              style: SDSTextStyle.bold.copyWith(
+                                fontSize: 15,
+                                color: SDSColor.gray900,
                               ),
-                              child: Text(
-                                '크루원 랭킹',
-                                style: SDSTextStyle.bold.copyWith(fontSize: 13, color: SDSColor.gray900),
-                              ),
+                            ),
+                            Expanded(child: SizedBox()),
+                            (_crewDetailViewModel_recordRoom.isLoading == true)
+                                ? SizedBox.shrink()
+                                : Row(
+                              children: [
+                                TextButton(
+                                  onPressed: () async {
+                                    Get.toNamed(AppRoutes.crewMemberRankingList_recordRoom);
+                                    await _crewRankingListViewModel_recordRoom.fetchCrewRankings_recordRoom(
+                                      crewId: _crewDetailViewModel.crewDetailInfo.crewId!,
+                                      userId: _userViewModel.user.user_id!,
+                                      selected_season: _crewRecordRoomViewModel.currentSeason.value,
+                                    );
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    shadowColor: Colors.transparent,
+                                    overlayColor: Colors.transparent,
+                                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 3),
+                                    minimumSize: Size(36, 32),
+                                    backgroundColor: SDSColor.snowliveWhite,
+                                    side: BorderSide(color: SDSColor.gray200),
+                                    elevation: 0,
+                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+                                  ),
+                                  child: Text(
+                                    '크루원 랭킹',
+                                    style: SDSTextStyle.bold.copyWith(fontSize: 13, color: SDSColor.gray900),
+                                  ),
+                                ),
+                              ],
                             ),
                           ],
                         ),
-                      ],
-                    ),
+                      ),
+                      SizedBox(height: 6),
+                      // 랭킹 카드
+                      _buildRankingSummaryCard(context),
+                      SizedBox(height: 20),
+                      // 그래프 카드
+                      _buildGraphCard(_size),
+                      SizedBox(height: 20),
+                      // 월별 기록 리스트
+                      ..._buildGroupedRecords(MediaQuery.of(context).size),
+                    ],
                   ),
-                  SizedBox(height: 6),
-                  // 랭킹 카드
-                  _buildRankingSummaryCard(context),
-                  SizedBox(height: 20),
-                  // 그래프 카드
-                  _buildGraphCard(_size),
-                  SizedBox(height: 20),
-                  // 월별 기록 리스트
-                  ..._buildGroupedRecords(MediaQuery.of(context).size),
-                ],
-              ),
-            ),
-          ),
-        );
-      }),
+                ),
+              );
+            }),
+          ],
+        ),
+      ),
     );
   }
 
@@ -229,6 +236,7 @@ class CrewRecordRoomView extends StatelessWidget {
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
         children: [
           ...RankingFilter_season.values.map((season) {
             return Padding(
@@ -1154,5 +1162,7 @@ class CrewRecordRoomView extends StatelessWidget {
     )
         : Center(child: Text('No data available'));
   }
+
+
 }
 
